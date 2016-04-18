@@ -1,5 +1,5 @@
 package Markets::Web;
-use Mojo::Base 'Mojolicious';
+use Mojo::Base 'Markets';
 
 # This method will run once at server start
 sub startup {
