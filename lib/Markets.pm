@@ -2,6 +2,9 @@ package Markets;
 use Mojo::Base 'Mojolicious';
 our $VERSION = '0.01';
 
+# dispatcher is Mojolicious::Plugin
+sub dispatcher { shift->plugin(@_) }
+
 1;
 __END__
 

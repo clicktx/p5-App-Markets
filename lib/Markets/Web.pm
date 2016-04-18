@@ -8,11 +8,9 @@ sub startup {
     # Documentation browser under "/perldoc"
     $self->plugin('PODRenderer');
 
-    # Router
-    my $r = $self->routes;
+    # Routes
+    $self->dispatcher('Markets::Web::Dispatcher');
 
-    # Normal route to controller
-    $r->get('/')->to('example#welcome');
 }
 
 1;
