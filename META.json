@@ -47,7 +47,7 @@
       },
       "runtime" : {
          "requires" : {
-            "Mojolicious" : "6.58"
+            "Mojolicious" : "== 6.58"
          }
       }
    },
