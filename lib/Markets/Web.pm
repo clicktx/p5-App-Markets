@@ -14,6 +14,8 @@ sub initialize_app {
     # connect to DataBase
     $self->plugin( Config => { file => 'etc/' . $self->config_file } );
 
+    $self->plugin( Model => { namespaces => ['Markets::Web::Model'] } );
+
     # config from DataBase
     $self->config( { app_config => 'from_db' } );
 }
@@ -24,7 +26,6 @@ sub startup {
     my $app  = $self->app;
 
     $self->initialize_app;
-    say Dumper $self->config; 
 
     # templets paths
     my $themes = $app->util->list_themes('theme');
