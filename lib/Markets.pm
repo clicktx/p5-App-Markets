@@ -1,6 +1,9 @@
 package Markets;
 use Mojo::Base 'Mojolicious';
+use Markets::Util;
 our $VERSION = '0.01';
+
+has util => sub { Markets::Util->new };
 
 # dispatcher is Mojolicious::Plugin
 sub dispatcher { shift->plugin(@_) }
