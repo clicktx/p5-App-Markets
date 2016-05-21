@@ -1,4 +1,4 @@
-package Markets::Web::Model::Data::Hoge;
+package Markets::Model::Data::Hoge;
 use Mojo::Base 'MojoX::Model';
 
 sub do {

@@ -14,7 +14,7 @@ sub initialize_app {
     # connect to DataBase
     $self->plugin( Config => { file => 'etc/' . $self->config_file } );
 
-    $self->plugin( Model => { namespaces => ['Markets::Web::Model'] } );
+    $self->plugin( Model => { namespaces => ['Markets::Model'] } );
 
     # config from DataBase
     $self->config( { app_config => 'from_db' } );
