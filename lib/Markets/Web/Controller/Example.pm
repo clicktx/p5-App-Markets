@@ -7,8 +7,8 @@ sub welcome {
     my $self = shift;
 
     # use model
-    $self->app->model('logic-hoge')->do;
-    $self->app->model('Data::Hoge')->do;
+    $self->app->model('logic-base')->do;
+    $self->app->model('Data::Base')->do;
 
     # Render template "example/welcome.html.ep" with message
     $self->render(
