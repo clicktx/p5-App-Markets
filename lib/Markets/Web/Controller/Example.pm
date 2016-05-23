@@ -8,7 +8,7 @@ sub welcome {
 
     # use model
     $self->app->model('logic-hoge')->do;
-    $self->app->model('data-hoge')->do;
+    $self->app->model('Data::Hoge')->do;
 
     # Render template "example/welcome.html.ep" with message
     $self->render(
