@@ -1,4 +1,4 @@
-package Markets::Model::Logic::Hoge;
+package Markets::Model::Logic::Base;
 use Mojo::Base 'MojoX::Model';
 
 sub do {
@@ -11,13 +11,13 @@ __END__
 
 =head1 NAME
 
-Markets::Model::Logic::Hoge
+Markets::Model::Logic::Base
 
 =head1 SYNOPSIS
 
 Your model
 
-    package Markets::Model::Logic::Hoge;
+    package Markets::Model::Logic::Base;
     use Mojo::Base 'MojoX::Model';
 
     sub do {
@@ -48,9 +48,9 @@ Camel case or Module name.
         my $self = shift;
 
         # model
-        $self->app->model('logic-hoge')->do;
+        $self->app->model('logic-base')->do;
         # or
-        $self->app->model('Logic::Hoge')->do;
+        $self->app->model('Logic::Base')->do;
     }
 
 =head1 DESCRIPTION
