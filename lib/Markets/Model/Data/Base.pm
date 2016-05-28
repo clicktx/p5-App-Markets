@@ -3,9 +3,13 @@ use Mojo::Base 'MojoX::Model';
 use DBI;
 use Markets::DB;
 use Teng::Schema::Loader;
+use Data::Dumper;
 
 sub do {
     my ($self) = @_;
+    my $db = $self->app->db;
+    say $db;
+    say Dumper $db->single(session => {session_id => 1});
     say "data->do";
 }
 
