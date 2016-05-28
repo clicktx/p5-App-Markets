@@ -1,6 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 
+use_ok 'Markets::DB::Schema';
 use_ok 'Markets::Model::Data::Base';
 
 subtest 'Model Data' => sub {
