@@ -1,8 +1,12 @@
 package Markets::Model::Data::Base;
 use Mojo::Base 'MojoX::Model';
+use Data::Dumper;
 
 sub do {
     my ($self) = @_;
+    my $db = $self->app->db;
+    say $db;
+    say Dumper $db->single(session => {session_id => 1});
     say "data->do";
 }
 
