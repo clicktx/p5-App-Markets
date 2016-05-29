@@ -13,6 +13,10 @@ sub initialize_app {
 
     # connect to DataBase
     $self->plugin( Config => { file => 'etc/' . $self->config_file } );
+    my $db = $self->app->db;
+    say Dumper $db; 
+
+    $self->plugin( Model => { namespaces => ['Markets::Model'] } );
 
     # config from DataBase
     $self->config( { app_config => 'from_db' } );
@@ -24,11 +28,10 @@ sub startup {
     my $app  = $self->app;
 
     $self->initialize_app;
-    say Dumper $self->config; 
 
     # templets paths
     my $themes = $app->util->list_themes('theme');
-    say Dumper $themes;
+    say Dumper $themes; 
     $app->renderer->paths( ['theme/default'] );
 
     # Documentation browser under "/perldoc"
