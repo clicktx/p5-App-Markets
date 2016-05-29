@@ -1,8 +1,5 @@
 package Markets::Model::Data::Base;
 use Mojo::Base 'MojoX::Model';
-use DBI;
-use Markets::DB;
-use Teng::Schema::Loader;
 use Data::Dumper;
 
 sub do {
