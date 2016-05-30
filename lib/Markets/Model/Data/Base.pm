@@ -1,15 +1,13 @@
 package Markets::Model::Data::Base;
 use Mojo::Base 'MojoX::Model';
-use DBI;
-use Markets::DB;
-use Teng::Schema::Loader;
 use Data::Dumper;
 
 sub do {
     my ($self) = @_;
     my $db = $self->app->db;
-    say $db;
-    say Dumper $db->single(session => {session_id => 1});
+    say '$app->dbh => ' . $self->app->dbh . 'on Model::Data::Base'; 
+    say '$app->db => ' . $db; 
+    say $db->single(session => {sid => 1});
     say "data->do";
 }
 

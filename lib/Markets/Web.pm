@@ -3,18 +3,17 @@ use Mojo::Base 'Markets';
 use Data::Dumper;
 
 has config_file => sub {
-    my $self = shift;
-    my $env = $ENV{MOJO_MODE} // 'develop';
-    return "${env}.conf";
+    my $mode = shift->app->mode;
+    return "${mode}.conf";
 };
 
 sub initialize_app {
     my $self = shift;
 
     # connect to DataBase
-    $self->plugin( Config => { file => 'etc/' . $self->config_file } );
-    my $db = $self->app->db;
-    say Dumper $db; 
+    $self->plugin( Config => { file => 'config/' . $self->config_file } );
+    # my $db = $self->app->db;
+    # say Dumper $db; 
 
     $self->plugin( Model => { namespaces => ['Markets::Model'] } );
 
