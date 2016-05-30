@@ -12,7 +12,7 @@ sub initialize_app {
 
     # connect to DataBase
     $self->plugin( Config => { file => 'config/' . $self->config_file } );
-    my $db = $self->app->db;
+    # my $db = $self->app->db;
     # say Dumper $db; 
 
     $self->plugin( Model => { namespaces => ['Markets::Model'] } );
