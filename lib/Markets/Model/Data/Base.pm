@@ -5,7 +5,8 @@ use Data::Dumper;
 sub do {
     my ($self) = @_;
     my $db = $self->app->db;
-    say $db;
+    say '$app->dbh => ' . $self->app->dbh . 'on Model::Data::Base'; 
+    say '$app->db => ' . $db; 
     say $db->single(session => {sid => 1});
     say "data->do";
 }

@@ -14,7 +14,7 @@ has dbh => sub {
     my $dbh = DBI->connect( $dsn, $conf->{username}, $conf->{password} )
       or die $DBI::errstr;
     say "connecting DB."; 
-    say $dbh; 
+    say '$app->dbh => ' . $dbh . 'on Markets.pm'; 
     return $dbh;
 };
 has db => sub {
