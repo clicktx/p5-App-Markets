@@ -13,6 +13,8 @@ has dbh => sub {
 "dbi:$conf->{dbtype}:dbname=$conf->{dbname};host=$conf->{hostname};port=$conf->{port};";
     my $dbh = DBI->connect( $dsn, $conf->{username}, $conf->{password} )
       or die $DBI::errstr;
+    say "connecting DB."; 
+    say $dbh; 
     return $dbh;
 };
 has db => sub {
