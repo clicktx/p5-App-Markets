@@ -15,10 +15,11 @@ sub initialize_app {
     # my $db = $self->app->db;
     # say Dumper $db; 
 
-    $self->plugin( Model => { namespaces => ['Markets::Model'] } );
-
     # config from DataBase
     $self->config( { app_config => 'from_db' } );
+
+    $self->plugin( Model => { namespaces => ['Markets::Model'] } );
+
 }
 
 # This method will run once at server start
