@@ -15,10 +15,17 @@ sub initialize_app {
     # my $db = $self->app->db;
     # say Dumper $db; 
 
-    $self->plugin( Model => { namespaces => ['Markets::Model'] } );
-
     # config from DataBase
     $self->config( { app_config => 'from_db' } );
+
+    $self->plugin( Model => { namespaces => ['Markets::Model'] } );
+    $self->plugin(
+        session => {
+            stash_key     => 'session-markets',
+            store         => [ dbi => { dbh => $self->app->dbh } ],
+            expires_delta => 3600,
+        }
+    );
 }
 
 # This method will run once at server start
@@ -35,6 +42,8 @@ sub startup {
 
     # Documentation browser under "/perldoc"
     $self->plugin('PODRenderer');
+
+    $self->helper( mojox_session => sub { shift->stash('session-markets') } );
 
     # Routes
     $self->dispatcher('Markets::Web::Dispatcher');

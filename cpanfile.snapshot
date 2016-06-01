@@ -943,6 +943,25 @@ DISTRIBUTIONS
       Text::Xslate 0.2013
       Try::Tiny 0
       parent 0
+  MojoX-Session-0.33
+    pathname: V/VT/VTI/MojoX-Session-0.33.tar.gz
+    provides:
+      MojoX::Session 0.33
+      MojoX::Session::Store undef
+      MojoX::Session::Store::AsyncOrm undef
+      MojoX::Session::Store::Couchdb undef
+      MojoX::Session::Store::Dbi undef
+      MojoX::Session::Store::Dbic undef
+      MojoX::Session::Transport undef
+      MojoX::Session::Transport::Cookie undef
+      Mojolicious::Plugin::Session undef
+    requirements:
+      Digest::SHA 0
+      MIME::Base64 0
+      Module::Build 0.38
+      Mojolicious 5.78
+      Storable 0
+      Test::More 0
   Mojolicious-6.58
     pathname: S/SR/SRI/Mojolicious-6.58.tar.gz
     provides:
