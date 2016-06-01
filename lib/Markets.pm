@@ -5,6 +5,10 @@ use Markets::Util;
 use Markets::DB::Schema;
 our $VERSION = '0.01';
 
+has config_file => sub {
+    my $mode = shift->app->mode;
+    return "${mode}.conf";
+};
 has util => sub { Markets::Util->new };
 has dbh => sub {
     my $self = shift;
@@ -24,6 +28,30 @@ has db => sub {
         namespace => 'Markets::DB',
     );
 };
+
+sub initialize_app {
+    my $self = shift;
+
+    # connect to DataBase
+    $self->plugin( Config => { file => 'config/' . $self->config_file } );
+    # my $db = $self->app->db;
+    # say Dumper $db; 
+
+    # config from DataBase
+    $self->config( { app_config => 'from_db' } );
+
+    $self->plugin( Model => { namespaces => ['Markets::Model'] } );
+    $self->plugin(
+        session => {
+            stash_key     => 'session-markets',
+            store         => [ dbi => { dbh => $self->app->dbh } ],
+            expires_delta => 3600,
+        }
+    );
+
+    # helper
+    $self->helper( mojox_session => sub { shift->stash('session-markets') } );
+}
 
 # dispatcher is Mojolicious::Plugin
 sub dispatcher { shift->plugin(@_) }
