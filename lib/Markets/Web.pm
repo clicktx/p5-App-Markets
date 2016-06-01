@@ -15,10 +15,10 @@ sub startup {
 
     # Documentation browser under "/perldoc"
     $self->plugin('PODRenderer');
+    $self->plugin( 'Markets::Util::MountApp' => { prefix => '/admin' } );
 
     # Routes
     $self->dispatcher('Markets::Web::Dispatcher');
-
 }
 
 1;
