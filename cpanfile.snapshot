@@ -962,8 +962,8 @@ DISTRIBUTIONS
       Mojolicious 5.78
       Storable 0
       Test::More 0
-  Mojolicious-6.58
-    pathname: S/SR/SRI/Mojolicious-6.58.tar.gz
+  Mojolicious-6.62
+    pathname: S/SR/SRI/Mojolicious-6.62.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -1026,7 +1026,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 6.58
+      Mojolicious 6.62
       Mojolicious::Command undef
       Mojolicious::Command::cgi undef
       Mojolicious::Command::cpanify undef
