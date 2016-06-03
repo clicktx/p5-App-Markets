@@ -1,7 +1,7 @@
 requires 'Mojolicious', '== 6.62';
 requires 'File::Find::Rule';
 requires 'Mojolicious::Plugin::Model';
-requires 'Mojolicious::Plugin::Session';
+requires 'MojoX::Session';
 requires 'Teng';
 requires 'DBI';
 requires 'DBD::mysql';
