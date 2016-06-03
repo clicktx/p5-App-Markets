@@ -42,12 +42,15 @@ sub initialize_app {
 
     $self->plugin( Model => { namespaces => ['Markets::Model'] } );
     $self->plugin(
-        session => {
+        'Markets::Session' => {
             stash_key     => 'session-markets',
             store         => [ dbi => { dbh => $self->app->dbh } ],
             expires_delta => 3600,
         }
     );
+
+    # Documentation browser under "/perldoc"
+    $self->plugin('PODRenderer');
 
     # helper
     $self->helper( mojox_session => sub { shift->stash('session-markets') } );
@@ -55,6 +58,20 @@ sub initialize_app {
 
 # dispatcher is Mojolicious::Plugin
 sub dispatcher { shift->plugin(@_) }
+
+sub startup {
+    my $self = shift;
+    my $app  = $self->app;
+
+    # App mount
+    my $r = $app->routes;
+    # $app->routes->any( $prefix )
+    #   ->detour( app => Mojolicious::Commands->start_app('Markets::Admin') );
+    $r->any('/admin')
+      ->detour( app => Mojolicious::Commands->start_app('Markets::Admin') );
+    $r->any('/')
+      ->detour( app => Mojolicious::Commands->start_app('Markets::Web') );
+}
 
 1;
 __END__

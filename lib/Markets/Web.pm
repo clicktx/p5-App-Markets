@@ -1,6 +1,5 @@
 package Markets::Web;
 use Mojo::Base 'Markets';
-use Data::Dumper;
 
 # This method will run once at server start
 sub startup {
@@ -10,12 +9,8 @@ sub startup {
 
     # templets paths
     my $themes = $app->util->list_themes('theme');
-    say Dumper $themes; 
+    say $self->dumper($themes); 
     $app->renderer->paths( ['theme/default'] );
-
-    # Documentation browser under "/perldoc"
-    $self->plugin('PODRenderer');
-    $self->plugin( 'Markets::Util::MountApp' => { prefix => '/admin' } );
 
     # Routes
     $self->dispatcher('Markets::Web::Dispatcher');
