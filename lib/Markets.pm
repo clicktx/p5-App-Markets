@@ -6,13 +6,13 @@ use Markets::DB::Schema;
 our $VERSION = '0.01';
 
 has config_file => sub {
-    my $mode = shift->app->mode;
+    my $mode = shift->mode;
     return "${mode}.conf";
 };
 has util => sub { Markets::Util->new };
 has dbh => sub {
     my $self = shift;
-    my $conf = $self->app->config->{db} or die "Missing configuration for db";
+    my $conf = $self->config->{db} or die "Missing configuration for db";
     my $dsn =
 "dbi:$conf->{dbtype}:dbname=$conf->{dbname};host=$conf->{hostname};port=$conf->{port};";
     my $dbh = DBI->connect( $dsn, $conf->{username}, $conf->{password} )
