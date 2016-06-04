@@ -7,7 +7,7 @@ sub do {
     my $db = $self->app->db;
     say '$app->dbh => ' . $self->app->dbh . 'on Model::Data::Base'; 
     say '$app->db => ' . $db; 
-    say $db->single(session => {sid => 1});
+    # say $db->single(session => {sid => 1});
     say "data->do";
 }
 

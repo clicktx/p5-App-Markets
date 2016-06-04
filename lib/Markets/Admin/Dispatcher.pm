@@ -1,4 +1,4 @@
-package Markets::Web::Dispatcher;
+package Markets::Admin::Dispatcher;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
@@ -6,7 +6,7 @@ sub register {
     my $r = $app->routes;
 
     # Normal route to controller
-    $r->get('/')->to('example#welcome');
+    $r->get('/')->to('index#welcome');
 }
 
 1;

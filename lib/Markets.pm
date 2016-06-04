@@ -5,10 +5,13 @@ use Markets::Util;
 use Markets::DB::Schema;
 our $VERSION = '0.01';
 
+has config_file => sub {
+    my $mode = shift->mode;
+    return "${mode}.conf";
+};
 has util => sub { Markets::Util->new };
 has dbh => sub {
-    my $self = shift;
-    my $conf = $self->app->config->{db} or die "Missing configuration for db";
+    my $conf = shift->config->{db} or die "Missing configuration for db";
     my $dsn =
 "dbi:$conf->{dbtype}:dbname=$conf->{dbname};host=$conf->{hostname};port=$conf->{port};";
     my $dbh = DBI->connect( $dsn, $conf->{username}, $conf->{password} )
@@ -18,12 +21,39 @@ has dbh => sub {
     return $dbh;
 };
 has db => sub {
-    my $self = shift;
+    say "+++++ load schema. +++++"; 
     Markets::DB::Schema->load(
-        dbh => $self->app->dbh,
+        dbh       => shift->dbh,
         namespace => 'Markets::DB',
     );
 };
+
+sub initialize_app {
+    my $self = shift;
+
+    $self->plugin( Config => { file => 'config/' . $self->config_file } );
+
+    # connect to DataBase
+    # my $db = $self->app->db;
+
+    # config from DataBase
+    $self->config( { app_config => 'from_db' } );
+
+    $self->plugin( Model => { namespaces => ['Markets::Model'] } );
+    $self->plugin(
+        'Markets::Session' => {
+            stash_key     => 'session-markets',
+            store         => [ dbi => { dbh => $self->app->dbh } ],
+            expires_delta => 3600,
+        }
+    );
+
+    # Documentation browser under "/perldoc"
+    $self->plugin('PODRenderer');
+
+    # helper
+    $self->helper( mojox_session => sub { shift->stash('session-markets') } );
+}
 
 # dispatcher is Mojolicious::Plugin
 sub dispatcher { shift->plugin(@_) }
