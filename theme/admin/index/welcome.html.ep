@@ -8,3 +8,6 @@ and the layout "templates/layouts/default.html.ep",
 <%= link_to 'here' => '/index.html' %> to move forward to a static page. To
 learn more, you can also browse through the documentation
 <%= link_to 'here' => '/perldoc' %>.
+
+<h2>Front pages</h2>
+<%= link_to 'front page' => '../' %>
