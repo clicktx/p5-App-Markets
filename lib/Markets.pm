@@ -11,8 +11,7 @@ has config_file => sub {
 };
 has util => sub { Markets::Util->new };
 has dbh => sub {
-    my $self = shift;
-    my $conf = $self->config->{db} or die "Missing configuration for db";
+    my $conf = shift->config->{db} or die "Missing configuration for db";
     my $dsn =
 "dbi:$conf->{dbtype}:dbname=$conf->{dbname};host=$conf->{hostname};port=$conf->{port};";
     my $dbh = DBI->connect( $dsn, $conf->{username}, $conf->{password} )
@@ -22,9 +21,9 @@ has dbh => sub {
     return $dbh;
 };
 has db => sub {
-    my $self = shift;
+    say "+++++ load schema. +++++"; 
     Markets::DB::Schema->load(
-        dbh       => $self->app->dbh,
+        dbh       => shift->dbh,
         namespace => 'Markets::DB',
     );
 };
@@ -32,9 +31,9 @@ has db => sub {
 sub initialize_app {
     my $self = shift;
 
-    # connect to DataBase
     $self->plugin( Config => { file => 'config/' . $self->config_file } );
 
+    # connect to DataBase
     # my $db = $self->app->db;
 
     # config from DataBase
@@ -58,20 +57,6 @@ sub initialize_app {
 
 # dispatcher is Mojolicious::Plugin
 sub dispatcher { shift->plugin(@_) }
-
-sub startup {
-    my $self = shift;
-    my $app  = $self->app;
-
-    # App mount
-    my $r = $app->routes;
-    # $app->routes->any( $prefix )
-    #   ->detour( app => Mojolicious::Commands->start_app('Markets::Admin') );
-    $r->any('/admin')
-      ->detour( app => Mojolicious::Commands->start_app('Markets::Admin') );
-    $r->any('/')
-      ->detour( app => Mojolicious::Commands->start_app('Markets::Web') );
-}
 
 1;
 __END__
