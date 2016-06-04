@@ -1,18 +1,17 @@
 package Markets::Admin;
 use Mojo::Base 'Markets';
 
+# This method will run once at server start
 sub startup {
     my $self = shift;
-    my $app  = $self->app;
     $self->initialize_app;
 
     # templets paths
-    $app->renderer->paths( ['theme/admin'] );
-    say $self->dumper($app->renderer->paths); 
+    my $themes = $self->util->list_themes('theme');
+    $self->renderer->paths( ['theme/admin'] );
 
-    # Normal route to controller
-    my $r = $app->routes;
-    $r->get('/')->to('index#welcome');
+    # Routes
+    $self->dispatcher('Markets::Admin::Dispatcher');
 }
 
 1;
