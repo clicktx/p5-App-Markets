@@ -46,6 +46,22 @@ DISTRIBUTIONS
       Class::Accessor::Lite 0.08
     requirements:
       ExtUtils::MakeMaker 6.36
+  Class-Accessor-Lite-Lazy-0.03
+    pathname: M/MO/MOTEMEN/Class-Accessor-Lite-Lazy-0.03.tar.gz
+    provides:
+      Class::Accessor::Lite::Lazy 0.03
+    requirements:
+      CPAN::Meta 0
+      CPAN::Meta::Prereqs 0
+      Carp 0
+      Class::Accessor::Lite 0.05
+      ExtUtils::CBuilder 0
+      ExtUtils::MakeMaker 6.59
+      Module::Build 0.38
+      Test::Fatal 0
+      Test::More 0.98
+      parent 0
+      perl 5.008001
   Class-Load-0.23
     pathname: E/ET/ETHER/Class-Load-0.23.tar.gz
     provides:
@@ -61,6 +77,19 @@ DISTRIBUTIONS
       Package::Stash 0.14
       Scalar::Util 0
       Try::Tiny 0
+      base 0
+      perl 5.006
+      strict 0
+      warnings 0
+  Class-Method-Modifiers-2.12
+    pathname: E/ET/ETHER/Class-Method-Modifiers-2.12.tar.gz
+    provides:
+      Class::Method::Modifiers 2.12
+    requirements:
+      B 0
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
       base 0
       perl 5.006
       strict 0
@@ -1146,6 +1175,13 @@ DISTRIBUTIONS
       Sub::Identify 0.03
       Test::Simple 0.61
       perl v5.6.2
+  String-CamelCase-0.02
+    pathname: H/HI/HIO/String-CamelCase-0.02.tar.gz
+    provides:
+      String::CamelCase 0.02
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
   Sub-Identify-0.12
     pathname: R/RG/RGARCIA/Sub-Identify-0.12.tar.gz
     provides:
@@ -1208,6 +1244,23 @@ DISTRIBUTIONS
       SQL::Maker 0.14
       parent 0
       perl 5.008_001
+  Teng-Plugin-ResultSet-0.01
+    pathname: S/SO/SONGMU/Teng-Plugin-ResultSet-0.01.tar.gz
+    provides:
+      Teng::Plugin::ResultSet 0.01
+      Teng::ResultSet undef
+    requirements:
+      CPAN::Meta 0
+      CPAN::Meta::Prereqs 0
+      Class::Accessor::Lite::Lazy 0.03
+      Class::Load 0
+      Class::Method::Modifiers 0
+      ExtUtils::CBuilder 0
+      Module::Build 0.38
+      String::CamelCase 0
+      Teng::Iterator 0
+      parent 0
+      perl 5.008001
   Test-Deep-1.120
     pathname: R/RJ/RJBS/Test-Deep-1.120.tar.gz
     provides:
@@ -1281,6 +1334,18 @@ DISTRIBUTIONS
       Test::Harness 2.03
       base 0
       perl 5.006001
+      strict 0
+      warnings 0
+  Test-Fatal-0.014
+    pathname: R/RJ/RJBS/Test-Fatal-0.014.tar.gz
+    provides:
+      Test::Fatal 0.014
+    requirements:
+      Carp 0
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      Test::Builder 0
+      Try::Tiny 0.07
       strict 0
       warnings 0
   Test-MockModule-0.11
