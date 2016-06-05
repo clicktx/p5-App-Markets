@@ -11,11 +11,12 @@ has config_file => sub {
 };
 has util => sub { Markets::Util->new };
 has dbh => sub {
-    my $conf = shift->config->{db} or die "Missing configuration for db";
-    my $dsn =
-"dbi:$conf->{dbtype}:dbname=$conf->{dbname};host=$conf->{hostname};port=$conf->{port};";
-    my $dbh = DBI->connect( $dsn, $conf->{username}, $conf->{password} )
-      or die $DBI::errstr;
+    my $conf        = shift->config->{db} or die "Missing configuration for db";
+    my $data_source = "dbi:$conf->{dbtype}:database=$conf->{dbname}";
+    my $dbh         = DBI->connect(
+        $data_source, $conf->{username},
+        $conf->{password}, { RaiseError => 1 }
+    ) or die $DBI::errstr;
     say "connecting DB."; 
     say '$app->dbh => ' . $dbh . 'on Markets.pm'; 
     return $dbh;
@@ -43,7 +44,7 @@ sub initialize_app {
     $self->plugin(
         'Markets::Session' => {
             stash_key     => 'session-markets',
-            store         => [ dbi => { dbh => $self->app->dbh } ],
+            store         => [ dbi => { dbh => $self->dbh } ],
             expires_delta => 3600,
         }
     );
