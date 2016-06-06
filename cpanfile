@@ -5,7 +5,6 @@ requires 'MojoX::Session';
 requires 'Teng';
 requires 'Teng::Plugin::ResultSet';
 requires 'DBI';
-requires 'DBIx::Connector';
 requires 'DBD::mysql';
 
 on build => sub {

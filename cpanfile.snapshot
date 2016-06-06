@@ -210,26 +210,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.48
       Test::Simple 0.90
       perl 5.008
-  DBIx-Connector-0.56
-    pathname: D/DW/DWHEELER/DBIx-Connector-0.56.tar.gz
-    provides:
-      DBIx::Connector 0.56
-      DBIx::Connector::Driver 0.56
-      DBIx::Connector::Driver::Firebird 0.56
-      DBIx::Connector::Driver::MSSQL 0.56
-      DBIx::Connector::Driver::Oracle 0.56
-      DBIx::Connector::Driver::Pg 0.56
-      DBIx::Connector::Driver::SQLite 0.56
-      DBIx::Connector::Driver::mysql 0.56
-      DBIx::Connector::RollbackError 0.56
-      DBIx::Connector::SvpRollbackError 0.56
-      DBIx::Connector::TxnRollbackError 0.56
-    requirements:
-      DBI 1.605
-      Module::Build 0.30
-      Test::MockModule 0.05
-      Test::More 0.88
-      perl 5.006002
   DBIx-Inspector-0.12
     pathname: T/TO/TOKUHIROM/DBIx-Inspector-0.12.tar.gz
     provides:
@@ -1166,26 +1146,10 @@ DISTRIBUTIONS
       Test::Requires 0
       Tie::IxHash 0
       perl 5.008001
-  SUPER-1.20141117
-    pathname: C/CH/CHROMATIC/SUPER-1.20141117.tar.gz
-    provides:
-      SUPER 1.20141117
-    requirements:
-      Scalar::Util 1.20
-      Sub::Identify 0.03
-      Test::Simple 0.61
-      perl v5.6.2
   String-CamelCase-0.02
     pathname: H/HI/HIO/String-CamelCase-0.02.tar.gz
     provides:
       String::CamelCase 0.02
-    requirements:
-      ExtUtils::MakeMaker 0
-      Test::More 0
-  Sub-Identify-0.12
-    pathname: R/RG/RGARCIA/Sub-Identify-0.12.tar.gz
-    provides:
-      Sub::Identify 0.12
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
@@ -1348,17 +1312,6 @@ DISTRIBUTIONS
       Try::Tiny 0.07
       strict 0
       warnings 0
-  Test-MockModule-0.11
-    pathname: G/GF/GFRANKS/Test-MockModule-0.11.tar.gz
-    provides:
-      Test::MockModule 0.11
-    requirements:
-      Carp 0
-      Module::Build 0.38
-      SUPER 0
-      Scalar::Util 0
-      Test::More 0.45
-      perl 5.006
   Test-Requires-0.10
     pathname: T/TO/TOKUHIROM/Test-Requires-0.10.tar.gz
     provides:
