@@ -6,6 +6,7 @@ requires 'Teng',                       '0.28';
 requires 'Teng::Plugin::ResultSet',    '0.01';
 requires 'DBI',                        '1.636';
 requires 'DBD::mysql',                 '4.033';
+requires 'Data::MessagePack',          '0.49';
 
 on build => sub {
     requires 'ExtUtils::MakeMaker';
