@@ -1,5 +1,5 @@
 package Markets::DB::Schema;
-use Mojo::Base -base;
+use Mojo::Base 'Markets::DB';
 use Teng::Schema::Loader;
 
 sub load {

@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious';
 use DBI;
 use Markets::Util;
 use Markets::DB::Schema;
+use Markets::Session::Store::Teng;
 our $VERSION = '0.01';
 
 has config_file => sub {
@@ -41,10 +42,11 @@ sub initialize_app {
     $self->config( { app_config => 'from_db' } );
 
     $self->plugin( Model => { namespaces => ['Markets::Model'] } );
+    my $rs = $self->db->resultset('session');
     $self->plugin(
         'Markets::Session' => {
-            stash_key     => 'session-markets',
-            store         => [ dbi => { dbh => $self->dbh } ],
+            stash_key => 'session-markets',
+            store     => Markets::Session::Store::Teng->new( resultset => $rs ),
             expires_delta => 3600,
         }
     );
