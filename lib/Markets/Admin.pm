@@ -1,5 +1,5 @@
 package Markets::Admin;
-use Mojo::Base 'Markets';
+use Mojo::Base 'Markets::Core';
 
 # This method will run once at server start
 sub startup {
