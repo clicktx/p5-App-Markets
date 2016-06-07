@@ -8,5 +8,9 @@ and the layout "templates/layouts/default.html.ep",
 learn more, you can also browse through the documentation
 <%= link_to 'here' => '/perldoc' %>.
 
+<p>
+    Your visit count: <%= mojox_session->data('counter') %>
+</p>
+
 <h2>Admin pages</h2>
 <%= link_to 'admin page' => '/admin' %>
