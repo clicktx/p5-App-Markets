@@ -6,6 +6,13 @@ use Data::Dumper;
 sub welcome {
     my $self = shift;
 
+    # session
+    my $session = $self->mojox_session;
+    my $counter = $session->data('counter');
+    $counter++;
+    $session->data(counter => $counter);
+    say "counter: " . $counter;
+
     # use model
     $self->app->model('logic-base')->do;
     $self->app->model('Data::Base')->do;

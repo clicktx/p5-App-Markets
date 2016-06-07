@@ -5,7 +5,7 @@ use warnings;
 use base 'MojoX::Session::Store';
 
 use MIME::Base64;
-use Storable qw/nfreeze thaw/;
+use Data::MessagePack;
 
 __PACKAGE__->attr('resultset');
 __PACKAGE__->attr( sid_column     => 'sid' );
@@ -15,7 +15,7 @@ __PACKAGE__->attr( data_column    => 'data' );
 sub create {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    $data = encode_base64( nfreeze($data) ) if $data;
+    $data = Data::MessagePack->pack($data) if $data;
 
     my $resultset      = $self->resultset;
     my $sid_column     = $self->sid_column;
@@ -34,7 +34,7 @@ sub create {
 sub update {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    $data = encode_base64( nfreeze($data) ) if $data;
+    $data = Data::MessagePack->pack($data) if $data;
 
     my $resultset      = $self->resultset;
     my $sid_column     = $self->sid_column;
@@ -64,7 +64,7 @@ sub load {
     my $expires = $row->get_column($expires_column);
     my $data    = $row->get_column($data_column);
 
-    $data = thaw( decode_base64($data) ) if $data;
+    $data = Data::MessagePack->unpack($data) if $data;
 
     return ( $expires, $data );
 }

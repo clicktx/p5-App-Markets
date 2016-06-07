@@ -245,6 +245,20 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.36
       Test::More 0.96
       Try::Tiny 0
+  Data-MessagePack-0.49
+    pathname: S/SY/SYOHEX/Data-MessagePack-0.49.tar.gz
+    provides:
+      Data::MessagePack 0.49
+      Data::MessagePack::Boolean undef
+      Data::MessagePack::PP undef
+    requirements:
+      Devel::PPPort 3.19
+      ExtUtils::MakeMaker 6.59
+      ExtUtils::ParseXS 3.18
+      Test::More 0.94
+      Test::Requires 0
+      XSLoader 0.02
+      perl 5.008001
   Data-OptList-0.110
     pathname: R/RJ/RJBS/Data-OptList-0.110.tar.gz
     provides:
