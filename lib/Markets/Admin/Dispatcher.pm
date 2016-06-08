@@ -7,6 +7,7 @@ sub register {
 
     # Normal route to controller
     $r->get('/')->to('index#welcome');
+    $r->get('/admin')->to('index#welcome');
 }
 
 1;
