@@ -42,7 +42,7 @@ sub initialize_app {
     $self->config( { app_config => 'from_db' } );
 
     $self->plugin( Model => { namespaces => ['Markets::Model'] } );
-    my $rs = $self->db->resultset('session');
+    my $rs = $self->db->resultset('sessions');
     $self->plugin(
         'Markets::Session' => {
             stash_key => 'session-markets',
