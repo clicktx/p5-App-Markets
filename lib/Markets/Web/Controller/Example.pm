@@ -10,8 +10,9 @@ sub welcome {
     my $session = $self->mojox_session;
     my $counter = $session->data('counter');
     $counter++;
-    $session->data(counter => $counter);
-    say "counter: " . $counter;
+    $session->data( counter => $counter );
+    say "counter: " . $counter; 
+    say $self->ROOT_URL; 
 
     # use model
     $self->app->model('logic-base')->do;

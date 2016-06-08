@@ -35,11 +35,19 @@ sub initialize_app {
 
     $self->plugin( Config => { file => 'config/' . $self->config_file } );
 
-    # connect to DataBase
+    # preferences
     # my $db = $self->app->db;
+    my $preference = {
+        LINK_NAME => 'リンク先',
+        ROOT_URL  => 'http://google.com/',
+    };
 
-    # config from DataBase
     $self->config( { app_config => 'from_db' } );
+    foreach my $key ( keys %$preference ) {
+        $self->helper( $key => sub { $preference->{$key} } );
+    }
+    $self->helper( LINK_NAME => sub { '上書き' } );    #override ok
+
 
     $self->plugin( Model => { namespaces => ['Markets::Model'] } );
     my $rs = $self->db->resultset('sessions');
