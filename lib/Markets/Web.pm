@@ -10,7 +10,7 @@ sub startup {
     my $themes = $self->util->list_themes('theme');
     $self->renderer->paths( ['theme/default'] );
 
-    $self->routes->any($self->ADMIN_PREFIX)
+    $self->routes->any($self->ADMIN_PAGE_PREFIX)
       ->detour( app => Mojolicious::Commands->start_app('Markets::Admin') );
 
     # Routes

@@ -38,7 +38,7 @@ sub initialize_app {
     # preferences
     # my $db = $self->app->db;
     my $preference = {
-        ADMIN_PREFIX => '/admin',
+        ADMIN_PAGE_PREFIX => '/admin',
         LINK_NAME => 'リンク先',
         ROOT_URL  => 'http://google.com/',
     };

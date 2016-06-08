@@ -26,4 +26,4 @@ learn more, you can also browse through the documentation
 
 
 <h2>Admin pages</h2>
-<%= link_to 'admin page' => '/admin' %>
+<%= link_to 'admin page' => ADMIN_PAGE_PREFIX %>
