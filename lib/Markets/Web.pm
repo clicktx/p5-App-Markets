@@ -8,12 +8,10 @@ sub startup {
 
     # templets paths
     my $themes = $self->util->list_themes('theme');
-    $self->renderer->paths( ['theme/default'] );
-
-    $self->routes->any($self->ADMIN_PAGE_PREFIX)
-      ->detour( app => Mojolicious::Commands->start_app('Markets::Admin') );
+    $self->renderer->paths( [ 'theme/default', 'theme/admin' ] );
 
     # Routes
+    $self->dispatcher('Markets::Admin::Dispatcher');
     $self->dispatcher('Markets::Web::Dispatcher');
 }
 
