@@ -12,5 +12,18 @@ learn more, you can also browse through the documentation
     Your visit count: <%= mojox_session->data('counter') %>
 </p>
 
+<p>
+    <%= link_to $self->LINK_NAME => ROOT_URL %> or
+    <%= link_to app->LINK_NAME => ROOT_URL %> or
+    <%= link_to LINK_NAME() => ROOT_URL %>
+</p>
+<p>
+    <%= link_to ROOT_URL() => begin %>
+        <%= LINK_NAME %>
+    <% end %>
+</p>
+<%= $self->LINK_NAME %>
+
+
 <h2>Admin pages</h2>
-<%= link_to 'admin page' => '/admin' %>
+<%= link_to 'admin page' => ADMIN_PAGE_PREFIX %>

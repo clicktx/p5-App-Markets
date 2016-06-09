@@ -10,8 +10,8 @@ sub startup {
     my $r = $self->app->routes;
     # $app->routes->any( $prefix )
     #   ->detour( app => Mojolicious::Commands->start_app('Markets::Admin') );
-    $r->any('/admin')
-      ->detour( app => Mojolicious::Commands->start_app('Markets::Admin') );
+    # $r->any('/admin')
+    #   ->detour( app => Mojolicious::Commands->start_app('Markets::Admin') );
     $r->any('/')
       ->detour( app => Mojolicious::Commands->start_app('Markets::Web') );
 }
