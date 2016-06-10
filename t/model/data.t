@@ -1,12 +1,19 @@
 use Mojo::Base -strict;
+
 use Test::More;
+use Test::Mojo;
 
-use_ok 'Markets::DB::Schema';
-use_ok 'Markets::Model::Data::Base';
+my $t   = Test::Mojo->new('Markets::Web');
+my $app = $t->app;
 
-subtest 'Model Data' => sub {
-    my $data = Markets::Model::Data::Base->new;
-    ok (ref $data, 'construct.');
+subtest 'Model Data Base' => sub {
+    my $result = $app->model('Data::Base')->new;
+    ok( ref $result, 'construct.' );
+};
+
+subtest 'preferences' => sub {
+    my $result = $app->model('Data::Preference')->load;
+    isa_ok( $result, 'HASH' );
 };
 
 done_testing();

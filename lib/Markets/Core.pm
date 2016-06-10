@@ -4,7 +4,6 @@ use DBI;
 use Markets::Util;
 use Markets::DB::Schema;
 use Markets::Session::Store::Teng;
-our $VERSION = '0.01';
 
 has config_file => sub {
     my $mode = shift->mode;
@@ -33,24 +32,20 @@ has db => sub {
 sub initialize_app {
     my $self = shift;
 
-    $self->plugin( Config => { file => 'config/' . $self->config_file } );
+    $self->plugin( Config => { file       => 'config/' . $self->config_file } );
+    $self->plugin( Model  => { namespaces => ['Markets::Model'] } );
 
     # preferences
-    # my $db = $self->app->db;
-    my $preference = {
-        ADMIN_PAGE_PREFIX => '/admin',
-        LINK_NAME => 'リンク先',
-        ROOT_URL  => 'http://google.com/',
-    };
+    my $preferences = $self->model('data-preference')->load;
+    $preferences->{LINK_NAME} = 'リンク先';
+    $preferences->{ROOT_URL}  = 'http://google.com/';
 
-    $self->config( { app_config => 'from_db' } );
-    foreach my $key ( keys %$preference ) {
-        $self->helper( $key => sub { $preference->{$key} } );
+    foreach my $name ( keys %$preferences ) {
+        $self->helper( $name => sub { $preferences->{$name} } );
     }
     $self->helper( LINK_NAME => sub { '上書き' } );    #override ok
 
-
-    $self->plugin( Model => { namespaces => ['Markets::Model'] } );
+    # session
     my $rs = $self->db->resultset('sessions');
     $self->plugin(
         'Markets::Session' => {
