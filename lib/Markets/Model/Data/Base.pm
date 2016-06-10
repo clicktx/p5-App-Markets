@@ -44,7 +44,7 @@ Your app
         ...
 
 App Controller.
-Camel case or Module name.
+Snake case or Module name.
 
     package Markets::Web::Controller::Example;
     use Mojo::Base 'Mojolicious::Controller';
