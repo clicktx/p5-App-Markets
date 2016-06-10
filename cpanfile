@@ -11,3 +11,11 @@ requires 'Data::MessagePack',          '0.49';
 on build => sub {
     requires 'ExtUtils::MakeMaker';
 };
+
+on develop => sub {
+    requires 'Test::mysqld';
+};
+
+on test => sub {
+    requires 'Test::mysqld';
+};

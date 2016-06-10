@@ -783,6 +783,14 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  File-Copy-Recursive-0.38
+    pathname: D/DM/DMUEY/File-Copy-Recursive-0.38.tar.gz
+    provides:
+      File::Copy::Recursive 0.38
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Copy 0
+      File::Spec 0
   File-Find-Rule-0.34
     pathname: R/RC/RCLAMP/File-Find-Rule-0.34.tar.gz
     provides:
@@ -1335,6 +1343,32 @@ DISTRIBUTIONS
       Test::Builder::Module 0
       Test::More 0.47
       perl 5.006
+  Test-SharedFork-0.35
+    pathname: E/EX/EXODIST/Test-SharedFork-0.35.tar.gz
+    provides:
+      Test::SharedFork 0.35
+      Test::SharedFork::Array undef
+      Test::SharedFork::Scalar undef
+      Test::SharedFork::Store undef
+    requirements:
+      ExtUtils::MakeMaker 6.64
+      File::Temp 0
+      Test::Builder 0.32
+      Test::Builder::Module 0
+      Test::More 0.88
+      perl 5.008_001
+  Test-mysqld-0.17
+    pathname: K/KA/KAZUHO/Test-mysqld-0.17.tar.gz
+    provides:
+      Test::mysqld 0.17
+    requirements:
+      Class::Accessor::Lite 0
+      DBD::mysql 0
+      DBI 0
+      ExtUtils::MakeMaker 6.42
+      File::Copy::Recursive 0
+      Test::SharedFork 0.06
+      perl 5.008
   Text-Glob-0.09
     pathname: R/RC/RCLAMP/Text-Glob-0.09.tar.gz
     provides:
