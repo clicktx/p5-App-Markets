@@ -4,7 +4,6 @@ use DBI;
 use Markets::Util;
 use Markets::DB::Schema;
 use Markets::Session::Store::Teng;
-our $VERSION = '0.01';
 
 has config_file => sub {
     my $mode = shift->mode;
