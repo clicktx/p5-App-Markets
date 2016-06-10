@@ -18,4 +18,5 @@ on develop => sub {
 
 on test => sub {
     requires 'Test::mysqld';
+    requires 'Harriet';
 };

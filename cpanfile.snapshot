@@ -803,6 +803,15 @@ DISTRIBUTIONS
       Number::Compare 0
       Test::More 0
       Text::Glob 0.07
+  Harriet-00.05
+    pathname: T/TO/TOKUHIROM/Harriet-00.05.tar.gz
+    provides:
+      App::Prove::Plugin::Harriet undef
+      Harriet 00.05
+    requirements:
+      Module::Build 0.38
+      Pod::Usage 0
+      perl 5.008005
   IO-Socket-IP-0.37
     pathname: P/PE/PEVANS/IO-Socket-IP-0.37.tar.gz
     provides:
