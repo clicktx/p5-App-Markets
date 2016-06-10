@@ -7,7 +7,7 @@ sub welcome {
     my $self = shift;
 
     # session
-    my $session = $self->mojox_session;
+    my $session = $self->markets_session;
     my $counter = $session->data('counter');
     $counter++;
     $session->data( counter => $counter );

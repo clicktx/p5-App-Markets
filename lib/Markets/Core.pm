@@ -49,7 +49,7 @@ sub initialize_app {
     my $rs = $self->db->resultset('sessions');
     $self->plugin(
         'Markets::Session' => {
-            stash_key => 'session-markets',
+            stash_key => 'markets_session',
             store     => Markets::Session::Store::Teng->new( resultset => $rs ),
             expires_delta => 3600,
         }
@@ -59,7 +59,7 @@ sub initialize_app {
     $self->plugin('PODRenderer');
 
     # helper
-    $self->helper( mojox_session => sub { shift->stash('session-markets') } );
+    $self->helper( markets_session => sub { shift->stash('markets_session') } );
 }
 
 # dispatcher is Mojolicious::Plugin
