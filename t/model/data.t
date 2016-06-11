@@ -1,9 +1,10 @@
 use Mojo::Base -strict;
 
+use t::Util;
 use Test::More;
 use Test::Mojo;
 
-my $t   = Test::Mojo->new('Markets::Web');
+my $t   = Test::Mojo->new('t::App');
 my $app = $t->app;
 
 subtest 'Model Data Base' => sub {
