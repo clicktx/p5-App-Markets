@@ -13,10 +13,10 @@ on build => sub {
 };
 
 on develop => sub {
-    requires 'Test::mysqld';
 };
 
 on test => sub {
+    requires 'Test::More';
     requires 'Test::mysqld';
     requires 'Harriet';
 };
