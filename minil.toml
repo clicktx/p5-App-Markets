@@ -1,6 +1,6 @@
 name="Markets"
 module_maker="ModuleBuild"
-badges=['travis']
+badges=['travis', 'coveralls']
 
 [build]
     build_class = "builder::MyBuilder"
