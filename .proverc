@@ -1,3 +1,6 @@
+--color
+--timer
 -l
 -r t
-
+-Mt::Util
+-PHarriet=t/harriet/

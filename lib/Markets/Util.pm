@@ -11,4 +11,19 @@ sub list_themes {
     return \@subdirs;
 }
 
+sub initialize_dsn {
+    my ( $self, $conf ) = @_;
+    my $dsn;
+    if ( $ENV{TEST_MYSQL} ) {
+        $dsn = $ENV{TEST_MYSQL};
+    }
+    else {
+        $dsn =
+            "DBI:$conf->{dbtype}:dbname=$conf->{dbname};"
+          . "host=$conf->{host};port=$conf->{port};"
+          . "user=$conf->{user};password=$conf->{password};";
+    }
+    return $dsn;
+}
+
 1;

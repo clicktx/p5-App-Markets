@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 
+use t::Util;
 use Test::More;
 use Test::Mojo;
 

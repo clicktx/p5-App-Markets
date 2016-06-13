@@ -11,12 +11,10 @@ has config_file => sub {
 };
 has util => sub { Markets::Util->new };
 has dbh => sub {
-    my $conf        = shift->config->{db} or die "Missing configuration for db";
-    my $data_source = "dbi:$conf->{dbtype}:database=$conf->{dbname}";
-    my $dbh         = DBI->connect(
-        $data_source, $conf->{username},
-        $conf->{password}, { RaiseError => 1 }
-    ) or die $DBI::errstr;
+    my $self = shift;
+    my $conf = $self->config->{db} or die "Missing configuration for db";
+    my $dsn  = $self->util->initialize_dsn($conf);
+    my $dbh  = DBI->connect( $dsn, { RaiseError => 1 } ) or die $DBI::errstr;
     say "connecting DB."; 
     say '$app->dbh => ' . $dbh . 'on Markets.pm'; 
     return $dbh;

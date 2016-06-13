@@ -33,7 +33,7 @@
       },
       "configure" : {
          "requires" : {
-            "Module::Build::Tiny" : "0.035"
+            "Module::Build" : "0.4005"
          }
       },
       "develop" : {
@@ -56,6 +56,13 @@
             "Mojolicious::Plugin::Model" : "0.07",
             "Teng" : "0.28",
             "Teng::Plugin::ResultSet" : "0.01"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Harriet" : "0",
+            "Test::More" : "0",
+            "Test::mysqld" : "0"
          }
       }
    },
