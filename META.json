@@ -26,14 +26,10 @@
       ]
    },
    "prereqs" : {
-      "build" : {
-         "requires" : {
-            "ExtUtils::MakeMaker" : "0"
-         }
-      },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.4005"
+            "Module::Build" : "0.4005",
+            "Module::CPANfile" : "0.9010"
          }
       },
       "develop" : {
@@ -52,7 +48,7 @@
             "Data::MessagePack" : "0.49",
             "File::Find::Rule" : "0.34",
             "MojoX::Session" : "0.33",
-            "Mojolicious" : "== 6.62",
+            "Mojolicious" : "== 6.64",
             "Mojolicious::Plugin::Model" : "0.07",
             "Teng" : "0.28",
             "Teng::Plugin::ResultSet" : "0.01"
