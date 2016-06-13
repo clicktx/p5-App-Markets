@@ -1,10 +1,14 @@
 name="Markets"
-module_maker="ModuleBuildTiny"
+module_maker="ModuleBuild"
 
 [build]
+    build_class = "builder::MyBuilder"
 
 [release]
     do_not_upload_to_cpan = true
 
 [FileGatherer]
     include_dotfiles = true
+
+[tap_harness_args]
+    verbosity = 1

@@ -2,11 +2,14 @@ package builder::MyBuilder;
 use strict;
 use warnings;
 use parent qw(Module::Build);
+use Harriet;
 
 sub ACTION_test {
     my $self = shift;
 
-    local $ENV{HARNESS_OPTIONS} = ($ENV{HARNESS_OPTIONS} ||'') . 'j19';
+    my $harriet = Harriet->new('t/harriet');
+    $harriet->load_all();
+
     $self->SUPER::ACTION_test(@_);
 }
 
