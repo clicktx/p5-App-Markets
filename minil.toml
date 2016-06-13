@@ -1,5 +1,6 @@
 name="Markets"
 module_maker="ModuleBuild"
+badges=['travis']
 
 [build]
     build_class = "builder::MyBuilder"
