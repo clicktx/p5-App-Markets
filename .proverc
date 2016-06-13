@@ -1,3 +1,6 @@
+--color
+--merge
+--timer
 -l
 -r t
 -Mt::Util

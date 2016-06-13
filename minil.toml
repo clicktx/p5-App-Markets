@@ -12,3 +12,4 @@ module_maker="ModuleBuild"
 
 [tap_harness_args]
     verbosity = 1
+    color = 1
