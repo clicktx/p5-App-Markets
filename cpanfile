@@ -17,4 +17,5 @@ on test => sub {
     requires 'Test::More';
     requires 'Test::mysqld';
     requires 'Harriet';
+    requires 'Test::Perl::Critic';
 };
