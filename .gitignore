@@ -25,3 +25,4 @@ MYMETA.yml
 !META.json
 !LICENSE
 *.pid
+/bin/
