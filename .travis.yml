@@ -1,12 +1,15 @@
 language: perl
-# sudo: false
+sudo: false
 perl:
-  - "5.22"
-  - "5.14"
-  - "5.10"
+    - "5.22"
+    - "5.14"
+    - "5.10"
 before_install:
-  cpanm -n Devel::Cover::Report::Coveralls
-# install:
-#   cpanm --with-test --quiet --installdeps --notest .
+    - cpanm -n Devel::Cover::Report::Coveralls
+    - cpanm Carton
+install:
+    - carton install
 script:
-  perl Build.PL && ./Build build && cover -test -report coveralls
+    - HARNESS_PERL_SWITCHES="-MDevel::Cover=+ignore,^local/|^t/" carton exec prove -lrv t tx
+after_success:
+    - carton exec -- cover -report coveralls
