@@ -16,8 +16,12 @@ subtest 'admin page' => sub {
 
 subtest 'utility' => sub {
     use_ok 'Markets::Util';
-    my $themes = Markets::Util->new->list_themes('theme');
-    is_deeply $themes, ['theme/mytheme'];
+    my $themes = Markets::Util::directories( 'theme',
+        { ignore => [ 'default', 'admin' ] } );
+    is_deeply $themes, ['mytheme'];
+
+    my $addons = Markets::Util::directories('addons');
+    is ref $addons, 'ARRAY';
 };
 
 done_testing();
