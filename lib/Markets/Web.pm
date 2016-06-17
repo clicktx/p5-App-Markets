@@ -8,9 +8,10 @@ sub startup {
     $self->initialize_app;
 
     # templets paths
-    my $themes = directories( 'theme', { ignore => [ 'default', 'admin' ] } );
+    $self->renderer->paths( [ 'themes/default', 'themes/admin' ] );
+    my $themes = directories( 'themes', { ignore => [ 'default', 'admin' ] } );
     say $self->dumper($themes); 
-    $self->renderer->paths( [ 'theme/default', 'theme/admin' ] );
+    # unshift @{$self->renderer->paths}, 'themes/mytheme';
 
     # Addons
     my $addons = directories('addons');
