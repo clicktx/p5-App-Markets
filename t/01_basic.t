@@ -18,7 +18,7 @@ subtest 'utility' => sub {
     use_ok 'Markets::Util';
     my $themes = Markets::Util::directories( 'theme',
         { ignore => [ 'default', 'admin' ] } );
-    is_deeply $themes, ['theme/mytheme'];
+    is_deeply $themes, ['mytheme'];
 
     my $addons = Markets::Util::directories('addons');
     is ref $addons, 'ARRAY';
