@@ -4,6 +4,18 @@ use DBI;
 use Markets::Util;
 use Markets::DB::Schema;
 use Markets::Session::Store::Teng;
+use File::Spec;
+use File::Basename;
+
+BEGIN {
+    # @INC for Addons
+    my $base_dir =
+      File::Spec->catdir( dirname(__FILE__), '..', '..', 'addons' );
+    my $addons = Markets::Util::directories('addons');
+    foreach my $path (@$addons) {
+        push @INC, File::Spec->catdir( $base_dir, $path, 'lib' );
+    }
+}
 
 has config_file => sub {
     my $mode = shift->mode;

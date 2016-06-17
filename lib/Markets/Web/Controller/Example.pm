@@ -18,6 +18,9 @@ sub welcome {
     $self->app->model('logic-base')->do;
     $self->app->model('Data::Base')->do;
 
+    # use addon
+    say $self->my_addon;
+
     # Render template "example/welcome.html.ep" with message
     $self->render(
         msg => 'Welcome to the Mojolicious real-time web framework!' );

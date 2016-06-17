@@ -12,6 +12,11 @@ sub startup {
     say $self->dumper($themes); 
     $self->renderer->paths( [ 'theme/default', 'theme/admin' ] );
 
+    # Addons
+    my $addons = directories('addons');
+    say $self->dumper($addons); 
+    $self->plugin($_) for @$addons;
+
     # Routes
     $self->dispatcher('Markets::Admin::Dispatcher');
     $self->dispatcher('Markets::Web::Dispatcher');
