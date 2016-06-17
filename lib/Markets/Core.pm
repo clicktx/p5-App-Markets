@@ -13,7 +13,7 @@ has util => sub { Markets::Util->new };
 has dbh => sub {
     my $self = shift;
     my $conf = $self->config->{db} or die "Missing configuration for db";
-    my $dsn  = $self->util->initialize_dsn($conf);
+    my $dsn  = $self->dsn($conf);
     my $dbh  = DBI->connect( $dsn, { RaiseError => 1 } ) or die $DBI::errstr;
     say "connecting DB."; 
     say '$app->dbh => ' . $dbh . 'on Markets.pm'; 
@@ -26,6 +26,21 @@ has db => sub {
         namespace => 'Markets::DB',
     );
 };
+
+sub dsn {
+    my ( $self, $conf ) = @_;
+    my $dsn;
+    if ( $ENV{TEST_MYSQL} ) {
+        $dsn = $ENV{TEST_MYSQL};
+    }
+    else {
+        $dsn =
+            "DBI:$conf->{dbtype}:dbname=$conf->{dbname};"
+          . "host=$conf->{host};port=$conf->{port};"
+          . "user=$conf->{user};password=$conf->{password};";
+    }
+    return $dsn;
+}
 
 sub initialize_app {
     my $self = shift;

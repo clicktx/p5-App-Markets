@@ -1,5 +1,6 @@
 package Markets::Web;
 use Mojo::Base 'Markets::Core';
+use Markets::Util qw(directories);
 
 # This method will run once at server start
 sub startup {
@@ -7,7 +8,8 @@ sub startup {
     $self->initialize_app;
 
     # templets paths
-    my $themes = $self->util->list_themes('theme');
+    my $themes = directories( 'theme', { ignore => [ 'default', 'admin' ] } );
+    say $self->dumper($themes); 
     $self->renderer->paths( [ 'theme/default', 'theme/admin' ] );
 
     # Routes
