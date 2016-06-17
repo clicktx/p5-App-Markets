@@ -16,7 +16,7 @@ subtest 'admin page' => sub {
 
 subtest 'utility' => sub {
     use_ok 'Markets::Util';
-    my $themes = Markets::Util::directories( 'theme',
+    my $themes = Markets::Util::directories( 'themes',
         { ignore => [ 'default', 'admin' ] } );
     is_deeply $themes, ['mytheme'];
 
