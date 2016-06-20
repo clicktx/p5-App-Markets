@@ -6,6 +6,9 @@ use Data::Dumper;
 sub welcome {
     my $self = shift;
 
+    # emit hook
+    $self->app->plugins->emit_hook(before_welcome => $self);
+
     # session
     my $session = $self->markets_session;
     my $counter = $session->data('counter');
