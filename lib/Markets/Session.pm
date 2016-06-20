@@ -25,8 +25,7 @@ sub register {
                 $session->extend_expires;
             }
             else {
-                say "created new session."; 
-                $session->create;
+                _create_session( $c, $session );
             }
             say $session->sid; 
 
@@ -36,6 +35,22 @@ sub register {
         }
     );
 
+}
+
+sub _create_session {
+    my ( $c, $session ) = @_;
+    my $cookie = $c->cookie('landing_page');
+
+    # cookieに対応している場合のみセッション生成する
+    if ($cookie) {
+        say "created new session."; 
+        $session->data( 'landing_page' => $cookie );
+        $session->create;
+    }
+    else {
+        my $landing_page = $c->req->url->to_string;
+        $c->cookie( 'landing_page' => $landing_page );
+    }
 }
 
 1;
