@@ -11,7 +11,12 @@ sub startup {
     $self->renderer->paths( [ 'themes/default', 'themes/admin' ] );
     my $themes = directories( 'themes', { ignore => [ 'default', 'admin' ] } );
     say $self->dumper($themes); 
+
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
+
+    # renderer using Markets::Template
+    $self->plugin($_)
+      for ( 'Markets::Renderer::EPLRenderer', 'Markets::Renderer::EPRenderer' );
 
     # Addons
     my $addons = directories('addons');
