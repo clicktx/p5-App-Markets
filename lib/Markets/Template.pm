@@ -7,12 +7,17 @@ use Mojo::Exception;
 use Mojo::Util qw(decode encode monkey_patch slurp);
 
 use constant DEBUG => $ENV{MOJO_TEMPLATE_DEBUG} || 0;
+use Data::Dumper;
 
 sub render_file {
-    my ( $self, $path ) = ( shift, shift );
+    my ( $self, $c, $path ) = ( shift, shift, shift );
 
     $self->name($path) unless defined $self->{name};
     my $template = slurp $path;
+
+    #
+    $c->app->plugins->emit_hook( prefilter_transform => $c, $path, \$template, );
+
     my $encoding = $self->encoding;
     croak qq{Template "$path" has invalid encoding}
       if $encoding && !defined( $template = decode $encoding, $template );

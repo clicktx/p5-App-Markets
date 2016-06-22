@@ -42,7 +42,7 @@ sub _render {
             if ( defined( my $path = $renderer->template_path($options) ) ) {
                 $c->app->log->debug(qq{Rendering template "$name"});
                 $$output =
-                  $mt->name(qq{template "$name"})->render_file( $path, @args );
+                  $mt->name(qq{template "$name"})->render_file( $c, $path, @args );
             }
 
             # Try DATA section
