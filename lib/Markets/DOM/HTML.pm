@@ -1,5 +1,5 @@
 package Markets::DOM::HTML;
-use Mojo::Base -base;
+use Mojo::Base 'Mojo::DOM::HTML';
 
 use Mojo::Util qw(html_unescape xml_escape);
 use Scalar::Util 'weaken';
@@ -7,7 +7,8 @@ use Scalar::Util 'weaken';
 has tree => sub { ['root'] };
 has 'xml';
 
-my $ATTR_RE = qr/
+my $REPLACE_MARK = '%';
+my $ATTR_RE      = qr/
   ([^<>=\s\/]+|\/)                     # Key
   (?:
     \s*=\s*
@@ -33,7 +34,7 @@ my $TOKEN_RE = qr/
     |
       \?(.*?)\?                                       # Processing Instruction
     |
-      \s*([^<>\s]+\s*(?:(?:$ATTR_RE){0,32766})*+)     # Tag
+      \s*([^<$REPLACE_MARK>\s]+\s*(?:(?:$ATTR_RE){0,32766})*+)     # Tag
     )>
   |
     (<)                                               # Runaway "<"
@@ -202,7 +203,7 @@ sub _render {
 
     # Text (escaped)
     my $type = $tree->[0];
-    return xml_escape $tree->[1] if $type eq 'text';
+    return $tree->[1] if $type eq 'text';
 
     # Raw text
     return $tree->[1] if $type eq 'raw';
