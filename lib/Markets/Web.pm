@@ -14,7 +14,7 @@ sub startup {
 
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
 
-    # renderer using Markets::Template
+    # renderer
     $self->plugin($_)
       for ( 'Markets::Renderer::EPLRenderer', 'Markets::Renderer::EPRenderer' );
 

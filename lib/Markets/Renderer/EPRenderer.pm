@@ -1,7 +1,7 @@
 package Markets::Renderer::EPRenderer;
-use Mojo::Base 'Markets::Renderer::EPLRenderer';
+use Mojo::Base 'Mojolicious::Plugin::EPLRenderer';
 
-use Markets::Template;
+use Mojo::Template;
 use Mojo::Util qw(encode md5_sum monkey_patch);
 
 sub DESTROY { Mojo::Util::_teardown( shift->{namespace} ) }
@@ -12,7 +12,7 @@ sub register {
     # Auto escape by default to prevent XSS attacks
     my $ep = { auto_escape => 1, %{ $conf->{template} || {} }, vars => 1 };
     my $ns = $self->{namespace} = $ep->{namespace} //=
-      'Markets::Template::Sandbox::' . md5_sum "$self";
+      'Mojo::Template::Sandbox::' . md5_sum "$self";
 
     # Make "$self" and "$c" available in templates
     $ep->{prepend} = 'my $self = my $c = _C;' . ( $ep->{prepend} // '' );
@@ -28,7 +28,7 @@ sub register {
 
             my $cache = $renderer->cache;
             my $mt    = $cache->get($key);
-            $cache->set( $key => $mt = Markets::Template->new($ep) ) unless $mt;
+            $cache->set( $key => $mt = Mojo::Template->new($ep) ) unless $mt;
 
             # Export helpers only once
             ++$self->{helpers} and _helpers( $ns, $renderer->helpers )
@@ -101,7 +101,7 @@ Handler name, defaults to C<ep>.
   # Mojolicious::Lite
   plugin EPRenderer => {template => {line_start => '.'}};
 
-Attribute values passed to L<Markets::Template> object used to render templates.
+Attribute values passed to L<Mojo::Template> object used to render templates.
 
 =head1 METHODS
 
