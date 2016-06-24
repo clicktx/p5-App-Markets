@@ -16,7 +16,10 @@ sub startup {
 
     # renderer
     $self->plugin($_)
-      for ( 'Markets::Renderer::EPLRenderer', 'Markets::Renderer::EPRenderer' );
+      for (
+        'Markets::Plugin::EPLRenderer',
+        'Markets::Plugin::EPRenderer'
+      );
 
     # Addons
     my $addons = directories('addons');

@@ -5,7 +5,7 @@ use Test::More;
 use File::Basename 'dirname';
 use File::Spec::Functions 'catfile';
 use Mojo::Template;
-use Markets::Renderer::EPLRenderer;
+use Markets::Plugin::EPLRenderer;
 
 
 # Empty template
