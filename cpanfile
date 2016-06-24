@@ -1,4 +1,4 @@
-requires 'Mojolicious',                '== 6.64';
+requires 'Mojolicious',                '== 6.66';
 requires 'File::Find::Rule',           '0.34';
 requires 'Mojolicious::Plugin::Model', '0.07';
 requires 'MojoX::Session',             '0.33';
