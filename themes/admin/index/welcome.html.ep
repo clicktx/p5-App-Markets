@@ -9,5 +9,5 @@ and the layout "templates/layouts/default.html.ep",
 learn more, you can also browse through the documentation
 <%= link_to 'here' => '/perldoc' %>.
 
-<h2>Front pages</h2>
+<h2 id="admin-front"><%= $msg %>Front pages</h2>
 <%= link_to 'front page' => '../' %>

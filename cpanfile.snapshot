@@ -299,16 +299,17 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.36
       Test::More 0.96
       Try::Tiny 0
-  Data-MessagePack-0.49
-    pathname: S/SY/SYOHEX/Data-MessagePack-0.49.tar.gz
+  Data-MessagePack-0.50
+    pathname: S/SY/SYOHEX/Data-MessagePack-0.50.tar.gz
     provides:
-      Data::MessagePack 0.49
+      Data::MessagePack 0.50
       Data::MessagePack::Boolean undef
       Data::MessagePack::PP undef
     requirements:
       Devel::PPPort 3.19
       ExtUtils::MakeMaker 6.59
       ExtUtils::ParseXS 3.18
+      File::Copy::Recursive 0
       Test::More 0.94
       Test::Requires 0
       XSLoader 0.02
@@ -372,21 +373,21 @@ DISTRIBUTIONS
       vars 0
       warnings 0
       warnings::register 0
-  DateTime-Locale-1.03
-    pathname: D/DR/DROLSKY/DateTime-Locale-1.03.tar.gz
+  DateTime-Locale-1.04
+    pathname: D/DR/DROLSKY/DateTime-Locale-1.04.tar.gz
     provides:
-      DateTime::Locale 1.03
-      DateTime::Locale::Base 1.03
-      DateTime::Locale::Catalog 1.03
-      DateTime::Locale::Data 1.03
-      DateTime::Locale::FromData 1.03
-      DateTime::Locale::Util 1.03
+      DateTime::Locale 1.04
+      DateTime::Locale::Base 1.04
+      DateTime::Locale::Catalog 1.04
+      DateTime::Locale::Data 1.04
+      DateTime::Locale::FromData 1.04
+      DateTime::Locale::Util 1.04
     requirements:
       Carp 0
       Dist::CheckConflicts 0.02
       Exporter 0
       ExtUtils::MakeMaker 0
-      List::MoreUtils 0
+      List::Util 1.45
       Params::Validate 0
       perl 5.008001
       strict 0
@@ -1029,31 +1030,31 @@ DISTRIBUTIONS
       IPC::Cmd 0
       XSLoader 0
       base 0
-  MCE-1.708
-    pathname: M/MA/MARIOROY/MCE-1.708.tar.gz
+  MCE-1.800
+    pathname: M/MA/MARIOROY/MCE-1.800.tar.gz
     provides:
-      MCE 1.708
-      MCE::Candy 1.708
-      MCE::Core::Input::Generator 1.708
-      MCE::Core::Input::Handle 1.708
-      MCE::Core::Input::Iterator 1.708
-      MCE::Core::Input::Request 1.708
-      MCE::Core::Input::Sequence 1.708
-      MCE::Core::Manager 1.708
-      MCE::Core::Validation 1.708
-      MCE::Core::Worker 1.708
-      MCE::Flow 1.708
-      MCE::Grep 1.708
-      MCE::Loop 1.708
-      MCE::Map 1.708
-      MCE::Mutex 1.708
-      MCE::Queue 1.708
-      MCE::Relay 1.708
-      MCE::Signal 1.708
-      MCE::Step 1.708
-      MCE::Stream 1.708
-      MCE::Subs 1.708
-      MCE::Util 1.708
+      MCE 1.800
+      MCE::Candy 1.800
+      MCE::Core::Input::Generator 1.800
+      MCE::Core::Input::Handle 1.800
+      MCE::Core::Input::Iterator 1.800
+      MCE::Core::Input::Request 1.800
+      MCE::Core::Input::Sequence 1.800
+      MCE::Core::Manager 1.800
+      MCE::Core::Validation 1.800
+      MCE::Core::Worker 1.800
+      MCE::Flow 1.800
+      MCE::Grep 1.800
+      MCE::Loop 1.800
+      MCE::Map 1.800
+      MCE::Mutex 1.800
+      MCE::Queue 1.800
+      MCE::Relay 1.800
+      MCE::Signal 1.800
+      MCE::Step 1.800
+      MCE::Stream 1.800
+      MCE::Subs 1.800
+      MCE::Util 1.800
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
@@ -1226,8 +1227,8 @@ DISTRIBUTIONS
       Mojolicious 5.78
       Storable 0
       Test::More 0
-  Mojolicious-6.64
-    pathname: S/SR/SRI/Mojolicious-6.64.tar.gz
+  Mojolicious-6.66
+    pathname: S/SR/SRI/Mojolicious-6.66.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -1290,7 +1291,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 6.64
+      Mojolicious 6.66
       Mojolicious::Command undef
       Mojolicious::Command::cgi undef
       Mojolicious::Command::cpanify undef
@@ -1995,6 +1996,17 @@ DISTRIBUTIONS
       Test::Requires 0
       Tie::IxHash 0
       perl 5.008001
+  Scalar-List-Utils-1.45
+    pathname: P/PE/PEVANS/Scalar-List-Utils-1.45.tar.gz
+    provides:
+      List::Util 1.45
+      List::Util::XS 1.45
+      Scalar::Util 1.45
+      Sub::Util 1.45
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
+      perl 5.006
   String-CamelCase-0.02
     pathname: H/HI/HIO/String-CamelCase-0.02.tar.gz
     provides:
@@ -2243,57 +2255,56 @@ DISTRIBUTIONS
       Test::Builder::Module 0
       Test::More 0.88
       perl 5.008_001
-  Test-Simple-1.302026
-    pathname: E/EX/EXODIST/Test-Simple-1.302026.tar.gz
+  Test-Simple-1.302031
+    pathname: E/EX/EXODIST/Test-Simple-1.302031.tar.gz
     provides:
-      Test2 1.302026
-      Test2::API 1.302026
-      Test2::API::Breakage 1.302026
-      Test2::API::Context 1.302026
-      Test2::API::Instance 1.302026
-      Test2::API::Stack 1.302026
-      Test2::Event 1.302026
-      Test2::Event::Bail 1.302026
-      Test2::Event::Diag 1.302026
-      Test2::Event::Exception 1.302026
-      Test2::Event::Generic 1.302026
-      Test2::Event::Note 1.302026
-      Test2::Event::Ok 1.302026
-      Test2::Event::Plan 1.302026
-      Test2::Event::Skip 1.302026
-      Test2::Event::Subtest 1.302026
-      Test2::Event::Waiting 1.302026
-      Test2::Formatter 1.302026
-      Test2::Formatter::TAP 1.302026
-      Test2::Hub 1.302026
-      Test2::Hub::Interceptor 1.302026
-      Test2::Hub::Interceptor::Terminator 1.302026
-      Test2::Hub::Subtest 1.302026
-      Test2::IPC 1.302026
-      Test2::IPC::Driver 1.302026
-      Test2::IPC::Driver::Files 1.302026
-      Test2::Util 1.302026
-      Test2::Util::ExternalMeta 1.302026
-      Test2::Util::HashBase 1.302026
-      Test2::Util::Trace 1.302026
-      Test::Builder 1.302026
-      Test::Builder::Formatter 1.302026
+      Test2 1.302031
+      Test2::API 1.302031
+      Test2::API::Breakage 1.302031
+      Test2::API::Context 1.302031
+      Test2::API::Instance 1.302031
+      Test2::API::Stack 1.302031
+      Test2::Event 1.302031
+      Test2::Event::Bail 1.302031
+      Test2::Event::Diag 1.302031
+      Test2::Event::Exception 1.302031
+      Test2::Event::Generic 1.302031
+      Test2::Event::Note 1.302031
+      Test2::Event::Ok 1.302031
+      Test2::Event::Plan 1.302031
+      Test2::Event::Skip 1.302031
+      Test2::Event::Subtest 1.302031
+      Test2::Event::Waiting 1.302031
+      Test2::Formatter 1.302031
+      Test2::Formatter::TAP 1.302031
+      Test2::Hub 1.302031
+      Test2::Hub::Interceptor 1.302031
+      Test2::Hub::Interceptor::Terminator 1.302031
+      Test2::Hub::Subtest 1.302031
+      Test2::IPC 1.302031
+      Test2::IPC::Driver 1.302031
+      Test2::IPC::Driver::Files 1.302031
+      Test2::Util 1.302031
+      Test2::Util::ExternalMeta 1.302031
+      Test2::Util::HashBase 1.302031
+      Test2::Util::Trace 1.302031
+      Test::Builder 1.302031
+      Test::Builder::Formatter 1.302031
       Test::Builder::IO::Scalar 2.113
-      Test::Builder::Module 1.302026
-      Test::Builder::Tester 1.302026
-      Test::Builder::Tester::Color 1.302026
-      Test::Builder::Tester::Tie 1.302026
-      Test::Builder::TodoDiag 1.302026
-      Test::More 1.302026
-      Test::Simple 1.302026
-      Test::Tester 1.302026
-      Test::Tester::Capture 1.302026
-      Test::Tester::CaptureRunner 1.302026
-      Test::Tester::Delegate 1.302026
-      Test::use::ok 1.302026
-      ok 1.302026
+      Test::Builder::Module 1.302031
+      Test::Builder::Tester 1.302031
+      Test::Builder::Tester::Color 1.302031
+      Test::Builder::Tester::Tie 1.302031
+      Test::Builder::TodoDiag 1.302031
+      Test::More 1.302031
+      Test::Simple 1.302031
+      Test::Tester 1.302031
+      Test::Tester::Capture 1.302031
+      Test::Tester::CaptureRunner 1.302031
+      Test::Tester::Delegate 1.302031
+      Test::use::ok 1.302031
+      ok 1.302031
     requirements:
-      Carp 0
       ExtUtils::MakeMaker 0
       File::Spec 0
       File::Temp 0
