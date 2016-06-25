@@ -7,6 +7,17 @@ use Scalar::Util 'weaken';
 has tree => sub { ['root'] };
 has 'xml';
 
+my $tag     = '<%';
+# my $replace = '%';
+my $expr    = '=';
+# my $escp    = '=';
+# my $cpen    = 'end';
+my $cmnt    = '#';
+# my $cpst    = 'begin';
+# my $trim    = '=';
+my $end     = '%>';
+my $start   = '%';
+
 my $ATTR_RE = qr/
   ([^<>=\s\/]+|\/)                     # Key
   (?:
@@ -16,12 +27,9 @@ my $ATTR_RE = qr/
   \s*
 /x;
 my $TOKEN_RE = qr/
-  ([^<]+)?                                            # Text
-  (?:
-    <(
-        ?:%(.*?)%                                     # inline EP
-    )>
-  )?
+  ([^<$start]+)?                                           # Text
+  ([^<]+)?                                            # EP lines
+  (?:$tag([\s$expr$cmnt$start].+?)$end)?                           # EP tag
   (?:
     <(?:
       !(?:
@@ -105,8 +113,8 @@ sub parse {
   my $xml = $self->xml;
   my $current = my $tree = ['root'];
   while ($html =~ /\G$TOKEN_RE/gcso) {
-    my ($text, $inline_ep, $doctype, $comment, $cdata, $pi, $tag, $runaway)
-      = ($1, $2, $3, $4, $5, $6, $7, $11);
+    my ($text, $ep_lines, $ep_tag, $doctype, $comment, $cdata, $pi, $tag, $runaway)
+      = ($1, $2, $3, $4, $5, $6, $7, $8, $13);
 
     # Text (and runaway "<")
     $text .= '<' if defined $runaway;
@@ -149,8 +157,11 @@ sub parse {
       }
     }
 
-    # Inline EP
-    elsif (defined $inline_ep) { _node($current, 'inline_ep', $inline_ep) }
+    # EP Lines
+    elsif (defined $ep_lines) { _node($current, 'ep_lines', $ep_lines) }
+
+    # EP Tag
+    elsif (defined $ep_tag) { _node($current, 'ep_tag', $ep_tag) }
 
     # DOCTYPE
     elsif (defined $doctype) { _node($current, 'doctype', $doctype) }
@@ -208,8 +219,11 @@ sub _render {
   # Raw text
   return $tree->[1] if $type eq 'raw';
 
-  # Inline EP
-  return '<%' . $tree->[1] . '%>' if $type eq 'inline_ep';
+  # EP Line
+  return $tree->[1] if $type eq 'ep_lines';
+
+  # EP Tag
+  return '<%' . $tree->[1] . '%>' if $type eq 'ep_tag';
 
   # DOCTYPE
   return '<!DOCTYPE' . $tree->[1] . '>' if $type eq 'doctype';
