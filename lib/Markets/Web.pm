@@ -15,11 +15,9 @@ sub startup {
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
 
     # renderer
-    $self->plugin($_)
-      for (
-        'Markets::Plugin::EPLRenderer',
-        'Markets::Plugin::EPRenderer'
-      );
+    $self->plugin('Markets::Plugin::EPRenderer');
+    $self->plugin('Markets::Plugin::EPLRenderer');
+    $self->plugin('Markets::Plugin::DOM');
 
     # Addons
     my $addons = directories('addons');
