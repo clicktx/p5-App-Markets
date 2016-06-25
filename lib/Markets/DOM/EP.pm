@@ -18,6 +18,11 @@ my $ATTR_RE = qr/
 my $TOKEN_RE = qr/
   ([^<]+)?                                            # Text
   (?:
+    <(
+        ?:%(.*?)%                                     # inline EP
+    )>
+  )?
+  (?:
     <(?:
       !(?:
         DOCTYPE(
@@ -100,8 +105,8 @@ sub parse {
   my $xml = $self->xml;
   my $current = my $tree = ['root'];
   while ($html =~ /\G$TOKEN_RE/gcso) {
-    my ($text, $doctype, $comment, $cdata, $pi, $tag, $runaway)
-      = ($1, $2, $3, $4, $5, $6, $11);
+    my ($text, $inline_ep, $doctype, $comment, $cdata, $pi, $tag, $runaway)
+      = ($1, $2, $3, $4, $5, $6, $7, $11);
 
     # Text (and runaway "<")
     $text .= '<' if defined $runaway;
@@ -143,6 +148,9 @@ sub parse {
         _end($start, 0, \$current);
       }
     }
+
+    # Inline EP
+    elsif (defined $inline_ep) { _node($current, 'inline_ep', $inline_ep) }
 
     # DOCTYPE
     elsif (defined $doctype) { _node($current, 'doctype', $doctype) }
@@ -199,6 +207,9 @@ sub _render {
 
   # Raw text
   return $tree->[1] if $type eq 'raw';
+
+  # Inline EP
+  return '<%' . $tree->[1] . '%>' if $type eq 'inline_ep';
 
   # DOCTYPE
   return '<!DOCTYPE' . $tree->[1] . '>' if $type eq 'doctype';
