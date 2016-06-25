@@ -18,8 +18,8 @@ sub register {
         prefilter_transform => sub {
             my ( $c, $path, $template ) = @_;
             say "prefilter_transform.";
-            say $c;
-            say $path;
+            # say $c;
+            # say $path;
 
             # say Dumper $template;
 
@@ -27,16 +27,16 @@ sub register {
             if ( $path =~ m|admin/index/welcome| ) {
                 say "template is admin/index/welcome +++++++++++++++";
 
-                say "------------ orig";
-                say ${$template};
-                say "------------ orig";
+                # say "------------ orig";
+                # say ${$template};
+                # say "------------ orig";
 
                 # helper $app->dom
                 my $dom = $c->app->dom->parse( ${$template} );
-                say "start ================================>  Markets::DOM";
-                say $dom;
-                say "end <================================  Markets::DOM";
-                say Dumper $dom;
+                # say "start ================================>  Markets::DOM";
+                # say $dom;
+                # say "end <================================  Markets::DOM";
+                # say Dumper $dom;
 
                 # say Dumper $dom;
                 $dom->find('h2')
