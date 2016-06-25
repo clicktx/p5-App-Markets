@@ -1,13 +1,33 @@
-package Markets::Renderer::EPLRenderer;
+package Markets::Plugin::EPLRenderer;
 use Mojo::Base 'Mojolicious::Plugin';
 
-use Markets::Template;
-use Mojo::Util qw(encode md5_sum);
+use Mojo::Template;
+use Mojo::Util qw(encode md5_sum monkey_patch decode slurp);
+use Carp 'croak';
+
+monkey_patch 'Mojo::Template', render_file_has_hook => sub {
+    my ( $self, $c, $path ) = ( shift, shift, shift );
+
+    $self->name($path) unless defined $self->{name};
+    my $template = slurp $path;
+
+    # emit hook point.This hook using by addons.
+    $c->app->plugins->emit_hook(
+        prefilter_transform => $c,
+        $path, \$template,
+    );
+
+    my $encoding = $self->encoding;
+    croak qq{Template "$path" has invalid encoding}
+      if $encoding && !defined( $template = decode $encoding, $template );
+
+    return $self->render( $template, @_ );
+};
 
 sub register {
     my ( $self, $app ) = @_;
     $app->renderer->add_handler(
-        epl => sub { _render( @_, Markets::Template->new, $_[1] ) } );
+        epl => sub { _render( @_, Mojo::Template->new, $_[1] ) } );
 }
 
 sub _render {
@@ -41,8 +61,12 @@ sub _render {
             # Try template
             if ( defined( my $path = $renderer->template_path($options) ) ) {
                 $c->app->log->debug(qq{Rendering template "$name"});
+
+               # $$output =
+               #   $mt->name(qq{template "$name"})->render_file( $path, @args );
                 $$output =
-                  $mt->name(qq{template "$name"})->render_file( $c, $path, @args );
+                  $mt->name(qq{template "$name"})
+                  ->render_file_has_hook( $c, $path, @args );
             }
 
             # Try DATA section
@@ -84,7 +108,7 @@ Markets::Renderer::EPLRenderer - Embedded Perl Lite renderer plugin
 forked from L<Mojolicious::Plugin::EPLRenderer> Mojolicious v6.64
 
 L<Markets::Renderer::EPLRenderer> is a renderer for C<epl> templates, which
-are pretty much just raw L<Markets::Template>.
+are pretty much just raw L<Mojo::Template>.
 
 This is a core plugin, that means it is always enabled and its code a good
 example for learning to build new plugins, you're welcome to fork it.

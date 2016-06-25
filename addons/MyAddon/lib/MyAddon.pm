@@ -1,10 +1,7 @@
 package MyAddon;
 use Mojo::Base 'Mojolicious::Plugin';
-use Mojo::DOM;
 
 use Data::Dumper;
-
-has dom => sub { Mojo::DOM->new };
 
 sub register {
     my ( $self, $app ) = @_;
@@ -23,16 +20,34 @@ sub register {
             say "prefilter_transform.";
             say $c;
             say $path;
+
             # say Dumper $template;
 
             # say Dumper $mt, $template;
             if ( $path =~ m|admin/index/welcome| ) {
                 say "template is admin/index/welcome +++++++++++++++";
-                my $b = Mojo::ByteStream->new(${$template});
-                my $dom = $self->dom->parse( $b );
-                # $dom->find('h2')->first->replace('<h2>MyAddon Mojolicious MojoMojo</h2>');
+
+                say "------------ orig";
                 say ${$template};
-                # ${$template} = $dom;
+                say "------------ orig";
+
+                # helper $app->dom
+                my $dom = $c->app->dom->parse( ${$template} );
+                say "start ================================>  Markets::DOM";
+                say $dom;
+                say "end <================================  Markets::DOM";
+                say Dumper $dom;
+
+                # say Dumper $dom;
+                $dom->find('h2')
+                  ->first->replace('<h2>MyAddon Mojolicious</h2>');
+                $dom->find('h1')
+                  ->first->replace('<h1>Admin mode from MyAddon</h1>');
+                my $h2 = $dom->at('#admin-front')->content;
+                $dom->at('#admin-front')->content( $h2 . ' / add text' );
+
+                ${$template} = $dom;
+
             }
 
             # elsif ( $mt->{name} =~ m|layouts/default| ) {
@@ -44,19 +59,21 @@ sub register {
         }
     );
 
-    # $app->hook(
-    #     after_render => sub {
-    #         my ( $c, $output, $format ) = @_;
-    # 
-    #         # say $c->dumper( $c->tx );
-    # 
-    #         say 'route: ' . $c->stash('controller') . '#' . $c->stash('action');
-    # 
-    #         my $dom = Mojo::DOM->new( ${$output} );
-    #         $dom->find('h2')->first->replace('<h2>MyAddon Mojolicious</h2>');
-    #         ${$output} = $dom;
-    #     }
-    # );
+  # $app->hook(
+  #     after_render => sub {
+  #         my ( $c, $output, $format ) = @_;
+  # 
+  #         # say $c->dumper( $c->tx );
+  # 
+  #         say 'route: ' . $c->stash('controller') . '#' . $c->stash('action');
+  # 
+  #         my $dom = Mojo::DOM->new( ${$output} );
+  #         $dom->find('h2')->first->replace('<h2>MyAddon Mojolicious</h2>');
+  #         my $h2 = $dom->at('#admin-front')->text;
+  #         $dom->at('#admin-front')->content( $h2 . 'boo' );
+  #         ${$output} = $dom;
+  #     }
+  # );
 }
 
 1;
