@@ -3,8 +3,6 @@ use Mojo::Base 'Mojo::EventEmitter';
 
 use constant DEBUG => $ENV{MOJO_EVENTEMITTER_DEBUG} || 0;
 
-use Data::Dumper;
-
 sub _add_filter {
     my ( $ev, $name, $code, $conf ) = ( shift, shift, shift, shift // {} );
     my $priority = $conf->{priority} // 100;
@@ -30,7 +28,6 @@ sub catch {
 
 sub emit_filter { shift->emit(@_) }
 
-# override Mojo::EventEmitter;
 sub emit {
     my ( $ev, $name ) = ( shift, shift );
 
@@ -44,5 +41,11 @@ sub emit {
     }
     return $ev;
 }
+
+sub once { die 'Do not support.' }
+
+sub subscribers { die 'Do not support.' }
+
+sub unsubscribe { die 'Do not support.' }
 
 1;
