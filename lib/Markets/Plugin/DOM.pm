@@ -5,7 +5,7 @@ use Markets::DOM::EP;
 use Mojo::Util qw(monkey_patch);
 
 {
-    no strict 'vars';
+    # no strict 'vars';
 
     monkey_patch 'Mojo::DOM', new => sub {
         my $class = shift;
@@ -32,7 +32,7 @@ use Mojo::Util qw(monkey_patch);
 }
 
 sub register {
-    my ( $self, $app, $conf) = @_;
+    my ( $self, $app, $conf ) = @_;
     $app->helper( dom => sub { Mojo::DOM->new } );
 }
 
