@@ -20,6 +20,14 @@ sub sort {
       sort { $b->{priority} <=> $a->{priority} } @{ $ev->{events}{$name} };
 }
 
+sub catch {
+    $_[0]->on(
+        error => {
+            code => $_[1]
+        }
+    ) and return $_[0];
+}
+
 sub emit_filter { shift->emit(@_) }
 
 # override Mojo::EventEmitter;
