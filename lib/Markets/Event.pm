@@ -8,7 +8,6 @@ sub _add_filter {
     my $priority = $conf->{priority} // 100;
     $ev->on( $name => { code => $code, priority => $priority } );
     $ev->sort($name);
-    say Dumper $ev;
 }
 
 # sort by priority
