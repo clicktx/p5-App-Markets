@@ -27,7 +27,7 @@ sub register {
             else {
                 _create_session( $c, $session );
             }
-            say $session->sid; 
+            say "sid: " . $session->sid; 
 
             $next->();
 

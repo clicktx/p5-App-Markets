@@ -11,8 +11,8 @@ monkey_patch 'Mojo::Template', render_file_has_hook => sub {
     $self->name($path) unless defined $self->{name};
     my $template = slurp $path;
 
-    # emit hook point.This hook using by addons.
-    $c->app->plugins->emit_hook(
+    # emit filter. This filter was used to addons.
+    $c->app->filters->emit_filter(
         prefilter_transform => $c,
         $path, \$template,
     );

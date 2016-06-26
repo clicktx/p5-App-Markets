@@ -3,7 +3,7 @@ use Mojo::Base 'MojoX::Model';
 
 sub do {
     my ($self) = @_;
-    say "logic->do";
+    # say "logic->do";
 }
 
 1;
