@@ -11,3 +11,6 @@ learn more, you can also browse through the documentation
 
 <h2 id="admin-front"><%= $msg %>Front pages</h2>
 <%= link_to 'front page' => '../' %>
+<%= link_to '/' => begin %>
+    top
+<% end %>
