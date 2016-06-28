@@ -41,7 +41,13 @@ has db => sub {
 };
 has filters => sub { Markets::Event->new };
 
-sub add_filter { shift->filters->_add_filter(@_) }
+# sub add_filter { shift->filters->_add_filter(@_) }
+sub add_filter {
+    my ($self, $name, $code, $conf) = (shift, shift, shift, shift // {});
+    $conf->{client} = caller;
+    $self->filters->_add_filter($name, $code, $conf);
+}
+
 
 sub dsn {
     my ( $self, $conf ) = @_;

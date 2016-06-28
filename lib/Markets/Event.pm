@@ -4,9 +4,10 @@ use Mojo::Base 'Mojo::EventEmitter';
 use constant DEBUG => $ENV{MOJO_EVENTEMITTER_DEBUG} || 0;
 
 sub _add_filter {
-    my ( $ev, $name, $code, $conf ) = ( shift, shift, shift, shift // {} );
-    my $priority = $conf->{priority} // 100;
-    $ev->on( $name => { code => $code, priority => $priority } );
+    my ( $ev, $name, $code, $arg ) = ( shift, shift, shift, shift // {} );
+    $arg->{code} = $code;
+    $arg->{priority} //= 100;
+    $ev->on( $name => $arg );
     $ev->sort($name);
 }
 
