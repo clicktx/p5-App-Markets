@@ -5,7 +5,7 @@ use Mojo::Template;
 use Mojo::Util qw(encode md5_sum monkey_patch decode slurp);
 use Carp 'croak';
 
-monkey_patch 'Mojo::Template', render_file_has_hook => sub {
+monkey_patch 'Mojo::Template', render_file_after_hook => sub {
     my ( $self, $c, $path ) = ( shift, shift, shift );
 
     $self->name($path) unless defined $self->{name};
@@ -66,7 +66,7 @@ sub _render {
                #   $mt->name(qq{template "$name"})->render_file( $path, @args );
                 $$output =
                   $mt->name(qq{template "$name"})
-                  ->render_file_has_hook( $c, $path, @args );
+                  ->render_file_after_hook( $c, $path, @args );
             }
 
             # Try DATA section
