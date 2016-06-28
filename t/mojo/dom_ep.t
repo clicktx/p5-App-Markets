@@ -29,7 +29,6 @@ is "$dom", '<div><div foo="0" id="a">A</div><div id="b">B</div></div>',
   'right result';
 
 # EP tag(basics)
-use Data::Dumper;
 $dom = Mojo::DOM->new(<<EOF);
 % layout 'default';
 % title 'Welcome';
