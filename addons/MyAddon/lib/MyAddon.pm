@@ -11,69 +11,28 @@ sub register {
     # use before_compile_template
     $app->add_filter(
         before_compile_template => sub {
-            my ( $c, $template_file_path, $template_source ) = @_;
-            # say $c, $template_file_path, $template_source;
+            my ( $c, $file_path, $template_source ) = @_;
         },
-        # option
         {
-            priority => 300,      #default 100
+            priority => 300,     #default 100
             config   => 'aaa',
         }
     );
     $app->add_filter(
         before_compile_template => sub {
-            my ( $c, $template_file_path, $template_source ) = @_;
-            # say $c, $template_file_path, $template_source;
+            my ( $c, $file_path, $template_source ) = @_;
         },
-        # option
         {
             priority => 10,      #default 100
             config   => 'aaa',
         }
     );
-
     $app->add_filter(
-        before_compile_template => sub {
-            my ( $c, $template_file_path, $template_source ) = @_;
-            say "before_compile_template.";
-
-            if ( $template_file_path =~ m|admin/index/welcome| ) {
-                say "template is admin/index/welcome +++++++++++++++";
-
-                # say "------------ orig";
-                # say ${$template_source};
-                # say "------------ orig";
-
-                # helper $app->dom
-                my $dom = $c->app->dom->parse( ${$template_source} );
-
-                # say "start ================================>  Markets::DOM";
-                # say $dom;
-                # say "end <================================  Markets::DOM";
-                # say Dumper $dom;
-
-                # say Dumper $dom;
-                $dom->find('h2')
-                  ->first->replace('<h2>MyAddon Mojolicious</h2>');
-                $dom->find('h1')
-                  ->first->replace('<h1>Admin mode from MyAddon</h1>');
-                my $h2 = $dom->at('#admin-front')->content;
-                $dom->at('#admin-front')->content( $h2 . ' / add text' );
-
-                ${$template_source} = $dom;
-
-            }
-
-            # elsif ( $mt->{name} =~ m|layouts/default| ) {
-            #     say "template id default/layouts/default";
-            # } else {
-            #     say "don't match";
-            #     say $mt->{name};
-            # }
-        }
+        before_compile_template => \&replace_content,
+        { priority => 400 }
     );
 
-    # after_render はhtml生成後に実行されるので毎回処理が走る
+  # after_render はhtml生成後に実行されるので毎回処理が走る
   # $app->hook(
   #     after_render => sub {
   #         my ( $c, $output, $format ) = @_;
@@ -89,6 +48,23 @@ sub register {
   #         ${$output} = $dom;
   #     }
   # );
+}
+
+sub replace_content {
+    my ( $c, $file_path, $template_source ) = @_;
+    say "filter hook: before_compile_template.";
+
+    if ( $file_path =~ m|admin/index/welcome| ) {
+        say "  -> $file_path";
+
+        my $dom = $c->helpers->dom->parse( ${$template_source} );
+        $dom->find('h2')->first->replace('<h2>MyAddon Mojolicious</h2>');
+        $dom->find('h1')->first->replace('<h1>Admin mode from MyAddon</h1>');
+        my $h2 = $dom->at('#admin-front')->content;
+        $dom->at('#admin-front')->content( $h2 . ' / add text' );
+
+        ${$template_source} = $dom;
+    }
 }
 
 1;
