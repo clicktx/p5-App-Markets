@@ -95,7 +95,4 @@ sub initialize_app {
     $self->helper( markets_session => sub { shift->stash('markets_session') } );
 }
 
-# dispatcher is Mojolicious::Plugin
-sub dispatcher { shift->plugin(@_) }
-
 1;

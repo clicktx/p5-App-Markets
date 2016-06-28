@@ -25,8 +25,8 @@ sub startup {
     $self->plugin($_) for @$addons;
 
     # Routes
-    $self->dispatcher('Markets::Admin::Dispatcher');
-    $self->dispatcher('Markets::Web::Dispatcher');
+    $self->plugin('Markets::Admin::DispatchRoutes');
+    $self->plugin('Markets::Web::DispatchRoutes');
 }
 
 1;
