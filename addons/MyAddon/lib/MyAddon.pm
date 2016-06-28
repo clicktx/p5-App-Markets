@@ -8,9 +8,9 @@ sub register {
 
     $app->helper( my_addon => sub { "MyAddon, Say!" } );
 
-    # use prefilter_transform
+    # use before_compile_template
     $app->add_filter(
-        prefilter_transform => sub {
+        before_compile_template => sub {
             my ( $c, $path, $template ) = @_;
             # say $c, $path, $template;
         },
@@ -21,7 +21,7 @@ sub register {
         }
     );
     $app->add_filter(
-        prefilter_transform => sub {
+        before_compile_template => sub {
             my ( $c, $path, $template ) = @_;
             # say $c, $path, $template;
         },
@@ -33,9 +33,9 @@ sub register {
     );
 
     $app->add_filter(
-        prefilter_transform => sub {
+        before_compile_template => sub {
             my ( $c, $path, $template ) = @_;
-            say "prefilter_transform.";
+            say "before_compile_template.";
 
             if ( $path =~ m|admin/index/welcome| ) {
                 say "template is admin/index/welcome +++++++++++++++";
