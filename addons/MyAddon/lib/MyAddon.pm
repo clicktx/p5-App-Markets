@@ -11,8 +11,8 @@ sub register {
     # use before_compile_template
     $app->add_filter(
         before_compile_template => sub {
-            my ( $c, $path, $template ) = @_;
-            # say $c, $path, $template;
+            my ( $c, $template_file_path, $template_source ) = @_;
+            # say $c, $template_file_path, $template_source;
         },
         # option
         {
@@ -22,8 +22,8 @@ sub register {
     );
     $app->add_filter(
         before_compile_template => sub {
-            my ( $c, $path, $template ) = @_;
-            # say $c, $path, $template;
+            my ( $c, $template_file_path, $template_source ) = @_;
+            # say $c, $template_file_path, $template_source;
         },
         # option
         {
@@ -34,18 +34,18 @@ sub register {
 
     $app->add_filter(
         before_compile_template => sub {
-            my ( $c, $path, $template ) = @_;
+            my ( $c, $template_file_path, $template_source ) = @_;
             say "before_compile_template.";
 
-            if ( $path =~ m|admin/index/welcome| ) {
+            if ( $template_file_path =~ m|admin/index/welcome| ) {
                 say "template is admin/index/welcome +++++++++++++++";
 
                 # say "------------ orig";
-                # say ${$template};
+                # say ${$template_source};
                 # say "------------ orig";
 
                 # helper $app->dom
-                my $dom = $c->app->dom->parse( ${$template} );
+                my $dom = $c->app->dom->parse( ${$template_source} );
 
                 # say "start ================================>  Markets::DOM";
                 # say $dom;
@@ -60,7 +60,7 @@ sub register {
                 my $h2 = $dom->at('#admin-front')->content;
                 $dom->at('#admin-front')->content( $h2 . ' / add text' );
 
-                ${$template} = $dom;
+                ${$template_source} = $dom;
 
             }
 
