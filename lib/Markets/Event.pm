@@ -2,13 +2,10 @@ package Markets::Event;
 use Mojo::Base 'Mojo::EventEmitter';
 
 use constant DEBUG => $ENV{MOJO_EVENTEMITTER_DEBUG} || 0;
+use Carp 'croak';
 
-sub _add_filter {
-    my ( $ev, $name, $code, $conf ) = ( shift, shift, shift, shift // {} );
-    my $priority = $conf->{priority} // 100;
-    $ev->on( $name => { code => $code, priority => $priority } );
-    $ev->sort($name);
-}
+sub add_filter { croak 'Method "add_filter" not implemented by subclass' }
+sub add_action { croak 'Method "add_action" not implemented by subclass' }
 
 # sort by priority
 sub sort {
@@ -41,10 +38,8 @@ sub emit {
     return $ev;
 }
 
-sub once { die 'Do not support.' }
-
-sub subscribers { die 'Do not support.' }
-
-sub unsubscribe { die 'Do not support.' }
+sub once        { croak 'Method "once" not supported.' }
+sub subscribers { croak 'Method "subscribers" not support.' }
+sub unsubscribe { croak 'Method "unsubscribe" not support.' }
 
 1;

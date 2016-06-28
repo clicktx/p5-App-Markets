@@ -5,23 +5,24 @@ use Mojo::Template;
 use Mojo::Util qw(encode md5_sum monkey_patch decode slurp);
 use Carp 'croak';
 
-monkey_patch 'Mojo::Template', render_file_has_hook => sub {
-    my ( $self, $c, $path ) = ( shift, shift, shift );
+monkey_patch 'Mojo::Template', render_file_after_hook => sub {
+    my ( $self, $c, $template_file_path ) = ( shift, shift, shift );
 
-    $self->name($path) unless defined $self->{name};
-    my $template = slurp $path;
+    $self->name($template_file_path) unless defined $self->{name};
+    my $template_source = slurp $template_file_path;
 
     # emit filter. This filter was used to addons.
     $c->app->filters->emit_filter(
-        prefilter_transform => $c,
-        $path, \$template,
+        before_compile_template => $c,
+        $template_file_path, \$template_source,
     );
 
     my $encoding = $self->encoding;
-    croak qq{Template "$path" has invalid encoding}
-      if $encoding && !defined( $template = decode $encoding, $template );
+    croak qq{Template "$template_file_path" has invalid encoding}
+      if $encoding
+      && !defined( $template_source = decode $encoding, $template_source );
 
-    return $self->render( $template, @_ );
+    return $self->render( $template_source, @_ );
 };
 
 sub register {
@@ -59,14 +60,16 @@ sub _render {
             }
 
             # Try template
-            if ( defined( my $path = $renderer->template_path($options) ) ) {
+            if (
+                defined(
+                    my $template_file_path = $renderer->template_path($options)
+                )
+              )
+            {
                 $c->app->log->debug(qq{Rendering template "$name"});
-
-               # $$output =
-               #   $mt->name(qq{template "$name"})->render_file( $path, @args );
                 $$output =
                   $mt->name(qq{template "$name"})
-                  ->render_file_has_hook( $c, $path, @args );
+                  ->render_file_after_hook( $c, $template_file_path, @args );
             }
 
             # Try DATA section
