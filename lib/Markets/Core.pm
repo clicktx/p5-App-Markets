@@ -4,7 +4,7 @@ use DBI;
 use Markets::Util;
 use Markets::DB::Schema;
 use Markets::Session::Store::Teng;
-use Markets::Event;
+use Markets::Event::Filter;
 use File::Spec;
 use File::Basename;
 
@@ -39,15 +39,13 @@ has db => sub {
         namespace => 'Markets::DB',
     );
 };
-has filters => sub { Markets::Event->new };
+has filters => sub { Markets::Event::Filter->new };
 
-# sub add_filter { shift->filters->_add_filter(@_) }
 sub add_filter {
-    my ($self, $name, $code, $conf) = (shift, shift, shift, shift // {});
+    my ( $self, $name, $code, $conf ) = ( shift, shift, shift, shift // {} );
     $conf->{client} = caller;
-    $self->filters->_add_filter($name, $code, $conf);
+    $self->filters->add_filter( $name, $code, $conf );
 }
-
 
 sub dsn {
     my ( $self, $conf ) = @_;
