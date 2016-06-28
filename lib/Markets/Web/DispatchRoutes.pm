@@ -1,4 +1,4 @@
-package Markets::Web::Dispatcher;
+package Markets::Web::DispatchRoutes;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
