@@ -1,5 +1,5 @@
-package Markets::Event::Filter;
-use Mojo::Base 'Markets::Event';
+package Markets::Hook::Filter;
+use Mojo::Base 'Markets::Hook';
 
 sub add_filter {
     my ( $ev, $name, $code, $arg ) = ( shift, shift, shift, shift // {} );
