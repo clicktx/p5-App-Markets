@@ -17,7 +17,7 @@ sub sort {
 sub catch {
     $_[0]->on(
         error => {
-            code => $_[1]
+            cb => $_[1]
         }
     ) and return $_[0];
 }
@@ -29,7 +29,7 @@ sub emit {
 
     if ( my $s = $ev->{events}{$name} ) {
         warn "-- Emit $name in @{[blessed $ev]} (@{[scalar @$s]})\n" if DEBUG;
-        for my $cb (@$s) { $cb->{code}(@_) }
+        for my $event (@$s) { $event->{cb}(@_) }
     }
     else {
         warn "-- Emit $name in @{[blessed $ev]} (0)\n" if DEBUG;
@@ -39,7 +39,9 @@ sub emit {
 }
 
 sub once        { croak 'Method "once" not supported.' }
-sub subscribers { croak 'Method "subscribers" not support.' }
-sub unsubscribe { croak 'Method "unsubscribe" not support.' }
+
+# sub subscribers { shift->{events}{shift()} ||= [] }
+
+# sub unsubscribe { croak 'Method "unsubscribe" not support.' }
 
 1;
