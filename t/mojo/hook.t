@@ -2,6 +2,7 @@ use Mojo::Base -strict;
 
 use Test::More;
 use Markets::Hook;
+use Markets::Hook::Filter;
 
 # Normal event
 my $e = Markets::Hook->new;
@@ -100,5 +101,31 @@ ok !$e->unsubscribe('foo')->has_subscribers('foo'), 'no subscribers';
 is scalar @{ $e->subscribers('foo') }, 0, 'no subscribers';
 $e->emit('foo');
 is $counter, 5, 'event was not emitted again';
+
+# filter priority
+$e = Markets::Hook::Filter->new;
+$e->add_filter(
+    test1 => {
+        cb => sub { $called++ }
+    },
+    { priority => 200 }
+);
+$e->add_filter(
+    test1 => {
+        cb => sub { $called++ }
+    },
+    { priority => 1000 }
+);
+$e->add_filter(
+    test1 => {
+        cb => sub { $called++ }
+    },
+    { priority => 400 }
+);
+my @priority;
+foreach my $event (@{$e->{events}{test1}}){
+    push @priority, $event->{priority};
+}
+is_deeply \@priority, [1000, 400, 200], 'filter_add priority';
 
 done_testing();
