@@ -8,7 +8,7 @@ my $e = Markets::Hook->new;
 my $called;
 $e->on(
     test1 => {
-        code => sub { $called++ }
+        cb => sub { $called++ }
     }
 );
 $e->emit('test1');
@@ -17,7 +17,7 @@ is $called, 1, 'event was emitted once';
 # Error
 $e->on(
     die => {
-        code => sub { die "works!\n" }
+        cb => sub { die "works!\n" }
     }
 );
 eval { $e->emit('die') };
