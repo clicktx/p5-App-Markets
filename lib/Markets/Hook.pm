@@ -1,4 +1,4 @@
-package Markets::Event;
+package Markets::Hook;
 use Mojo::Base 'Mojo::EventEmitter';
 
 use constant DEBUG => $ENV{MOJO_EVENTEMITTER_DEBUG} || 0;

@@ -1,10 +1,10 @@
 use Mojo::Base -strict;
 
 use Test::More;
-use Markets::Event;
+use Markets::Hook;
 
 # Normal event
-my $e = Markets::Event->new;
+my $e = Markets::Hook->new;
 my $called;
 $e->on(
     test1 => {
@@ -25,7 +25,7 @@ is $@, "works!\n", 'right error';
 
 # Unhandled error event
 eval { $e->emit( error => 'works' ) };
-like $@, qr/^Markets::Event: works/, 'right error';
+like $@, qr/^Markets::Hook: works/, 'right error';
 
 # Catch
 my $err;
@@ -46,7 +46,7 @@ eval { $e->unsubscribe( test1 => $e->subscribers('test1')->[0] ) };
 like $@, qr/not support/, 'unsubscribe is not support';
 
 # Manipulate events
-$e = Markets::Event->new;
+$e = Markets::Hook->new;
 my $buffer = '';
 eval {
     push @{ $e->subscribers('foo') }, sub { $buffer .= 'one' };
