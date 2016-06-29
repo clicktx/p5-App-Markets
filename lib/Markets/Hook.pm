@@ -40,8 +40,4 @@ sub emit {
 
 sub once { croak 'Method "once" not supported.' }
 
-# sub subscribers { shift->{events}{shift()} ||= [] }
-
-# sub unsubscribe { croak 'Method "unsubscribe" not support.' }
-
 1;
