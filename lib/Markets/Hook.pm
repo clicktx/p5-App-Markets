@@ -9,9 +9,9 @@ sub add_action { croak 'Method "add_action" not implemented by subclass' }
 
 # sort by priority
 sub sort {
-    my ( $ev, $name ) = ( shift, shift );
-    @{ $ev->{events}{$name} } =
-      sort { $b->{priority} <=> $a->{priority} } @{ $ev->{events}{$name} };
+    my ( $self, $name ) = ( shift, shift );
+    @{ $self->{events}{$name} } =
+      sort { $b->{priority} <=> $a->{priority} } @{ $self->{events}{$name} };
 }
 
 sub catch {
@@ -25,20 +25,20 @@ sub catch {
 sub emit_filter { shift->emit(@_) }
 
 sub emit {
-    my ( $ev, $name ) = ( shift, shift );
+    my ( $self, $name ) = ( shift, shift );
 
-    if ( my $s = $ev->{events}{$name} ) {
-        warn "-- Emit $name in @{[blessed $ev]} (@{[scalar @$s]})\n" if DEBUG;
+    if ( my $s = $self->{events}{$name} ) {
+        warn "-- Emit $name in @{[blessed $self]} (@{[scalar @$s]})\n" if DEBUG;
         for my $event (@$s) { $event->{cb}(@_) }
     }
     else {
-        warn "-- Emit $name in @{[blessed $ev]} (0)\n" if DEBUG;
-        die "@{[blessed $ev]}: $_[0]" if $name eq 'error';
+        warn "-- Emit $name in @{[blessed $self]} (0)\n" if DEBUG;
+        die "@{[blessed $self]}: $_[0]" if $name eq 'error';
     }
-    return $ev;
+    return $self;
 }
 
-sub once        { croak 'Method "once" not supported.' }
+sub once { croak 'Method "once" not supported.' }
 
 # sub subscribers { shift->{events}{shift()} ||= [] }
 
