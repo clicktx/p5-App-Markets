@@ -65,7 +65,9 @@ sub dsn {
 sub initialize_app {
     my $self = shift;
 
-    $self->plugin( Config => { file       => 'config/' . $self->config_file } );
+    my $config_path =
+      $self->app->home->rel_file( 'config/' . $self->config_file );
+    $self->plugin( Config => { file       => $config_path } );
     $self->plugin( Model  => { namespaces => ['Markets::Model'] } );
 
     # preferences
