@@ -1,5 +1,5 @@
 package MyAddon;
-use Mojo::Base 'Mojolicious::Plugin';
+use Mojo::Base 'Markets::Addon';
 
 use Data::Dumper;
 
