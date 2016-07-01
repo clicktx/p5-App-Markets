@@ -19,10 +19,10 @@ sub startup {
     $self->plugin('Markets::Plugin::EPLRenderer');
     $self->plugin('Markets::Plugin::DOM');
 
-    # Addons
-    my $addons = directories('addons');
+    # regist enable addons
+    my $addons = $self->config->{addons}->{enable};
+    $self->plugin($_) for @{$addons};
     say $self->dumper($addons); 
-    $self->plugin($_) for @$addons;
 
     # Routes
     $self->plugin('Markets::Admin::DispatchRoutes');

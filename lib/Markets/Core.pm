@@ -8,12 +8,14 @@ use Markets::Hook::Filter;
 use File::Spec;
 use File::Basename;
 
+my $all_addons;
+
 BEGIN {
     # @INC for Addons
     my $base_dir =
       File::Spec->catdir( dirname(__FILE__), '..', '..', 'addons' );
-    my $addons = Markets::Util::directories('addons');
-    foreach my $path (@$addons) {
+    $all_addons = Markets::Util::directories('addons');
+    foreach my $path (@$all_addons) {
         push @INC, File::Spec->catdir( $base_dir, $path, 'lib' );
     }
 }
@@ -77,6 +79,10 @@ sub initialize_app {
         $self->helper( $name => sub { $preferences->{$name} } );
     }
     $self->helper( LINK_NAME => sub { '上書き' } );    #override ok
+
+    # [WIP] app config
+    my $enable_addons = ['MyAddon'];
+    $self->config( addons => { all => $all_addons, enable => $enable_addons } );
 
     # session
     my $rs = $self->db->resultset('sessions');
