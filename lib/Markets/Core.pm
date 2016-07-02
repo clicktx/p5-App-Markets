@@ -70,13 +70,13 @@ sub initialize_app {
     $self->plugin( Config => { file       => $config_path } );
     $self->plugin( Model  => { namespaces => ['Markets::Model'] } );
 
-    # preferences
-    my $preferences = $self->model('data-preference')->load;
-    $preferences->{LINK_NAME} = 'リンク先';
-    $preferences->{ROOT_URL}  = 'http://google.com/';
+    # constants
+    my $constants = $self->model('data-constant')->load;
+    $constants->{LINK_NAME} = 'リンク先';          # ex)
+    $constants->{ROOT_URL}  = 'http://google.com/';    # ex)
 
-    foreach my $name ( keys %$preferences ) {
-        $self->helper( $name => sub { $preferences->{$name} } );
+    foreach my $name ( keys %$constants ) {
+        $self->helper( $name => sub { $constants->{$name} } );
     }
     $self->helper( LINK_NAME => sub { '上書き' } );    #override ok
 
