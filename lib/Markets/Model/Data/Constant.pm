@@ -1,18 +1,18 @@
-package Markets::Model::Data::Preference;
+package Markets::Model::Data::Constant;
 use Mojo::Base 'MojoX::Model';
 
 sub load {
     my $self        = shift;
     my $db          = $self->app->db;
     my @rows        = $db->search( 'preferences', {} );
-    my $preferences = {};
+    my $constants = {};
 
     foreach my $row (@rows) {
         my $data = $row->get_columns;
-        $preferences->{ $data->{name} } =
+        $constants->{ $data->{name} } =
           $data->{value} ? $data->{value} : $data->{default_value};
     }
-    return $preferences;
+    return $constants;
 }
 
 1;
@@ -20,7 +20,7 @@ __END__
 
 =head1 NAME
 
-Markets::Model::Data::Preference
+Markets::Model::Data::Constant
 
 =head1 SYNOPSIS
 
@@ -33,9 +33,9 @@ Snake case or Package name.
     sub exsample {
         my $self = shift;
 
-        my $preferences = $self->model('data-preference')->load;
+        my $constants = $self->model('data-constant')->load;
         # or
-        my $preferences = $self->model('Data::Preference')->load;
+        my $constants = $self->model('Data::Constant')->load;
     }
 
 =head1 DESCRIPTION
