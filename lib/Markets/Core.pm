@@ -44,9 +44,9 @@ has db => sub {
 has filters => sub { Markets::Hook::Filter->new };
 
 sub add_filter {
-    my ( $self, $name, $code, $conf ) = ( shift, shift, shift, shift // {} );
+    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
     $conf->{client} = caller;
-    $self->filters->add_filter( $name, $code, $conf );
+    $self->filters->add_filter( $name, $cb, $conf );
 }
 
 sub dsn {
