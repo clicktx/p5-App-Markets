@@ -3,34 +3,10 @@ use Mojo::Base 'Markets::Addon';
 
 use Data::Dumper;
 
-sub register {
-    my ( $self, $app ) = @_;
-
-    $app->helper( my_addon => sub { "MyAddon, Say!" } );
-
-    # use before_compile_template
-    $app->add_filter(
-        before_compile_template => sub {
-            my ( $c, $file_path, $template_source ) = @_;
-        },
-        {
-            priority => 300,     #default 100
-            config   => 'aaa',
-        }
-    );
-    $app->add_filter(
-        before_compile_template => sub {
-            my ( $c, $file_path, $template_source ) = @_;
-        },
-        {
-            priority => 10,      #default 100
-            config   => 'aaa',
-        }
-    );
-    $app->add_filter(
-        before_compile_template => \&replace_content,
-        { priority => 400 }
-    );
+sub __register {
+    # my ( $self, $app, $conf ) = @_;
+    # say 'MyAddon regist.';
+    # my $priority = $conf->{priority};
 
   # after_render はhtml生成後に実行されるので毎回処理が走る
   # $app->hook(
@@ -50,7 +26,8 @@ sub register {
   # );
 }
 
-sub replace_content {
+# 各フックポイントを関数で定義する
+sub before_compile_template {
     my ( $c, $file_path, $template_source ) = @_;
     say "filter hook: before_compile_template.";
 

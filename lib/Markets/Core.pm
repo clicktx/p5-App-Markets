@@ -83,8 +83,18 @@ sub initialize_app {
     $self->helper( LINK_NAME => sub { '上書き' } );    #override ok
 
     # [WIP] app config
-    my $enable_addons = ['MyAddon'];
-    $self->config( addons => { all => $all_addons, enable => $enable_addons } );
+    my $enable_addons_setting_from_db = {
+        'MyAddon' => {
+            before_compile_template => 300,
+            before_xxx_action       => 500,
+        },
+    };
+    $self->config(
+        addons => {
+            all     => $all_addons,
+            enable  => $enable_addons_setting_from_db,
+        }
+    );
 
     # session
     my $rs = $self->db->resultset('sessions');
