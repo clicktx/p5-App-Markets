@@ -8,7 +8,13 @@ sub register {
     my $functions = Class::Inspector->functions($namespace);
 
     foreach my $function ( @{$functions} ) {
-        if ( $function =~ /^before_.+|^after_.+/ ) {
+        if ( $function =~ /^action_.+/ ) {
+            $app->add_action(
+                $function => \&{"$namespace::$function"},
+                { priority => $conf->{$function} }
+            );
+        }
+        elsif ( $function =~ /^filter_.+/ ) {
             $app->add_filter(
                 $function => \&{"$namespace::$function"},
                 { priority => $conf->{$function} }

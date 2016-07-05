@@ -43,6 +43,12 @@ has db => sub {
 };
 has filters => sub { Markets::Hook::Filter->new };
 
+sub add_action {
+    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
+    $conf->{client} = caller;
+    $self->filters->add_action( $name, $cb, $conf );
+}
+
 sub add_filter {
     my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
     $conf->{client} = caller;

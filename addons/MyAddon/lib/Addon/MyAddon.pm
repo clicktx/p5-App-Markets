@@ -27,7 +27,7 @@ sub __register {
 }
 
 # 各フックポイントを関数で定義する
-sub before_compile_template {
+sub filter_before_compile_template {
     my ( $c, $file_path, $template_source ) = @_;
     say "filter hook: before_compile_template.";
 
