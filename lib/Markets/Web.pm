@@ -23,7 +23,7 @@ sub startup {
     my $enable_addons = $self->config->{addons}->{enable};
     foreach my $addon ( keys %{$enable_addons} ) {
         my $priorities = $enable_addons->{$addon};
-        $self->plugin( $addon => $priorities );
+        $self->plugin( "Addon::" . $addon => $priorities );
     }
 
     # Routes
