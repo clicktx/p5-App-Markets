@@ -13,7 +13,7 @@ monkey_patch 'Mojo::Template', render_file_after_hook => sub {
 
     # emit filter. This filter was used to addons.
     $c->app->filters->emit_filter(
-        before_compile_template => $c,
+        filter_before_compile_template => $c,
         $template_file_path, \$template_source,
     );
 

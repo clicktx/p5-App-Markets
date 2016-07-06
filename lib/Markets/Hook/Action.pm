@@ -1,7 +1,7 @@
-package Markets::Hook::Filter;
+package Markets::Hook::Action;
 use Mojo::Base 'Markets::Hook';
 
-sub add_filter {
+sub add_action {
     my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
     $arg->{cb} = $cb;
     $arg->{priority} //= 100;

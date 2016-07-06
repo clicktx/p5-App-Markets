@@ -10,7 +10,7 @@ sub startup {
     # templets paths
     $self->renderer->paths( [ 'themes/default', 'themes/admin' ] );
     my $themes = directories( 'themes', { ignore => [ 'default', 'admin' ] } );
-    say $self->dumper($themes); 
+    say $self->dumper($themes);
 
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
 
@@ -19,10 +19,12 @@ sub startup {
     $self->plugin('Markets::Plugin::EPLRenderer');
     $self->plugin('Markets::Plugin::DOM');
 
-    # Addons
-    my $addons = directories('addons');
-    say $self->dumper($addons); 
-    $self->plugin($_) for @$addons;
+    # regist enable addons
+    my $enable_addons = $self->config->{addons}->{enable};
+    foreach my $addon ( keys %{$enable_addons} ) {
+        my $priorities = $enable_addons->{$addon};
+        $self->plugin( "Addon::" . $addon => $priorities );
+    }
 
     # Routes
     $self->plugin('Markets::Admin::DispatchRoutes');

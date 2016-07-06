@@ -8,12 +8,14 @@ use Markets::Hook::Filter;
 use File::Spec;
 use File::Basename;
 
+my $all_addons;
+
 BEGIN {
     # @INC for Addons
     my $base_dir =
       File::Spec->catdir( dirname(__FILE__), '..', '..', 'addons' );
-    my $addons = Markets::Util::directories('addons');
-    foreach my $path (@$addons) {
+    $all_addons = Markets::Util::directories('addons');
+    foreach my $path (@$all_addons) {
         push @INC, File::Spec->catdir( $base_dir, $path, 'lib' );
     }
 }
@@ -41,10 +43,16 @@ has db => sub {
 };
 has filters => sub { Markets::Hook::Filter->new };
 
-sub add_filter {
-    my ( $self, $name, $code, $conf ) = ( shift, shift, shift, shift // {} );
+sub add_action {
+    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
     $conf->{client} = caller;
-    $self->filters->add_filter( $name, $code, $conf );
+    $self->filters->add_action( $name, $cb, $conf );
+}
+
+sub add_filter {
+    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
+    $conf->{client} = caller;
+    $self->filters->add_filter( $name, $cb, $conf );
 }
 
 sub dsn {
@@ -79,6 +87,20 @@ sub initialize_app {
         $self->helper( $name => sub { $constants->{$name} } );
     }
     $self->helper( LINK_NAME => sub { '上書き' } );    #override ok
+
+    # [WIP] app config
+    my $enable_addons_setting_from_db = {
+        'MyAddon' => {
+            before_compile_template => 300,
+            before_xxx_action       => 500,
+        },
+    };
+    $self->config(
+        addons => {
+            all     => $all_addons,
+            enable  => $enable_addons_setting_from_db,
+        }
+    );
 
     # session
     my $rs = $self->db->resultset('sessions');

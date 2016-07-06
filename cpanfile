@@ -7,9 +7,10 @@ requires 'Teng::Plugin::ResultSet',    '0.01';
 requires 'DBI',                        '1.636';
 requires 'DBD::mysql',                 '4.033';
 requires 'Data::MessagePack',          '0.49';
+requires 'Class::Inspector',           '1.28';
 
 on configure => sub {
-    requires 'Module::Build', '0.38';
+    requires 'Module::Build',    '0.38';
     requires 'Module::CPANfile', '0.9010';
 };
 
