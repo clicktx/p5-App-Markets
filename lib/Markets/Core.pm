@@ -11,7 +11,7 @@ use File::Basename;
 my $all_addons;
 
 BEGIN {
-    # @INC for Addons
+    # add path to @INC
     my $base_dir =
       File::Spec->catdir( dirname(__FILE__), '..', '..', 'addons' );
     $all_addons = Markets::Util::directories('addons');
@@ -20,22 +20,18 @@ BEGIN {
     }
 }
 
-has config_file => sub {
-    my $mode = shift->mode;
-    return "${mode}.conf";
-};
 has util => sub { Markets::Util->new };
 has dbh => sub {
     my $self = shift;
     my $conf = $self->config->{db} or die "Missing configuration for db";
     my $dsn  = $self->dsn($conf);
     my $dbh  = DBI->connect( $dsn, { RaiseError => 1 } ) or die $DBI::errstr;
-    say "connecting DB."; 
-    say '$app->dbh => ' . $dbh . 'on Markets.pm'; 
+    say "connecting DB.";                            # debug
+    say '$app->dbh => ' . $dbh . 'on Markets.pm';    # debug
     return $dbh;
 };
 has db => sub {
-    say "+++++ load schema. +++++"; 
+    say "+++++ load schema. +++++";                  # debug
     Markets::DB::Schema->load(
         dbh       => shift->dbh,
         namespace => 'Markets::DB',
@@ -72,9 +68,14 @@ sub dsn {
 
 sub initialize_app {
     my $self = shift;
+    my $home = $self->home;
+    my $mode = $self->mode;
 
-    my $config_path =
-      $self->app->home->rel_file( 'config/' . $self->config_file );
+    # change log dir
+    $self->log->path( $home->rel_file("var/log/$mode.log") )
+      if -d $home->rel_file('var/log') && -w _;
+
+    my $config_path = $home->rel_file("config/$mode.conf");
     $self->plugin( Config => { file       => $config_path } );
     $self->plugin( Model  => { namespaces => ['Markets::Model'] } );
 
@@ -97,8 +98,8 @@ sub initialize_app {
     };
     $self->config(
         addons => {
-            all     => $all_addons,
-            enable  => $enable_addons_setting_from_db,
+            all    => $all_addons,
+            enable => $enable_addons_setting_from_db,
         }
     );
 
