@@ -16,9 +16,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `markets`.`preferences`
+-- Table `markets`.`constants`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `markets`.`preferences` (
+CREATE TABLE IF NOT EXISTS `markets`.`constants` (
   `name` VARCHAR(50) NOT NULL COMMENT '',
   `default_value` TEXT NULL COMMENT '',
   `value` TEXT NULL COMMENT '',

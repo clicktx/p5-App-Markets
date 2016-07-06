@@ -4,7 +4,7 @@ use Mojo::Base 'MojoX::Model';
 sub load {
     my $self        = shift;
     my $db          = $self->app->db;
-    my @rows        = $db->search( 'preferences', {} );
+    my @rows        = $db->search( 'constants', {} );
     my $constants = {};
 
     foreach my $row (@rows) {
