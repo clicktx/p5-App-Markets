@@ -10,7 +10,7 @@ sub startup {
     # templets paths
     $self->renderer->paths( [ 'themes/default', 'themes/admin' ] );
     my $themes = directories( 'themes', { ignore => [ 'default', 'admin' ] } );
-    say $self->dumper($themes);
+    say $self->dumper($themes);    # debug
 
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
 
