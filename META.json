@@ -4,7 +4,7 @@
       "Markets authors."
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.0.1, CPAN::Meta::Converter version 2.150005",
+   "generated_by" : "Minilla/v3.0.2, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "unknown"
    ],
@@ -43,6 +43,7 @@
       },
       "runtime" : {
          "requires" : {
+            "Class::Inspector" : "1.28",
             "DBD::mysql" : "4.033",
             "DBI" : "1.636",
             "Data::MessagePack" : "0.49",

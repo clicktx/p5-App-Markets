@@ -21,6 +21,35 @@ my %args = (
         'Module::Build' => '0.4005',
     },
 
+    requires => {
+        'File::Find::Rule' => '0.34',
+        'Teng::Plugin::ResultSet' => '0.01',
+        'MojoX::Session' => '0.33',
+        'Mojolicious' => '== 6.66',
+        'Mojolicious::Plugin::Model' => '0.07',
+        'DBD::mysql' => '4.033',
+        'Teng' => '0.28',
+        'Class::Inspector' => '1.28',
+        'Data::MessagePack' => '0.49',
+        'DBI' => '1.636',
+    },
+
+    recommends => {
+    },
+
+    suggests => {
+    },
+
+    build_requires => {
+    },
+
+    test_requires => {
+        'Test::More' => '0',
+        'Test::Perl::Critic' => '0',
+        'Test::mysqld' => '0',
+        'Harriet' => '0',
+    },
+
     name            => 'Markets',
     module_name     => 'Markets',
     allow_pureperl => 0,
