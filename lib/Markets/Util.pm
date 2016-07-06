@@ -31,10 +31,15 @@ ignore - ignore directory name.
 sub directories {
     my ( $dir, $options ) = ( shift, shift // {} );
     my @sub_directories;
+    my $ignore_dir = $options->{ignore} // '';
 
-    my $rule =
-      File::Find::Rule->not( File::Find::Rule->name( $options->{ignore} ) )
-      ->maxdepth(1)->directory->start($dir);
+    my $rule = File::Find::Rule->new;
+    if ($ignore_dir)
+    { # Hack the `Use of uninitialized value $regex in regexp compilation at Text/Glob.pm`
+        $rule->not( File::Find::Rule->name($ignore_dir) );
+    }
+    $rule->maxdepth(1)->directory->start($dir);
+
     while ( my $sub_dir = $rule->match ) {
         $sub_dir =~ s/$dir\/?//;
         push @sub_directories, $sub_dir if $sub_dir;
