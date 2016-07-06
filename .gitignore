@@ -24,5 +24,6 @@ MYMETA.yml
 !Build/
 !META.json
 !LICENSE
+.perl-version
 *.pid
 /bin/
