@@ -8,15 +8,16 @@ sub register {
     my $functions = Class::Inspector->functions($namespace);
 
     foreach my $function ( @{$functions} ) {
+        my $module_function = $namespace . '::' . $function;
         if ( $function =~ /^action_.+/ ) {
             $app->add_action(
-                $function => \&{"$namespace::$function"},
+                $function => \&{$module_function},
                 { priority => $conf->{$function} }
             );
         }
         elsif ( $function =~ /^filter_.+/ ) {
             $app->add_filter(
-                $function => \&{"$namespace::$function"},
+                $function => \&{$module_function},
                 { priority => $conf->{$function} }
             );
         }
