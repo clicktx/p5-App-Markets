@@ -1,15 +1,12 @@
 package Markets::DB::Schema;
-use Mojo::Base 'Markets::DB';
-use Teng::Schema::Loader;
+use strict;
+use warnings;
+use Teng::Schema::Declare;
 
-sub load {
-    my $class = shift;
-    my %args = @_ == 1 ? %{ $_[0] } : @_;
-
-    Teng::Schema::Loader->load(
-        dbh       => $args{dbh},
-        namespace => $args{namespace},
-    );
-}
+table {
+    name 'constants';
+    pk 'name';
+    columns qw( name default_value value summary category position );
+};
 
 1;

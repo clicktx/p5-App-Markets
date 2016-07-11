@@ -2,7 +2,7 @@ package Markets::Core;
 use Mojo::Base 'Mojolicious';
 use DBI;
 use Markets::Util;
-use Markets::DB::Schema;
+use Markets::DB;
 use Markets::Session::Store::Teng;
 use Markets::Hook::Filter;
 use File::Spec;
@@ -31,11 +31,9 @@ has dbh => sub {
     return $dbh;
 };
 has db => sub {
-    say "+++++ load schema. +++++";                  # debug
-    Markets::DB::Schema->load(
-        dbh       => shift->dbh,
-        namespace => 'Markets::DB',
-    );
+    say "+++++ DB. +++++";                           # debug
+    my $db = Markets::DB->new( dbh => shift->dbh );
+    return $db;
 };
 has filters => sub { Markets::Hook::Filter->new };
 
@@ -102,6 +100,10 @@ sub initialize_app {
             enable => $enable_addons_setting_from_db,
         }
     );
+
+    # load config after. option schema loading.
+    my $more_schema_classes_from_db = [ qw /Markets::DB::Schema::More/ ];
+    $self->db->merge_schema( $more_schema_classes_from_db );
 
     # session
     my $rs = $self->db->resultset('sessions');
