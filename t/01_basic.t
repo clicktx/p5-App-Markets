@@ -58,4 +58,18 @@ subtest 'session' => sub {
     is $session->load, undef, 'removed session';
 };
 
+subtest 'merge schema' => sub {
+    my $db = $t->app->db;
+    is ref $db, 'Markets::DB';
+
+    eval { $db->merge_schema( ['t::Ex::NoSchema'] ) };
+    like $@, qr/Can't locate object method "instance" via package/,
+      'no has schema';
+
+    $db->merge_schema( ['t::Ex::Schema'] );
+    my $table = $db->schema->get_table('test');
+    is_deeply $table->{columns}, [qw/id key value/],
+      'right merged schema';
+};
+
 done_testing();
