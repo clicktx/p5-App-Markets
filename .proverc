@@ -1,6 +1,6 @@
 --color
 --timer
 -l
--r t
+#-r t
 -Mt::Util
 -PHarriet=t/harriet/
