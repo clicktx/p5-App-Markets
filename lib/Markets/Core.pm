@@ -1,13 +1,14 @@
 package Markets::Core;
 use Mojo::Base 'Mojolicious';
+
+use File::Spec;
+use File::Basename;
 use DBI;
 use Markets::Util;
 use Markets::DB;
 use Markets::Session::Store::Teng;
 use Markets::Hook::Action;
 use Markets::Hook::Filter;
-use File::Spec;
-use File::Basename;
 
 my $all_addons;
 
