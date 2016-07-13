@@ -11,7 +11,7 @@ sub add_action { croak 'Method "add_action" not implemented by subclass' }
 sub sort {
     my ( $self, $name ) = ( shift, shift );
     @{ $self->{events}{$name} } =
-      sort { $b->{priority} <=> $a->{priority} } @{ $self->{events}{$name} };
+      sort { $a->{priority} <=> $b->{priority} } @{ $self->{events}{$name} };
 }
 
 sub catch {

@@ -127,7 +127,7 @@ my @priority;
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 1000, 400, 200 ], 'add_filter priority';
+is_deeply \@priority, [ 200, 400, 1000 ], 'add_filter priority';
 
 # action priority
 $e = Markets::Hook::Action->new;
@@ -153,6 +153,6 @@ my @priority;
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 1000, 400, 200 ], 'add_action priority';
+is_deeply \@priority, [ 200, 400, 1000 ], 'add_action priority';
 
 done_testing();
