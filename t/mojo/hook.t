@@ -3,6 +3,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Markets::Hook;
 use Markets::Hook::Filter;
+use Markets::Hook::Action;
 
 # Normal event
 my $e = Markets::Hook->new;
@@ -123,9 +124,35 @@ $e->add_filter(
     { priority => 400 }
 );
 my @priority;
-foreach my $event (@{$e->{events}{test1}}){
+foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [1000, 400, 200], 'filter_add priority';
+is_deeply \@priority, [ 200, 400, 1000 ], 'add_filter priority';
+
+# action priority
+$e = Markets::Hook::Action->new;
+$e->add_action(
+    test1 => {
+        cb => sub { $called++ }
+    },
+    { priority => 200 }
+);
+$e->add_action(
+    test1 => {
+        cb => sub { $called++ }
+    },
+    { priority => 1000 }
+);
+$e->add_action(
+    test1 => {
+        cb => sub { $called++ }
+    },
+    { priority => 400 }
+);
+my @priority;
+foreach my $event ( @{ $e->{events}{test1} } ) {
+    push @priority, $event->{priority};
+}
+is_deeply \@priority, [ 200, 400, 1000 ], 'add_action priority';
 
 done_testing();

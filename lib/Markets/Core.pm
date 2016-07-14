@@ -1,12 +1,14 @@
 package Markets::Core;
 use Mojo::Base 'Mojolicious';
+
+use File::Spec;
+use File::Basename;
 use DBI;
 use Markets::Util;
 use Markets::DB;
 use Markets::Session::Store::Teng;
+use Markets::Hook::Action;
 use Markets::Hook::Filter;
-use File::Spec;
-use File::Basename;
 
 my $all_addons;
 
@@ -35,12 +37,13 @@ has db => sub {
     my $db = Markets::DB->new( dbh => shift->dbh );
     return $db;
 };
+has actions => sub { Markets::Hook::Action->new };
 has filters => sub { Markets::Hook::Filter->new };
 
 sub add_action {
     my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
     $conf->{client} = caller;
-    $self->filters->add_action( $name, $cb, $conf );
+    $self->actions->add_action( $name, $cb, $conf );
 }
 
 sub add_filter {
@@ -102,8 +105,8 @@ sub initialize_app {
     );
 
     # load config after. option schema loading.
-    my $more_schema_classes_from_db = [ qw /Markets::DB::Schema::More/ ];
-    $self->db->merge_schema( $more_schema_classes_from_db );
+    my $more_schema_classes_from_db = [qw /Markets::DB::Schema::More/];
+    $self->db->merge_schema($more_schema_classes_from_db);
 
     # session
     my $rs = $self->db->resultset('sessions');
