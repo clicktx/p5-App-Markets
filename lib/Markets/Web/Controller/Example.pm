@@ -7,15 +7,15 @@ sub welcome {
     my $self = shift;
 
     # emit hook
-    $self->app->plugins->emit_hook(before_welcome => $self);
+    $self->app->plugins->emit_hook( before_welcome => $self );
 
     # session
     my $session = $self->markets_session;
     my $counter = $session->data('counter');
     $counter++;
     $session->data( counter => $counter );
-    say "counter: " . $counter; 
-    say $self->ROOT_URL; 
+    say "counter: " . $counter;      # debug
+    say $self->const('ROOT_URL');    # debug
 
     # use model
     $self->app->model('logic-base')->do;
