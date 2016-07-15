@@ -13,17 +13,17 @@ learn more, you can also browse through the documentation
 </p>
 
 <p>
-    <%= link_to $self->LINK_NAME => ROOT_URL %> or
-    <%= link_to app->LINK_NAME => ROOT_URL %> or
-    <%= link_to LINK_NAME() => ROOT_URL %>
+    <%= link_to const('LINK_NAME') => const('ROOT_URL') %> or
+    <%= link_to app->const('LINK_NAME') => const('ROOT_URL') %> or
+    <%= link_to const('LINK_NAME') => const('ROOT_URL') %>
 </p>
 <p>
-    <%= link_to ROOT_URL() => begin %>
-        <%= LINK_NAME %>
+    <%= link_to const('ROOT_URL') => begin %>
+        <%= const('LINK_NAME') %>
     <% end %>
 </p>
-<%= $self->LINK_NAME %>
+<%= $self->const('LINK_NAME') %>
 
 
 <h2>Admin pages</h2>
-<%= link_to 'admin page' => ADMIN_PAGE_PREFIX %>
+<%= link_to 'admin page' => const('ADMIN_PAGE_PREFIX') %>
