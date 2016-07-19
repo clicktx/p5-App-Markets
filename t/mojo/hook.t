@@ -149,7 +149,8 @@ $e->add_action(
     },
     { priority => 400 }
 );
-my @priority;
+
+@priority = ();
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
