@@ -21,13 +21,13 @@ sub register {
 
             $session->load;
             if ( $session->sid ) {
-                say "ented session expires time."; 
+                say "ented session expires time.";    # debug
                 $session->extend_expires;
             }
             else {
                 _create_session( $c, $session );
             }
-            say "sid: " . $session->sid; 
+            say "sid: " . $session->sid;              # debug
 
             $next->();
 
@@ -43,7 +43,7 @@ sub _create_session {
 
     # cookieに対応している場合のみセッション生成する
     if ($cookie) {
-        say "created new session."; 
+        say "created new session.";    # debug
         $session->data( 'landing_page' => $cookie );
         $session->create;
     }
