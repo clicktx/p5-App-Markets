@@ -1,4 +1,4 @@
-package Markets::Session;
+package Markets::Plugin::Session;
 use Mojo::Base 'Mojolicious::Plugin';
 use MojoX::Session;
 
@@ -58,7 +58,7 @@ __END__
 
 =head1 NAME
 
-Markets::Session - forked from Mojolicious::Plugin::Session
+Markets::Plugin::Session - forked from Mojolicious::Plugin::Session
 
 =head1 SYNOPSIS
 

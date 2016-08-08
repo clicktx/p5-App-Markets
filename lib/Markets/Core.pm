@@ -121,7 +121,7 @@ sub initialize_app {
     # session
     my $rs = $self->db->resultset('sessions');
     $self->plugin(
-        'Markets::Session' => {
+        'Markets::Plugin::Session' => {
             stash_key => 'markets_session',
             store     => Markets::Session::Store::Teng->new( resultset => $rs ),
             expires_delta => 3600,
