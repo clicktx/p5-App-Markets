@@ -14,8 +14,8 @@ __PACKAGE__->attr( data_column    => 'data' );
 __PACKAGE__->attr( cart_column    => 'cart' );
 
 sub _separate_session_data {
-    my ($data) = @_;
-    my $cart_data = $data->{cart} || '';
+    my $data         = shift;
+    my $cart_data    = $data->{cart} || '';
     my $session_data = $data;
     undef $session_data->{cart} if $session_data->{cart};
     return ( $cart_data, $session_data );
