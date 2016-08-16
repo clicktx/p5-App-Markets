@@ -7,18 +7,16 @@ use lib File::Spec->catdir( dirname(__FILE__), '..', 'lib' );
 use Markets::Util;
 
 BEGIN {
+    # Check app mode
     unless ( $ENV{MOJO_MODE} ) {
         $ENV{MOJO_MODE} = 'test';
     }
     if ( $ENV{MOJO_MODE} eq 'production' ) {
         die "Do not run a test script on deployment environment";
     }
-}
 
-BEGIN {
     # @INC for Addons
-    my $base_dir =
-      File::Spec->catdir( dirname(__FILE__), '..', 'addons' );
+    my $base_dir = File::Spec->catdir( dirname(__FILE__), '..', 'addons' );
     my $addons = Markets::Util::directories('addons');
     foreach my $path (@$addons) {
         push @INC, File::Spec->catdir( $base_dir, $path, 'lib' );

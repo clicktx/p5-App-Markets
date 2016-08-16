@@ -27,3 +27,10 @@ learn more, you can also browse through the documentation
 
 <h2>Admin pages</h2>
 <%= link_to 'admin page' => const('ADMIN_PAGE_PREFIX') %>
+
+<p>
+    <%= __ 'hello' %><%= __ 'hello2' %>
+</p>
+<p>
+    domain <%= __d 'my_addon', 'hello' %><%= __d 'my_addon', 'hello2' %>
+</p>
