@@ -156,6 +156,7 @@ sub initialize_app {
     );
 
     # loading lexicon for addons
+    # TODO: config->{addons}->{enable}のみを読み込むように修正しよう
     foreach my $addon (@$all_addons) {
         my $text_domain = Mojo::Util::decamelize($addon);
         $self->lexicon(
