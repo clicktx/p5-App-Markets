@@ -13,5 +13,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language: ja\n"
 
+# This file textdomain is "AddonName" snake_case. ex) addon_name
 msgid "hello"
 msgstr "こんにちはmy-addon"

@@ -129,7 +129,7 @@ sub initialize_app {
     );
 
     # locale
-    $ENV{MOJO_I18N_DEBUG} = 1;
+    $ENV{MOJO_I18N_DEBUG} = $self->mode eq 'development' ? 1 : 0;
     $self->plugin(
         'LocaleTextDomainOO',
         {
@@ -155,17 +155,20 @@ sub initialize_app {
         }
     );
 
-    # addon locale exsample
-    $self->lexicon(
-        {
-            search_dirs => [
-                File::Spec->catdir(
-                    $self->home, 'addons', 'MyAddon', 'locale'
-                )
-            ],
-            data => [ '*::my-addon' => '*.po' ],    # set domain
-        }
-    );
+    # loading lexicon for addons
+    foreach my $addon (@$all_addons) {
+        my $text_domain = Mojo::Util::decamelize($addon);
+        $self->lexicon(
+            {
+                search_dirs => [
+                    File::Spec->catdir(
+                        $self->home, 'addons', $addon, 'locale'
+                    )
+                ],
+                data => [ "*::$text_domain" => '*.po' ],    # set text domain
+            }
+        );
+    }
 
     # Documentation browser under "/perldoc"
     $self->plugin('PODRenderer');

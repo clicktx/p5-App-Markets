@@ -13,6 +13,7 @@ msgstr ""
 "Language: en\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+# This file textdomain is "AddonName" snake_case. ex) addon_name
 msgid "hello"
 msgstr "hello my-addon"
 
