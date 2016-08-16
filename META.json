@@ -4,7 +4,7 @@
       "Markets authors."
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.0.2, CPAN::Meta::Converter version 2.143240",
+   "generated_by" : "Minilla/v3.0.2, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "unknown"
    ],
@@ -50,6 +50,7 @@
             "File::Find::Rule" : "0.34",
             "MojoX::Session" : "0.33",
             "Mojolicious" : "== 6.66",
+            "Mojolicious::Plugin::LocaleTextDomainOO" : "0.03",
             "Mojolicious::Plugin::Model" : "0.07",
             "Teng" : "0.28",
             "Teng::Plugin::ResultSet" : "0.01"
@@ -79,5 +80,6 @@
    "version" : "0.01",
    "x_contributors" : [
       "clicktx <clicktx@gmail.com>"
-   ]
+   ],
+   "x_serialization_backend" : "JSON::PP version 2.27400"
 }

@@ -23,6 +23,7 @@ my %args = (
 
     requires => {
         'File::Find::Rule' => '0.34',
+        'Mojolicious::Plugin::LocaleTextDomainOO' => '0.03',
         'Teng::Plugin::ResultSet' => '0.01',
         'MojoX::Session' => '0.33',
         'Mojolicious' => '== 6.66',
