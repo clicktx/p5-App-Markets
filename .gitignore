@@ -27,3 +27,4 @@ MYMETA.yml
 .perl-version
 *.pid
 /bin/
+cpanfile.snapshot
