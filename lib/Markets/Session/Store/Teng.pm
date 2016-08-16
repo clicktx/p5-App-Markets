@@ -85,8 +85,9 @@ sub load {
     my $session_data = $row->get_column($data_column);
     my $cart_data    = $row->get_column($cart_column);
 
+    my $data = {};
+    $data = Data::MessagePack->unpack($session_data) if $session_data;
     $cart_data = Data::MessagePack->unpack($cart_data) if $cart_data;
-    my $data = Data::MessagePack->unpack($session_data) if $session_data;
     $data->{cart} = $cart_data if $cart_data;
 
     return ( $expires, $data );
