@@ -25,40 +25,6 @@ subtest 'utility' => sub {
     is ref $addons, 'ARRAY', 'loading addons';
 };
 
-# use Mojo::Cookie::Response;
-subtest 'session' => sub {
-    my $cookie =
-      Mojo::Cookie::Request->new( name => 'sid', value => 'bar', path => '/' );
-    my $tx = Mojo::Transaction::HTTP->new();
-    $tx->req->cookies($cookie);
-    my $rs = $t->app->db->resultset('sessions');
-
-    my $session = MojoX::Session->new(
-        tx            => $tx,
-        store         => Markets::Session::Store::Teng->new( resultset => $rs ),
-        transport     => MojoX::Session::Transport::Cookie->new,
-        expires_delta => 3600,
-    );
-
-    # create session
-    my $sid = $session->create;
-    $session->flush;
-    ok $sid, 'created session';
-
-    # load session
-    $cookie =
-      Mojo::Cookie::Request->new( name => 'sid', value => $sid, path => '/' );
-    $tx = Mojo::Transaction::HTTP->new();
-    $session->tx($tx);
-    $tx->req->cookies($cookie);
-    is $session->load, $sid, 'loading session';
-
-    # remove session
-    $session->expire;
-    $session->flush;
-    is $session->load, undef, 'removed session';
-};
-
 subtest 'merge schema' => sub {
     my $db = $t->app->db;
     is ref $db, 'Markets::DB';
@@ -87,7 +53,7 @@ subtest 'constants' => sub {
     $app->config('constants')->{NO_CONSTANT_KEY} = [ 1, 2, 3 ];
     $const_value = $app->const('NO_CONSTANT_KEY');
     is ref $const_value, 'ARRAY', 'right reference';
-    is_deeply $const_value, [1,2,3], 'reght value';
+    is_deeply $const_value, [ 1, 2, 3 ], 'reght value';
 };
 
 done_testing();
