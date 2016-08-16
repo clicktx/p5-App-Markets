@@ -2,7 +2,7 @@ package Markets::Session::Store::Teng;
 use strict;
 use warnings;
 
-use base 'MojoX::Session::Store';
+use parent 'MojoX::Session::Store';
 
 use MIME::Base64;
 use Data::MessagePack;
