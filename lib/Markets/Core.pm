@@ -128,6 +128,45 @@ sub initialize_app {
         }
     );
 
+    # locale
+    $ENV{MOJO_I18N_DEBUG} = 1;
+    $self->plugin(
+        'LocaleTextDomainOO',
+        {
+            # file_type => 'po',    # or 'mo'. default: po
+            default   => 'en',               # default en
+            languages => [qw( en ja de )],
+
+            # Mojolicious::Plugin::I18N like options
+            no_header_detect  => 1,                   # option. default: false
+            support_url_langs => [qw( en ja de )],    # option
+        }
+    );
+
+    # loading lexicon files
+    $self->lexicon(
+        {
+            search_dirs =>
+              [ File::Spec->catdir( $self->home, 'share', 'locale' ) ],
+
+            # gettext_to_maketext => $boolean,                    # option
+            # decode              => $boolean,                    # option
+            data => [ '*::' => '*.po' ],
+        }
+    );
+
+    # addon locale exsample
+    $self->lexicon(
+        {
+            search_dirs => [
+                File::Spec->catdir(
+                    $self->home, 'addons', 'MyAddon', 'locale'
+                )
+            ],
+            data => [ '*::my-addon' => '*.po' ],    # set domain
+        }
+    );
+
     # Documentation browser under "/perldoc"
     $self->plugin('PODRenderer');
 
