@@ -42,6 +42,8 @@ is $session->data('counter'), 1, 'right session value';
 $session->data( cart => 1 );
 is $session->data('cart'), 1, 'right cart value';
 
+is_deeply $session->data, { counter => 1, cart => 1 }, 'right cart value';
+
 # remove session
 $session->expire;
 $session->flush;
