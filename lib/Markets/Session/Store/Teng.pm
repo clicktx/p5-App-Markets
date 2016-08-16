@@ -13,7 +13,7 @@ __PACKAGE__->attr( expires_column => 'expires' );
 __PACKAGE__->attr( data_column    => 'data' );
 __PACKAGE__->attr( cart_column    => 'cart' );
 
-sub _divide_session_data {
+sub _separate_session_data {
     my ($data) = @_;
     my $cart_data = $data->{cart} || '';
     my $session_data = $data;
@@ -24,7 +24,7 @@ sub _divide_session_data {
 sub create {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    my ( $cart_data, $session_data ) = _divide_session_data($data);
+    my ( $cart_data, $session_data ) = _separate_session_data($data);
 
     $cart_data    = Data::MessagePack->pack($cart_data)    if $cart_data;
     $session_data = Data::MessagePack->pack($session_data) if $session_data;
@@ -48,7 +48,7 @@ sub create {
 sub update {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    my ( $cart_data, $session_data ) = _divide_session_data($data);
+    my ( $cart_data, $session_data ) = _separate_session_data($data);
 
     $cart_data    = Data::MessagePack->pack($cart_data)    if $cart_data;
     $session_data = Data::MessagePack->pack($session_data) if $session_data;
