@@ -11,22 +11,36 @@ __PACKAGE__->attr('resultset');
 __PACKAGE__->attr( sid_column     => 'sid' );
 __PACKAGE__->attr( expires_column => 'expires' );
 __PACKAGE__->attr( data_column    => 'data' );
+__PACKAGE__->attr( cart_column    => 'cart' );
+
+sub _divide_session_data {
+    my ($data) = @_;
+    my $cart_data = $data->{cart} || '';
+    my $session_data = $data;
+    undef $session_data->{cart} if $session_data->{cart};
+    return ( $cart_data, $session_data );
+}
 
 sub create {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    $data = Data::MessagePack->pack($data) if $data;
+    my ( $cart_data, $session_data ) = _divide_session_data($data);
+
+    $cart_data    = Data::MessagePack->pack($cart_data)    if $cart_data;
+    $session_data = Data::MessagePack->pack($session_data) if $session_data;
 
     my $resultset      = $self->resultset;
     my $sid_column     = $self->sid_column;
     my $expires_column = $self->expires_column;
     my $data_column    = $self->data_column;
+    my $cart_column    = $self->cart_column;
 
     return $resultset->insert(
         {
             $sid_column     => $sid,
             $expires_column => $expires,
-            $data_column    => $data,
+            $data_column    => $session_data,
+            $cart_column    => $cart_data,
         }
     ) ? 1 : 0;
 }
@@ -34,18 +48,23 @@ sub create {
 sub update {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    $data = Data::MessagePack->pack($data) if $data;
+    my ( $cart_data, $session_data ) = _divide_session_data($data);
+
+    $cart_data    = Data::MessagePack->pack($cart_data)    if $cart_data;
+    $session_data = Data::MessagePack->pack($session_data) if $session_data;
 
     my $resultset      = $self->resultset;
     my $sid_column     = $self->sid_column;
     my $expires_column = $self->expires_column;
     my $data_column    = $self->data_column;
+    my $cart_column    = $self->cart_column;
 
     my $set = $resultset->single( { $sid_column => $sid } );
     return $set->update(
         {
             $expires_column => $expires,
-            $data_column    => $data,
+            $data_column    => $session_data,
+            $cart_column    => $cart_data,
         }
     ) ? 1 : 0;
 }
@@ -57,14 +76,18 @@ sub load {
     my $sid_column     = $self->sid_column;
     my $expires_column = $self->expires_column;
     my $data_column    = $self->data_column;
+    my $cart_column    = $self->cart_column;
 
     my $row = $resultset->single( { $sid_column => $sid } );
     return unless $row;
 
-    my $expires = $row->get_column($expires_column);
-    my $data    = $row->get_column($data_column);
+    my $expires      = $row->get_column($expires_column);
+    my $session_data = $row->get_column($data_column);
+    my $cart_data    = $row->get_column($cart_column);
 
-    $data = Data::MessagePack->unpack($data) if $data;
+    $cart_data = Data::MessagePack->unpack($cart_data) if $cart_data;
+    my $data = Data::MessagePack->unpack($session_data) if $session_data;
+    $data->{cart} = $cart_data if $cart_data;
 
     return ( $expires, $data );
 }
@@ -89,7 +112,8 @@ MojoX::Session::Store::Teng - Teng Store for MojoX::Session
 
     CREATE TABLE session (
         sid          VARCHAR(40) PRIMARY KEY,
-        data         TEXT,
+        data         LONG TEXT,
+        cart         LONG TEXT,
         expires      INTEGER UNSIGNED NOT NULL,
         UNIQUE(sid)
     );
@@ -135,6 +159,10 @@ Expires column name. Default is 'expires'.
 =head2 C<data_column>
 
 Data column name. Default is 'data'.
+
+=head2 C<cart_column>
+
+Cart column name. Default is 'cart'.
 
 =head1 METHODS
 
