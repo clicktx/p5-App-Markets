@@ -13,6 +13,7 @@ requires 'Class::Inspector',                        '1.28';
 on configure => sub {
     requires 'Module::Build',    '0.38';
     requires 'Module::CPANfile', '0.9010';
+    requires 'Safe',             '2.32';    # Hack for Devel::Cover
 };
 
 on test => sub {
