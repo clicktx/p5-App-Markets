@@ -20,10 +20,12 @@ sub startup {
     $self->plugin('Markets::Plugin::DOM');
 
     # regist enable addons
-    my $enable_addons = $self->config->{addons}->{enable};
-    foreach my $addon ( keys %{$enable_addons} ) {
-        my $priorities = $enable_addons->{$addon};
-        $self->plugin( "Addon::" . $addon => $priorities );
+    my $addons = $self->config->{addons};
+    my @enabled = grep{ $_->{is_enabled} } @$addons;
+    foreach my $addon (@enabled){
+        my $addon_name = $addon->{name};
+        my $hooks = $addon->{hooks} || {};
+        $self->plugin( "Addon::" . $addon_name => $hooks );
     }
 
     # Routes
