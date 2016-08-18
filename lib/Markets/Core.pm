@@ -119,6 +119,15 @@ sub initialize_app {
     ];
     $self->config( addons => $addons_setting_from_db );
 
+    # regist enable addons
+    my $addons = $self->config->{addons};
+    my @enabled = grep { $_->{is_enabled} } @$addons;
+    foreach my $addon (@enabled) {
+        my $addon_name = $addon->{name};
+        my $hooks = $addon->{hooks} || {};
+        $self->plugin( "Addon::" . $addon_name => $hooks );
+    }
+
     # load config after. option schema loading.
     my $more_schema_classes_from_db = [qw /Markets::DB::Schema::More/];
     $self->db->merge_schema($more_schema_classes_from_db);

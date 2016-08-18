@@ -19,15 +19,6 @@ sub startup {
     $self->plugin('Markets::Plugin::EPLRenderer');
     $self->plugin('Markets::Plugin::DOM');
 
-    # regist enable addons
-    my $addons = $self->config->{addons};
-    my @enabled = grep{ $_->{is_enabled} } @$addons;
-    foreach my $addon (@enabled){
-        my $addon_name = $addon->{name};
-        my $hooks = $addon->{hooks} || {};
-        $self->plugin( "Addon::" . $addon_name => $hooks );
-    }
-
     # Routes
     $self->plugin('Markets::Admin::DispatchRoutes');
     $self->plugin('Markets::Web::DispatchRoutes');
