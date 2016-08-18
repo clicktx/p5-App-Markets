@@ -19,7 +19,9 @@ BEGIN {
       File::Spec->catdir( dirname(__FILE__), '..', '..', 'addons' );
     $all_addons = Markets::Util::directories('addons');
     foreach my $path (@$all_addons) {
-        push @INC, File::Spec->catdir( $base_dir, $path, 'lib' );
+        push @INC,
+          Mojo::Path->new( File::Spec->catdir( $base_dir, $path, 'lib' ) )
+          ->canonicalize->to_string;
     }
 }
 
