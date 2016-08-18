@@ -129,7 +129,7 @@ sub initialize_app {
     );
 
     # locale
-    $ENV{MOJO_I18N_DEBUG} = $self->mode eq 'development' ? 1 : 0;
+    $ENV{MOJO_I18N_DEBUG} = $mode eq 'development' ? 1 : 0;
     $self->plugin(
         'LocaleTextDomainOO',
         {
