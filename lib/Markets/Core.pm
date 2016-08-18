@@ -146,8 +146,7 @@ sub initialize_app {
     # loading lexicon files
     $self->lexicon(
         {
-            search_dirs =>
-              [ File::Spec->catdir( $self->home, 'share', 'locale' ) ],
+            search_dirs => [ File::Spec->catdir( $home, 'share', 'locale' ) ],
 
             # gettext_to_maketext => $boolean,                    # option
             # decode              => $boolean,                    # option
@@ -155,17 +154,14 @@ sub initialize_app {
         }
     );
 
-    # loading lexicon for addons
-    # TODO: config->{addons}->{enable}のみを読み込むように修正しよう
+ # loading lexicon for addons
+ # TODO: config->{addons}->{enable}のみを読み込むように修正しよう
     foreach my $addon (@$all_addons) {
         my $text_domain = Mojo::Util::decamelize($addon);
         $self->lexicon(
             {
-                search_dirs => [
-                    File::Spec->catdir(
-                        $self->home, 'addons', $addon, 'locale'
-                    )
-                ],
+                search_dirs =>
+                  [ File::Spec->catdir( $home, 'addons', $addon, 'locale' ) ],
                 data => [ "*::$text_domain" => '*.po' ],    # set text domain
             }
         );
