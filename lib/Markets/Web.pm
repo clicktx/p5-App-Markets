@@ -19,13 +19,6 @@ sub startup {
     $self->plugin('Markets::Plugin::EPLRenderer');
     $self->plugin('Markets::Plugin::DOM');
 
-    # regist enable addons
-    my $enable_addons = $self->config->{addons}->{enable};
-    foreach my $addon ( keys %{$enable_addons} ) {
-        my $priorities = $enable_addons->{$addon};
-        $self->plugin( "Addon::" . $addon => $priorities );
-    }
-
     # Routes
     $self->plugin('Markets::Admin::DispatchRoutes');
     $self->plugin('Markets::Web::DispatchRoutes');

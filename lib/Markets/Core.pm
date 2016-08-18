@@ -100,19 +100,33 @@ sub initialize_app {
 
     # $self->config( constants => $self->model('data-constant')->load );
 
-    # [WIP] app config
-    my $enable_addons_setting_from_db = {
-        'MyAddon' => {
-            before_compile_template => 300,
-            before_xxx_action       => 500,
+    # [WIP] addon config
+    my $addons_setting_from_db = [
+        {
+            name       => 'MyAddon',
+            is_enabled => 1,
+            hooks      => {
+                before_compile_template => 300,
+                before_xxx_action       => 500,
+            },
         },
-    };
-    $self->config(
-        addons => {
-            all    => $all_addons,
-            enable => $enable_addons_setting_from_db,
-        }
-    );
+
+        # DBで is_enabled=false を除く事も出来るが...
+        {
+            name       => 'MyDisableAddon',
+            is_enabled => 0,
+        },
+    ];
+    $self->config( addons => $addons_setting_from_db );
+
+    # regist enable addons
+    my $addons = $self->config->{addons};
+    my @enabled = grep { $_->{is_enabled} } @$addons;
+    foreach my $addon (@enabled) {
+        my $addon_name = $addon->{name};
+        my $hooks = $addon->{hooks} || {};
+        $self->plugin( "Addon::" . $addon_name => $hooks );
+    }
 
     # load config after. option schema loading.
     my $more_schema_classes_from_db = [qw /Markets::DB::Schema::More/];
@@ -155,8 +169,8 @@ sub initialize_app {
         }
     );
 
-    # loading lexicon for addons
-    # TODO: config->{addons}->{enable}のみを読み込むように修正しよう
+ # loading lexicon for addons
+ # TODO: config->{addons}->{enable}のみを読み込むように修正しよう
     foreach my $addon (@$all_addons) {
         my $text_domain = Mojo::Util::decamelize($addon);
         $self->lexicon(
