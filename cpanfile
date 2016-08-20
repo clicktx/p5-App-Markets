@@ -1,7 +1,7 @@
 requires 'Mojolicious',                             '== 6.66';
 requires 'File::Find::Rule',                        '0.34';
 requires 'Mojolicious::Plugin::Model',              '0.07';
-requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.03';
+requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';
 requires 'MojoX::Session',                          '0.33';
 requires 'Teng',                                    '0.28';
 requires 'Teng::Plugin::ResultSet',                 '0.01';
