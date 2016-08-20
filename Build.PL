@@ -23,7 +23,7 @@ my %args = (
 
     requires => {
         'File::Find::Rule' => '0.34',
-        'Mojolicious::Plugin::LocaleTextDomainOO' => '0.03',
+        'Mojolicious::Plugin::LocaleTextDomainOO' => '0.04',
         'Teng::Plugin::ResultSet' => '0.01',
         'MojoX::Session' => '0.33',
         'Mojolicious' => '== 6.66',
@@ -49,6 +49,7 @@ my %args = (
         'Test::Perl::Critic' => '0',
         'Test::mysqld' => '0',
         'Harriet' => '0',
+        'Safe' => '2.32',
     },
 
     name            => 'Markets',
