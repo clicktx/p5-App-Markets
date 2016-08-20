@@ -80,7 +80,7 @@ Markets::Addon - Markets External plugin system
 =head1 SYNOPSIS
 
   # YourAddon
-  package YourAddon;
+  package Markets::Addon::YourAddon;
   use Mojo::Base 'Markets::Addon';
 
 =head1 DESCRIPTION
@@ -92,7 +92,7 @@ Markets::Addon - Markets External plugin system
 =head2 addon_home
 
   # /path/to/Markets/addon/YourAddon
-  &addon_home(Addon::YourAddon)
+  &addon_home(Markets::Addon::YourAddon)
 
 Get home path for YourAddon.
 

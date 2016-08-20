@@ -1,4 +1,4 @@
-package Addon::MyAddon;
+package Markets::Addon::MyAddon;
 use Mojo::Base 'Markets::Addon';
 
 use Data::Dumper;
