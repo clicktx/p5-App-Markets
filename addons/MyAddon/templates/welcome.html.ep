@@ -1,0 +1,5 @@
+<%= __begin_d 'my_addon' %>
+<p>
+    domain: <%= __ 'hello' %><%= __ 'hello2' %>
+</p>
+<%= __end_d %>
