@@ -10,6 +10,9 @@ use Markets::DB;
 use Markets::Session::Store::Teng;
 use Markets::Hook::Action;
 use Markets::Hook::Filter;
+use constant {
+    ADDON_NAMESPACE => 'Markets::Addon',
+};
 
 my $all_addons;
 
@@ -127,7 +130,7 @@ sub initialize_app {
     foreach my $addon (@enabled) {
         my $addon_name = $addon->{name};
         my $hooks = $addon->{hooks} || {};
-        $self->plugin( "Addon::" . $addon_name => $hooks );
+        $self->plugin( ADDON_NAMESPACE . '::' . $addon_name => $hooks );
     }
 
     # load config after. option schema loading.
