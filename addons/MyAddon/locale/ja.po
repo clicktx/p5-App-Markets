@@ -16,3 +16,6 @@ msgstr ""
 # This file textdomain is "AddonName" snake_case. ex) addon_name
 msgid "hello"
 msgstr "こんにちはmy-addon"
+
+msgid "hello2"
+msgstr "こんにちは２my-addon"
