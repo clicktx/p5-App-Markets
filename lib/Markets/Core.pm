@@ -10,7 +10,6 @@ use Markets::DB;
 use Markets::Session::Store::Teng;
 use Markets::Hook::Action;
 use Markets::Hook::Filter;
-use constant { ADDON_NAMESPACE => 'Markets::Addon', };
 
 my $all_addons;
 
@@ -102,34 +101,6 @@ sub initialize_app {
     $self->config( constants => $constants );
 
     # $self->config( constants => $self->model('data-constant')->load );
-
-    # [WIP] addon config
-    my $addons_setting_from_db = [
-        {
-            name       => 'MyAddon',
-            is_enabled => 1,
-            hooks      => {
-                before_compile_template => 300,
-                before_xxx_action       => 500,
-            },
-        },
-
-        # DBで is_enabled=false を除く事も出来るが...
-        {
-            name       => 'MyDisableAddon',
-            is_enabled => 0,
-        },
-    ];
-    $self->config( addons => $addons_setting_from_db );
-
-    # regist enable addons
-    my $addons = $self->config->{addons};
-    my @enabled = grep { $_->{is_enabled} } @$addons;
-    foreach my $addon (@enabled) {
-        my $addon_name = $addon->{name};
-        my $hooks = $addon->{hooks} || {};
-        $self->plugin( ADDON_NAMESPACE . '::' . $addon_name => $hooks );
-    }
 
     # load config after. option schema loading.
     my $more_schema_classes_from_db = [qw /Markets::DB::Schema::More/];
