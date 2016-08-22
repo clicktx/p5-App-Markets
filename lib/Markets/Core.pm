@@ -10,9 +10,7 @@ use Markets::DB;
 use Markets::Session::Store::Teng;
 use Markets::Hook::Action;
 use Markets::Hook::Filter;
-use constant {
-    ADDON_NAMESPACE => 'Markets::Addon',
-};
+use constant { ADDON_NAMESPACE => 'Markets::Addon', };
 
 my $all_addons;
 
@@ -173,15 +171,17 @@ sub initialize_app {
         }
     );
 
- # loading lexicon for addons
- # TODO: config->{addons}->{enable}のみを読み込むように修正しよう
- #       addon configを考慮すると全てのアドオンのlocaleを読み込んだほうが良い
+# loading lexicon for addons
+# TODO: config->{addons}->{enable}のみを読み込むように修正しよう
+#       addon configを考慮すると全てのアドオンのlocaleを読み込んだほうが良い
     foreach my $addon (@$all_addons) {
         my $text_domain = Mojo::Util::decamelize($addon);
+        my $locale_dir =
+          File::Spec->catdir( $home, 'addons', $addon, 'locale' );
+        next unless -d $locale_dir;
         $self->lexicon(
             {
-                search_dirs =>
-                  [ File::Spec->catdir( $home, 'addons', $addon, 'locale' ) ],
+                search_dirs => [$locale_dir],
                 data => [ "*::$text_domain" => '*.po' ],    # set text domain
             }
         );
