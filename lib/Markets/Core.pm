@@ -115,6 +115,7 @@ sub initialize_app {
             expires_delta => 3600,
         }
     );
+    $self->helper( markets_session => sub { shift->stash('markets_session') } );
 
     # locale
     $ENV{MOJO_I18N_DEBUG} = $mode eq 'development' ? 1 : 0;
@@ -160,9 +161,6 @@ sub initialize_app {
 
     # Documentation browser under "/perldoc"
     $self->plugin('PODRenderer');
-
-    # helper
-    $self->helper( markets_session => sub { shift->stash('markets_session') } );
 }
 
 1;
