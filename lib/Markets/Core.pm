@@ -10,9 +10,6 @@ use Markets::DB;
 use Markets::Session::Store::Teng;
 use Markets::Hook::Action;
 use Markets::Hook::Filter;
-use constant {
-    ADDON_NAMESPACE => 'Markets::Addon',
-};
 
 my $all_addons;
 
@@ -105,34 +102,6 @@ sub initialize_app {
 
     # $self->config( constants => $self->model('data-constant')->load );
 
-    # [WIP] addon config
-    my $addons_setting_from_db = [
-        {
-            name       => 'MyAddon',
-            is_enabled => 1,
-            hooks      => {
-                before_compile_template => 300,
-                before_xxx_action       => 500,
-            },
-        },
-
-        # DBで is_enabled=false を除く事も出来るが...
-        {
-            name       => 'MyDisableAddon',
-            is_enabled => 0,
-        },
-    ];
-    $self->config( addons => $addons_setting_from_db );
-
-    # regist enable addons
-    my $addons = $self->config->{addons};
-    my @enabled = grep { $_->{is_enabled} } @$addons;
-    foreach my $addon (@enabled) {
-        my $addon_name = $addon->{name};
-        my $hooks = $addon->{hooks} || {};
-        $self->plugin( ADDON_NAMESPACE . '::' . $addon_name => $hooks );
-    }
-
     # load config after. option schema loading.
     my $more_schema_classes_from_db = [qw /Markets::DB::Schema::More/];
     $self->db->merge_schema($more_schema_classes_from_db);
@@ -146,6 +115,7 @@ sub initialize_app {
             expires_delta => 3600,
         }
     );
+    $self->helper( markets_session => sub { shift->stash('markets_session') } );
 
     # locale
     $ENV{MOJO_I18N_DEBUG} = $mode eq 'development' ? 1 : 0;
@@ -173,15 +143,17 @@ sub initialize_app {
         }
     );
 
- # loading lexicon for addons
- # TODO: config->{addons}->{enable}のみを読み込むように修正しよう
- #       addon configを考慮すると全てのアドオンのlocaleを読み込んだほうが良い
+# loading lexicon for addons
+# TODO: config->{addons}->{enable}のみを読み込むように修正しよう
+#       addon configを考慮すると全てのアドオンのlocaleを読み込んだほうが良い
     foreach my $addon (@$all_addons) {
         my $text_domain = Mojo::Util::decamelize($addon);
+        my $locale_dir =
+          File::Spec->catdir( $home, 'addons', $addon, 'locale' );
+        next unless -d $locale_dir;
         $self->lexicon(
             {
-                search_dirs =>
-                  [ File::Spec->catdir( $home, 'addons', $addon, 'locale' ) ],
+                search_dirs => [$locale_dir],
                 data => [ "*::$text_domain" => '*.po' ],    # set text domain
             }
         );
@@ -189,9 +161,6 @@ sub initialize_app {
 
     # Documentation browser under "/perldoc"
     $self->plugin('PODRenderer');
-
-    # helper
-    $self->helper( markets_session => sub { shift->stash('markets_session') } );
 }
 
 1;
