@@ -13,7 +13,6 @@ sub add_action { croak 'Method "add_action" not implemented by subclass' }
 # sub emit_action { shift->emit(@_) }
 sub emit_filter { shift->emit(@_) }
 
-
 ###################################################
 ###  loading plugin code from Mojolicous::Plugins
 ###################################################
@@ -37,13 +36,14 @@ sub register_addon {
 # TODO: Mojolicious::Pluginのままでいいのか未検証
 sub _load {
     my $module = shift;
-    return $module->isa( 'Mojolicious::Plugin' )
+    return $module->isa('Mojolicious::Plugin')
       unless my $e = load_class $module;
     ref $e ? die $e : return undef;
 }
 
 package Markets::Addons::Action;
 use Mojo::Base 'Markets::Addons';
+
 sub add_action {
     my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
     $arg->{cb} = $cb;
@@ -54,6 +54,7 @@ sub add_action {
 
 package Markets::Addons::Filter;
 use Mojo::Base 'Markets::Addons';
+
 sub add_filter {
     my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
     $arg->{cb} = $cb;
@@ -61,7 +62,6 @@ sub add_filter {
     $self->on( $name => $arg );
     $self->sort($name);
 }
-
 
 1;
 
