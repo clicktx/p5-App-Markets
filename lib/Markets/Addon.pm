@@ -5,7 +5,7 @@ use File::Spec;
 use Mojolicious::Renderer;
 use Mojo::Util qw/slurp/;
 use constant {
-    FORMAT => 'html',
+    FORMAT  => 'html',
     HANDLER => 'ep',
 };
 
