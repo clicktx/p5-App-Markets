@@ -7,6 +7,7 @@ sub add_action {
     $arg->{priority} //= 100;
     $self->on( $name => $arg );
     $self->sort($name);
+    return $arg;
 }
 
 1;
