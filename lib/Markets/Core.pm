@@ -8,6 +8,7 @@ use DBI;
 use Markets::Util;
 use Markets::DB;
 use Markets::Session::Store::Teng;
+use Markets::Addons;
 use Markets::Hook::Action;
 use Markets::Hook::Filter;
 
@@ -39,8 +40,14 @@ has db => sub {
     my $db = Markets::DB->new( dbh => shift->dbh );
     return $db;
 };
+has addons  => sub { Markets::Addons->new };
 has actions => sub { Markets::Hook::Action->new };
 has filters => sub { Markets::Hook::Filter->new };
+
+sub addon {
+    my $self = shift;
+    $self->addons->register_addon( shift, $self, @_ );
+}
 
 sub add_action {
     my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
