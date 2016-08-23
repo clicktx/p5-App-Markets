@@ -9,8 +9,6 @@ use Markets::Util;
 use Markets::DB;
 use Markets::Session::Store::Teng;
 use Markets::Addons;
-use Markets::Hook::Action;
-use Markets::Hook::Filter;
 
 my $all_addons;
 
@@ -41,8 +39,8 @@ has db => sub {
     return $db;
 };
 has addons  => sub { Markets::Addons->new };
-has actions => sub { Markets::Hook::Action->new };
-has filters => sub { Markets::Hook::Filter->new };
+has actions => sub { Markets::Addons::Action->new };
+has filters => sub { Markets::Addons::Filter->new };
 
 sub addon {
     my $self = shift;
