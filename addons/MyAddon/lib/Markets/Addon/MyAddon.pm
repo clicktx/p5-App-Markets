@@ -32,6 +32,18 @@ sub filter_before_compile_template {
     }
 }
 
+sub install   { }
+sub uninstall { }
+sub update    { }
+sub enable {
+    my $self = shift;# my ($self, $app, $arg) = (shift, shift, shift // {});
+    $self->SUPER::enable(@_);
+}
+sub disable   {
+    my $self = shift;
+    $self->SUPER::disable(@_);
+}
+
 1;
 __DATA__
 
