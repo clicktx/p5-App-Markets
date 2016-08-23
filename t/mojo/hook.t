@@ -1,12 +1,11 @@
 use Mojo::Base -strict;
 
 use Test::More;
-use Markets::Hook;
-use Markets::Hook::Filter;
-use Markets::Hook::Action;
+use Markets::EventEmitter;
+use Markets::Addons;
 
 # Normal event
-my $e = Markets::Hook->new;
+my $e = Markets::EventEmitter->new;
 my $called;
 $e->on(
     test1 => {
@@ -27,7 +26,7 @@ is $@, "works!\n", 'right error';
 
 # Unhandled error event
 eval { $e->emit( error => 'works' ) };
-like $@, qr/^Markets::Hook: works/, 'right error';
+like $@, qr/^Markets::EventEmitter: works/, 'right error';
 
 # Catch
 my $err;
@@ -67,7 +66,7 @@ eval {
 like $@, qr/not support/, 'once, not support';
 
 # Unsubscribe
-$e = Markets::Hook->new;
+$e = Markets::EventEmitter->new;
 my $counter;
 my $cb = $e->on(
     foo => {
@@ -104,7 +103,7 @@ $e->emit('foo');
 is $counter, 5, 'event was not emitted again';
 
 # filter priority
-$e = Markets::Hook::Filter->new;
+$e = Markets::Addons::Filter->new;
 $e->add_filter(
     test1 => {
         cb => sub { $called++ }
@@ -130,7 +129,7 @@ foreach my $event ( @{ $e->{events}{test1} } ) {
 is_deeply \@priority, [ 200, 400, 1000 ], 'add_filter priority';
 
 # action priority
-$e = Markets::Hook::Action->new;
+$e = Markets::Addons::Action->new;
 $e->add_action(
     test1 => {
         cb => sub { $called++ }
