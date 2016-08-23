@@ -1,4 +1,4 @@
-package Addon::TestAddon;
+package Markets::Addon::TestAddon;
 use Mojo::Base 'Markets::Addon';
 
 sub filter_exsample_hook {
