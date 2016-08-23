@@ -25,7 +25,6 @@ BEGIN {
     }
 }
 
-has util => sub { Markets::Util->new };
 has dbh => sub {
     my $self = shift;
     my $conf = $self->config->{db} or die "Missing configuration for db";
