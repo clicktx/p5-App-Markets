@@ -1,5 +1,5 @@
 use Mojo::Base -strict;
-use lib 't/Ex/Addons/TestAddon/lib';
+use lib 't/lib';
 
 use t::Util;
 use Test::More;
@@ -10,7 +10,7 @@ my $t   = Test::Mojo->new('Markets::Web');
 my $app = $t->app;
 
 subtest 'load addon' => sub {
-    $app->plugin("Addon::TestAddon");
+    $app->addon("TestAddon");
     my $test_action = $app->actions->{events}->{action_exsample_hook};
     my $test_filter = $app->filters->{events}->{filter_exsample_hook};
 
