@@ -8,8 +8,7 @@ use DBI;
 use Markets::Util;
 use Markets::DB;
 use Markets::Session::Store::Teng;
-use Markets::Hook::Action;
-use Markets::Hook::Filter;
+use Markets::Addons;
 
 my $all_addons;
 
@@ -25,7 +24,6 @@ BEGIN {
     }
 }
 
-has util => sub { Markets::Util->new };
 has dbh => sub {
     my $self = shift;
     my $conf = $self->config->{db} or die "Missing configuration for db";
@@ -40,8 +38,14 @@ has db => sub {
     my $db = Markets::DB->new( dbh => shift->dbh );
     return $db;
 };
-has actions => sub { Markets::Hook::Action->new };
-has filters => sub { Markets::Hook::Filter->new };
+has addons  => sub { Markets::Addons->new };
+has actions => sub { Markets::Addons::Action->new };
+has filters => sub { Markets::Addons::Filter->new };
+
+sub addon {
+    my $self = shift;
+    $self->addons->register_addon( shift, $self, @_ );
+}
 
 sub add_action {
     my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );

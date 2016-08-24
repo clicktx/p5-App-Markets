@@ -1,7 +1,6 @@
 package Markets::Web;
 use Mojo::Base 'Markets::Core';
 use Markets::Util qw(directories);
-use constant { ADDON_NAMESPACE => 'Markets::Addon', };
 
 # This method will run once at server start
 sub startup {
@@ -50,7 +49,7 @@ sub startup {
     foreach my $addon (@enabled) {
         my $addon_name = $addon->{name};
         my $hooks = $addon->{hooks} || {};
-        $self->plugin( ADDON_NAMESPACE . '::' . $addon_name => $hooks );
+        $self->addon( $addon_name => $hooks );
     }
 }
 
