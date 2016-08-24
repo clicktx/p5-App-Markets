@@ -68,7 +68,7 @@ like $@, qr/not support/, 'once, not support';
 # Unsubscribe
 $e = Markets::EventEmitter->new;
 my $counter;
-my $cb = $e->on(
+my $event = $e->on(
     foo => {
         cb => sub { $counter++ }
     }
@@ -91,7 +91,7 @@ $e->unsubscribe(
     )
 );
 is scalar @{ $e->subscribers('foo') }, 3, 'three subscribers';
-$e->emit('foo')->unsubscribe( foo => $cb );
+$e->emit('foo')->unsubscribe( foo => $event );
 is $counter, 3, 'event was emitted three times';
 is scalar @{ $e->subscribers('foo') }, 2, 'two subscribers';
 $e->emit('foo');
