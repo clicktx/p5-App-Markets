@@ -23,18 +23,26 @@ sub emit {
         warn "-- Emit $name in @{[blessed $self]} (0)\n" if DEBUG;
         die "@{[blessed $self]}: $_[0]" if $name eq 'error';
     }
-    use Data::Dumper;
-    say Dumper $self;
     return $self;
+}
+
+sub on {
+    my ( $self, $name, $arg ) = @_;
+    push @{ $self->{events}{$name} }, $arg or return;
+    $self->_sort_by_priority($name) and return $arg;
 }
 
 sub once { croak 'Method "once" not supported.' }
 
 # sort by priority
-sub sort {
+sub _sort_by_priority {
     my ( $self, $name ) = ( shift, shift );
-    @{ $self->{events}{$name} } =
-      sort { $a->{priority} <=> $b->{priority} } @{ $self->{events}{$name} };
+    {
+        no warnings 'uninitialized';
+        @{ $self->{events}{$name} } =
+          sort { $a->{priority} <=> $b->{priority} }
+          @{ $self->{events}{$name} };
+    }
 }
 
 1;
@@ -73,7 +81,6 @@ Emit event.
 
     my $hash_ref = $e->on(name => $args);
 
-Subscribe to event.
 
     $e->on(
         name => {
@@ -82,11 +89,12 @@ Subscribe to event.
         }
     );
 
+Subscribe to event.
+Sort the Events in order of priority.
+
 =head2 sort
 
     $e->sort('name');
-
-Sort the Events in order of priority
 
 
 =head1 SEE ALSO

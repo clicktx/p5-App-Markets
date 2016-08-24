@@ -10,7 +10,7 @@ sub add_filter { croak 'Method "add_filter" not implemented by subclass' }
 sub add_action { croak 'Method "add_action" not implemented by subclass' }
 
 # TODO: [WIP]
-# sub emit_action { shift->emit(@_) }
+sub emit_action { shift->emit(@_) }
 sub emit_filter { shift->emit(@_) }
 
 ###################################################
@@ -49,7 +49,6 @@ sub add_action {
     $arg->{cb} = $cb;
     $arg->{priority} //= 100;
     $self->on( $name => $arg );
-    $self->sort($name);
 }
 
 package Markets::Addons::Filter;
@@ -60,7 +59,6 @@ sub add_filter {
     $arg->{cb} = $cb;
     $arg->{priority} //= 100;
     $self->on( $name => $arg );
-    $self->sort($name);
 }
 
 1;
