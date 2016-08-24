@@ -28,9 +28,8 @@ sub load_addon {
     die qq{Addon "$name" missing, maybe you need to install it?\n};
 }
 
-# TODO: registerの他に初期化method等を加えられる？
 sub register_addon {
-    shift->load_addon(shift)->register( shift, ref $_[0] ? $_[0] : {@_} );
+    shift->load_addon(shift)->init( shift, ref $_[0] ? $_[0] : {@_} );
 }
 
 # TODO: Mojolicious::Pluginのままでいいのか未検証
