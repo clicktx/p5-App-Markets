@@ -7,20 +7,12 @@ use Markets::Addons;
 # Normal event
 my $e = Markets::EventEmitter->new;
 my $called;
-$e->on(
-    test1 => {
-        cb => sub { $called++ }
-    }
-);
+$e->on( test1 => sub { $called++ }, {} );
 $e->emit('test1');
 is $called, 1, 'event was emitted once';
 
 # Error
-$e->on(
-    die => {
-        cb => sub { die "works!\n" }
-    }
-);
+$e->on( die => sub { die "works!\n" }, {} );
 eval { $e->emit('die') };
 is $@, "works!\n", 'right error';
 
@@ -28,20 +20,18 @@ is $@, "works!\n", 'right error';
 eval { $e->emit( error => 'works' ) };
 like $@, qr/^Markets::EventEmitter: works/, 'right error';
 
+# has_subscribers
+ok !$e->has_subscribers('foo'), 'no subscribers';
+
 # Catch
 my $err;
-ok !$e->has_subscribers('foo'), 'no subscribers';
 $e->catch( sub { $err = pop } );
 ok $e->has_subscribers('error'), 'has subscribers';
 $e->emit( error => 'just works!' );
 is $err, 'just works!', 'right error';
 
 # Exception in error event
-$e->on(
-    error => {
-        cb => sub { die "$_[0]entional" }
-    }
-);
+$e->on( error => sub { die "$_[0]entional" }, {} );
 eval { $e->emit( error => 'int' ) };
 like $@, qr/^intentional/, 'right error';
 
@@ -68,26 +58,12 @@ like $@, qr/not support/, 'once, not support';
 # Unsubscribe
 $e = Markets::EventEmitter->new;
 my $counter;
-my $event = $e->on(
-    foo => {
-        cb => sub { $counter++ }
-    }
-);
-$e->on(
-    foo => {
-        cb => sub { $counter++ }
-    }
-);
-$e->on(
-    foo => {
-        cb => sub { $counter++ }
-    }
-);
+my $event = $e->on( foo => sub { $counter++ }, {});
+$e->on( foo => sub { $counter++ }, {});
+$e->on( foo => sub { $counter++ }, {});
 $e->unsubscribe(
     foo => $e->on(
-        foo => {
-            cb => sub { $counter++ }
-        }
+        foo => sub { $counter++ },{}
     )
 );
 is scalar @{ $e->subscribers('foo') }, 3, 'three subscribers';
@@ -104,19 +80,19 @@ is $counter, 5, 'event was not emitted again';
 
 # filter priority
 $e = Markets::Addons::Filter->new;
-$e->add_filter(
+$e->on_filter(
     test1 => {
         cb => sub { $called++ }
     },
     { priority => 200 }
 );
-$e->add_filter(
+$e->on_filter(
     test1 => {
         cb => sub { $called++ }
     },
     { priority => 1000 }
 );
-$e->add_filter(
+$e->on_filter(
     test1 => {
         cb => sub { $called++ }
     },
@@ -126,23 +102,23 @@ my @priority;
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 1000 ], 'add_filter priority';
+is_deeply \@priority, [ 200, 400, 1000 ], 'on_filter priority';
 
 # action priority
 $e = Markets::Addons::Action->new;
-$e->add_action(
+$e->on_action(
     test1 => {
         cb => sub { $called++ }
     },
     { priority => 200 }
 );
-$e->add_action(
+$e->on_action(
     test1 => {
         cb => sub { $called++ }
     },
     { priority => 1000 }
 );
-$e->add_action(
+$e->on_action(
     test1 => {
         cb => sub { $called++ }
     },
@@ -153,6 +129,6 @@ $e->add_action(
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 1000 ], 'add_action priority';
+is_deeply \@priority, [ 200, 400, 1000 ], 'on_action priority';
 
 done_testing();
