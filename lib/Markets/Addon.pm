@@ -28,11 +28,11 @@ sub add_filter {
     my $hooks = $self->hooks;
     my $priority =
       $hooks->{$name} ? $hooks->{$name} : $conf->{default_priority};
-    my ( $class, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
+    my ( $namespace, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
     $self->app->add_filter(
         $name => $cb,
         {
-            class    => $class,
+            namespace    => $namespace,
             priority => $priority
         }
     );
