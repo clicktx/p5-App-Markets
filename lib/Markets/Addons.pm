@@ -39,23 +39,11 @@ sub _load {
 
 package Markets::Addons::Action;
 use Mojo::Base 'Markets::Addons';
-
-sub on_action {
-    my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
-    $arg->{cb} = $cb;
-    $arg->{priority} //= 100;
-    $self->on( $name => $arg );
-}
+sub on_action { shift->on(@_) }
 
 package Markets::Addons::Filter;
 use Mojo::Base 'Markets::Addons';
-
-sub on_filter {
-    my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
-    $arg->{cb} = $cb;
-    $arg->{priority} //= 100;
-    $self->on( $name => $arg );
-}
+sub on_filter { shift->on(@_) }
 
 1;
 

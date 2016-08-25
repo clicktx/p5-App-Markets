@@ -4,6 +4,8 @@ use Mojo::Base 'Mojo::EventEmitter';
 use constant DEBUG => $ENV{MOJO_EVENTEMITTER_DEBUG} || 0;
 use Carp 'croak';
 
+my $default_priority = 100; # Default priority for addon hooks
+
 sub catch {
     $_[0]->on(
         error => {
@@ -27,7 +29,9 @@ sub emit {
 }
 
 sub on {
-    my ( $self, $name, $arg ) = @_;
+    my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
+    $arg->{cb} = $cb;
+    $arg->{priority} //= $default_priority;
     push @{ $self->{events}{$name} }, $arg or return;
     $self->_sort_by_priority($name) and return $arg;
 }
