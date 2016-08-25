@@ -45,8 +45,16 @@ sub register { croak 'Method "register" not implemented by subclass' }
 sub add_filter {
     my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
     my $hooks = $self->hooks;
-    my $priority = $hooks->{$name} ? $hooks->{$name} : $conf->{default_priority};
-    $self->app->add_filter( $name => $cb, { priority => $priority } );
+    my $priority =
+      $hooks->{$name} ? $hooks->{$name} : $conf->{default_priority};
+    my ( $class, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
+    $self->app->add_filter(
+        $name => $cb,
+        {
+            class    => $class,
+            priority => $priority
+        }
+    );
 }
 
 sub install   { }
