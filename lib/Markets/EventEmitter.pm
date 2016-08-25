@@ -4,14 +4,10 @@ use Mojo::Base 'Mojo::EventEmitter';
 use constant DEBUG => $ENV{MOJO_EVENTEMITTER_DEBUG} || 0;
 use Carp 'croak';
 
-my $default_priority = 100; # Default priority for addon hooks
+my $default_priority = 100;    # Default priority for addon hooks
 
 sub catch {
-    $_[0]->on(
-        error => {
-            cb => $_[1]
-        }
-    ) and return $_[0];
+    $_[0]->on( error => $_[1], {} ) and return $_[0];
 }
 
 sub emit {
