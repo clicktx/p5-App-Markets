@@ -10,7 +10,12 @@ my $t   = Test::Mojo->new('Markets::Web');
 my $app = $t->app;
 
 subtest 'load addon' => sub {
+    eval { $app->addon("NotFoundAddon") };
+    is $@,
+      'Addon "NotFoundAddon" missing, maybe you need to install it?' . "\n";
+
     $app->addon("TestAddon");
+
     # my $test_action = $app->actions->{events}->{action_exsample_hook};
     # my $test_filter = $app->filters->{events}->{filter_exsample_hook};
     my $test_action = $app->actions->subscribers('action_exsample_hook');
