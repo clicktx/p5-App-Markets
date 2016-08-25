@@ -23,13 +23,28 @@ sub init {
 
 sub register { croak 'Method "register" not implemented by subclass' }
 
+sub add_action {
+    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
+    my $hooks = $self->hooks;
+    my $priority =
+      $hooks->{$name} ? $hooks->{$name} : $conf->{default_priority};
+    my ( $namespace, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
+    $self->app->actions->on_action(
+        $name => $cb,
+        {
+            namespace    => $namespace,
+            priority => $priority
+        }
+    );
+}
+
 sub add_filter {
     my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
     my $hooks = $self->hooks;
     my $priority =
       $hooks->{$name} ? $hooks->{$name} : $conf->{default_priority};
     my ( $namespace, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
-    $self->app->add_filter(
+    $self->app->filters->on_filter(
         $name => $cb,
         {
             namespace    => $namespace,
