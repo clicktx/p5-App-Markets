@@ -9,14 +9,15 @@ use Markets::Util;
 use Markets::DB;
 use Markets::Session::Store::Teng;
 use Markets::Addons;
+use constant ADDONS_DIR => 'addons';
 
 my $all_addons;
 
 BEGIN {
     # add path to @INC
     my $base_dir =
-      File::Spec->catdir( dirname(__FILE__), '..', '..', 'addons' );
-    $all_addons = Markets::Util::directories('addons');
+      File::Spec->catdir( dirname(__FILE__), '..', '..', ADDONS_DIR );
+    $all_addons = Markets::Util::directories(ADDONS_DIR);
     foreach my $path (@$all_addons) {
         push @INC,
           Mojo::Path->new( File::Spec->catdir( $base_dir, $path, 'lib' ) )
@@ -45,18 +46,6 @@ has filters => sub { Markets::Addons::Filter->new };
 sub addon {
     my $self = shift;
     $self->addons->register_addon( shift, $self, @_ );
-}
-
-sub add_action {
-    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
-    $conf->{client} = caller;
-    $self->actions->add_action( $name, $cb, $conf );
-}
-
-sub add_filter {
-    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
-    $conf->{client} = caller;
-    $self->filters->add_filter( $name, $cb, $conf );
 }
 
 sub dsn {
@@ -153,7 +142,7 @@ sub initialize_app {
     foreach my $addon (@$all_addons) {
         my $text_domain = Mojo::Util::decamelize($addon);
         my $locale_dir =
-          File::Spec->catdir( $home, 'addons', $addon, 'locale' );
+          File::Spec->catdir( $home, ADDONS_DIR, $addon, 'locale' );
         next unless -d $locale_dir;
         $self->lexicon(
             {

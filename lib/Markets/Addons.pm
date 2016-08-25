@@ -6,9 +6,6 @@ use Mojo::Util 'camelize';
 
 has namespaces => sub { ['Markets::Addon'] };
 
-sub add_filter { croak 'Method "add_filter" not implemented by subclass' }
-sub add_action { croak 'Method "add_action" not implemented by subclass' }
-
 # TODO: [WIP]
 sub emit_action { shift->emit(@_) }
 sub emit_filter { shift->emit(@_) }
@@ -28,9 +25,8 @@ sub load_addon {
     die qq{Addon "$name" missing, maybe you need to install it?\n};
 }
 
-# TODO: registerの他に初期化method等を加えられる？
 sub register_addon {
-    shift->load_addon(shift)->register( shift, ref $_[0] ? $_[0] : {@_} );
+    shift->load_addon(shift)->init( shift, ref $_[0] ? $_[0] : {@_} );
 }
 
 # TODO: Mojolicious::Pluginのままでいいのか未検証
@@ -43,23 +39,11 @@ sub _load {
 
 package Markets::Addons::Action;
 use Mojo::Base 'Markets::Addons';
-
-sub add_action {
-    my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
-    $arg->{cb} = $cb;
-    $arg->{priority} //= 100;
-    $self->on( $name => $arg );
-}
+sub on_action { shift->on(@_) }
 
 package Markets::Addons::Filter;
 use Mojo::Base 'Markets::Addons';
-
-sub add_filter {
-    my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
-    $arg->{cb} = $cb;
-    $arg->{priority} //= 100;
-    $self->on( $name => $arg );
-}
+sub on_filter { shift->on(@_) }
 
 1;
 
