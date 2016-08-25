@@ -1,7 +1,6 @@
 package Markets::Addon;
 use Mojo::Base 'Mojolicious::Plugin';
 use Carp 'croak';
-use Class::Inspector;
 use File::Spec;
 use Mojolicious::Renderer;
 use Mojo::Util qw/slurp/;
@@ -19,24 +18,6 @@ sub init {
     my ( $self, $app, $hooks ) = @_;
     $self->{app}   = $app;
     $self->{hooks} = $hooks;
-    my $namespace = ref $self;
-    my $functions = Class::Inspector->functions($namespace);
-
-    foreach my $function ( @{$functions} ) {
-        my $module_function = $namespace . '::' . $function;
-        if ( $function =~ /^action_.+/ ) {
-            $app->add_action(
-                $function => \&{$module_function},
-                { priority => $hooks->{$function} }
-            );
-        }
-        elsif ( $function =~ /^filter_.+/ ) {
-            $app->add_filter(
-                $function => \&{$module_function},
-                { priority => $hooks->{$function} }
-            );
-        }
-    }
     $self->register( $app, $hooks );
 }
 

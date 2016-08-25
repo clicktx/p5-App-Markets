@@ -14,6 +14,10 @@ sub register {
         'filter_before_compile_template' => \&say_yes,
         { default_priority => 500 }    # option
     );
+    $self->add_filter(
+        'filter_before_compile_template' => \&filter_before_compile_template,
+        # { default_priority => 100 }    # option
+    );
 }
 
 sub say_yes {
