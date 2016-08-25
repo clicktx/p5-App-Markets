@@ -37,7 +37,7 @@ sub init {
             );
         }
     }
-    $self->register( $self, $app, $hooks );
+    $self->register( $app, $hooks );
 }
 
 sub register { croak 'Method "register" not implemented by subclass' }
