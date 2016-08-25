@@ -6,9 +6,6 @@ use Mojo::Util 'camelize';
 
 has namespaces => sub { ['Markets::Addon'] };
 
-sub add_filter { croak 'Method "add_filter" not implemented by subclass' }
-sub add_action { croak 'Method "add_action" not implemented by subclass' }
-
 # TODO: [WIP]
 sub emit_action { shift->emit(@_) }
 sub emit_filter { shift->emit(@_) }
@@ -43,7 +40,7 @@ sub _load {
 package Markets::Addons::Action;
 use Mojo::Base 'Markets::Addons';
 
-sub add_action {
+sub on_action {
     my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
     $arg->{cb} = $cb;
     $arg->{priority} //= 100;
@@ -53,7 +50,7 @@ sub add_action {
 package Markets::Addons::Filter;
 use Mojo::Base 'Markets::Addons';
 
-sub add_filter {
+sub on_filter {
     my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
     $arg->{cb} = $cb;
     $arg->{priority} //= 100;

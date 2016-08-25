@@ -48,17 +48,8 @@ sub addon {
     $self->addons->register_addon( shift, $self, @_ );
 }
 
-sub add_action {
-    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
-    $conf->{client} = caller;
-    $self->actions->add_action( $name, $cb, $conf );
-}
-
-sub add_filter {
-    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
-    $conf->{client} = caller;
-    $self->filters->add_filter( $name, $cb, $conf );
-}
+sub add_action { shift->actions->on_action(@_) }
+sub add_filter { shift->filters->on_filter(@_) }
 
 sub dsn {
     my ( $self, $conf ) = @_;
