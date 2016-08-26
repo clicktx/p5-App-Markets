@@ -31,7 +31,7 @@ sub add_action {
       ? $hook_priorities->{$name}
       : $conf->{default_priority};
     my ( $namespace, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
-    $self->app->actions->on_action(
+    $self->app->actions->on_action_hook(
         $name => $cb,
         {
             namespace => $namespace,
@@ -48,7 +48,7 @@ sub add_filter {
       ? $hook_priorities->{$name}
       : $conf->{default_priority};
     my ( $namespace, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
-    $self->app->filters->on_filter(
+    $self->app->filters->on_filter_hook(
         $name => $cb,
         {
             namespace => $namespace,

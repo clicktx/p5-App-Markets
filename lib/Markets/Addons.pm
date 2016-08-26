@@ -39,11 +39,11 @@ sub _load {
 
 package Markets::Addons::Action;
 use Mojo::Base 'Markets::Addons';
-sub on_action { shift->on(@_) }
+sub on_action_hook { shift->on(@_) }
 
 package Markets::Addons::Filter;
 use Mojo::Base 'Markets::Addons';
-sub on_filter { shift->on(@_) }
+sub on_filter_hook { shift->on(@_) }
 
 1;
 
