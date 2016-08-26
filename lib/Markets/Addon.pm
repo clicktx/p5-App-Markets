@@ -23,16 +23,16 @@ sub init {
 
 sub register { croak 'Method "register" not implemented by subclass' }
 
-sub add_action {
-    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
-    my $hook_priorities = $self->hook_priorities;
+sub _add_hook {
+    my ( $self, $caller, $hook_name, $cb, $conf ) =
+      ( shift, shift, shift, shift, shift // {} );
+    my ( $namespace, $function ) = $caller =~ /(.*)::(.*)/;
+    my $hook_priorities = $self->hook_priorities->{$hook_name};
     my $priority =
-        $hook_priorities->{$name}
-      ? $hook_priorities->{$name}
-      : $conf->{default_priority};
-    my ( $namespace, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
-    $self->app->actions->on_action_hook(
-        $name => $cb,
+      $hook_priorities ? $hook_priorities : $conf->{default_priority};
+
+    return (
+        $hook_name => $cb,
         {
             namespace => $namespace,
             priority  => $priority
@@ -40,21 +40,18 @@ sub add_action {
     );
 }
 
+sub add_action {
+    my $self   = shift;
+    my $caller = ( caller 1 )[3];
+    my @result = $self->_add_hook( $caller, @_ );
+    $self->app->actions->on_hook(@result);
+}
+
 sub add_filter {
-    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
-    my $hook_priorities = $self->hook_priorities;
-    my $priority =
-        $hook_priorities->{$name}
-      ? $hook_priorities->{$name}
-      : $conf->{default_priority};
-    my ( $namespace, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
-    $self->app->filters->on_filter_hook(
-        $name => $cb,
-        {
-            namespace => $namespace,
-            priority  => $priority
-        }
-    );
+    my $self   = shift;
+    my $caller = ( caller 1 )[3];
+    my @result = $self->_add_hook( $caller, @_ );
+    $self->app->filters->on_hook(@result);
 }
 
 sub install   { }
