@@ -29,7 +29,7 @@ sub startup {
         {
             name       => 'MyAddon',
             is_enabled => 1,
-            hooks      => {
+            hook_priorities      => {
                 before_compile_template => 300,
                 before_xxx_action       => 500,
             },
@@ -48,8 +48,8 @@ sub startup {
     my @enabled = grep { $_->{is_enabled} } @$addons;
     foreach my $addon (@enabled) {
         my $addon_name = $addon->{name};
-        my $hooks = $addon->{hooks} || {};
-        $self->addon( $addon_name => $hooks );
+        my $hook_priorities = $addon->{hook_priorities} || {};
+        $self->addon( $addon_name => $hook_priorities );
     }
 }
 

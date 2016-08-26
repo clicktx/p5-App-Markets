@@ -9,46 +9,50 @@ use constant {
     HANDLER => 'ep',
 };
 
-has [qw /app hooks/];
+has [qw /app hook_priorities/];
 
 # Make addon home path
 sub addon_home { Mojo::Home->new->detect(shift) }
 
 sub init {
-    my ( $self, $app, $hooks ) = @_;
-    $self->{app}   = $app;
-    $self->{hooks} = $hooks;
-    $self->register( $app, $hooks );
+    my ( $self, $app, $hook_priorities ) = @_;
+    $self->{app}             = $app;
+    $self->{hook_priorities} = $hook_priorities;
+    $self->register( $app, $hook_priorities );
 }
 
 sub register { croak 'Method "register" not implemented by subclass' }
 
 sub add_action {
     my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
-    my $hooks = $self->hooks;
+    my $hook_priorities = $self->hook_priorities;
     my $priority =
-      $hooks->{$name} ? $hooks->{$name} : $conf->{default_priority};
+        $hook_priorities->{$name}
+      ? $hook_priorities->{$name}
+      : $conf->{default_priority};
     my ( $namespace, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
     $self->app->actions->on_action(
         $name => $cb,
         {
-            namespace    => $namespace,
-            priority => $priority
+            namespace => $namespace,
+            priority  => $priority
         }
     );
 }
 
 sub add_filter {
     my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
-    my $hooks = $self->hooks;
+    my $hook_priorities = $self->hook_priorities;
     my $priority =
-      $hooks->{$name} ? $hooks->{$name} : $conf->{default_priority};
+        $hook_priorities->{$name}
+      ? $hook_priorities->{$name}
+      : $conf->{default_priority};
     my ( $namespace, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
     $self->app->filters->on_filter(
         $name => $cb,
         {
-            namespace    => $namespace,
-            priority => $priority
+            namespace => $namespace,
+            priority  => $priority
         }
     );
 }
@@ -120,9 +124,9 @@ L<Markets::Addon> is L<Mojolicious::Plugin> base plugin system.
 
 Return the application object.
 
-=head2 hooks
+=head2 hook_priorities
 
-    my $hooks = $addon->hooks;
+    my $hook_priorities = $addon->hook_priorities;
     # return { 'hook_name' => priority, ... }
 
 =head1 METHODS
@@ -146,7 +150,7 @@ Get home path for YourAddon.
 
     sub foo { ... }
 
-Extend L<Markets> with hooks.
+Extend L<Markets> with hook.
 
 =head2 get_template
 
