@@ -80,19 +80,19 @@ is $counter, 5, 'event was not emitted again';
 
 # filter priority
 $e = Markets::Addons::Filter->new;
-$e->on_filter(
+$e->on_filter_hook(
     test1 => {
         cb => sub { $called++ }
     },
     { priority => 200 }
 );
-$e->on_filter(
+$e->on_filter_hook(
     test1 => {
         cb => sub { $called++ }
     },
     { priority => 1000 }
 );
-$e->on_filter(
+$e->on_filter_hook(
     test1 => {
         cb => sub { $called++ }
     },
@@ -102,23 +102,23 @@ my @priority;
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 1000 ], 'on_filter priority';
+is_deeply \@priority, [ 200, 400, 1000 ], 'on_filter_hook priority';
 
 # action priority
 $e = Markets::Addons::Action->new;
-$e->on_action(
+$e->on_action_hook(
     test1 => {
         cb => sub { $called++ }
     },
     { priority => 200 }
 );
-$e->on_action(
+$e->on_action_hook(
     test1 => {
         cb => sub { $called++ }
     },
     { priority => 1000 }
 );
-$e->on_action(
+$e->on_action_hook(
     test1 => {
         cb => sub { $called++ }
     },
@@ -129,6 +129,6 @@ $e->on_action(
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 1000 ], 'on_action priority';
+is_deeply \@priority, [ 200, 400, 1000 ], 'on_action_hook priority';
 
 done_testing();
