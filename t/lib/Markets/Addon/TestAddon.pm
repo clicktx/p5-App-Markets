@@ -8,10 +8,17 @@ sub register {
         'action_exsample_hook' => \&action_exsample_hook,
         { default_priority => 500 }
     );
+    $self->add_action(
+        'action_exsample_hook' => \&action_exsample_hook,
+    );
     $self->add_filter(
         'filter_exsample_hook' => \&filter_exsample_hook,
         { default_priority => 10 }
     );
+    $self->add_filter(
+        'filter_exsample_hook' => \&filter_exsample_hook,
+    );
+
 }
 
 sub action_exsample_hook {

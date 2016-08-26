@@ -78,57 +78,73 @@ is scalar @{ $e->subscribers('foo') }, 0, 'no subscribers';
 $e->emit('foo');
 is $counter, 5, 'event was not emitted again';
 
-# filter priority
-$e = Markets::Addons::Filter->new;
-$e->on_filter_hook(
-    test1 => {
-        cb => sub { $called++ }
-    },
-    { priority => 200 }
+
+# action priority
+my $addon_namespace = 'Markets::Addon::Test';
+my $cb = sub { $called++ };
+$e = Markets::Addons::Action->new;
+$e->on_hook(
+    test1 => $cb,
 );
-$e->on_filter_hook(
-    test1 => {
-        cb => sub { $called++ }
+$e->on_hook(
+    test1 => $cb,
+    {
+        namespace => $addon_namespace,
+        priority  => 200
     },
-    { priority => 1000 }
 );
-$e->on_filter_hook(
-    test1 => {
-        cb => sub { $called++ }
+$e->on_hook(
+    test1 => $cb,
+    {
+        namespace => $addon_namespace,
+        priority  => 1000
     },
-    { priority => 400 }
 );
+$e->on_hook(
+    test1 => $cb,
+    {
+        namespace => $addon_namespace,
+        priority  => 400
+    },
+);
+
 my @priority;
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 1000 ], 'on_filter_hook priority';
+is_deeply \@priority, [ 100, 200, 400, 1000 ], 'on_hook priority';
 
-# action priority
-$e = Markets::Addons::Action->new;
-$e->on_action_hook(
-    test1 => {
-        cb => sub { $called++ }
-    },
-    { priority => 200 }
+# filter priority
+$e = Markets::Addons::Filter->new;
+$e->on_hook(
+    test1 => $cb,
 );
-$e->on_action_hook(
-    test1 => {
-        cb => sub { $called++ }
+$e->on_hook(
+    test1 => $cb,
+    {
+        namespace => $addon_namespace,
+        priority  => 200
     },
-    { priority => 1000 }
 );
-$e->on_action_hook(
-    test1 => {
-        cb => sub { $called++ }
+$e->on_hook(
+    test1 => $cb,
+    {
+        namespace => $addon_namespace,
+        priority  => 1000
     },
-    { priority => 400 }
+);
+$e->on_hook(
+    test1 => $cb,
+    {
+        namespace => $addon_namespace,
+        priority  => 400
+    },
 );
 
 @priority = ();
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 1000 ], 'on_action_hook priority';
+is_deeply \@priority, [ 100, 200, 400, 1000 ], 'on_hook priority';
 
 done_testing();
