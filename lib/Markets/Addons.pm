@@ -6,10 +6,6 @@ use Mojo::Util 'camelize';
 
 has namespaces => sub { ['Markets::Addon'] };
 
-# TODO: [WIP]
-sub emit_action { shift->emit(@_) }
-sub emit_filter { shift->emit(@_) }
-
 ###################################################
 ###  loading plugin code from Mojolicous::Plugins
 ###################################################
@@ -39,7 +35,9 @@ sub _load {
 
 ###################################################
 
-sub on_hook { shift->on(@_) }
+sub emit_action { shift->emit(@_) }
+sub emit_filter { shift->emit(@_) }
+sub on_hook     { shift->on(@_) }
 
 package Markets::Addons::Action;
 use Mojo::Base 'Markets::Addons';
