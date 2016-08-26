@@ -24,14 +24,14 @@ sub init {
 sub register { croak 'Method "register" not implemented by subclass' }
 
 sub _add_hook {
-    my ( $self, $caller, $hook_name, $cb, $conf ) =
-      ( shift, shift, shift, shift, shift // {} );
+    my ( $self, $caller, $hook_type, $hook_name, $cb, $conf ) =
+      ( shift, shift, shift, shift, shift, shift // {} );
     my ( $namespace, $function ) = $caller =~ /(.*)::(.*)/;
     my $hook_priorities = $self->hook_priorities->{$hook_name};
     my $priority =
       $hook_priorities ? $hook_priorities : $conf->{default_priority};
 
-    return (
+    $self->app->$hook_type->on_hook(
         $hook_name => $cb,
         {
             namespace => $namespace,
@@ -41,17 +41,13 @@ sub _add_hook {
 }
 
 sub add_action {
-    my $self   = shift;
     my $caller = ( caller 1 )[3];
-    my @result = $self->_add_hook( $caller, @_ );
-    $self->app->actions->on_hook(@result);
+    shift->_add_hook( $caller, 'actions', @_ );
 }
 
 sub add_filter {
-    my $self   = shift;
     my $caller = ( caller 1 )[3];
-    my @result = $self->_add_hook( $caller, @_ );
-    $self->app->filters->on_hook(@result);
+    shift->_add_hook( $caller, 'filters', @_ );
 }
 
 sub install   { }
