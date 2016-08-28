@@ -40,8 +40,8 @@ has db => sub {
     return $db;
 };
 has addons  => sub { Markets::Addons->new };
-has actions => sub { Markets::Addons::Action->new };
-has filters => sub { Markets::Addons::Filter->new };
+has action => sub { shift->addons->action(@_) };
+has filter => sub { shift->addons->filter(@_) };
 
 sub addon {
     my $self = shift;

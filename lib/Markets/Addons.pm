@@ -5,6 +5,9 @@ use Mojo::Loader 'load_class';
 use Mojo::Util 'camelize';
 
 has namespaces => sub { ['Markets::Addon'] };
+has action => sub { Markets::Addons::Action->new };
+has filter => sub { Markets::Addons::Filter->new };
+has default_priority => '100';
 
 ###################################################
 ###  loading plugin code from Mojolicous::Plugins
