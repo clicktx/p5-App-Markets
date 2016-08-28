@@ -13,23 +13,62 @@ has [qw /app hook_priorities/];
 
 # Make addon home path
 sub addon_home { Mojo::Home->new->detect(shift) }
+sub register   { croak 'Method "register" not implemented by subclass' }
 
 sub init {
     my ( $self, $app, $hook_priorities ) = @_;
     $self->{app}             = $app;
     $self->{hook_priorities} = $hook_priorities;
+
+    my $namespace = ref $self;
+    $app->defaults->{addons}->{$namespace} = { hooks => [] };
     $self->register( $app, $hook_priorities );
+
+    # Addon status is enabled
+    $self->is_enabled($namespace);
 }
 
-sub register { croak 'Method "register" not implemented by subclass' }
+sub is_enabled {
+    my ( $self, $namespace ) = @_;
+    my ( undef, $name )      = $namespace =~ /(.*)::(.*)/;    # TODO: 簡易版
+          #_namespace2name($namespace);
+    say $name;
+    my $addons = $self->app->config->{addons};
+    my @match_addons = grep { $_->{name} eq $name } @$addons;
+    say $match_addons[0]->{name};
+    say $match_addons[0]->{is_enabled};
+}
+
+sub add_action {
+    my $caller = ( caller 1 )[3];
+    shift->_add_hook( $caller, 'action', @_ );
+}
+
+sub add_filter {
+    my $caller = ( caller 1 )[3];
+    shift->_add_hook( $caller, 'filter', @_ );
+}
 
 sub _add_hook {
-    my ( $self, $caller, $hook_type, $hook_name, $cb, $conf ) =
+    my ( $self, $caller, $hook_type, $hook_name, $cb, $arg ) =
       ( shift, shift, shift, shift, shift, shift // {} );
     my ( $namespace, $function ) = $caller =~ /(.*)::(.*)/;
     my $hook_priorities = $self->hook_priorities->{$hook_name};
-    my $priority =
-      $hook_priorities ? $hook_priorities : $conf->{default_priority};
+    my $default_priority =
+      $arg->{default_priority} || $self->app->addons->default_priority;
+    my $priority = $hook_priorities ? $hook_priorities : $default_priority;
+
+    my $hooks = $self->app->stash->{addons}->{$namespace}->{hooks};
+    push @{$hooks},
+      {
+        name             => $hook_name,
+        type             => $hook_type,
+        cb               => $cb,
+        priority         => $priority,
+        default_priority => $default_priority,
+      };
+    use Data::Dumper;
+    say Dumper $self->app->defaults;
 
     $self->app->$hook_type->on_hook(
         $hook_name => $cb,
@@ -40,21 +79,19 @@ sub _add_hook {
     );
 }
 
-sub add_action {
-    my $caller = ( caller 1 )[3];
-    shift->_add_hook( $caller, 'actions', @_ );
-}
-
-sub add_filter {
-    my $caller = ( caller 1 )[3];
-    shift->_add_hook( $caller, 'filters', @_ );
-}
-
 sub install   { }
 sub uninstall { }
 sub update    { }
-sub enable    { }
-sub disable   { }
+
+sub enable {
+
+    # check: 現在enableなら処理をしない
+}
+
+sub disable {
+
+    # check: 現在disableなら処理をしない
+}
 
 sub get_template {
     my ( $class, $template ) = @_;
@@ -100,7 +137,7 @@ Markets::Addon - Markets External plugin system
   use Mojo::Base 'Markets::Addon';
 
   sub init {
-    my ($self, $app, $conf) = @_;
+    my ($self, $app, $arg) = @_;
 
     # Your addon code here!
 }
@@ -134,7 +171,7 @@ Get home path for YourAddon.
 =head2 add_filter
 
     sub register {
-        my my ( $self, $app, $conf ) = @_;
+        my my ( $self, $app, $arg ) = @_;
         $self->add_filter(
             'filter_hook_name' => \&foo,
             { default_priority => 500 }    # option
