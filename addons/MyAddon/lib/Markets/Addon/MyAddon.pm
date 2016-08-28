@@ -15,7 +15,6 @@ sub register {
     );
     $self->add_action(
         action_replace_template => \&action_replace_template,
-        # { default_priority => 100 }    # option
     );
 }
 
