@@ -16,10 +16,10 @@ subtest 'load addon' => sub {
 
     $app->addon("TestAddon");
 
-    # my $test_action = $app->actions->{events}->{action_exsample_hook};
-    # my $test_filter = $app->filters->{events}->{filter_exsample_hook};
-    my $test_action = $app->actions->subscribers('action_exsample_hook');
-    my $test_filter = $app->filters->subscribers('filter_exsample_hook');
+    # my $test_action = $app->action->{events}->{action_exsample_hook};
+    # my $test_filter = $app->filter->{events}->{filter_exsample_hook};
+    my $test_action = $app->action->subscribers('action_exsample_hook');
+    my $test_filter = $app->filter->subscribers('filter_exsample_hook');
 
     is $test_action->[0]->{priority}, 100, 'right priority, action hook';
     is $test_action->[1]->{priority}, 500, 'right priority, action hook';
