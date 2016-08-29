@@ -27,20 +27,20 @@ sub startup {
     # [WIP] addon config
     my $addons_setting_from_db = {
         'Markets::Addon::MyAddon' => {
-            is_enabled      => 1,
-            hooks  => [],
-            config => {
+            is_enabled => 1,
+            hooks      => [],
+            config     => {
                 hook_priorities => {
                     before_compile_template => 300,
                     before_xxx_action       => 500,
-                    action_replace_template => 222,
+                    # action_replace_template => 222,
                 },
             },
         },
         'Markets::Addon::MyDisableAddon' => {
             is_enabled => 0,
-            hooks  => [],
-            config=> {},
+            hooks      => [],
+            config     => {},
         },
     };
     $self->defaults( addons => $addons_setting_from_db );
@@ -48,9 +48,7 @@ sub startup {
     # [WIP]regist enable addons
     my $addons = $self->defaults('addons');
     foreach my $addon_name ( keys %{$addons} ) {
-        my $addon           = $addons->{$addon_name};
-        my $hook_priorities = $addon->{config}->{hook_priorities};
-        $self->addon( $addon_name => $hook_priorities ) if $addon->{is_enabled};
+        $self->addon($addon_name) if $addons->{$addon_name}->{is_enabled};
     }
 }
 

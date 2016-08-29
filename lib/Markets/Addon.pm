@@ -9,25 +9,24 @@ use constant {
     HANDLER => 'ep',
 };
 
-has [qw /app hook_priorities/];
+has 'app';
 
 # Make addon home path
 sub addon_home { Mojo::Home->new->detect(shift) }
 sub register   { croak 'Method "register" not implemented by subclass' }
 
 sub init {
-    my ( $self, $app, $hook_priorities ) = @_;
-    $self->{app}             = $app;
-    $self->{hook_priorities} = $hook_priorities;
+    my ( $self, $app ) = @_;
+    $self->{app} = $app;
 
     # Addonのhook等をstashに保存
     my $addon_name = ref $self;
-    $self->register( $app, $hook_priorities );
+    $self->register($app);
 
     # [WIP]enableの場合はhookをonに
     # Web.pmでまとめて実行したほうが良い？
     if ( $self->is_enabled($addon_name) ) {
-        say "$addon_name is enabled!";
+        say "$addon_name is enabled!";    # debug
 
         $self->on_hooks($addon_name);
     }
@@ -36,17 +35,14 @@ sub init {
 
 sub is_enabled {
     my ( $self, $addon_name ) = @_;
-    my $addons = $self->app->defaults('addons');
+    my $addons = $self->app->stash('addons');
     $addons->{$addon_name}->{is_enabled};
 }
 
 sub on_hooks {
     my ( $self, @addon_names ) = @_;
     foreach my $addon_name (@addon_names) {
-        say $addon_name;
-        my $hooks = $self->app->defaults('addons')->{$addon_name}->{hooks};
-        use Data::Dumper;
-        say Dumper $hooks;
+        my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
         for my $hook ( @{$hooks} ) {
             my $hook_type = $hook->{type};
             $self->app->$hook_type->on_hook(
@@ -73,13 +69,16 @@ sub add_filter {
 sub _add_hook {
     my ( $self, $caller, $hook_type, $hook_name, $cb, $arg ) =
       ( shift, shift, shift, shift, shift, shift // {} );
-    my ( $namespace, $function ) = $caller =~ /(.*)::(.*)/;
-    my $hook_priorities = $self->hook_priorities->{$hook_name};
-    my $default_priority =
-      $arg->{default_priority} || $self->app->addons->default_priority;
-    my $priority = $hook_priorities ? $hook_priorities : $default_priority;
+    my ( $addon_name, $function ) = $caller =~ /(.*)::(.*)/;
 
-    my $hooks = $self->app->stash->{addons}->{$namespace}->{hooks};
+    my $addon          = $self->app->stash('addons')->{$addon_name};
+    my $hook_prioritie = $addon->{config}->{hook_priorities}->{$hook_name};
+
+    my $default_priority =
+      $arg->{default_priority} || $self->app->addons->PRIORITY_DEFAULT;
+    my $priority = $hook_prioritie ? $hook_prioritie : $default_priority;
+
+    my $hooks = $addon->{hooks};
     push @{$hooks},
       {
         name             => $hook_name,
@@ -164,11 +163,6 @@ L<Markets::Addon> is L<Mojolicious::Plugin> base plugin system.
     my $app = $addon->app;
 
 Return the application object.
-
-=head2 hook_priorities
-
-    my $hook_priorities = $addon->hook_priorities;
-    # return { 'hook_name' => priority, ... }
 
 =head1 METHODS
 
