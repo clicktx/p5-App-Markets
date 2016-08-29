@@ -29,13 +29,7 @@ sub init {
     if ( $self->is_enabled($addon_name) ) {
         say "$addon_name is enabled!";
 
-        # $self->app->$hook_type->on_hook(
-        #     $hook_name => $cb,
-        #     {
-        #         addon_name => $addon_name,
-        #         priority  => $priority
-        #     }
-        # );
+        $self->on_hooks($addon_name);
     }
 
 }
@@ -44,6 +38,26 @@ sub is_enabled {
     my ( $self, $addon_name ) = @_;
     my $addons = $self->app->defaults('addons');
     $addons->{$addon_name}->{is_enabled};
+}
+
+sub on_hooks {
+    my ( $self, @addon_names ) = @_;
+    foreach my $addon_name (@addon_names) {
+        say $addon_name;
+        my $hooks = $self->app->defaults('addons')->{$addon_name}->{hooks};
+        use Data::Dumper;
+        say Dumper $hooks;
+        for my $hook ( @{$hooks} ) {
+            my $hook_type = $hook->{type};
+            $self->app->$hook_type->on_hook(
+                $hook->{name} => $hook->{cb},
+                {
+                    addon_name => $hook->{name},
+                    priority   => $hook->{priority},
+                }
+            );
+        }
+    }
 }
 
 sub add_action {
@@ -74,16 +88,6 @@ sub _add_hook {
         priority         => $priority,
         default_priority => $default_priority,
       };
-    use Data::Dumper;
-    say Dumper $self->app->defaults;
-
-    $self->app->$hook_type->on_hook(
-        $hook_name => $cb,
-        {
-            namespace => $namespace,
-            priority  => $priority
-        }
-    );
 }
 
 sub install   { }
@@ -208,7 +212,7 @@ Meant to be overloaded in a subclass.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin>
+L<Markets::Addons> L<Mojolicious::Plugin>
 
 =cut
 
