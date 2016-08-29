@@ -24,19 +24,16 @@ sub init {
     $app->defaults->{addons}->{$namespace} = { hooks => [] };
     $self->register( $app, $hook_priorities );
 
-    # Addon status is enabled
-    $self->is_enabled($namespace);
+    # enableのアドオンのみフック登録
+    say $self->is_enabled($namespace);
+
 }
 
 sub is_enabled {
-    my ( $self, $namespace ) = @_;
-    my ( undef, $name )      = $namespace =~ /(.*)::(.*)/;    # TODO: 簡易版
-          #_namespace2name($namespace);
-    say $name;
+    my ( $self, $namespace )  = @_;
+    my ( undef, $addon_name ) = $namespace =~ /(.*)::(.*)/;    # TODO: 簡易版
     my $addons = $self->app->config->{addons};
-    my @match_addons = grep { $_->{name} eq $name } @$addons;
-    say $match_addons[0]->{name};
-    say $match_addons[0]->{is_enabled};
+    $addons->{$addon_name}->{is_enabled};
 }
 
 sub add_action {
