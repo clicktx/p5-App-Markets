@@ -23,27 +23,33 @@ sub startup {
     $self->plugin('Markets::Admin::DispatchRoutes');
     $self->plugin('Markets::Web::DispatchRoutes');
 
-    # Loadin Addons
+    # Loading indtalled Addons
     # [WIP] addon config
     my $addons_setting_from_db = {
-        MyAddon => {
+        'Markets::Addon::MyAddon' => {
             is_enabled      => 1,
-            hook_priorities => {
-                before_compile_template => 300,
-                before_xxx_action       => 500,
+            hooks  => [],
+            config => {
+                hook_priorities => {
+                    before_compile_template => 300,
+                    before_xxx_action       => 500,
+                    action_replace_template => 222,
+                },
             },
         },
-        MyDisableAddon => {
+        'Markets::Addon::MyDisableAddon' => {
             is_enabled => 0,
+            hooks  => [],
+            config=> {},
         },
     };
-    $self->config( addons => $addons_setting_from_db );
+    $self->defaults( addons => $addons_setting_from_db );
 
-    # regist enable addons
-    my $addons = $self->config->{addons};
+    # [WIP]regist enable addons
+    my $addons = $self->defaults('addons');
     foreach my $addon_name ( keys %{$addons} ) {
         my $addon           = $addons->{$addon_name};
-        my $hook_priorities = $addon->{hook_priorities};
+        my $hook_priorities = $addon->{config}->{hook_priorities};
         $self->addon( $addon_name => $hook_priorities ) if $addon->{is_enabled};
     }
 }

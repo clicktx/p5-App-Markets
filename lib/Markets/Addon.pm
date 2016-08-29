@@ -20,19 +20,29 @@ sub init {
     $self->{app}             = $app;
     $self->{hook_priorities} = $hook_priorities;
 
-    my $namespace = ref $self;
-    $app->defaults->{addons}->{$namespace} = { hooks => [] };
+    # Addonのhook等をstashに保存
+    my $addon_name = ref $self;
     $self->register( $app, $hook_priorities );
 
-    # enableのアドオンのみフック登録
-    say $self->is_enabled($namespace);
+    # [WIP]enableの場合はhookをonに
+    # Web.pmでまとめて実行したほうが良い？
+    if ( $self->is_enabled($addon_name) ) {
+        say "$addon_name is enabled!";
+
+        # $self->app->$hook_type->on_hook(
+        #     $hook_name => $cb,
+        #     {
+        #         addon_name => $addon_name,
+        #         priority  => $priority
+        #     }
+        # );
+    }
 
 }
 
 sub is_enabled {
-    my ( $self, $namespace )  = @_;
-    my ( undef, $addon_name ) = $namespace =~ /(.*)::(.*)/;    # TODO: 簡易版
-    my $addons = $self->app->config->{addons};
+    my ( $self, $addon_name ) = @_;
+    my $addons = $self->app->defaults('addons');
     $addons->{$addon_name}->{is_enabled};
 }
 
