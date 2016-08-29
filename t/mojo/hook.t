@@ -85,6 +85,10 @@ my $cb = sub { $called++ };
 $e = Markets::Addons::Action->new;
 $e->on_hook(
     test1 => $cb,
+    {
+        namespace => $addon_namespace,
+        priority  => 400
+    },
 );
 $e->on_hook(
     test1 => $cb,
@@ -112,12 +116,16 @@ my @priority;
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 100, 200, 400, 1000 ], 'on_hook priority';
+is_deeply \@priority, [ 200, 400, 400, 1000 ], 'on_hook priority';
 
 # filter priority
 $e = Markets::Addons::Filter->new;
 $e->on_hook(
     test1 => $cb,
+    {
+        namespace => $addon_namespace,
+        priority  => 400
+    },
 );
 $e->on_hook(
     test1 => $cb,
@@ -145,6 +153,6 @@ $e->on_hook(
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 100, 200, 400, 1000 ], 'on_hook priority';
+is_deeply \@priority, [ 200, 400, 400, 1000 ], 'on_hook priority';
 
 done_testing();
