@@ -28,10 +28,9 @@ sub register_addon {
     shift->load_addon(shift)->init( shift, ref $_[0] ? $_[0] : {@_} );
 }
 
-# TODO: Mojolicious::Pluginのままでいいのか未検証
 sub _load {
     my $module = shift;
-    return $module->isa('Mojolicious::Plugin')
+    return $module->isa('Markets::Addon')
       unless my $e = load_class $module;
     ref $e ? die $e : return undef;
 }
