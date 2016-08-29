@@ -25,7 +25,6 @@ sub emit {
 sub on {
     my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
     $arg->{cb} = $cb;
-    croak 'argument "priority" is required.' unless defined $arg->{priority};
     push @{ $self->{events}{$name} }, $arg or return;
     $self->_sort_by_priority($name) and return $arg;
 }
