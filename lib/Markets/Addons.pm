@@ -76,6 +76,18 @@ L<Markets::Addons> inherits all events from L<Mojo::EventEmitter> & L<Markets::E
 
 =head1 METHODS
 
+=head2 on_hook
+
+    my $hook_type = 'action'; # or filter
+    $addon->$hook_type->on_hook(
+        $hook_name => $cb,
+        {
+            addon_name => $addon_full_name,
+            priority   => $priority,
+        }
+    );
+
+Subscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
 
 =head1 SEE ALSO
 
