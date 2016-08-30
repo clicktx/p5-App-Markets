@@ -8,6 +8,16 @@ use Data::Dumper;
 
 my $t   = Test::Mojo->new('Markets::Web');
 my $app = $t->app;
+$app->defaults(
+    'addons',
+    {
+        'Markets::Addon::TestAddon' => {
+            is_enabled => 1,
+            hooks      => [],
+            config     => {},
+        },
+    }
+);
 
 subtest 'load addon' => sub {
     eval { $app->addon("NotFoundAddon") };
@@ -25,7 +35,7 @@ subtest 'load addon' => sub {
     is $test_action->[1]->{priority}, 500, 'right priority, action hook';
     is ref $test_action->[0]->{cb}, 'CODE', 'right code ref, action hook';
 
-    is $test_filter->[0]->{priority}, 10, 'right priority, filter hook';
+    is $test_filter->[0]->{priority}, 10,  'right priority, filter hook';
     is $test_filter->[1]->{priority}, 100, 'right priority, filter hook';
     is ref $test_filter->[0]->{cb}, 'CODE', 'right code ref, filter hook';
 };
