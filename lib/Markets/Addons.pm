@@ -10,6 +10,10 @@ has action     => sub { Markets::Addons::Action->new };
 has filter     => sub { Markets::Addons::Filter->new };
 has 'app';
 
+sub emit_action { shift->emit(@_) }
+sub emit_filter { shift->emit(@_) }
+sub on_hook     { shift->on(@_) }
+
 ###################################################
 ###  loading plugin code from Mojolicous::Plugins
 ###################################################
@@ -39,10 +43,6 @@ sub _load {
 }
 
 ###################################################
-
-sub emit_action { shift->emit(@_) }
-sub emit_filter { shift->emit(@_) }
-sub on_hook     { shift->on(@_) }
 
 # Use separate namespace
 package Markets::Addons::Action;
