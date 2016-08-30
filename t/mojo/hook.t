@@ -7,12 +7,22 @@ use Markets::Addons;
 # Normal event
 my $e = Markets::EventEmitter->new;
 my $called;
-$e->on( test1 => sub { $called++ }, {} );
+$e->on(
+    {
+        name => 'test1',
+        cb   => sub { $called++ },
+    }
+);
 $e->emit('test1');
 is $called, 1, 'event was emitted once';
 
 # Error
-$e->on( die => sub { die "works!\n" }, {} );
+$e->on(
+    {
+        name => 'die',
+        cb   => sub { die "works!\n" },
+    }
+);
 eval { $e->emit('die') };
 is $@, "works!\n", 'right error';
 
@@ -31,7 +41,12 @@ $e->emit( error => 'just works!' );
 is $err, 'just works!', 'right error';
 
 # Exception in error event
-$e->on( error => sub { die "$_[0]entional" }, {} );
+$e->on(
+    {
+        name => 'error',
+        cb   => sub { die "$_[0]entional" },
+    }
+);
 eval { $e->emit( error => 'int' ) };
 like $@, qr/^intentional/, 'right error';
 
@@ -58,14 +73,33 @@ like $@, qr/not support/, 'once, not support';
 # Unsubscribe
 $e = Markets::EventEmitter->new;
 my $counter;
-my $event = $e->on( foo => sub { $counter++ }, {});
-$e->on( foo => sub { $counter++ }, {});
-$e->on( foo => sub { $counter++ }, {});
+my $event = $e->on(
+    {
+        name => 'foo',
+        cb   => sub { $counter++ }
+    }
+);
+$e->on(
+    {
+        name => 'foo',
+        cb   => sub { $counter++ }
+    }
+);
+$e->on(
+    {
+        name => 'foo',
+        cb   => sub { $counter++ }
+    }
+);
 $e->unsubscribe(
     foo => $e->on(
-        foo => sub { $counter++ },{}
+        {
+            name => 'foo',
+            cb   => sub { $counter++ }
+        }
     )
 );
+
 is scalar @{ $e->subscribers('foo') }, 3, 'three subscribers';
 $e->emit('foo')->unsubscribe( foo => $event );
 is $counter, 3, 'event was emitted three times';
@@ -77,7 +111,6 @@ ok !$e->unsubscribe('foo')->has_subscribers('foo'), 'no subscribers';
 is scalar @{ $e->subscribers('foo') }, 0, 'no subscribers';
 $e->emit('foo');
 is $counter, 5, 'event was not emitted again';
-
 
 # action priority
 my $addon_namespace = 'Markets::Addon::Test';

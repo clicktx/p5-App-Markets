@@ -17,17 +17,9 @@ sub emit_filter { shift->emit(@_) }
 sub subscribe_hooks {
     my ( $self, $addon_name ) = @_;
     my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
-    use Data::Dumper;
-    say Dumper $hooks;
     foreach my $hook ( @{$hooks} ) {
         my $hook_type = $hook->{type};
-        $self->$hook_type->_on(
-            $hook->{name} => $hook->{cb},
-            {
-                addon_name => $hook->{name},
-                priority   => $hook->{priority},
-            }
-        );
+        $self->$hook_type->_on($hook);
     }
 }
 

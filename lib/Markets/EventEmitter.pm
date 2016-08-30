@@ -5,7 +5,7 @@ use constant DEBUG => $ENV{MOJO_EVENTEMITTER_DEBUG} || 0;
 use Carp 'croak';
 
 sub catch {
-    $_[0]->on( error => $_[1], {} ) and return $_[0];
+    $_[0]->on( { name => 'error', cb => $_[1] } ) and return $_[0];
 }
 
 sub emit {
@@ -23,8 +23,8 @@ sub emit {
 }
 
 sub on {
-    my ( $self, $name, $cb, $arg ) = ( shift, shift, shift, shift // {} );
-    $arg->{cb} = $cb;
+    my ( $self, $arg ) = ( shift, shift // {} );
+    my $name = $arg->{name};
     push @{ $self->{events}{$name} }, $arg or return;
     $self->_sort_by_priority($name) and return $arg;
 }
@@ -76,11 +76,11 @@ Emit event.
 
 =head2 on
 
-    my $hash_ref = $e->on(name => $args);
-
+    my $hash_ref = $e->on($args_ref);
 
     $e->on(
-        name => {
+        {
+            name     => 'hook_name'
             cb       => \&cb,
             priority => $int,
         }
