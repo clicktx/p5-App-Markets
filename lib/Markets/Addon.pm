@@ -9,55 +9,67 @@ use constant {
     HANDLER => 'ep',
 };
 
-has [qw /app hooks/];
+has 'app';
+
+# Protect subclasses using AUTOLOAD for Perl v5.24+
+sub DESTROY { }
 
 # Make addon home path
 sub addon_home { Mojo::Home->new->detect(shift) }
+sub register   { croak 'Method "register" not implemented by subclass' }
 
 sub init {
-    my ( $self, $app, $hooks ) = @_;
-    $self->{app}   = $app;
-    $self->{hooks} = $hooks;
-    $self->register( $app, $hooks );
+    my $self = shift;
+    my $app  = $self->app;
+    $self->register($app);
 }
 
-sub register { croak 'Method "register" not implemented by subclass' }
-
 sub add_action {
-    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
-    my $hooks = $self->hooks;
-    my $priority =
-      $hooks->{$name} ? $hooks->{$name} : $conf->{default_priority};
-    my ( $namespace, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
-    $self->app->actions->on_action(
-        $name => $cb,
-        {
-            namespace    => $namespace,
-            priority => $priority
-        }
-    );
+    my $caller = ( caller 1 )[3];
+    shift->_add_hook( $caller, 'action', @_ );
 }
 
 sub add_filter {
-    my ( $self, $name, $cb, $conf ) = ( shift, shift, shift, shift // {} );
-    my $hooks = $self->hooks;
-    my $priority =
-      $hooks->{$name} ? $hooks->{$name} : $conf->{default_priority};
-    my ( $namespace, $function ) = ( caller 1 )[3] =~ /(.*)::(.*)/;
-    $self->app->filters->on_filter(
-        $name => $cb,
-        {
-            namespace    => $namespace,
-            priority => $priority
-        }
-    );
+    my $caller = ( caller 1 )[3];
+    shift->_add_hook( $caller, 'filter', @_ );
+}
+
+sub _add_hook {
+    my ( $self, $caller, $hook_type, $hook_name, $cb, $arg ) =
+      ( shift, shift, shift, shift, shift, shift // {} );
+    my ( $addon_name, $function ) = $caller =~ /(.*)::(.*)/;
+
+    my $addon          = $self->app->stash('addons')->{$addon_name};
+    my $hook_prioritie = $addon->{config}->{hook_priorities}->{$hook_name};
+
+    my $default_priority =
+      $arg->{default_priority} || $self->app->addons->PRIORITY_DEFAULT;
+    my $priority = $hook_prioritie ? $hook_prioritie : $default_priority;
+
+    my $hooks = $addon->{hooks};
+    push @{$hooks},
+      {
+        name             => $hook_name,
+        type             => $hook_type,
+        cb               => $cb,
+        priority         => $priority,
+        default_priority => $default_priority,
+      };
 }
 
 sub install   { }
 sub uninstall { }
 sub update    { }
-sub enable    { }
-sub disable   { }
+
+sub enable {
+
+    # check: 現在enableなら処理をしない
+}
+
+sub disable {
+
+    # check: 現在disableなら処理をしない
+}
 
 sub get_template {
     my ( $class, $template ) = @_;
@@ -103,7 +115,7 @@ Markets::Addon - Markets External plugin system
   use Mojo::Base 'Markets::Addon';
 
   sub init {
-    my ($self, $app, $conf) = @_;
+    my ($self, $app, $arg) = @_;
 
     # Your addon code here!
 }
@@ -120,11 +132,6 @@ L<Markets::Addon> is L<Mojolicious::Plugin> base plugin system.
 
 Return the application object.
 
-=head2 hooks
-
-    my $hooks = $addon->hooks;
-    # return { 'hook_name' => priority, ... }
-
 =head1 METHODS
 
 =head2 addon_home
@@ -134,19 +141,33 @@ Return the application object.
 
 Get home path for YourAddon.
 
-=head2 add_filter
+=head2 add_action
 
     sub register {
-        my my ( $self, $app, $conf ) = @_;
-        $self->add_filter(
-            'filter_hook_name' => \&foo,
+        my my ( $self, $app, $arg ) = @_;
+        $self->add_action(
+            'action_hook_name' => \&fizz,
             { default_priority => 500 }    # option
         );
     }
 
-    sub foo { ... }
+    sub fizz { ... }
 
-Extend L<Markets> with hooks.
+Extend L<Markets> with action hook event.
+
+=head2 add_filter
+
+    sub register {
+        my my ( $self, $app, $arg ) = @_;
+        $self->add_filter(
+            'filter_hook_name' => \&buzz,
+            { default_priority => 500 }    # option
+        );
+    }
+
+    sub buzz { ... }
+
+Extend L<Markets> with filter hook event.
 
 =head2 get_template
 
@@ -167,7 +188,7 @@ Meant to be overloaded in a subclass.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin>
+L<Markets::Addons> L<Mojolicious::Plugin>
 
 =cut
 

@@ -9,14 +9,12 @@ my $home  = $class->addon_home;    # get this addon home abs path.
 sub register {
     my ( $self, $app, $conf ) = @_;
 
-    # add_action('init', $cb);
-    $self->add_filter(
-        'filter_before_compile_template' => \&say_yes,
+    $self->add_action(
+        action_replace_template => \&say_yes,
         { default_priority => 500 }    # option
     );
-    $self->add_filter(
-        'filter_before_compile_template' => \&filter_before_compile_template,
-        # { default_priority => 100 }    # option
+    $self->add_action(
+        action_replace_template => \&action_replace_template,
     );
 }
 
@@ -36,7 +34,7 @@ sub say_yes {
 # 各フックポイントを関数で定義する
 
 # コンパイル前のテンプレートに適用されるhook
-sub filter_before_compile_template {
+sub action_replace_template {
     my ( $c, $file_path, $template_source ) = @_;
     say "filter hook: before_compile_template.";
 

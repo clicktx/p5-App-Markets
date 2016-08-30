@@ -3,12 +3,52 @@ use Mojo::Base 'Markets::EventEmitter';
 use Carp qw/croak/;
 use Mojo::Loader 'load_class';
 use Mojo::Util 'camelize';
+use constant { PRIORITY_DEFAULT => '100' };
 
 has namespaces => sub { ['Markets::Addon'] };
+has action     => sub { Markets::Addons::Action->new };
+has filter     => sub { Markets::Addons::Filter->new };
+has 'app';
 
-# TODO: [WIP]
+sub _on         { shift->on(@_) }
 sub emit_action { shift->emit(@_) }
 sub emit_filter { shift->emit(@_) }
+
+sub subscribe_hooks {
+    my ( $self, $addon_name ) = @_;
+    my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
+    foreach my $hook ( @{$hooks} ) {
+        my $hook_type = $hook->{type};
+        $self->$hook_type->_on($hook);
+    }
+}
+
+sub is_enabled {
+    my ( $self, $addon_name ) = @_;
+    my $addons = $self->app->stash('addons');
+    $addons->{$addon_name}->{is_enabled};
+}
+
+sub init {
+    my $self   = shift;
+    my $app    = $self->app;
+    my $addons = $app->defaults('addons');
+
+    foreach my $addon_name ( keys %{$addons} ) {
+        $app->addon($addon_name);
+        $self->enabled($addon_name) if $self->is_enabled($addon_name);
+    }
+}
+
+sub enabled {
+    my ( $self, $addon_name ) = @_;
+
+    # 全てのHookを有効に
+    $self->subscribe_hooks($addon_name);
+
+    # [WIP]全てのRooteを有効に
+    # $self->on_routes($addon_name);
+}
 
 ###################################################
 ###  loading plugin code from Mojolicous::Plugins
@@ -19,31 +59,33 @@ sub load_addon {
     # Try all namespaces and full module name
     my $suffix = $name =~ /^[a-z]/ ? camelize $name : $name;
     my @classes = map { "${_}::$suffix" } @{ $self->namespaces };
-    for my $class ( @classes, $name ) { return $class->new if _load($class) }
+    for my $class ( @classes, $name ) {
+        return $class->new( app => $self->app ) if _load($class);
+    }
 
     # Not found
     die qq{Addon "$name" missing, maybe you need to install it?\n};
 }
 
 sub register_addon {
-    shift->load_addon(shift)->init( shift, ref $_[0] ? $_[0] : {@_} );
+    shift->load_addon(shift)->init( ref $_[0] ? $_[0] : {@_} );
 }
 
-# TODO: Mojolicious::Pluginのままでいいのか未検証
 sub _load {
     my $module = shift;
-    return $module->isa('Mojolicious::Plugin')
+    return $module->isa('Markets::Addon')
       unless my $e = load_class $module;
     ref $e ? die $e : return undef;
 }
 
+###################################################
+
+# Use separate namespace
 package Markets::Addons::Action;
 use Mojo::Base 'Markets::Addons';
-sub on_action { shift->on(@_) }
 
 package Markets::Addons::Filter;
 use Mojo::Base 'Markets::Addons';
-sub on_filter { shift->on(@_) }
 
 1;
 
@@ -67,9 +109,32 @@ L<Markets::Addons> inherits all events from L<Mojo::EventEmitter> & L<Markets::E
 
 =head1 ATTRIBUTES
 
+=head2 app
+
+    my $app = $addons->app;
+
+Return the application object.
+
+=head2 action
+
+Markets::Addons::Action object.
+
+=head2 filter
+
+Markets::Addons::Filter object.
 
 =head1 METHODS
 
+=head2 init
+
+    $addons->init
+
+=head2 subscribe_hooks
+
+    $addons->subscribe_hooks('Markets::Addon::MyAddon');
+
+
+Subscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
 
 =head1 SEE ALSO
 
