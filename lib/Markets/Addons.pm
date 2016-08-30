@@ -44,15 +44,12 @@ sub emit_action { shift->emit(@_) }
 sub emit_filter { shift->emit(@_) }
 sub on_hook     { shift->on(@_) }
 
+# Use separate namespace
 package Markets::Addons::Action;
 use Mojo::Base 'Markets::Addons';
 
-# sub on_hook { shift->on(@_) }
-
 package Markets::Addons::Filter;
 use Mojo::Base 'Markets::Addons';
-
-# sub on_hook { shift->on(@_) }
 
 1;
 
