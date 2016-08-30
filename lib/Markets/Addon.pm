@@ -21,42 +21,7 @@ sub register   { croak 'Method "register" not implemented by subclass' }
 sub init {
     my $self = shift;
     my $app  = $self->app;
-
-    # Addonのhook等をstashに保存
-    my $addon_name = ref $self;
     $self->register($app);
-
-    # [WIP]enableの場合はhookをonに
-    # Web.pmでまとめて実行したほうが良い？
-    if ( $self->is_enabled($addon_name) ) {
-        say "$addon_name is enabled!";    # debug
-
-        $self->on_hooks($addon_name);
-    }
-
-}
-
-sub is_enabled {
-    my ( $self, $addon_name ) = @_;
-    my $addons = $self->app->stash('addons');
-    $addons->{$addon_name}->{is_enabled};
-}
-
-sub on_hooks {
-    my ( $self, @addon_names ) = @_;
-    foreach my $addon_name (@addon_names) {
-        my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
-        for my $hook ( @{$hooks} ) {
-            my $hook_type = $hook->{type};
-            $self->app->$hook_type->on_hook(
-                $hook->{name} => $hook->{cb},
-                {
-                    addon_name => $hook->{name},
-                    priority   => $hook->{priority},
-                }
-            );
-        }
-    }
 }
 
 sub add_action {

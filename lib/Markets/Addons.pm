@@ -10,9 +10,53 @@ has action     => sub { Markets::Addons::Action->new };
 has filter     => sub { Markets::Addons::Filter->new };
 has 'app';
 
+sub _on         { shift->on(@_) }
 sub emit_action { shift->emit(@_) }
 sub emit_filter { shift->emit(@_) }
-sub on_hook     { shift->on(@_) }
+
+sub subscribe_hooks {
+    my ( $self, $addon_name ) = @_;
+    my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
+    use Data::Dumper;
+    say Dumper $hooks;
+    foreach my $hook ( @{$hooks} ) {
+        my $hook_type = $hook->{type};
+        $self->$hook_type->_on(
+            $hook->{name} => $hook->{cb},
+            {
+                addon_name => $hook->{name},
+                priority   => $hook->{priority},
+            }
+        );
+    }
+}
+
+sub is_enabled {
+    my ( $self, $addon_name ) = @_;
+    my $addons = $self->app->stash('addons');
+    $addons->{$addon_name}->{is_enabled};
+}
+
+sub init {
+    my $self   = shift;
+    my $app    = $self->app;
+    my $addons = $app->defaults('addons');
+
+    foreach my $addon_name ( keys %{$addons} ) {
+        $app->addon($addon_name);
+        $self->enabled($addon_name) if $self->is_enabled($addon_name);
+    }
+}
+
+sub enabled {
+    my ( $self, $addon_name ) = @_;
+
+    # 全てのHookを有効に
+    $self->subscribe_hooks($addon_name);
+
+    # [WIP]全てのRooteを有効に
+    # $self->on_routes($addon_name);
+}
 
 ###################################################
 ###  loading plugin code from Mojolicous::Plugins
@@ -79,19 +123,24 @@ L<Markets::Addons> inherits all events from L<Mojo::EventEmitter> & L<Markets::E
 
 Return the application object.
 
+=head2 action
+
+Markets::Addons::Action object.
+
+=head2 filter
+
+Markets::Addons::Filter object.
 
 =head1 METHODS
 
-=head2 on_hook
+=head2 init
 
-    my $hook_type = 'action'; # or filter
-    $addons->$hook_type->on_hook(
-        $hook_name => $cb,
-        {
-            addon_name => $addon_full_name,
-            priority   => $priority,
-        }
-    );
+    $addons->init
+
+=head2 subscribe_hooks
+
+    $addons->subscribe_hooks('Markets::Addon::MyAddon');
+
 
 Subscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
 

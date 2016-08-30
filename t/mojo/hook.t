@@ -83,28 +83,28 @@ is $counter, 5, 'event was not emitted again';
 my $addon_namespace = 'Markets::Addon::Test';
 my $cb = sub { $called++ };
 $e = Markets::Addons::Action->new;
-$e->on_hook(
+$e->_on(
     test1 => $cb,
     {
         namespace => $addon_namespace,
         priority  => 400
     },
 );
-$e->on_hook(
+$e->_on(
     test1 => $cb,
     {
         namespace => $addon_namespace,
         priority  => 200
     },
 );
-$e->on_hook(
+$e->_on(
     test1 => $cb,
     {
         namespace => $addon_namespace,
         priority  => 1000
     },
 );
-$e->on_hook(
+$e->_on(
     test1 => $cb,
     {
         namespace => $addon_namespace,
@@ -116,32 +116,32 @@ my @priority;
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 400, 1000 ], 'on_hook priority';
+is_deeply \@priority, [ 200, 400, 400, 1000 ], '_on priority';
 
 # filter priority
 $e = Markets::Addons::Filter->new;
-$e->on_hook(
+$e->_on(
     test1 => $cb,
     {
         namespace => $addon_namespace,
         priority  => 400
     },
 );
-$e->on_hook(
+$e->_on(
     test1 => $cb,
     {
         namespace => $addon_namespace,
         priority  => 200
     },
 );
-$e->on_hook(
+$e->_on(
     test1 => $cb,
     {
         namespace => $addon_namespace,
         priority  => 1000
     },
 );
-$e->on_hook(
+$e->_on(
     test1 => $cb,
     {
         namespace => $addon_namespace,
@@ -153,6 +153,6 @@ $e->on_hook(
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 400, 1000 ], 'on_hook priority';
+is_deeply \@priority, [ 200, 400, 400, 1000 ], '_on priority';
 
 done_testing();

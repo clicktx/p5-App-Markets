@@ -37,19 +37,16 @@ sub startup {
                 },
             },
         },
-        'Markets::Addon::MyDisableAddon' => {
-            is_enabled => 0,
-            hooks      => [],
-            config     => {},
-        },
+        # 'Markets::Addon::MyDisableAddon' => {
+        #     is_enabled => 0,
+        #     hooks      => [],
+        #     config     => {},
+        # },
     };
     $self->defaults( addons => $addons_setting_from_db );
 
-    # [WIP]regist enable addons
-    my $addons = $self->defaults('addons');
-    foreach my $addon_name ( keys %{$addons} ) {
-        $self->addon($addon_name) if $addons->{$addon_name}->{is_enabled};
-    }
+    # Initialize all addons
+    $self->addons->init;
 }
 
 1;
