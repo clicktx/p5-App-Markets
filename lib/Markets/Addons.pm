@@ -85,7 +85,7 @@ Return the application object.
 =head2 on_hook
 
     my $hook_type = 'action'; # or filter
-    $addon->$hook_type->on_hook(
+    $addons->$hook_type->on_hook(
         $hook_name => $cb,
         {
             addon_name => $addon_full_name,
