@@ -16,8 +16,8 @@ sub addon_home { Mojo::Home->new->detect(shift) }
 sub register   { croak 'Method "register" not implemented by subclass' }
 
 sub init {
-    my ( $self, $app ) = @_;
-    $self->{app} = $app;
+    my $self = shift;
+    my $app  = $self->app;
 
     # Addonのhook等をstashに保存
     my $addon_name = ref $self;

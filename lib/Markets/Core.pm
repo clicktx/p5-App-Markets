@@ -39,13 +39,13 @@ has db => sub {
     my $db = Markets::DB->new( dbh => shift->dbh );
     return $db;
 };
-has addons  => sub { Markets::Addons->new };
+has addons => sub { Markets::Addons->new( app => shift ) };
 has action => sub { shift->addons->action(@_) };
 has filter => sub { shift->addons->filter(@_) };
 
 sub addon {
     my $self = shift;
-    $self->addons->register_addon( shift, $self, @_ );
+    $self->addons->register_addon( shift, @_ );
 }
 
 sub dsn {
