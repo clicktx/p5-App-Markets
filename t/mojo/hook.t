@@ -117,75 +117,75 @@ my $addon_namespace = 'Markets::Addon::Test';
 my $cb = sub { $called++ };
 $e = Markets::Addons::Action->new;
 $e->_on(
-    test1 => $cb,
     {
-        namespace => $addon_namespace,
-        priority  => 400
-    },
+        name     => 'test1',
+        cb       => $cb,
+        priority => 400,
+    }
 );
 $e->_on(
-    test1 => $cb,
     {
-        namespace => $addon_namespace,
-        priority  => 200
-    },
+        name     => 'test1',
+        cb       => $cb,
+        priority => 200,
+    }
 );
 $e->_on(
-    test1 => $cb,
     {
-        namespace => $addon_namespace,
-        priority  => 1000
-    },
+        name     => 'test1',
+        cb       => $cb,
+        priority => 1000,
+    }
 );
 $e->_on(
-    test1 => $cb,
     {
-        namespace => $addon_namespace,
-        priority  => 400
-    },
+        name     => 'test1',
+        cb       => $cb,
+        priority => 400,
+    }
 );
 
 my @priority;
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 400, 1000 ], '_on priority';
+is_deeply \@priority, [ 200, 400, 400, 1000 ], 'right action->_on priority';
 
 # filter priority
 $e = Markets::Addons::Filter->new;
 $e->_on(
-    test1 => $cb,
     {
-        namespace => $addon_namespace,
-        priority  => 400
-    },
+        name     => 'test1',
+        cb       => $cb,
+        priority => 400,
+    }
 );
 $e->_on(
-    test1 => $cb,
     {
-        namespace => $addon_namespace,
-        priority  => 200
-    },
+        name     => 'test1',
+        cb       => $cb,
+        priority => 200,
+    }
 );
 $e->_on(
-    test1 => $cb,
     {
-        namespace => $addon_namespace,
-        priority  => 1000
-    },
+        name     => 'test1',
+        cb       => $cb,
+        priority => 1000,
+    }
 );
 $e->_on(
-    test1 => $cb,
     {
-        namespace => $addon_namespace,
-        priority  => 400
-    },
+        name     => 'test1',
+        cb       => $cb,
+        priority => 400,
+    }
 );
 
 @priority = ();
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 400, 1000 ], '_on priority';
+is_deeply \@priority, [ 200, 400, 400, 1000 ], 'right filter->_on priority';
 
 done_testing();
