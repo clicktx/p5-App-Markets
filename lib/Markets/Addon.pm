@@ -141,19 +141,33 @@ Return the application object.
 
 Get home path for YourAddon.
 
+=head2 add_action
+
+    sub register {
+        my my ( $self, $app, $arg ) = @_;
+        $self->add_action(
+            'action_hook_name' => \&fizz,
+            { default_priority => 500 }    # option
+        );
+    }
+
+    sub fizz { ... }
+
+Extend L<Markets> with action hook event.
+
 =head2 add_filter
 
     sub register {
         my my ( $self, $app, $arg ) = @_;
         $self->add_filter(
-            'filter_hook_name' => \&foo,
+            'filter_hook_name' => \&buzz,
             { default_priority => 500 }    # option
         );
     }
 
-    sub foo { ... }
+    sub buzz { ... }
 
-Extend L<Markets> with hook.
+Extend L<Markets> with filter hook event.
 
 =head2 get_template
 
