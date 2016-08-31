@@ -19,12 +19,21 @@ $app->defaults(
     }
 );
 
+subtest 'basic' => sub {
+    my $addon = $app->addons->load_addon('Markets::Addon::TestAddon');
+    is $addon->class_name, 'Markets::Addon::TestAddon', 'right class name';
+    is $addon->addon_name, 'TestAddon', 'right addon name';
+    my $r = $addon->routes;
+    is $r->name, 'Markets::Addon::TestAddon', 'right routes name';
+};
+
 subtest 'load addon' => sub {
     eval { $app->addon("NotFoundAddon") };
     is $@,
       'Addon "NotFoundAddon" missing, maybe you need to install it?' . "\n";
 
     $app->addons->init;
+
     # my $test_action = $app->action->{events}->{action_exsample_hook};
     # my $test_filter = $app->filter->{events}->{filter_exsample_hook};
     my $test_action = $app->action->subscribers('action_exsample_hook');

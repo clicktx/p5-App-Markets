@@ -1,15 +1,27 @@
 package Markets::Addon;
 use Mojo::Base 'Mojolicious::Plugin';
+
 use Carp 'croak';
 use File::Spec;
+use Mojolicious::Routes;
 use Mojolicious::Renderer;
-use Mojo::Util qw/slurp/;
+use Mojo::Util qw/slurp decamelize/;
 use constant {
     FORMAT  => 'html',
     HANDLER => 'ep',
 };
 
 has class_name => sub { ref shift };
+has addon_name => sub {
+    my $package = __PACKAGE__;
+    shift->class_name =~ /${package}::(.*)/ and $1;
+};
+has routes => sub {
+    my $self   = shift;
+    my $prefix = decamelize( $self->addon_name );
+    Mojolicious::Routes->new->any( '/' . $prefix )
+      ->to( namespace => __PACKAGE__ )->name( $self->class_name );
+};
 has 'app';
 
 # Make addon home path
@@ -128,6 +140,21 @@ Return the application object.
     my $class_name = $addon->class_name;
 
 Return the class name of addon.
+
+=head2 addon_name
+
+    my $addon_name = $addon->addon_name;
+
+Return the addon name.
+
+
+=head2 routes
+
+    my $routes = $addon->routes;
+
+
+Return the addon name.
+
 
 =head1 METHODS
 
