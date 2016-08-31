@@ -9,6 +9,7 @@ use constant {
     HANDLER => 'ep',
 };
 
+has class_name => sub { ref shift };
 has 'app';
 
 # Protect subclasses using AUTOLOAD for Perl v5.24+
@@ -24,23 +25,16 @@ sub init {
     $self->register($app);
 }
 
-sub add_action {
-    my $caller = ( caller 1 )[3];
-    shift->_add_hook( $caller, 'action', @_ );
-}
-
-sub add_filter {
-    my $caller = ( caller 1 )[3];
-    shift->_add_hook( $caller, 'filter', @_ );
-}
+sub add_action { shift->_add_hook( 'action', @_ ) }
+sub add_filter { shift->_add_hook( 'filter', @_ ) }
 
 sub _add_hook {
-    my ( $self, $caller, $hook_type, $hook_name, $cb, $arg ) =
-      ( shift, shift, shift, shift, shift, shift // {} );
-    my ( $addon_name, $function ) = $caller =~ /(.*)::(.*)/;
+    my ( $self, $type, $name, $cb, $arg ) =
+      ( shift, shift, shift, shift, shift // {} );
+    my $addon_name = $self->class_name;
 
     my $addon          = $self->app->stash('addons')->{$addon_name};
-    my $hook_prioritie = $addon->{config}->{hook_priorities}->{$hook_name};
+    my $hook_prioritie = $addon->{config}->{hook_priorities}->{$name};
 
     my $default_priority =
       $arg->{default_priority} || $self->app->addons->PRIORITY_DEFAULT;
@@ -49,8 +43,8 @@ sub _add_hook {
     my $hooks = $addon->{hooks};
     push @{$hooks},
       {
-        name             => $hook_name,
-        type             => $hook_type,
+        name             => $name,
+        type             => $type,
         cb               => $cb,
         priority         => $priority,
         default_priority => $default_priority,
@@ -131,6 +125,12 @@ L<Markets::Addon> is L<Mojolicious::Plugin> base plugin system.
     my $app = $addon->app;
 
 Return the application object.
+
+=head2 class_name
+
+    my $class_name = $addon->class_name;
+
+Return the class name of addon.
 
 =head1 METHODS
 
