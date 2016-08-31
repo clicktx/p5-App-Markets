@@ -11,9 +11,6 @@ use constant {
 
 has 'app';
 
-# Protect subclasses using AUTOLOAD for Perl v5.24+
-sub DESTROY { }
-
 # Make addon home path
 sub addon_home { Mojo::Home->new->detect(shift) }
 sub register   { croak 'Method "register" not implemented by subclass' }
