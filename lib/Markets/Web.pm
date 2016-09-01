@@ -42,6 +42,11 @@ sub startup {
         #     hooks      => [],
         #     config     => {},
         # },
+        'Markets::Addon::Newpage' => {
+            is_enabled => 1,
+            hooks      => [],
+            config     => {},
+        },
     };
     $self->defaults( addons => $addons_setting_from_db );
 
