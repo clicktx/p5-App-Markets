@@ -48,10 +48,9 @@ sub startup {
             config     => {},
         },
     };
-    $self->defaults( addons => $addons_setting_from_db );
 
     # Initialize all addons
-    $self->addons->init;
+    $self->addons->init($addons_setting_from_db);
 }
 
 1;

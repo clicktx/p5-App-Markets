@@ -30,10 +30,14 @@ sub is_enabled {
 }
 
 sub init {
-    my $self   = shift;
-    my $app    = $self->app;
-    my $addons = $app->defaults('addons');
+    my ( $self, $addon_settings ) = ( shift, shift // {} );
 
+    my $app = $self->app;
+
+    # Initialize all addons
+    $app->defaults( addons => $addon_settings );
+
+    my $addons = $app->defaults('addons');
     foreach my $addon_name ( keys %{$addons} ) {
         $app->addon($addon_name);
         $self->enabled($addon_name) if $self->is_enabled($addon_name);
@@ -127,7 +131,7 @@ Markets::Addons::Filter object.
 
 =head2 init
 
-    $addons->init
+    $addons->init(\%addon_settings);
 
 =head2 subscribe_hooks
 
