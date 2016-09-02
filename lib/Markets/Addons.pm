@@ -41,10 +41,10 @@ sub init {
     my $addons = $app->stash('addons');
     foreach my $addon_name ( keys %{$addons} ) {
 
-        # Routes
+        # Initialize routes
         $self->init_routes($addon_name);
 
-        # Hooks
+        # Initialize hooks
         # $self->xxx
 
         # Regist addon
