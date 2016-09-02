@@ -17,10 +17,13 @@ has addon_name => sub {
     shift->class_name =~ /${package}::(.*)/ and $1;
 };
 has routes => sub {
-    my $self   = shift;
-    my $prefix = decamelize( $self->addon_name );
-    Mojolicious::Routes->new->any( '/' . $prefix )
-      ->to( namespace => __PACKAGE__ )->name( $self->class_name );
+    my $self             = shift;
+    my $addon_class_name = $self->class_name;
+    my $prefix           = decamelize( $self->addon_name );
+
+    $self->app->stash('addons')->{$addon_class_name}->{routes}
+      ->any( '/' . $prefix )->to( namespace => __PACKAGE__ )
+      ->name($addon_class_name);
 };
 has 'app';
 
@@ -28,7 +31,7 @@ has 'app';
 sub addon_home { Mojo::Home->new->detect(shift) }
 sub register   { croak 'Method "register" not implemented by subclass' }
 
-sub init {
+sub init {    #TODO 不要？
     my $self = shift;
     my $app  = $self->app;
     $self->register($app);
@@ -150,11 +153,13 @@ Return the addon name.
 
 =head2 routes
 
-    my $routes = $addon->routes;
+    my $r = $addon->routes;
 
+    # Markets::Addon::AddonName::Controller::action()
+    # template AddonName/templates/addon_name/controller/action.html.ep
+    $r->get('/')->to('addon_name-controller#action');
 
-Return the addon name.
-
+Return L<Mojolicious::Routes> object.
 
 =head1 METHODS
 

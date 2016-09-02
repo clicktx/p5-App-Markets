@@ -1,8 +1,10 @@
 package Markets::Addons;
 use Mojo::Base 'Markets::EventEmitter';
+
 use Carp qw/croak/;
 use Mojo::Loader 'load_class';
 use Mojo::Util 'camelize';
+use Mojolicious::Routes;
 use constant { PRIORITY_DEFAULT => '100' };
 
 has namespaces => sub { ['Markets::Addon'] };
@@ -31,27 +33,47 @@ sub is_enabled {
 
 sub init {
     my ( $self, $addon_settings ) = ( shift, shift // {} );
-
     my $app = $self->app;
 
-    # Initialize all addons
+    # Add all addons data in the app->stash.
     $app->defaults( addons => $addon_settings );
 
-    my $addons = $app->defaults('addons');
+    my $addons = $app->stash('addons');
     foreach my $addon_name ( keys %{$addons} ) {
+
+        # Routes
+        $self->init_routes($addon_name);
+
+        # Hooks
+        # $self->xxx
+
+        # Regist addon
         $app->addon($addon_name);
+
+        # For the enabled addons
         $self->enabled($addon_name) if $self->is_enabled($addon_name);
     }
+}
+
+sub init_routes {
+    my ( $self, $name ) = @_;
+    $self->app->stash('addons')->{$name}->{routes} = Mojolicious::Routes->new;
 }
 
 sub enabled {
     my ( $self, $addon_name ) = @_;
 
-    # 全てのHookを有効に
+    # Add hooks into the App.
     $self->subscribe_hooks($addon_name);
 
-    # [WIP]全てのRooteを有効に
-    # $self->on_routes($addon_name);
+    # Add routes in to the App.
+    $self->on_routes($addon_name);
+}
+
+sub on_routes {
+    my ( $self, $addon_name ) = @_;
+    my $routes = $self->app->stash('addons')->{$addon_name}->{routes};
+    $self->app->routes->add_child($routes) if @{ $routes->children };
 }
 
 ###################################################

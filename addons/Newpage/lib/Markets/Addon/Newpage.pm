@@ -24,7 +24,7 @@ sub register {
     push @{ $app->renderer->classes }, 'Markets::Addon::Newpage';
 
     # Add routes in to the App.
-    $app->routes->add_child($r);
+    # $app->routes->add_child($r);
 
     # Remove routes for the App.
     # $app->routes->find($self->class_name)->remove;
