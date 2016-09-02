@@ -1,25 +1,37 @@
 package Markets::Addon;
 use Mojo::Base 'Mojolicious::Plugin';
+
 use Carp 'croak';
 use File::Spec;
+use Mojolicious::Routes;
 use Mojolicious::Renderer;
-use Mojo::Util qw/slurp/;
+use Mojo::Util qw/slurp decamelize/;
 use constant {
     FORMAT  => 'html',
     HANDLER => 'ep',
 };
 
 has class_name => sub { ref shift };
-has 'app';
+has addon_name => sub {
+    my $package = __PACKAGE__;
+    shift->class_name =~ /${package}::(.*)/ and $1;
+};
+has routes => sub {
+    my $self             = shift;
+    my $addon_class_name = $self->class_name;
+    my $prefix           = decamelize( $self->addon_name );
 
-# Protect subclasses using AUTOLOAD for Perl v5.24+
-sub DESTROY { }
+    $self->app->stash('addons')->{$addon_class_name}->{routes}
+      ->any( '/' . $prefix )->to( namespace => __PACKAGE__ )
+      ->name($addon_class_name);
+};
+has 'app';
 
 # Make addon home path
 sub addon_home { Mojo::Home->new->detect(shift) }
 sub register   { croak 'Method "register" not implemented by subclass' }
 
-sub init {
+sub init {    #TODO 不要？
     my $self = shift;
     my $app  = $self->app;
     $self->register($app);
@@ -131,6 +143,23 @@ Return the application object.
     my $class_name = $addon->class_name;
 
 Return the class name of addon.
+
+=head2 addon_name
+
+    my $addon_name = $addon->addon_name;
+
+Return the addon name.
+
+
+=head2 routes
+
+    my $r = $addon->routes;
+
+    # Markets::Addon::AddonName::Controller::action()
+    # template AddonName/templates/addon_name/controller/action.html.ep
+    $r->get('/')->to('addon_name-controller#action');
+
+Return L<Mojolicious::Routes> object.
 
 =head1 METHODS
 
