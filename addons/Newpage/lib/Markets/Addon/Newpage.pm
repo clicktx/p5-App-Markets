@@ -15,8 +15,6 @@ sub register {
     $r->get('/page')
       ->to( 'Newpage::Example#welcome', template => 'newpage/new/page', );
 
-    say Dumper $r;
-
     # Add "templates" directory path.
     # push @{$app->renderer->paths}, 'addons/Newpage/templates';
 
