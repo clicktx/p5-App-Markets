@@ -33,13 +33,26 @@ sub register {
 __DATA__
 
 @@ newpage/example/welcome.html.ep
+% layout 'default';
+% title 'make page from Newpage addon';
+
 <h1>DATA <%= $msg %></h1>
 <p>
     template: newpage/example/welcome.html.ep
+</p>
+<p>
+    <li>link: <%= link_to 'top' => '/' %></li>
+    <li>link: <%= link_to 'ja' => '/ja' %> <%= link_to 'en' => '/en' %></li>
+    <li>link: <%= link_to 'page' => 'page' %></li>
 </p>
 
 @@ newpage/new/page.html.ep
 <h1>DATA <%= $msg %></h1>
 <p>
     template_name: newpage/new/page.html.ep
+</p>
+<p>
+    <li>link: <%= link_to 'top' => '/' %></li>
+    <li>link: <%= link_to 'ja' => '/ja' %> <%= link_to 'en' => '/en' %></li>
+    <li>link: <%= link_to 'newpage' => '/newpage' %></li>
 </p>
