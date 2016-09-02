@@ -43,6 +43,9 @@ subtest 'load addon' => sub {
       'Addon "NotFoundAddon" missing, maybe you need to install it?' . "\n";
 
     $app->addons->init;
+};
+
+subtest 'for TestAddon' => sub {
 
     # my $test_action = $app->action->{events}->{action_exsample_hook};
     # my $test_filter = $app->filter->{events}->{filter_exsample_hook};
@@ -56,9 +59,13 @@ subtest 'load addon' => sub {
     is $test_filter->[0]->{priority}, 10,  'right priority, filter hook';
     is $test_filter->[1]->{priority}, 100, 'right priority, filter hook';
     is ref $test_filter->[0]->{cb}, 'CODE', 'right code ref, filter hook';
+
+    $t->get_ok('/test_addon')->status_is(200)->content_like(qr/top/);
+    $t->get_ok('/test_addon/hoo')->status_is(200)->content_like(qr/hoo/);
+    $t->get_ok('/test_addon/nooo')->status_is(404);
 };
 
-subtest 'disable addon' => sub {
+subtest 'for DisableAddon' => sub {
     my $disable_action = $app->action->subscribers('action_disable_hook');
     my $disable_filter = $app->filter->subscribers('filter_disable_hook');
     is_deeply $disable_action, [], 'no action hooks';
