@@ -37,11 +37,11 @@ sub startup {
                 },
             },
         },
-        # 'Markets::Addon::MyDisableAddon' => {
-        #     is_enabled => 0,
-        #     hooks      => [],
-        #     config     => {},
-        # },
+        'Markets::Addon::DisableAddon' => {
+            is_enabled => 0,
+            hooks      => [],
+            config     => {},
+        },
         'Markets::Addon::Newpage' => {
             is_enabled => 1,
             hooks      => [],
