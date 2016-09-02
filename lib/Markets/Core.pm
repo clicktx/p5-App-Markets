@@ -43,10 +43,7 @@ has addons => sub { Markets::Addons->new( app => shift ) };
 has action => sub { shift->addons->action(@_) };
 has filter => sub { shift->addons->filter(@_) };
 
-sub addon {
-    my $self = shift;
-    $self->addons->register_addon( shift, @_ );
-}
+sub register_addon { shift->addons->register_addon( shift, @_ ) }
 
 sub dsn {
     my ( $self, $conf ) = @_;

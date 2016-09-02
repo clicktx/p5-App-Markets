@@ -29,7 +29,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'load addon' => sub {
-    eval { $app->addon("NotFoundAddon") };
+    eval { $app->register_addon("NotFoundAddon") };
     is $@,
       'Addon "NotFoundAddon" missing, maybe you need to install it?' . "\n";
 

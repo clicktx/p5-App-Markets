@@ -48,7 +48,7 @@ sub init {
         # $self->xxx
 
         # Regist addon
-        $app->addon($addon_name);
+        $app->register_addon($addon_name);
 
         # For the enabled addons
         $self->enabled($addon_name) if $self->is_enabled($addon_name);
