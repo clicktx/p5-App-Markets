@@ -12,8 +12,17 @@ my $app = $t->app;
 my $addon_settings = {
     'Markets::Addon::TestAddon' => {
         is_enabled => 1,
-        hooks      => [],
-        config     => {},
+
+        # routes     => '',
+        hooks  => [],
+        config => {},
+    },
+    'Markets::Addon::DisableAddon' => {
+        is_enabled => 0,
+
+        # routes     => '',
+        hooks  => [],
+        config => {},
     },
 };
 
@@ -47,6 +56,15 @@ subtest 'load addon' => sub {
     is $test_filter->[0]->{priority}, 10,  'right priority, filter hook';
     is $test_filter->[1]->{priority}, 100, 'right priority, filter hook';
     is ref $test_filter->[0]->{cb}, 'CODE', 'right code ref, filter hook';
+};
+
+subtest 'disable addon' => sub {
+    my $disable_action = $app->action->subscribers('action_disable_hook');
+    my $disable_filter = $app->filter->subscribers('filter_disable_hook');
+    is_deeply $disable_action, [], 'no action hooks';
+    is_deeply $disable_filter, [], 'no filter hooks';
+
+    $t->get_ok('/disable_addon')->status_is(404);
 };
 
 done_testing();
