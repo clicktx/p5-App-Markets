@@ -3,7 +3,6 @@ use Mojo::Base 'Mojolicious::Plugin';
 
 use Carp 'croak';
 use File::Spec;
-use Mojolicious::Routes;
 use Mojolicious::Renderer;
 use Mojo::Util qw/slurp decamelize/;
 use constant {
