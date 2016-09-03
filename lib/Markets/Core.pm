@@ -9,7 +9,6 @@ use Markets::DB;
 use Markets::Session::Store::Teng;
 use Markets::Addons;
 
-has ADDONS_DIR => sub { 'addons' };
 has dbh => sub {
     my $self = shift;
     my $conf = $self->config->{db} or die "Missing configuration for db";
@@ -55,8 +54,17 @@ sub initialize_app {
       if -d $home->rel_file('var/log') && -w _;
 
     my $config_path = $home->rel_file("config/$mode.conf");
-    $self->plugin( Config => { file       => $config_path } );
-    $self->plugin( Model  => { namespaces => ['Markets::Model'] } );
+    $self->plugin( Config => { file => $config_path } );
+
+    # Application defaults
+    $self->config(
+        app_defaults => {
+            ADDONS_DIR => 'addons',
+        }
+    );
+
+    # Models
+    $self->plugin( Model => { namespaces => ['Markets::Model'] } );
 
     # constants
     $self->helper(
