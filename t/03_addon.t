@@ -29,8 +29,8 @@ my $addon_settings = {
 $app->addons->init($addon_settings);
 
 subtest 'basic' => sub {
-    is_deeply $app->all_addons, [ 'DisableAddon', 'NotInstallAddon', 'TestAddon' ],
-      'right all addons';
+    # is_deeply $app->all_addons, [ 'DisableAddon', 'NotInstallAddon', 'TestAddon' ],
+    #   'right all addons';
     my $addon = $app->addons->load_addon('Markets::Addon::TestAddon');
     is $addon->class_name, 'Markets::Addon::TestAddon', 'right class name';
     is $addon->addon_name, 'TestAddon', 'right addon name';
