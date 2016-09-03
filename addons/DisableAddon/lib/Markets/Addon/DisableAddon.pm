@@ -14,15 +14,7 @@ sub register {
 sub install   { }
 sub uninstall { }
 sub update    { }
-
-sub enable {
-    my $self = shift;    # my ($self, $app, $arg) = (shift, shift, shift // {});
-    $self->SUPER::enable(@_);
-}
-
-sub disable {
-    my $self = shift;
-    $self->SUPER::disable(@_);
-}
+sub enable { }
+sub disable { }
 
 1;
