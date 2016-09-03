@@ -30,9 +30,23 @@ has 'app';
 sub addon_home { Mojo::Home->new->detect(shift) }
 sub register   { croak 'Method "register" not implemented by subclass' }
 
-sub init {    #TODO 不要？
+sub init {
     my $self = shift;
     my $app  = $self->app;
+
+    # Load lexicon file.
+    my $addon_name = $self->addon_name;
+    my $locale_dir =
+      File::Spec->catdir( $app->home, $app->ADDONS_DIR, $addon_name, 'locale' );
+    my $text_domain = decamelize($addon_name);
+    $app->lexicon(
+        {
+            search_dirs => [$locale_dir],
+            data        => [ "*::$text_domain" => '*.po' ],    # set text domain
+        }
+    ) if -d $locale_dir;
+
+    # Call to register method for YourAddon.
     $self->register($app);
 }
 
