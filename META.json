@@ -69,13 +69,13 @@
    "release_status" : "unstable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/clicktx/p5-App-Markets/issues"
+         "web" : "https://github.com/clicktx/p5-Markets/issues"
       },
-      "homepage" : "https://github.com/clicktx/p5-App-Markets",
+      "homepage" : "https://github.com/clicktx/p5-Markets",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/clicktx/p5-App-Markets.git",
-         "web" : "https://github.com/clicktx/p5-App-Markets"
+         "url" : "git://github.com/clicktx/p5-Markets.git",
+         "web" : "https://github.com/clicktx/p5-Markets"
       }
    },
    "version" : "0.01",
