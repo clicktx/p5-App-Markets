@@ -5,6 +5,25 @@ use Mojo::DOM;
 use Markets::DOM::EP;
 use Markets::Plugin::DOM;
 
+# EP tag(basics)
+$dom = Mojo::DOM->new(<<EOF);
+% layout 'default';
+% title 'Welcome';
+<%= \$msg %>
+<%= link_to '/' => begin %>
+  top
+<% end %>
+EOF
+is $dom->tree->[0], 'root', 'right type';
+is $dom->tree->[1][0], 'ep_lines', 'right type';
+is $dom->tree->[1][1], "% layout 'default';\n% title 'Welcome';\n", 'right tag';
+is $dom->tree->[3][0], 'ep_tag', 'right type';
+is $dom->tree->[3][1], '= link_to \'/\' => begin ', 'right tag';
+is $dom->tree->[4][0], 'text', 'right type';
+is $dom->tree->[4][1], "\n  top\n", 'right tag';
+is $dom->tree->[5][0], 'ep_tag', 'right type';
+is $dom->tree->[5][1], ' end ', 'right tag';
+
 # Empty
 is(Mojo::DOM->new,                     '',    'right result');
 is(Mojo::DOM->new(''),                 '',    'right result');
@@ -27,25 +46,6 @@ is $dom->at('#a')->attr('foo'), 0, 'right attribute';
 is $dom->at('#a')->attr->{foo}, 0, 'right attribute';
 is "$dom", '<div><div foo="0" id="a">A</div><div id="b">B</div></div>',
   'right result';
-
-# EP tag(basics)
-$dom = Mojo::DOM->new(<<EOF);
-% layout 'default';
-% title 'Welcome';
-<%= \$msg %>
-<%= link_to '/' => begin %>
-  top
-<% end %>
-EOF
-is $dom->tree->[0], 'root', 'right type';
-is $dom->tree->[1][0], 'ep_lines', 'right type';
-is $dom->tree->[1][1], "% layout 'default';\n% title 'Welcome';\n", 'right tag';
-is $dom->tree->[3][0], 'ep_tag', 'right type';
-is $dom->tree->[3][1], '= link_to \'/\' => begin ', 'right tag';
-is $dom->tree->[4][0], 'text', 'right type';
-is $dom->tree->[4][1], "\n  top\n", 'right tag';
-is $dom->tree->[5][0], 'ep_tag', 'right type';
-is $dom->tree->[5][1], ' end ', 'right tag';
 
 # Tap into method chain
 $dom = Mojo::DOM->new->parse('<div id="a">A</div><div id="b">B</div>');
