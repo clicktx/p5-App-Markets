@@ -55,7 +55,7 @@ sub initialize_app {
 
     # Search directories from all addons
     my $all_addons =
-      Markets::Util::directories( $self->project_home . '/' . ADDONS_DIR );
+      Markets::Util::directories( $home . '/' . ADDONS_DIR );
     $self->all_addons($all_addons);
 
     # change log dir

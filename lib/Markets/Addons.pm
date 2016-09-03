@@ -3,11 +3,11 @@ use Mojo::Base 'Markets::EventEmitter';
 
 use Carp qw/croak/;
 use Mojo::Loader 'load_class';
-use Mojo::Util 'camelize';
+use Mojo::Util qw/camelize decamelize/;
 use Mojolicious::Routes;
 use constant { PRIORITY_DEFAULT => '100' };
 
-has namespaces => sub { ['Markets::Addon'] };
+has namespaces => sub { [] };
 has action     => sub { Markets::Addons::Action->new };
 has filter     => sub { Markets::Addons::Filter->new };
 has 'app';
@@ -34,6 +34,7 @@ sub is_enabled {
 sub init {
     my ( $self, $addon_settings ) = ( shift, shift // {} );
     my $app = $self->app;
+    say "home: " . $app->home;
 
     # Add all addons data in the app->stash.
     $app->defaults( addons => $addon_settings );
@@ -76,6 +77,13 @@ sub on_routes {
     $self->app->routes->add_child($routes) if @{ $routes->children };
 }
 
+sub _push_inc_path {
+    my ( $self, $name ) = @_;
+    my $home = $self->app->home;
+    $name =~ s/Markets::Addon:://;
+    push @INC, "$home/addons/$name/lib";
+}
+
 ###################################################
 ###  loading plugin code from Mojolicous::Plugins
 ###################################################
@@ -83,6 +91,9 @@ sub load_addon {
     my ( $self, $name ) = @_;
 
     # Try all namespaces and full module name
+    # The Markets addon use full module name only!
+    $self->_push_inc_path($name) unless $name->can('new');
+
     my $suffix = $name =~ /^[a-z]/ ? camelize $name : $name;
     my @classes = map { "${_}::$suffix" } @{ $self->namespaces };
     for my $class ( @classes, $name ) {
@@ -159,8 +170,13 @@ Markets::Addons::Filter object.
 
     $addons->subscribe_hooks('Markets::Addon::MyAddon');
 
-
 Subscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
+
+head2 register_addon
+
+    $addons->register_addon('Markets::Addons::MyAddon');
+
+Load a addon from the configured by full module name and run register.
 
 =head1 SEE ALSO
 
