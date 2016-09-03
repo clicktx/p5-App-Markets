@@ -4,6 +4,7 @@ use strict;
 use File::Spec;
 use File::Basename qw(dirname);
 use lib File::Spec->catdir( dirname(__FILE__), '..', 'lib' );
+use lib 't/App/lib';
 use Markets::Util;
 
 BEGIN {
@@ -26,7 +27,7 @@ BEGIN {
 sub load_config {
     my $config_base_dir =
       File::Spec->rel2abs(
-        File::Spec->catdir( dirname(__FILE__), '..', 'config' ) );
+        File::Spec->catdir( dirname(__FILE__), 'App', 'config' ) );
     my $config_file = File::Spec->catfile( $config_base_dir, "test.conf" );
     my $conf = do $config_file;
     unless ( ref($conf) eq 'HASH' ) {
