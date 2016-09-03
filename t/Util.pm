@@ -15,13 +15,6 @@ BEGIN {
     if ( $ENV{MOJO_MODE} eq 'production' ) {
         die "Do not run a test script on deployment environment";
     }
-
-    # @INC for Addons
-    my $base_dir = File::Spec->catdir( dirname(__FILE__), '..', 'addons' );
-    my $addons = Markets::Util::directories('addons');
-    foreach my $path (@$addons) {
-        push @INC, File::Spec->catdir( $base_dir, $path, 'lib' );
-    }
 }
 
 sub load_config {
