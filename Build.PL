@@ -26,7 +26,7 @@ my %args = (
         'Mojolicious::Plugin::LocaleTextDomainOO' => '0.04',
         'Teng::Plugin::ResultSet' => '0.01',
         'MojoX::Session' => '0.33',
-        'Mojolicious' => '== 6.66',
+        'Mojolicious' => '== 7.05',
         'Mojolicious::Plugin::Model' => '0.07',
         'DBD::mysql' => '4.033',
         'Teng' => '0.28',
