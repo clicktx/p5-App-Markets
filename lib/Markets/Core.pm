@@ -11,19 +11,7 @@ use Markets::Session::Store::Teng;
 use Markets::Addons;
 use constant ADDONS_DIR => 'addons';
 
-my $all_addons;
-
-BEGIN {
-    # add path to @INC
-    my $base_dir =
-      File::Spec->catdir( dirname(__FILE__), '..', '..', ADDONS_DIR );
-    $all_addons = Markets::Util::directories(ADDONS_DIR);
-    foreach my $path (@$all_addons) {
-        push @INC,
-          Mojo::Path->new( File::Spec->catdir( $base_dir, $path, 'lib' ) )
-          ->canonicalize->to_string;
-    }
-}
+has 'all_addons';
 
 has dbh => sub {
     my $self = shift;
@@ -64,6 +52,11 @@ sub initialize_app {
     my $self = shift;
     my $home = $self->home;
     my $mode = $self->mode;
+
+    # Search directories from all addons
+    my $all_addons =
+      Markets::Util::directories( $self->project_home . '/' . ADDONS_DIR );
+    $self->all_addons($all_addons);
 
     # change log dir
     $self->log->path( $home->rel_file("var/log/$mode.log") )
