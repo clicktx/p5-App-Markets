@@ -6,14 +6,14 @@ use File::Basename 'dirname';
 use File::Spec::Functions 'catfile';
 use Mojo::Template;
 use Markets::Plugin::EPLRenderer;
-
+use t::Util;
 
 # Empty template
 my $mt     = Mojo::Template->new;
 my $output = $mt->render('');
 is $output, '', 'empty string';
 
-my $c = Test::Mojo->new('Markets::Web');
+my $c = Test::Mojo->new('App');
 
 # File
 $mt = Mojo::Template->new;

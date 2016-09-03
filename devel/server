@@ -1,1 +1,1 @@
-carton exec -- morbo script/markets_web
+carton exec -- morbo script/markets

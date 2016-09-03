@@ -25,29 +25,7 @@ sub startup {
 
     # Loading indtalled Addons
     # [WIP] addon config
-    my $addons_setting_from_db = {
-        'Markets::Addon::MyAddon' => {
-            is_enabled => 1,
-            hooks      => [],
-            config     => {
-                hook_priorities => {
-                    before_compile_template => 300,
-                    before_xxx_action       => 500,
-                    # action_replace_template => 222,
-                },
-            },
-        },
-        'Markets::Addon::DisableAddon' => {
-            is_enabled => 0,
-            hooks      => [],
-            config     => {},
-        },
-        'Markets::Addon::Newpage' => {
-            is_enabled => 1,
-            hooks      => [],
-            config     => {},
-        },
-    };
+    my $addons_setting_from_db = $self->config('addons_setting_from_db');
 
     # Initialize all addons
     $self->addons->init($addons_setting_from_db);

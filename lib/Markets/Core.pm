@@ -3,28 +3,13 @@ use Mojo::Base 'Mojolicious';
 
 use Carp qw/croak/;
 use File::Spec;
-use File::Basename;
 use DBI;
 use Markets::Util;
 use Markets::DB;
 use Markets::Session::Store::Teng;
 use Markets::Addons;
-use constant ADDONS_DIR => 'addons';
 
-my $all_addons;
-
-BEGIN {
-    # add path to @INC
-    my $base_dir =
-      File::Spec->catdir( dirname(__FILE__), '..', '..', ADDONS_DIR );
-    $all_addons = Markets::Util::directories(ADDONS_DIR);
-    foreach my $path (@$all_addons) {
-        push @INC,
-          Mojo::Path->new( File::Spec->catdir( $base_dir, $path, 'lib' ) )
-          ->canonicalize->to_string;
-    }
-}
-
+has ADDONS_DIR => sub { 'addons' };
 has dbh => sub {
     my $self = shift;
     my $conf = $self->config->{db} or die "Missing configuration for db";
@@ -123,31 +108,16 @@ sub initialize_app {
     );
 
     # loading lexicon files
+    my $locale_dir = File::Spec->catdir( $home, 'share', 'locale' );
     $self->lexicon(
         {
-            search_dirs => [ File::Spec->catdir( $home, 'share', 'locale' ) ],
+            search_dirs => [$locale_dir],
 
             # gettext_to_maketext => $boolean,                    # option
             # decode              => $boolean,                    # option
             data => [ '*::' => '*.po' ],
         }
-    );
-
-# loading lexicon for addons
-# TODO: config->{addons}->{enable}のみを読み込むように修正しよう
-#       addon configを考慮すると全てのアドオンのlocaleを読み込んだほうが良い
-    foreach my $addon (@$all_addons) {
-        my $text_domain = Mojo::Util::decamelize($addon);
-        my $locale_dir =
-          File::Spec->catdir( $home, ADDONS_DIR, $addon, 'locale' );
-        next unless -d $locale_dir;
-        $self->lexicon(
-            {
-                search_dirs => [$locale_dir],
-                data => [ "*::$text_domain" => '*.po' ],    # set text domain
-            }
-        );
-    }
+    ) if -d $locale_dir;
 
     # Documentation browser under "/perldoc"
     $self->plugin('PODRenderer');

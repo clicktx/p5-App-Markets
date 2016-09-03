@@ -1,35 +1,17 @@
 use Mojo::Base -strict;
-use lib 't/lib';
 
 use t::Util;
 use Test::More;
 use Test::Mojo;
 use Data::Dumper;
 
-my $t   = Test::Mojo->new('Markets::Web');
+my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
-my $addon_settings = {
-    'Markets::Addon::TestAddon' => {
-        is_enabled => 1,
-
-        # routes     => '',
-        hooks  => [],
-        config => {},
-    },
-    'Markets::Addon::DisableAddon' => {
-        is_enabled => 0,
-
-        # routes     => '',
-        hooks  => [],
-        config => {},
-    },
-};
-
-# Re-initialize of the addon.
-$app->addons->init($addon_settings);
-
 subtest 'basic' => sub {
+
+# is_deeply $app->all_addons, [ 'DisableAddon', 'NotInstallAddon', 'TestAddon' ],
+#   'right all addons';
     my $addon = $app->addons->load_addon('Markets::Addon::TestAddon');
     is $addon->class_name, 'Markets::Addon::TestAddon', 'right class name';
     is $addon->addon_name, 'TestAddon', 'right addon name';

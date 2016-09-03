@@ -4,7 +4,7 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-my $t   = Test::Mojo->new('Markets::Web');
+my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
 # use Mojo::Cookie::Response;
