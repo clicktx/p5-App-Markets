@@ -9,6 +9,15 @@ requires 'DBI',                                     '1.636';
 requires 'DBD::mysql',                              '4.033';
 requires 'Data::MessagePack',                       '0.49';
 requires 'Class::Inspector',                        '1.28';
+requires 'Server::Starter',                         '0.32';
+requires 'Starlet',                                 '0.30';
+
+# XS modules. it's a high performance!
+# See http://qiita.com/karupanerura/items/e765b23bd3bff806cc27
+requires 'HTTP::Parser::XS',  '0.17';
+requires 'Time::TZOffset',    '0.04';
+#requires 'Cookie::Baker::XS', '0.06';
+#requires 'JSON::XS',          '3.02';
 
 on configure => sub {
     requires 'Module::Build',    '0.38';
