@@ -2,6 +2,7 @@ package Markets::Addons;
 use Mojo::Base 'Markets::EventEmitter';
 
 use Carp qw/croak/;
+use Clone qw(clone);
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
 use Mojolicious::Routes;
@@ -75,6 +76,8 @@ sub subscribe_hooks {
         my $hook_type = $hook->{type};
         $self->$hook_type->_on($hook);
     }
+    # TODO: 一度描写したページは無効にできない...
+    # $self->app->renderer->cache(Mojo::Cache->new);
 }
 
 sub unsubscribe_hooks {
@@ -82,26 +85,32 @@ sub unsubscribe_hooks {
     my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
     foreach my $hook ( @{$hooks} ) {
         my $hook_type = $hook->{type};
-        use Data::Dumper;
-        say $hook_type;
-        say Dumper $hook;
-
         $self->$hook_type->unsubscribe( $hook->{name} => $hook );
-
-        say Dumper $self->$hook_type->subscribers($hook->{name});
     }
 }
 
 sub on_routes {
     my ( $self, $addon_name ) = @_;
     my $routes = $self->app->stash('addons')->{$addon_name}->{routes};
-    $self->app->routes->add_child($routes) if @{ $routes->children };    # bug  
+
+    if ( @{ $routes->children } ) {
+
+# Clone routes
+# そのまま追加した場合はoff_routes時に再度on_routes出来ないため
+        my $clone_routes = clone($routes);
+        $self->app->routes->add_child($clone_routes);
+    }
+
 }
 
 sub off_routes {
     my ( $self, $addon_name ) = @_;
-    my $route = $self->app->routes->find($addon_name);
-    $route->remove if ref $route;
+    my $routes = $self->app->routes->find($addon_name);
+
+    if ( ref $routes ) {
+        $routes->remove;
+        $self->app->routes->cache( Mojo::Cache->new );
+    }
 }
 
 sub _push_inc_path {
