@@ -25,7 +25,6 @@ sub is_enabled {
 sub init {
     my ( $self, $addon_settings ) = ( shift, shift // {} );
     my $app = $self->app;
-    say "home: " . $app->home;
 
     # Add all addons data in the app->stash.
     $app->defaults( addons => $addon_settings );
@@ -34,10 +33,7 @@ sub init {
     foreach my $addon_name ( keys %{$addons} ) {
 
         # Initialize routes
-        $self->init_routes($addon_name);
-
-        # Initialize hooks
-        # $self->xxx
+        $self->_init_routes($addon_name);
 
         # Regist addon
         $app->register_addon($addon_name);
@@ -47,7 +43,7 @@ sub init {
     }
 }
 
-sub init_routes {
+sub _init_routes {
     my ( $self, $name ) = @_;
     $self->app->stash('addons')->{$name}->{routes} = Mojolicious::Routes->new;
 }
@@ -62,6 +58,16 @@ sub to_enable {
     $self->on_routes($addon_name);
 }
 
+sub to_disable {
+    my ( $self, $addon_name ) = @_;
+
+    # Remove hooks for App.
+    $self->unsubscribe_hooks($addon_name);
+
+    # Remove routes for App.
+    $self->off_routes($addon_name);
+}
+
 sub subscribe_hooks {
     my ( $self, $addon_name ) = @_;
     my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
@@ -71,10 +77,31 @@ sub subscribe_hooks {
     }
 }
 
+sub unsubscribe_hooks {
+    my ( $self, $addon_name ) = @_;
+    my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
+    foreach my $hook ( @{$hooks} ) {
+        my $hook_type = $hook->{type};
+        use Data::Dumper;
+        say $hook_type;
+        say Dumper $hook;
+
+        $self->$hook_type->unsubscribe( $hook->{name} => $hook );
+
+        say Dumper $self->$hook_type->subscribers($hook->{name});
+    }
+}
+
 sub on_routes {
     my ( $self, $addon_name ) = @_;
     my $routes = $self->app->stash('addons')->{$addon_name}->{routes};
-    $self->app->routes->add_child($routes) if @{ $routes->children };
+    $self->app->routes->add_child($routes) if @{ $routes->children };    # bug  
+}
+
+sub off_routes {
+    my ( $self, $addon_name ) = @_;
+    my $route = $self->app->routes->find($addon_name);
+    $route->remove if ref $route;
 }
 
 sub _push_inc_path {
@@ -166,13 +193,43 @@ Markets::Addons::Filter object.
 
     $addons->init(\%addon_settings);
 
+=head2 to_enable
+
+    $addons->to_enable('Markets::Addon::MyAddon');
+
+Change addon status to enable.
+
+=head2 to_disable
+
+    $addons->to_disable('Markets::Addon::MyAddon');
+
+Change addon status to disable.
+
 =head2 subscribe_hooks
 
     $addons->subscribe_hooks('Markets::Addon::MyAddon');
 
 Subscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
 
-head2 register_addon
+=head2 unsubscribe_hooks
+
+    $addons->unsubscribe_hooks('Markets::Addon::MyAddon');
+
+Unsubscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
+
+=head2 on_routes
+
+    $self->on_routes('Markets::Addon::MyAddon');
+
+Add addon routes for App.
+
+=head2 off_routes
+
+    $self->off_routes('Markets::Addon::MyAddon');
+
+Remove addons routes from App.
+
+=head2 register_addon
 
     $addons->register_addon('Markets::Addons::MyAddon');
 
