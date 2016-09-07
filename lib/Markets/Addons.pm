@@ -43,7 +43,7 @@ sub init {
         $app->register_addon($addon_name);
 
         # For the enabled addons
-        $self->enabled($addon_name) if $self->is_enabled($addon_name);
+        $self->to_enable($addon_name) if $self->is_enabled($addon_name);
     }
 }
 
@@ -52,7 +52,7 @@ sub init_routes {
     $self->app->stash('addons')->{$name}->{routes} = Mojolicious::Routes->new;
 }
 
-sub enabled {
+sub to_enable {
     my ( $self, $addon_name ) = @_;
 
     # Add hooks into the App.
