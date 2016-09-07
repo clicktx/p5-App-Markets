@@ -1,0 +1,151 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use 5.10.0;
+use Getopt::Long;
+use Pod::Usage;
+use File::Spec;
+use File::Basename qw(dirname);
+use lib File::Spec->catdir( dirname(__FILE__), '..', 'lib' );
+
+use Data::Dumper;
+
+# Command and Application
+my $nohup        = "";
+my $start_server = "carton exec -- start_server";
+my $plackup      = "plackup";
+my $server       = "Starlet";
+my $app          = File::Spec->catfile( dirname(__FILE__), 'Markets' );
+my $pid_file =
+  File::Spec->catfile( dirname(__FILE__), '..', 'var', 'run', 'app.pid' );
+my $status_file =
+  File::Spec->catfile( dirname(__FILE__), '..', 'var', 'run', 'app.status' );
+
+my $mode = '';
+my $port = '';
+GetOptions(
+    'mode=s'      => \$mode,
+    'dev|develop' => \my $development,
+    'production'  => \my $production,
+    'start'       => \my $start,
+    'stop'        => \my $stop,
+    'restart'     => \my $restart,
+    'p|port=i'    => \$port,
+    'h|help'      => \my $help,
+) or usage();
+usage() if $help;
+
+# Mode
+my $plackup_dev_option = "";
+my $back_ground        = "&";
+my $workers;
+if ( $mode eq 'development' or $development ) {
+    $mode = 'development';
+    $port ||= 3000;
+    $plackup_dev_option = "-R lib,lib,themes,addons ";
+    $back_ground        = "";
+    $workers = 1;
+}
+else {
+    $mode = 'production';
+    $port ||= 8080;
+    $workers = 5;
+}
+
+# Shortcut command
+if ( !$start && !$stop && !$restart ) {
+    unless ( -e $pid_file && -e $status_file ) {
+        $start = 1;
+    }
+    else {
+        $restart = 1;
+    }
+}
+
+# start|stop|restart commands
+if ($start) {
+    unless ( -e $pid_file && -e $status_file ) {
+        my $cmd =
+            "$nohup $start_server "
+          . "--pid-file=$pid_file "
+          . "--status-file=$status_file "
+          . "--port=$port "
+          . "-- $plackup -E $mode -s $server $plackup_dev_option"
+          . "--max-workers=$workers "
+          . "--max-reqs-per-child=1000 "
+          . "$app $back_ground";
+        warn $cmd;
+        system($cmd);
+    }
+    else {
+        warn "server is already running...";
+        exit;
+    }
+}
+elsif ($stop) {
+    if ( -e $pid_file && -e $status_file ) {
+
+        # my $cmd = "/bin/cat $pid_file | xargs kill -TERM ";
+        my $cmd = "$nohup $start_server " . "--pid-file=$pid_file " . "--stop";
+        warn $cmd;
+        system($cmd);
+    }
+    else {
+        warn "pid_file and status_file is NOT exists...";
+        exit;
+    }
+}
+elsif ($restart) {
+    if ( -e $pid_file && -e $status_file ) {
+        my $cmd =
+            "$nohup $start_server "
+          . "--pid-file=$pid_file "
+          . "--status-file=$status_file "
+          . "--restart";
+        warn $cmd;
+        system($cmd);
+    }
+    else {
+        warn "server id not running...";
+        exit;
+    }
+}
+else {
+    usage();
+}
+exit;
+
+sub usage {
+    pod2usage(
+        -exitval => 0,
+        -varbose => 1,
+    );
+    exit;
+}
+
+__END__
+
+=head1 NAME
+
+marktes - Markets Application control command
+
+=head1 SYNOPSIS
+
+    appctl [options]
+
+=head1 OPTIONS
+
+=head2 -m|--mode <name>
+
+Operating mode for your application,
+defaults to the value of C<production>
+
+=head2 --develop
+
+Set C<development> to $ENV{MOJO_MODE}.default server port 3000.
+
+=head2 --production
+
+Set C<production> to $ENV{MOJO_MODE}.default server port 8080.
+
+=head2 -p|--port <port>
