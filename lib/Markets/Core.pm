@@ -26,6 +26,7 @@ has db => sub {
 has addons => sub { Markets::Addons->new( app => shift ) };
 has action => sub { shift->addons->action(@_) };
 has filter => sub { shift->addons->filter(@_) };
+has restart_app => sub { system shift->home . "/script/appctl --restart" };
 
 sub register_addon { shift->addons->register_addon( shift, @_ ) }
 
