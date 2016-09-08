@@ -15,8 +15,6 @@ has filter     => sub { Markets::Addons::Filter->new };
 has 'app';
 
 sub _on         { shift->on(@_) }
-sub emit_action { shift->emit(@_) }
-sub emit_filter { shift->emit(@_) }
 
 sub is_enabled {
     my ( $self, $addon_name ) = @_;
@@ -159,9 +157,11 @@ sub _load {
 # Use separate namespace
 package Markets::Addons::Action;
 use Mojo::Base 'Markets::Addons';
+sub emit_action { shift->emit(@_) }
 
 package Markets::Addons::Filter;
 use Mojo::Base 'Markets::Addons';
+sub emit_filter { shift->emit(@_) }
 
 1;
 
@@ -200,6 +200,22 @@ Markets::Addons::Action object.
 Markets::Addons::Filter object.
 
 =head1 METHODS
+
+=head2 emit_action
+
+    $addons = $addons->action->emit_action('foo');
+    $addons = $addons->action->emit_action(foo => 123);
+
+Emit event as action hook.
+This method is Markets::Addons::Action::emit_action.
+
+=head2 emit_filter
+
+    $addons = $addons->filter->emit_filter('foo');
+    $addons = $addons->filter->emit_filter(foo => 123);
+
+Emit event as filter hook.
+This method is Markets::Addons::Filter::emit_filter.
 
 =head2 init
 
