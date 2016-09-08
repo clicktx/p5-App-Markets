@@ -5,6 +5,7 @@ use Carp qw/croak/;
 use Clone qw(clone);
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
+use Mojo::Cache;
 use Mojolicious::Routes;
 use constant { PRIORITY_DEFAULT => '100' };
 
@@ -76,8 +77,7 @@ sub subscribe_hooks {
         my $hook_type = $hook->{type};
         $self->$hook_type->_on($hook);
     }
-    # TODO: 一度描写したページは無効にできない...
-    # $self->app->renderer->cache(Mojo::Cache->new);
+    $self->app->renderer->cache( Mojo::Cache->new );
 }
 
 sub unsubscribe_hooks {
@@ -87,6 +87,7 @@ sub unsubscribe_hooks {
         my $hook_type = $hook->{type};
         $self->$hook_type->unsubscribe( $hook->{name} => $hook );
     }
+    $self->app->renderer->cache( Mojo::Cache->new );
 }
 
 sub on_routes {
@@ -95,10 +96,12 @@ sub on_routes {
 
     if ( @{ $routes->children } ) {
 
-# Clone routes
-# そのまま追加した場合はoff_routes時に再度on_routes出来ないため
+# HACK: リファレンス渡しのため削除する際に実態が削除されてしまうため
+#       routesのクローンを追加しておく
         my $clone_routes = clone($routes);
         $self->app->routes->add_child($clone_routes);
+
+# $self->app->routes->cache( Mojo::Cache->new ); # 無くても動作するが必要？
     }
 
 }
