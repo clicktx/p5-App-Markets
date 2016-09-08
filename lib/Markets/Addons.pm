@@ -8,6 +8,7 @@ use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
 use Mojo::Cache;
 use Mojolicious::Routes;
+use Markets::Util;
 use constant { PRIORITY_DEFAULT => '100' };
 
 has namespaces => sub { [] };
@@ -16,6 +17,15 @@ has filter     => sub { Markets::Addons::Filter->new };
 has 'app';
 
 sub _on { shift->on(@_) }
+
+sub get_all {
+    my $self = shift;
+    my $addons_dir = $self->app->config('app_defaults')->{ADDONS_DIR};
+    my $rel_dir = Mojo::Home->new($self->app->home)->rel_dir($addons_dir);
+    my @all_dir = Markets::Util::directories($rel_dir);
+    my @all_addons = map {"Markets::Addon::" . $_} @all_dir;
+    return wantarray ? @all_addons : \@all_addons;
+}
 
 sub is_enabled {
     my ( $self, $addon_name ) = @_;
@@ -118,7 +128,8 @@ sub off_routes {
 sub _push_inc_path {
     my ( $self, $name ) = @_;
     $name =~ s/Markets::Addon:://;
-    my $path = Mojo::Home->new( $self->app->home )->rel_dir("addons/$name/lib");
+    my $addons_dir  = $self->app->config('app_defaults')->{ADDONS_DIR};
+    my $path = Mojo::Home->new( $self->app->home )->rel_dir("$addons_dir/$name/lib");
     push @INC, $path;
 }
 
@@ -221,6 +232,13 @@ This method is Markets::Addons::Filter::emit_filter.
 =head2 init
 
     $addons->init(\%addon_settings);
+
+=head2 get_all
+
+    # Ref
+    my $all_addons = $addons->get_all;
+    # Array
+    my @all_addons = $addons->get_all;
 
 =head2 to_enable
 
