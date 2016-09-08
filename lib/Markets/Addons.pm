@@ -3,6 +3,7 @@ use Mojo::Base 'Markets::EventEmitter';
 
 use Carp qw/croak/;
 use Clone qw(clone);
+use Mojo::Home;
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
 use Mojo::Cache;
@@ -14,7 +15,7 @@ has action     => sub { Markets::Addons::Action->new };
 has filter     => sub { Markets::Addons::Filter->new };
 has 'app';
 
-sub _on         { shift->on(@_) }
+sub _on { shift->on(@_) }
 
 sub is_enabled {
     my ( $self, $addon_name ) = @_;
@@ -116,9 +117,9 @@ sub off_routes {
 
 sub _push_inc_path {
     my ( $self, $name ) = @_;
-    my $home = $self->app->home;
     $name =~ s/Markets::Addon:://;
-    push @INC, "$home/addons/$name/lib";
+    my $path = Mojo::Home->new( $self->app->home )->rel_dir("addons/$name/lib");
+    push @INC, $path;
 }
 
 ###################################################
