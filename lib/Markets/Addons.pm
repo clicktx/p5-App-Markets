@@ -2,7 +2,7 @@ package Markets::Addons;
 use Mojo::Base 'Markets::EventEmitter';
 
 use Carp qw/croak/;
-use Clone qw(clone);
+use Clone qw/clone/;
 use Mojo::Home;
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
@@ -19,11 +19,11 @@ has 'app';
 sub _on { shift->on(@_) }
 
 sub get_all {
-    my $self = shift;
+    my $self       = shift;
     my $addons_dir = $self->app->config('app_defaults')->{ADDONS_DIR};
-    my $rel_dir = Mojo::Home->new($self->app->home)->rel_dir($addons_dir);
-    my @all_dir = Markets::Util::directories($rel_dir);
-    my @all_addons = map {"Markets::Addon::" . $_} @all_dir;
+    my $rel_dir    = Mojo::Home->new( $self->app->home )->rel_dir($addons_dir);
+    my @all_dir    = Markets::Util::directories($rel_dir);
+    my @all_addons = map { "Markets::Addon::" . $_ } @all_dir;
     return wantarray ? @all_addons : \@all_addons;
 }
 
@@ -128,8 +128,9 @@ sub off_routes {
 sub _push_inc_path {
     my ( $self, $name ) = @_;
     $name =~ s/Markets::Addon:://;
-    my $addons_dir  = $self->app->config('app_defaults')->{ADDONS_DIR};
-    my $path = Mojo::Home->new( $self->app->home )->rel_dir("$addons_dir/$name/lib");
+    my $addons_dir = $self->app->config('app_defaults')->{ADDONS_DIR};
+    my $path =
+      Mojo::Home->new( $self->app->home )->rel_dir("$addons_dir/$name/lib");
     push @INC, $path;
 }
 

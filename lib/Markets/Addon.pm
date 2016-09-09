@@ -35,7 +35,7 @@ sub init {
     my $app  = $self->app;
 
     # Load lexicon file.
-    my $addons_dir  = $app->config('app_defaults')->{ADDONS_DIR};
+    my $addons_dir = $app->config('app_defaults')->{ADDONS_DIR};
     my $addon_name = $self->addon_name;
     my $locale_dir =
       File::Spec->catdir( $app->home, $addons_dir, $addon_name, 'locale' );
