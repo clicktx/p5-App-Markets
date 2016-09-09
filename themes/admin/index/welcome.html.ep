@@ -15,5 +15,5 @@ learn more, you can also browse through the documentation
     top
 <% end %>
 <p>
-    <%= link_to 'addon settings' => 'addons' %>
+    <%= link_to 'addon settings' => '/admin/addons' %>
 </p>
