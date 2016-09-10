@@ -21,8 +21,7 @@ has routes => sub {
     my $prefix           = decamelize( $self->addon_name );
 
     $self->app->stash('addons')->{$addon_class_name}->{routes}
-      ->any( '/' . $prefix )->to( namespace => __PACKAGE__ )
-      ->name($addon_class_name);
+      ->any( '/' . $prefix )->to( namespace => __PACKAGE__ );
 };
 has 'app';
 

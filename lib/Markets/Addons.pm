@@ -2,7 +2,6 @@ package Markets::Addons;
 use Mojo::Base 'Markets::EventEmitter';
 
 use Carp qw/croak/;
-use Clone qw/clone/;
 use Mojo::Home;
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
@@ -56,7 +55,8 @@ sub init {
 
 sub _init_routes {
     my ( $self, $name ) = @_;
-    $self->app->stash('addons')->{$name}->{routes} = Mojolicious::Routes->new;
+    $self->app->stash('addons')->{$name}->{routes} =
+      Mojolicious::Routes->new->name($name);
 }
 
 sub to_enable {
@@ -104,11 +104,7 @@ sub on_routes {
     my $routes = $self->app->stash('addons')->{$addon_name}->{routes};
 
     if ( @{ $routes->children } ) {
-
-# HACK: リファレンス渡しのため削除する際に実態が削除されてしまうため
-#       routesのクローンを追加しておく
-        my $clone_routes = clone($routes);
-        $self->app->routes->add_child($clone_routes);
+        $self->app->routes->add_child($routes);
 
 # $self->app->routes->cache( Mojo::Cache->new ); # 無くても動作するが必要？
     }
