@@ -2,30 +2,31 @@
 % title 'Welcome';
 <h1>Admin Mode</h1>
 
-<p>
+<div class="addon-list">
 % foreach my $addon(@$all_addons){
-    <div class="addon-list">
-        <div class="addon-name">
-            <% if ($installed_addons->{$addon}){ %>
-                installed:
-            <% } else { %>
-                not install:
-            <% } %>
-            <%= $addon %>
-        </div>
-        <div class="addon-status">
-            <% if ($installed_addons->{$addon}->{is_enabled}){ %>
-                <%= link_to url_for('/admin/addons/disable')->query(target => $addon) => begin %>on<% end %>
-            <% } else { %>
-                <%= link_to url_for('/admin/addons/enable')->query(target => $addon) => begin %>off<% end %>
-            <% }  %>
-        </div>
+%    if ($installed_addons->{$addon}){
+    <div class="addon-name addon-active">
+            installed: <%= $addon %>
+            <div class="addon-status">
+                <% if ($installed_addons->{$addon}->{is_enabled}){ %>
+                    <%= link_to url_for('/admin/addons/disable')->query(target => $addon) => begin %>on<% end %>
+                <% } else { %>
+                    <%= link_to url_for('/admin/addons/enable')->query(target => $addon) => begin %>off<% end %>
+                <% }  %>
+            </div>
     </div>
+%    } else {
+    <div class="addon-name addon-inactive">
+        not install: <%= $addon %>
+    </div>
+%   }
 % }
-</p>
+</div>
 
-<%= link_to 'click here' => url_for %> to reload the page or
-<%= link_to 'front page' => '../' %>
-<%= link_to '/' => begin %>
-    top
-<% end %>
+<p>
+    <%= link_to 'click here' => url_for %> to reload the page or
+    <%= link_to 'front page' => '../' %>
+    <%= link_to '/' => begin %>
+        top
+    <% end %>
+</p>
