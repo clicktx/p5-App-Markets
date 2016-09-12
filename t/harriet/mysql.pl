@@ -20,7 +20,7 @@ $ENV{TEST_MYSQL} ||= do {
     my $socket = $mysqld->my_cnf->{socket};
     system "mysqladmin -uroot -S $socket create markets";
     system "mysql -uroot -S $socket markets < share/sql/schema_mysql.sql";
-    system "mysql -uroot -S $socket markets < share/sql/data_mysql.sql";
+    system "mysql -uroot -S $socket markets < share/sql/default_data_mysql.sql";
 
     # return dsn
     $mysqld->dsn(
