@@ -87,7 +87,8 @@ sub initialize_app {
     # $self->config( constants => $self->model('data-constant')->load );
 
     # load config after. option schema loading.
-    my $more_schema_classes_from_db = [qw /Markets::DB::Schema::More/];
+    my $more_schema_classes_from_db =
+      [qw /Markets::DB::Schema::More Markets::DB::Schema::Addons/];
     $self->db->merge_schema($more_schema_classes_from_db);
 
     # session
