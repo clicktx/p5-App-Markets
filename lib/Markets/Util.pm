@@ -23,6 +23,7 @@ ignore - ignore directory name.
     use Markets::Util qw(directories);
 
     $sub_directories = directories('hoge', { ignore => ['huga'] });
+    @sub_directories = directories('hoge', { ignore => ['huga'] });
 
 =back
 
@@ -44,7 +45,7 @@ sub directories {
         $sub_dir =~ s/$dir\/?//;
         push @sub_directories, $sub_dir if $sub_dir;
     }
-    return \@sub_directories;
+    return wantarray ? @sub_directories : \@sub_directories;
 }
 
 1;

@@ -2,9 +2,12 @@ package Markets::Addons;
 use Mojo::Base 'Markets::EventEmitter';
 
 use Carp qw/croak/;
+use Mojo::Home;
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
+use Mojo::Cache;
 use Mojolicious::Routes;
+use Markets::Util;
 use constant { PRIORITY_DEFAULT => '100' };
 
 has namespaces => sub { [] };
@@ -12,17 +15,15 @@ has action     => sub { Markets::Addons::Action->new };
 has filter     => sub { Markets::Addons::Filter->new };
 has 'app';
 
-sub _on         { shift->on(@_) }
-sub emit_action { shift->emit(@_) }
-sub emit_filter { shift->emit(@_) }
+sub _on { shift->on(@_) }
 
-sub subscribe_hooks {
-    my ( $self, $addon_name ) = @_;
-    my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
-    foreach my $hook ( @{$hooks} ) {
-        my $hook_type = $hook->{type};
-        $self->$hook_type->_on($hook);
-    }
+sub get_all {
+    my $self       = shift;
+    my $addons_dir = $self->app->config('app_defaults')->{ADDONS_DIR};
+    my $rel_dir    = Mojo::Home->new( $self->app->home )->rel_dir($addons_dir);
+    my @all_dir    = Markets::Util::directories($rel_dir);
+    my @all_addons = map { "Markets::Addon::" . $_ } @all_dir;
+    return wantarray ? @all_addons : \@all_addons;
 }
 
 sub is_enabled {
@@ -34,7 +35,6 @@ sub is_enabled {
 sub init {
     my ( $self, $addon_settings ) = ( shift, shift // {} );
     my $app = $self->app;
-    say "home: " . $app->home;
 
     # Add all addons data in the app->stash.
     $app->defaults( addons => $addon_settings );
@@ -43,25 +43,23 @@ sub init {
     foreach my $addon_name ( keys %{$addons} ) {
 
         # Initialize routes
-        $self->init_routes($addon_name);
-
-        # Initialize hooks
-        # $self->xxx
+        $self->_init_routes($addon_name);
 
         # Regist addon
         $app->register_addon($addon_name);
 
         # For the enabled addons
-        $self->enabled($addon_name) if $self->is_enabled($addon_name);
+        $self->to_enable($addon_name) if $self->is_enabled($addon_name);
     }
 }
 
-sub init_routes {
+sub _init_routes {
     my ( $self, $name ) = @_;
-    $self->app->stash('addons')->{$name}->{routes} = Mojolicious::Routes->new;
+    $self->app->stash('addons')->{$name}->{routes} =
+      Mojolicious::Routes->new->name($name);
 }
 
-sub enabled {
+sub to_enable {
     my ( $self, $addon_name ) = @_;
 
     # Add hooks into the App.
@@ -71,17 +69,65 @@ sub enabled {
     $self->on_routes($addon_name);
 }
 
+sub to_disable {
+    my ( $self, $addon_name ) = @_;
+
+    # Remove hooks for App.
+    $self->unsubscribe_hooks($addon_name);
+
+    # Remove routes for App.
+    $self->off_routes($addon_name);
+}
+
+sub subscribe_hooks {
+    my ( $self, $addon_name ) = @_;
+    my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
+    foreach my $hook ( @{$hooks} ) {
+        my $hook_type = $hook->{type};
+        $self->$hook_type->_on($hook);
+    }
+    $self->app->renderer->cache( Mojo::Cache->new );
+}
+
+sub unsubscribe_hooks {
+    my ( $self, $addon_name ) = @_;
+    my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
+    foreach my $hook ( @{$hooks} ) {
+        my $hook_type = $hook->{type};
+        $self->$hook_type->unsubscribe( $hook->{name} => $hook );
+    }
+    $self->app->renderer->cache( Mojo::Cache->new );
+}
+
 sub on_routes {
     my ( $self, $addon_name ) = @_;
     my $routes = $self->app->stash('addons')->{$addon_name}->{routes};
-    $self->app->routes->add_child($routes) if @{ $routes->children };
+
+    if ( @{ $routes->children } ) {
+        $self->app->routes->add_child($routes);
+
+# $self->app->routes->cache( Mojo::Cache->new ); # 無くても動作するが必要？
+    }
+
+}
+
+sub off_routes {
+    my ( $self, $addon_name ) = @_;
+    my $routes = $self->app->routes->find($addon_name);
+
+    if ( ref $routes ) {
+        $routes->remove;
+        $self->app->routes->cache( Mojo::Cache->new );
+    }
 }
 
 sub _push_inc_path {
     my ( $self, $name ) = @_;
-    my $home = $self->app->home;
     $name =~ s/Markets::Addon:://;
-    push @INC, "$home/addons/$name/lib";
+    my $addons_dir = $self->app->config('app_defaults')->{ADDONS_DIR};
+    my $path =
+      Mojo::Home->new( $self->app->home )->rel_dir("$addons_dir/$name/lib");
+    push @INC, $path;
 }
 
 ###################################################
@@ -120,9 +166,11 @@ sub _load {
 # Use separate namespace
 package Markets::Addons::Action;
 use Mojo::Base 'Markets::Addons';
+sub emit_action { shift->emit(@_) }
 
 package Markets::Addons::Filter;
 use Mojo::Base 'Markets::Addons';
+sub emit_filter { shift->emit(@_) }
 
 1;
 
@@ -162,9 +210,44 @@ Markets::Addons::Filter object.
 
 =head1 METHODS
 
+=head2 emit_action
+
+    $addons = $addons->action->emit_action('foo');
+    $addons = $addons->action->emit_action(foo => 123);
+
+Emit event as action hook.
+This method is Markets::Addons::Action::emit_action.
+
+=head2 emit_filter
+
+    $addons = $addons->filter->emit_filter('foo');
+    $addons = $addons->filter->emit_filter(foo => 123);
+
+Emit event as filter hook.
+This method is Markets::Addons::Filter::emit_filter.
+
 =head2 init
 
     $addons->init(\%addon_settings);
+
+=head2 get_all
+
+    # Ref
+    my $all_addons = $addons->get_all;
+    # Array
+    my @all_addons = $addons->get_all;
+
+=head2 to_enable
+
+    $addons->to_enable('Markets::Addon::MyAddon');
+
+Change addon status to enable.
+
+=head2 to_disable
+
+    $addons->to_disable('Markets::Addon::MyAddon');
+
+Change addon status to disable.
 
 =head2 subscribe_hooks
 
@@ -172,7 +255,25 @@ Markets::Addons::Filter object.
 
 Subscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
 
-head2 register_addon
+=head2 unsubscribe_hooks
+
+    $addons->unsubscribe_hooks('Markets::Addon::MyAddon');
+
+Unsubscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
+
+=head2 on_routes
+
+    $self->on_routes('Markets::Addon::MyAddon');
+
+Add addon routes for App.
+
+=head2 off_routes
+
+    $self->off_routes('Markets::Addon::MyAddon');
+
+Remove addons routes from App.
+
+=head2 register_addon
 
     $addons->register_addon('Markets::Addons::MyAddon');
 

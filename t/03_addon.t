@@ -10,25 +10,32 @@ my $app = $t->app;
 
 subtest 'basic' => sub {
 
-# is_deeply $app->all_addons, [ 'DisableAddon', 'NotInstallAddon', 'TestAddon' ],
-#   'right all addons';
-    my $addon = $app->addons->load_addon('Markets::Addon::TestAddon');
+    my $all_addons = $app->addons->get_all;
+    is ref $all_addons, 'ARRAY', 'return array ref';
+    is @{$all_addons}, 3, 'right all addons';
+    my @sort_array =
+      sort { $a cmp $b } @{$all_addons};    # Hack: OSによる違いに対処
+    is_deeply \@sort_array,
+      [
+        'Markets::Addon::DisableAddon', 'Markets::Addon::NotInstallAddon',
+        'Markets::Addon::TestAddon'
+      ],
+      'right all addons';
+
+    my $addon = Markets::Addon::TestAddon->new;
     is $addon->class_name, 'Markets::Addon::TestAddon', 'right class name';
     is $addon->addon_name, 'TestAddon', 'right addon name';
-    my $r = $addon->routes;
-    is $r->name, 'Markets::Addon::TestAddon', 'right routes name';
 };
 
 subtest 'load addon' => sub {
     eval { $app->register_addon("NotFoundAddon") };
     is $@,
       'Addon "NotFoundAddon" missing, maybe you need to install it?' . "\n";
-
-    $app->addons->init;
 };
 
 subtest 'for TestAddon' => sub {
 
+    # Hooks
     # my $test_action = $app->action->{events}->{action_exsample_hook};
     # my $test_filter = $app->filter->{events}->{filter_exsample_hook};
     my $test_action = $app->action->subscribers('action_exsample_hook');
@@ -42,9 +49,20 @@ subtest 'for TestAddon' => sub {
     is $test_filter->[1]->{priority}, 100, 'right priority, filter hook';
     is ref $test_filter->[0]->{cb}, 'CODE', 'right code ref, filter hook';
 
+    # Routes
     $t->get_ok('/test_addon')->status_is(200)->content_like(qr/top/);
     $t->get_ok('/test_addon/hoo')->status_is(200)->content_like(qr/hoo/);
     $t->get_ok('/test_addon/nooo')->status_is(404);
+
+    # Disable addon
+    $app->addons->to_disable('Markets::Addon::TestAddon');
+    $test_action = $app->action->subscribers('action_exsample_hook');
+    $test_filter = $app->filter->subscribers('filter_exsample_hook');
+    is_deeply $test_action, [], 'removed action hooks';
+    is_deeply $test_filter, [], 'removed action hooks';
+    $t->get_ok('/test_addon')->status_is(404);
+    $t->get_ok('/test_addon/hoo')->status_is(404);
+
 };
 
 subtest 'for DisableAddon' => sub {

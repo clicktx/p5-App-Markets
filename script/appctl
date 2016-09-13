@@ -42,7 +42,7 @@ my $workers;
 if ( $mode eq 'development' or $development ) {
     $mode = 'development';
     $port ||= 3000;
-    $plackup_dev_option = "-R lib,lib,themes,addons ";
+    $plackup_dev_option = "-R lib,lib,themes,config,addons ";
     $back_ground        = "";
     $workers = 1;
 }

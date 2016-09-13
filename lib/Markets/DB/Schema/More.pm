@@ -4,8 +4,8 @@ use warnings;
 use Teng::Schema::Declare;
 
 table {
-    name 'sessions';
-    pk 'sid';
+    name    'sessions';
+    pk      'sid';
     columns qw( sid data cart expires );
 };
 

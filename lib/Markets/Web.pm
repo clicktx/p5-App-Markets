@@ -24,11 +24,10 @@ sub startup {
     $self->plugin('Markets::Web::DispatchRoutes');
 
     # Loading indtalled Addons
-    # [WIP] addon config
-    my $addons_setting_from_db = $self->config('addons_setting_from_db');
+    my $addons_config = $self->model('data-configure')->addons;
 
     # Initialize all addons
-    $self->addons->init($addons_setting_from_db);
+    $self->addons->init($addons_config) unless $ENV{MOJO_ADDON_TEST_MODE};
 }
 
 1;

@@ -29,4 +29,18 @@ sub load_config {
     return $conf;
 }
 
+sub init_addon {
+    my ( $self, $app, $name, $arg ) = ( shift, shift, shift, shift // {} );
+
+    $app->stash( 'addons', {} );
+    my $addon_config = $app->stash('addons');
+    my $is_enabled   = $arg->{is_enabled} || 0;
+
+    $addon_config->{$name} = {
+        is_enabled => $is_enabled,
+        hooks      => [],
+    };
+    $app->addons->init($addon_config);
+}
+
 1;

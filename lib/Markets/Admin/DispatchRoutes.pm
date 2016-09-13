@@ -8,7 +8,7 @@ sub register {
 
     # Admin route to controller
     $r->get('/')->to('index#welcome');
-    $r->get('/addons')->to('addons#index');
+    $r->get('/:controller/:action')->to(action => 'index');
 }
 
 1;

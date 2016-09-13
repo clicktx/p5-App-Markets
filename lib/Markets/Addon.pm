@@ -21,8 +21,7 @@ has routes => sub {
     my $prefix           = decamelize( $self->addon_name );
 
     $self->app->stash('addons')->{$addon_class_name}->{routes}
-      ->any( '/' . $prefix )->to( namespace => __PACKAGE__ )
-      ->name($addon_class_name);
+      ->any( '/' . $prefix )->to( namespace => __PACKAGE__ );
 };
 has 'app';
 
@@ -35,10 +34,10 @@ sub init {
     my $app  = $self->app;
 
     # Load lexicon file.
-    my $addon_dir  = $app->config('app_defaults')->{ADDONS_DIR};
+    my $addons_dir = $app->config('app_defaults')->{ADDONS_DIR};
     my $addon_name = $self->addon_name;
     my $locale_dir =
-      File::Spec->catdir( $app->home, $addon_dir, $addon_name, 'locale' );
+      File::Spec->catdir( $app->home, $addons_dir, $addon_name, 'locale' );
     my $text_domain = decamelize($addon_name);
     $app->lexicon(
         {
