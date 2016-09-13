@@ -13,6 +13,6 @@ table {
     name    'addon_hooks';
     pk      'id';
     columns qw( id addon_id hook_name priority );
-}
+};
 
 1;
