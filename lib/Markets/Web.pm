@@ -23,7 +23,7 @@ sub startup {
     $self->plugin('Markets::Admin::DispatchRoutes');
     $self->plugin('Markets::Web::DispatchRoutes');
 
-    # Loading indtalled Addons
+    # Loading installed Addons config
     my $addons_config = $self->model('data-configure')->addons;
 
     # Initialize all addons
