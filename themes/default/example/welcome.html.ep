@@ -22,7 +22,17 @@ learn more, you can also browse through the documentation
         <%= const('LINK_NAME') %>
     <% end %>
 </p>
-<%= $self->const('LINK_NAME') %>
+
+
+<form action="<%= url_for %>" method="post" style="border:1px solid gray">
+  <b>Form</b><br>
+  <b>Name:</b> <%= text_field 'name', placeholder => 'placeholder', class => 'css-class', id => 'css-id' %><br>
+  <b>Private:</b> Yes<%= radio_button private => 1 %> / No <%= radio_button private => 0, checked => 'checked' %><br>
+  <b>Message:</b><br>
+  <%= text_area 'message', style => "width:400px; height:100px" %><br>
+  <b>Password:</b> <%= password_field 'pass', class => 'pass-class', placeholder => 'your password' %><br>
+  <input type="submit" value="Post">
+</form>
 
 
 <h2>Admin pages</h2>
