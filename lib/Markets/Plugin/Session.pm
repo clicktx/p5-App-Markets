@@ -31,6 +31,7 @@ sub register {
 
             $next->();
 
+            say "hook! session flush";                # debug
             $c->stash($stash_key)->flush;
         }
     );
