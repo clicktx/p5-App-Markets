@@ -1,6 +1,7 @@
 package Markets::Addon;
 use Mojo::Base 'Mojolicious::Plugin';
 
+use B;
 use Carp 'croak';
 use File::Spec;
 use Mojolicious::Renderer;
@@ -66,11 +67,14 @@ sub _add_hook {
     my $priority = $hook_prioritie ? $hook_prioritie : $default_priority;
 
     my $hooks = $addon->{hooks};
+    my $cb_name = B::svref_2object($cb)->GV->NAME;
+
     push @{$hooks},
       {
         name             => $name,
         type             => $type,
         cb               => $cb,
+        cb_name          => $cb_name,
         priority         => $priority,
         default_priority => $default_priority,
       };
