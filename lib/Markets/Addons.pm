@@ -35,9 +35,7 @@ sub is_enabled {
 sub init {
     my ( $self, $addon_settings ) = ( shift, shift // {} );
     my $app = $self->app;
-
-    # Add all addons data in the app->stash.
-    $app->defaults( addons => $addon_settings );
+    $app->defaults( addons => $addon_settings, remove_hooks => [] );
 
     my $addons = $app->stash('addons');
     foreach my $addon_name ( keys %{$addons} ) {
@@ -48,8 +46,29 @@ sub init {
         # Regist addon
         $app->register_addon($addon_name);
 
-        # For the enabled addons
+        # Subscribe hooks
         $self->to_enable($addon_name) if $self->is_enabled($addon_name);
+    }
+
+    # Remove hooks
+    $self->_remove_hooks;
+}
+
+sub _remove_hooks {
+    my $self = shift;
+    my $remove_hooks = $self->app->stash('remove_hooks') || '';
+    return unless $remove_hooks;
+
+    foreach my $remove_hook ( @{$remove_hooks} ) {
+        my $type        = $remove_hook->{type};
+        my $hook        = $remove_hook->{hook};
+        my $subscribers = $self->app->addons->$type->subscribers($hook);
+        my $unsubscribers =
+          [ grep { $_->{cb_fn_name} eq $remove_hook->{cb_fn_name} }
+              @{$subscribers} ];
+
+        map { $self->app->addons->$type->unsubscribe( $hook, $_ ) }
+          @{$unsubscribers};
     }
 }
 

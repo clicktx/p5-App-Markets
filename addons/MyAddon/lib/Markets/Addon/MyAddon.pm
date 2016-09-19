@@ -13,9 +13,13 @@ sub register {
         action_replace_template => \&say_yes,
         { default_priority => 500 }    # option
     );
-    $self->add_action(
-        action_replace_template => \&action_replace_template,
+    $self->add_action( action_replace_template => \&myaddon_replace_templates,
     );
+    $self->add_filter( filter_form => sub { say "hook! filter_form!" } );
+
+    # remove action hook example
+    # $self->remove_action('action_replace_template', 'say_yes');
+    # $self->remove_action('action_replace_template', 'myaddon_replace_templates');
 }
 
 sub say_yes {
@@ -34,7 +38,7 @@ sub say_yes {
 # 各フックポイントを関数で定義する
 
 # コンパイル前のテンプレートに適用されるhook
-sub action_replace_template {
+sub myaddon_replace_templates {
     my ( $c, $file_path, $template_source ) = @_;
     say "filter hook: before_compile_template.";
 

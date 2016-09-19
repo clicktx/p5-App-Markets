@@ -129,6 +129,18 @@ sub initialize_app {
         }
     ) if -d $locale_dir;
 
+    $self->hook(
+        before_routes => sub {
+            my $c = shift;
+
+            # Emit filter hook (ignore static files)
+            say "hook! before_routes";    # debug
+            say "... This route is dynamic" unless ( $c->stash('mojo.static') );
+            $c->app->filter->emit_filter( filter_form => $c->app )
+              unless $c->stash('mojo.static');
+        }
+    );
+
     # Documentation browser under "/perldoc"
     $self->plugin('PODRenderer');
 }
