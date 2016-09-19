@@ -89,11 +89,6 @@ Emit event.
 Subscribe to event.
 Sort the Events in order of priority.
 
-=head2 sort
-
-    $e->sort('name');
-
-
 =head1 SEE ALSO
 
 L<Mojo::EventEmitter>
