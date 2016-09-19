@@ -31,6 +31,8 @@ sub on {
 
 sub once { croak 'Method "once" not supported.' }
 
+sub unsubscribe { shift->SUPER::unsubscribe(@_) }
+
 # sort by priority
 sub _sort_by_priority {
     my ( $self, $name ) = ( shift, shift );
@@ -89,10 +91,12 @@ Emit event.
 Subscribe to event.
 Sort the Events in order of priority.
 
-=head2 sort
+=head2 unsubscribe
 
-    $e->sort('name');
+  $e = $e->unsubscribe('foo');
+  $e = $e->unsubscribe(foo => $hook_ref);
 
+Unsubscribe from event.
 
 =head1 SEE ALSO
 
