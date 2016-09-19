@@ -21,11 +21,21 @@ sub register {
     # Add class with templates in DATA section
     push @{ $app->renderer->classes }, 'Markets::Addon::Newpage';
 
-    # Add routes in to the App.
-    # $app->routes->add_child($r);
+    # Add link
+    $self->add_action( action_replace_template => \&action_replace_template, );
+}
 
-    # Remove routes for the App.
-    # $app->routes->find($self->class_name)->remove;
+sub action_replace_template {
+    my ( $c, $file_path, $template_source ) = @_;
+
+    if ( $file_path =~ m|default/example/welcome| ) {
+
+        my $dom = $c->helpers->dom->parse( ${$template_source} );
+        $dom->find('p')
+          ->last->append( "<h2>Newpage</h2>"
+              . "<p><%= link_to 'newpage' => '/newpage' %></p>" );
+        ${$template_source} = $dom;
+    }
 }
 
 1;
