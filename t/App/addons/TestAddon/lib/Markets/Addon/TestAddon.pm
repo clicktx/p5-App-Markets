@@ -16,6 +16,12 @@ sub register {
     );
     $self->add_filter( 'filter_exsample_hook' => \&filter_exsample_hook, );
 
+    # Add hook and remove.
+    $self->add_action( 'action_exsample_hook' => \&remove_action_hook, );
+    $self->add_filter( 'filter_exsample_hook' => \&remove_filter_hook, );
+    $self->remove_action('action_exsample_hook', 'remove_action_hook');
+    $self->remove_filter('filter_exsample_hook', 'remove_filter_hook');
+
     # Add routes
     my $r = $self->routes;
     $r->get('/')->to('test_addon-example#top');
@@ -25,6 +31,8 @@ sub register {
 
 sub action_exsample_hook { my ( $c, $arg ) = @_ }
 sub filter_exsample_hook { my ( $c, $arg ) = @_ }
+sub remove_action_hook   { }
+sub remove_filter_hook   { }
 
 package Markets::Addon::TestAddon::Example;
 use Mojo::Base 'Mojolicious::Controller';

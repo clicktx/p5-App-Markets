@@ -53,6 +53,8 @@ sub init {
 
 sub add_action { shift->_add_hook( 'action', @_ ) }
 sub add_filter { shift->_add_hook( 'filter', @_ ) }
+sub remove_action { shift->_remove_hook( 'action', @_ ) }
+sub remove_filter { shift->_remove_hook( 'filter', @_ ) }
 
 sub _add_hook {
     my ( $self, $type, $name, $cb, $arg ) =
@@ -66,17 +68,28 @@ sub _add_hook {
       $arg->{default_priority} || $self->app->addons->PRIORITY_DEFAULT;
     my $priority = $hook_prioritie ? $hook_prioritie : $default_priority;
 
-    my $hooks = $addon->{hooks};
-    my $cb_name = B::svref_2object($cb)->GV->NAME;
+    my $hooks      = $addon->{hooks};
+    my $cb_fn_name = B::svref_2object($cb)->GV->NAME;
 
     push @{$hooks},
       {
         name             => $name,
         type             => $type,
         cb               => $cb,
-        cb_name          => $cb_name,
+        cb_fn_name       => $cb_fn_name,
         priority         => $priority,
         default_priority => $default_priority,
+      };
+}
+
+sub _remove_hook {
+    my ( $self, $type, $hook, $cb_fn_name ) = @_;
+    my $remove_hooks = $self->app->stash('remove_hooks');
+    push @{$remove_hooks},
+      {
+        type       => $type,
+        hook      => $hook,
+        cb_fn_name => $cb_fn_name,
       };
 }
 
@@ -214,6 +227,18 @@ Extend L<Markets> with action hook event.
     sub buzz { ... }
 
 Extend L<Markets> with filter hook event.
+
+=head2 remove_action
+
+    $addon->remove_action( 'action_hook_name', 'subroutine_name');
+
+Remove L<Markets> action hook event.
+
+=head2 remove_filter
+
+    $addon->remove_filter( 'filter_hook_name', 'subroutine_name');
+
+Remove L<Markets> filter hook event.
 
 =head2 get_template
 
