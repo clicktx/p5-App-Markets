@@ -34,3 +34,10 @@ learn more, you can also browse through the documentation
 <p>
     domain <%= __d 'my_addon', 'hello' %><%= __d 'my_addon', 'hello2' %>
 </p>
+
+<a href="<%= url_for %>" target="_top">link</a>
+% my $selected = 'selected';
+<select class="" name="">
+    <option>1</option>
+    <option <%= $selected %>>2</option>
+</select>
