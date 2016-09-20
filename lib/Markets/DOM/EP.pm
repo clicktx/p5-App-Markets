@@ -28,7 +28,7 @@ my $ATTR_RE = qr/
 /x;
 my $TOKEN_RE = qr/
   ([^<$start]+)?                                      # Text
-  ([^<]+)?                                            # EP lines
+  ([^<\n]+)?                                          # EP line
   (?:$tag([\s$expr$cmnt$start].+?)$end)?              # EP tag
   (?:
     <(?:
@@ -116,7 +116,7 @@ sub parse {
     my $current = my $tree = ['root'];
     while ( $html =~ /\G$TOKEN_RE/gcso ) {
         my (
-            $text,  $ep_lines, $ep_tag, $doctype, $comment,
+            $text,  $ep_line, $ep_tag, $doctype, $comment,
             $cdata, $pi,       $tag,    $runaway
         ) = ( $1, $2, $3, $4, $5, $6, $7, $8, $13 );
 
@@ -167,7 +167,7 @@ sub parse {
         }
 
         # EP Lines
-        elsif ( defined $ep_lines ) { _node( $current, 'ep_lines', $ep_lines ) }
+        elsif ( defined $ep_line ) { _node( $current, 'ep_line', $ep_line ) }
 
         # EP Tag
         elsif ( defined $ep_tag ) { _node( $current, 'ep_tag', $ep_tag ) }
@@ -229,7 +229,7 @@ sub _render {
     return $tree->[1] if $type eq 'raw';
 
     # EP Line
-    return $tree->[1] if $type eq 'ep_lines';
+    return $tree->[1] if $type eq 'ep_line';
 
     # EP Tag
     return '<%' . $tree->[1] . '%>' if $type eq 'ep_tag';
