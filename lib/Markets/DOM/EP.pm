@@ -18,8 +18,12 @@ my $cmnt  = '#';
 my $end   = '%>';
 my $start = '%';
 
+my $EP_TAG_IN_TAG_RE = qr/
+    $tag[\s$expr$cmnt$start].+?$end
+/x;
+
 my $ATTR_RE = qr/
-  ([^<>=\s\/]+|\/)                     # Key
+  ([^<>=\s\/]+|\/|$EP_TAG_IN_TAG_RE)                     # Key
   (?:
     \s*=\s*
     (?s:(["'])(.*?)\g{-2}|([^>\s]*))   # Value
@@ -28,7 +32,7 @@ my $ATTR_RE = qr/
 /x;
 my $TOKEN_RE = qr/
   ([^<$start]+)?                                      # Text
-  ([^<]+)?                                            # EP lines
+  ([^<\n]+\n)?                                        # EP line
   (?:$tag([\s$expr$cmnt$start].+?)$end)?              # EP tag
   (?:
     <(?:
@@ -116,8 +120,8 @@ sub parse {
     my $current = my $tree = ['root'];
     while ( $html =~ /\G$TOKEN_RE/gcso ) {
         my (
-            $text,  $ep_lines, $ep_tag, $doctype, $comment,
-            $cdata, $pi,       $tag,    $runaway
+            $text,  $ep_line, $ep_tag, $doctype, $comment,
+            $cdata, $pi,      $tag,    $runaway
         ) = ( $1, $2, $3, $4, $5, $6, $7, $8, $13 );
 
         # Text (and runaway "<")
@@ -167,7 +171,7 @@ sub parse {
         }
 
         # EP Lines
-        elsif ( defined $ep_lines ) { _node( $current, 'ep_lines', $ep_lines ) }
+        elsif ( defined $ep_line ) { _node( $current, 'ep_line', $ep_line ) }
 
         # EP Tag
         elsif ( defined $ep_tag ) { _node( $current, 'ep_tag', $ep_tag ) }
@@ -229,7 +233,7 @@ sub _render {
     return $tree->[1] if $type eq 'raw';
 
     # EP Line
-    return $tree->[1] if $type eq 'ep_lines';
+    return $tree->[1] if $type eq 'ep_line';
 
     # EP Tag
     return '<%' . $tree->[1] . '%>' if $type eq 'ep_tag';
@@ -259,7 +263,9 @@ sub _render {
         my $value = $tree->[2]{$key};
         $result .= $xml ? qq{ $key="$key"} : " $key" and next
           unless defined $value;
-        $result .= qq{ $key="} . xml_escape($value) . '"';
+
+        $value = xml_escape($value) if $value !~ /$EP_TAG_IN_TAG_RE/;
+        $result .= qq{ $key="} . $value . '"';
     }
 
     # No children

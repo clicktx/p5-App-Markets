@@ -9,38 +9,68 @@ use Markets::Plugin::DOM;
 my $dom = Mojo::DOM->new(<<EOF);
 % layout 'default';
 % title 'Welcome';
+This text
 <%= \$msg %>
+<% print "a" %>
+<%== \$msg %>
 <%= link_to '/' => begin %>
   top
 <% end %>
+<a href="<%= url_for %>">link</a>
+% my \$selected = 'selected';
+<option <%= \$selected %>>2</option>
+<div <%= class %> <%= style %>>
+    content
+</div>
 EOF
 is $dom->tree->[0], 'root', 'right type';
-is $dom->tree->[1][0], 'ep_lines', 'right type';
-is $dom->tree->[1][1], "% layout 'default';\n% title 'Welcome';\n", 'right tag';
-is $dom->tree->[3][0], 'ep_tag', 'right type';
-is $dom->tree->[3][1], '= link_to \'/\' => begin ', 'right tag';
-is $dom->tree->[4][0], 'text', 'right type';
-is $dom->tree->[4][1], "\n  top\n", 'right tag';
-is $dom->tree->[5][0], 'ep_tag', 'right type';
-is $dom->tree->[5][1], ' end ', 'right tag';
+is $dom->tree->[1][0],  'ep_line',                   'right type';
+is $dom->tree->[1][1],  "% layout 'default';\n",     'right line';
+is $dom->tree->[2][0],  'ep_line',                   'right type';
+is $dom->tree->[2][1],  "% title 'Welcome';\n",      'right line';
+is $dom->tree->[3][0],  'text',                      'right type';
+is $dom->tree->[3][1],  "This text\n",               'right text';
+is $dom->tree->[4][0],  'ep_tag',                    'right type';
+is $dom->tree->[4][1],  '= $msg ',                   'right tag';
+is $dom->tree->[6][0],  'ep_tag',                    'right type';
+is $dom->tree->[6][1],  ' print "a" ',               'right tag';
+is $dom->tree->[8][0],  'ep_tag',                    'right type';
+is $dom->tree->[8][1],  '== $msg ',                  'right tag';
+is $dom->tree->[10][0], 'ep_tag',                    'right type';
+is $dom->tree->[10][1], '= link_to \'/\' => begin ', 'right tag';
+is $dom->tree->[11][0], 'text',                      'right type';
+is $dom->tree->[11][1], "\n  top\n",                 'right tag';
+is $dom->tree->[12][0], 'ep_tag',                    'right type';
+is $dom->tree->[12][1], ' end ',                     'right tag';
+is $dom->tree->[14][0], 'tag',                       'right type';
+is $dom->tree->[14][1], 'a',                         'right tag';
+is_deeply $dom->tree->[14][2], { href => '<%= url_for %>' }, 'right attr';
+is $dom->tree->[16][0], 'ep_line', 'right type';
+is $dom->tree->[17][0], 'tag',     'right type';
+is $dom->tree->[17][1], 'option',  'right tag';
+is $dom->tree->[17][2]->{'<%= url_for %>'}, undef, 'right attr';
+is $dom->tree->[19][0], 'tag', 'right type';
+is $dom->tree->[19][1], 'div', 'right tag';
+is $dom->tree->[19][2]->{'<%= class %>'}, undef, 'right attr';
+is $dom->tree->[19][2]->{'<%= style %>'}, undef, 'right attr';
 
 # Empty
-is(Mojo::DOM->new,                     '',    'right result');
-is(Mojo::DOM->new(''),                 '',    'right result');
-is(Mojo::DOM->new->parse(''),          '',    'right result');
-is(Mojo::DOM->new->at('p'),            undef, 'no result');
-is(Mojo::DOM->new->append_content(''), '',    'right result');
-is(Mojo::DOM->new->all_text,           '',    'right result');
+is( Mojo::DOM->new,                     '',    'right result' );
+is( Mojo::DOM->new(''),                 '',    'right result' );
+is( Mojo::DOM->new->parse(''),          '',    'right result' );
+is( Mojo::DOM->new->at('p'),            undef, 'no result' );
+is( Mojo::DOM->new->append_content(''), '',    'right result' );
+is( Mojo::DOM->new->all_text,           '',    'right result' );
 
 # Simple (basics)
-$dom
-  = Mojo::DOM->new('<div><div FOO="0" id="a">A</div><div id="b">B</div></div>');
+$dom =
+  Mojo::DOM->new('<div><div FOO="0" id="a">A</div><div id="b">B</div></div>');
 is $dom->at('#b')->text, 'B', 'right text';
 my @div;
 push @div, $dom->find('div[id]')->map('text')->each;
 is_deeply \@div, [qw(A B)], 'found all div elements with id';
 @div = ();
-$dom->find('div[id]')->each(sub { push @div, $_->text });
+$dom->find('div[id]')->each( sub { push @div, $_->text } );
 is_deeply \@div, [qw(A B)], 'found all div elements with id';
 is $dom->at('#a')->attr('foo'), 0, 'right attribute';
 is $dom->at('#a')->attr->{foo}, 0, 'right attribute';
@@ -49,14 +79,14 @@ is "$dom", '<div><div foo="0" id="a">A</div><div id="b">B</div></div>',
 
 # Tap into method chain
 $dom = Mojo::DOM->new->parse('<div id="a">A</div><div id="b">B</div>');
-is_deeply [$dom->find('[id]')->map(attr => 'id')->each], [qw(a b)],
+is_deeply [ $dom->find('[id]')->map( attr => 'id' )->each ], [qw(a b)],
   'right result';
-is $dom->tap(sub { $_->at('#b')->remove }), '<div id="a">A</div>',
+is $dom->tap( sub { $_->at('#b')->remove } ), '<div id="a">A</div>',
   'right result';
 
 # Build tree from scratch
-is(Mojo::DOM->new->append_content('<p>')->at('p')->append_content('0')->text,
-  '0', 'right text');
+is( Mojo::DOM->new->append_content('<p>')->at('p')->append_content('0')->text,
+    '0', 'right text' );
 
 # Simple nesting with healing (tree structure)
 $dom = Mojo::DOM->new(<<EOF);
@@ -69,14 +99,14 @@ is_deeply $dom->tree->[1][2], {}, 'empty attributes';
 is $dom->tree->[1][3], $dom->tree, 'right parent';
 is $dom->tree->[1][4][0], 'tag', 'right type';
 is $dom->tree->[1][4][1], 'bar', 'right tag';
-is_deeply $dom->tree->[1][4][2], {a => 'b<c'}, 'right attributes';
+is_deeply $dom->tree->[1][4][2], { a => 'b<c' }, 'right attributes';
 is $dom->tree->[1][4][3], $dom->tree->[1], 'right parent';
 is $dom->tree->[1][4][4][0], 'text', 'right type';
 is $dom->tree->[1][4][4][1], 'ju',   'right text';
 is $dom->tree->[1][4][4][2], $dom->tree->[1][4], 'right parent';
 is $dom->tree->[1][4][5][0], 'tag', 'right type';
 is $dom->tree->[1][4][5][1], 'baz', 'right tag';
-is_deeply $dom->tree->[1][4][5][2], {a23 => undef}, 'right attributes';
+is_deeply $dom->tree->[1][4][5][2], { a23 => undef }, 'right attributes';
 is $dom->tree->[1][4][5][3], $dom->tree->[1][4], 'right parent';
 is $dom->tree->[1][4][5][4][0], 'text', 'right type';
 is $dom->tree->[1][4][5][4][1], 's',    'right text';
@@ -130,7 +160,7 @@ EOF
 ok !$dom->xml, 'XML mode not detected';
 is $dom->tag, undef, 'no tag';
 is $dom->attr('foo'), undef, 'no attribute';
-is $dom->attr(foo => 'bar')->attr('foo'), undef, 'no attribute';
+is $dom->attr( foo => 'bar' )->attr('foo'), undef, 'no attribute';
 is $dom->tree->[1][0], 'doctype', 'right type';
 is $dom->tree->[1][1], ' foo',    'right doctype';
 is "$dom", <<EOF, 'right result';
@@ -161,7 +191,8 @@ is $simple->parent->attr->{bar}, 'ba<z', 'right parent attribute';
 is $simple->parent->children->[1]->tag, 'test', 'right sibling';
 is $simple->to_string, '<simple class="working">easy</simple>',
   'stringified right';
-$simple->parent->attr(bar => 'baz')->attr({this => 'works', too => 'yea'});
+$simple->parent->attr( bar => 'baz' )
+  ->attr( { this => 'works', too => 'yea' } );
 is $simple->parent->attr('bar'),  'baz',   'right parent attribute';
 is $simple->parent->attr('this'), 'works', 'right parent attribute';
 is $simple->parent->attr('too'),  'yea',   'right parent attribute';
@@ -177,13 +208,13 @@ is $dom->next,     undef, 'no siblings';
 is $dom->previous, undef, 'no siblings';
 is $dom->at('foo > a')->next,          undef, 'no next sibling';
 is $dom->at('foo > simple')->previous, undef, 'no previous sibling';
-is_deeply [$dom->at('simple')->ancestors->map('tag')->each], ['foo'],
+is_deeply [ $dom->at('simple')->ancestors->map('tag')->each ], ['foo'],
   'right results';
 ok !$dom->at('simple')->ancestors->first->xml, 'XML mode not active';
 
 # Nodes
 $dom = Mojo::DOM->new(
-  '<!DOCTYPE before><p>test<![CDATA[123]]><!-- 456 --></p><?after?>');
+    '<!DOCTYPE before><p>test<![CDATA[123]]><!-- 456 --></p><?after?>');
 is $dom->at('p')->preceding_nodes->first->content, ' before', 'right content';
 is $dom->at('p')->preceding_nodes->size, 1, 'right number of nodes';
 is $dom->at('p')->child_nodes->last->preceding_nodes->first->content, 'test',
@@ -235,7 +266,7 @@ is $dom->child_nodes->[2]->type,    'pi',    'right type';
 is $dom->child_nodes->[2]->content, 'after', 'right content';
 is $dom->child_nodes->first->content(' again')->content, ' again',
   'right content';
-is $dom->child_nodes->grep(sub { $_->type eq 'pi' })->map('remove')
+is $dom->child_nodes->grep( sub { $_->type eq 'pi' } )->map('remove')
   ->first->type, 'root', 'right type';
 is "$dom", '<!DOCTYPE again><p><![CDATA[123]]><!-- 456 --></p>', 'right result';
 
@@ -351,15 +382,15 @@ is $p->[1], undef, 'no second result';
 is $p->size, 1, 'right number of elements';
 my @p;
 @div = ();
-$dom->find('div')->each(sub { push @div, $_->attr('id') });
-$dom->find('p')->each(sub { push @p, $_->attr('id') });
+$dom->find('div')->each( sub { push @div, $_->attr('id') } );
+$dom->find('p')->each( sub { push @p, $_->attr('id') } );
 is_deeply \@p, [qw(foo bar)], 'found all p elements';
 my $ids = [qw(container header logo buttons buttons content)];
 is_deeply \@div, $ids, 'found all div elements';
-is_deeply [$dom->at('p')->ancestors->map('tag')->each],
+is_deeply [ $dom->at('p')->ancestors->map('tag')->each ],
   [qw(div div div body html)], 'right results';
-is_deeply [$dom->at('html')->ancestors->each], [], 'no results';
-is_deeply [$dom->ancestors->each],             [], 'no results';
+is_deeply [ $dom->at('html')->ancestors->each ], [], 'no results';
+is_deeply [ $dom->ancestors->each ],             [], 'no results';
 
 # Script tag
 $dom = Mojo::DOM->new(<<EOF);
@@ -369,7 +400,7 @@ is $dom->at('script')->text, "alert('lalala');", 'right script content';
 
 # HTML5 (unquoted values)
 $dom = Mojo::DOM->new(
-  '<div id = test foo ="bar" class=tset bar=/baz/ value baz=//>works</div>');
+    '<div id = test foo ="bar" class=tset bar=/baz/ value baz=//>works</div>');
 is $dom->at('#test')->text,                'works', 'right text';
 is $dom->at('div')->text,                  'works', 'right text';
 is $dom->at('[foo=bar][foo="bar"]')->text, 'works', 'right text';
@@ -405,8 +436,8 @@ is $dom->at("[id='snow\\'m\"an']")->text,  '☃', 'right text';
 is $dom->at("[id='snow\\27m\"an']")->text, '☃', 'right text';
 
 # Unicode and escaped selectors
-my $html
-  = '<html><div id="☃x">Snowman</div><div class="x ♥">Heart</div></html>';
+my $html =
+  '<html><div id="☃x">Snowman</div><div class="x ♥">Heart</div></html>';
 $dom = Mojo::DOM->new($html);
 is $dom->at("#\\\n\\002603x")->text,                  'Snowman', 'right text';
 is $dom->at('#\\2603 x')->text,                       'Snowman', 'right text';
@@ -478,7 +509,7 @@ is $dom->content,   $html, 'right result';
 
 # Looks remotely like HTML
 $dom = Mojo::DOM->new(
-  '<!DOCTYPE H "-/W/D HT 4/E">☃<title class=test>♥</title>☃');
+    '<!DOCTYPE H "-/W/D HT 4/E">☃<title class=test>♥</title>☃');
 is $dom->at('title')->text, '♥', 'right text';
 is $dom->at('*')->text,     '♥', 'right text';
 is $dom->at('.test')->text, '♥', 'right text';
@@ -488,10 +519,10 @@ $dom = Mojo::DOM->new('<div>foo<p>lalala</p>bar</div>');
 is $dom->at('p')->replace('<foo>bar</foo>'), '<div>foo<foo>bar</foo>bar</div>',
   'right result';
 is "$dom", '<div>foo<foo>bar</foo>bar</div>', 'right result';
-$dom->at('foo')->replace(Mojo::DOM->new('text'));
+$dom->at('foo')->replace( Mojo::DOM->new('text') );
 is "$dom", '<div>footextbar</div>', 'right result';
 $dom = Mojo::DOM->new('<div>foo</div><div>bar</div>');
-$dom->find('div')->each(sub { shift->replace('<p>test</p>') });
+$dom->find('div')->each( sub { shift->replace('<p>test</p>') } );
 is "$dom", '<p>test</p><p>test</p>', 'right result';
 $dom = Mojo::DOM->new('<div>foo<p>lalala</p>bar</div>');
 is $dom->replace('♥'), '♥', 'right result';
@@ -504,7 +535,7 @@ is $dom->replace(''), '', 'no result';
 is "$dom", '', 'no result';
 $dom->replace('<div>foo<p>lalala</p>bar</div>');
 is "$dom", '<div>foo<p>lalala</p>bar</div>', 'right result';
-$dom->find('p')->map(replace => '');
+$dom->find('p')->map( replace => '' );
 is "$dom", '<div>foobar</div>', 'right result';
 $dom = Mojo::DOM->new('<div>♥</div>');
 $dom->at('div')->content('☃');
@@ -537,12 +568,12 @@ is "$dom", '<div>ABC</div>', 'right result';
 $dom = Mojo::DOM->new('<div>foo<p>lalala</p>bar</div>');
 is $dom->at('p')->content('bar'), '<p>bar</p>', 'right result';
 is "$dom", '<div>foo<p>bar</p>bar</div>', 'right result';
-$dom->at('p')->content(Mojo::DOM->new('text'));
+$dom->at('p')->content( Mojo::DOM->new('text') );
 is "$dom", '<div>foo<p>text</p>bar</div>', 'right result';
 $dom = Mojo::DOM->new('<div>foo</div><div>bar</div>');
-$dom->find('div')->each(sub { shift->content('<p>test</p>') });
+$dom->find('div')->each( sub { shift->content('<p>test</p>') } );
 is "$dom", '<div><p>test</p></div><div><p>test</p></div>', 'right result';
-$dom->find('p')->each(sub { shift->content('') });
+$dom->find('p')->each( sub { shift->content('') } );
 is "$dom", '<div><p></p></div><div><p></p></div>', 'right result';
 $dom = Mojo::DOM->new('<div><p id="☃" /></div>');
 $dom->at('#☃')->content('♥');
@@ -569,10 +600,10 @@ $dom = Mojo::DOM->new(<<EOF);
 </table>
 EOF
 my @data;
-for my $tr ($dom->find('table tr')->each) {
-  for my $td (@{$tr->children}) {
-    push @data, $td->tag, $td->all_text;
-  }
+for my $tr ( $dom->find('table tr')->each ) {
+    for my $td ( @{ $tr->children } ) {
+        push @data, $td->tag, $td->all_text;
+    }
 }
 is $data[0], 'td',    'right tag';
 is $data[1], 'text1', 'right text';
@@ -608,7 +639,7 @@ $dom = Mojo::DOM->new(<<EOF);
 EOF
 ok $dom->xml, 'XML mode detected';
 is $dom->find('rss')->[0]->attr('version'), '2.0', 'right version';
-is_deeply [$dom->at('title')->ancestors->map('tag')->each], [qw(channel rss)],
+is_deeply [ $dom->at('title')->ancestors->map('tag')->each ], [qw(channel rss)],
   'right results';
 is $dom->at('extension')->attr('foo:id'), 'works', 'right id';
 like $dom->at('#works')->text,       qr/\[awesome\]\]/, 'right text';
@@ -773,14 +804,14 @@ is "$dom", $yadis, 'successful roundtrip';
 # Result and iterator order
 $dom = Mojo::DOM->new('<a><b>1</b></a><b>2</b><b>3</b>');
 my @numbers;
-$dom->find('b')->each(sub { push @numbers, pop, shift->text });
-is_deeply \@numbers, [1, 1, 2, 2, 3, 3], 'right order';
+$dom->find('b')->each( sub { push @numbers, pop, shift->text } );
+is_deeply \@numbers, [ 1, 1, 2, 2, 3, 3 ], 'right order';
 
 # Attributes on multiple lines
 $dom = Mojo::DOM->new("<div test=23 id='a' \n class='x' foo=bar />");
 is $dom->at('div.x')->attr('test'),        23,  'right attribute';
 is $dom->at('[foo="bar"]')->attr('class'), 'x', 'right attribute';
-is $dom->at('div')->attr(baz => undef)->root->to_string,
+is $dom->at('div')->attr( baz => undef )->root->to_string,
   '<div baz class="x" foo="bar" id="a" test="23"></div>', 'right result';
 
 # Markup characters in attribute values
@@ -816,17 +847,17 @@ is $dom->at('div')->content, 'content', 'right text';
 # Class with hyphen
 $dom = Mojo::DOM->new('<div class="a">A</div><div class="a-1">A1</div>');
 @div = ();
-$dom->find('.a')->each(sub { push @div, shift->text });
+$dom->find('.a')->each( sub { push @div, shift->text } );
 is_deeply \@div, ['A'], 'found first element only';
 @div = ();
-$dom->find('.a-1')->each(sub { push @div, shift->text });
+$dom->find('.a-1')->each( sub { push @div, shift->text } );
 is_deeply \@div, ['A1'], 'found last element only';
 
 # Defined but false text
 $dom = Mojo::DOM->new(
-  '<div><div id="a">A</div><div id="b">B</div></div><div id="0">0</div>');
+    '<div><div id="a">A</div><div id="b">B</div></div><div id="0">0</div>');
 @div = ();
-$dom->find('div[id]')->each(sub { push @div, shift->text });
+$dom->find('div[id]')->each( sub { push @div, shift->text } );
 is_deeply \@div, [qw(A B 0)], 'found all div elements with id';
 
 # Empty tags
@@ -841,30 +872,30 @@ is $dom->content, '<a>xxx<x>x</x>xxx</a>', 'right result';
 
 # Multiple selectors
 $dom = Mojo::DOM->new(
-  '<div id="a">A</div><div id="b">B</div><div id="c">C</div><p>D</p>');
+    '<div id="a">A</div><div id="b">B</div><div id="c">C</div><p>D</p>');
 @div = ();
-$dom->find('p, div')->each(sub { push @div, shift->text });
+$dom->find('p, div')->each( sub { push @div, shift->text } );
 is_deeply \@div, [qw(A B C D)], 'found all elements';
 @div = ();
-$dom->find('#a, #c')->each(sub { push @div, shift->text });
+$dom->find('#a, #c')->each( sub { push @div, shift->text } );
 is_deeply \@div, [qw(A C)], 'found all div elements with the right ids';
 @div = ();
-$dom->find('div#a, div#b')->each(sub { push @div, shift->text });
+$dom->find('div#a, div#b')->each( sub { push @div, shift->text } );
 is_deeply \@div, [qw(A B)], 'found all div elements with the right ids';
 @div = ();
-$dom->find('div[id="a"], div[id="c"]')->each(sub { push @div, shift->text });
+$dom->find('div[id="a"], div[id="c"]')->each( sub { push @div, shift->text } );
 is_deeply \@div, [qw(A C)], 'found all div elements with the right ids';
 $dom = Mojo::DOM->new(
-  '<div id="☃">A</div><div id="b">B</div><div id="♥x">C</div>');
+    '<div id="☃">A</div><div id="b">B</div><div id="♥x">C</div>');
 @div = ();
-$dom->find('#☃, #♥x')->each(sub { push @div, shift->text });
+$dom->find('#☃, #♥x')->each( sub { push @div, shift->text } );
 is_deeply \@div, [qw(A C)], 'found all div elements with the right ids';
 @div = ();
-$dom->find('div#☃, div#b')->each(sub { push @div, shift->text });
+$dom->find('div#☃, div#b')->each( sub { push @div, shift->text } );
 is_deeply \@div, [qw(A B)], 'found all div elements with the right ids';
 @div = ();
 $dom->find('div[id="☃"], div[id="♥x"]')
-  ->each(sub { push @div, shift->text });
+  ->each( sub { push @div, shift->text } );
 is_deeply \@div, [qw(A C)], 'found all div elements with the right ids';
 
 # Multiple attributes
@@ -875,10 +906,10 @@ $dom = Mojo::DOM->new(<<EOF);
 <div foo="baz" bar="baz">D</div>
 EOF
 @div = ();
-$dom->find('div[foo="bar"][bar="baz"]')->each(sub { push @div, shift->text });
+$dom->find('div[foo="bar"][bar="baz"]')->each( sub { push @div, shift->text } );
 is_deeply \@div, [qw(A C)], 'found all div elements with the right atributes';
 @div = ();
-$dom->find('div[foo^="b"][foo$="r"]')->each(sub { push @div, shift->text });
+$dom->find('div[foo^="b"][foo$="r"]')->each( sub { push @div, shift->text } );
 is_deeply \@div, [qw(A B C)], 'found all div elements with the right atributes';
 is $dom->at('[foo="bar"]')->previous, undef, 'no previous sibling';
 is $dom->at('[foo="bar"]')->next->text, 'B', 'right text';
@@ -950,13 +981,13 @@ $dom = Mojo::DOM->new(<<EOF);
 </ul>
 EOF
 my @li;
-$dom->find('li:nth-child(odd)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(odd)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A C E G)], 'found all odd li elements';
 @li = ();
-$dom->find('li:NTH-CHILD(ODD)')->each(sub { push @li, shift->text });
+$dom->find('li:NTH-CHILD(ODD)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A C E G)], 'found all odd li elements';
 @li = ();
-$dom->find('li:nth-last-child(odd)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child(odd)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(B D F H)], 'found all odd li elements';
 is $dom->find(':nth-child(odd)')->[0]->tag,      'ul', 'right tag';
 is $dom->find(':nth-child(odd)')->[1]->text,     'A',  'right text';
@@ -967,124 +998,124 @@ is $dom->find(':nth-last-child(odd)')->last->text, 'H', 'right text';
 is $dom->find(':nth-last-child(1)')->[0]->tag,  'ul', 'right tag';
 is $dom->find(':nth-last-child(1)')->[1]->text, 'H',  'right text';
 @li = ();
-$dom->find('li:nth-child(2n+1)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(2n+1)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A C E G)], 'found all odd li elements';
 @li = ();
-$dom->find('li:nth-child(2n + 1)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(2n + 1)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A C E G)], 'found all odd li elements';
 @li = ();
-$dom->find('li:nth-last-child(2n+1)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child(2n+1)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(B D F H)], 'found all odd li elements';
 @li = ();
-$dom->find('li:nth-child(even)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(even)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(B D F H)], 'found all even li elements';
 @li = ();
-$dom->find('li:NTH-CHILD(EVEN)')->each(sub { push @li, shift->text });
+$dom->find('li:NTH-CHILD(EVEN)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(B D F H)], 'found all even li elements';
 @li = ();
-$dom->find('li:nth-last-child( even )')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child( even )')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A C E G)], 'found all even li elements';
 @li = ();
-$dom->find('li:nth-child(2n+2)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(2n+2)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(B D F H)], 'found all even li elements';
 @li = ();
-$dom->find('li:nTh-chILd(2N+2)')->each(sub { push @li, shift->text });
+$dom->find('li:nTh-chILd(2N+2)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(B D F H)], 'found all even li elements';
 @li = ();
-$dom->find('li:nth-child( 2n + 2 )')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child( 2n + 2 )')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(B D F H)], 'found all even li elements';
 @li = ();
-$dom->find('li:nth-last-child(2n+2)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child(2n+2)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A C E G)], 'found all even li elements';
 @li = ();
-$dom->find('li:nth-child(4n+1)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(4n+1)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A E)], 'found the right li elements';
 @li = ();
-$dom->find('li:nth-last-child(4n+1)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child(4n+1)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(D H)], 'found the right li elements';
 @li = ();
-$dom->find('li:nth-child(4n+4)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(4n+4)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(D H)], 'found the right li elements';
 @li = ();
-$dom->find('li:nth-last-child(4n+4)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child(4n+4)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A E)], 'found the right li elements';
 @li = ();
-$dom->find('li:nth-child(4n)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(4n)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(D H)], 'found the right li elements';
 @li = ();
-$dom->find('li:nth-child( 4n )')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child( 4n )')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(D H)], 'found the right li elements';
 @li = ();
-$dom->find('li:nth-last-child(4n)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child(4n)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A E)], 'found the right li elements';
 @li = ();
-$dom->find('li:nth-child(5n-2)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(5n-2)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(C H)], 'found the right li elements';
 @li = ();
-$dom->find('li:nth-child( 5n - 2 )')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child( 5n - 2 )')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(C H)], 'found the right li elements';
 @li = ();
-$dom->find('li:nth-last-child(5n-2)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child(5n-2)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A F)], 'found the right li elements';
 @li = ();
-$dom->find('li:nth-child(-n+3)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(-n+3)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A B C)], 'found first three li elements';
 @li = ();
-$dom->find('li:nth-child( -n + 3 )')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child( -n + 3 )')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A B C)], 'found first three li elements';
 @li = ();
-$dom->find('li:nth-last-child(-n+3)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child(-n+3)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(F G H)], 'found last three li elements';
 @li = ();
-$dom->find('li:nth-child(-1n+3)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(-1n+3)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A B C)], 'found first three li elements';
 @li = ();
-$dom->find('li:nth-last-child(-1n+3)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child(-1n+3)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(F G H)], 'found first three li elements';
 @li = ();
-$dom->find('li:nth-child(3n)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(3n)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(C F)], 'found every third li elements';
 @li = ();
-$dom->find('li:nth-last-child(3n)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child(3n)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(C F)], 'found every third li elements';
 @li = ();
-$dom->find('li:NTH-LAST-CHILD(3N)')->each(sub { push @li, shift->text });
+$dom->find('li:NTH-LAST-CHILD(3N)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(C F)], 'found every third li elements';
 @li = ();
-$dom->find('li:Nth-Last-Child(3N)')->each(sub { push @li, shift->text });
+$dom->find('li:Nth-Last-Child(3N)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(C F)], 'found every third li elements';
 @li = ();
-$dom->find('li:nth-child( 3 )')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child( 3 )')->each( sub { push @li, shift->text } );
 is_deeply \@li, ['C'], 'found third li element';
 @li = ();
-$dom->find('li:nth-last-child( +3 )')->each(sub { push @li, shift->text });
+$dom->find('li:nth-last-child( +3 )')->each( sub { push @li, shift->text } );
 is_deeply \@li, ['F'], 'found third last li element';
 @li = ();
-$dom->find('li:nth-child(1n+0)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(1n+0)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A B C D E F G)], 'found all li elements';
 @li = ();
-$dom->find('li:nth-child(1n-0)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(1n-0)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A B C D E F G)], 'found all li elements';
 @li = ();
-$dom->find('li:nth-child(n+0)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(n+0)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A B C D E F G)], 'found all li elements';
 @li = ();
-$dom->find('li:nth-child(n)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(n)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A B C D E F G)], 'found all li elements';
 @li = ();
-$dom->find('li:nth-child(n+0)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(n+0)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A B C D E F G)], 'found all li elements';
 @li = ();
-$dom->find('li:NTH-CHILD(N+0)')->each(sub { push @li, shift->text });
+$dom->find('li:NTH-CHILD(N+0)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A B C D E F G)], 'found all li elements';
 @li = ();
-$dom->find('li:Nth-Child(N+0)')->each(sub { push @li, shift->text });
+$dom->find('li:Nth-Child(N+0)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A B C D E F G)], 'found all li elements';
 @li = ();
-$dom->find('li:nth-child(n)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(n)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A B C D E F G)], 'found all li elements';
 @li = ();
-$dom->find('li:nth-child(0n+1)')->each(sub { push @li, shift->text });
+$dom->find('li:nth-child(0n+1)')->each( sub { push @li, shift->text } );
 is_deeply \@li, [qw(A)], 'found first li element';
 is $dom->find('li:nth-child(0n+0)')->size,     0, 'no results';
 is $dom->find('li:nth-child(0)')->size,        0, 'no results';
@@ -1115,104 +1146,105 @@ $dom = Mojo::DOM->new(<<EOF);
 </div>
 EOF
 my @e;
-$dom->find('ul :nth-child(odd)')->each(sub { push @e, shift->text });
+$dom->find('ul :nth-child(odd)')->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(A C E G I)], 'found all odd elements';
 @e = ();
-$dom->find('li:nth-of-type(odd)')->each(sub { push @e, shift->text });
+$dom->find('li:nth-of-type(odd)')->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(A E H)], 'found all odd li elements';
 @e = ();
-$dom->find('li:nth-last-of-type( odd )')->each(sub { push @e, shift->text });
+$dom->find('li:nth-last-of-type( odd )')->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(C F I)], 'found all odd li elements';
 @e = ();
-$dom->find('p:nth-of-type(odd)')->each(sub { push @e, shift->text });
+$dom->find('p:nth-of-type(odd)')->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(B G)], 'found all odd p elements';
 @e = ();
-$dom->find('p:nth-last-of-type(odd)')->each(sub { push @e, shift->text });
+$dom->find('p:nth-last-of-type(odd)')->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(B G)], 'found all odd li elements';
 @e = ();
-$dom->find('ul :nth-child(1)')->each(sub { push @e, shift->text });
+$dom->find('ul :nth-child(1)')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['A'], 'found first child';
 @e = ();
-$dom->find('ul :first-child')->each(sub { push @e, shift->text });
+$dom->find('ul :first-child')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['A'], 'found first child';
 @e = ();
-$dom->find('p:nth-of-type(1)')->each(sub { push @e, shift->text });
+$dom->find('p:nth-of-type(1)')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['B'], 'found first child';
 @e = ();
-$dom->find('p:first-of-type')->each(sub { push @e, shift->text });
+$dom->find('p:first-of-type')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['B'], 'found first child';
 @e = ();
-$dom->find('li:nth-of-type(1)')->each(sub { push @e, shift->text });
+$dom->find('li:nth-of-type(1)')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['A'], 'found first child';
 @e = ();
-$dom->find('li:first-of-type')->each(sub { push @e, shift->text });
+$dom->find('li:first-of-type')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['A'], 'found first child';
 @e = ();
-$dom->find('ul :nth-last-child(-n+1)')->each(sub { push @e, shift->text });
+$dom->find('ul :nth-last-child(-n+1)')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['I'], 'found last child';
 @e = ();
-$dom->find('ul :last-child')->each(sub { push @e, shift->text });
+$dom->find('ul :last-child')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['I'], 'found last child';
 @e = ();
-$dom->find('p:nth-last-of-type(-n+1)')->each(sub { push @e, shift->text });
+$dom->find('p:nth-last-of-type(-n+1)')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['G'], 'found last child';
 @e = ();
-$dom->find('p:last-of-type')->each(sub { push @e, shift->text });
+$dom->find('p:last-of-type')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['G'], 'found last child';
 @e = ();
-$dom->find('li:nth-last-of-type(-n+1)')->each(sub { push @e, shift->text });
+$dom->find('li:nth-last-of-type(-n+1)')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['I'], 'found last child';
 @e = ();
-$dom->find('li:last-of-type')->each(sub { push @e, shift->text });
+$dom->find('li:last-of-type')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['I'], 'found last child';
 @e = ();
-$dom->find('ul :nth-child(-n+3):not(li)')->each(sub { push @e, shift->text });
+$dom->find('ul :nth-child(-n+3):not(li)')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['B'], 'found first p element';
 @e = ();
-$dom->find('ul :nth-child(-n+3):NOT(li)')->each(sub { push @e, shift->text });
+$dom->find('ul :nth-child(-n+3):NOT(li)')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['B'], 'found first p element';
 @e = ();
 $dom->find('ul :nth-child(-n+3):not(:first-child)')
-  ->each(sub { push @e, shift->text });
+  ->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(B C)], 'found second and third element';
 @e = ();
-$dom->find('ul :nth-child(-n+3):not(.♥)')->each(sub { push @e, shift->text });
+$dom->find('ul :nth-child(-n+3):not(.♥)')
+  ->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(A B)], 'found first and second element';
 @e = ();
 $dom->find('ul :nth-child(-n+3):not([class$="♥"])')
-  ->each(sub { push @e, shift->text });
+  ->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(A B)], 'found first and second element';
 @e = ();
 $dom->find('ul :nth-child(-n+3):not(li[class$="♥"])')
-  ->each(sub { push @e, shift->text });
+  ->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(A B)], 'found first and second element';
 @e = ();
 $dom->find('ul :nth-child(-n+3):not([class$="♥"][class^="test"])')
-  ->each(sub { push @e, shift->text });
+  ->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(A B)], 'found first and second element';
 @e = ();
 $dom->find('ul :nth-child(-n+3):not(*[class$="♥"])')
-  ->each(sub { push @e, shift->text });
+  ->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(A B)], 'found first and second element';
 @e = ();
 $dom->find('ul :nth-child(-n+3):not(:nth-child(-n+2))')
-  ->each(sub { push @e, shift->text });
+  ->each( sub { push @e, shift->text } );
 is_deeply \@e, ['C'], 'found third element';
 @e = ();
 $dom->find('ul :nth-child(-n+3):not(:nth-child(1)):not(:nth-child(2))')
-  ->each(sub { push @e, shift->text });
+  ->each( sub { push @e, shift->text } );
 is_deeply \@e, ['C'], 'found third element';
 @e = ();
-$dom->find(':only-child')->each(sub { push @e, shift->text });
+$dom->find(':only-child')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['J'], 'found only child';
 @e = ();
-$dom->find('div :only-of-type')->each(sub { push @e, shift->text });
+$dom->find('div :only-of-type')->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(J K)], 'found only child';
 @e = ();
-$dom->find('div:only-child')->each(sub { push @e, shift->text });
+$dom->find('div:only-child')->each( sub { push @e, shift->text } );
 is_deeply \@e, ['J'], 'found only child';
 @e = ();
-$dom->find('div div:only-of-type')->each(sub { push @e, shift->text });
+$dom->find('div div:only-of-type')->each( sub { push @e, shift->text } );
 is_deeply \@e, [qw(J K)], 'found only child';
 
 # Sibling combinator
@@ -1314,7 +1346,7 @@ is "$dom", <<EOF, 'no changes';
 </ul>
 <div>D</div>
 EOF
-$dom->find('div')->each(sub { shift->append('works') });
+$dom->find('div')->each( sub { shift->append('works') } );
 is "$dom", <<EOF, 'right result';
 <ul>
     24<div>A-1</div>works25<li>A</li><p>A1</p>23
@@ -1617,14 +1649,14 @@ is $dom->find('tbody > tr > .gamma > a')->[0]->text, 'Gamma', 'right text';
 is $dom->find('tbody > tr > .alpha')->[1]->text, "Alpha Two\n          ",
   'right text';
 is $dom->find('tbody > tr > .gamma > a')->[1]->text, 'Gamma Two', 'right text';
-my @following
-  = $dom->find('tr > td:nth-child(1)')->map(following => ':nth-child(even)')
+my @following =
+  $dom->find('tr > td:nth-child(1)')->map( following => ':nth-child(even)' )
   ->flatten->map('all_text')->each;
 my $elements = [
-  "Beta\n          ",
-  "Delta\n        ",
-  "Beta Two\n          ",
-  "Delta Two\n    "
+    "Beta\n          ",
+    "Delta\n        ",
+    "Beta Two\n          ",
+    "Delta Two\n    "
 ];
 is_deeply \@following, $elements, 'right results';
 
@@ -1992,8 +2024,8 @@ is $dom, '<XMLTest2 foo="foo" /><XMLTest3 just="works" />', 'right result';
 # Ensure HTML semantics
 ok !Mojo::DOM->new->xml(undef)->parse('<?xml version="1.0"?>')->xml,
   'XML mode not detected';
-$dom
-  = Mojo::DOM->new->xml(0)->parse('<?xml version="1.0"?><br><div>Test</div>');
+$dom =
+  Mojo::DOM->new->xml(0)->parse('<?xml version="1.0"?><br><div>Test</div>');
 is $dom->at('div:root')->text, 'Test', 'right text';
 
 # Ensure XML semantics
@@ -2068,19 +2100,19 @@ $dom->parse(<<EOF);
 EOF
 my @results;
 $dom->find('b')->each(
-  sub {
-    $_->find('a')->each(sub { push @results, $_->text });
-  }
+    sub {
+        $_->find('a')->each( sub { push @results, $_->text } );
+    }
 );
 is_deeply \@results, [qw(bar baz yada)], 'right results';
 @results = ();
-$dom->find('a')->each(sub { push @results, $_->text });
+$dom->find('a')->each( sub { push @results, $_->text } );
 is_deeply \@results, [qw(foo bar baz yada)], 'right results';
 @results = ();
 $dom->find('b')->each(
-  sub {
-    $_->find('c a')->each(sub { push @results, $_->text });
-  }
+    sub {
+        $_->find('c a')->each( sub { push @results, $_->text } );
+    }
 );
 is_deeply \@results, [qw(baz yada)], 'right results';
 is $dom->at('b')->at('a')->text, 'bar', 'right text';
@@ -2099,24 +2131,27 @@ $dom = Mojo::DOM->new->xml(1)->parse(<<EOF);
 EOF
 ok $dom->xml, 'XML mode active';
 is $dom->at('a')->{id}, 'one', 'right attribute';
-is_deeply [sort keys %{$dom->at('a')}], ['id'], 'right attributes';
+is_deeply [ sort keys %{ $dom->at('a') } ], ['id'], 'right attributes';
 is $dom->at('a')->at('B')->text, "\n    foo\n    \n    \n  ", 'right text';
 is $dom->at('B')->{class}, 'two', 'right attribute';
-is_deeply [sort keys %{$dom->at('a B')}], [qw(class test)], 'right attributes';
+is_deeply [ sort keys %{ $dom->at('a B') } ], [qw(class test)],
+  'right attributes';
 is $dom->find('a B c')->[0]->text, 'bar', 'right text';
 is $dom->find('a B c')->[0]{id}, 'three', 'right attribute';
-is_deeply [sort keys %{$dom->find('a B c')->[0]}], ['id'], 'right attributes';
+is_deeply [ sort keys %{ $dom->find('a B c')->[0] } ], ['id'],
+  'right attributes';
 is $dom->find('a B c')->[1]->text, 'baz', 'right text';
 is $dom->find('a B c')->[1]{ID}, 'four', 'right attribute';
-is_deeply [sort keys %{$dom->find('a B c')->[1]}], ['ID'], 'right attributes';
+is_deeply [ sort keys %{ $dom->find('a B c')->[1] } ], ['ID'],
+  'right attributes';
 is $dom->find('a B c')->[2], undef, 'no result';
 is $dom->find('a B c')->size, 2, 'right number of elements';
 @results = ();
-$dom->find('a B c')->each(sub { push @results, $_->text });
+$dom->find('a B c')->each( sub { push @results, $_->text } );
 is_deeply \@results, [qw(bar baz)], 'right results';
 is $dom->find('a B c')->join("\n"),
   qq{<c id="three">bar</c>\n<c ID="four">baz</c>}, 'right result';
-is_deeply [keys %$dom], [], 'root has no attributes';
+is_deeply [ keys %$dom ], [], 'root has no attributes';
 is $dom->find('#nothing')->join, '', 'no result';
 
 # Direct hash access to attributes in HTML mode
@@ -2131,24 +2166,27 @@ $dom = Mojo::DOM->new(<<EOF);
 EOF
 ok !$dom->xml, 'XML mode not active';
 is $dom->at('a')->{id}, 'one', 'right attribute';
-is_deeply [sort keys %{$dom->at('a')}], ['id'], 'right attributes';
+is_deeply [ sort keys %{ $dom->at('a') } ], ['id'], 'right attributes';
 is $dom->at('a')->at('b')->text, "\n    foo\n    \n    \n  ", 'right text';
 is $dom->at('b')->{class}, 'two', 'right attribute';
-is_deeply [sort keys %{$dom->at('a b')}], [qw(class test)], 'right attributes';
+is_deeply [ sort keys %{ $dom->at('a b') } ], [qw(class test)],
+  'right attributes';
 is $dom->find('a b c')->[0]->text, 'bar', 'right text';
 is $dom->find('a b c')->[0]{id}, 'three', 'right attribute';
-is_deeply [sort keys %{$dom->find('a b c')->[0]}], ['id'], 'right attributes';
+is_deeply [ sort keys %{ $dom->find('a b c')->[0] } ], ['id'],
+  'right attributes';
 is $dom->find('a b c')->[1]->text, 'baz', 'right text';
 is $dom->find('a b c')->[1]{id}, 'four', 'right attribute';
-is_deeply [sort keys %{$dom->find('a b c')->[1]}], ['id'], 'right attributes';
+is_deeply [ sort keys %{ $dom->find('a b c')->[1] } ], ['id'],
+  'right attributes';
 is $dom->find('a b c')->[2], undef, 'no result';
 is $dom->find('a b c')->size, 2, 'right number of elements';
 @results = ();
-$dom->find('a b c')->each(sub { push @results, $_->text });
+$dom->find('a b c')->each( sub { push @results, $_->text } );
 is_deeply \@results, [qw(bar baz)], 'right results';
 is $dom->find('a b c')->join("\n"),
   qq{<c id="three">bar</c>\n<c id="four">baz</c>}, 'right result';
-is_deeply [keys %$dom], [], 'root has no attributes';
+is_deeply [ keys %$dom ], [], 'root has no attributes';
 is $dom->find('#nothing')->join, '', 'no result';
 
 # Append and prepend content
@@ -2248,7 +2286,7 @@ is $dom->at('p')->val,                         undef, 'no value';
 is $dom->at('input')->val,                     'A',   'right value';
 is $dom->at('input:checked')->val,             'B',   'right value';
 is $dom->at('input:checked[type=radio]')->val, 'C',   'right value';
-is_deeply $dom->at('select')->val, ['I', 'J'], 'right values';
+is_deeply $dom->at('select')->val, [ 'I', 'J' ], 'right values';
 is $dom->at('select option')->val,                          'F', 'right value';
 is $dom->at('select optgroup option:not([selected])')->val, 'H', 'right value';
 is $dom->find('select')->[1]->at('option')->val, 'N', 'right value';
@@ -2365,7 +2403,7 @@ EOF
 is $dom->tree->[0], 'root', 'right type';
 is $dom->tree->[1][0], 'tag', 'right type';
 is $dom->tree->[1][1], 'foo', 'right tag';
-is_deeply $dom->tree->[1][2], {bar => ''}, 'right attributes';
+is_deeply $dom->tree->[1][2], { bar => '' }, 'right attributes';
 is $dom->tree->[1][4][0], 'text',       'right type';
 is $dom->tree->[1][4][1], "\n  test\n", 'right text';
 is $dom->tree->[3][0], 'tag', 'right type';
@@ -2445,8 +2483,8 @@ is $dom->find('div > ul ul')->[0]->text, "\n        \n        C\n      ",
 is $dom->find('div > ul ul')->[1], undef, 'no result';
 
 # Unusual order
-$dom
-  = Mojo::DOM->new('<a href="http://example.com" id="foo" class="bar">Ok!</a>');
+$dom =
+  Mojo::DOM->new('<a href="http://example.com" id="foo" class="bar">Ok!</a>');
 is $dom->at('a:not([href$=foo])[href^=h]')->text, 'Ok!', 'right text';
 is $dom->at('a:not([href$=example.com])[href^=h]'), undef, 'no result';
 is $dom->at('a[href^=h]#foo.bar')->text, 'Ok!', 'right text';
@@ -2463,7 +2501,7 @@ is $dom->at(':not([href^=h]#foo#foo)'), undef, 'no result';
 # Slash between attributes
 $dom = Mojo::DOM->new('<input /type=checkbox / value="/a/" checked/><br/>');
 is_deeply $dom->at('input')->attr,
-  {type => 'checkbox', value => '/a/', checked => undef}, 'right attributes';
+  { type => 'checkbox', value => '/a/', checked => undef }, 'right attributes';
 is "$dom", '<input checked type="checkbox" value="/a/"><br>', 'right result';
 
 # Dot and hash in class and id attributes
@@ -2532,11 +2570,11 @@ is $dom->tree->[5][1], ' HTML4 ',             'right comment';
 is $dom->tree->[7][1], ' bad idea -- HTML4 ', 'right comment';
 
 # Huge number of attributes
-$dom = Mojo::DOM->new('<div ' . ('a=b ' x 32768) . '>Test</div>');
+$dom = Mojo::DOM->new( '<div ' . ( 'a=b ' x 32768 ) . '>Test</div>' );
 is $dom->at('div[a=b]')->text, 'Test', 'right text';
 
 # Huge number of nested tags
-my $huge = ('<a>' x 100) . 'works' . ('</a>' x 100);
+my $huge = ( '<a>' x 100 ) . 'works' . ( '</a>' x 100 );
 $dom = Mojo::DOM->new($huge);
 is $dom->all_text, 'works', 'right text';
 is "$dom", $huge, 'right result';
