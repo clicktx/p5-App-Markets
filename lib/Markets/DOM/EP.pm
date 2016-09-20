@@ -18,12 +18,12 @@ my $cmnt  = '#';
 my $end   = '%>';
 my $start = '%';
 
-my $ATTR_VALUE_EP_TAG_RE = qr/
+my $EP_TAG_IN_TAG_RE = qr/
     $tag[\s$expr$cmnt$start].+?$end
 /x;
 
 my $ATTR_RE = qr/
-  ([^<>=\s\/]+|\/)                     # Key
+  ([^<>=\s\/]+|\/|$EP_TAG_IN_TAG_RE)                     # Key
   (?:
     \s*=\s*
     (?s:(["'])(.*?)\g{-2}|([^>\s]*))   # Value
@@ -264,7 +264,7 @@ sub _render {
         $result .= $xml ? qq{ $key="$key"} : " $key" and next
           unless defined $value;
 
-        $value = xml_escape($value) if $value !~ /$ATTR_VALUE_EP_TAG_RE/;
+        $value = xml_escape($value) if $value !~ /$EP_TAG_IN_TAG_RE/;
         $result .= qq{ $key="} . $value . '"';
     }
 
