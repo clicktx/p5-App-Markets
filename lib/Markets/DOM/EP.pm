@@ -18,6 +18,10 @@ my $cmnt  = '#';
 my $end   = '%>';
 my $start = '%';
 
+my $ATTR_VALUE_EP_TAG_RE = qr/
+    $tag[\s$expr$cmnt$start].+?$end
+/x;
+
 my $ATTR_RE = qr/
   ([^<>=\s\/]+|\/)                     # Key
   (?:
@@ -28,7 +32,7 @@ my $ATTR_RE = qr/
 /x;
 my $TOKEN_RE = qr/
   ([^<$start]+)?                                      # Text
-  ([^<\n]+)?                                          # EP line
+  ([^<\n]+\n)?                                        # EP line
   (?:$tag([\s$expr$cmnt$start].+?)$end)?              # EP tag
   (?:
     <(?:
@@ -117,7 +121,7 @@ sub parse {
     while ( $html =~ /\G$TOKEN_RE/gcso ) {
         my (
             $text,  $ep_line, $ep_tag, $doctype, $comment,
-            $cdata, $pi,       $tag,    $runaway
+            $cdata, $pi,      $tag,    $runaway
         ) = ( $1, $2, $3, $4, $5, $6, $7, $8, $13 );
 
         # Text (and runaway "<")
@@ -259,7 +263,9 @@ sub _render {
         my $value = $tree->[2]{$key};
         $result .= $xml ? qq{ $key="$key"} : " $key" and next
           unless defined $value;
-        $result .= qq{ $key="} . xml_escape($value) . '"';
+
+        $value = xml_escape($value) if $value !~ /$ATTR_VALUE_EP_TAG_RE/;
+        $result .= qq{ $key="} . $value . '"';
     }
 
     # No children
