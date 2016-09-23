@@ -15,7 +15,7 @@ sub register {
     );
     $self->add_action( action_replace_template => \&myaddon_replace_templates,
     );
-    $self->add_filter( filter_form => sub { say "hook! filter_form!" } );
+    $self->add_filter( filter_form => sub { say "hook! MyAddon filter_form!" } );
 
     # remove action hook example
     # $self->remove_action('action_replace_template', 'say_yes');
