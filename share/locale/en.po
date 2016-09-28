@@ -18,3 +18,6 @@ msgstr "hello?"
 
 msgid "hello2"
 msgstr "hello2?"
+
+msgid "login"
+msgstr "Sign in"

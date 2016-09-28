@@ -25,3 +25,6 @@ msgstr "{name} こんにちは"
 
 msgid "hello, [_1]"
 msgstr "こんにちは [_1]"
+
+msgid "login"
+msgstr "サインイン"

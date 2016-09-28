@@ -22,7 +22,9 @@ learn more, you can also browse through the documentation
         <%= const('LINK_NAME') %>
     <% end %>
 </p>
-
+<p>
+    <%= link_to __('login') => url_for('/login/') %>
+</p>
 
 <form action="<%= url_for %>" method="post" style="border:1px solid gray">
   <b>Form</b><br>
