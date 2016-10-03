@@ -1,6 +1,8 @@
 package Markets::Plugin::FormFields;
 
-# use Mojo::Base 'Mojolicious::Plugin';
+# TODO: pull requestがmergeされた場合はオリジナル(Mojolicious::Plugin::FormFields v0.06)を使う
+# https://github.com/sshaw/Mojolicious-Plugin-FormFields/pull/3
+
 use Mojo::Base 'Mojolicious::Plugin::FormFields';
 use Mojo::Util qw(monkey_patch);
 
