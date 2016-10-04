@@ -1,4 +1,4 @@
-package t::Ex::Schema;
+package t::DB::Schema;
 use strict;
 use warnings;
 use Teng::Schema::Declare;
