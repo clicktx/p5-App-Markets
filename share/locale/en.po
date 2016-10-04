@@ -19,5 +19,19 @@ msgstr "hello?"
 msgid "hello2"
 msgstr "hello2?"
 
+# Login
 msgid "login"
 msgstr "Sign in"
+
+msgid "login.name"
+msgstr "Username or email address"
+
+msgid "login.name.placeholder"
+msgstr "Username or email address"
+
+msgid "login.password"
+msgstr "Password"
+
+# Error messages
+msgid "Required"
+msgstr "Required"
