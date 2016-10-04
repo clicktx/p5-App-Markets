@@ -22,6 +22,10 @@ my %args = (
     },
 
     requires => {
+        'Mojolicious::Plugin::Model' => '0.07',
+        'Time::TZOffset' => '0.04',
+        'Data::MessagePack' => '0.49',
+        'DBI' => '1.636',
         'File::Find::Rule' => '0.34',
         'Server::Starter' => '0.32',
         'Mojolicious::Plugin::LocaleTextDomainOO' => '0.04',
@@ -29,14 +33,11 @@ my %args = (
         'MojoX::Session' => '0.33',
         'HTTP::Parser::XS' => '0.17',
         'Mojolicious' => '== 7.05',
-        'Mojolicious::Plugin::Model' => '0.07',
         'DBD::mysql' => '4.033',
         'Teng' => '0.28',
         'Class::Inspector' => '1.28',
         'Starlet' => '0.30',
-        'Data::MessagePack' => '0.49',
-        'Time::TZOffset' => '0.04',
-        'DBI' => '1.636',
+        'Mojolicious::Plugin::FormFields' => '0.05',
     },
 
     recommends => {
