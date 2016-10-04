@@ -39,6 +39,27 @@ monkey_patch 'Mojolicious::Plugin::FormFields::Field', valid => sub {
     $result->{success};
 };
 
+monkey_patch 'Mojolicious::Plugin::FormFields::Field', label => sub {
+    my $self = shift;
+
+    my $text;
+    $text = pop   if ref $_[-1] eq 'CODE';
+    $text = shift if @_ % 2;                 # step on CODE
+
+    my $SEPARATOR = $self->separator;
+    my @result = ( split /\Q$SEPARATOR/, $self->{name} );
+    $text //= $self->{c}->__($self->{name});
+    # $text //= $self->{c}->stash( $result[0] )->{".labels"}->{ $result[-1] };
+    $text //=
+      Mojolicious::Plugin::FormFields::Field::_default_label( $self->{name} );
+
+    my %options = @_;
+    $options{for} //=
+      Mojolicious::Plugin::FormFields::Field::_dom_id( $self->{name} );
+
+    $self->{c}->tag( 'label', %options, $text );
+};
+
 sub register {
     my ( $self, $app, $config ) = @_;
     my $ns = 'formfields.fields';
