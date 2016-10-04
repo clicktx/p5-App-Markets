@@ -2,6 +2,7 @@ requires 'Mojolicious',                             '== 7.05';
 requires 'File::Find::Rule',                        '0.34';
 requires 'Mojolicious::Plugin::Model',              '0.07';
 requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';
+requires 'Mojolicious::Plugin::FormFields',         '0.05';
 requires 'MojoX::Session',                          '0.33';
 requires 'Teng',                                    '0.28';
 requires 'Teng::Plugin::ResultSet',                 '0.01';
@@ -14,8 +15,9 @@ requires 'Starlet',                                 '0.30';
 
 # XS modules. it's a high performance!
 # See http://qiita.com/karupanerura/items/e765b23bd3bff806cc27
-requires 'HTTP::Parser::XS',  '0.17';
-requires 'Time::TZOffset',    '0.04';
+requires 'HTTP::Parser::XS', '0.17';
+requires 'Time::TZOffset',   '0.04';
+
 #requires 'Cookie::Baker::XS', '0.06';
 #requires 'JSON::XS',          '3.02';
 

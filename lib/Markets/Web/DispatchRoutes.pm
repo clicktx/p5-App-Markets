@@ -7,6 +7,8 @@ sub register {
 
     # Normal route to controller
     $r->get('/')->to('example#welcome');
+    $r->get('/login')->to('login#index');
+    $r->post('/login/attempt')->to('login#attempt');
 }
 
 1;

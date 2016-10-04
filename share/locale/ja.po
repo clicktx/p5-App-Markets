@@ -25,3 +25,20 @@ msgstr "{name} こんにちは"
 
 msgid "hello, [_1]"
 msgstr "こんにちは [_1]"
+
+# Login
+msgid "login"
+msgstr "サインイン"
+
+msgid "login.name"
+msgstr "ユーザー名又はメールアドレス"
+
+msgid "login.name.placeholder"
+msgstr "ユーザー名又はメールアドレス"
+
+msgid "login.password"
+msgstr "パスワード"
+
+# Error messages
+msgid "Required"
+msgstr "必須項目"

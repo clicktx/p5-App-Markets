@@ -7,12 +7,15 @@ sub startup {
     my $self = shift;
     $self->initialize_app;
 
-    # templets paths
+    # Template paths
     $self->renderer->paths( [ 'themes/default', 'themes/admin' ] );
+
+    # Original themes
     my $themes = directories( 'themes', { ignore => [ 'default', 'admin' ] } );
     say $self->dumper($themes);    # debug
 
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
+    push @{ $self->renderer->paths }, 'themes';    # For template full path
 
     # renderer
     $self->plugin('Markets::Plugin::EPRenderer');
