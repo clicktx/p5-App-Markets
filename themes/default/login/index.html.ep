@@ -1,5 +1,7 @@
 % layout 'default';
-% title app->__('login');
+% title __('login');
+
+<h2><%= __('login') %></h2>
 
 % unless ( form_valid() ){
     <div class="alert alert-danger">

@@ -1,6 +1,6 @@
 % layout 'default';
 % title 'Welcome';
-<h1>Admin Mode</h1>
+<h2>Admin Mode</h2>
 
 <div class="addon-list">
 % foreach my $addon(@$all_addons){
