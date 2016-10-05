@@ -91,6 +91,10 @@ sub initialize_app {
       [qw /Markets::DB::Schema::More Markets::DB::Schema::Addons/];
     $self->db->merge_schema($more_schema_classes_from_db);
 
+    # default cookie
+    $self->sessions->cookie_name('session');
+    $self->secrets(['aaabbbccc']);    #           change this!
+
     # session
     my $rs = $self->db->resultset('sessions');
     $self->plugin(
