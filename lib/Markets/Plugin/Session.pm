@@ -11,31 +11,38 @@ sub register {
     my $init = delete $args->{init};
 
     $app->hook(
-        around_action => sub {
-            my ( $next, $c, $action, $last ) = @_;
-            my $session = MojoX::Session->new(%$args);
+        before_routes => sub {
+            my $c = shift;
+            say "hook! before_routes from plugin session";    # debug
+            return if $c->stash->{'mojo.static'};
 
+            my $session = MojoX::Session->new(%$args);
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
             $c->stash( $stash_key => $session );
 
             $session->load;
             if ( $session->sid ) {
-                say "ented session expires time.";    # debug
+                say "   ... ented session expires time.";     # debug
                 $session->extend_expires;
             }
             else {
                 _create_session( $c, $session );
             }
-            say "sid: " . $session->sid;              # debug
+            say "   ... sid: " . $session->sid;               # debug
+        }
+    );
+    $app->hook(
+        after_dispatch => sub {
+            my $c = shift;
 
-            $next->();
+            say "hook! after_dispatch from plugin session";    # debug
+            return if $c->stash->{'mojo.static'};
 
-            say "hook! session flush";                # debug
+            say "   ... session flush";                        # debug
             $c->stash($stash_key)->flush;
         }
     );
-
 }
 
 sub _create_session {
@@ -43,8 +50,9 @@ sub _create_session {
     my $cookie = $c->cookie('landing_page');
 
     # cookieに対応している場合のみセッション生成する
+    # cookieが無いときはlanding pageのurlを保存
     if ($cookie) {
-        say "created new session.";    # debug
+        say "created new session.";                            # debug
         $session->data( 'landing_page' => $cookie );
         $session->create;
     }
