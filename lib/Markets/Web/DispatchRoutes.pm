@@ -9,7 +9,7 @@ sub register {
     $r = $r->under(
         sub {
             my $c = shift;
-            return 1 if $c->req->method ne 'POST';
+            return 1 if $c->req->method eq 'GET';
 
             return 1
               unless $c->validation->csrf_protect->has_error('csrf_token');
