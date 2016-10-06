@@ -11,31 +11,49 @@ sub register {
     my $init = delete $args->{init};
 
     $app->hook(
-        around_action => sub {
-            my ( $next, $c, $action, $last ) = @_;
-            my $session = MojoX::Session->new(%$args);
+        before_dispatch => sub {
+            my $c = shift;
+            say "hook! before_dispatch from plugin session";    # debug
 
+            my $session = MojoX::Session->new(%$args);
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
             $c->stash( $stash_key => $session );
+            say "   ... set stash: $stash_key => session object";    # debug
+        }
+    );
 
+    $app->hook(
+        before_routes => sub {
+            my $c = shift;
+            say "hook! before_routes from plugin session";           # debug
+
+            # Dynamic routes only
+            return if $c->stash->{'mojo.static'};
+
+            # Create or Expires time for session
+            my $session = $c->stash($stash_key);
             $session->load;
             if ( $session->sid ) {
-                say "ented session expires time.";    # debug
+                say "   ... ented session expires time.";            # debug
                 $session->extend_expires;
             }
             else {
                 _create_session( $c, $session );
             }
-            say "sid: " . $session->sid;              # debug
-
-            $next->();
-
-            say "hook! session flush";                # debug
-            $c->stash($stash_key)->flush;
+            say "   ... sid: " . $session->sid;                      # debug
         }
     );
 
+    $app->hook(
+        after_dispatch => sub {
+            my $c = shift;
+            say "hook! after_dispatch from plugin session";          # debug
+            return if $c->stash->{'mojo.static'};
+            say "   ... session flush";                              # debug
+            $c->stash($stash_key)->flush;
+        }
+    );
 }
 
 sub _create_session {
@@ -43,12 +61,14 @@ sub _create_session {
     my $cookie = $c->cookie('landing_page');
 
     # cookieに対応している場合のみセッション生成する
+    # cookieが無いときはlanding pageのurlを保存
     if ($cookie) {
-        say "created new session.";    # debug
+        say "   ... created new session.";    # debug
         $session->data( 'landing_page' => $cookie );
         $session->create;
     }
     else {
+        say "   ... created cookie landing_page.";    # debug
         my $landing_page = $c->req->url->to_string;
         $c->cookie( 'landing_page' => $landing_page );
     }
