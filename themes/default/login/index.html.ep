@@ -8,7 +8,7 @@
         error
     </div>
 % }
-<form action="<%= url_for '/login/attempt' %>" method="post" style="border:1px solid gray">
+<%= form_for '/login/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
     <% my $f = fields('login'); %>
@@ -23,8 +23,7 @@
         <%= __( field('login.password')->error ) %>
     </div>
     <input type="submit" value="<%= __ 'login' %>">
-</form>
-
+<% end %>
 <p>
     <%= link_to 'top' => url_for('/') %>
 </p>
