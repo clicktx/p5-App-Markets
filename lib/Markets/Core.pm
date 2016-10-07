@@ -91,16 +91,21 @@ sub initialize_app {
       [qw /Markets::DB::Schema::More Markets::DB::Schema::Addons/];
     $self->db->merge_schema($more_schema_classes_from_db);
 
+    # default cookie
+    $self->sessions->cookie_name('session');
+    $self->secrets(['aaabbbccc']);    #           change this!
+
     # session
+    my $session_stash_key = 'markets.session';
     my $rs = $self->db->resultset('sessions');
     $self->plugin(
         'Markets::Plugin::Session' => {
-            stash_key => 'markets_session',
+            stash_key => $session_stash_key,
             store     => Markets::Session::Store::Teng->new( resultset => $rs ),
             expires_delta => 3600,
         }
     );
-    $self->helper( markets_session => sub { shift->stash('markets_session') } );
+    $self->helper( markets_session => sub { shift->stash($session_stash_key) } );
 
     # locale
     $ENV{MOJO_I18N_DEBUG} = $mode eq 'development' ? 1 : 0;

@@ -32,7 +32,7 @@ my $ATTR_RE = qr/
 /x;
 my $TOKEN_RE = qr/
   ([^<$start]+)?                                      # Text
-  ([^<\n]+\n)?                                        # EP line
+  ([^<\n]+)?                                          # EP line
   (?:$tag([\s$expr$cmnt$start].+?)$end)?              # EP tag
   (?:
     <(?:

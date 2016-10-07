@@ -15,11 +15,12 @@ sub register {
     );
     $self->add_action( action_replace_template => \&myaddon_replace_templates,
     );
-    $self->add_filter( filter_form => sub { say "hook! MyAddon filter_form!" } );
+    $self->add_filter( filter_form => sub { say "hook! MyAddon filter_form!" }
+    );
 
-    # remove action hook example
-    # $self->remove_action('action_replace_template', 'say_yes');
-    # $self->remove_action('action_replace_template', 'myaddon_replace_templates');
+ # remove action hook example
+ # $self->remove_action('action_replace_template', 'say_yes');
+ # $self->remove_action('action_replace_template', 'myaddon_replace_templates');
 }
 
 sub say_yes {
@@ -56,6 +57,15 @@ sub myaddon_replace_templates {
         $dom->find('h1')->first->replace('<h1>Admin mode from MyAddon</h1>');
         my $h2 = $dom->at('#admin-front')->content;
         $dom->at('#admin-front')->content( $h2 . ' / add text: ' . $content );
+
+        ${$template_source} = $dom;
+    }
+    else {
+        say "all templates rewiright!";
+        # どのパスでも適用させる
+        my $dom = $c->helpers->dom->parse( ${$template_source} );
+        my $div = $dom->at('h2');
+        $div->append_content(' rewright') if $div;
 
         ${$template_source} = $dom;
     }
