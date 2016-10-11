@@ -11,14 +11,10 @@
 <%= form_for '/login/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
-    <%= label_for "login.name" => __('login.name'), class => 'class' %>
-    <%= text_field "login.name" => '', placeholder => __('login.name.placeholder') %>
-
     <% my $f = fields('login'); %>
     <div class="">
         <%= $f->label('name', class => 'class') %>
         <%= $f->text('name', class => 'class', placeholder => __('login.name.placeholder') ) %>
-        <%= __ 'login.name.description' %>
         <%= __ $f->errors('name') %>
     </div>
     <div class="">

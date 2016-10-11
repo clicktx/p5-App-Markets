@@ -14,6 +14,16 @@ sub startup {
     my $themes = directories( 'themes', { ignore => [ 'default', 'admin' ] } );
     say $self->dumper($themes);    # debug
 
+    # [WIP]loading lexicon files from themes
+    my $theme_locale_dir =
+      File::Spec->catdir( $self->home, 'themes', 'default', 'locale' );
+    $self->lexicon(
+        {
+            search_dirs => [$theme_locale_dir],
+            data        => [ '*::' => '*.po' ],
+        }
+    ) if -d $theme_locale_dir;
+
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
     push @{ $self->renderer->paths }, 'themes';    # For template full path
 

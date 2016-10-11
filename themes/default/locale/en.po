@@ -1,0 +1,34 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: markets-lasted-version\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: markets-lang-team <clicktx@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.8\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+# Login
+msgid "login"
+msgstr "Sign in222"
+
+msgid "login.name"
+msgstr "Username or email address222"
+
+msgid "login.name.placeholder"
+msgstr "Username or email address"
+
+msgid "login.password"
+msgstr "Password"
+
+msgid "login.name.description"
+msgstr "This field is your login name or email address."
+
+# Error messages
+msgid "Required"
+msgstr "Required"
