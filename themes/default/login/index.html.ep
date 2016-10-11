@@ -19,12 +19,14 @@
         <%= $f->label('name', class => 'class') %>
         <%= $f->text('name', class => 'class', placeholder => __('login.name.placeholder') ) %>
         <%= __ 'login.name.description' %>
-        <%= __ $f->errors('name') %>
+        <% if ( $f->errors('name') ){ %><%= __ $f->errors('name') %><% } %>
     </div>
     <div class="">
         <%= field('login.password')->label(class => 'fefe') %>
         <%= field('login.password')->text %>
-        <%= __( field('login.password')->error ) %>
+        <% if ( field('login.password')->error ){ %>
+            <%= __( field('login.password')->error ) %>
+        <% } %>
     </div>
     <input type="submit" value="<%= __ 'login' %>">
 <% end %>
