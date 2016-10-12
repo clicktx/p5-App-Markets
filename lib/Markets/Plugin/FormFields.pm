@@ -5,6 +5,7 @@ package Markets::Plugin::FormFields;
 
 use Mojo::Base 'Mojolicious::Plugin::FormFields';
 use Mojo::Util qw(monkey_patch);
+use Markets::Form;
 
 # Add cuntom filters
 $Validate::Tiny::FILTERS{only_digits} = sub { _only_digits(@_) };
@@ -48,7 +49,8 @@ monkey_patch 'Mojolicious::Plugin::FormFields::Field', label => sub {
 
     my $SEPARATOR = $self->separator;
     my @result = ( split /\Q$SEPARATOR/, $self->{name} );
-    $text //= $self->{c}->__($self->{name});
+    $text //= $self->{c}->__( $self->{name} );
+
     # $text //= $self->{c}->stash( $result[0] )->{".labels"}->{ $result[-1] };
     $text //=
       Mojolicious::Plugin::FormFields::Field::_default_label( $self->{name} );
@@ -88,6 +90,15 @@ sub register {
 
             $c->stash->{"$ns.errors"} = $errors;
             $valid;
+        }
+    );
+    $app->helper(
+        form => sub {
+            Markets::Form->new(
+                'markets.controller'        => shift,
+                'markets.form.fields'       => shift,
+                'markets.form.valid.method' => $helper,
+            );
         }
     );
 }

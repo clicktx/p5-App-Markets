@@ -1,18 +1,27 @@
 package Markets::Web::Controller::Login;
 use Mojo::Base 'Mojolicious::Controller';
-use Markets::Form;
 
 use Data::Dumper;
+use DDP {
+
+    # deparse => 1,
+    # filters => {
+    #        'DateTime' => sub { shift->ymd },
+    # },
+};
 
 sub _init_form {
     my $self = shift;
 
-    my $form = Markets::Form->new;
+    my $form = $self->form('login');
+
+    $form->add_param( 'name', 100, [], ['is_required'] );
     $form->add_param(
-        'name' => '',
-        $self->__('hello'), 111, ['validations'], ['filters']
+        'password',
+        [ 8,      256 ],
+        [ 'trim', 'only_digits' ],
+        ['is_required']
     );
-    $form->add_param('password');
     $form;
 }
 
@@ -20,8 +29,14 @@ sub index {
     my $self = shift;
 
     my $form = $self->_init_form;
-    say Dumper $form;
-    say $form->params;
+
+    # Set default value
+    $form->default_value( 'name', 'default_value' );
+
+    p($form);
+
+    my $p = $form->params;
+    say Dumper $p;
 
     $self->render( login => $form );
 }
@@ -32,18 +47,12 @@ sub attempt {
     my $form = $self->_init_form;
     my $f    = $self->fields('login');
 
-    # Filters
-    $f->filter( 'password', 'trim', 'only_digits' );
-
     # Varidations
-    $f->is_required('name');
-    $f->is_required('password');
+    # $f->is_required('name');
+    # $f->is_required('password');
 
-    # $f->_field('name')
-    #   ->check( sub { $_[0] =~ /^sshaw$/ ? undef : 'Not sshaw' } );
-
-    use DDP {};
-    if ( $self->form_valid ) {
+    if ( $form->valid ) {
+    # if ( $self->form_valid ) {
         say "ok";
         my $param = $self->param('login');
         p($param);
