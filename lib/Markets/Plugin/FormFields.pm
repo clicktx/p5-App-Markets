@@ -7,9 +7,6 @@ use Mojo::Base 'Mojolicious::Plugin::FormFields';
 use Mojo::Util qw(monkey_patch);
 use Markets::Form;
 
-# Add cuntom filters
-$Validate::Tiny::FILTERS{only_digits} = sub { _only_digits(@_) };
-
 # Override method
 monkey_patch 'Mojolicious::Plugin::FormFields::Field', valid => sub {
     my $self = shift;
@@ -101,12 +98,6 @@ sub register {
             );
         }
     );
-}
-
-sub _only_digits {
-    my $val = shift // return;
-    $val =~ s/\D//g;
-    return $val;
 }
 
 1;
