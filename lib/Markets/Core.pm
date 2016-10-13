@@ -135,7 +135,7 @@ sub initialize_app {
     ) if -d $locale_dir;
 
     # Form Frameworks
-    $self->plugin( 'Markets::Plugin::FormFields',
+    $self->plugin( 'Markets::Plugin::Form',
         methods => { valid => 'form_valid', errors => 'form_errors' } );
 
     $self->hook(

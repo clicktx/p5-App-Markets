@@ -1,4 +1,4 @@
-package Markets::Plugin::FormFields;
+package Markets::Plugin::Form;
 
 # TODO: pull requestがmergeされた場合はオリジナル(Mojolicious::Plugin::FormFields v0.06)を使う
 # https://github.com/sshaw/Mojolicious-Plugin-FormFields/pull/3
