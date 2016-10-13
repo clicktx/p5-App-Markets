@@ -103,3 +103,19 @@ sub register {
 }
 
 1;
+
+=encoding utf8
+
+=head1 NAME
+
+Markets::Plugin::Form - Form for Markets
+
+=head1 DESCRIPTION
+
+This module is a wrapper of L<Mojolicious::Plugin::FormFields>.
+
+=head1 SEE ALSO
+
+L<Mojolicious::Plugin::FormFields>
+
+=cut
