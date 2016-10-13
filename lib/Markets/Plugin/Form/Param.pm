@@ -1,5 +1,7 @@
 package Markets::Plugin::Form::Param;
 use Mojo::Base -base;
+use Markets::Plugin::Form::CustomFilters;
+use Markets::Plugin::Form::CustomVaridations;
 
 sub new {
     my $self = shift;
@@ -55,6 +57,7 @@ sub params {
 sub valid {
     my $self = shift;
     say "valid from Markets::Form";
+    say "language now: " . $self->c->language;
 
     my $fields = $self->c->fields( $self->fields );
     foreach my $param ( @{ $self->params } ) {
@@ -86,62 +89,6 @@ sub _add_validation {
     foreach my $validation ( @{$validations} ) {
         $fields->$validation($param);
     }
-}
-
-package Markets::Form::CustomVaridations;
-
-# use Mojo::Util qw/monkey_patch/;
-# monkey_patch 'Validate::Tiny', is_example => sub {
-#     say "is_example";
-#     return sub {};
-# };
-# sub Validate::Tiny::is_example {
-#     say "is_example";
-#     return sub { };
-# }
-
-use Mojo::Util qw/monkey_patch/;
-
-my @validations = qw/is_example/;
-
-foreach my $method (@validations) {
-    no strict 'refs';    ## no critic
-    monkey_patch 'Validate::Tiny', "$method" => sub { &$method(@_) };
-}
-
-sub is_example {
-    say "is_example";
-    my $err_msg = shift || 'This is example validation';
-    return sub {
-        return if defined $_[0] && $_[0] ne '';
-        return $err_msg;
-    };
-}
-
-package Markets::Form::CustomFilters;
-
-# $Validate::Tiny::FILTERS{only_digits} = sub { _only_digits(@_) };
-# sub _only_digits {
-#     my $val = shift // return;
-#     $val =~ s/\D//g;
-#     return $val;
-# }
-# $Validate::Tiny::FILTERS{only_digits} = sub {
-#     my $val = shift // return;
-#     $val =~ s/\D//g;
-#     return $val;
-# };
-
-my @filters = qw/only_digits/;
-foreach my $method (@filters) {
-    no strict 'refs';    ## no critic
-    $Validate::Tiny::FILTERS{$method} = sub { &$method(@_) };
-}
-
-sub only_digits {
-    my $val = shift // return;
-    $val =~ s/\D//g;
-    return $val;
 }
 
 1;
