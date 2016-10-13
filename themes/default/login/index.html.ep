@@ -28,6 +28,13 @@
             <%= __( field('login.password')->error ) %>
         <% } %>
     </div>
+    <div class="">
+        <%= field('login.confirm_password')->label(class => 'fefe') %>
+        <%= field('login.confirm_password')->text %>
+        <% if ( field('login.confirm_password')->error ){ %>
+            <%= __( field('login.confirm_password')->error ) %>
+        <% } %>
+    </div>
     <input type="submit" value="<%= __ 'login' %>">
 <% end %>
 <p>
