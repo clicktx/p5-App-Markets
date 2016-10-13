@@ -8,6 +8,8 @@ use Mojo::Util qw(monkey_patch);
 use Markets::Form;
 
 # Override method
+#   Filters is not applied, and use the "STRUCTURED REQUEST PARAMETERS". by clicktx · Pull Request #3
+#   https://github.com/sshaw/Mojolicious-Plugin-FormFields/pull/3
 monkey_patch 'Mojolicious::Plugin::FormFields::Field', valid => sub {
     my $self = shift;
     return $self->{result}->{success} if defined $self->{result};
