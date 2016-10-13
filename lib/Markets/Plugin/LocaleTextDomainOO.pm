@@ -5,7 +5,7 @@ use Mojo::Util qw(monkey_patch);
 use Carp qw(confess);
 
 {
-    no strict 'vars';
+    no strict 'vars';    ## no critic
     my $escape_maketext = sub {
         my $string = shift;
 
@@ -16,8 +16,7 @@ use Carp qw(confess);
         return $string;
     };
 
-    monkey_patch 'Locale::TextDomain::OO::Translator',
-      translate => sub {    ## no critic (ExcessComplexity ManyArgs)
+    monkey_patch 'Locale::TextDomain::OO::Translator', translate => sub {
         my ( $self, $msgctxt, $msgid, $msgid_plural, $count, $is_n ) = @_;
 
         my $key_util =
@@ -109,7 +108,7 @@ use Carp qw(confess);
             $lexicon->{ $maketext_msg_key->() }->{msgstr} )
           : ();
 
-        # Hack. 現在の言語に翻訳がなければデフォルト言語の翻訳を使用
+# Hack. 現在の言語に翻訳がなければデフォルト言語の翻訳を使用
         if ( !defined $msgstr ) {
             my $self_language    = $self->language;
             my $defalut_language = $self->languages->[-1];
@@ -164,7 +163,7 @@ use Carp qw(confess);
         }
 
         return $msgstr;
-      };
+    };
 }
 
 1;
