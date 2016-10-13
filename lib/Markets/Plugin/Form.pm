@@ -5,7 +5,7 @@ package Markets::Plugin::Form;
 
 use Mojo::Base 'Mojolicious::Plugin::FormFields';
 use Mojo::Util qw(monkey_patch);
-use Markets::Form;
+use Markets::Plugin::Form::Param;
 
 # Override method
 #   Filters is not applied, and use the "STRUCTURED REQUEST PARAMETERS". by clicktx · Pull Request #3
@@ -93,7 +93,7 @@ sub register {
     );
     $app->helper(
         form => sub {
-            Markets::Form->new(
+            Markets::Plugin::Form::Param->new(
                 'markets.controller'        => shift,
                 'markets.form.fields'       => shift,
                 'markets.form.valid.method' => $helper,

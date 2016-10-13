@@ -1,4 +1,4 @@
-package Markets::Form;
+package Markets::Plugin::Form::Param;
 use Mojo::Base -base;
 
 sub new {
