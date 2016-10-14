@@ -1,7 +1,5 @@
 package Markets::Plugin::Form::Param;
 use Mojo::Base -base;
-use Markets::Plugin::Form::CustomFilters;
-use Markets::Plugin::Form::CustomVaridations;
 
 sub new {
     my $self = shift;

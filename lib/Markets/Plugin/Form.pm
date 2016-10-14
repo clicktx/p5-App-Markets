@@ -6,6 +6,8 @@ package Markets::Plugin::Form;
 use Mojo::Base 'Mojolicious::Plugin::FormFields';
 use Mojo::Util qw(monkey_patch);
 use Markets::Plugin::Form::Param;
+use Markets::Plugin::Form::CustomFilters;
+use Markets::Plugin::Form::CustomVaridations;
 
 # Override method
 #   Filters is not applied, and use the "STRUCTURED REQUEST PARAMETERS". by clicktx · Pull Request #3
