@@ -13,7 +13,8 @@ use DDP {
 sub _init_form {
     my $self = shift;
 
-    my $form = $self->form('login');
+    # my $form = $self->form('login'); or
+    my $form = $self->form->fields('login');
 
     # $form->add_param( 'name', int, ['filters'], ['validations'] );
     # $form->add_filter('name', [], [], [{is_long_between => []}]);

@@ -7,7 +7,12 @@ sub new {
 }
 
 sub c      { shift->{"markets.controller"} }
-sub fields { shift->{"markets.form.fields"} }
+sub fields {
+    my ($self, $arg) = @_;
+    return $self->{"markets.form.fields"} unless $arg;
+    $self->{"markets.form.fields"} = $arg;
+    $self;
+}
 
 # [WIP]
 sub remove_param { }
