@@ -22,7 +22,7 @@ sub add_field {
     my ( $self, $name, $length, $filters, $validations ) = @_;
 
     # Default value
-    $self->{$name} = '';
+    $self->{$name} = undef;
     $self->attr($name);
 
     $self->filters( $name => $filters );
