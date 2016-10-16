@@ -17,7 +17,7 @@ sub fields {
 # [WIP]
 sub remove_param { }
 
-sub add_param {
+sub add_field {
     my ( $self, $param, $length, $filters, $validations ) = @_;
 
     # Default value
@@ -124,10 +124,10 @@ Get/Set $form->{markets.form.fields} value.
 
 =head1 METHODS
 
-=head2 add_param
+=head2 add_field
 
-    $form->add_param(name, length, [filters], [validations]);
-    $form->add_param('password', [8, 32], [qw/trim/], [qw/is_required is_equal/]);
+    $form->add_field(name, length, [filters], [validations]);
+    $form->add_field('password', [8, 32], [qw/trim/], [qw/is_required is_equal/]);
 
 =head2 validations
 

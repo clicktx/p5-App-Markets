@@ -16,17 +16,17 @@ sub _init_form {
     # my $form = $self->form('login'); or
     my $form = $self->form->fields('login');
 
-    # $form->add_param( 'name', int, ['filters'], ['validations'] );
+    # $form->add_field( 'name', int, ['filters'], ['validations'] );
     # $form->add_filter('name', [], [], [{is_long_between => []}]);
     
-    $form->add_param( 'name', 100, [], ['is_required'] );
-    $form->add_param(
+    $form->add_field( 'name', 100, [], ['is_required'] );
+    $form->add_field(
         'password',
         [ 8,      256 ],
         [ 'trim', 'only_digits' ],
         ['is_example']
     );
-    $form->add_param(
+    $form->add_field(
         'confirm_password',
         [ 8,      256 ],
         [ 'trim', 'only_digits' ],
