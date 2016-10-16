@@ -49,11 +49,11 @@ sub default_value {
     $self->{$name} = $value;
 }
 
-sub params {
+sub names {
     my $self = shift;
 
-    my @params = grep { $_ =~ /^markets\..+/ ? undef : $_ } keys %{$self};
-    return wantarray ? @params : \@params;
+    my @names = grep { $_ =~ /^markets\..+/ ? undef : $_ } keys %{$self};
+    return wantarray ? @names : \@names;
 }
 
 # [WIP]
@@ -63,7 +63,7 @@ sub valid {
     say "language now: " . $self->c->language;
 
     my $fields = $self->c->fields( $self->fields );
-    foreach my $name ( @{ $self->params } ) {
+    foreach my $name ( @{ $self->names } ) {
         $fields->filter( $name, @{ $self->filters($name) } );
 
         $self->_add_validation( $fields, $name );
@@ -153,10 +153,10 @@ Get/Set filters.
 
 Get/Set default value.
 
-=head2 params
+=head2 names
 
-    my $params = $form->params;
-    my @params = $form->params;
+    my $names = $form->names;
+    my @names = $form->names;
 
 =head2 valid
 

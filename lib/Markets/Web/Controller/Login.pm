@@ -45,7 +45,7 @@ sub index {
 
     p($form);
 
-    my $p = $form->params;
+    my $p = $form->names;
     say Dumper $p;
 
     $self->render( login => $form );
