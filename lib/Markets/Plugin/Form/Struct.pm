@@ -77,6 +77,12 @@ sub valid {
     $self->c->$method;
 }
 
+sub errors {
+    my ( $self, $name ) = @_;
+    my $form_fields = $self->c->fields( $self->fields );
+    return $name ? $form_fields->errors($name) : $form_fields->errors;
+}
+
 sub _add_validation {
     my ( $self, $fields, $name ) = @_;
     my $validations = $self->validations($name);
@@ -162,6 +168,16 @@ Get/Set default value.
 =head2 valid
 
     $form->valid;
+
+=head2 errors
+
+    # Return value is hash ref.
+    # ex. { password => 'Requied', login_name => 'Requied', ... }
+    my $error_messages = $form->errors;
+
+    # Return value is scalar
+    # ex. 'Requied'
+    my $error_message = $form->errors('password');
 
 =head1 SEE ALSO
 
