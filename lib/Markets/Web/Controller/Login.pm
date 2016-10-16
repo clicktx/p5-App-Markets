@@ -45,8 +45,7 @@ sub index {
 
     p($form);
 
-    my $p = $form->names;
-    say Dumper $p;
+    say Dumper $form->names;
 
     $self->render( login => $form );
 }
@@ -55,7 +54,7 @@ sub attempt {
     my $self = shift;
 
     my $form = $self->_init_form;
-    my $f    = $self->fields('login');
+    # my $f    = $self->fields('login');
 
     # Varidations
     # $f->is_required('name');

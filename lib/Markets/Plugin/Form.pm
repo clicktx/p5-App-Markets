@@ -96,9 +96,9 @@ sub register {
     $app->helper(
         form => sub {
             Markets::Plugin::Form::Struct->new(
-                'markets.controller'        => shift,
-                'markets.form.fields'       => shift,
-                'markets.form.valid.method' => $helper,
+                'markets.controller'              => shift,
+                'markets.form.fields'             => shift,
+                'markets.formfields.valid.method' => $helper,
             );
         }
     );

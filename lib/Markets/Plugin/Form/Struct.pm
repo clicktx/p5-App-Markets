@@ -6,9 +6,10 @@ sub new {
     $self->SUPER::new(@_);
 }
 
-sub c      { shift->{"markets.controller"} }
+sub c { shift->{"markets.controller"} }
+
 sub fields {
-    my ($self, $arg) = @_;
+    my ( $self, $arg ) = @_;
     return $self->{"markets.form.fields"} unless $arg;
     $self->{"markets.form.fields"} = $arg;
     $self;
@@ -72,7 +73,7 @@ sub valid {
     $fields->is_equal( 'password', 'confirm_password' );
 
     # Execute valid method
-    my $method = $self->{"markets.form.valid.method"};
+    my $method = $self->{"markets.formfields.valid.method"};
     $self->c->$method;
 }
 
