@@ -18,35 +18,35 @@ sub fields {
 sub remove_param { }
 
 sub add_field {
-    my ( $self, $param, $length, $filters, $validations ) = @_;
+    my ( $self, $name, $length, $filters, $validations ) = @_;
 
     # Default value
-    $self->{$param} = '';
-    $self->attr($param);
+    $self->{$name} = '';
+    $self->attr($name);
 
-    $self->filters( $param => $filters );
-    $self->validations( $param => $validations );
+    $self->filters( $name => $filters );
+    $self->validations( $name => $validations );
 
     $self;
 }
 
 sub validations {
-    my ( $self, $param, $value ) = @_;
-    return $self->{"markets.form.validations"}->{$param} unless $value;
-    $self->{"markets.form.validations"}->{$param} = $value;
+    my ( $self, $name, $value ) = @_;
+    return $self->{"markets.form.validations"}->{$name} unless $value;
+    $self->{"markets.form.validations"}->{$name} = $value;
 }
 
 sub filters {
-    my ( $self, $param, $value ) = @_;
-    return $self->{"markets.form.filters"}->{$param} unless $value;
-    $self->{"markets.form.filters"}->{$param} = $value;
+    my ( $self, $name, $value ) = @_;
+    return $self->{"markets.form.filters"}->{$name} unless $value;
+    $self->{"markets.form.filters"}->{$name} = $value;
 }
 
 sub default_value {
-    my ( $self, $param, $value ) = @_;
-    return $self->{$param} unless $value;
+    my ( $self, $name, $value ) = @_;
+    return $self->{$name} unless $value;
 
-    $self->{$param} = $value;
+    $self->{$name} = $value;
 }
 
 sub params {
@@ -63,10 +63,10 @@ sub valid {
     say "language now: " . $self->c->language;
 
     my $fields = $self->c->fields( $self->fields );
-    foreach my $param ( @{ $self->params } ) {
-        $fields->filter( $param, @{ $self->filters($param) } );
+    foreach my $name ( @{ $self->params } ) {
+        $fields->filter( $name, @{ $self->filters($name) } );
 
-        $self->_add_validation( $fields, $param );
+        $self->_add_validation( $fields, $name );
     }
 
     $fields->is_equal( 'password', 'confirm_password' );
@@ -77,8 +77,8 @@ sub valid {
 }
 
 sub _add_validation {
-    my ( $self, $fields, $param ) = @_;
-    my $validations = $self->validations($param);
+    my ( $self, $fields, $name ) = @_;
+    my $validations = $self->validations($name);
     use DDP {
 
         # deparse => 1,
@@ -90,7 +90,7 @@ sub _add_validation {
 
     # [WIP]
     foreach my $validation ( @{$validations} ) {
-        $fields->$validation($param);
+        $fields->$validation($name);
     }
 }
 
