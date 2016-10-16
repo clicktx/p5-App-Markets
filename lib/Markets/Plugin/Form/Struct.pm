@@ -16,7 +16,7 @@ sub fields {
 }
 
 # [WIP]
-sub remove_param { }
+sub remove_field { }
 
 sub add_field {
     my ( $self, $name, $length, $filters, $validations ) = @_;
@@ -55,6 +55,16 @@ sub names {
 
     my @names = grep { $_ =~ /^markets\..+/ ? undef : $_ } keys %{$self};
     return wantarray ? @names : \@names;
+}
+
+sub params {
+    my $self = shift;
+    $self->c->param( $self->fields );
+}
+
+sub param {
+    my ( $self, $name ) = @_;
+    $self->params->{$name};
 }
 
 # [WIP]
@@ -178,6 +188,19 @@ Get/Set default value.
     # Return value is scalar
     # ex. 'Requied'
     my $error_message = $form->errors('password');
+
+= head2 params
+
+    my $params = $form->params;
+
+Return value is hash ref.
+This method is alias of $controller->param($fields_name)
+
+=head2 param
+
+    my $password = $form->param('password');
+
+Get field value.
 
 =head1 SEE ALSO
 
