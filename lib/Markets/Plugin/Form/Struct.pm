@@ -1,4 +1,4 @@
-package Markets::Plugin::Form::Param;
+package Markets::Plugin::Form::Struct;
 use Mojo::Base -base;
 
 sub new {
@@ -100,7 +100,7 @@ sub _add_validation {
 
 =head1 NAME
 
-Markets::Form - Form for Markets
+Markets::Form::Struct - Form for Markets
 
 =head1 SYNOPSIS
 
@@ -118,8 +118,9 @@ Return $form->{markets.controller}
 =head2 fields
 
     $form->fields;
+    $form->fields('login');
 
-Return $form->{markets.form.fields}
+Get/Set $form->{markets.form.fields} value.
 
 =head1 METHODS
 
@@ -163,6 +164,6 @@ Get/Set default value.
 
 =head1 SEE ALSO
 
-L<Markets::Plugin::FormFields> L<Mojolicious::Plugin::FormFields>
+L<Markets::Plugin::Form> L<Mojolicious::Plugin::FormFields>
 
 =cut

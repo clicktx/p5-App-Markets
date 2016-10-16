@@ -5,7 +5,7 @@ package Markets::Plugin::Form;
 
 use Mojo::Base 'Mojolicious::Plugin::FormFields';
 use Mojo::Util qw(monkey_patch);
-use Markets::Plugin::Form::Param;
+use Markets::Plugin::Form::Struct;
 use Markets::Plugin::Form::CustomFilters;
 use Markets::Plugin::Form::CustomVaridations;
 
@@ -95,7 +95,7 @@ sub register {
     );
     $app->helper(
         form => sub {
-            Markets::Plugin::Form::Param->new(
+            Markets::Plugin::Form::Struct->new(
                 'markets.controller'        => shift,
                 'markets.form.fields'       => shift,
                 'markets.form.valid.method' => $helper,
