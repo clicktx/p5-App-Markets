@@ -8,11 +8,18 @@
         error
     </div>
 % }
+<%= dumper form_errors %>
 <%= form_for '/login/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
-    <%= label_for "login.name" => __('login.name'), class => 'class' %>
-    <%= text_field "login.name" => '', placeholder => __('login.name.placeholder') %>
+        <%= field('login.cart.0')->text %>
+        <%= field('login.cart.2')->text %>
+
+        <%= field('login.item.0.no')->text %>
+        <%= field('login.item.1.no')->text %>
+
+        <%= field('login.opt.type')->text %>
+        <%= field('login.opt.color')->text %>
 
     <% my $f = fields('login'); %>
     <div class="">

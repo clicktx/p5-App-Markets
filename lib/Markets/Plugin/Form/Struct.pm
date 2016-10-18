@@ -6,6 +6,14 @@ sub new {
     $self->SUPER::new(@_);
 }
 
+# [WIP]
+sub to_hash {
+    my $self   = shift;
+    my $fields = $self->fields;
+    return $fields =>
+      { name => 333, cart => [], item => [ {}, {} ], opt => {} };
+}
+
 sub c { shift->{"markets.controller"} }
 
 sub fields {
@@ -23,7 +31,6 @@ sub add_field {
 
     # Default value
     $self->{$name} = undef;
-    $self->attr($name);
 
     $self->filters( $name => $filters );
     $self->validations( $name => $validations );
@@ -58,8 +65,9 @@ sub names {
 }
 
 sub params {
-    my $self = shift;
-    $self->c->param( $self->fields );
+    my ( $self, $name ) = @_;
+    my $params = $self->c->param( $self->fields );
+    return $name ? $params->{$name} : $params;
 }
 
 sub param {
@@ -73,14 +81,20 @@ sub valid {
     say "valid from Markets::Form";
     say "language now: " . $self->c->language;
 
-    my $fields = $self->c->fields( $self->fields );
-    foreach my $name ( @{ $self->names } ) {
-        $fields->filter( $name, @{ $self->filters($name) } );
+    my $formfields = $self->c->fields( $self->fields );
+    my $fields     = $self->fields;
 
-        $self->_add_validation( $fields, $name );
+    # POSTされてきたfieldのみバリデーション対象となる
+    my @names = @{ $self->c->req->params->names };
+    @names = grep { s/^$fields\.// } @names;    ## no critic
+    foreach my $name (@names) {
+        my $field = $name;
+        $field =~ s/\.\d+/.[]/g;
+
+        $formfields->filter( $name, @{ $self->filters($field) } );
+        $self->_do_validate( $formfields, $name, $field );
     }
-
-    $fields->is_equal( 'password', 'confirm_password' );
+    $formfields->is_equal( 'password', 'confirm_password' );
 
     # Execute valid method
     my $method = $self->{"markets.formfields.valid.method"};
@@ -89,25 +103,18 @@ sub valid {
 
 sub errors {
     my ( $self, $name ) = @_;
-    my $form_fields = $self->c->fields( $self->fields );
-    return $name ? $form_fields->errors($name) : $form_fields->errors;
+    my $formfields = $self->c->fields( $self->fields );
+    return $name ? $formfields->errors($name) : $formfields->errors;
 }
 
-sub _add_validation {
-    my ( $self, $fields, $name ) = @_;
-    my $validations = $self->validations($name);
-    use DDP {
+sub _do_validate {
+    my ( $self, $formfields, $name, $field ) = @_;
 
-        # deparse => 1,
-        # filters => {
-        #        'DateTime' => sub { shift->ymd },
-        # },
-    };
-    p($validations);
+    my $validations = $self->validations($field);
 
     # [WIP]
     foreach my $validation ( @{$validations} ) {
-        $fields->$validation($name);
+        $formfields->$validation($name);
     }
 }
 
@@ -191,9 +198,14 @@ Get/Set default value.
 
 = head2 params
 
+    # Return value is hash ref.
+    # ex. { password => 'xxxxxxx', login_name => 'hoge', ... }
     my $params = $form->params;
 
-Return value is hash ref.
+    # Return value is scalar
+    # ex. 'hoge'
+    my $login_name = $form->params('login_name');
+
 This method is alias of $controller->param($fields_name)
 
 =head2 param
