@@ -1,67 +1,64 @@
 package Markets::Plugin::Form::Struct;
 use Mojo::Base -base;
 
+has 'fields';
+
 sub new {
     my $self = shift;
     $self->SUPER::new(@_);
 }
 
-# [WIP]
-sub to_hash {
-    my $self   = shift;
-    my $fields = $self->fields;
-    return $fields =>
-      { name => 333, cart => [], item => [ {}, {} ], opt => {} };
+sub c { shift->{"controller"} }
+
+sub default_value {
+    my ( $self, $name, $value ) = @_;
+    return $self->_default_value_expand_hash unless $name;
+    return $self->{default_value}->{$name}   unless $value;
+
+    $self->{default_value}->{$name} = $value;
 }
 
-sub c { shift->{"markets.controller"} }
-
-sub fields {
-    my ( $self, $arg ) = @_;
-    return $self->{"markets.form.fields"} unless $arg;
-    $self->{"markets.form.fields"} = $arg;
-    $self;
+sub _default_value_expand_hash {
+    my $self   = shift;
+    my $fields = $self->fields;
+    my $hash   = CGI::Expand->expand_hash( $self->{default_value} );
+    $fields => $hash;
 }
 
 # [WIP]
 sub remove_field { }
 
 sub add_field {
-    my ( $self, $name, $length, $filters, $validations ) = @_;
+    my ( $self, $field, $length, $filters, $validations ) = @_;
 
-    # Default value
-    $self->{$name} = undef;
-
-    $self->filters( $name => $filters );
-    $self->validations( $name => $validations );
-
+    $self->filters( $field => $filters );
+    $self->validations( $field => $validations );
     $self;
 }
 
-sub validations {
-    my ( $self, $name, $value ) = @_;
-    return $self->{"markets.form.validations"}->{$name} unless $value;
-    $self->{"markets.form.validations"}->{$name} = $value;
-}
-
 sub filters {
-    my ( $self, $name, $value ) = @_;
-    return $self->{"markets.form.filters"}->{$name} unless $value;
-    $self->{"markets.form.filters"}->{$name} = $value;
+    my ( $self, $field, $value ) = @_;
+    return $self->{field}->{$field}->{filters} unless $value;
+    $self->{field}->{$field}->{filters} = $value || [];
 }
 
-sub default_value {
-    my ( $self, $name, $value ) = @_;
-    return $self->{$name} unless $value;
-
-    $self->{$name} = $value;
+sub validations {
+    my ( $self, $field, $value ) = @_;
+    return $self->{field}->{$field}->{validations} unless $value;
+    $self->{field}->{$field}->{validations} = $value || [];
 }
 
+# no used
 sub names {
     my $self = shift;
 
     my @names = grep { $_ =~ /^markets\..+/ ? undef : $_ } keys %{$self};
     return wantarray ? @names : \@names;
+}
+
+sub param {
+    my ( $self, $name ) = @_;
+    $self->params->{$name};
 }
 
 sub params {
@@ -70,9 +67,11 @@ sub params {
     return $name ? $params->{$name} : $params;
 }
 
-sub param {
-    my ( $self, $name ) = @_;
-    $self->params->{$name};
+sub params_expand_hash {
+    my $self   = shift;
+    my $fields = $self->fields;
+    my $hash   = CGI::Expand->expand_hash( $self->params );
+    return $fields => $hash;
 }
 
 # [WIP]
@@ -97,7 +96,7 @@ sub valid {
     $formfields->is_equal( 'password', 'confirm_password' );
 
     # Execute valid method
-    my $method = $self->{"markets.formfields.valid.method"};
+    my $method = $self->{'formfields_valid'};
     $self->c->$method;
 }
 
@@ -144,7 +143,7 @@ Return $form->{markets.controller}
     $form->fields;
     $form->fields('login');
 
-Get/Set $form->{markets.form.fields} value.
+Get/Set $form->{fields} value.
 
 =head1 METHODS
 

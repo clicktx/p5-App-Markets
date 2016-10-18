@@ -13,8 +13,8 @@ use DDP {
 sub _init_form {
     my $self = shift;
 
-    # my $form = $self->form('login'); or
-    my $form = $self->form->fields('login');
+    my $form = $self->form('login'); #or
+    # my $form = $self->form->fields('login');
 
     $form->add_field( 'name', 100, [], ['is_example'] );
     $form->add_field(
@@ -43,13 +43,20 @@ sub index {
 
     # Set default value
     $form->default_value( 'name', 'default_value' );
+    $form->default_value( 'cart.0', 'cart0' );
+    $form->default_value( 'cart.2', 'cart2' );
+    $form->default_value( 'item.0.no', 33 );
+    $form->default_value( 'item.1.no', 55 );
+    $form->default_value( 'opt.type', 'tablet' );
+    $form->default_value( 'opt.color', 'red' );
+
 
     p($form);
 
     say Dumper $form->names;
 
     # $self->render( login => $form );
-    $self->render( $form->to_hash );
+    $self->render( $form->default_value );
 }
 
 sub attempt {
@@ -79,8 +86,8 @@ sub attempt {
         template => 'login/index',
 
         # login    => $form,
-        # login => {}
-        $form->to_hash
+        # login => { name => 333, cart => [], item => [ {}, {} ], opt => {} }
+        $form->params_expand_hash
     );
 }
 
