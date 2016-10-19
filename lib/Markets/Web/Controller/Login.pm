@@ -56,7 +56,8 @@ sub index {
     say Dumper $form->names;
 
     # $self->render( login => $form );
-    $self->render( $form->default_value );
+    # $self->render( $form->default_value );
+    $self->render( $form->expand_hash );
 }
 
 sub attempt {
@@ -87,7 +88,8 @@ sub attempt {
 
         # login    => $form,
         # login => { name => 333, cart => [], item => [ {}, {} ], opt => {} }
-        $form->params_expand_hash
+        # $form->params_expand_hash
+        $form->expand_hash
     );
 }
 

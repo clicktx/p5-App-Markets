@@ -12,17 +12,17 @@ sub c { shift->{"controller"} }
 
 sub default_value {
     my ( $self, $name, $value ) = @_;
-    return $self->_default_value_expand_hash unless $name;
-    return $self->{default_value}->{$name}   unless $value;
+    return $self->{default_value}->{$name} unless $value;
 
     $self->{default_value}->{$name} = $value;
 }
 
-sub _default_value_expand_hash {
+sub expand_hash {
     my $self   = shift;
     my $fields = $self->fields;
-    my $hash   = CGI::Expand->expand_hash( $self->{default_value} );
-    $fields => $hash;
+    my $params = $self->params ? $self->params : $self->{default_value};
+
+    $fields => CGI::Expand->expand_hash($params);
 }
 
 # [WIP]
@@ -65,13 +65,6 @@ sub params {
     my ( $self, $name ) = @_;
     my $params = $self->c->param( $self->fields );
     return $name ? $params->{$name} : $params;
-}
-
-sub params_expand_hash {
-    my $self   = shift;
-    my $fields = $self->fields;
-    my $hash   = CGI::Expand->expand_hash( $self->params );
-    return $fields => $hash;
 }
 
 # [WIP]
@@ -130,7 +123,7 @@ Markets::Form::Struct - Form for Markets
 
 =head1 DESCRIPTION
 
-=head1 ALIAS
+=head1 METHODS
 
 =head2 c
 
@@ -145,7 +138,16 @@ Return $form->{markets.controller}
 
 Get/Set $form->{fields} value.
 
-=head1 METHODS
+==head3 expand_hash
+
+    # in your controller
+    $self->render(
+        $form->expand_hash
+    );
+
+    # Return value is fields_name => { ... }
+
+Return default values or form paramater.
 
 =head2 add_field
 
