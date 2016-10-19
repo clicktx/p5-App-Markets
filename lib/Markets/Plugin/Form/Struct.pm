@@ -8,6 +8,14 @@ sub new {
     $self->SUPER::new(@_);
 }
 
+sub add_field {
+    my ( $self, $field, $length, $filters, $validations ) = @_;
+
+    $self->filters( $field => $filters );
+    $self->validations( $field => $validations );
+    $self;
+}
+
 sub c { shift->{"controller"} }
 
 sub default_value {
@@ -15,6 +23,12 @@ sub default_value {
     return $self->{default_value}->{$name} unless $value;
 
     $self->{default_value}->{$name} = $value;
+}
+
+sub errors {
+    my ( $self, $name ) = @_;
+    my $formfields = $self->c->fields( $self->fields );
+    return $name ? $formfields->errors($name) : $formfields->errors;
 }
 
 sub expand_hash {
@@ -25,26 +39,10 @@ sub expand_hash {
     $fields => CGI::Expand->expand_hash($params);
 }
 
-sub remove_field { delete $_[0]->{field}->{ $_[1] } }
-
-sub add_field {
-    my ( $self, $field, $length, $filters, $validations ) = @_;
-
-    $self->filters( $field => $filters );
-    $self->validations( $field => $validations );
-    $self;
-}
-
 sub filters {
     my ( $self, $field, $value ) = @_;
     return $self->{field}->{$field}->{filters} unless $value;
     $self->{field}->{$field}->{filters} = $value || [];
-}
-
-sub validations {
-    my ( $self, $field, $value ) = @_;
-    return $self->{field}->{$field}->{validations} unless $value;
-    $self->{field}->{$field}->{validations} = $value || [];
 }
 
 sub param {
@@ -57,6 +55,8 @@ sub params {
     my $params = $self->c->param( $self->fields );
     return $name ? $params->{$name} : $params;
 }
+
+sub remove_field { delete $_[0]->{field}->{ $_[1] } }
 
 # [WIP]
 sub valid {
@@ -79,15 +79,15 @@ sub valid {
     }
     $formfields->is_equal( 'password', 'confirm_password' );
 
-    # Execute valid method
+    # Do M::P::FormFields valid method
     my $method = $self->{'formfields_valid'};
     $self->c->$method;
 }
 
-sub errors {
-    my ( $self, $name ) = @_;
-    my $formfields = $self->c->fields( $self->fields );
-    return $name ? $formfields->errors($name) : $formfields->errors;
+sub validations {
+    my ( $self, $field, $value ) = @_;
+    return $self->{field}->{$field}->{validations} unless $value;
+    $self->{field}->{$field}->{validations} = $value || [];
 }
 
 sub _do_validate {
