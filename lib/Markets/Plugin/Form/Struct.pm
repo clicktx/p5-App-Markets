@@ -25,8 +25,7 @@ sub expand_hash {
     $fields => CGI::Expand->expand_hash($params);
 }
 
-# [WIP]
-sub remove_field { }
+sub remove_field { delete $_[0]->{field}->{ $_[1] } }
 
 sub add_field {
     my ( $self, $field, $length, $filters, $validations ) = @_;
@@ -190,6 +189,12 @@ Get field value.
     my $login_name = $form->params('login_name');
 
 This method is alias of $controller->param($fields_name)
+
+=head2 remove_field
+
+    $form->remove_field('password');
+
+Remove form field.
 
 =head2 valid
 

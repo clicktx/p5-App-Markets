@@ -10,11 +10,8 @@ use DDP {
     # },
 };
 
-sub _init_form {
-    my $self = shift;
-
-    my $form = $self->form('login'); #or
-    # my $form = $self->form->fields('login');
+sub init_form {
+    my ( $self, $form ) = @_;
 
     $form->add_field( 'name', 100, [], ['is_example'] );
     $form->add_field(
@@ -33,21 +30,24 @@ sub _init_form {
     $form->add_field( 'opt.type',   [], ['trim'], ['is_required'] );
     $form->add_field( 'opt.color',  [], ['trim'], ['is_required'] );
 
-    $form;
+    $form->add_field( 'opt.delete', [], ['trim'], ['is_required'] );
+    $form->remove_field('opt.delete');
 }
 
 sub index {
     my $self = shift;
 
-    my $form = $self->_init_form;
+    my $form = $self->form('login');  #or
+                                      # my $form = $self->form->fields('login');
+    $self->init_form($form);
 
     # Set default value
-    $form->default_value( 'name', 'default_value' );
-    $form->default_value( 'cart.0', 'cart0' );
-    $form->default_value( 'cart.2', 'cart2' );
+    $form->default_value( 'name',      'default_value' );
+    $form->default_value( 'cart.0',    'cart0' );
+    $form->default_value( 'cart.2',    'cart2' );
     $form->default_value( 'item.0.no', 33 );
     $form->default_value( 'item.1.no', 55 );
-    $form->default_value( 'opt.type', 'tablet' );
+    $form->default_value( 'opt.type',  'tablet' );
     $form->default_value( 'opt.color', 'red' );
     p($form);
 
@@ -59,7 +59,9 @@ sub index {
 sub attempt {
     my $self = shift;
 
-    my $form = $self->_init_form;
+    my $form = $self->form('login');
+    $self->init_form($form);
+
     if ( $form->valid ) {
         say "ok";
         p( $form->params );
