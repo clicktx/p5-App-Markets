@@ -125,48 +125,16 @@ Markets::Form::Struct - Form for Markets
 
 =head1 METHODS
 
-=head2 c
-
-    $form->c;
-
-Return $form->{markets.controller}
-
-=head2 fields
-
-    $form->fields;
-    $form->fields('login');
-
-Get/Set $form->{fields} value.
-
-==head3 expand_hash
-
-    # in your controller
-    $self->render(
-        $form->expand_hash
-    );
-
-    # Return value is fields_name => { ... }
-
-Return default values or form paramater.
-
 =head2 add_field
 
     $form->add_field(name, length, [filters], [validations]);
     $form->add_field('password', [8, 32], [qw/trim/], [qw/is_required is_equal/]);
 
-=head2 validations
+=head2 c
 
-    $form->validations('password', ['is_required']);
-    my $validations = $form->validations('password');
+    $form->c;
 
-Get/Set validations.
-
-=head2 filters
-
-    $form->filters('password', ['trim']);
-    my $filters = $form->filters('password');
-
-Get/Set filters.
+Return $form->{markets.controller}
 
 =head2 default_value
 
@@ -178,15 +146,6 @@ Get/Set filters.
 
 Get/Set default value.
 
-=head2 names
-
-    my $names = $form->names;
-    my @names = $form->names;
-
-=head2 valid
-
-    $form->valid;
-
 =head2 errors
 
     # Return value is hash ref.
@@ -196,6 +155,42 @@ Get/Set default value.
     # Return value is scalar
     # ex. 'Requied'
     my $error_message = $form->errors('password');
+
+=head2 expand_hash
+
+    # in your controller
+    $self->render(
+        $form->expand_hash
+    );
+
+    # Return value is fields_name => { ... }
+
+Return default values or form paramater.
+
+=head2 fields
+
+    $form->fields;
+    $form->fields('login');
+
+Get/Set $form->{fields} value.
+
+=head2 filters
+
+    $form->filters('password', ['trim']);
+    my $filters = $form->filters('password');
+
+Get/Set filters.
+
+=head2 names
+
+    my $names = $form->names;
+    my @names = $form->names;
+
+=head2 param
+
+    my $password = $form->param('password');
+
+Get field value.
 
 = head2 params
 
@@ -209,11 +204,16 @@ Get/Set default value.
 
 This method is alias of $controller->param($fields_name)
 
-=head2 param
+=head2 valid
 
-    my $password = $form->param('password');
+    $form->valid;
 
-Get field value.
+=head2 validations
+
+    $form->validations('password', ['is_required']);
+    my $validations = $form->validations('password');
+
+Get/Set validations.
 
 =head1 SEE ALSO
 
