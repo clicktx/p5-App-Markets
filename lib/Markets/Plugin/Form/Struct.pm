@@ -48,14 +48,6 @@ sub validations {
     $self->{field}->{$field}->{validations} = $value || [];
 }
 
-# no used
-sub names {
-    my $self = shift;
-
-    my @names = grep { $_ =~ /^markets\..+/ ? undef : $_ } keys %{$self};
-    return wantarray ? @names : \@names;
-}
-
 sub param {
     my ( $self, $name ) = @_;
     $self->params->{$name};
@@ -180,11 +172,6 @@ Get/Set $form->{fields} value.
     my $filters = $form->filters('password');
 
 Get/Set filters.
-
-=head2 names
-
-    my $names = $form->names;
-    my @names = $form->names;
 
 =head2 param
 

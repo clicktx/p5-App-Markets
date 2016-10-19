@@ -49,11 +49,7 @@ sub index {
     $form->default_value( 'item.1.no', 55 );
     $form->default_value( 'opt.type', 'tablet' );
     $form->default_value( 'opt.color', 'red' );
-
-
     p($form);
-
-    say Dumper $form->names;
 
     # $self->render( login => $form );
     # $self->render( $form->default_value );
