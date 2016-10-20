@@ -95,8 +95,20 @@ sub _do_validate {
     foreach my $validation ( @{$validations} ) {
         my $arg;
         ( $validation, $arg ) = %$validation if ref $validation eq 'HASH';
-        $self->formfields->$validation( $name, @$arg );
+        if ( $validation =~ /^is_.+/ ) {
+            $self->formfields->$validation( $name, @$arg );
+        }
+        else {
+            $self->$validation( $name, @$arg );
+        }
     }
+}
+
+sub length_between {
+    my ( $self, $name, $min, $max, $err_msg ) = @_;
+    $err_msg ||= $self->c->__x( 'Must be between {min} and {max} symbols',
+        { min => $min, max => $max } );
+    $self->formfields->is_long_between( $name, $min, $max, $err_msg );
 }
 
 1;

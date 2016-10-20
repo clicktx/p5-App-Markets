@@ -20,7 +20,8 @@ sub init_form {
         [ 'trim', 'only_digits' ],
         [
             'is_required',
-            { is_long_between => [ 4, 8 ] },
+            { length_between => [ 4, 8 ] },
+            # { is_long_between => [ 4, 8 ] },
             { is_equal        => ['confirm_password'] },
         ]
     );
