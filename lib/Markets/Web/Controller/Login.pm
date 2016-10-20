@@ -18,7 +18,11 @@ sub init_form {
         'password',
         [ 8,      256 ],
         [ 'trim', 'only_digits' ],
-        ['is_required']
+        [
+            'is_required',
+            { is_long_between => [ 4, 8 ] },
+            { is_equal        => ['confirm_password'] },
+        ]
     );
     $form->add_field(
         'confirm_password', [ 8, 256 ],

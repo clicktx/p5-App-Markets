@@ -77,7 +77,6 @@ sub valid {
         $formfields->filter( $name, @{ $self->filters($field) } );
         $self->_do_validate( $formfields, $name, $field );
     }
-    $formfields->is_equal( 'password', 'confirm_password' );
 
     # Do M::P::FormFields valid method
     my $method = $self->{'formfields_valid'};
@@ -94,10 +93,10 @@ sub _do_validate {
     my ( $self, $formfields, $name, $field ) = @_;
 
     my $validations = $self->validations($field);
-
-    # [WIP]
     foreach my $validation ( @{$validations} ) {
-        $formfields->$validation($name);
+        my $arg;
+        ( $validation, $arg ) = %$validation if ref $validation eq 'HASH';
+        $formfields->$validation( $name, @$arg );
     }
 }
 
