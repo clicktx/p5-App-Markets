@@ -2,6 +2,7 @@ package Markets::Plugin::Form::Struct;
 use Mojo::Base -base;
 
 has 'fields';
+has 'formfields' => sub { $_[0]->c->fields( $_[0]->fields ) };
 
 sub new {
     my $self = shift;
@@ -27,8 +28,7 @@ sub default_value {
 
 sub errors {
     my ( $self, $name ) = @_;
-    my $formfields = $self->c->fields( $self->fields );
-    return $name ? $formfields->errors($name) : $formfields->errors;
+    return $name ? $self->formfields->errors($name) : $self->formfields->errors;
 }
 
 sub expand_hash {
@@ -64,8 +64,7 @@ sub valid {
     say "valid from Markets::Form";
     say "language now: " . $self->c->language;
 
-    my $formfields = $self->c->fields( $self->fields );
-    my $fields     = $self->fields;
+    my $fields = $self->fields;
 
     # POSTされてきたfieldのみバリデーション対象となる
     my @names = @{ $self->c->req->params->names };
@@ -74,8 +73,8 @@ sub valid {
         my $field = $name;
         $field =~ s/\.\d+/.[]/g;
 
-        $formfields->filter( $name, @{ $self->filters($field) } );
-        $self->_do_validate( $formfields, $name, $field );
+        $self->formfields->filter( $name, @{ $self->filters($field) } );
+        $self->_do_validate( $name, $field );
     }
 
     # Do M::P::FormFields valid method
@@ -90,13 +89,13 @@ sub validations {
 }
 
 sub _do_validate {
-    my ( $self, $formfields, $name, $field ) = @_;
+    my ( $self, $name, $field ) = @_;
 
     my $validations = $self->validations($field);
     foreach my $validation ( @{$validations} ) {
         my $arg;
         ( $validation, $arg ) = %$validation if ref $validation eq 'HASH';
-        $formfields->$validation( $name, @$arg );
+        $self->formfields->$validation( $name, @$arg );
     }
 }
 
