@@ -1,6 +1,7 @@
 package Markets::Web;
 use Mojo::Base 'Markets::Core';
-use Markets::Util qw(directories);
+use Markets::Util qw/directories/;
+use Mojo::Util qw/files/;
 
 # This method will run once at server start
 sub startup {
@@ -13,6 +14,24 @@ sub startup {
     # Original themes
     my $themes = directories( 'themes', { ignore => [ 'default', 'admin' ] } );
     say $self->dumper($themes);    # debug
+
+    # [WIP]loading lexicon files from themes
+    my $theme_locale_dir =
+      File::Spec->catdir( $self->home, 'themes', 'default', 'locale' );
+    $self->lexicon(
+        {
+            search_dirs => [$theme_locale_dir],
+            data        => [ '*:theme:' => '*.po' ]
+        }
+    ) if -d $theme_locale_dir;
+
+    # [WIP] Merge lexicon
+    my @locale_files = files "$theme_locale_dir";   # map {say $_}@locale_files;
+    my $instance = Locale::TextDomain::OO::Singleton::Lexicon->instance;
+    eval {
+        $instance->merge_lexicon( 'en::', 'en:theme:', 'en::' );    # [WIP]
+        $instance->merge_lexicon( 'ja::', 'ja:theme:', 'ja::' );    # [WIP]
+    };
 
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
     push @{ $self->renderer->paths }, 'themes';    # For template full path

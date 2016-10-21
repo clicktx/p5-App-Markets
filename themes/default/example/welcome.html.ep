@@ -22,20 +22,11 @@ learn more, you can also browse through the documentation
         <%= const('LINK_NAME') %>
     <% end %>
 </p>
+
+<h2><%= __('login') %></h2>
 <p>
     <%= link_to __('login') => url_for('/login/') %>
 </p>
-
-<form action="<%= url_for %>" method="post" style="border:1px solid gray">
-  <b>Form</b><br>
-  <b>Name:</b> <%= text_field 'name', placeholder => 'placeholder', class => 'css-class', id => 'css-id' %><br>
-  <b>Private:</b> Yes<%= radio_button private => 1 %> / No <%= radio_button private => 0, checked => 'checked' %><br>
-  <b>Message:</b><br>
-  <%= text_area 'message', style => "width:400px; height:100px" %><br>
-  <b>Password:</b> <%= password_field 'pass', class => 'pass-class', placeholder => 'your password' %><br>
-  <input type="submit" value="Post">
-</form>
-
 
 <h2>Admin pages</h2>
 <%= link_to 'admin page' => const('ADMIN_PAGE_PREFIX') %>
@@ -48,8 +39,3 @@ learn more, you can also browse through the documentation
 </p>
 
 <a href="<%= url_for %>" target="_top">link</a>
-% my $selected = 'selected';
-<select class="" name="">
-    <option>1</option>
-    <option <%= $selected %>>2</option>
-</select>

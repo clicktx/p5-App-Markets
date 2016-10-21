@@ -1,0 +1,29 @@
+% layout 'default';
+% title __('login');
+
+<h2><%= __('login') %></h2>
+
+% unless ( form_valid() ){
+    <div class="alert alert-danger">
+        error
+    </div>
+% }
+<%= form_for '/login/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+    <%= csrf_field %>
+
+    <% my $f = fields('login'); %>
+    <div class="">
+        <%= $f->label('name', class => 'class') %>
+        <%= $f->text('name', class => 'class', placeholder => __('login.name.placeholder') ) %>
+        <%= __ $f->errors('name') %>
+    </div>
+    <div class="">
+        <%= field('login.password')->label(class => 'fefe') %>
+        <%= field('login.password')->text %>
+        <%= __( field('login.password')->error ) %>
+    </div>
+    <input type="submit" value="<%= __ 'login' %>">
+<% end %>
+<p>
+    <%= link_to 'top' => url_for('/') %>
+</p>

@@ -93,11 +93,11 @@ sub initialize_app {
 
     # default cookie
     $self->sessions->cookie_name('session');
-    $self->secrets(['aaabbbccc']);    #           change this!
+    $self->secrets( ['aaabbbccc'] );    #           change this!
 
     # session
     my $session_stash_key = 'markets.session';
-    my $rs = $self->db->resultset('sessions');
+    my $rs                = $self->db->resultset('sessions');
     $self->plugin(
         'Markets::Plugin::Session' => {
             stash_key => $session_stash_key,
@@ -105,12 +105,16 @@ sub initialize_app {
             expires_delta => 3600,
         }
     );
-    $self->helper( markets_session => sub { shift->stash($session_stash_key) } );
+    $self->helper(
+        markets_session => sub {
+            shift->stash($session_stash_key);
+        }
+    );
 
     # locale
     $ENV{MOJO_I18N_DEBUG} = $mode eq 'development' ? 1 : 0;
     $self->plugin(
-        'LocaleTextDomainOO',
+        'Markets::Plugin::LocaleTextDomainOO',
         {
             # file_type => 'po',    # or 'mo'. default: po
             default   => 'en',               # default en
@@ -135,7 +139,7 @@ sub initialize_app {
     ) if -d $locale_dir;
 
     # Form Frameworks
-    $self->plugin( 'Markets::Plugin::FormFields',
+    $self->plugin( 'Markets::Plugin::Form',
         methods => { valid => 'form_valid', errors => 'form_errors' } );
 
     $self->hook(

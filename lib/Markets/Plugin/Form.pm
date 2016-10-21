@@ -1,15 +1,17 @@
-package Markets::Plugin::FormFields;
+package Markets::Plugin::Form;
 
 # TODO: pull requestがmergeされた場合はオリジナル(Mojolicious::Plugin::FormFields v0.06)を使う
 # https://github.com/sshaw/Mojolicious-Plugin-FormFields/pull/3
 
 use Mojo::Base 'Mojolicious::Plugin::FormFields';
 use Mojo::Util qw(monkey_patch);
-
-# Add cuntom filters
-$Validate::Tiny::FILTERS{only_digits} = sub { _only_digits(@_) };
+use Markets::Plugin::Form::Struct;
+use Markets::Plugin::Form::CustomFilter;
+use Markets::Plugin::Form::CustomVaridation;
 
 # Override method
+#   Filters is not applied, and use the "STRUCTURED REQUEST PARAMETERS". by clicktx · Pull Request #3
+#   https://github.com/sshaw/Mojolicious-Plugin-FormFields/pull/3
 monkey_patch 'Mojolicious::Plugin::FormFields::Field', valid => sub {
     my $self = shift;
     return $self->{result}->{success} if defined $self->{result};
@@ -48,7 +50,8 @@ monkey_patch 'Mojolicious::Plugin::FormFields::Field', label => sub {
 
     my $SEPARATOR = $self->separator;
     my @result = ( split /\Q$SEPARATOR/, $self->{name} );
-    $text //= $self->{c}->__($self->{name});
+    $text //= $self->{c}->__( $self->{name} );
+
     # $text //= $self->{c}->stash( $result[0] )->{".labels"}->{ $result[-1] };
     $text //=
       Mojolicious::Plugin::FormFields::Field::_default_label( $self->{name} );
@@ -90,12 +93,31 @@ sub register {
             $valid;
         }
     );
-}
-
-sub _only_digits {
-    my $val = shift // return;
-    $val =~ s/\D//g;
-    return $val;
+    $app->helper(
+        form => sub {
+            Markets::Plugin::Form::Struct->new(
+                'controller'        => shift,
+                'fields'            => shift,
+                'formfields_valid' => $helper,
+            );
+        }
+    );
 }
 
 1;
+
+=encoding utf8
+
+=head1 NAME
+
+Markets::Plugin::Form - Form for Markets
+
+=head1 DESCRIPTION
+
+This module is a wrapper of L<Mojolicious::Plugin::FormFields>.
+
+=head1 SEE ALSO
+
+L<Mojolicious::Plugin::FormFields>
+
+=cut
