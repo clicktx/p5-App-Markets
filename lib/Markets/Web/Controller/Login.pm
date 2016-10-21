@@ -18,24 +18,22 @@ sub init_form {
         'password',
         [ 8,      256 ],
         [ 'trim', 'only_digits' ],
-        [
-            'is_required',
-            { length_between => [ 4, 8 ] },
-            # { is_long_between => [ 4, 8 ] },
-            { is_equal        => ['confirm_password'] },
-        ]
+        [ 'required', { range_length => [ 4, 8 ] }, ]
     );
     $form->add_field(
-        'confirm_password', [ 8, 256 ],
-        [ 'trim', 'only_digits' ], ['is_required']
+        'confirm_password',
+        [ 8,      256 ],
+        [ 'trim', 'only_digits' ],
+        [ 'required', { equal_to => 'password' }, ]
     );
 
-    $form->add_field( 'cart.[]',    [], ['trim'], ['is_required'] );
-    $form->add_field( 'item.[].no', [], ['trim'], ['is_required'] );
-    $form->add_field( 'opt.type',   [], ['trim'], ['is_required'] );
-    $form->add_field( 'opt.color',  [], ['trim'], ['is_required'] );
+    $form->add_field( 'cart.[]', [], ['trim'],
+        [ 'required', { min_length => 6 }, { max_length => 7 }, ] );
+    $form->add_field( 'item.[].no', [], ['trim'], ['required'] );
+    $form->add_field( 'opt.type',   [], ['trim'], ['required'] );
+    $form->add_field( 'opt.color',  [], ['trim'], ['required'] );
 
-    $form->add_field( 'opt.delete', [], ['trim'], ['is_required'] );
+    $form->add_field( 'opt.delete', [], ['trim'], ['required'] );
     $form->remove_field('opt.delete');
 }
 
@@ -75,9 +73,8 @@ sub attempt {
     }
     else {
         say "!!!!!!!!!!!!!!!!!!!error!!!!!!!!!!!!!!";
-        say Dumper $self->form_errors;
-        say Dumper $form->errors;
-        say Dumper $form->errors('name');
+        p( $self->form_errors );
+        p( $form->errors );
 
         my $params = $self->param('login');
         p($params);
