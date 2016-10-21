@@ -16,19 +16,3 @@ msgstr ""
 # Login
 msgid "login"
 msgstr "Sign in222"
-
-msgid "login.name"
-msgstr "Username or email address222"
-
-msgid "login.name.placeholder"
-msgstr "Username or email address"
-
-msgid "login.password"
-msgstr "Password"
-
-msgid "login.name.description"
-msgstr "This field is your login name or email address."
-
-# Error messages
-msgid "Required"
-msgstr "Required"
