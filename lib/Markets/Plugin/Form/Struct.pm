@@ -67,9 +67,6 @@ sub remove_field { delete $_[0]->{field}->{ $_[1] } }
 # [WIP]
 sub valid {
     my $self = shift;
-    say "valid from Markets::Form";
-    say "language now: " . $self->c->language;
-
     my $fields = $self->fields;
 
     # POSTされてきたfieldのみバリデーション対象となる
@@ -99,13 +96,13 @@ sub _do_validate {
 
     my $validations = $self->validations($field);
     foreach my $validation ( @{$validations} ) {
-        my $arg;
-        ( $validation, $arg ) = %$validation if ref $validation eq 'HASH';
-        if ( $validation =~ /^is_.+/ ) {
-            $self->formfields->$validation( $name, @$arg );
+        my ( $method, $arg ) = ref $validation ? %{$validation} : ($validation);
+        my @values = ref $arg ? @$arg : ($arg);
+        if ( $method =~ /^is_.+/ ) {
+            $self->formfields->$method( $name, @values );
         }
         else {
-            $self->custom_validation->$validation( $name, @$arg );
+            $self->custom_validation->$method( $name, @values );
         }
     }
 }
