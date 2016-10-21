@@ -28,8 +28,10 @@ sub startup {
     # [WIP] Merge lexicon
     my @locale_files = files "$theme_locale_dir";   # map {say $_}@locale_files;
     my $instance = Locale::TextDomain::OO::Singleton::Lexicon->instance;
-    $instance->merge_lexicon( 'en::', 'en:theme:', 'en::' );    # [WIP]
-    $instance->merge_lexicon( 'ja::', 'ja:theme:', 'ja::' );    # [WIP]
+    eval {
+        $instance->merge_lexicon( 'en::', 'en:theme:', 'en::' );    # [WIP]
+        $instance->merge_lexicon( 'ja::', 'ja:theme:', 'ja::' );    # [WIP]
+    };
 
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
     push @{ $self->renderer->paths }, 'themes';    # For template full path
