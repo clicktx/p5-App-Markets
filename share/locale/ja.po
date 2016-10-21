@@ -41,7 +41,16 @@ msgstr "パスワード"
 
 # Error messages
 msgid "Required"
-msgstr "必須項目"
+msgstr "必須項目です。"
+
+msgid "Invalid value"
+msgstr "入力値が正しくありません。"
+
+msgid "Must be at least {length} symbols"
+msgstr "{length}文字以上で入力して下さい。"
+
+msgid "Must be at the most {length} symbols"
+msgstr "{length}文字以下で入力して下さい。"
 
 msgid "Must be between {min} and {max} symbols"
-msgstr "{min}〜{max}文字で入力"
+msgstr "{min}〜{max}文字で入力して下さい。"
