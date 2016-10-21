@@ -3,8 +3,8 @@ use Mojo::Base -base;
 
 has 'fields';
 has 'formfields' => sub { $_[0]->c->fields( $_[0]->fields ) };
-has 'custom_validations' => sub {
-    Markets::Plugin::Form::CustomVaridations->new(
+has 'custom_validation' => sub {
+    Markets::Plugin::Form::CustomVaridation->new(
         c          => $_[0]->c,
         formfields => $_[0]->formfields,
     );
@@ -105,7 +105,7 @@ sub _do_validate {
             $self->formfields->$validation( $name, @$arg );
         }
         else {
-            $self->custom_validations->$validation( $name, @$arg );
+            $self->custom_validation->$validation( $name, @$arg );
         }
     }
 }

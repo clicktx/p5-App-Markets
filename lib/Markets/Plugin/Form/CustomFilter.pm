@@ -1,4 +1,4 @@
-package Markets::Plugin::Form::CustomFilters;
+package Markets::Plugin::Form::CustomFilter;
 use Mojo::Base -base;
 
 # $Validate::Tiny::FILTERS{only_digits} = sub { _only_digits(@_) };
