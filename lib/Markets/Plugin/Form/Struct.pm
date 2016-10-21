@@ -3,6 +3,12 @@ use Mojo::Base -base;
 
 has 'fields';
 has 'formfields' => sub { $_[0]->c->fields( $_[0]->fields ) };
+has 'custom_validations' => sub {
+    Markets::Plugin::Form::CustomVaridations->new(
+        c          => $_[0]->c,
+        formfields => $_[0]->formfields,
+    );
+};
 
 sub new {
     my $self = shift;
@@ -99,16 +105,9 @@ sub _do_validate {
             $self->formfields->$validation( $name, @$arg );
         }
         else {
-            $self->$validation( $name, @$arg );
+            $self->custom_validations->$validation( $name, @$arg );
         }
     }
-}
-
-sub length_between {
-    my ( $self, $name, $min, $max, $err_msg ) = @_;
-    $err_msg ||= $self->c->__x( 'Must be between {min} and {max} symbols',
-        { min => $min, max => $max } );
-    $self->formfields->is_long_between( $name, $min, $max, $err_msg );
 }
 
 1;
