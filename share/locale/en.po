@@ -35,3 +35,6 @@ msgstr "Password"
 # Error messages
 msgid "Required"
 msgstr "Required"
+
+msgid "Must be between {min} and {max} symbols"
+msgstr "Must be between {min} and {max} symbols"
