@@ -13,27 +13,25 @@ use DDP {
 sub init_form {
     my ( $self, $form ) = @_;
 
-    $form->add_field( 'name', 100, [], ['is_example'] );
+    $form->add_field( 'name', [], ['is_example'] );
     $form->add_field(
         'password',
-        [ 8,      256 ],
         [ 'trim', 'only_digits' ],
         [ 'required', { range_length => [ 4, 8 ] }, ]
     );
     $form->add_field(
         'confirm_password',
-        [ 8,      256 ],
         [ 'trim', 'only_digits' ],
         [ 'required', { equal_to => 'password' }, ]
     );
 
-    $form->add_field( 'cart.[]', [], ['trim'],
+    $form->add_field( 'cart.[]', ['trim'],
         [ 'required', { min_length => 6 }, { max_length => 7 }, ] );
-    $form->add_field( 'item.[].no', [], ['trim'], ['required'] );
-    $form->add_field( 'opt.type',   [], ['trim'], ['required'] );
-    $form->add_field( 'opt.color',  [], ['trim'], ['required'] );
+    $form->add_field( 'item.[].no', ['trim'], ['required'] );
+    $form->add_field( 'opt.type',   ['trim'], ['required'] );
+    $form->add_field( 'opt.color',  ['trim'], ['required'] );
 
-    $form->add_field( 'opt.delete', [], ['trim'], ['required'] );
+    $form->add_field( 'opt.delete', ['trim'], ['required'] );
     $form->remove_field('opt.delete');
 }
 
