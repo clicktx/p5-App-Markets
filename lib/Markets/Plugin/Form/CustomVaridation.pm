@@ -34,22 +34,47 @@ sub range_length {
 
 sub min {
     my ( $self, $name, $int, $err_msg ) = @_;
+    $err_msg ||= $self->c->__x( 'Enter a value greater than or equal to {int}',
+        { int => $int } );
+    $self->formfields->is_minimal( $name, $int, $err_msg );
 }
 
 sub max {
     my ( $self, $name, $int, $err_msg ) = @_;
+    $err_msg ||= $self->c->__x( 'Enter a value less than or equal to {int}',
+        { int => $int } );
+    $self->formfields->is_maximum( $name, $int, $err_msg );
 }
 
 sub range {
     my ( $self, $name, $min, $max, $err_msg ) = @_;
+    $err_msg ||= $self->c->__x( 'Enter a value between {min} and {max}',
+        { min => $min, max => $max } );
+    $self->formfields->is_range( $name, $min, $max, $err_msg );
 }
+
 sub step    { }
 sub email   { }
 sub url     { }
 sub date    { }
 sub dateISO { }
-sub number  { }
-sub digits  { }
+
+# 数字（正負、桁区切り、小数点含む）
+# [世界各国での数字の区切り方](http://coliss.com/articles/build-websites/operation/writing/53.html)
+sub number {
+    my ( $self, $name, $value, $err_msg ) = @_;
+    $err_msg ||= $self->c->__('Invalid number');
+    my $regexp;
+    # say $self->c->language;
+    $self->formfields->is_number( $name, $value, $regexp, $err_msg );
+}
+
+# 整数のみ
+sub digits {
+    my ( $self, $name, $value, $err_msg ) = @_;
+    $err_msg ||= $self->c->__('Only digits');
+    $self->formfields->is_digits( $name, $value, $err_msg );
+}
 
 sub equal_to {
     my ( $self, $name, $other, $err_msg ) = @_;
@@ -71,6 +96,58 @@ sub is_example {
     my $err_msg = shift || 'This is example validation';
     return sub {
         return if defined $_[0] && $_[0] ne '';
+        return $err_msg;
+    };
+}
+
+sub is_minimal {
+    my ( $int, $err_msg ) = @_;
+    $err_msg ||= "Enter a value greater than or equal to $int";
+    return sub {
+        return if !defined( $_[0] ) || $_[0] eq '';
+        return if $_[0] >= $int;
+        return $err_msg;
+    };
+}
+
+sub is_maximum {
+    my ( $int, $err_msg ) = @_;
+    $err_msg ||= "Enter a value less than or equal to $int";
+    return sub {
+        return if !defined( $_[0] ) || $_[0] eq '';
+        return if $_[0] <= $int;
+        return $err_msg;
+    };
+}
+
+sub is_range {
+    my ( $min, $max, $err_msg ) = @_;
+    $err_msg ||= "Enter a value between $min and $max";
+    return sub {
+        return if !defined( $_[0] ) || $_[0] eq '';
+        return if $_[0] >= $min && $_[0] <= $max;
+        return $err_msg;
+    };
+}
+
+sub is_number {
+    my ( $value, $regexp, $err_msg ) = @_;
+    $err_msg ||= 'Invalid number';
+    return sub {
+        return if !defined( $_[0] ) || $_[0] eq '';
+        return
+          if defined $_[0]
+          && $_[0] =~ /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/;
+        return $err_msg;
+    };
+}
+
+sub is_digits {
+    my ( $value, $err_msg ) = @_;
+    $err_msg ||= 'Only digits';
+    return sub {
+        return if !defined( $_[0] ) || $_[0] eq '';
+        return if defined $_[0] && $_[0] =~ /^\d+$/;
         return $err_msg;
     };
 }
