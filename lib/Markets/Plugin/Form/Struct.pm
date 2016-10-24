@@ -10,13 +10,13 @@ has 'custom_validation' => sub {
     );
 };
 
-sub new {
-    my $self = shift;
-    $self->SUPER::new(@_);
-}
+# sub new {
+#     my $self = shift;
+#     $self->SUPER::new(@_);
+# }
 
 sub add_field {
-    my ( $self, $field, $length, $filters, $validations ) = @_;
+    my ( $self, $field, $filters, $validations ) = @_;
 
     $self->filters( $field => $filters );
     $self->validations( $field => $validations );
@@ -124,8 +124,8 @@ Markets::Form::Struct - Form for Markets
 
 =head2 add_field
 
-    $form->add_field(name, length, [filters], [validations]);
-    $form->add_field('password', [8, 32], [qw/trim/], [qw/is_required is_equal/]);
+    $form->add_field(name, [filters], [validations]);
+    $form->add_field('password', [qw/trim/], [qw/is_required is_equal/]);
 
 =head2 c
 
