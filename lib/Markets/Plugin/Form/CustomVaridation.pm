@@ -4,6 +4,14 @@ use Mojo::Base -base;
 has c          => sub { shift->{c} };
 has formfields => sub { shift->{formfields} };
 
+# [WIP] 言語で切り替えるのではなく地域で切り替えるべき
+our %NUMBER_RE = (
+    en => '^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$',
+    de => '^-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d+)?$',
+    ru => '^-?(?:\d+|\d{1,3}(?:\ \d{3})+)(?:,\d+)?$',
+    fr => '^-?(?:\d+|\d{1,3}(?:\ \d{3})+)(?:,\d+)?$',
+);
+
 # From https://jqueryvalidation.org/documentation/
 sub required {
     my ( $self, $name, $err_msg ) = @_;
@@ -64,8 +72,9 @@ sub dateISO { }
 sub number {
     my ( $self, $name, $value, $err_msg ) = @_;
     $err_msg ||= $self->c->__('Invalid number');
-    my $regexp;
-    # say $self->c->language;
+    my $lang = $self->c->language;
+    my $regexp = $NUMBER_RE{$lang} || $NUMBER_RE{en};
+
     $self->formfields->is_number( $name, $value, $regexp, $err_msg );
 }
 
@@ -137,7 +146,7 @@ sub is_number {
         return if !defined( $_[0] ) || $_[0] eq '';
         return
           if defined $_[0]
-          && $_[0] =~ /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/;
+          && $_[0] =~ /$regexp/;
         return $err_msg;
     };
 }

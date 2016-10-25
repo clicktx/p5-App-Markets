@@ -39,8 +39,11 @@ post '/range' => sub {
     my $json = { valid => $f->valid, errors => $f->errors };
     $c->render( json => $json );
 };
-post '/number' => sub {
+post '/number/:lang' => sub {
     my $c = shift;
+    my $lang = $c->stash('lang') || 'en';
+    $c->language($lang);
+
     my $f = $c->form('cart');
     $f->add_field( 'id', [], ['number'] );
 
@@ -99,20 +102,30 @@ $t->post_ok( '/range', form => { 'cart.id' => 10 } )->status_is(200)
   ->json_is( { valid => 1, errors => {} } );
 
 # is_number
-$t->post_ok( '/number', form => { 'cart.id' => 'a' } )->status_is(200)
+$t->post_ok( '/number/en', form => { 'cart.id' => 'a' } )->status_is(200)
   ->json_is( { valid => 0, errors => { id => 'Invalid number' } } );
-$t->post_ok( '/number', form => { 'cart.id' => '' } )->status_is(200)
+$t->post_ok( '/number/en', form => { 'cart.id' => '' } )->status_is(200)
   ->json_is( { valid => 1, errors => {} } );
-$t->post_ok( '/number', form => { 'cart.id' => 5 } )->status_is(200)
+$t->post_ok( '/number/en', form => { 'cart.id' => 5 } )->status_is(200)
   ->json_is( { valid => 1, errors => {} } );
-$t->post_ok( '/number', form => { 'cart.id' => '-55' } )->status_is(200)
+$t->post_ok( '/number/en', form => { 'cart.id' => '-55' } )->status_is(200)
   ->json_is( { valid => 1, errors => {} } );
-$t->post_ok( '/number', form => { 'cart.id' => '5.5' } )->status_is(200)
+$t->post_ok( '/number/en', form => { 'cart.id' => '5.5' } )->status_is(200)
   ->json_is( { valid => 1, errors => {} } );
-$t->post_ok( '/number', form => { 'cart.id' => '1,000,000' } )->status_is(200)
-  ->json_is( { valid => 1, errors => {} } );
+$t->post_ok( '/number/en', form => { 'cart.id' => '1,000,000' } )
+  ->status_is(200)->json_is( { valid => 1, errors => {} } );
+
 # Locale: DE (German, Deutsch)
-# Locale: RU (Russian; русский язык)
+$t->post_ok( '/number/de', form => { 'cart.id' => '5,5' } )->status_is(200)
+  ->json_is( { valid => 1, errors => {} } );
+$t->post_ok( '/number/de', form => { 'cart.id' => '1.000.000,00' } )
+  ->status_is(200)->json_is( { valid => 1, errors => {} } );
+
+# Locale: RU (Russian; русский язык) / FR (French; français)
+$t->post_ok( '/number/ru', form => { 'cart.id' => '5,5' } )->status_is(200)
+  ->json_is( { valid => 1, errors => {} } );
+$t->post_ok( '/number/ru', form => { 'cart.id' => '1 000 000,00' } )
+  ->status_is(200)->json_is( { valid => 1, errors => {} } );
 
 # is_digits
 $t->post_ok( '/digits', form => { 'cart.id' => 'a' } )->status_is(200)
