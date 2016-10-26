@@ -42,7 +42,7 @@ sub startup {
     $self->plugin('Markets::Plugin::DOM');
 
     # Routes
-    $self->plugin('Markets::Admin::Routes');
+    $self->plugin('Markets::Web::Admin::Routes');
     $self->plugin('Markets::Web::Catalog::Routes');
 
     # Loading installed Addons config

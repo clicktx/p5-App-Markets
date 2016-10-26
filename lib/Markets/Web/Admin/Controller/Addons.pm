@@ -1,4 +1,4 @@
-package Markets::Admin::Controller::Addons;
+package Markets::Web::Admin::Controller::Addons;
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 

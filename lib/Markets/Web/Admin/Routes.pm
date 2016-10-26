@@ -1,10 +1,10 @@
-package Markets::Admin::Routes;
+package Markets::Web::Admin::Routes;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
     my ( $self, $app ) = @_;
     my $r = $app->routes->any( $app->const('ADMIN_PAGE_PREFIX') )
-      ->to( namespace => 'Markets::Admin::Controller' );
+      ->to( namespace => 'Markets::Web::Admin::Controller' );
 
     # CSRF protection
     $r = $r->under(
