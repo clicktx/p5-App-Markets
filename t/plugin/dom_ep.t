@@ -2,7 +2,6 @@ use Mojo::Base -strict;
 
 use Test::More;
 use Mojo::DOM;
-use Markets::DOM::EP;
 use Markets::Plugin::DOM;
 
 # EP tag(basics)
