@@ -1,4 +1,4 @@
-package Markets::Admin::DispatchRoutes;
+package Markets::Admin::Routes;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
