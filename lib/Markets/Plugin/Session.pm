@@ -1,21 +1,27 @@
 package Markets::Plugin::Session;
 use Mojo::Base 'Mojolicious::Plugin';
 use MojoX::Session;
+use Markets::Plugin::Session::Store::Teng;
 
 sub register {
     my ( $self, $app, $args ) = @_;
-
     $args ||= {};
 
     my $stash_key = delete $args->{stash_key} || 'mojox-session';
-    my $init = delete $args->{init};
+    my $init      = delete $args->{init};
+    my $resultset = $args->{resultset};
 
     $app->hook(
         before_dispatch => sub {
             my $c = shift;
             say "hook! before_dispatch from plugin session";    # debug
 
-            my $session = MojoX::Session->new(%$args);
+            my $session = MojoX::Session->new(
+                %$args,
+                store => Markets::Plugin::Session::Store::Teng->new(
+                    resultset => $resultset
+                )
+            );
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
             $c->stash( $stash_key => $session );
