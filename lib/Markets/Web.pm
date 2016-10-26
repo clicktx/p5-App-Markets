@@ -42,8 +42,8 @@ sub startup {
     $self->plugin('Markets::Plugin::DOM');
 
     # Routes
-    $self->plugin('Markets::Admin::DispatchRoutes');
-    $self->plugin('Markets::Web::DispatchRoutes');
+    $self->plugin('Markets::Web::Admin::Routes');
+    $self->plugin('Markets::Web::Catalog::Routes');
 
     # Loading installed Addons config
     my $addons_config = $self->model('data-configure')->addons;

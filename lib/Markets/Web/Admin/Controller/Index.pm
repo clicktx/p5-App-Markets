@@ -1,4 +1,4 @@
-package Markets::Admin::Controller::Index;
+package Markets::Web::Admin::Controller::Index;
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 
