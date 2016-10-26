@@ -1,7 +1,7 @@
 package Markets::Plugin::DOM;
 use Mojo::Base 'Mojolicious::Plugin';
 
-use Markets::DOM::EP;
+use Markets::Plugin::DOM::EP;
 use Mojo::Util qw(monkey_patch);
 
 {
@@ -9,7 +9,7 @@ use Mojo::Util qw(monkey_patch);
 
     monkey_patch 'Mojo::DOM', new => sub {
         my $class = shift;
-        my $self = bless \Markets::DOM::EP->new, ref $class || $class;
+        my $self = bless \Markets::Plugin::DOM::EP->new, ref $class || $class;
         return @_ ? $self->parse(@_) : $self;
       },
       content => sub {
@@ -18,7 +18,7 @@ use Mojo::Util qw(monkey_patch);
         my $type = $self->type;
         if ( $type eq 'root' || $type eq 'tag' ) {
             return $self->_content( 0, 1, @_ ) if @_;
-            my $html = Markets::DOM::EP->new( xml => $self->xml );
+            my $html = Markets::Plugin::DOM::EP->new( xml => $self->xml );
             return join '',
               map { $html->tree($_)->render } Mojo::DOM::_nodes( $self->tree );
         }
@@ -28,7 +28,7 @@ use Mojo::Util qw(monkey_patch);
         return $self;
       },
       _parse =>
-      sub { Markets::DOM::EP->new( xml => shift->xml )->parse(shift)->tree };
+      sub { Markets::Plugin::DOM::EP->new( xml => shift->xml )->parse(shift)->tree };
 }
 
 sub register {
