@@ -1,9 +1,9 @@
-package Markets::Web::Routes;
+package Markets::Web::Catalog::Routes;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
     my ( $self, $app ) = @_;
-    my $r = $app->routes->namespaces( ['Markets::Web::Controller'] );
+    my $r = $app->routes->namespaces( ['Markets::Web::Catalog::Controller'] );
 
     # CSRF protection
     $r = $r->under(

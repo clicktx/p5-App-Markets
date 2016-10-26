@@ -1,4 +1,4 @@
-package Markets::Web::Controller::Example;
+package Markets::Web::Catalog::Controller::Example;
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 

@@ -43,7 +43,7 @@ sub startup {
 
     # Routes
     $self->plugin('Markets::Admin::Routes');
-    $self->plugin('Markets::Web::Routes');
+    $self->plugin('Markets::Web::Catalog::Routes');
 
     # Loading installed Addons config
     my $addons_config = $self->model('data-configure')->addons;
