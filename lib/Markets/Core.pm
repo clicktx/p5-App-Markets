@@ -6,7 +6,7 @@ use File::Spec;
 use DBI;
 use Markets::Util;
 use Markets::DB;
-use Markets::Session::Store::Teng;
+use Markets::Plugin::Session::Store::Teng;
 use Markets::Addons;
 
 has dbh => sub {
@@ -101,7 +101,7 @@ sub initialize_app {
     $self->plugin(
         'Markets::Plugin::Session' => {
             stash_key => $session_stash_key,
-            store     => Markets::Session::Store::Teng->new( resultset => $rs ),
+            store     => Markets::Plugin::Session::Store::Teng->new( resultset => $rs ),
             expires_delta => 3600,
         }
     );

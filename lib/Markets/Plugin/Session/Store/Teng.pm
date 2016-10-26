@@ -1,4 +1,4 @@
-package Markets::Session::Store::Teng;
+package Markets::Plugin::Session::Store::Teng;
 use strict;
 use warnings;
 

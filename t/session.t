@@ -16,7 +16,7 @@ my $rs = $t->app->db->resultset('sessions');
 
 my $session = MojoX::Session->new(
     tx            => $tx,
-    store         => Markets::Session::Store::Teng->new( resultset => $rs ),
+    store         => Markets::Plugin::Session::Store::Teng->new( resultset => $rs ),
     transport     => MojoX::Session::Transport::Cookie->new,
     expires_delta => 3600,
 );
