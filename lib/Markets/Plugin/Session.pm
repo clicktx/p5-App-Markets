@@ -1,6 +1,6 @@
 package Markets::Plugin::Session;
 use Mojo::Base 'Mojolicious::Plugin';
-use MojoX::Session;
+use Markets::Session;
 use Markets::Plugin::Session::Store::Teng;
 
 sub register {
