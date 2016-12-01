@@ -86,8 +86,7 @@ sub initialize_app {
     # $self->config( constants => $self->model('data-constant')->load );
 
     # load config after. option schema loading.
-    my $more_schema_classes_from_db =
-      [qw /Markets::DB::Schema::More Markets::DB::Schema::Addons/];
+    my $more_schema_classes_from_db = [qw /Markets::DB::Schema::More Markets::DB::Schema::Addons/];
     $self->db->merge_schema($more_schema_classes_from_db);
 
     # default cookie
@@ -99,8 +98,8 @@ sub initialize_app {
     my $rs                = $self->db->resultset('sessions');
     $self->plugin(
         'Markets::Plugin::Session' => {
-            stash_key => $session_stash_key,
-            resultset => $rs,
+            stash_key     => $session_stash_key,
+            resultset     => $rs,
             expires_delta => 3600,
         }
     );
