@@ -30,12 +30,9 @@ sub register {
     );
 
     $app->hook(
-        before_routes => sub {
+        before_action => sub {
             my $c = shift;
-            say "hook! before_routes from plugin session";           # debug
-
-            # Dynamic routes only
-            return if $c->stash->{'mojo.static'};
+            say "hook! before_action from plugin session";          # debug
 
             # Create or Expires time for session
             my $session = $c->stash($stash_key);
