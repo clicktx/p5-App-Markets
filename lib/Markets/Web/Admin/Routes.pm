@@ -6,9 +6,6 @@ sub register {
     my $r = $app->routes->any( $app->const('ADMIN_PAGE_PREFIX') )
       ->to( namespace => 'Markets::Web::Admin::Controller' );
 
-    # Emit before_action hook
-    $r = $r->under( sub { $_[0]->app->plugins->emit_hook( before_action => $_[0] ) } );
-
     # CSRF protection
     $r = $r->under(
         sub {
