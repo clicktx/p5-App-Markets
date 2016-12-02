@@ -10,32 +10,23 @@ sub register {
     my $stash_key = delete $args->{stash_key} || 'mojox-session';
     my $init      = delete $args->{init};
     my $resultset = $args->{resultset};
-
+    my $session   = Markets::Session->new(
+        %$args,
+        store => Markets::Plugin::Session::Store::Teng->new(
+            resultset => $resultset
+        )
+    );
     $app->hook(
-        before_dispatch => sub {
+        before_action => sub {
             my $c = shift;
-            say "hook! before_dispatch from plugin session";    # debug
+            say "hook! before_action from plugin session";    # debug
 
-            my $session = MojoX::Session->new(
-                %$args,
-                store => Markets::Plugin::Session::Store::Teng->new(
-                    resultset => $resultset
-                )
-            );
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
             $c->stash( $stash_key => $session );
             say "   ... set stash: $stash_key => session object";    # debug
-        }
-    );
-
-    $app->hook(
-        before_action => sub {
-            my $c = shift;
-            say "hook! before_action from plugin session";          # debug
 
             # Create or Expires time for session
-            my $session = $c->stash($stash_key);
             $session->load;
             if ( $session->sid ) {
                 say "   ... ented session expires time.";            # debug
@@ -49,10 +40,9 @@ sub register {
     );
 
     $app->hook(
-        after_dispatch => sub {
+        after_action => sub {
             my $c = shift;
-            say "hook! after_dispatch from plugin session";          # debug
-            return if $c->stash->{'mojo.static'};
+            say "hook! after_action from plugin session";            # debug
             say "   ... session flush";                              # debug
             $c->stash($stash_key)->flush;
         }
