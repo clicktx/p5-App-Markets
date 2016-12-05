@@ -1,4 +1,4 @@
-package Markets::Web;
+package Markets::App;
 use Mojo::Base 'Markets::Core';
 use Markets::Util qw/directories/;
 use Mojo::Util qw/files/;

@@ -4,7 +4,6 @@ use Test::More;
 
 use_ok $_ for qw(
   Markets
-  Markets::Web
   MojoX::Session
   Markets::Plugin::Session::Store::Teng
   Mojolicious::Plugin::Model
