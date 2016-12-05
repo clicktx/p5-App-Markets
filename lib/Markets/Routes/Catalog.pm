@@ -3,7 +3,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
     my ( $self, $app ) = @_;
-    my $r = $app->routes->namespaces( ['Markets::Web::Catalog::Controller'] );
+    my $r = $app->routes->namespaces( ['Markets::Controller::Catalog'] );
 
     # CSRF protection
     $r = $r->under(
