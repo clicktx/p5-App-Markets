@@ -1,4 +1,4 @@
-package Markets::Web::Admin::Routes;
+package Markets::Routes::Admin;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {

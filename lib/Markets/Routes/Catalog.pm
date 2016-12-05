@@ -1,4 +1,4 @@
-package Markets::Web::Catalog::Routes;
+package Markets::Routes::Catalog;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
