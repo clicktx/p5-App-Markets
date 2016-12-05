@@ -1,9 +1,10 @@
-package Markets::Web::Catalog::Routes;
+package Markets::Routes::Admin;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
     my ( $self, $app ) = @_;
-    my $r = $app->routes->namespaces( ['Markets::Web::Catalog::Controller'] );
+    my $r = $app->routes->any( $app->const('ADMIN_PAGE_PREFIX') )
+      ->to( namespace => 'Markets::Controller::Admin' );
 
     # CSRF protection
     $r = $r->under(
@@ -20,10 +21,9 @@ sub register {
         }
     );
 
-    # Routes
-    $r->get('/')->to('example#welcome');
-    $r->get('/login')->to('login#index');
-    $r->post('/login/attempt')->to('login#attempt');
+    # Routes for Admin
+    $r->get('/')->to('index#welcome');
+    $r->get('/:controller/:action')->to( action => 'index' );
 }
 
 1;

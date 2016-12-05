@@ -1,4 +1,4 @@
-package Markets::Web::Catalog::Controller::Login;
+package Markets::Controller::Catalog::Login;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
