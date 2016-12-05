@@ -1,6 +1,11 @@
 package Markets::Session;
 use Mojo::Base qw/MojoX::Session/;
 
+sub new {
+    my $self = shift;
+    say "M::Session::new";    # debug
+    $self->SUPER::new(@_);
+}
 
 1;
 __END__

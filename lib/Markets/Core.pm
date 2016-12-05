@@ -140,6 +140,22 @@ sub initialize_app {
     $self->plugin( 'Markets::Plugin::Form',
         methods => { valid => 'form_valid', errors => 'form_errors' } );
 
+    # Add before/after action hook
+    $self->hook(
+        around_action => sub {
+            my ( $next, $c, $action, $last ) = @_;
+            if ($last) {
+                say "hook! around_action3 from Markets::Core";
+                $c->app->plugins->emit_hook( before_action => $c );
+                $c->$action();
+                $c->app->plugins->emit_hook( after_action => $c );
+            }
+            else {
+                return $next->();
+            }
+        }
+    );
+
     $self->hook(
         before_routes => sub {
             my $c = shift;

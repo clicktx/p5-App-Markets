@@ -5,9 +5,6 @@ sub register {
     my ( $self, $app ) = @_;
     my $r = $app->routes->namespaces( ['Markets::Web::Catalog::Controller'] );
 
-    # Emit before_action hook
-    $r = $r->under( sub { $_[0]->app->plugins->emit_hook( before_action => $_[0] ) } );
-
     # CSRF protection
     $r = $r->under(
         sub {
