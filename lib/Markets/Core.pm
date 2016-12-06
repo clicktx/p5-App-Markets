@@ -144,15 +144,10 @@ sub initialize_app {
     $self->hook(
         around_action => sub {
             my ( $next, $c, $action, $last ) = @_;
-            if ($last) {
-                say "hook! around_action3 from Markets::Core";
-                $c->app->plugins->emit_hook( before_action => $c );
-                $c->$action();
-                $c->app->plugins->emit_hook( after_action => $c );
-            }
-            else {
-                return $next->();
-            }
+            return $next->() unless $last;
+
+            say "hook! around_action from Markets::Core";    # debug
+            $c->process($action);
         }
     );
 
@@ -161,7 +156,7 @@ sub initialize_app {
             my $c = shift;
 
             # Emit filter hook (ignore static files)
-            say "hook! before_routes";    # debug
+            say "hook! before_routes";                        # debug
             say "... This route is dynamic" unless ( $c->stash('mojo.static') );
             $c->app->filter->emit_filter( filter_form => $c )
               unless $c->stash('mojo.static');
