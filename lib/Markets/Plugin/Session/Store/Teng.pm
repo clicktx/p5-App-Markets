@@ -25,8 +25,6 @@ sub create {
     my ( $self, $sid, $expires, $data ) = @_;
 
     my ( $cart_id, $session_data ) = _separate_session_data($data);
-
-    $cart_id    = Data::MessagePack->pack($cart_id)    if $cart_id;
     $session_data = Data::MessagePack->pack($session_data) if $session_data;
 
     my $resultset      = $self->resultset;
@@ -49,8 +47,6 @@ sub update {
     my ( $self, $sid, $expires, $data ) = @_;
 
     my ( $cart_id, $session_data ) = _separate_session_data($data);
-
-    $cart_id    = Data::MessagePack->pack($cart_id)    if $cart_id;
     $session_data = Data::MessagePack->pack($session_data) if $session_data;
 
     my $resultset      = $self->resultset;
@@ -87,7 +83,6 @@ sub load {
 
     my $data = {};
     $data = Data::MessagePack->unpack($session_data) if $session_data;
-    $cart_id = Data::MessagePack->unpack($cart_id) if $cart_id;
     $data->{cart_id} = $cart_id if $cart_id;
 
     return ( $expires, $data );
