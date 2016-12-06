@@ -1,5 +1,5 @@
 package Markets::Controller::Admin::Index;
-use Mojo::Base 'Mojolicious::Controller';
+use Mojo::Base 'Markets::Controller';
 use Data::Dumper;
 
 # This action will render a template

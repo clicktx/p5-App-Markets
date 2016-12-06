@@ -35,7 +35,7 @@ sub remove_action_hook   { }
 sub remove_filter_hook   { }
 
 package Markets::Addon::TestAddon::Example;
-use Mojo::Base 'Mojolicious::Controller';
+use Mojo::Base 'Markets::Controller';
 
 sub top { shift->render( text => 'top' ) }
 sub hoo { shift->render( text => 'hoo' ) }
