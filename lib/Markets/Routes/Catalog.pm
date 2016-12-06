@@ -22,6 +22,7 @@ sub register {
 
     # Routes
     $r->get('/')->to('example#welcome');
+    $r->get('/regenerate_session')->to('example#regenerate_session');
     $r->get('/login')->to('login#index');
     $r->post('/login/attempt')->to('login#attempt');
 }

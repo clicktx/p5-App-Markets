@@ -2,9 +2,28 @@ package Markets::Session;
 use Mojo::Base qw/MojoX::Session/;
 
 sub new {
-    my $self = shift;
+    my $class = shift;
     say "M::Session::new";    # debug
-    $self->SUPER::new(@_);
+    my $self = $class->SUPER::new(@_);
+
+    return $self;
+}
+
+use DDP;
+
+sub regenerate_session {
+    my $self = shift;
+
+    # Remove old session
+    my $data = $self->data;
+    p $data;         # debug
+    p $self->sid;    # debug
+    $self->expires;
+    $self->flush;
+
+    # Create new session
+    $self->data($data);
+    $self->create;
 }
 
 1;
