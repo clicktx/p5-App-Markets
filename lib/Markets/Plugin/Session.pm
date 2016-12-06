@@ -2,6 +2,7 @@ package Markets::Plugin::Session;
 use Mojo::Base 'Mojolicious::Plugin';
 use Markets::Session;
 use Markets::Plugin::Session::Store::Teng;
+use Markets::Util;
 
 sub register {
     my ( $self, $app, $args ) = @_;
@@ -57,7 +58,11 @@ sub _create_session {
     # cookieが無いときはlanding pageのurlを保存
     if ($landing_page_on_cookie) {
         say "   ... created new session.";    # debug
-        $session->data( 'landing_page' => $landing_page_on_cookie );
+        my $cart_id = Markets::Util::generate_token( length => 40 );
+        $session->data(
+            landing_page => $landing_page_on_cookie,
+            cart_id         => $cart_id,
+        );
         $session->create;
     }
     else {
