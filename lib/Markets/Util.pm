@@ -3,7 +3,9 @@ use Mojo::Base -strict;
 
 use Exporter 'import';
 use File::Find::Rule;
-our @EXPORT_OK = ( qw(directories ), );
+use Session::Token;
+
+our @EXPORT_OK = ( qw(directories generate_token), );
 
 =head1 FUNCTIONS
 
@@ -36,7 +38,7 @@ sub directories {
 
     my $rule = File::Find::Rule->new;
     if ($ignore_dir)
-    { # Hack the `Use of uninitialized value $regex in regexp compilation at Text/Glob.pm`
+    {    # Hack the `Use of uninitialized value $regex in regexp compilation at Text/Glob.pm`
         $rule->not( File::Find::Rule->name($ignore_dir) );
     }
     $rule->maxdepth(1)->directory->start($dir);
@@ -46,6 +48,28 @@ sub directories {
         push @sub_directories, $sub_dir if $sub_dir;
     }
     return wantarray ? @sub_directories : \@sub_directories;
+}
+
+=over
+
+=item C<generate_token>
+
+Generate secure token. based L<Session::Token>
+
+    use Markets::Util qw(genarate_token);
+    my $token = genarate_token( { length => 30 } );
+    # -> ZVZdkwIfNrvsk9N8f3jB0zBZ12kePJ
+
+B<options>
+
+SEE ALSO L<Session::Token>
+
+=back
+
+=cut
+
+sub generate_token {
+    Session::Token->new(@_)->get;
 }
 
 1;

@@ -1,4 +1,4 @@
-package Markets::Web;
+package Markets::App;
 use Mojo::Base 'Markets::Core';
 use Markets::Util qw/directories/;
 use Mojo::Util qw/files/;
@@ -42,8 +42,8 @@ sub startup {
     $self->plugin('Markets::Plugin::DOM');
 
     # Routes
-    $self->plugin('Markets::Web::Admin::Routes');
-    $self->plugin('Markets::Web::Catalog::Routes');
+    $self->plugin('Markets::Routes::Admin');
+    $self->plugin('Markets::Routes::Catalog');
 
     # Loading installed Addons config
     my $addons_config = $self->model('data-configure')->addons;

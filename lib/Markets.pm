@@ -1,5 +1,5 @@
 package Markets;
-use Mojo::Base 'Markets::Web';
+use Mojo::Base 'Markets::App';
 use File::Spec;
 use File::Basename;
 our $VERSION = '0.01';

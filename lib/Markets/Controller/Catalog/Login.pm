@@ -1,5 +1,5 @@
-package Markets::Web::Catalog::Controller::Login;
-use Mojo::Base 'Mojolicious::Controller';
+package Markets::Controller::Catalog::Login;
+use Mojo::Base 'Markets::Controller';
 
 use Data::Dumper;
 use DDP {

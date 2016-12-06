@@ -1,10 +1,11 @@
-package Markets::Web::Catalog::Controller::Example;
-use Mojo::Base 'Mojolicious::Controller';
+package Markets::Controller::Catalog::Example;
+use Mojo::Base 'Markets::Controller';
 use Data::Dumper;
 
 # This action will render a template
 sub welcome {
     my $self = shift;
+    say "!!! start action !!!";
 
     # emit hook
     $self->app->plugins->emit_hook( before_welcome => $self );
@@ -22,8 +23,9 @@ sub welcome {
     $self->app->model('Data::Base')->do;
 
     # Render template "example/welcome.html.ep" with message
-    $self->render(
-        msg => 'Welcome to the Mojolicious real-time web framework!' );
+    $self->render( msg => 'Welcome to the Mojolicious real-time web framework!' );
+
+    say "!!! end action !!!";
 }
 
 1;

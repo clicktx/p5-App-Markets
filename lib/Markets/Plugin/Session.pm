@@ -1,6 +1,6 @@
 package Markets::Plugin::Session;
 use Mojo::Base 'Mojolicious::Plugin';
-use MojoX::Session;
+use Markets::Session;
 use Markets::Plugin::Session::Store::Teng;
 
 sub register {
@@ -10,35 +10,23 @@ sub register {
     my $stash_key = delete $args->{stash_key} || 'mojox-session';
     my $init      = delete $args->{init};
     my $resultset = $args->{resultset};
-
+    my $session   = Markets::Session->new(
+        %$args,
+        store => Markets::Plugin::Session::Store::Teng->new(
+            resultset => $resultset
+        )
+    );
     $app->hook(
-        before_dispatch => sub {
+        before_action => sub {
             my $c = shift;
-            say "hook! before_dispatch from plugin session";    # debug
+            say "hook! before_action from plugin session";    # debug
 
-            my $session = MojoX::Session->new(
-                %$args,
-                store => Markets::Plugin::Session::Store::Teng->new(
-                    resultset => $resultset
-                )
-            );
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
             $c->stash( $stash_key => $session );
             say "   ... set stash: $stash_key => session object";    # debug
-        }
-    );
-
-    $app->hook(
-        before_routes => sub {
-            my $c = shift;
-            say "hook! before_routes from plugin session";           # debug
-
-            # Dynamic routes only
-            return if $c->stash->{'mojo.static'};
 
             # Create or Expires time for session
-            my $session = $c->stash($stash_key);
             $session->load;
             if ( $session->sid ) {
                 say "   ... ented session expires time.";            # debug
@@ -52,10 +40,9 @@ sub register {
     );
 
     $app->hook(
-        after_dispatch => sub {
+        after_action => sub {
             my $c = shift;
-            say "hook! after_dispatch from plugin session";          # debug
-            return if $c->stash->{'mojo.static'};
+            say "hook! after_action from plugin session";            # debug
             say "   ... session flush";                              # debug
             $c->stash($stash_key)->flush;
         }
@@ -64,19 +51,19 @@ sub register {
 
 sub _create_session {
     my ( $c, $session ) = @_;
-    my $cookie = $c->cookie('landing_page');
+    my $landing_page_on_cookie = $c->session('landing_page');
 
     # cookieに対応している場合のみセッション生成する
     # cookieが無いときはlanding pageのurlを保存
-    if ($cookie) {
+    if ($landing_page_on_cookie) {
         say "   ... created new session.";    # debug
-        $session->data( 'landing_page' => $cookie );
+        $session->data( 'landing_page' => $landing_page_on_cookie );
         $session->create;
     }
     else {
         say "   ... created cookie landing_page.";    # debug
         my $landing_page = $c->req->url->to_string;
-        $c->cookie( 'landing_page' => $landing_page );
+        $c->session( landing_page => $landing_page );
     }
 }
 
