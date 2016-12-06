@@ -38,12 +38,12 @@ $session->flush;
 $session->load;
 is $session->data('counter'), 1, 'right session value';
 
-# set cart data
-$session->data( cart => 1 );
+# set cart_id data
+$session->data( cart_id => 1 );
 $session->flush;
 $session->load;
-is $session->data('cart'), 1, 'right cart value';
-is_deeply $session->data, { counter => 1, cart => 1 }, 'right cart value';
+is $session->data('cart_id'), 1, 'right cart_id value';
+is_deeply $session->data, { counter => 1, cart_id => 1 }, 'right cart_id value';
 
 # regenerate session
 my $data    = $session->data;

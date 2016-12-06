@@ -6,7 +6,7 @@ use Teng::Schema::Declare;
 table {
     name    'sessions';
     pk      'sid';
-    columns qw( sid data cart expires );
+    columns qw( sid data cart_id expires );
 };
 
 1;

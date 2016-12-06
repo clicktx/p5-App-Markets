@@ -21,9 +21,9 @@ USE `markets` ;
 -- Table `markets`.`sessions`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `markets`.`sessions` (
-  `sid` VARCHAR(40) NOT NULL COMMENT '',
-  `data` LONGTEXT NULL COMMENT '',
-  `cart` LONGTEXT NULL COMMENT '',
+  `sid` VARCHAR(50) NOT NULL COMMENT '',
+  `data` MEDIUMTEXT NULL COMMENT '',
+  `cart_id` VARCHAR(50) NULL COMMENT '',
   `expires` INT UNSIGNED NOT NULL COMMENT '',
   PRIMARY KEY (`sid`)  COMMENT '')
 ENGINE = InnoDB;

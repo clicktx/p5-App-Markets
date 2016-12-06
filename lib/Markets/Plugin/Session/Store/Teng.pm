@@ -11,36 +11,36 @@ __PACKAGE__->attr('resultset');
 __PACKAGE__->attr( sid_column     => 'sid' );
 __PACKAGE__->attr( expires_column => 'expires' );
 __PACKAGE__->attr( data_column    => 'data' );
-__PACKAGE__->attr( cart_column    => 'cart' );
+__PACKAGE__->attr( cart_id_column    => 'cart_id' );
 
 sub _separate_session_data {
     my $data         = shift;
-    my $cart_data    = $data->{cart} || '';
+    my $cart_id    = $data->{cart_id} || '';
     my $session_data = $data;
-    undef $session_data->{cart} if $session_data->{cart};
-    return ( $cart_data, $session_data );
+    undef $session_data->{cart_id} if $session_data->{cart_id};
+    return ( $cart_id, $session_data );
 }
 
 sub create {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    my ( $cart_data, $session_data ) = _separate_session_data($data);
+    my ( $cart_id, $session_data ) = _separate_session_data($data);
 
-    $cart_data    = Data::MessagePack->pack($cart_data)    if $cart_data;
+    $cart_id    = Data::MessagePack->pack($cart_id)    if $cart_id;
     $session_data = Data::MessagePack->pack($session_data) if $session_data;
 
     my $resultset      = $self->resultset;
     my $sid_column     = $self->sid_column;
     my $expires_column = $self->expires_column;
     my $data_column    = $self->data_column;
-    my $cart_column    = $self->cart_column;
+    my $cart_id_column    = $self->cart_id_column;
 
     return $resultset->insert(
         {
             $sid_column     => $sid,
             $expires_column => $expires,
             $data_column    => $session_data,
-            $cart_column    => $cart_data,
+            $cart_id_column    => $cart_id,
         }
     ) ? 1 : 0;
 }
@@ -48,23 +48,23 @@ sub create {
 sub update {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    my ( $cart_data, $session_data ) = _separate_session_data($data);
+    my ( $cart_id, $session_data ) = _separate_session_data($data);
 
-    $cart_data    = Data::MessagePack->pack($cart_data)    if $cart_data;
+    $cart_id    = Data::MessagePack->pack($cart_id)    if $cart_id;
     $session_data = Data::MessagePack->pack($session_data) if $session_data;
 
     my $resultset      = $self->resultset;
     my $sid_column     = $self->sid_column;
     my $expires_column = $self->expires_column;
     my $data_column    = $self->data_column;
-    my $cart_column    = $self->cart_column;
+    my $cart_id_column    = $self->cart_id_column;
 
     my $set = $resultset->single( { $sid_column => $sid } );
     return $set->update(
         {
             $expires_column => $expires,
             $data_column    => $session_data,
-            $cart_column    => $cart_data,
+            $cart_id_column    => $cart_id,
         }
     ) ? 1 : 0;
 }
@@ -76,19 +76,19 @@ sub load {
     my $sid_column     = $self->sid_column;
     my $expires_column = $self->expires_column;
     my $data_column    = $self->data_column;
-    my $cart_column    = $self->cart_column;
+    my $cart_id_column    = $self->cart_id_column;
 
     my $row = $resultset->single( { $sid_column => $sid } );
     return unless $row;
 
     my $expires      = $row->get_column($expires_column);
     my $session_data = $row->get_column($data_column);
-    my $cart_data    = $row->get_column($cart_column);
+    my $cart_id    = $row->get_column($cart_id_column);
 
     my $data = {};
     $data = Data::MessagePack->unpack($session_data) if $session_data;
-    $cart_data = Data::MessagePack->unpack($cart_data) if $cart_data;
-    $data->{cart} = $cart_data if $cart_data;
+    $cart_id = Data::MessagePack->unpack($cart_id) if $cart_id;
+    $data->{cart_id} = $cart_id if $cart_id;
 
     return ( $expires, $data );
 }
@@ -113,8 +113,8 @@ MojoX::Session::Store::Teng - Teng Store for MojoX::Session
 
     CREATE TABLE session (
         sid          VARCHAR(40) PRIMARY KEY,
-        data         LONG TEXT,
-        cart         LONG TEXT,
+        data         MEDIUMTEXT,
+        cart_id      VARCHAR(40),
         expires      INTEGER UNSIGNED NOT NULL,
         UNIQUE(sid)
     );
@@ -161,9 +161,9 @@ Expires column name. Default is 'expires'.
 
 Data column name. Default is 'data'.
 
-=head2 C<cart_column>
+=head2 C<cart_id_column>
 
-Cart column name. Default is 'cart'.
+Cart column name. Default is 'cart_id'.
 
 =head1 METHODS
 
