@@ -17,6 +17,7 @@ sub welcome {
     $session->data( counter => $counter );
     say "counter: " . $counter;      # debug
     say $self->const('ROOT_URL');    # debug
+    say Dumper $session->data;
 
     # use model
     $self->app->model('logic-base')->do;
