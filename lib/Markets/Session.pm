@@ -19,7 +19,7 @@ sub regenerate_session {
     p $self->sid;    # debug
 
     # Remove old session
-    $self->expires;
+    $self->expire;
     $self->flush;
 
     p %data;         # debug
