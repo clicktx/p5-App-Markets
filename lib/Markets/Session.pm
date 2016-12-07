@@ -14,15 +14,19 @@ use DDP;
 sub regenerate_session {
     my $self = shift;
 
-    # Remove old session
-    my $data = $self->data;
-    p $data;         # debug
+    my %data = %{$self->data};
+    p %data;         # debug
     p $self->sid;    # debug
+
+    # Remove old session
     $self->expires;
     $self->flush;
 
+    p %data;         # debug
+    p $self->sid;    # debug
+
     # Create new session
-    $self->data($data);
+    $self->data(%data);
     $self->create;
 }
 
