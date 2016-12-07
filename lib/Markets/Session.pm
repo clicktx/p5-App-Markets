@@ -9,21 +9,13 @@ sub new {
     return $self;
 }
 
-use DDP;
-
 sub regenerate_session {
     my $self = shift;
-
     my %data = %{$self->data};
-    p %data;         # debug
-    p $self->sid;    # debug
 
     # Remove old session
     $self->expire;
     $self->flush;
-
-    p %data;         # debug
-    p $self->sid;    # debug
 
     # Create new session
     $self->data(%data);

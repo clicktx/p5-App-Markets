@@ -60,8 +60,9 @@ sub _create_session {
         say "   ... created new session.";    # debug
         my $cart_id = Markets::Util::generate_token( length => 40 );
         $session->data(
+            is_loged_in  => 0,
             landing_page => $landing_page_on_cookie,
-            cart_id         => $cart_id,
+            cart_id      => $cart_id,
         );
         $session->create;
     }
