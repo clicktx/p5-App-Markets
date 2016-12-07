@@ -46,13 +46,12 @@ is $session->data('cart_id'), 1, 'right cart_id value';
 is_deeply $session->data, { counter => 1, cart_id => 1 }, 'right cart_id value';
 
 # regenerate session
-my $data    = $session->data;
+my %data    = %{$session->data};
 my $new_sid = $session->regenerate_session;
-$session->flush;
-$session->load;
-my $new_data = $session->data;
 isnt $sid, $new_sid, 'created new sid';
-is %$data, %$new_data, 'right session data';
+
+my %new_data = %{$session->data};
+is %data, %new_data, 'right session data';
 
 # remove session
 $session->expire;
