@@ -1,17 +1,9 @@
 package Markets::Session;
 use Mojo::Base qw/MojoX::Session/;
 
-sub new {
-    my $class = shift;
-    say "M::Session::new";    # debug
-    my $self = $class->SUPER::new(@_);
-
-    return $self;
-}
-
 sub regenerate_session {
     my $self = shift;
-    my %data = %{$self->data};
+    my %data = %{ $self->data };
 
     # Remove old session
     $self->expire;
