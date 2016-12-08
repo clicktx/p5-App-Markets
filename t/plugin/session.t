@@ -47,7 +47,7 @@ is_deeply $session->data, { counter => 1, cart_id => 1 }, 'right cart_id value';
 
 # regenerate session
 my %data    = %{$session->data};
-my $new_sid = $session->regenerate_session;
+my $new_sid = $session->regenerate_sid;
 isnt $sid, $new_sid, 'created new sid';
 
 my %new_data = %{$session->data};

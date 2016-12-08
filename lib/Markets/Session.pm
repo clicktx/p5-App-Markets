@@ -1,7 +1,7 @@
 package Markets::Session;
 use Mojo::Base qw/MojoX::Session/;
 
-sub regenerate_session {
+sub regenerate_sid {
     my $self = shift;
     my %data = %{ $self->data };
 

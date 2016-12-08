@@ -9,7 +9,7 @@ learn more, you can also browse through the documentation
 <%= link_to 'here' => '/perldoc' %>.
 
 <h2>Admin pages</h2>
-    <%= link_to 'regenerate_session' => 'regenerate_session' %>
+    <%= link_to 'regenerate_sid' => 'regenerate_sid' %>
 
 <p>
     Your visit count: <%= markets_session->data('counter') %>

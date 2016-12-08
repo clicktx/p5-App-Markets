@@ -29,12 +29,12 @@ sub welcome {
     say "!!! end action !!!";
 }
 
-sub regenerate_session {
+sub regenerate_sid {
     my $self = shift;
-    say "regenerate_session";
+    say "regenerate_sid";
 
     my $session = $self->markets_session;
-    $session->regenerate_session;
+    $session->regenerate_sid;
     $self->stash( template => 'example/welcome' );
     $self->welcome;
 }
