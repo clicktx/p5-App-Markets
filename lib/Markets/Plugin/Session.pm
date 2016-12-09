@@ -8,7 +8,7 @@ sub register {
     my ( $self, $app, $args ) = @_;
     $args ||= {};
 
-    my $stash_key = delete $args->{stash_key} || 'mojox-session';
+    my $stash_key = delete $args->{stash_key} || 'markets.session';
     my $init      = delete $args->{init};
     my $resultset = $args->{resultset};
     my $session   = Markets::Session->new(
@@ -17,6 +17,13 @@ sub register {
             resultset => $resultset
         )
     );
+
+    # Helpers
+    $app->helper(
+        markets_session => sub { shift->stash($stash_key) },
+    );
+
+    # Hooks
     $app->hook(
         before_action => sub {
             my $c = shift;
@@ -24,7 +31,9 @@ sub register {
 
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
-            $c->stash( $stash_key => $session );
+            $c->stash(
+                $stash_key      => $session,
+            );
             say "   ... set stash: $stash_key => session object";    # debug
 
             # Create or Expires time for session

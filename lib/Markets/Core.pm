@@ -94,18 +94,11 @@ sub initialize_app {
     $self->secrets( ['aaabbbccc'] );    #           change this!
 
     # session
-    my $session_stash_key = 'markets.session';
-    my $rs                = $self->db->resultset('sessions');
+    my $rs = $self->db->resultset('sessions');
     $self->plugin(
         'Markets::Plugin::Session' => {
-            stash_key     => $session_stash_key,
             resultset     => $rs,
             expires_delta => 3600,
-        }
-    );
-    $self->helper(
-        markets_session => sub {
-            shift->stash($session_stash_key);
         }
     );
 
@@ -156,7 +149,7 @@ sub initialize_app {
             my $c = shift;
 
             # Emit filter hook (ignore static files)
-            say "hook! before_routes";                        # debug
+            say "hook! before_routes";                       # debug
             say "... This route is dynamic" unless ( $c->stash('mojo.static') );
             $c->app->filter->emit_filter( filter_form => $c )
               unless $c->stash('mojo.static');
