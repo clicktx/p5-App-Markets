@@ -2,6 +2,7 @@ package Markets::Session::Cart;
 use Mojo::Base -base;
 
 has 'session';
+has id => sub { shift->session->cart_id };
 
 sub create { }
 

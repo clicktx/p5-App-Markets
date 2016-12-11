@@ -22,6 +22,8 @@ sub regenerate_sid {
 sub _generate_sid {
     my $self = shift;
     $self->SUPER::_generate_sid;
+
+    return if $self->data('cart_id');
     $self->data( cart_id => generate_token( length => 40 ) );
 }
 
@@ -52,9 +54,9 @@ Returns new L<Markets::Session::Cart> object.
 
 Returns cart id.
 
-=head2 C<regenerate_session>
+=head2 C<regenerate_sid>
 
-    my $sid = $session->regenerate_session;
+    my $sid = $session->regenerate_sid;
 
 =head1 SEE ALSO
 

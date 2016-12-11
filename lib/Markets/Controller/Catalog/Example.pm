@@ -34,7 +34,8 @@ sub regenerate_sid {
     say "regenerate_sid";
 
     my $session = $self->markets_session;
-    $session->regenerate_sid;
+    my $sid = $session->regenerate_sid;
+    say "  .. regenerate_sid: " . $sid;
     $self->stash( template => 'example/welcome' );
     $self->welcome;
 }

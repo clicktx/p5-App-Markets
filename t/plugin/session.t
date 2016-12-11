@@ -11,7 +11,7 @@ my $app = $t->app;
 my $cookie = Mojo::Cookie::Request->new( name => 'sid', value => 'bar', path => '/' );
 my $tx = Mojo::Transaction::HTTP->new();
 $tx->req->cookies($cookie);
-my $rs = $t->app->db->resultset('sessions');
+my $rs = $app->db->resultset('sessions');
 
 my $session = Markets::Session->new(
     tx            => $tx,
@@ -32,25 +32,26 @@ $session->tx($tx);
 $tx->req->cookies($cookie);
 is $session->load, $sid, 'loading session';
 
+# for cart session
+my $cart = $session->cart;
+is ref $cart, 'Markets::Session::Cart', 'right cart object';
+ok $cart->id, 'right cart->id';
+my $cart_id = $session->cart_id;
+ok $cart_id, 'right session->cart_id';
+
 # set data
 $session->data( counter => 1 );
 $session->flush;
 $session->load;
 is $session->data('counter'), 1, 'right session value';
 
-# set cart_id data
-$session->data( cart_id => 1 );
-$session->flush;
-$session->load;
-is $session->data('cart_id'), 1, 'right cart_id value';
-is_deeply $session->data, { counter => 1, cart_id => 1 }, 'right cart_id value';
-
 # regenerate session
-my %data    = %{$session->data};
+my %data    = %{ $session->data };
 my $new_sid = $session->regenerate_sid;
 isnt $sid, $new_sid, 'created new sid';
+is $cart_id, $session->cart_id, 'don\'t create new cart_id';
 
-my %new_data = %{$session->data};
+my %new_data = %{ $session->data };
 is %data, %new_data, 'right session data';
 
 # remove session
