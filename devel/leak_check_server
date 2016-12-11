@@ -1,0 +1,16 @@
+# Development Server with Leak check
+
+carton exec -- \
+start_server \
+--port=3000 \
+--pid-file=var/run/markets.pid \
+--status-file=var/run/markets.status \
+-- plackup -R lib,themes,addons,share/locale \
+-MDevel::Leak::Object=GLOBAL_bless \
+-e '$Devel::Leak::Object::TRACKSOURCELINES = 1' \
+-s Starlet --max-workers=1 \
+script/markets
+
+# Devel::Leak::Objectはcpanfileに未記載
+#[Plack/PSGIアプリケーションのメモリリークをDevel::Leak::Objectでチェック - blog.nomadscafe.jp](http://blog.nomadscafe.jp/2013/04/plackpsgidevelleakobject.html)
+# [CatalystアプリのメモリーリークをDevel::Leak::Objectでチェック - dann's blog - #](https://dann.g.hatena.ne.jp/dann/20080922/p2)
