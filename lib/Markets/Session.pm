@@ -6,7 +6,7 @@ use Markets::Util qw/generate_token/;
 has 'cart' => sub { Markets::Session::Cart->new( session => shift ) };
 has 'cart_id' => sub { shift->data('cart_id') };
 
-sub regenerate_session {
+sub regenerate_sid {
     my $self = shift;
     my %data = %{ $self->data };
 
