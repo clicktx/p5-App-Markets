@@ -108,15 +108,14 @@ sub delete {
     my $db         = $self->db;
     my $sid_column = $self->sid_column;
 
-    my $row = $db->single( $self->table_session, { $sid_column => $sid } );
-    my $cnt = $row->delete;
+    my $row_cnt = $db->delete( $self->table_session, { $sid_column => $sid } );
 
     my $error = $db->dbh->errstr || '';
     if ($error) {
         $self->error($error);
         return;
     }
-    return $cnt ? 1 : 0;
+    return $row_cnt ? 1 : 0;
 }
 
 sub _separate_session_data {
