@@ -3,24 +3,24 @@ use Mojo::Base qw/MojoX::Session/;
 use Markets::Session::Cart;
 use Markets::Util qw/generate_token/;
 
-has 'cart' => sub { Markets::Session::Cart->new( session => shift ) };
-has 'cart_id' => sub { shift->data('cart_id') };
+has cart => sub { Markets::Session::Cart->new( session => shift ) };
+has cart_id => sub { shift->data('cart_id') };
 
 sub regenerate_sid {
     my $self = shift;
-    my %data = %{ $self->data };
 
-    my $txn = $self->store->db->txn_scope;
+    my $original_sid = $self->sid;
+    $self->SUPER::_generate_sid;
 
-    # Remove old session
-    $self->expire;
-    $self->flush;
+    if ( $self->transport ) {
+        $self->transport->tx( $self->tx );
+        $self->transport->set( $self->sid, $self->expires );
+    }
 
-    # Create new session
-    $self->data(%data);
-    $self->create;
+    $self->_is_flushed(0);
+    $self->store->update_sid( $original_sid, $self->sid );
 
-    $txn->commit;
+    return $self->sid;
 }
 
 sub _generate_sid {

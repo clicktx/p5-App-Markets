@@ -1,7 +1,7 @@
 package Markets::Session::Store::Teng;
 use Mojo::Base 'MojoX::Session::Store';
 
-# use MIME::Base64; シリアライズ時にbase64する必要があるか？
+# use MIME::Base64; シリアライズ時にbase64する必要があるか？MessagePackなら不要？
 use Data::MessagePack;
 
 has 'db';
@@ -63,6 +63,30 @@ sub update {
         },
         {
             $sid_column => $sid
+        }
+    );
+
+    my $error = $db->dbh->errstr || '';
+    if ($error) {
+        $self->error($error);
+        return;
+    }
+    return $row_cnt ? 1 : 0;
+}
+
+sub update_sid {
+    my ( $self, $original_sid, $new_sid ) = @_;
+
+    my $db         = $self->db;
+    my $sid_column = $self->sid_column;
+
+    my $row_cnt = $db->update(
+        $self->table_session,
+        {
+            $sid_column => $new_sid
+        },
+        {
+            $sid_column => $original_sid
         }
     );
 
@@ -141,6 +165,11 @@ Markets::Session::Store::Teng - Teng Store for MojoX::Session
         cart_id      VARCHAR(40),
         expires      INTEGER UNSIGNED NOT NULL,
         UNIQUE(sid)
+    );
+    CREATE TABLE carts (
+        cart_id      VARCHAR(40) PRIMARY KEY,
+        data         MEDIUMTEXT,
+        UNIQUE(cart_id)
     );
 
     # Your App
