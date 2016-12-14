@@ -2,6 +2,7 @@ package Markets::Plugin::Session;
 use Mojo::Base 'Mojolicious::Plugin';
 use Markets::Session;
 use Markets::Session::Store::Teng;
+use Data::Dumper;
 
 sub register {
     my ( $self, $app, $args ) = @_;
@@ -43,7 +44,7 @@ sub register {
 
             # Cart
             say "  on Cart";                                         # debug
-            $session->cart->load;
+            say Dumper $session->cart;
         }
     );
 

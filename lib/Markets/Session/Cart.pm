@@ -1,16 +1,5 @@
 package Markets::Session::Cart;
 use Mojo::Base -base;
-
-has 'session';
-has id => sub { shift->session->cart_id };
-
-sub create { }
-
-sub load {
-    my $self = shift;
-    say "   ... cart_id: " . $self->session->data('cart_id');    # debug
-}
-
 1;
 __END__
 
