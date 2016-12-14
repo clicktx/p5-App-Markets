@@ -34,9 +34,27 @@ sub regenerate_sid {
     say "regenerate_sid";
 
     my $session = $self->markets_session;
-    my $sid = $session->regenerate_sid;
+    my $sid     = $session->regenerate_sid;
     say "  .. regenerate_sid: " . $sid;
-    $self->stash( template => 'example/welcome' );
+    $self->stash(
+        msg      => 'update sid!',
+        template => 'example/welcome'
+    );
+    $self->welcome;
+}
+
+sub logout {
+    my $self = shift;
+    say "logout ... remove session";
+
+    my $session = $self->markets_session;
+    $session->expire;
+    $session->flush;
+
+    $self->stash(
+        msg      => 'logout!',
+        template => 'example/welcome'
+    );
     $self->welcome;
 }
 
