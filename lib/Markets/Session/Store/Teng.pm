@@ -21,8 +21,9 @@ sub create {
     my $data_column    = $self->data_column;
     my $cart_id_column = $self->cart_id_column;
 
-    my ( $cart_id, $session_data ) = _separate_session_data($data);
+    my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
     $session_data = Data::MessagePack->pack($session_data) if $session_data;
+    $cart_data    = Data::MessagePack->pack($cart_data)    if $cart_data;
 
     {
         my $txn = $db->txn_scope;
@@ -32,7 +33,7 @@ sub create {
             $self->table_cart,
             {
                 $cart_id_column => $cart_id,
-                $data_column    => 'dummy',
+                $data_column    => $cart_data,
             }
         );
 
@@ -61,8 +62,9 @@ sub create {
 sub update {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    my ( $cart_id, $session_data ) = _separate_session_data($data);
+    my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
     $session_data = Data::MessagePack->pack($session_data) if $session_data;
+    $cart_data    = Data::MessagePack->pack($cart_data)    if $cart_data;
 
     my $db             = $self->db;
     my $sid_column     = $self->sid_column;
@@ -123,21 +125,26 @@ sub load {
     my $data_column    = $self->data_column;
     my $cart_id_column = $self->cart_id_column;
 
-    my $row = $db->single( $self->table_session, { $sid_column => $sid } );
+    my $row_session = $db->single( $self->table_session, { $sid_column => $sid } );
     my $error = $db->dbh->errstr || '';
     if ($error) {
         $self->error($error);
         return;
     }
-    return unless $row;
+    return unless $row_session;
 
-    my $expires      = $row->get_column($expires_column);
-    my $session_data = $row->get_column($data_column);
-    my $cart_id      = $row->get_column($cart_id_column);
+    my $expires      = $row_session->get_column($expires_column);
+    my $session_data = $row_session->get_column($data_column);
+    my $cart_id      = $row_session->get_column($cart_id_column);
+
+    my $row_cart = $db->single( $self->table_cart, { $cart_id_column => $cart_id } );
+    my $cart_data = $row_cart->get_column($data_column);
+    $cart_data = Data::MessagePack->unpack($cart_data) if $cart_data;
 
     my $data = {};
-    $data = Data::MessagePack->unpack($session_data) if $session_data;
-    $data->{cart_id} = $cart_id if $cart_id;
+    $data            = Data::MessagePack->unpack($session_data) if $session_data;
+    $data->{cart_id} = $cart_id                                 if $cart_id;
+    $data->{cart}    = $cart_data                               if $cart_data;
 
     return ( $expires, $data );
 }
@@ -145,8 +152,8 @@ sub load {
 sub delete {
     my ( $self, $sid ) = @_;
 
-    my $db         = $self->db;
-    my $sid_column = $self->sid_column;
+    my $db             = $self->db;
+    my $sid_column     = $self->sid_column;
     my $cart_id_column = $self->cart_id_column;
 
     {
@@ -170,10 +177,13 @@ sub delete {
 
 sub _separate_session_data {
     my $data         = shift;
-    my $cart_id      = $data->{cart_id} || '';
     my $session_data = $data;
-    undef $session_data->{cart_id} if $session_data->{cart_id};
-    return ( $cart_id, $session_data );
+    my $cart_id      = $data->{cart_id} || '';
+    my $cart_data    = $data->{cart} || {};
+
+    delete $session_data->{cart_id} if $cart_id;
+    delete $session_data->{cart}    if %$cart_data;
+    return ( $session_data, $cart_id, $cart_data );
 }
 
 1;
