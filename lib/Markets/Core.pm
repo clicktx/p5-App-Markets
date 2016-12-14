@@ -94,10 +94,8 @@ sub initialize_app {
     $self->secrets( ['aaabbbccc'] );    #           change this!
 
     # session
-    my $rs = $self->db->resultset('sessions');
     $self->plugin(
         'Markets::Plugin::Session' => {
-            resultset     => $rs,
             expires_delta => 3600,
         }
     );

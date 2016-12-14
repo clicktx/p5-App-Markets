@@ -1,7 +1,7 @@
 package Markets::Plugin::Session;
 use Mojo::Base 'Mojolicious::Plugin';
 use Markets::Session;
-use Markets::Plugin::Session::Store::Teng;
+use Markets::Session::Store::Teng;
 
 sub register {
     my ( $self, $app, $args ) = @_;
@@ -10,13 +10,9 @@ sub register {
     my $stash_key      = delete $args->{stash_key}      || 'markets.session';
     my $cart_stash_key = delete $args->{cart_stash_key} || 'markets.session.cart';
     my $init           = delete $args->{init};
-    my $resultset      = $args->{resultset};
-    my $session        = Markets::Session->new(
-        %$args,
-        store => Markets::Plugin::Session::Store::Teng->new(
-            resultset => $resultset
-        )
-    );
+    my $session =
+      Markets::Session->new( %$args,
+        store => Markets::Session::Store::Teng->new( db => $app->db ) );
 
     # Helpers
     $app->helper(
