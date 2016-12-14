@@ -33,16 +33,17 @@ is $session->load, $sid, 'loading session';
 
 # for cart session
 my $cart = $session->cart;
-is ref $cart, 'Markets::Session::Cart', 'right cart object';
-ok $cart->id, 'right cart->id';
+is ref $cart, 'HASH', 'right cart';
 my $cart_id = $session->cart_id;
 ok $cart_id, 'right session->cart_id';
 
 # set data
 $session->data( counter => 1 );
+$session->data( cart => { items => [] } );
 $session->flush;
 $session->load;
 is $session->data('counter'), 1, 'right session value';
+is_deeply $session->data('cart'), { items => [] }, 'right cart value';
 
 # regenerate session
 my %data    = %{ $session->data };

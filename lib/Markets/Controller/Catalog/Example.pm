@@ -15,6 +15,12 @@ sub welcome {
     my $counter = $session->data('counter');
     $counter++;
     $session->data( counter => $counter );
+
+    # cart
+    my $cart = $session->data('cart');
+    $cart->{new}++;
+    $session->data( cart => $cart );
+
     say "counter: " . $counter;      # debug
     say $self->const('ROOT_URL');    # debug
     say Dumper $session->data;

@@ -72,24 +72,42 @@ sub update {
     my $data_column    = $self->data_column;
     my $cart_id_column = $self->cart_id_column;
 
-    my $row_cnt = $db->update(
-        $self->table_session,
-        {
-            $expires_column => $expires,
-            $data_column    => $session_data,
-            $cart_id_column => $cart_id,
-        },
-        {
-            $sid_column => $sid
-        }
-    );
+    {
+        my $txn = $db->txn_scope;
+
+        # Update Cart
+        $db->update(
+            $self->table_cart,
+            {
+                $data_column => $cart_data,
+            },
+            {
+                $cart_id_column => $cart_id
+            }
+        );
+
+        # Update Session
+        $db->update(
+            $self->table_session,
+            {
+                $expires_column => $expires,
+                $data_column    => $session_data,
+                $cart_id_column => $cart_id,
+            },
+            {
+                $sid_column => $sid
+            }
+        );
+
+        $txn->commit;
+    }
 
     my $error = $db->dbh->errstr || '';
     if ($error) {
         $self->error($error);
         return;
     }
-    return $row_cnt ? 1 : 0;
+    return 1;
 }
 
 sub update_sid {
