@@ -10,9 +10,6 @@ sub register {
 
     my $stash_key = delete $args->{stash_key} || 'markets.session';
     my $init = delete $args->{init};
-    my $session =
-      Markets::Session->new( %$args,
-        store => Markets::Session::Store::Teng->new( db => $app->db ) );
 
     # Helpers
     $app->helper(
@@ -23,7 +20,13 @@ sub register {
     # Hooks
     $app->hook(
         before_action => sub {
-            my $c = shift;
+            my $c       = shift;
+            my $session = Markets::Session->new(
+                %$args,
+                store => Markets::Session::Store::Teng->new(
+                    db => $app->db
+                )
+            );
             say "hook! before_action from plugin session";    # debug
 
             $session->tx( $c->tx );
