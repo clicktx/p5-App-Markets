@@ -10,6 +10,8 @@ sub regenerate_sid {
     my $self = shift;
     my %data = %{ $self->data };
 
+    my $txn = $self->store->db->txn_scope;
+
     # Remove old session
     $self->expire;
     $self->flush;
@@ -17,6 +19,8 @@ sub regenerate_sid {
     # Create new session
     $self->data(%data);
     $self->create;
+
+    $txn->commit;
 }
 
 sub _generate_sid {
