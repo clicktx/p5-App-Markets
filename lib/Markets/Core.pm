@@ -86,7 +86,9 @@ sub initialize_app {
     # $self->config( constants => $self->model('data-constant')->load );
 
     # load config after. option schema loading.
-    my $more_schema_classes_from_db = [qw /Markets::DB::Schema::More Markets::DB::Schema::Addons/];
+    # TODO: issue #6 自動で読み込むようにする
+    my $more_schema_classes_from_db =
+      [qw /Markets::DB::Schema::Session Markets::DB::Schema::Addons/];
     $self->db->merge_schema($more_schema_classes_from_db);
 
     # default cookie
