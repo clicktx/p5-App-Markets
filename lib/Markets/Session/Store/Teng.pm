@@ -54,24 +54,24 @@ sub update {
     my $data_column    = $self->data_column;
     my $cart_id_column = $self->cart_id_column;
 
-    my $row = $db->single( $self->table_session, { $sid_column => $sid } );
-    return unless $row;
-
-    $row->set_columns(
+    my $row_cnt = $db->update(
+        $self->table_session,
         {
             $expires_column => $expires,
             $data_column    => $session_data,
             $cart_id_column => $cart_id,
+        },
+        {
+            $sid_column => $sid
         }
     );
-    $row->update;
 
     my $error = $db->dbh->errstr || '';
     if ($error) {
         $self->error($error);
         return;
     }
-    return $row ? 1 : 0;
+    return $row_cnt ? 1 : 0;
 }
 
 sub load {
