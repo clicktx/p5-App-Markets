@@ -7,9 +7,8 @@ sub register {
     my ( $self, $app, $args ) = @_;
     $args ||= {};
 
-    my $stash_key      = delete $args->{stash_key}      || 'markets.session';
-    my $cart_stash_key = delete $args->{cart_stash_key} || 'markets.session.cart';
-    my $init           = delete $args->{init};
+    my $stash_key = delete $args->{stash_key} || 'markets.session';
+    my $init = delete $args->{init};
     my $session =
       Markets::Session->new( %$args,
         store => Markets::Session::Store::Teng->new( db => $app->db ) );
@@ -17,7 +16,7 @@ sub register {
     # Helpers
     $app->helper(
         markets_session => sub { shift->stash($stash_key) },
-        markets_cart    => sub { shift->stash($cart_stash_key) },
+        markets_cart    => sub { shift->stash($stash_key)->{cart} },
     );
 
     # Hooks
@@ -28,26 +27,22 @@ sub register {
 
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
-            $c->stash(
-                $stash_key      => $session,
-                $cart_stash_key => $session->cart,
-            );
-            say "   ... set stash: $stash_key => session object";      # debug
-            say "   ... set stash: $cart_stash_key => cart object";    # debug
+            $c->stash( $stash_key => $session, );
+            say "   ... set stash: $stash_key => session object";    # debug
 
             # Create or Expires time for session
             $session->load;
             if ( $session->sid ) {
-                say "   ... ented session expires time.";              # debug
+                say "   ... ented session expires time.";            # debug
                 $session->extend_expires;
             }
             else {
                 _create_session( $c, $session );
             }
-            say "   ... sid: " . $session->sid;                        # debug
+            say "   ... sid: " . $session->sid;                      # debug
 
             # Cart
-            say "  on Cart";                                           # debug
+            say "  on Cart";                                         # debug
             $session->cart->load;
         }
     );
@@ -55,8 +50,8 @@ sub register {
     $app->hook(
         after_action => sub {
             my $c = shift;
-            say "hook! after_action from plugin session";              # debug
-            say "   ... session flush";                                # debug
+            say "hook! after_action from plugin session";            # debug
+            say "   ... session flush";                              # debug
             $c->stash($stash_key)->flush;
         }
     );
@@ -96,7 +91,6 @@ Markets::Plugin::Session - forked from Mojolicious::Plugin::Session
     plugin session =>
         {
             stash_key       => 'markets.session',
-            cart_stash_key  => 'markets.session.cart',
             store           => 'dbi',
             expires_delta   => 5
         };
@@ -105,7 +99,6 @@ Markets::Plugin::Session - forked from Mojolicious::Plugin::Session
     $self->plugin(
         session => {
             stash_key       => 'markets.session',
-            cart_stash_key  => 'markets.session.cart',
             store           => 'dbi',
             expires_delta   => 5
         }
@@ -118,10 +111,6 @@ Markets::Plugin::Session - forked from Mojolicious::Plugin::Session
 =head2 C<stash_key>
 
     Markets::Session instance will be saved in stash using this key.
-
-=head2 C<cart_stash_key>
-
-    Markets::Session::Cart instance will be saved in stash using this key.
 
 =head1 SEE ALSO
 
