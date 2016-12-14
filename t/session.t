@@ -11,11 +11,10 @@ my $app = $t->app;
 my $cookie = Mojo::Cookie::Request->new( name => 'sid', value => 'bar', path => '/' );
 my $tx = Mojo::Transaction::HTTP->new();
 $tx->req->cookies($cookie);
-my $rs = $app->db->resultset('sessions');
 
 my $session = Markets::Session->new(
     tx            => $tx,
-    store         => Markets::Plugin::Session::Store::Teng->new( resultset => $rs ),
+    store         => Markets::Session::Store::Teng->new( db => $app->db ),
     transport     => MojoX::Session::Transport::Cookie->new,
     expires_delta => 3600,
 );

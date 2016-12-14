@@ -6,7 +6,6 @@ requires 'Mojolicious::Plugin::FormFields',         '0.05';
 requires 'MojoX::Session',                          '0.33';
 requires 'Session::Token',                          '1.503';
 requires 'Teng',                                    '0.28';
-requires 'Teng::Plugin::ResultSet',                 '0.01';
 requires 'DBI',                                     '1.636';
 requires 'DBD::mysql',                              '4.033';
 requires 'Data::MessagePack',                       '0.49';
