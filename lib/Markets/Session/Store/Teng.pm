@@ -24,7 +24,7 @@ sub create {
     my $data_column    = $self->data_column;
     my $cart_id_column = $self->cart_id_column;
 
-    my $row = $db->insert(
+    my $last_insert_id = $db->fast_insert(
         $self->table_session,
         {
             $sid_column     => $sid,
@@ -39,7 +39,7 @@ sub create {
         $self->error($error);
         return;
     }
-    return $row ? 1 : 0;
+    return $last_insert_id ? 1 : 0;
 }
 
 sub update {
