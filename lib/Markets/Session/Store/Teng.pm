@@ -15,31 +15,47 @@ has cart_id_column => 'cart_id';
 sub create {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    my ( $cart_id, $session_data ) = _separate_session_data($data);
-    $session_data = Data::MessagePack->pack($session_data) if $session_data;
-
     my $db             = $self->db;
     my $sid_column     = $self->sid_column;
     my $expires_column = $self->expires_column;
     my $data_column    = $self->data_column;
     my $cart_id_column = $self->cart_id_column;
 
-    my $last_insert_id = $db->fast_insert(
-        $self->table_session,
-        {
-            $sid_column     => $sid,
-            $expires_column => $expires,
-            $data_column    => $session_data,
-            $cart_id_column => $cart_id,
-        }
-    );
+    my ( $cart_id, $session_data ) = _separate_session_data($data);
+    $session_data = Data::MessagePack->pack($session_data) if $session_data;
 
-    my $error = $db->dbh->errstr || '';
-    if ($error) {
-        $self->error($error);
-        return;
+    {
+        my $txn = $db->txn_scope;
+
+        # Cart
+        $db->fast_insert(
+            $self->table_cart,
+            {
+                $cart_id_column => $cart_id,
+                $data_column    => 'dummy',
+            }
+        );
+
+        # Session
+        $db->fast_insert(
+            $self->table_session,
+            {
+                $sid_column     => $sid,
+                $expires_column => $expires,
+                $data_column    => $session_data,
+                $cart_id_column => $cart_id,
+            }
+        );
+
+        my $error = $db->dbh->errstr || '';
+        if ($error) {
+            $self->error($error);
+            return;
+        }
+        $txn->commit;
     }
-    return $last_insert_id ? 1 : 0;
+
+    return 1;
 }
 
 sub update {
@@ -131,15 +147,25 @@ sub delete {
 
     my $db         = $self->db;
     my $sid_column = $self->sid_column;
+    my $cart_id_column = $self->cart_id_column;
 
-    my $row_cnt = $db->delete( $self->table_session, { $sid_column => $sid } );
+    {
+        my $txn = $db->txn_scope;
+
+        my $row = $db->single( $self->table_session, { $sid_column => $sid } );
+        my $cart_id = $row->cart_id;
+        $db->delete( $self->table_cart, { $cart_id_column => $cart_id } );
+        $row->delete;
+
+        $txn->commit;
+    }
 
     my $error = $db->dbh->errstr || '';
     if ($error) {
         $self->error($error);
         return;
     }
-    return $row_cnt ? 1 : 0;
+    return 1;
 }
 
 sub _separate_session_data {
@@ -193,9 +219,9 @@ L<Markets::Session::Store::Teng> implements the following attributes.
 =head2 C<db>
 
     my $db = $store->db;
-    $db    = $store->db(db);
+    $db    = $store->db($teng);
 
-Get and set Teng::ResultSet object.
+Get and set Teng object.
 
 =head2 C<sid_column>
 
@@ -225,6 +251,10 @@ Insert session to database.
 =head2 C<update>
 
 Update session in database.
+
+=head2 C<update_sid>
+
+Update sid in database.
 
 =head2 C<load>
 
