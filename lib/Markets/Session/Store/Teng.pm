@@ -6,7 +6,7 @@ use Data::MessagePack;
 
 has 'db';
 has table_session  => 'sessions';
-has table_cart     => 'cart';
+has table_cart     => 'carts';
 has sid_column     => 'sid';
 has expires_column => 'expires';
 has data_column    => 'data';
