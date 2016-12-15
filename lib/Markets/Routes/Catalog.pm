@@ -8,6 +8,7 @@ sub register {
     # Routes
     $r->get('/')->to('example#welcome');
     $r->get('/regenerate_sid')->to('example#regenerate_sid');
+    $r->post('/signin')->to('example#signin');
     $r->get('/logout')->to('example#logout');
     $r->get('/login')->to('login#index');
     $r->post('/login/attempt')->to('login#attempt');

@@ -13,6 +13,13 @@ learn more, you can also browse through the documentation
     <%= link_to 'regenerate_sid' => 'regenerate_sid' %>
 </p>
 <p>
+    <%= form_for '/signin' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+        signin
+        <%= csrf_field %>
+        <%= text_field name => 'defaule' %>
+        <%= submit_button 'ok' %>
+    <% end %>
+
     <%= link_to 'logout' => 'logout' %>
 </p>
 

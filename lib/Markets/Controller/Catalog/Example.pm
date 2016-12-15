@@ -48,6 +48,15 @@ sub regenerate_sid {
     );
 }
 
+sub signin {
+    my $self = shift;
+
+    $self->render(
+        msg      => 'signin!',
+        template => 'example/welcome'
+    );
+}
+
 sub logout {
     my $self = shift;
     say "logout ... remove session";
