@@ -3,10 +3,26 @@ use Mojo::Base 'Mojolicious::Controller';
 
 sub process {
     my ( $self, $action ) = @_;
+
+    # CSRF protection
+    return unless $self->csrf_protect();
+
+    # Controller process
     $self->init();
     $self->action_before();
     $self->$action();
     $self->action_after();
+}
+
+sub csrf_protect {
+    my $self = shift;
+    return 1 if $self->req->method ne 'POST';
+    return 1 unless $self->validation->csrf_protect->has_error('csrf_token');
+    $self->render(
+        text   => 'Bad CSRF token!',
+        status => 403,
+    );
+    return;
 }
 
 sub init {
