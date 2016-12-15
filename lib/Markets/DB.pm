@@ -1,7 +1,6 @@
 package Markets::DB;
 use Mojo::Base 'Teng';
 use Carp qw(croak);
-__PACKAGE__->load_plugin('ResultSet');
 
 sub merge_schema {
     my ( $self, $classes ) = @_;

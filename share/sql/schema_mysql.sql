@@ -28,6 +28,15 @@ CREATE TABLE IF NOT EXISTS `markets`.`sessions` (
   PRIMARY KEY (`sid`)  COMMENT '')
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `markets`.`carts`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `markets`.`carts` (
+  `cart_id` VARCHAR(50) NOT NULL COMMENT '',
+  `data` MEDIUMTEXT NULL COMMENT '',
+  PRIMARY KEY (`cart_id`)  COMMENT '')
+ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Table `markets`.`constants`

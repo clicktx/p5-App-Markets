@@ -37,7 +37,6 @@ my %args = (
         'Session::Token' => '1.503',
         'Starlet' => '0.30',
         'Teng' => '0.28',
-        'Teng::Plugin::ResultSet' => '0.01',
         'Time::TZOffset' => '0.04',
     },
 
