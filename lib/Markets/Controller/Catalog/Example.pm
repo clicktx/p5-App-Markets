@@ -15,8 +15,15 @@ sub welcome {
     my $counter = $session->data('counter');
     $counter++;
     $session->data( counter => $counter );
+
+    # cart
+    my $cart = $session->data('cart');
+    $cart->{new}++;
+    $session->data( cart => $cart );
+
     say "counter: " . $counter;      # debug
     say $self->const('ROOT_URL');    # debug
+    say Dumper $session->data;
 
     # use model
     $self->app->model('logic-base')->do;
@@ -26,6 +33,38 @@ sub welcome {
     $self->render( msg => 'Welcome to the Mojolicious real-time web framework!' );
 
     say "!!! end action !!!";
+}
+
+sub regenerate_sid {
+    my $self = shift;
+    say "regenerate_sid";
+
+    my $session = $self->markets_session;
+    my $sid     = $session->regenerate_sid;
+    say "  .. regenerate_sid: " . $sid;
+    $self->render(
+        msg      => 'update sid!',
+        template => 'example/welcome'
+    );
+}
+
+sub logout {
+    my $self = shift;
+    say "logout ... remove session";
+
+    my $session = $self->markets_session;
+    # TODO: 後でlogicにする
+    # 2重ログアウトの対策
+    $session->_is_flushed(1);
+    if ($session->_is_stored){
+        $session->expire;
+        $session->_is_flushed(0);
+    }
+
+    $self->render(
+        msg      => 'logout!',
+        template => 'example/welcome'
+    );
 }
 
 1;

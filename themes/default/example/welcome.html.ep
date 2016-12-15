@@ -8,6 +8,14 @@ and the layout "templates/layouts/default.html.ep",
 learn more, you can also browse through the documentation
 <%= link_to 'here' => '/perldoc' %>.
 
+<h2>Admin pages</h2>
+<p>
+    <%= link_to 'regenerate_sid' => 'regenerate_sid' %>
+</p>
+<p>
+    <%= link_to 'logout' => 'logout' %>
+</p>
+
 <p>
     Your visit count: <%= markets_session->data('counter') %>
 </p>
@@ -38,4 +46,4 @@ learn more, you can also browse through the documentation
     domain <%= __d 'my_addon', 'hello' %><%= __d 'my_addon', 'hello2' %>
 </p>
 
-<a href="<%= url_for %>" target="_top">link</a>
+<%= link_to 'top' => '/' %>
