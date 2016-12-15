@@ -42,11 +42,10 @@ sub regenerate_sid {
     my $session = $self->markets_session;
     my $sid     = $session->regenerate_sid;
     say "  .. regenerate_sid: " . $sid;
-    $self->stash(
+    $self->render(
         msg      => 'update sid!',
         template => 'example/welcome'
     );
-    $self->welcome;
 }
 
 sub logout {
@@ -57,11 +56,10 @@ sub logout {
     $session->expire;
     $session->flush;
 
-    $self->stash(
+    $self->render(
         msg      => 'logout!',
         template => 'example/welcome'
     );
-    $self->welcome;
 }
 
 1;
