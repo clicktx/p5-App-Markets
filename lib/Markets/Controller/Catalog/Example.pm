@@ -53,8 +53,13 @@ sub logout {
     say "logout ... remove session";
 
     my $session = $self->markets_session;
-    $session->expire;
-    $session->flush;
+    # TODO: 後でlogicにする
+    # 2重ログアウトの対策
+    $session->_is_flushed(1);
+    if ($session->_is_stored){
+        $session->expire;
+        $session->_is_flushed(0);
+    }
 
     $self->render(
         msg      => 'logout!',
