@@ -32,13 +32,13 @@ $tx->req->cookies($cookie);
 is $session->load, $sid, 'loading session';
 
 # for cart session
-my $cart    = $session->cart;
 my $cart_id = $session->cart_id;
 ok $cart_id, 'right session->cart_id';
-is ref $cart, '', 'right new cart';
 my $store = $session->store;
 my $result = $store->db->single( $store->table_cart, { cart_id => $cart_id } );
 is $result->data, '', 'db: cart data is empty';
+my $cart    = $session->cart;
+is ref $cart, 'Markets::Session::Cart', 'right new cart object';
 
 # set data
 $session->data( counter => 1 );

@@ -1,5 +1,8 @@
 package Markets::Session::Cart;
 use Mojo::Base -base;
+
+sub add_item { 1 }
+
 1;
 __END__
 
