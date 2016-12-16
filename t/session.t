@@ -21,8 +21,15 @@ my $session = Markets::Session->new(
 
 # create session
 my $sid = $session->create;
-$session->flush;
 ok $sid, 'created session';
+is_deeply $session->data('cart'), {}, 'cart data is empty hash after create';
+$session->flush;
+is_deeply $session->data('cart'), {}, 'cart data is empty hash after flush';
+my $cart_id = $session->cart_id;
+ok $cart_id, 'right session->cart_id';
+my $store = $session->store;
+my $result = $store->db->single( $store->table_cart, { cart_id => $cart_id } );
+is $result->data, '', 'db: cart data is empty';
 
 # load session
 $cookie = Mojo::Cookie::Request->new( name => 'sid', value => $sid, path => '/' );
@@ -30,14 +37,10 @@ $tx = Mojo::Transaction::HTTP->new();
 $session->tx($tx);
 $tx->req->cookies($cookie);
 is $session->load, $sid, 'loading session';
+is_deeply $session->data('cart'), {}, 'cart data is empty hash after load';
 
-# for cart session
-my $cart_id = $session->cart_id;
-ok $cart_id, 'right session->cart_id';
-my $store = $session->store;
-my $result = $store->db->single( $store->table_cart, { cart_id => $cart_id } );
-is $result->data, '', 'db: cart data is empty';
-my $cart    = $session->cart;
+# for cart
+my $cart = $session->cart;
 is ref $cart, 'Markets::Session::Cart', 'right new cart object';
 
 # set data

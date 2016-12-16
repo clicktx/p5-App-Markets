@@ -194,14 +194,14 @@ sub delete {
 }
 
 sub _separate_session_data {
-    my $data         = shift;
-    my $session_data = $data;
-    my $cart_id      = $data->{cart_id} || '';
-    my $cart_data    = $data->{cart} || '';
+    my $data = shift;
 
-    delete $session_data->{cart_id} if $cart_id;
-    delete $session_data->{cart}    if $cart_data;
-    return ( $session_data, $cart_id, $cart_data );
+    my %clone     = %$data;
+    my $cart_id   = delete $clone{cart_id};
+    my $cart_data = delete $clone{cart};
+    $cart_data = '' unless %$cart_data;
+
+    return ( \%clone, $cart_id, $cart_data );
 }
 
 1;
