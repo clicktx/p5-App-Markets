@@ -32,10 +32,13 @@ $tx->req->cookies($cookie);
 is $session->load, $sid, 'loading session';
 
 # for cart session
-my $cart = $session->cart;
-is ref $cart, 'HASH', 'right cart';
+my $cart    = $session->cart;
 my $cart_id = $session->cart_id;
 ok $cart_id, 'right session->cart_id';
+is ref $cart, '', 'right new cart';
+my $store = $session->store;
+my $result = $store->db->single( $store->table_cart, { cart_id => $cart_id } );
+is $result->data, '', 'db: cart data is empty';
 
 # set data
 $session->data( counter => 1 );
@@ -44,6 +47,8 @@ $session->flush;
 $session->load;
 is $session->data('counter'), 1, 'right session value';
 is_deeply $session->data('cart'), { items => [] }, 'right cart value';
+$result = $store->db->single( $store->table_cart, { cart_id => $cart_id } );
+ok $result->data, 'db: right cart data';
 
 # regenerate session
 my %data    = %{ $session->data };

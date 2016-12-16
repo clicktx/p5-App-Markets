@@ -197,10 +197,10 @@ sub _separate_session_data {
     my $data         = shift;
     my $session_data = $data;
     my $cart_id      = $data->{cart_id} || '';
-    my $cart_data    = $data->{cart} || {};
+    my $cart_data    = $data->{cart} || '';
 
     delete $session_data->{cart_id} if $cart_id;
-    delete $session_data->{cart}    if %$cart_data;
+    delete $session_data->{cart}    if $cart_data;
     return ( $session_data, $cart_id, $cart_data );
 }
 
