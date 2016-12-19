@@ -4,7 +4,7 @@ use Markets::Session::Cart;
 use Markets::Util qw/generate_token/;
 
 has cart_id => sub { shift->data('cart_id') };
-has cart => sub { Markets::Session::Cart->new( session => shift ) };
+has cart    => sub { Markets::Session::Cart->new(@_) };
 
 sub create {
     my $self = shift;
