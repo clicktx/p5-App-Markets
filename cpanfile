@@ -33,3 +33,8 @@ on test => sub {
     requires 'Test::Perl::Critic';
     requires 'Safe', '2.32';    # Hack for Devel::Cover
 };
+
+on develop => sub {
+    requires 'DDP';
+    requires 'Data::Dumper';
+};
