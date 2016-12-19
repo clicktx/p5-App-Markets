@@ -151,7 +151,7 @@ sub initialize_app {
             # Emit filter hook (ignore static files)
             say "hook! before_routes";                       # debug
             say "... This route is dynamic" unless ( $c->stash('mojo.static') );
-            $c->app->filter->emit_filter( filter_form => $c )
+            $c->app->filter->emit( filter_form => $c )
               unless $c->stash('mojo.static');
         }
     );

@@ -185,11 +185,11 @@ sub _load {
 # Use separate namespace
 package Markets::Addons::Action;
 use Mojo::Base 'Markets::Addons';
-sub emit_action { shift->emit(@_) }
+sub emit { shift->SUPER::emit(@_) }
 
 package Markets::Addons::Filter;
 use Mojo::Base 'Markets::Addons';
-sub emit_filter { shift->emit(@_) }
+sub emit { shift->SUPER::emit(@_) }
 
 1;
 
@@ -229,21 +229,18 @@ Markets::Addons::Filter object.
 
 =head1 METHODS
 
-=head2 emit_action
+=head2 emit
 
-    $addons = $addons->action->emit_action('foo');
-    $addons = $addons->action->emit_action(foo => 123);
+    # Emit action hook
+    $addons->action->emit('foo');
+    $addons->action->emit(foo => 123);
 
-Emit event as action hook.
-This method is Markets::Addons::Action::emit_action.
+    # Emit filter hook
+    $addons->filter->emit('foo');
+    $addons->filter->emit(foo => 123);
 
-=head2 emit_filter
-
-    $addons = $addons->filter->emit_filter('foo');
-    $addons = $addons->filter->emit_filter(foo => 123);
-
-Emit event as filter hook.
-This method is Markets::Addons::Filter::emit_filter.
+Emit event as action/filter hook.
+This method is Markets::Addons::Action::emit or Markets::Addons::Filter::emit.
 
 =head2 init
 

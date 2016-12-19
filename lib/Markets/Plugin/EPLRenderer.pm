@@ -12,7 +12,7 @@ monkey_patch 'Mojo::Template', render_file_after_hook => sub {
     my $template_source = slurp $template_file_path;
 
     # emit filter. This filter was used to addons.
-    $c->app->action->emit_action(
+    $c->app->action->emit(
         action_replace_template => $c,
         $template_file_path, \$template_source,
     );
