@@ -17,9 +17,9 @@ sub welcome {
     $session->data( counter => $counter );
 
     # cart
-    my $cart = $session->data('cart');
-    $cart->{new}++;
-    $session->data( cart => $cart );
+    my $cart      = $session->cart;
+    my $cart_data = $cart->data;
+    $cart_data->{new}++;
 
     say "counter: " . $counter;      # debug
     say $self->const('ROOT_URL');    # debug
@@ -62,10 +62,11 @@ sub logout {
     say "logout ... remove session";
 
     my $session = $self->markets_session;
+
     # TODO: 後でlogicにする
     # 2重ログアウトの対策
     $session->_is_flushed(1);
-    if ($session->_is_stored){
+    if ( $session->_is_stored ) {
         $session->expire;
         $session->_is_flushed(0);
     }

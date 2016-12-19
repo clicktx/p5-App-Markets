@@ -47,8 +47,8 @@ sub register {
             say "   ... sid: " . $session->sid;                      # debug
 
             # Cart
-            say "  on Cart";                                         # debug
-            p $session->cart;
+            say "   ... Cart data: ";                                # debug
+            p $session->cart->data;
         }
     );
 
