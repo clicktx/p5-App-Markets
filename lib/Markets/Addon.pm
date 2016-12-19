@@ -51,9 +51,9 @@ sub init {
 }
 
 sub add_action_hook { shift->_add_hook( 'action_hook', @_ ) }
-sub add_filter_hook { shift->_add_hook( 'filter', @_ ) }
+sub add_filter_hook { shift->_add_hook( 'filter_hook', @_ ) }
 sub rm_action_hook { shift->_remove_hook( 'action_hook', @_ ) }
-sub rm_filter_hook { shift->_remove_hook( 'filter', @_ ) }
+sub rm_filter_hook { shift->_remove_hook( 'filter_hook', @_ ) }
 
 sub _add_hook {
     my ( $self, $type, $name, $cb, $arg ) =

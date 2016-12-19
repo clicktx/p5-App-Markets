@@ -152,7 +152,7 @@ foreach my $event ( @{ $e->{events}{test1} } ) {
 is_deeply \@priority, [ 200, 400, 400, 1000 ], 'right action_hook->_on priority';
 
 # filter priority
-$e = Markets::Addons::Filter->new;
+$e = Markets::Addons::FilterHook->new;
 $e->_on(
     {
         name     => 'test1',
@@ -186,6 +186,6 @@ $e->_on(
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 400, 1000 ], 'right filter->_on priority';
+is_deeply \@priority, [ 200, 400, 400, 1000 ], 'right filter_hook->_on priority';
 
 done_testing();
