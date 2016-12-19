@@ -3,7 +3,7 @@ module_maker="ModuleBuild"
 badges=['travis', 'coveralls']
 
 [build]
-    build_class = "builder::MyBuilder"
+    build_class = "devel::builder::MyBuilder"
 
 [release]
     do_not_upload_to_cpan = true

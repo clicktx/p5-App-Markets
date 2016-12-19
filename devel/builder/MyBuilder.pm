@@ -1,4 +1,4 @@
-package builder::MyBuilder;
+package devel::builder::MyBuilder;
 use strict;
 use warnings;
 use parent qw(Module::Build);
