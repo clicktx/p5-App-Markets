@@ -21,8 +21,15 @@ my $session = Markets::Session->new(
 
 # create session
 my $sid = $session->create;
-$session->flush;
 ok $sid, 'created session';
+is_deeply $session->data('cart'), {}, 'cart data is empty hash after create';
+$session->flush;
+is_deeply $session->data('cart'), {}, 'cart data is empty hash after flush';
+my $cart_id = $session->cart_id;
+ok $cart_id, 'right session->cart_id';
+my $store = $session->store;
+my $result = $store->db->single( $store->table_cart, { cart_id => $cart_id } );
+is $result->data, '', 'db: cart data is empty';
 
 # load session
 $cookie = Mojo::Cookie::Request->new( name => 'sid', value => $sid, path => '/' );
@@ -30,12 +37,7 @@ $tx = Mojo::Transaction::HTTP->new();
 $session->tx($tx);
 $tx->req->cookies($cookie);
 is $session->load, $sid, 'loading session';
-
-# for cart session
-my $cart = $session->cart;
-is ref $cart, 'HASH', 'right cart';
-my $cart_id = $session->cart_id;
-ok $cart_id, 'right session->cart_id';
+is_deeply $session->data('cart'), {}, 'cart data is empty hash after load';
 
 # set data
 $session->data( counter => 1 );
@@ -44,6 +46,24 @@ $session->flush;
 $session->load;
 is $session->data('counter'), 1, 'right session value';
 is_deeply $session->data('cart'), { items => [] }, 'right cart value';
+$result = $store->db->single( $store->table_cart, { cart_id => $cart_id } );
+ok $result->data, 'db: right cart data';
+
+# for cart
+my $cart = $session->cart;
+is ref $cart, 'Markets::Session::Cart', 'right cart object';
+is_deeply $cart->data, { items => [] }, 'get all cart data';
+is_deeply $cart->data('items'), [], 'get instracted data in the cart';
+$cart->data( items => [ {} ] );
+is_deeply $cart->data('items'), [ {} ], 'set data in the cart';
+is_deeply $session->data('cart'), { items => [ {} ] }, 'right session data changed';
+$cart->data( { items => [], address => {} } );
+is_deeply $cart->data, { items => [], address => {} }, 'set all cart data';
+
+$cart->flash('items');
+is_deeply $cart->data, { address => {} }, 'flash instracted cart data';
+$cart->flash;
+is_deeply $cart->data, {}, 'flash all cart data';
 
 # regenerate session
 my %data    = %{ $session->data };

@@ -1,9 +1,26 @@
 package Markets::Session;
 use Mojo::Base qw/MojoX::Session/;
+use Markets::Session::Cart;
 use Markets::Util qw/generate_token/;
 
 has cart_id => sub { shift->data('cart_id') };
-has cart    => sub { shift->data('cart') };
+has cart    => sub { Markets::Session::Cart->new(@_) };
+
+sub create {
+    my $self = shift;
+    my $sid  = $self->SUPER::create(@_);
+
+    $self->data( cart => {} );
+    return $sid;
+}
+
+sub load {
+    my $self = shift;
+    my $sid  = $self->SUPER::load(@_);
+
+    $self->data( cart => {} ) unless $self->data('cart');
+    return $sid;
+}
 
 sub regenerate_sid {
     my $self = shift;

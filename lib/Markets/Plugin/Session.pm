@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use Markets::Session;
 use Markets::Session::Store::Teng;
 use Data::Dumper;
+use DDP;
 
 sub register {
     my ( $self, $app, $args ) = @_;
@@ -14,7 +15,7 @@ sub register {
     # Helpers
     $app->helper(
         markets_session => sub { shift->stash($stash_key) },
-        markets_cart    => sub { shift->stash($stash_key)->{cart} },
+        cart            => sub { shift->stash($stash_key)->{cart} },
     );
 
     # Hooks
@@ -46,8 +47,8 @@ sub register {
             say "   ... sid: " . $session->sid;                      # debug
 
             # Cart
-            say "  on Cart";                                         # debug
-            say Dumper $session->cart;
+            say "   ... Cart data: ";                                # debug
+            p $session->cart->data;
         }
     );
 
