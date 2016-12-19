@@ -50,10 +50,10 @@ sub init {
     $self->register($app);
 }
 
-sub add_action { shift->_add_hook( 'action', @_ ) }
-sub add_filter { shift->_add_hook( 'filter', @_ ) }
-sub remove_action { shift->_remove_hook( 'action', @_ ) }
-sub remove_filter { shift->_remove_hook( 'filter', @_ ) }
+sub add_action_hook { shift->_add_hook( 'action', @_ ) }
+sub add_filter_hook { shift->_add_hook( 'filter', @_ ) }
+sub rm_action_hook { shift->_remove_hook( 'action', @_ ) }
+sub rm_filter_hook { shift->_remove_hook( 'filter', @_ ) }
 
 sub _add_hook {
     my ( $self, $type, $name, $cb, $arg ) =
@@ -198,11 +198,11 @@ Return L<Mojolicious::Routes> object.
 
 Get home path for YourAddon.
 
-=head2 add_action
+=head2 add_action_hook
 
     sub register {
         my my ( $self, $app, $arg ) = @_;
-        $self->add_action(
+        $self->add_action_hook(
             'action_hook_name' => \&fizz,
             { default_priority => 500 }    # option
         );
@@ -212,11 +212,11 @@ Get home path for YourAddon.
 
 Extend L<Markets> with action hook event.
 
-=head2 add_filter
+=head2 add_filter_hook
 
     sub register {
         my my ( $self, $app, $arg ) = @_;
-        $self->add_filter(
+        $self->add_filter_hook(
             'filter_hook_name' => \&buzz,
             { default_priority => 500 }    # option
         );
@@ -226,15 +226,15 @@ Extend L<Markets> with action hook event.
 
 Extend L<Markets> with filter hook event.
 
-=head2 remove_action
+=head2 rm_action_hook
 
-    $addon->remove_action( 'action_hook_name', 'subroutine_name');
+    $addon->rm_action_hook( 'action_hook_name', 'subroutine_name');
 
 Remove L<Markets> action hook event.
 
-=head2 remove_filter
+=head2 rm_filter_hook
 
-    $addon->remove_filter( 'filter_hook_name', 'subroutine_name');
+    $addon->rm_filter_hook( 'filter_hook_name', 'subroutine_name');
 
 Remove L<Markets> filter hook event.
 

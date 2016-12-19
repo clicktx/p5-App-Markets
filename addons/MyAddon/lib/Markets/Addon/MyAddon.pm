@@ -9,18 +9,18 @@ my $home  = $class->addon_home;    # get this addon home abs path.
 sub register {
     my ( $self, $app, $conf ) = @_;
 
-    $self->add_action(
+    $self->add_action_hook(
         action_replace_template => \&say_yes,
         { default_priority => 500 }    # option
     );
-    $self->add_action( action_replace_template => \&myaddon_replace_templates,
+    $self->add_action_hook( action_replace_template => \&myaddon_replace_templates,
     );
-    $self->add_filter( filter_form => sub { say "hook! MyAddon filter_form!" }
+    $self->add_filter_hook( filter_form => sub { say "hook! MyAddon filter_form!" }
     );
 
  # remove action hook example
- # $self->remove_action('action_replace_template', 'say_yes');
- # $self->remove_action('action_replace_template', 'myaddon_replace_templates');
+ # $self->rm_action_hook('action_replace_template', 'say_yes');
+ # $self->rm_action_hook('action_replace_template', 'myaddon_replace_templates');
 }
 
 sub say_yes {

@@ -5,22 +5,22 @@ sub register {
     my ( $self, $app, $conf ) = @_;
 
     # Add hooks
-    $self->add_action(
+    $self->add_action_hook(
         'action_exsample_hook' => \&action_exsample_hook,
         { default_priority => 500 }
     );
-    $self->add_action( 'action_exsample_hook' => \&action_exsample_hook, );
-    $self->add_filter(
+    $self->add_action_hook( 'action_exsample_hook' => \&action_exsample_hook, );
+    $self->add_filter_hook(
         'filter_exsample_hook' => \&filter_exsample_hook,
         { default_priority => 10 }
     );
-    $self->add_filter( 'filter_exsample_hook' => \&filter_exsample_hook, );
+    $self->add_filter_hook( 'filter_exsample_hook' => \&filter_exsample_hook, );
 
     # Add hook and remove.
-    $self->add_action( 'action_exsample_hook' => \&remove_action_hook, );
-    $self->add_filter( 'filter_exsample_hook' => \&remove_filter_hook, );
-    $self->remove_action('action_exsample_hook', 'remove_action_hook');
-    $self->remove_filter('filter_exsample_hook', 'remove_filter_hook');
+    $self->add_action_hook( 'action_exsample_hook' => \&rm_act_hook, );
+    $self->add_filter_hook( 'filter_exsample_hook' => \&rm_flt_hook, );
+    $self->rm_action_hook('action_exsample_hook', 'rm_act_hook');
+    $self->rm_filter_hook('filter_exsample_hook', 'rm_flt_hook');
 
     # Add routes
     my $r = $self->routes;
@@ -31,8 +31,8 @@ sub register {
 
 sub action_exsample_hook { my ( $c, $arg ) = @_ }
 sub filter_exsample_hook { my ( $c, $arg ) = @_ }
-sub remove_action_hook   { }
-sub remove_filter_hook   { }
+sub rm_act_hook   { }
+sub rm_flt_hook   { }
 
 package Markets::Addon::TestAddon::Example;
 use Mojo::Base 'Markets::Controller';

@@ -22,7 +22,7 @@ sub register {
     push @{ $app->renderer->classes }, 'Markets::Addon::Newpage';
 
     # Add link
-    $self->add_action( action_replace_template => \&action_replace_template, );
+    $self->add_action_hook( action_replace_template => \&action_replace_template, );
 }
 
 sub action_replace_template {
