@@ -39,8 +39,7 @@ sub _sort_by_priority {
     {
         no warnings 'uninitialized';
         @{ $self->{events}{$name} } =
-          sort { $a->{priority} <=> $b->{priority} }
-          @{ $self->{events}{$name} };
+          sort { $a->{priority} <=> $b->{priority} } @{ $self->{events}{$name} };
     }
 }
 

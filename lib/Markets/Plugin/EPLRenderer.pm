@@ -27,8 +27,7 @@ monkey_patch 'Mojo::Template', render_file_after_hook => sub {
 
 sub register {
     my ( $self, $app ) = @_;
-    $app->renderer->add_handler(
-        epl => sub { _render( @_, Mojo::Template->new, $_[1] ) } );
+    $app->renderer->add_handler( epl => sub { _render( @_, Mojo::Template->new, $_[1] ) } );
 }
 
 sub _render {
@@ -49,8 +48,7 @@ sub _render {
         # Inline
         if ( defined $inline ) {
             $c->app->log->debug(qq{Rendering inline template "$name"});
-            $$output =
-              $mt->name(qq{inline template "$name"})->render( $inline, @args );
+            $$output = $mt->name(qq{inline template "$name"})->render( $inline, @args );
         }
 
         # File
@@ -60,12 +58,7 @@ sub _render {
             }
 
             # Try template
-            if (
-                defined(
-                    my $template_file_path = $renderer->template_path($options)
-                )
-              )
-            {
+            if ( defined( my $template_file_path = $renderer->template_path($options) ) ) {
                 $c->app->log->debug(qq{Rendering template "$name"});
                 $$output =
                   $mt->name(qq{template "$name"})
@@ -73,12 +66,9 @@ sub _render {
             }
 
             # Try DATA section
-            elsif ( defined( my $d = $renderer->get_data_template($options) ) )
-            {
-                $c->app->log->debug(
-                    qq{Rendering template "$name" from DATA section});
-                $$output = $mt->name(qq{template "$name" from DATA section})
-                  ->render( $d, @args );
+            elsif ( defined( my $d = $renderer->get_data_template($options) ) ) {
+                $c->app->log->debug(qq{Rendering template "$name" from DATA section});
+                $$output = $mt->name(qq{template "$name" from DATA section})->render( $d, @args );
             }
 
             # No template

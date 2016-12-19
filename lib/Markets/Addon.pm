@@ -21,8 +21,8 @@ has routes => sub {
     my $addon_class_name = $self->class_name;
     my $prefix           = decamelize( $self->addon_name );
 
-    $self->app->stash('addons')->{$addon_class_name}->{routes}
-      ->any( '/' . $prefix )->to( namespace => __PACKAGE__ );
+    $self->app->stash('addons')->{$addon_class_name}->{routes}->any( '/' . $prefix )
+      ->to( namespace => __PACKAGE__ );
 };
 has 'app';
 
@@ -35,10 +35,9 @@ sub init {
     my $app  = $self->app;
 
     # Load lexicon file.
-    my $addons_dir = $app->config('app_defaults')->{ADDONS_DIR};
-    my $addon_name = $self->addon_name;
-    my $locale_dir =
-      File::Spec->catdir( $app->home, $addons_dir, $addon_name, 'locale' );
+    my $addons_dir  = $app->config('app_defaults')->{ADDONS_DIR};
+    my $addon_name  = $self->addon_name;
+    my $locale_dir  = File::Spec->catdir( $app->home, $addons_dir, $addon_name, 'locale' );
     my $text_domain = decamelize($addon_name);
     $app->lexicon(
         {
@@ -64,8 +63,7 @@ sub _add_hook {
     my $addon          = $self->app->stash('addons')->{$addon_name};
     my $hook_prioritie = $addon->{config}->{hook_priorities}->{$name};
 
-    my $default_priority =
-      $arg->{default_priority} || $self->app->addons->PRIORITY_DEFAULT;
+    my $default_priority = $arg->{default_priority} || $self->app->addons->PRIORITY_DEFAULT;
     my $priority = $hook_prioritie ? $hook_prioritie : $default_priority;
 
     my $hooks      = $addon->{hooks};
@@ -88,7 +86,7 @@ sub _remove_hook {
     push @{$remove_hooks},
       {
         type       => $type,
-        hook      => $hook,
+        hook       => $hook,
         cb_fn_name => $cb_fn_name,
       };
 }

@@ -64,11 +64,9 @@ sub _remove_hooks {
         my $hook        = $remove_hook->{hook};
         my $subscribers = $self->app->addons->$type->subscribers($hook);
         my $unsubscribers =
-          [ grep { $_->{cb_fn_name} eq $remove_hook->{cb_fn_name} }
-              @{$subscribers} ];
+          [ grep { $_->{cb_fn_name} eq $remove_hook->{cb_fn_name} } @{$subscribers} ];
 
-        map { $self->app->addons->$type->unsubscribe( $hook, $_ ) }
-          @{$unsubscribers};
+        map { $self->app->addons->$type->unsubscribe( $hook, $_ ) } @{$unsubscribers};
     }
 }
 
@@ -125,7 +123,7 @@ sub on_routes {
     if ( @{ $routes->children } ) {
         $self->app->routes->add_child($routes);
 
-# $self->app->routes->cache( Mojo::Cache->new ); # 無くても動作するが必要？
+        # $self->app->routes->cache( Mojo::Cache->new ); # 無くても動作するが必要？
     }
 
 }
@@ -144,8 +142,7 @@ sub _push_inc_path {
     my ( $self, $name ) = @_;
     $name =~ s/Markets::Addon:://;
     my $addons_dir = $self->app->config('app_defaults')->{ADDONS_DIR};
-    my $path =
-      Mojo::Home->new( $self->app->home )->rel_dir("$addons_dir/$name/lib");
+    my $path       = Mojo::Home->new( $self->app->home )->rel_dir("$addons_dir/$name/lib");
     push @INC, $path;
 }
 
