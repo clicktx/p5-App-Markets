@@ -23,7 +23,7 @@ has db => sub {
     return $db;
 };
 has addons => sub { Markets::Addons->new( app => shift ) };
-has action => sub { shift->addons->action(@_) };
+has action_hook => sub { shift->addons->action_hook(@_) };
 has filter => sub { shift->addons->filter(@_) };
 has restart_app => sub { system shift->home . "/script/appctl --restart" };
 

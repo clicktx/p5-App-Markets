@@ -11,7 +11,7 @@ use Markets::Util;
 use constant { PRIORITY_DEFAULT => '100' };
 
 has namespaces => sub { [] };
-has action     => sub { Markets::Addons::Action->new };
+has action_hook     => sub { Markets::Addons::ActionHook->new };
 has filter     => sub { Markets::Addons::Filter->new };
 has 'app';
 
@@ -180,7 +180,7 @@ sub _load {
 ###################################################
 
 # Use separate namespace
-package Markets::Addons::Action;
+package Markets::Addons::ActionHook;
 use Mojo::Base 'Markets::Addons';
 sub emit { shift->SUPER::emit(@_) }
 
@@ -216,9 +216,9 @@ L<Markets::Addons> inherits all events from L<Mojo::EventEmitter> & L<Markets::E
 
 Return the application object.
 
-=head2 action
+=head2 action_hook
 
-Markets::Addons::Action object.
+Markets::Addons::ActionHook object.
 
 =head2 filter
 
@@ -229,15 +229,15 @@ Markets::Addons::Filter object.
 =head2 emit
 
     # Emit action hook
-    $addons->action->emit('foo');
-    $addons->action->emit(foo => 123);
+    $addons->action_hook->emit('foo');
+    $addons->action_hook->emit(foo => 123);
 
     # Emit filter hook
     $addons->filter->emit('foo');
     $addons->filter->emit(foo => 123);
 
 Emit event as action/filter hook.
-This method is Markets::Addons::Action::emit or Markets::Addons::Filter::emit.
+This method is Markets::Addons::ActionHook::emit or Markets::Addons::Filter::emit.
 
 =head2 init
 
@@ -266,13 +266,13 @@ Change addon status to disable.
 
     $addons->subscribe_hooks('Markets::Addon::MyAddon');
 
-Subscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
+Subscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::Filter> event.
 
 =head2 unsubscribe_hooks
 
     $addons->unsubscribe_hooks('Markets::Addon::MyAddon');
 
-Unsubscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
+Unsubscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::Filter> event.
 
 =head2 on_routes
 
