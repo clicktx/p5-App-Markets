@@ -9,7 +9,7 @@ use strict;
 use warnings;
 use utf8;
 
-use builder::MyBuilder;
+use devel::builder::MyBuilder;
 use File::Basename;
 use File::Spec;
 
@@ -75,7 +75,7 @@ if (-d 'share') {
     $args{share_dir} = 'share';
 }
 
-my $builder = builder::MyBuilder->subclass(
+my $builder = devel::builder::MyBuilder->subclass(
     class => 'MyBuilder',
     code => q{
         sub ACTION_distmeta {
