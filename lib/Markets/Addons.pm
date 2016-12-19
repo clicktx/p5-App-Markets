@@ -10,9 +10,9 @@ use Mojolicious::Routes;
 use Markets::Util;
 use constant { PRIORITY_DEFAULT => '100' };
 
-has namespaces => sub { [] };
-has action_hook     => sub { Markets::Addons::ActionHook->new };
-has filter_hook     => sub { Markets::Addons::FilterHook->new };
+has namespaces  => sub { [] };
+has action_hook => sub { Markets::Addons::ActionHook->new };
+has filter_hook => sub { Markets::Addons::FilterHook->new };
 has 'app';
 
 sub _on { shift->on(@_) }
