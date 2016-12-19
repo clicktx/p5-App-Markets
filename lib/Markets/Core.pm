@@ -23,8 +23,8 @@ has db => sub {
     return $db;
 };
 has addons => sub { Markets::Addons->new( app => shift ) };
-has action => sub { shift->addons->action(@_) };
-has filter => sub { shift->addons->filter(@_) };
+has action_hook => sub { shift->addons->action_hook(@_) };
+has filter_hook => sub { shift->addons->filter_hook(@_) };
 has restart_app => sub { system shift->home . "/script/appctl --restart" };
 
 sub register_addon { shift->addons->register_addon( shift, @_ ) }
@@ -151,7 +151,7 @@ sub initialize_app {
             # Emit filter hook (ignore static files)
             say "hook! before_routes";                       # debug
             say "... This route is dynamic" unless ( $c->stash('mojo.static') );
-            $c->app->filter->emit_filter( filter_form => $c )
+            $c->app->filter_hook->emit( filter_form => $c )
               unless $c->stash('mojo.static');
         }
     );

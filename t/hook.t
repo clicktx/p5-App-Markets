@@ -115,7 +115,7 @@ is $counter, 5, 'event was not emitted again';
 # action priority
 my $addon_namespace = 'Markets::Addon::Test';
 my $cb = sub { $called++ };
-$e = Markets::Addons::Action->new;
+$e = Markets::Addons::ActionHook->new;
 $e->_on(
     {
         name     => 'test1',
@@ -149,10 +149,10 @@ my @priority;
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 400, 1000 ], 'right action->_on priority';
+is_deeply \@priority, [ 200, 400, 400, 1000 ], 'right action_hook->_on priority';
 
 # filter priority
-$e = Markets::Addons::Filter->new;
+$e = Markets::Addons::FilterHook->new;
 $e->_on(
     {
         name     => 'test1',
@@ -186,6 +186,6 @@ $e->_on(
 foreach my $event ( @{ $e->{events}{test1} } ) {
     push @priority, $event->{priority};
 }
-is_deeply \@priority, [ 200, 400, 400, 1000 ], 'right filter->_on priority';
+is_deeply \@priority, [ 200, 400, 400, 1000 ], 'right filter_hook->_on priority';
 
 done_testing();

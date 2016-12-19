@@ -10,9 +10,9 @@ use Mojolicious::Routes;
 use Markets::Util;
 use constant { PRIORITY_DEFAULT => '100' };
 
-has namespaces => sub { [] };
-has action     => sub { Markets::Addons::Action->new };
-has filter     => sub { Markets::Addons::Filter->new };
+has namespaces  => sub { [] };
+has action_hook => sub { Markets::Addons::ActionHook->new };
+has filter_hook => sub { Markets::Addons::FilterHook->new };
 has 'app';
 
 sub _on { shift->on(@_) }
@@ -64,11 +64,9 @@ sub _remove_hooks {
         my $hook        = $remove_hook->{hook};
         my $subscribers = $self->app->addons->$type->subscribers($hook);
         my $unsubscribers =
-          [ grep { $_->{cb_fn_name} eq $remove_hook->{cb_fn_name} }
-              @{$subscribers} ];
+          [ grep { $_->{cb_fn_name} eq $remove_hook->{cb_fn_name} } @{$subscribers} ];
 
-        map { $self->app->addons->$type->unsubscribe( $hook, $_ ) }
-          @{$unsubscribers};
+        map { $self->app->addons->$type->unsubscribe( $hook, $_ ) } @{$unsubscribers};
     }
 }
 
@@ -125,7 +123,7 @@ sub on_routes {
     if ( @{ $routes->children } ) {
         $self->app->routes->add_child($routes);
 
-# $self->app->routes->cache( Mojo::Cache->new ); # 無くても動作するが必要？
+        # $self->app->routes->cache( Mojo::Cache->new ); # 無くても動作するが必要？
     }
 
 }
@@ -144,8 +142,7 @@ sub _push_inc_path {
     my ( $self, $name ) = @_;
     $name =~ s/Markets::Addon:://;
     my $addons_dir = $self->app->config('app_defaults')->{ADDONS_DIR};
-    my $path =
-      Mojo::Home->new( $self->app->home )->rel_dir("$addons_dir/$name/lib");
+    my $path       = Mojo::Home->new( $self->app->home )->rel_dir("$addons_dir/$name/lib");
     push @INC, $path;
 }
 
@@ -183,13 +180,13 @@ sub _load {
 ###################################################
 
 # Use separate namespace
-package Markets::Addons::Action;
+package Markets::Addons::ActionHook;
 use Mojo::Base 'Markets::Addons';
-sub emit_action { shift->emit(@_) }
+sub emit { shift->SUPER::emit(@_) }
 
-package Markets::Addons::Filter;
+package Markets::Addons::FilterHook;
 use Mojo::Base 'Markets::Addons';
-sub emit_filter { shift->emit(@_) }
+sub emit { shift->SUPER::emit(@_) }
 
 1;
 
@@ -219,31 +216,28 @@ L<Markets::Addons> inherits all events from L<Mojo::EventEmitter> & L<Markets::E
 
 Return the application object.
 
-=head2 action
+=head2 action_hook
 
-Markets::Addons::Action object.
+Markets::Addons::ActionHook object.
 
 =head2 filter
 
-Markets::Addons::Filter object.
+Markets::Addons::FilterHook object.
 
 =head1 METHODS
 
-=head2 emit_action
+=head2 emit
 
-    $addons = $addons->action->emit_action('foo');
-    $addons = $addons->action->emit_action(foo => 123);
+    # Emit action hook
+    $addons->action_hook->emit('foo');
+    $addons->action_hook->emit(foo => 123);
 
-Emit event as action hook.
-This method is Markets::Addons::Action::emit_action.
+    # Emit filter hook
+    $addons->filter_hook->emit('foo');
+    $addons->filter_hook->emit(foo => 123);
 
-=head2 emit_filter
-
-    $addons = $addons->filter->emit_filter('foo');
-    $addons = $addons->filter->emit_filter(foo => 123);
-
-Emit event as filter hook.
-This method is Markets::Addons::Filter::emit_filter.
+Emit event as action/filter hook.
+This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook::emit.
 
 =head2 init
 
@@ -272,13 +266,13 @@ Change addon status to disable.
 
     $addons->subscribe_hooks('Markets::Addon::MyAddon');
 
-Subscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
+Subscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
 
 =head2 unsubscribe_hooks
 
     $addons->unsubscribe_hooks('Markets::Addon::MyAddon');
 
-Unsubscribe to C<Markets::Addons::Action> or C<Markets::Addons::Filter> event.
+Unsubscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
 
 =head2 on_routes
 

@@ -9,7 +9,7 @@ my $home  = $class->addon_home;    # get this addon home abs path.
 sub register {
     my ( $self, $app, $conf ) = @_;
 
-    $self->add_filter(
+    $self->add_filter_hook(
         filter_form => \&query_convert_ja,
         { default_priority => -9999 }
     );

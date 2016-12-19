@@ -16,8 +16,7 @@ sub startup {
     say $self->dumper($themes);    # debug
 
     # [WIP]loading lexicon files from themes
-    my $theme_locale_dir =
-      File::Spec->catdir( $self->home, 'themes', 'default', 'locale' );
+    my $theme_locale_dir = File::Spec->catdir( $self->home, 'themes', 'default', 'locale' );
     $self->lexicon(
         {
             search_dirs => [$theme_locale_dir],
@@ -26,7 +25,7 @@ sub startup {
     ) if -d $theme_locale_dir;
 
     # [WIP] Merge lexicon
-    my @locale_files = files "$theme_locale_dir";   # map {say $_}@locale_files;
+    my @locale_files = files "$theme_locale_dir";    # map {say $_}@locale_files;
     my $instance = Locale::TextDomain::OO::Singleton::Lexicon->instance;
     eval {
         $instance->merge_lexicon( 'en::', 'en:theme:', 'en::' );    # [WIP]
@@ -34,7 +33,7 @@ sub startup {
     };
 
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
-    push @{ $self->renderer->paths }, 'themes';    # For template full path
+    push @{ $self->renderer->paths }, 'themes';                     # For template full path
 
     # renderer
     $self->plugin('Markets::Plugin::EPRenderer');
