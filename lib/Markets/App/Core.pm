@@ -1,4 +1,4 @@
-package Markets::Core;
+package Markets::App::Core;
 use Mojo::Base 'Mojolicious';
 
 use Carp qw/croak/;
@@ -139,7 +139,7 @@ sub initialize_app {
             my ( $next, $c, $action, $last ) = @_;
             return $next->() unless $last;
 
-            say "hook! around_action from Markets::Core";    # debug
+            say "hook! around_action from Markets::App::Core";    # debug
             $c->process($action);
         }
     );
