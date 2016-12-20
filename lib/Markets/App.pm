@@ -1,5 +1,5 @@
 package Markets::App;
-use Mojo::Base 'Markets::Core';
+use Mojo::Base 'Markets::App::Core';
 use Markets::Util qw/directories/;
 use Mojo::Util qw/files/;
 
