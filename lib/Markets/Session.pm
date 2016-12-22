@@ -10,7 +10,7 @@ sub create {
     my $self = shift;
     my $sid  = $self->SUPER::create(@_);
 
-    $self->data( cart => {} );
+    $self->data( cart => {}, cart_checksum => '' );
     return $sid;
 }
 

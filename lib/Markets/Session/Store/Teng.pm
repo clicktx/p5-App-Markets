@@ -3,6 +3,7 @@ use Mojo::Base 'MojoX::Session::Store';
 
 # use MIME::Base64; シリアライズ時にbase64する必要があるか？MessagePackなら不要？
 use Data::MessagePack;
+use Mojo::Util;
 
 has 'db';
 has table_session  => 'sessions';
@@ -21,9 +22,9 @@ sub create {
     my $data_column    = $self->data_column;
     my $cart_id_column = $self->cart_id_column;
 
-    my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
-    $session_data = Data::MessagePack->pack($session_data) if $session_data;
-    $cart_data    = Data::MessagePack->pack($cart_data)    if $cart_data;
+    my ( $session_data, $cart_id, $cart_data ) = $self->_separate_session_data($data);
+    my $session_data_mp = $session_data ? Data::MessagePack->pack($session_data) : '';
+    my $cart_data_mp    = %$cart_data   ? Data::MessagePack->pack($cart_data)    : '';
 
     {
         my $txn = $db->txn_scope;
@@ -33,7 +34,7 @@ sub create {
             $self->table_cart,
             {
                 $cart_id_column => $cart_id,
-                $data_column    => $cart_data,
+                $data_column    => $cart_data_mp,
             }
         );
 
@@ -43,7 +44,7 @@ sub create {
             {
                 $sid_column     => $sid,
                 $expires_column => $expires,
-                $data_column    => $session_data,
+                $data_column    => $session_data_mp,
                 $cart_id_column => $cart_id,
             }
         );
@@ -62,15 +63,20 @@ sub create {
 sub update {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
-    $session_data = Data::MessagePack->pack($session_data) if $session_data;
-    $cart_data    = Data::MessagePack->pack($cart_data)    if $cart_data;
+    my ( $session_data, $cart_id, $cart_data ) = $self->_separate_session_data($data);
 
-    my $db             = $self->db;
-    my $sid_column     = $self->sid_column;
-    my $expires_column = $self->expires_column;
-    my $data_column    = $self->data_column;
-    my $cart_id_column = $self->cart_id_column;
+    # カートの変更をチェック
+    my $cart_data_mp = %$cart_data ? Data::MessagePack->pack($cart_data) : '';
+
+    my ( $is_modified, $checksum ) = $self->_cart_checksum( $session_data, $cart_data_mp );
+    $session_data->{cart_checksum} = $checksum;
+
+    my $db              = $self->db;
+    my $sid_column      = $self->sid_column;
+    my $expires_column  = $self->expires_column;
+    my $data_column     = $self->data_column;
+    my $cart_id_column  = $self->cart_id_column;
+    my $session_data_mp = $session_data ? Data::MessagePack->pack($session_data) : '';
 
     {
         my $txn = $db->txn_scope;
@@ -79,19 +85,19 @@ sub update {
         $db->update(
             $self->table_cart,
             {
-                $data_column => $cart_data,
+                $data_column => $cart_data_mp,
             },
             {
                 $cart_id_column => $cart_id
             }
-        );
+        ) if $is_modified;
 
         # Update Session
         $db->update(
             $self->table_session,
             {
                 $expires_column => $expires,
-                $data_column    => $session_data,
+                $data_column    => $session_data_mp,
                 $cart_id_column => $cart_id,
             },
             {
@@ -151,20 +157,19 @@ sub load {
     }
     return unless $row_session;
 
-    my $expires      = $row_session->get_column($expires_column);
-    my $session_data = $row_session->get_column($data_column);
-    my $cart_id      = $row_session->get_column($cart_id_column);
+    my $expires         = $row_session->get_column($expires_column);
+    my $session_data_mp = $row_session->get_column($data_column);
+    my $session_data    = $session_data_mp ? Data::MessagePack->unpack($session_data_mp) : {};
+    my $cart_id         = $row_session->get_column($cart_id_column);
+    $session_data->{cart_id} = $cart_id if $cart_id;
 
-    my $row_cart = $db->single( $self->table_cart, { $cart_id_column => $cart_id } );
-    my $cart_data = $row_cart->get_column($data_column);
-    $cart_data = Data::MessagePack->unpack($cart_data) if $cart_data;
+    my $cart_data_mp =
+        $session_data->{cart_checksum}
+      ? $db->single( $self->table_cart, { $cart_id_column => $cart_id } )->$data_column
+      : '';
+    $session_data->{cart} = $cart_data_mp ? Data::MessagePack->unpack($cart_data_mp) : '';
 
-    my $data = {};
-    $data            = Data::MessagePack->unpack($session_data) if $session_data;
-    $data->{cart_id} = $cart_id                                 if $cart_id;
-    $data->{cart}    = $cart_data                               if $cart_data;
-
-    return ( $expires, $data );
+    return ( $expires, $session_data );
 }
 
 sub delete {
@@ -177,10 +182,10 @@ sub delete {
     {
         my $txn = $db->txn_scope;
 
-        my $row = $db->single( $self->table_session, { $sid_column => $sid } );
-        my $cart_id = $row->cart_id;
+        my $session_row = $db->single( $self->table_session, { $sid_column => $sid } );
+        my $cart_id = $session_row->cart_id;
         $db->delete( $self->table_cart, { $cart_id_column => $cart_id } );
-        $row->delete;
+        $session_row->delete;
 
         $txn->commit;
     }
@@ -194,14 +199,25 @@ sub delete {
 }
 
 sub _separate_session_data {
-    my $data = shift;
+    my ( $self, $data ) = @_;
 
     my %clone     = %$data;
     my $cart_id   = delete $clone{cart_id};
     my $cart_data = delete $clone{cart};
-    $cart_data = '' unless %$cart_data;
 
     return ( \%clone, $cart_id, $cart_data );
+}
+
+# カートデータからchecksumを生成
+# カートデータが空の場合のchecksumは空文字
+sub _cart_checksum {
+    my ( $self, $session_data, $cart_data_mp ) = @_;
+
+    my $checksum     = $session_data->{cart_checksum};
+    my $new_checksum = $cart_data_mp ? Mojo::Util::md5_sum($cart_data_mp) : '';
+    my $is_modified  = $checksum ne $new_checksum ? 1 : 0;
+
+    return $is_modified, $new_checksum;
 }
 
 1;
