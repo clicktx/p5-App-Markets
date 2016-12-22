@@ -30,6 +30,7 @@ ok $cart_id, 'right session->cart_id';
 my $store = $session->store;
 my $result = $store->db->single( $store->table_cart, { cart_id => $cart_id } );
 is $result->data, '', 'db: cart data is empty';
+is $session->data('cart_checksum'), '', 'right checksum create after';
 
 # load session
 $cookie = Mojo::Cookie::Request->new( name => 'sid', value => $sid, path => '/' );
@@ -38,6 +39,7 @@ $session->tx($tx);
 $tx->req->cookies($cookie);
 is $session->load, $sid, 'loading session';
 is_deeply $session->data('cart'), {}, 'cart data is empty hash after load';
+is $session->data('cart_checksum'), '', 'right checksum load after';
 
 # set data
 $session->data( counter => 1 );
@@ -48,26 +50,59 @@ is $session->data('counter'), 1, 'right session value';
 is_deeply $session->data('cart'), { items => [] }, 'right cart value';
 $result = $store->db->single( $store->table_cart, { cart_id => $cart_id } );
 ok $result->data, 'db: right cart data';
+ok $session->data('cart_checksum'), 'right checksum set cart data after';
 
 # for cart
 my $cart = $session->cart;
 is ref $cart, 'Markets::Session::Cart', 'right cart object';
-is_deeply $cart->data, { items => [] }, 'get all cart data';
+
+# add cart and don't save
+$cart->data( payment => [] );
+$session->load;
+is_deeply $cart->data, { items => [] }, 'not flush after cart data';
+
+# add cart and save
+$cart->data( payment => [] );
+$session->flush;
+$session->load;
+is_deeply $cart->data, { items => [], payment => [] }, 'flush after load cart all data';
 is_deeply $cart->data('items'), [], 'get instracted data in the cart';
+
+# get cart data
 $cart->data( items => [ {} ] );
 is_deeply $cart->data('items'), [ {} ], 'set data in the cart';
-is_deeply $session->data('cart'), { items => [ {} ] }, 'right session data changed';
+is_deeply $session->data('cart'), { items => [ {} ], payment => [] }, 'right session data changed';
+
+# all chage cart data
 $cart->data( { items => [], address => {} } );
 is_deeply $cart->data, { items => [], address => {} }, 'set all cart data';
 $session->flush;
 $session->load;
-$cart=$session->cart;
 is_deeply $cart->data, { items => [], address => {} }, 'reload cart data';
 
+# cart data remove
 $cart->flash('items');
 is_deeply $cart->data, { address => {} }, 'flash instracted cart data';
 $cart->flash;
 is_deeply $cart->data, {}, 'flash all cart data';
+
+# cart_checksum
+$session->flush;
+$session->load;
+is $session->data('cart_checksum'), '', 'right checksum empty cart';
+
+# change `session` data
+$session->data( foo => 1 );
+$session->flush;
+$session->load;
+is $session->data('cart_checksum'), '', 'modified session data after checksum';
+
+# change `cart` data
+$cart->data( items => [] );
+is $session->data('cart_checksum'), '', 'modified cart data after checksum';
+$session->flush;
+$session->load;
+ok $session->data('cart_checksum'), 'modified cart data after checksum';
 
 # regenerate session
 my %data    = %{ $session->data };
