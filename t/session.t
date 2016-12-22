@@ -59,6 +59,10 @@ is_deeply $cart->data('items'), [ {} ], 'set data in the cart';
 is_deeply $session->data('cart'), { items => [ {} ] }, 'right session data changed';
 $cart->data( { items => [], address => {} } );
 is_deeply $cart->data, { items => [], address => {} }, 'set all cart data';
+$session->flush;
+$session->load;
+$cart=$session->cart;
+is_deeply $cart->data, { items => [], address => {} }, 'reload cart data';
 
 $cart->flash('items');
 is_deeply $cart->data, { address => {} }, 'flash instracted cart data';
