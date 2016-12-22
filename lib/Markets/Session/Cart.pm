@@ -17,8 +17,8 @@ sub data {
 sub flash {
     my $self = shift;
 
-    @_ ? delete $self->data->{ $_[0] } : $self->data( {} );
     $self->session->_is_flushed(0);
+    @_ ? delete $self->data->{ $_[0] } : $self->data( {} );
 }
 
 1;
