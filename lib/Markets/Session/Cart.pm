@@ -1,18 +1,24 @@
 package Markets::Session::Cart;
 use Mojo::Base -base;
+has 'session';
 
 sub data {
     my $self = shift;
-    return $self->{_data}->{cart} = $_[0] if ref $_[0] eq 'HASH';
+    my $cart_data = $self->session->data->{cart};
 
-    my $data = $self->{_data}->{cart};
-    return @_ ? @_ > 1 ? $data->{ $_[0] } = $_[1] : $data->{ $_[0] } : $data;
+    # Getter
+    return @_ ? $cart_data->{ $_[0] } : $cart_data if ( @_ < 2 and ref $_[0] ne 'HASH' );
+
+    # Setter
+    $self->session->_is_flushed(0);
+    return @_ > 1 ? $cart_data->{ $_[0] } = $_[1] : $self->session->data( cart => $_[0] );
 }
 
 sub flash {
     my $self = shift;
 
-    return @_ ? delete $self->data->{ $_[0] } : $self->data( {} );
+    $self->session->_is_flushed(0);
+    @_ ? delete $self->data->{ $_[0] } : $self->data( {} );
 }
 
 1;

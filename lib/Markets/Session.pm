@@ -4,13 +4,13 @@ use Markets::Session::Cart;
 use Markets::Util qw/generate_token/;
 
 has cart_id => sub { shift->data('cart_id') };
-has cart    => sub { Markets::Session::Cart->new(@_) };
+has cart => sub { Markets::Session::Cart->new( session => shift ) };
 
 sub create {
     my $self = shift;
     my $sid  = $self->SUPER::create(@_);
 
-    $self->data( cart => {} );
+    $self->data( cart => {}, cart_checksum => '' );
     return $sid;
 }
 
