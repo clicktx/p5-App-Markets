@@ -1,0 +1,16 @@
+% layout 'default';
+% title 'Login';
+
+
+<h2><%= __('login') %></h2>
+
+<p>
+    <%= form_for 'customer_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+        signin
+        <%= csrf_field %>
+        <%= text_field name => 'defaule' %>
+        <%= submit_button 'ok' %>
+    <% end %>
+</p>
+
+<%= link_to 'top' => '/' %>
