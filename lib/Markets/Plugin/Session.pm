@@ -83,10 +83,7 @@ sub _create_session {
     # cookieが無いときはlanding pageのurlを保存
     if ($landing_page_on_cookie) {
         say "   ... created new session.";    # debug
-        $session->data(
-            is_loged_in  => 0,
-            landing_page => $landing_page_on_cookie,
-        );
+        $session->data( landing_page => $landing_page_on_cookie, );
         $session->create;
     }
     else {
