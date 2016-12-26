@@ -5,7 +5,7 @@
 <h2><%= __('login') %></h2>
 
 <p>
-    <%= form_for 'customer_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+    <%= form_for 'customer_authenticate' => (method => 'POST', style => 'border:1px solid gray') => begin %>
         signin
         <%= csrf_field %>
         <%= text_field name => 'defaule' %>

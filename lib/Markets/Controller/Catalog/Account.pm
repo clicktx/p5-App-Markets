@@ -2,16 +2,16 @@ package Markets::Controller::Catalog::Account;
 use Mojo::Base 'Markets::Controller';
 use DDP;
 
-sub authorization {
+sub authorize {
     my $self = shift;
-    say "authorization";
+    say "authorize";
     my $session = $self->markets_session;
     my $is_loged_in = $session->data('customer_id') ? 1 : 0;
     $self->redirect_to('customer_login') and return 0 unless $is_loged_in;
     return 1;
 }
 
-sub authentication {
+sub authenticate {
     my $self = shift;
 
     my $session = $self->markets_session;
