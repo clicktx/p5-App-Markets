@@ -20,23 +20,35 @@ sub register {
 
     # Hooks
     $app->hook(
-        before_action => sub {
-            my $c       = shift;
+        before_dispatch => sub {
+            my $c = shift;
+
+            say "hook! before_dispatch from plugin session";    # debug
             my $session = Markets::Session->new(
                 %$args,
                 store => Markets::Session::Store::Teng->new(
                     db => $app->db
                 )
             );
-            say "hook! before_action from plugin session";    # debug
-
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
             $c->stash( $stash_key => $session, );
             say "   ... set stash: $stash_key => session object";    # debug
+        }
+    );
+    $app->hook(
+        before_routes => sub {
+            my $c = shift;
 
-            # Create or Expires time for session
+            say "hook! before_routes from plugin session";           # debug
+            return if $c->stash('mojo.static');
+
+            # Dynamic route only
+            say "... This route is dynamic";                         # debug
+            my $session = $c->stash($stash_key);
             $session->load;
+
+            # Create session or extend expires
             if ( $session->sid ) {
                 say "   ... ented session expires time.";            # debug
                 $session->extend_expires;
@@ -44,7 +56,8 @@ sub register {
             else {
                 _create_session( $c, $session );
             }
-            say "   ... sid: " . $session->sid;                      # debug
+            say "   ... sid: ";                                      # debug
+            p $session->sid;
 
             # Cart
             say "   ... Cart data: ";                                # debug
