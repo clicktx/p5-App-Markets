@@ -44,7 +44,7 @@ sub register {
             return if $c->stash('mojo.static');
 
             # Dynamic route only
-            say "... This route is dynamic";                         # debug
+            say "   ... This route is dynamic";                      # debug
             my $session = $c->stash($stash_key);
             $session->load;
 
@@ -68,11 +68,12 @@ sub register {
     $app->hook(
         after_dispatch => sub {
             my $c = shift;
-            say "hook! after_dispatch from plugin session";    # debug
+            say "hook! after_dispatch from plugin session";          # debug
             return if $c->stash('mojo.static');
 
             # Dynamic route only
-            say "   ... session flush";                        # debug
+            say "   ... This route is dynamic";                      # debug
+            say "   ... session flush";                              # debug
             $c->stash($stash_key)->flush;
         }
     );
