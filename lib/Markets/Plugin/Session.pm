@@ -66,10 +66,13 @@ sub register {
     );
 
     $app->hook(
-        after_action => sub {
+        after_dispatch => sub {
             my $c = shift;
-            say "hook! after_action from plugin session";            # debug
-            say "   ... session flush";                              # debug
+            say "hook! after_dispatch from plugin session";    # debug
+            return if $c->stash('mojo.static');
+
+            # Dynamic route only
+            say "   ... session flush";                        # debug
             $c->stash($stash_key)->flush;
         }
     );
