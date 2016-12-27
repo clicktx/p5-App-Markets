@@ -6,9 +6,10 @@
 
 <p>
     <%= form_for 'customer_login_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
-        signin
         <%= csrf_field %>
-        <%= text_field name => 'defaule' %>
+        <%= hidden_field ref => $ref %>
+        Your name <%= text_field name => 'defaulte' %>
+        Password <%= password_field 'password' %>
         <%= submit_button 'ok' %>
     <% end %>
 </p>
