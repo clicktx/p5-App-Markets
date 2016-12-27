@@ -1,42 +1,52 @@
 package Markets::Controller::Catalog::Account;
 use Mojo::Base 'Markets::Controller';
-use DDP;
 
 sub authorize {
     my $self = shift;
-    say "authorize";
+    say "authorize";    #debug
     my $session = $self->markets_session;
-    my $is_loged_in = $session->data('customer_id') ? 1 : 0;
-    $self->redirect_to('customer_login') and return 0 unless $is_loged_in;
+    my $is_loged_in = $session->data('customer_id') ? 1 : 0;    # logic is_loged_in()
+
+    my $referer = $self->current_route;
+    my $redirect_url = $self->url_for('customer_login')->query( ref => $referer );
+    $self->redirect_to($redirect_url) and return 0 unless $is_loged_in;
     return 1;
-}
-
-sub authenticate {
-    my $self = shift;
-
-    my $session = $self->markets_session;
-    my $sid     = $session->regenerate_sid;
-    say "  .. regenerate_sid: " . $sid;
-
-    $self->markets_session->data( customer_id => 1 );
-    $self->redirect_to('customer_home');
-    return 1;
-}
-
-sub home {
-    my $self = shift;
 }
 
 sub login {
-    my $self = shift;
+    my $self    = shift;
     my $session = $self->markets_session;
-    p $session->data;
+    my $params  = $self->req->params;
+
+    $self->render( ref => $params->param('ref') );
+}
+
+sub login_authen {
+    my $self    = shift;
+    my $params  = $self->req->params;
+    my $session = $self->markets_session;
+
+    my $is_valid = $params->param('password');
+    if ($is_valid) {
+        $self->markets_session->data( customer_id => 1 );
+
+        # Regenerate session id
+        my $sid = $session->regenerate_sid;
+        say "  .. regenerate_sid: " . $sid;    #debug
+
+        my $redirect_route = $params->param('ref') || 'customer_home';
+        return $self->redirect_to($redirect_route);
+    }
+    else {
+        say "don't loged in.";                 #debug
+    }
+    $self->render( template => 'account/login', ref => $params->param('ref') );
 }
 
 sub logout {
     my $self = shift;
 
-    say "logout ... remove session";
+    say "logout ... remove session";           #debug
 
     my $session = $self->markets_session;
 
@@ -47,6 +57,14 @@ sub logout {
         $session->expire;
         $session->_is_flushed(0);
     }
+}
+
+sub home {
+    my $self = shift;
+}
+
+sub favorite {
+    my $self = shift;
 }
 
 1;
