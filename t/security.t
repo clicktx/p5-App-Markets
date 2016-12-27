@@ -16,7 +16,9 @@ subtest 'CSRF check' => sub {
 
     $t->post_ok( '/account/login', form => { csrf_token => 'dummy' } )->status_is(403)
       ->content_like(qr/csrf/i);
-    $t->post_ok( '/account/login', form => { csrf_token => $csrf_token } )->status_is(302);
+    $t->post_ok( '/account/login',
+        form => { csrf_token => $csrf_token, customer_id => 'default', password => 'pass' } )
+      ->status_is(302);
 };
 
 done_testing();
