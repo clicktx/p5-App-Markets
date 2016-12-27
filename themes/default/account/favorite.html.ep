@@ -1,5 +1,5 @@
 % layout 'default';
-% title 'Home';
+% title 'Favorite';
 
 <h1>Welcome Your <%= stash 'title' %></h1>
 <ul>

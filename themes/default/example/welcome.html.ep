@@ -10,10 +10,10 @@ learn more, you can also browse through the documentation
 
 
 <h1>For Customer</h1>
-<h2>Customer Home</h2>
-<p>
-    <%= link_to 'customer_home' => 'customer_home' %>
-</p>
+<ul>
+    <li><%= link_to 'customer_home' => 'customer_home' %></li>
+    <li><%= link_to 'customer_favorite' => 'customer_favorite' %></li>
+</ul>
 
 <p>
     <%= link_to __('login') => 'customer_login' %>

@@ -18,9 +18,9 @@ sub register {
 
     # 認証後
     my $account = $r->under('/account')->to('account#authorize');
-    $account->get('/home')->to('account#home')->name('customer_home');
     $account->get('/logout')->to('account#logout')->name('customer_logout');
-
+    $account->get('/home')->to('account#home')->name('customer_home');
+    $account->get('/favorite')->to('account#favorite')->name('customer_favorite');
 }
 
 1;
