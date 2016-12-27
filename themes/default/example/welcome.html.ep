@@ -20,7 +20,7 @@ learn more, you can also browse through the documentation
 </p>
 
 <p>
-    <%= form_for 'customer_authenticate' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+    <%= form_for 'customer_login_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
         <%= __('login') %>
         <%= csrf_field %>
         <%= text_field name => 'defaule' %>

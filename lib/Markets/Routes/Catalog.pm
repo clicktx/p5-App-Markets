@@ -14,7 +14,7 @@ sub register {
 
     # For Customer
     $r->get('/account/login')->to('account#login')->name('customer_login');
-    $r->post('/account/login')->to('account#authenticate')->name('customer_authenticate');
+    $r->post('/account/login')->to('account#login_authen')->name('customer_login_authen');
 
     # 認証後
     my $account = $r->under('/account')->to('account#authorize');
