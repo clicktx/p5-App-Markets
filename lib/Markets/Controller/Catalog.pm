@@ -3,7 +3,7 @@ use Mojo::Base 'Markets::Controller';
 
 sub is_logged_in {
     my $self = shift;
-    $self->markets_session->data('customer_id') ? 1 : 0;
+    $self->db_session->data('customer_id') ? 1 : 0;
 }
 
 1;

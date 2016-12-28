@@ -11,7 +11,7 @@ sub welcome {
     $self->app->plugins->emit_hook( before_welcome => $self );
 
     # session
-    my $session = $self->markets_session;
+    my $session = $self->db_session;
     my $counter = $session->data('counter');
     $counter++;
     $session->data( counter => $counter );
@@ -39,7 +39,7 @@ sub regenerate_sid {
     my $self = shift;
     say "regenerate_sid";
 
-    my $session = $self->markets_session;
+    my $session = $self->db_session;
     my $sid     = $session->regenerate_sid;
     say "  .. regenerate_sid: " . $sid;
     $self->render(
@@ -61,7 +61,7 @@ sub logout {
     my $self = shift;
     say "logout ... remove session";
 
-    my $session = $self->markets_session;
+    my $session = $self->db_session;
 
     # TODO: 後でlogicにする
     # 2重ログアウトの対策

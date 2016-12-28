@@ -14,7 +14,7 @@ sub register {
 
     # Helpers
     $app->helper(
-        markets_session => sub { shift->stash($stash_key) },
+        db_session => sub { shift->stash($stash_key) },
         cart            => sub { shift->stash($stash_key)->{cart} },
     );
 
