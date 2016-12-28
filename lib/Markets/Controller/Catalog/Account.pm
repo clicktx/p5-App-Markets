@@ -1,5 +1,5 @@
 package Markets::Controller::Catalog::Account;
-use Mojo::Base 'Markets::Controller';
+use Mojo::Base 'Markets::Controller::Catalog';
 
 sub authorize {
     my $self = shift;

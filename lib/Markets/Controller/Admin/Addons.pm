@@ -1,5 +1,5 @@
 package Markets::Controller::Admin::Addons;
-use Mojo::Base 'Markets::Controller';
+use Mojo::Base 'Markets::Controller::Admin';
 use Data::Dumper;
 
 # This action will render a template

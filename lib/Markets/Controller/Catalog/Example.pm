@@ -1,5 +1,5 @@
 package Markets::Controller::Catalog::Example;
-use Mojo::Base 'Markets::Controller';
+use Mojo::Base 'Markets::Controller::Catalog';
 use Data::Dumper;
 
 # This action will render a template
