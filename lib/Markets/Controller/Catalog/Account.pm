@@ -4,8 +4,8 @@ use Mojo::Base 'Markets::Controller::Catalog';
 sub authorize {
     my $self = shift;
     say "authorize";    #debug
-    my $session = $self->db_session;
-    my $referer = $self->current_route;
+    my $session      = $self->db_session;
+    my $referer      = $self->current_route;
     my $redirect_url = $self->url_for('customer_login')->query( ref => $referer );
     $self->redirect_to($redirect_url) and return 0 unless $self->is_logged_in;
     return 1;
@@ -44,14 +44,13 @@ sub login_authen {
 sub logout {
     my $self = shift;
 
-    say "logout ... remove session";           #debug
-
     my $session = $self->db_session;
 
     # TODO: 後でlogicにする
     # 2重ログアウトの対策
     $session->_is_flushed(1);
     if ( $session->_is_stored ) {
+        say "logout ... remove session";    #debug
         $session->expire;
         $session->_is_flushed(0);
     }
