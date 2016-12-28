@@ -43,3 +43,30 @@ sub action_after {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+Markets::Controller - Controller base class
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 ATTRIBUTES
+
+L<Markets::Controller> inherits all attributes from L<Mojolicious::Controller> and
+implements the following new ones.
+
+=head1 METHODS
+
+L<Markets::Controller> inherits all methods from L<Mojolicious::Controller> and
+implements the following new ones.
+
+=head1 SEE ALSO
+
+L<Mojolicious::Controller>
+
+L<Mojolicious>
+
+=cut
