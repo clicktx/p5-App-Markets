@@ -45,15 +45,7 @@ sub logout {
     my $self = shift;
 
     my $session = $self->db_session;
-
-    # TODO: 後でlogicにする
-    # 2重ログアウトの対策
-    $session->_is_flushed(1);
-    if ( $session->_is_stored ) {
-        say "logout ... remove session";    #debug
-        $session->expire;
-        $session->_is_flushed(0);
-    }
+    $self->model('account')->remove_session($session);
 }
 
 sub home {
