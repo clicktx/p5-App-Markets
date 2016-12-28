@@ -35,14 +35,12 @@ sub startup {
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
     push @{ $self->renderer->paths }, 'themes';                     # For template full path
 
-    # renderer
-    $self->plugin('Markets::Plugin::EPRenderer');
-    $self->plugin('Markets::Plugin::EPLRenderer');
-    $self->plugin('Markets::Plugin::DOM');
+    # Renderer
+    $self->plugin($_)
+      for qw(Markets::Plugin::EPRenderer Markets::Plugin::EPLRenderer Markets::Plugin::DOM);
 
     # Routes
-    $self->plugin('Markets::Routes::Admin');
-    $self->plugin('Markets::Routes::Catalog');
+    $self->plugin($_) for qw(Markets::Routes::Admin Markets::Routes::Catalog);
 
     # Loading installed Addons config
     my $addons_config = $self->model('data-configure')->addons;

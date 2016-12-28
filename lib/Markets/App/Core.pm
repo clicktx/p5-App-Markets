@@ -155,9 +155,6 @@ sub initialize_app {
               unless $c->stash('mojo.static');
         }
     );
-
-    # Documentation browser under "/perldoc"
-    $self->plugin('PODRenderer');
 }
 
 1;

@@ -68,8 +68,6 @@ SEE ALSO L<Session::Token>
 
 =cut
 
-sub generate_token {
-    Session::Token->new(@_)->get;
-}
+sub generate_token { Session::Token->new(@_)->get }
 
 1;
