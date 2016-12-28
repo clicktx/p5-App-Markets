@@ -8,23 +8,31 @@ and the layout "templates/layouts/default.html.ep",
 learn more, you can also browse through the documentation
 <%= link_to 'here' => '/perldoc' %>.
 
-<h2>Admin pages</h2>
+
+<h1>For Customer</h1>
+<ul>
+    <li><%= link_to 'customer_home' => 'customer_home' %></li>
+    <li><%= link_to 'customer_favorite' => 'customer_favorite' %></li>
+</ul>
+
 <p>
-    <%= link_to 'regenerate_sid' => 'regenerate_sid' %>
+    <%= link_to __('login') => 'customer_login' %>
 </p>
+
 <p>
-    <%= form_for '/signin' => (method => 'POST', style => 'border:1px solid gray') => begin %>
-        signin
+    <%= form_for 'customer_login_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+        <%= __('login') %>
         <%= csrf_field %>
         <%= text_field name => 'defaule' %>
         <%= submit_button 'ok' %>
     <% end %>
-
-    <%= link_to 'logout' => 'logout' %>
+</p>
+<p>
+    <%= link_to __('logout') => 'customer_logout' %>
 </p>
 
 <p>
-    Your visit count: <%= markets_session->data('counter') %>
+    Your visit count: <%= db_session->data('counter') %>
 </p>
 
 <p>
@@ -38,12 +46,7 @@ learn more, you can also browse through the documentation
     <% end %>
 </p>
 
-<h2><%= __('login') %></h2>
-<p>
-    <%= link_to __('login') => url_for('/login/') %>
-</p>
-
-<h2>Admin pages</h2>
+<h1>For Admin</h1>
 <%= link_to 'admin page' => const('ADMIN_PAGE_PREFIX') %>
 
 <p>

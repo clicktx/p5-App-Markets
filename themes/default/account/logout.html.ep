@@ -1,0 +1,7 @@
+% layout 'default';
+% title 'Logout';
+
+
+<h2><%= __('loged out') %></h2>
+
+<%= link_to 'top' => '/' %>

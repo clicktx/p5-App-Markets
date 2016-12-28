@@ -1,0 +1,15 @@
+% layout 'default';
+% title 'Favorite';
+
+<h1>Welcome Your <%= stash 'title' %></h1>
+<ul>
+    <li><%= link_to 'customer_home' => 'customer_home' %></li>
+    <li><%= link_to 'customer_favorite' => 'customer_favorite' %></li>
+</ul>
+
+<h2><%= __('logout') %></h2>
+<p>
+    <%= link_to __('logout') => url_for('customer_logout') %>
+</p>
+
+<%= link_to 'top' => '/' %>

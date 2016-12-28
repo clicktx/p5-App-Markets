@@ -8,10 +8,21 @@ sub register {
     # Routes
     $r->get('/')->to('example#welcome');
     $r->get('/regenerate_sid')->to('example#regenerate_sid');
-    $r->post('/signin')->to('example#signin');
     $r->get('/logout')->to('example#logout');
     $r->get('/login')->to('login#index');
     $r->post('/login/attempt')->to('login#attempt');
+
+    # For Customer
+    $r->get('/account/login')->to('account#login')->name('customer_login');
+    $r->post('/account/login')->to('account#login_authen')->name('customer_login_authen');
+    $r->get('/account/logout')->to('account#logout')->name('customer_logout');
+
+    # 認証後
+    {
+        my $account = $r->under('/account')->to('account#authorize');
+        $account->get('/home')->to('account#home')->name('customer_home');
+        $account->get('/favorite')->to('account#favorite')->name('customer_favorite');
+    }
 }
 
 1;
