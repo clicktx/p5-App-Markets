@@ -1,6 +1,11 @@
 package Markets::Controller::Catalog;
 use Mojo::Base 'Markets::Controller';
 
+sub is_logged_in {
+    my $self = shift;
+    $self->markets_session->data('customer_id') ? 1 : 0;
+}
+
 1;
 __END__
 
@@ -21,6 +26,8 @@ implements the following new ones.
 
 L<Markets::Controller::Catalog> inherits all methods from L<Markets::Controller> and
 implements the following new ones.
+
+=head2 is_logged_in
 
 =head1 SEE ALSO
 

@@ -5,11 +5,9 @@ sub authorize {
     my $self = shift;
     say "authorize";    #debug
     my $session = $self->markets_session;
-    my $is_loged_in = $session->data('customer_id') ? 1 : 0;    # logic is_loged_in()
-
     my $referer = $self->current_route;
     my $redirect_url = $self->url_for('customer_login')->query( ref => $referer );
-    $self->redirect_to($redirect_url) and return 0 unless $is_loged_in;
+    $self->redirect_to($redirect_url) and return 0 unless $self->is_logged_in;
     return 1;
 }
 
