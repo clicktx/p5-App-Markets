@@ -6,7 +6,13 @@ use Test::Mojo;
 use Data::Dumper;
 use DDP;
 
-my $t = Test::Mojo->new('App');
+my @pages = qw(home favorite);
+my $t     = Test::Mojo->new('App');
+
+# pages
+foreach my $page (@pages) {
+    $t->get_ok( '/account/' . $page )->status_is(302);
+}
 
 subtest 'Login process' => sub {
     $t->get_ok('/account/home')->status_is(302);
@@ -17,14 +23,22 @@ subtest 'Login process' => sub {
     # login
     my $tx         = $t->tx;
     my $csrf_token = $tx->res->dom->at('input[name="csrf_token"]')->{value};
+
+    # failure
+    $t->post_ok( '/account/login', form => { csrf_token => $csrf_token, customer_id => 'default' } )
+      ->status_is(200);
+
+    # success
     $t->post_ok( '/account/login',
         form => { csrf_token => $csrf_token, customer_id => 'default', password => 'pass' } )
       ->status_is(302);
     my $sid_loged_in = _get_sid($t);
     isnt $sid, $sid_loged_in, 'right regenerate sid';
 
-    # loged in
-    $t->get_ok('/account/home')->status_is(200);
+    # pages
+    foreach my $page (@pages) {
+        $t->get_ok( '/account/' . $page )->status_is(200);
+    }
 
     # logout
     $t->get_ok('/account/logout')->status_is(200);
