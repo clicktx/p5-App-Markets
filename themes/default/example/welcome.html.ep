@@ -8,6 +8,10 @@ and the layout "templates/layouts/default.html.ep",
 learn more, you can also browse through the documentation
 <%= link_to 'here' => '/perldoc' %>.
 
+<h1>Products</h1>
+<ul>
+    <li><%= link_to 'product1' => 'product' => { product_id => 1} %></li>
+</ul>
 
 <h1>For Customer</h1>
 <ul>

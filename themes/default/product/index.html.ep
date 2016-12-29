@@ -1,0 +1,10 @@
+% layout 'default';
+% title 'Product';
+
+<h1><%= stash 'title' %><%= stash 'product_id' %></h1>
+<ul>
+    <li><%= link_to 'product2' => 'product' => { product_id => 2} %></li>
+    <li><%= link_to 'product3' => 'product' => { product_id => 3} %></li>
+</ul>
+
+<%= link_to 'top' => '/' %>

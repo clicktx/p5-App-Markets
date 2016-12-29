@@ -12,6 +12,9 @@ sub register {
     $r->get('/login')->to('login#index');
     $r->post('/login/attempt')->to('login#attempt');
 
+    # Product
+    $r->get('/product/:product_id')->to('product#index')->name('product');
+
     # For Customer
     $r->get('/account/login')->to('account#login')->name('customer_login');
     $r->post('/account/login')->to('account#login_authen')->name('customer_login_authen');
