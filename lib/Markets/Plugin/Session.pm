@@ -13,10 +13,8 @@ sub register {
     my $init = delete $args->{init};
 
     # Helpers
-    $app->helper(
-        db_session => sub { shift->stash($stash_key) },
-        cart            => sub { shift->stash($stash_key)->{cart} },
-    );
+    $app->helper( db_session => sub { shift->stash($stash_key) } );
+    $app->helper( cart       => sub { shift->stash($stash_key)->{cart} } );
 
     # Hooks
     $app->hook(
