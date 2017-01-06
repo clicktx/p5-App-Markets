@@ -1,7 +1,6 @@
 package Markets::App::Core;
 use Mojo::Base 'Mojolicious';
 
-use Carp qw/croak/;
 use File::Spec;
 use DBI;
 use Markets::Util;
@@ -70,17 +69,6 @@ sub initialize_app {
     $self->plugin('Markets::Plugin::DefaultHelpers');
 
     # constants
-    $self->helper(
-        const => sub {
-            my ( $c, $key ) = @_;
-            my $constants = $c->app->config('constants');
-            unless ( $constants->{$key} ) {
-                $c->app->log->warn("const('$key') has no constant value.");
-                croak "const('$key') has no constant value.";
-            }
-            return $constants->{$key};
-        }
-    );
     my $constants = $self->model('data-constant')->load;
     $constants->{LINK_NAME} = 'リンク先';          # ex)
     $constants->{ROOT_URL}  = 'http://google.com/';    # ex)
