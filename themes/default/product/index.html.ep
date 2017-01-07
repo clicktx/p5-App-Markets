@@ -7,4 +7,13 @@
     <li><%= link_to 'product3' => 'product' => { product_id => 3} %></li>
 </ul>
 
-<%= link_to 'top' => '/' %>
+<h1>Order</h1>
+<%= form_for 'add_to_cart' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+    <%= csrf_field %>
+    Quantity <%= text_field quantity => '1' %>
+    <%= submit_button 'Add to Cart' %>
+<% end %>
+
+<p>
+    <%= link_to 'top' => '/' %>
+</p>

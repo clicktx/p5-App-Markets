@@ -14,6 +14,7 @@ sub register {
 
     # Product
     $r->get('/product/:product_id')->to('product#index')->name('product');
+    $r->post('/product/:product_id')->to('product#add_to_cart')->name('add_to_cart');
 
     # For Customer
     $r->get('/account/login')->to('account#login')->name('customer_login');
