@@ -96,7 +96,7 @@ sub initialize_app {
     # locale
     $ENV{MOJO_I18N_DEBUG} = $mode eq 'development' ? 1 : 0;
     $self->plugin(
-        'Markets::Plugin::LocaleTextDomainOO',
+        'Markets::I18N',
         {
             # file_type => 'po',    # or 'mo'. default: po
             default   => 'en',               # default en

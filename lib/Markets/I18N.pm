@@ -1,4 +1,4 @@
-package Markets::Plugin::LocaleTextDomainOO;
+package Markets::I18N;
 use Mojo::Base 'Mojolicious::Plugin::LocaleTextDomainOO';
 
 use Mojo::Util qw(monkey_patch);
