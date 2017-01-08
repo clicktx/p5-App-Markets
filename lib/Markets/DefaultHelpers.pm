@@ -1,4 +1,4 @@
-package Markets::Plugin::DefaultHelpers;
+package Markets::DefaultHelpers;
 use Mojo::Base 'Mojolicious::Plugin';
 use Carp qw/croak/;
 
@@ -27,7 +27,7 @@ __END__
 
 =head1 NAME
 
-Markets::Plugin::DefaultHelpers - Default helpers plugin for Markets
+Markets::DefaultHelpers - Default helpers plugin for Markets
 
 =head1 DESCRIPTION
 
