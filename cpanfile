@@ -1,4 +1,4 @@
-requires 'Mojolicious',                             '== 7.05';
+requires 'Mojolicious',                             '== 7.13';
 requires 'File::Find::Rule',                        '0.34';
 requires 'Mojolicious::Plugin::Model',              '0.07';
 requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';
