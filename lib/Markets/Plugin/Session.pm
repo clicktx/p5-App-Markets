@@ -1,6 +1,6 @@
 package Markets::Plugin::Session;
 use Mojo::Base 'Mojolicious::Plugin';
-use Markets::Session;
+use Markets::Session::ServerSession;
 use Markets::Session::Store::Teng;
 use Data::Dumper;
 use DDP;
@@ -22,7 +22,7 @@ sub register {
             my $c = shift;
 
             say "hook! before_dispatch from plugin session";    # debug
-            my $session = Markets::Session->new(
+            my $session = Markets::Session::ServerSession->new(
                 %$args,
                 store => Markets::Session::Store::Teng->new(
                     db => $app->db
@@ -127,11 +127,11 @@ Markets::Plugin::Session - forked from Mojolicious::Plugin::Session
 
 =head2 C<stash_key>
 
-    Markets::Session instance will be saved in stash using this key.
+    Markets::Session::ServerSession instance will be saved in stash using this key.
 
 =head1 SEE ALSO
 
-L<Markets::Session>
+L<Markets::Session::ServerSession>
 
 L<Markets::Session::Cart>
 

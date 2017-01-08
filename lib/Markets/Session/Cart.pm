@@ -56,7 +56,7 @@ Markets::Session::Cart
 
 =head1 SEE ALSO
 
-L<Markets::Session>
+L<Markets::Session::ServerSession>
 
 L<MojoX::Session>
 

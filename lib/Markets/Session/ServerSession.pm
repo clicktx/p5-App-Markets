@@ -1,4 +1,4 @@
-package Markets::Session;
+package Markets::Session::ServerSession;
 use Mojo::Base qw/MojoX::Session/;
 use Markets::Session::Cart;
 use Markets::Util qw/generate_token/;
@@ -52,7 +52,7 @@ __END__
 
 =head1 NAME
 
-Markets::Session - based MojoX::Session
+Markets::Session::ServerSession - based MojoX::Session
 
 =head1 SYNOPSIS
 
