@@ -4,7 +4,8 @@
 <h1>Welcome Your <%= stash 'title' %></h1>
 <ul>
     <li><%= link_to 'customer_home' => 'customer_home' %></li>
-    <li><%= link_to 'wishlist' => 'customer_wishlist' %></li>
+    <li><%= link_to 'Orders' => 'customer_orders' %></li>
+    <li><%= link_to 'Wishlist' => 'customer_wishlist' %></li>
 </ul>
 
 <h2><%= __('logout') %></h2>

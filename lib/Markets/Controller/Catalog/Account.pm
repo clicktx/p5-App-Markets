@@ -52,6 +52,10 @@ sub home {
     my $self = shift;
 }
 
+sub orders {
+    my $self = shift;
+}
+
 sub wishlist {
     my $self = shift;
 }
