@@ -4,7 +4,7 @@ use Mojolicious::Lite;
 use Test::Mojo;
 use Test::More;
 
-plugin 'Markets::Plugin::LocaleTextDomainOO';
+plugin 'Markets::I18N';
 plugin 'Markets::Plugin::Form';
 
 post '/' => sub {
