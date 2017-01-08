@@ -1,4 +1,4 @@
-package Markets::Plugin::Session;
+package Markets::Session;
 use Mojo::Base 'Mojolicious::Plugin';
 use Markets::Session::ServerSession;
 use Markets::Session::Store::Teng;
@@ -100,7 +100,7 @@ __END__
 
 =head1 NAME
 
-Markets::Plugin::Session - forked from Mojolicious::Plugin::Session
+Markets::Session - forked from Mojolicious::Plugin::Session
 
 =head1 SYNOPSIS
 

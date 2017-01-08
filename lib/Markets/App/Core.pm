@@ -88,7 +88,7 @@ sub initialize_app {
 
     # session
     $self->plugin(
-        'Markets::Plugin::Session' => {
+        'Markets::Session' => {
             expires_delta => 3600,
         }
     );
