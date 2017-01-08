@@ -66,7 +66,7 @@ sub initialize_app {
     $self->plugin( Model => { namespaces => ['Markets::Model'] } );
 
     # Default Helpers
-    $self->plugin('Markets::Plugin::DefaultHelpers');
+    $self->plugin('Markets::DefaultHelpers');
 
     # constants
     my $constants = $self->model('data-constant')->load;
