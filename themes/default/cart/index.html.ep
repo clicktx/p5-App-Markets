@@ -1,0 +1,18 @@
+% layout 'default';
+% title 'Cart';
+
+<h1><%= title %></h1>
+
+<ul>
+    % foreach my $item ( @{$items} ) {
+        <li><%= dumper $item %></li>
+    % }
+</ul>
+
+<p>
+    % my $ref = $self->flash('ref') || '/';
+    <%= link_to 'back to shopping' => $ref %>
+</p>
+<p>
+    <%= link_to 'top' => '/' %>
+</p>

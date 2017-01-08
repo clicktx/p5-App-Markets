@@ -20,9 +20,8 @@ sub add_to_cart {
     use DDP;
     p $cart->data('items');
 
-    $self->template('product/index');
-    # $self->flash( ref => $self->req->url->to_string );
-    # $self->redirect_to('cart');
+    $self->flash( ref => $self->req->url->to_string );
+    $self->redirect_to('cart');
 }
 
 1;
