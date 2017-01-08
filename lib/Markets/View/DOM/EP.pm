@@ -1,4 +1,4 @@
-package Markets::Plugin::DOM::EP;
+package Markets::View::DOM::EP;
 use Mojo::Base -base;
 
 use Mojo::Util qw(html_unescape xml_escape);
@@ -312,28 +312,28 @@ sub _start {
 
 =head1 NAME
 
-Markets::Plugin::DOM::EP - HTML/XML/EP Tenmplate engine
+Markets::View::DOM::EP - HTML/XML/EP Tenmplate engine
 
 =head1 SYNOPSIS
 
-  use Markets::Plugin::DOM::EP;
+  use Markets::View::DOM::EP;
 
   # Turn HTML into DOM tree
-  my $html = Markets::Plugin::DOM::EP->new;
+  my $html = Markets::View::DOM::EP->new;
   $html->parse('<div><p id="a">Test</p><p id="b">123</p></div>');
   my $tree = $html->tree;
 
 =head1 DESCRIPTION
 
-L<Markets::Plugin::DOM::EP> is forked by L<Mojo::DOM::HTML> (Mojolicious v7.00)
+L<Markets::View::DOM::EP> is forked by L<Mojo::DOM::HTML> (Mojolicious v7.00)
 
-L<Markets::Plugin::DOM::EP> is the HTML/XML engine used by L<Mojo::DOM>, based on the
+L<Markets::View::DOM::EP> is the HTML/XML engine used by L<Mojo::DOM>, based on the
 L<HTML Living Standard|https://html.spec.whatwg.org> and the
 L<Extensible Markup Language (XML) 1.0|http://www.w3.org/TR/xml/>.
 
 =head1 ATTRIBUTES
 
-L<Markets::Plugin::DOM::EP> implements the following attributes.
+L<Markets::View::DOM::EP> implements the following attributes.
 
 =head2 tree
 
@@ -353,7 +353,7 @@ auto-detection based on XML declarations.
 
 =head1 METHODS
 
-L<Markets::Plugin::DOM::EP> inherits all methods from L<Mojo::Base> and implements the
+L<Markets::View::DOM::EP> inherits all methods from L<Mojo::Base> and implements the
 following new ones.
 
 =head2 parse

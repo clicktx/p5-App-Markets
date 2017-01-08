@@ -37,7 +37,7 @@ sub startup {
 
     # Renderer
     $self->plugin($_)
-      for qw(Markets::Plugin::EPRenderer Markets::Plugin::EPLRenderer Markets::Plugin::DOM);
+      for qw(Markets::View::EPRenderer Markets::View::EPLRenderer Markets::View::DOM);
 
     # Routes
     $self->plugin($_) for qw(Markets::Routes::Admin Markets::Routes::Catalog);
