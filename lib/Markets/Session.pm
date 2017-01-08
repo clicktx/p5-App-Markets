@@ -1,50 +1,98 @@
 package Markets::Session;
-use Mojo::Base qw/MojoX::Session/;
-use Markets::Session::Cart;
-use Markets::Util qw/generate_token/;
+use Mojo::Base 'Mojolicious::Plugin';
+use Markets::Session::ServerSession;
+use Markets::Session::Store::Teng;
+use Data::Dumper;
+use DDP;
 
-has cart_id => sub { shift->data('cart_id') };
-has cart => sub { Markets::Session::Cart->new( session => shift ) };
+sub register {
+    my ( $self, $app, $args ) = @_;
+    $args ||= {};
 
-sub create {
-    my $self = shift;
-    my $sid  = $self->SUPER::create(@_);
+    my $stash_key = delete $args->{stash_key} || 'markets.session';
+    my $init = delete $args->{init};
 
-    $self->data( cart => {}, cart_checksum => '' );
-    return $sid;
+    # Helpers
+    $app->helper( db_session => sub { shift->stash($stash_key) } );
+    $app->helper( cart       => sub { shift->stash($stash_key)->{cart} } );
+
+    # Hooks
+    $app->hook(
+        before_dispatch => sub {
+            my $c = shift;
+
+            say "hook! before_dispatch from plugin session";    # debug
+            my $session = Markets::Session::ServerSession->new(
+                %$args,
+                store => Markets::Session::Store::Teng->new(
+                    db => $app->db
+                )
+            );
+            $session->tx( $c->tx );
+            $init->( $c, $session ) if $init;
+            $c->stash( $stash_key => $session, );
+            say "   ... set stash: $stash_key => session object";    # debug
+        }
+    );
+    $app->hook(
+        before_routes => sub {
+            my $c = shift;
+
+            say "hook! before_routes from plugin session";           # debug
+            return if $c->stash('mojo.static');
+
+            # Dynamic route only
+            say "   ... This route is dynamic";                      # debug
+            my $session = $c->stash($stash_key);
+            $session->load;
+
+            # Create session or extend expires
+            if ( $session->sid ) {
+                say "   ... ented session expires time.";            # debug
+                $session->extend_expires;
+            }
+            else {
+                _create_session( $c, $session );
+            }
+            say "   ... sid: ";                                      # debug
+            p $session->sid;
+
+            # Cart
+            say "   ... Cart data: ";                                # debug
+            p $session->cart->data;
+        }
+    );
+
+    $app->hook(
+        after_dispatch => sub {
+            my $c = shift;
+            say "hook! after_dispatch from plugin session";          # debug
+            return if $c->stash('mojo.static');
+
+            # Dynamic route only
+            say "   ... This route is dynamic";                      # debug
+            say "   ... session flush";                              # debug
+            $c->stash($stash_key)->flush;
+        }
+    );
 }
 
-sub load {
-    my $self = shift;
-    my $sid  = $self->SUPER::load(@_);
+sub _create_session {
+    my ( $c, $session ) = @_;
+    my $landing_page_on_cookie = $c->session('landing_page');
 
-    $self->data( cart => {} ) unless $self->data('cart');
-    return $sid;
-}
-
-sub regenerate_sid {
-    my $self = shift;
-
-    my $original_sid = $self->sid;
-    $self->SUPER::_generate_sid;
-
-    if ( $self->transport ) {
-        $self->transport->tx( $self->tx );
-        $self->transport->set( $self->sid, $self->expires );
+    # cookieに対応している場合のみセッション生成する
+    # cookieが無いときはlanding pageのurlを保存
+    if ($landing_page_on_cookie) {
+        say "   ... created new session.";    # debug
+        $session->data( landing_page => $landing_page_on_cookie, );
+        $session->create;
     }
-
-    $self->_is_flushed(0);
-    $self->store->update_sid( $original_sid, $self->sid );
-
-    return $self->sid;
-}
-
-sub _generate_sid {
-    my $self = shift;
-    $self->SUPER::_generate_sid;
-
-    return if $self->data('cart_id');
-    $self->data( cart_id => generate_token( length => 40 ) );
+    else {
+        say "   ... created cookie landing_page.";    # debug
+        my $landing_page = $c->req->url->to_string;
+        $c->session( landing_page => $landing_page );
+    }
 }
 
 1;
@@ -52,33 +100,42 @@ __END__
 
 =head1 NAME
 
-Markets::Session - based MojoX::Session
+Markets::Session - forked from Mojolicious::Plugin::Session
 
 =head1 SYNOPSIS
+
+    # Mojolicious::Lite
+    plugin session =>
+        {
+            stash_key       => 'markets.session',
+            store           => 'dbi',
+            expires_delta   => 5
+        };
+
+    # Mojolicious
+    $self->plugin(
+        session => {
+            stash_key       => 'markets.session',
+            store           => 'dbi',
+            expires_delta   => 5
+        }
+    );
 
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
-=head1 METHODS
+=head2 C<stash_key>
 
-=head2 C<cart>
-
-    my $cart = $session->cart;
-
-Returns new L<Markets::Session::Cart> object.
-
-=head2 C<cart_id>
-
-    my $cart_id = $session->cart_id;
-
-Returns cart id.
-
-=head2 C<regenerate_sid>
-
-    my $sid = $session->regenerate_sid;
+    Markets::Session::ServerSession instance will be saved in stash using this key.
 
 =head1 SEE ALSO
+
+L<Markets::Session::ServerSession>
+
+L<Markets::Session::Cart>
+
+L<Mojolicious::Plugin::Session>
 
 L<MojoX::Session>
 

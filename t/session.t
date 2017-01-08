@@ -12,7 +12,7 @@ my $cookie = Mojo::Cookie::Request->new( name => 'sid', value => 'bar', path => 
 my $tx = Mojo::Transaction::HTTP->new();
 $tx->req->cookies($cookie);
 
-my $session = Markets::Session->new(
+my $session = Markets::Session::ServerSession->new(
     tx            => $tx,
     store         => Markets::Session::Store::Teng->new( db => $app->db ),
     transport     => MojoX::Session::Transport::Cookie->new,
