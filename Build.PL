@@ -29,7 +29,7 @@ my %args = (
         'File::Find::Rule' => '0.34',
         'HTTP::Parser::XS' => '0.17',
         'MojoX::Session' => '0.33',
-        'Mojolicious' => '== 7.05',
+        'Mojolicious' => '== 7.13',
         'Mojolicious::Plugin::FormFields' => '0.05',
         'Mojolicious::Plugin::LocaleTextDomainOO' => '0.04',
         'Mojolicious::Plugin::Model' => '0.07',
