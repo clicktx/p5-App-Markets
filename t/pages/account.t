@@ -6,10 +6,10 @@ use Test::Mojo;
 use Data::Dumper;
 use DDP;
 
-my @pages = qw(home wishlist);
 my $t     = Test::Mojo->new('App');
 
 # pages
+my @pages = qw(home orders wishlist);
 foreach my $page (@pages) {
     $t->get_ok( '/account/' . $page )->status_is(302);
 }
