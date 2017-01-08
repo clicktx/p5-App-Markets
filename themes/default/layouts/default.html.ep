@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html>
-  <head><title><%= title %></title></head>
-  <body><%= content %></body>
+    <head>
+        <title><%= title %></title>
+    </head>
+    <body>
+        <header>
+            <%= include 'header' %>
+        </header>
+        <%= content %>
+        <footer>
+            <%= include 'footer' %>
+        </footer>
+    </body>
 </html>

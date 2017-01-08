@@ -1,0 +1,5 @@
+header
+<ul>
+    <li><%= link_to 'Your Cart' => 'cart' %></li>
+</ul>
+<hr>

@@ -1,7 +1,6 @@
 package Markets::App::Core;
 use Mojo::Base 'Mojolicious';
 
-use Carp qw/croak/;
 use File::Spec;
 use DBI;
 use Markets::Util;
@@ -66,18 +65,10 @@ sub initialize_app {
     # Models
     $self->plugin( Model => { namespaces => ['Markets::Model'] } );
 
+    # Default Helpers
+    $self->plugin('Markets::Plugin::DefaultHelpers');
+
     # constants
-    $self->helper(
-        const => sub {
-            my ( $c, $key ) = @_;
-            my $constants = $c->app->config('constants');
-            unless ( $constants->{$key} ) {
-                $c->app->log->warn("const('$key') has no constant value.");
-                croak "const('$key') has no constant value.";
-            }
-            return $constants->{$key};
-        }
-    );
     my $constants = $self->model('data-constant')->load;
     $constants->{LINK_NAME} = 'リンク先';          # ex)
     $constants->{ROOT_URL}  = 'http://google.com/';    # ex)
@@ -149,7 +140,7 @@ sub initialize_app {
             my $c = shift;
 
             # Emit filter hook (ignore static files)
-            say "hook! before_routes";                       # debug
+            say "hook! before_routes";                            # debug
             say "... This route is dynamic" unless ( $c->stash('mojo.static') );
             $c->app->filter_hook->emit( filter_form => $c )
               unless $c->stash('mojo.static');
