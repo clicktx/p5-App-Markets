@@ -12,7 +12,7 @@ learn more, you can also browse through the documentation
 <h1>For Customer</h1>
 <ul>
     <li><%= link_to 'customer_home' => 'customer_home' %></li>
-    <li><%= link_to 'customer_favorite' => 'customer_favorite' %></li>
+    <li><%= link_to 'wishlist' => 'wishlist' %></li>
 </ul>
 
 <p>

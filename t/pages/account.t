@@ -6,7 +6,7 @@ use Test::Mojo;
 use Data::Dumper;
 use DDP;
 
-my @pages = qw(home favorite);
+my @pages = qw(home wishlist);
 my $t     = Test::Mojo->new('App');
 
 # pages

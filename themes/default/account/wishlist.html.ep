@@ -1,10 +1,10 @@
 % layout 'default';
-% title 'Favorite';
+% title 'Wishlist';
 
 <h1>Welcome Your <%= stash 'title' %></h1>
 <ul>
     <li><%= link_to 'customer_home' => 'customer_home' %></li>
-    <li><%= link_to 'customer_favorite' => 'customer_favorite' %></li>
+    <li><%= link_to 'wishlist' => 'wishlist' %></li>
 </ul>
 
 <h2><%= __('logout') %></h2>

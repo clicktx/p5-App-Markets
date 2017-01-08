@@ -52,7 +52,7 @@ sub home {
     my $self = shift;
 }
 
-sub favorite {
+sub wishlist {
     my $self = shift;
 }
 
