@@ -28,7 +28,7 @@ sub register {
     {
         my $account = $r->under('/account')->to('account#authorize');
         $account->get('/home')->to('account#home')->name('customer_home');
-        $account->get('/wishlist')->to('account#wishlist')->name('wishlist');
+        $account->get('/wishlist')->to('account#wishlist')->name('customer_wishlist');
     }
 }
 
