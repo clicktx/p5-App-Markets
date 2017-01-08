@@ -1,5 +1,5 @@
-package Markets::Plugin::EPRenderer;
-use Mojo::Base 'Markets::Plugin::EPLRenderer';
+package Markets::View::EPRenderer;
+use Mojo::Base 'Markets::View::EPLRenderer';
 
 use Mojo::Template;
 use Mojo::Util qw(encode md5_sum monkey_patch);
@@ -38,7 +38,7 @@ sub register {
             no strict 'refs';
             no warnings 'redefine';
             local *{"${ns}::_C"} = sub { $c };
-            Markets::Plugin::EPLRenderer::_render( $renderer, $c,
+            Markets::View::EPLRenderer::_render( $renderer, $c,
                 $output, $options, $mt, $c->stash );
         }
     );

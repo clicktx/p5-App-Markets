@@ -1,4 +1,4 @@
-package Markets::Plugin::EPLRenderer;
+package Markets::View::EPLRenderer;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use Mojo::Template;
