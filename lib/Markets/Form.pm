@@ -1,13 +1,13 @@
-package Markets::Plugin::Form;
+package Markets::Form;
 
 # TODO: pull requestがmergeされた場合はオリジナル(Mojolicious::Plugin::FormFields v0.06)を使う
 # https://github.com/sshaw/Mojolicious-Plugin-FormFields/pull/3
 
 use Mojo::Base 'Mojolicious::Plugin::FormFields';
 use Mojo::Util qw(monkey_patch);
-use Markets::Plugin::Form::Struct;
-use Markets::Plugin::Form::CustomFilter;
-use Markets::Plugin::Form::CustomVaridation;
+use Markets::Form::Struct;
+use Markets::Form::CustomFilter;
+use Markets::Form::CustomVaridation;
 
 # Override method
 #   Filters is not applied, and use the "STRUCTURED REQUEST PARAMETERS". by clicktx · Pull Request #3
@@ -95,7 +95,7 @@ sub register {
     );
     $app->helper(
         form => sub {
-            Markets::Plugin::Form::Struct->new(
+            Markets::Form::Struct->new(
                 'controller'        => shift,
                 'fields'            => shift,
                 'formfields_valid' => $helper,
@@ -110,7 +110,7 @@ sub register {
 
 =head1 NAME
 
-Markets::Plugin::Form - Form for Markets
+Markets::Form - Form for Markets
 
 =head1 DESCRIPTION
 

@@ -1,4 +1,4 @@
-package Markets::Plugin::Form::CustomVaridation;
+package Markets::Form::CustomVaridation;
 use Mojo::Base -base;
 
 has c          => sub { shift->{c} };

@@ -5,7 +5,7 @@ use Test::Mojo;
 use Test::More;
 
 plugin 'Markets::I18N';
-plugin 'Markets::Plugin::Form';
+plugin 'Markets::Form';
 
 post '/' => sub {
     my $c = shift;

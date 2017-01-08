@@ -1,10 +1,10 @@
-package Markets::Plugin::Form::Struct;
+package Markets::Form::Struct;
 use Mojo::Base -base;
 
 has 'fields';
 has 'formfields' => sub { $_[0]->c->fields( $_[0]->fields ) };
 has 'custom_validation' => sub {
-    Markets::Plugin::Form::CustomVaridation->new(
+    Markets::Form::CustomVaridation->new(
         c          => $_[0]->c,
         formfields => $_[0]->formfields,
     );
@@ -215,6 +215,6 @@ Get/Set validations.
 
 =head1 SEE ALSO
 
-L<Markets::Plugin::Form> L<Mojolicious::Plugin::FormFields>
+L<Markets::Form> L<Mojolicious::Plugin::FormFields>
 
 =cut
