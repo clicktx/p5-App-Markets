@@ -10,22 +10,22 @@ learn more, you can also browse through the documentation
 
 <h1>Products</h1>
 <ul>
-    <li><%= link_to 'product1' => 'product' => { product_id => 1} %></li>
+    <li><%= link_to 'product1' => 'RN_product' => { product_id => 1} %></li>
 </ul>
 
 <h1>For Customer</h1>
 <ul>
-    <li><%= link_to 'Your Home' => 'customer_home' %></li>
-    <li><%= link_to 'Orders' => 'customer_orders' %></li>
-    <li><%= link_to 'Wishlist' => 'customer_wishlist' %></li>
+    <li><%= link_to 'Your Home' => 'RN_customer_home' %></li>
+    <li><%= link_to Orders => 'RN_customer_orders' %></li>
+    <li><%= link_to Wishlist => 'RN_customer_wishlist' %></li>
 </ul>
 
 <p>
-    <%= link_to __('login') => 'customer_login' %>
+    <%= link_to __('login') => 'RN_customer_login' %>
 </p>
 
 <p>
-    <%= form_for 'customer_login_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+    <%= form_for 'RN_customer_login_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
         <%= __('login') %>
         <%= csrf_field %>
         <%= text_field name => 'defaule' %>
@@ -33,7 +33,7 @@ learn more, you can also browse through the documentation
     <% end %>
 </p>
 <p>
-    <%= link_to __('logout') => 'customer_logout' %>
+    <%= link_to __('logout') => 'RN_customer_logout' %>
 </p>
 
 <p>

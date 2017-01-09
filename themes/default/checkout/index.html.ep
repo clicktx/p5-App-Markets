@@ -3,7 +3,7 @@
 
 <h1><%= title %></h1>
 
-<%= link_to 'Edit Cart' => 'cart' %>
+<%= link_to 'Edit Cart' => 'RN_cart' %>
 
 <p>
     <%= link_to 'top' => '/' %>

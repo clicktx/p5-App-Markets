@@ -6,6 +6,7 @@ sub register {
     my $r = $app->routes->namespaces( ['Markets::Controller::Catalog'] );
 
     # Routes
+    # TODO: routeの名前にはプリフィックス RN_ (Route Name)を付ける
     $r->get('/')->to('example#welcome');
     $r->get('/regenerate_sid')->to('example#regenerate_sid');
     $r->get('/logout')->to('example#logout');
@@ -13,26 +14,26 @@ sub register {
     $r->post('/login/attempt')->to('login#attempt');
 
     # Product
-    $r->get('/product/:product_id')->to('product#index')->name('product');
-    $r->post('/product/:product_id')->to('product#add_to_cart')->name('add_to_cart');
+    $r->get('/product/:product_id')->to('product#index')->name('RN_product');
+    $r->post('/product/:product_id')->to('product#add_to_cart')->name('RN_add_to_cart');
 
     # Cart
-    $r->get('/cart')->to('cart#index')->name('cart');
+    $r->get('/cart')->to('cart#index')->name('RN_cart');
 
     # Checkout
-    $r->get('/checkout')->to('checkout#index')->name('checkout');
+    $r->get('/checkout')->to('checkout#index')->name('RN_checkout');
 
     # For Customer
-    $r->get('/account/login')->to('account#login')->name('customer_login');
-    $r->post('/account/login')->to('account#login_authen')->name('customer_login_authen');
-    $r->get('/account/logout')->to('account#logout')->name('customer_logout');
+    $r->get('/account/login')->to('account#login')->name('RN_customer_login');
+    $r->post('/account/login')->to('account#login_authen')->name('RN_customer_login_authen');
+    $r->get('/account/logout')->to('account#logout')->name('RN_customer_logout');
 
     # 認証後
     {
         my $account = $r->under('/account')->to('account#authorize');
-        $account->get('/home')->to('account#home')->name('customer_home');
-        $account->get('/orders')->to('account#orders')->name('customer_orders');
-        $account->get('/wishlist')->to('account#wishlist')->name('customer_wishlist');
+        $account->get('/home')->to('account#home')->name('RN_customer_home');
+        $account->get('/orders')->to('account#orders')->name('RN_customer_orders');
+        $account->get('/wishlist')->to('account#wishlist')->name('RN_customer_wishlist');
     }
 }
 
