@@ -15,7 +15,7 @@ learn more, you can also browse through the documentation
 
 <h1>For Customer</h1>
 <ul>
-    <li><%= link_to 'Your Home' => 'RN_customer_home' %></li>
+    <li><%= link_to 'My Account' => 'RN_customer_home' %></li>
     <li><%= link_to Orders => 'RN_customer_orders' %></li>
     <li><%= link_to Wishlist => 'RN_customer_wishlist' %></li>
 </ul>
