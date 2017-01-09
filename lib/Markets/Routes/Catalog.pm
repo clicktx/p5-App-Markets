@@ -19,6 +19,9 @@ sub register {
     # Cart
     $r->get('/cart')->to('cart#index')->name('cart');
 
+    # Checkout
+    $r->get('/checkout')->to('checkout#index')->name('checkout');
+
     # For Customer
     $r->get('/account/login')->to('account#login')->name('customer_login');
     $r->post('/account/login')->to('account#login_authen')->name('customer_login_authen');

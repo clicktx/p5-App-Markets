@@ -9,6 +9,9 @@
     % }
 </ul>
 
+<%= link_to 'Edit Cart' => 'cart' %>
+<%= link_to 'Proceed to Checkout' => 'checkout' %>
+
 <p>
     % my $ref = $self->flash('ref') || '/';
     <%= link_to 'back to shopping' => $ref %>

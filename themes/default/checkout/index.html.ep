@@ -1,0 +1,10 @@
+% layout 'default';
+% title 'Checkout';
+
+<h1><%= title %></h1>
+
+<%= link_to 'Edit Cart' => 'cart' %>
+
+<p>
+    <%= link_to 'top' => '/' %>
+</p>
