@@ -5,7 +5,7 @@
 <h2><%= __('login') %></h2>
 
 <p>
-    <%= form_for 'customer_login_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+    <%= form_for 'RN_customer_login_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
         <%= csrf_field %>
         <%= hidden_field ref => $ref %>
         Customer ID <%= text_field customer_id => 'defaulte' %>
