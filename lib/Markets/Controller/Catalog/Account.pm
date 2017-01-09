@@ -6,7 +6,7 @@ sub authorize {
     say "authorize";    #debug
     my $session      = $self->db_session;
     my $referer      = $self->current_route;
-    my $redirect_url = $self->url_for('customer_login')->query( ref => $referer );
+    my $redirect_url = $self->url_for('RN_customer_login')->query( ref => $referer );
     $self->redirect_to($redirect_url) and return 0 unless $self->is_logged_in;
     return 1;
 }
@@ -32,7 +32,7 @@ sub login_authen {
         my $sid = $session->regenerate_sid;
         say "  .. regenerate_sid: " . $sid;    #debug
 
-        my $redirect_route = $params->param('ref') || 'customer_home';
+        my $redirect_route = $params->param('ref') || 'RN_customer_home';
         return $self->redirect_to($redirect_route);
     }
     else {

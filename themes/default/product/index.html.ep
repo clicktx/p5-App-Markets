@@ -3,12 +3,12 @@
 
 <h1><%= stash 'title' %><%= stash 'product_id' %></h1>
 <ul>
-    <li><%= link_to 'product2' => 'product' => { product_id => 2} %></li>
-    <li><%= link_to 'product3' => 'product' => { product_id => 3} %></li>
+    <li><%= link_to 'product2' => 'RN_product' => { product_id => 2} %></li>
+    <li><%= link_to 'product3' => 'RN_product' => { product_id => 3} %></li>
 </ul>
 
 <h1>Order</h1>
-<%= form_for 'add_to_cart' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+<%= form_for 'RN_add_to_cart' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
     Quantity <%= text_field quantity => '1' %>
     <%= submit_button 'Add to Cart' %>

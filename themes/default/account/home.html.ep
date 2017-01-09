@@ -3,13 +3,13 @@
 
 <h1>Welcome Your <%= stash 'title' %></h1>
 <ul>
-    <li><%= link_to 'Orders' => 'customer_orders' %></li>
-    <li><%= link_to 'Wishlist' => 'customer_wishlist' %></li>
+    <li><%= link_to 'Orders' => 'RN_customer_orders' %></li>
+    <li><%= link_to 'Wishlist' => 'RN_customer_wishlist' %></li>
 </ul>
 
 <h2><%= __('logout') %></h2>
 <p>
-    <%= link_to __('logout') => url_for('customer_logout') %>
+    <%= link_to __('logout') => 'RN_customer_logout' %>
 </p>
 
 <%= link_to 'top' => '/' %>

@@ -1,0 +1,19 @@
+% layout 'default';
+% title 'Checkout';
+
+<h1><%= title %></h1>
+
+<%= link_to 'Edit Cart' => 'RN_cart' %>
+
+<h3>ORDER SUMMARY</h3>
+
+<h3>Secure checkout</h3>
+<ol>
+    <li>Please sign in</li>
+    <li>Billing and Shipping Address</li>
+    <li>Shipping Options</li>
+    <li>Billing Options</li>
+</ol>
+<p>
+    <%= link_to 'top' => '/' %>
+</p>

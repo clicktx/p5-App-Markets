@@ -21,7 +21,7 @@ sub add_to_cart {
     p $cart->data('items');
 
     $self->flash( ref => $self->req->url->to_string );
-    $self->redirect_to('cart');
+    $self->redirect_to('RN_cart');
 }
 
 1;
