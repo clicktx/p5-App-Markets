@@ -24,6 +24,9 @@ sub register {
     $r->get('/checkout')->to('checkout#index')->name('RN_checkout');
 
     # For Customer
+    $r->get('/register')->to('register#index')->name('RN_customer_create_account');
+    $r->post('/register')->to('register#index')->name('RN_customer_create_account');
+
     $r->get('/account/login')->to('account#login')->name('RN_customer_login');
     $r->post('/account/login')->to('account#login_authen')->name('RN_customer_login_authen');
     $r->get('/account/logout')->to('account#logout')->name('RN_customer_logout');

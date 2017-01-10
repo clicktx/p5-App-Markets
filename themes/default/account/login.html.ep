@@ -14,4 +14,7 @@
     <% end %>
 </p>
 
+<p>
+    New Customer? <%= link_to 'Create Your Account' => 'RN_customer_create_account' %>
+</p>
 <%= link_to 'top' => '/' %>
