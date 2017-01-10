@@ -13,10 +13,6 @@ sub register {
     $r->get('/login')->to('login#index');
     $r->post('/login/attempt')->to('login#attempt');
 
-    # Product
-    $r->get('/product/:product_id')->to('product#index')->name('RN_product');
-    $r->post('/product/:product_id')->to('product#add_to_cart')->name('RN_add_to_cart');
-
     # Cart
     $r->get('/cart')->to('cart#index')->name('RN_cart');
 
@@ -38,6 +34,14 @@ sub register {
         $account->get('/orders')->to('account#orders')->name('RN_customer_orders');
         $account->get('/wishlist')->to('account#wishlist')->name('RN_customer_wishlist');
     }
+
+    # Product
+    $r->get('/product/:product_id')->to('product#index')->name('RN_product');
+    $r->post('/product/:product_id')->to('product#add_to_cart')->name('RN_add_to_cart');
+
+    # Category
+    $r->get('/category/:category_id')->to('category#index')->name('RN_category');
+    $r->get('/:category_name')->to('category#index')->name('RN_category_name_base');
 }
 
 1;

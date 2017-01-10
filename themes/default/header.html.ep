@@ -1,5 +1,6 @@
 header
 <ul>
+    <li><%= link_to 'Category1' => 'RN_category' => { category_id => 1 } %></li>
     <li><%= link_to 'My Cart' => 'RN_cart' %></li>
 </ul>
 <hr>
