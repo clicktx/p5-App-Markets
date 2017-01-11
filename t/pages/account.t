@@ -16,7 +16,7 @@ foreach my $page (@pages) {
 
 subtest 'Login process' => sub {
     $t->get_ok('/account/home')->status_is(302);
-    $t->get_ok('/account/login');
+    $t->get_ok('/login');
     my $sid = _get_sid($t);
     ok $sid, 'right sid';
 
@@ -25,11 +25,11 @@ subtest 'Login process' => sub {
     my $csrf_token = $tx->res->dom->at('input[name="csrf_token"]')->{value};
 
     # failure
-    $t->post_ok( '/account/login', form => { csrf_token => $csrf_token, customer_id => 'default' } )
+    $t->post_ok( '/login', form => { csrf_token => $csrf_token, customer_id => 'default' } )
       ->status_is(200);
 
     # success
-    $t->post_ok( '/account/login',
+    $t->post_ok( '/login',
         form => { csrf_token => $csrf_token, customer_id => 'default', password => 'pass' } )
       ->status_is(302);
     my $sid_loged_in = _get_sid($t);
@@ -41,7 +41,7 @@ subtest 'Login process' => sub {
     }
 
     # logout
-    $t->get_ok('/account/logout')->status_is(200);
+    $t->get_ok('/logout')->status_is(200);
     $t->get_ok('/account/home')->status_is(302);
     my $sid_new_session = _get_sid($t);
     isnt $sid_loged_in, $sid_new_session, 'right new sid';

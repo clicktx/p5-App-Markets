@@ -9,7 +9,7 @@
     </div>
 % }
 <%= dumper form_errors %>
-<%= form_for '/login/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+<%= form_for '/login_example/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
     <div class="">

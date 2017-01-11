@@ -9,9 +9,8 @@ sub register {
     # TODO: routeの名前にはプリフィックス RN_ (Route Name)を付ける
     $r->get('/')->to('example#welcome');
     $r->get('/regenerate_sid')->to('example#regenerate_sid');
-    $r->get('/logout')->to('example#logout');
-    $r->get('/login')->to('login#index');
-    $r->post('/login/attempt')->to('login#attempt');
+    $r->get('/login_example')->to('login_example#index');
+    $r->post('/login_example/attempt')->to('login_example#attempt');
 
     # Cart
     $r->get('/cart')->to('cart#index')->name('RN_cart');
@@ -23,9 +22,9 @@ sub register {
     $r->get('/register')->to('register#index')->name('RN_customer_create_account');
     $r->post('/register')->to('register#index')->name('RN_customer_create_account');
 
-    $r->get('/account/login')->to('account#login')->name('RN_customer_login');
-    $r->post('/account/login')->to('account#login_authen')->name('RN_customer_login_authen');
-    $r->get('/account/logout')->to('account#logout')->name('RN_customer_logout');
+    $r->get('/login')->to('account#login')->name('RN_customer_login');
+    $r->post('/login')->to('account#login_authen')->name('RN_customer_login_authen');
+    $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
     {
         # Required authorization
         my $account = $r->under('/account')->to('account#authorize');
