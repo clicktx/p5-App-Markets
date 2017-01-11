@@ -6,21 +6,21 @@ sub register {
 
     # Add hooks
     $self->add_action_hook(
-        'action_exsample_hook' => \&action_exsample_hook,
+        'action_example_hook' => \&action_example_hook,
         { default_priority => 500 }
     );
-    $self->add_action_hook( 'action_exsample_hook' => \&action_exsample_hook, );
+    $self->add_action_hook( 'action_example_hook' => \&action_example_hook, );
     $self->add_filter_hook(
-        'filter_exsample_hook' => \&filter_exsample_hook,
+        'filter_example_hook' => \&filter_example_hook,
         { default_priority => 10 }
     );
-    $self->add_filter_hook( 'filter_exsample_hook' => \&filter_exsample_hook, );
+    $self->add_filter_hook( 'filter_example_hook' => \&filter_example_hook, );
 
     # Add hook and remove.
-    $self->add_action_hook( 'action_exsample_hook' => \&rm_act_hook, );
-    $self->add_filter_hook( 'filter_exsample_hook' => \&rm_flt_hook, );
-    $self->rm_action_hook('action_exsample_hook', 'rm_act_hook');
-    $self->rm_filter_hook('filter_exsample_hook', 'rm_flt_hook');
+    $self->add_action_hook( 'action_example_hook' => \&rm_act_hook, );
+    $self->add_filter_hook( 'filter_example_hook' => \&rm_flt_hook, );
+    $self->rm_action_hook('action_example_hook', 'rm_act_hook');
+    $self->rm_filter_hook('filter_example_hook', 'rm_flt_hook');
 
     # Add routes
     my $r = $self->routes;
@@ -29,8 +29,8 @@ sub register {
 
 }
 
-sub action_exsample_hook { my ( $c, $arg ) = @_ }
-sub filter_exsample_hook { my ( $c, $arg ) = @_ }
+sub action_example_hook { my ( $c, $arg ) = @_ }
+sub filter_example_hook { my ( $c, $arg ) = @_ }
 sub rm_act_hook   { }
 sub rm_flt_hook   { }
 

@@ -49,7 +49,7 @@ Snake case or Package name.
     package Markets::Web::Controller::Example;
     use Mojo::Base 'Mojolicious::Controller';
 
-    sub exsample {
+    sub example {
         my $self = shift;
 
         my $data = $self->model('data-configure')->method;
