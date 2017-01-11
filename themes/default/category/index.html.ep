@@ -8,13 +8,7 @@
     <li><%= link_to 'category sports-soccer' => 'RN_category_name_base' => { category_name => 'sports-soccer'} %></li>
 </ul>
 
-<h1>Order</h1>
-<%= form_for 'RN_add_to_cart' => (method => 'POST', style => 'border:1px solid gray') => begin %>
-    <%= csrf_field %>
-    Quantity <%= text_field quantity => '1' %>
-    <%= submit_button 'Add to Cart' %>
-<% end %>
-
-<p>
-    <%= link_to 'top' => '/' %>
-</p>
+<h2>Products</h2>
+<ul>
+    <li><%= link_to 'product 1' => 'RN_product' => { product_id => 1} %></li>
+</ul>
