@@ -26,9 +26,8 @@ sub register {
     $r->get('/account/login')->to('account#login')->name('RN_customer_login');
     $r->post('/account/login')->to('account#login_authen')->name('RN_customer_login_authen');
     $r->get('/account/logout')->to('account#logout')->name('RN_customer_logout');
-
-    # 認証後
     {
+        # Required authorization
         my $account = $r->under('/account')->to('account#authorize');
         $account->get('/home')->to('account#home')->name('RN_customer_home');
         $account->get('/orders')->to('account#orders')->name('RN_customer_orders');
