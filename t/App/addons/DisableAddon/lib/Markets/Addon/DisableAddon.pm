@@ -5,11 +5,11 @@ sub register {
     my ( $self, $app, $conf ) = @_;
 
     $self->add_action_hook(
-        'action_exsample_hook' => \&action_exsample_hook,
+        'action_example_hook' => \&action_example_hook,
         { default_priority => 1 }
     );
     $self->add_filter_hook(
-        'filter_exsample_hook' => \&filter_exsample_hook,
+        'filter_example_hook' => \&filter_example_hook,
         { default_priority => 1 }
     );
 
@@ -20,11 +20,11 @@ sub register {
     $r->get('/')->to('test_addon-example#welcome');
 }
 
-sub action_exsample_hook {
+sub action_example_hook {
     my ( $c, $arg ) = @_;
 }
 
-sub filter_exsample_hook {
+sub filter_example_hook {
     my ( $c, $arg ) = @_;
 }
 

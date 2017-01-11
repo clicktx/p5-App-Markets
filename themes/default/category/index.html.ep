@@ -1,0 +1,14 @@
+% layout 'default';
+% title 'Category';
+
+<h1><%= stash 'title' %> <%= stash 'category_id' %><%= stash 'category_name' %></h1>
+<ul>
+    <li><%= link_to 'category2' => 'RN_category' => { category_id => 2} %></li>
+    <li><%= link_to 'category3' => 'RN_category' => { category_id => 3} %></li>
+    <li><%= link_to 'category sports-soccer' => 'RN_category_name_base' => { category_name => 'sports-soccer'} %></li>
+</ul>
+
+<h2>Products</h2>
+<ul>
+    <li><%= link_to 'product 1' => 'RN_product' => { product_id => 1} %></li>
+</ul>

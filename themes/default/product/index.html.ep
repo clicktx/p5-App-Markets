@@ -13,7 +13,3 @@
     Quantity <%= text_field quantity => '1' %>
     <%= submit_button 'Add to Cart' %>
 <% end %>
-
-<p>
-    <%= link_to 'top' => '/' %>
-</p>

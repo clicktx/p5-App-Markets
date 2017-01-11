@@ -1,4 +1,4 @@
-package Markets::Controller::Catalog::Login;
+package Markets::Controller::Catalog::LoginExample;
 use Mojo::Base 'Markets::Controller::Catalog';
 
 use Data::Dumper;
@@ -82,7 +82,7 @@ sub attempt {
     }
 
     $self->render(
-        template => 'login/index',
+        template => 'login_example/index',
 
         # login    => $form,
         # login => { name => 333, cart => [], item => [ {}, {} ], opt => {} }

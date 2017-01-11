@@ -57,24 +57,4 @@ sub signin {
     );
 }
 
-sub logout {
-    my $self = shift;
-    say "logout ... remove session";
-
-    my $session = $self->db_session;
-
-    # TODO: 後でlogicにする
-    # 2重ログアウトの対策
-    $session->_is_flushed(1);
-    if ( $session->_is_stored ) {
-        $session->expire;
-        $session->_is_flushed(0);
-    }
-
-    $self->render(
-        msg      => 'logout!',
-        template => 'example/welcome'
-    );
-}
-
 1;

@@ -1,1 +1,5 @@
 footer
+
+<ul>
+    <li><%= link_to 'top page' => '/' %></li>
+</ul>

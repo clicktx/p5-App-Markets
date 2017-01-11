@@ -9,7 +9,7 @@
     </div>
 % }
 <%= dumper form_errors %>
-<%= form_for '/login/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+<%= form_for '/login_example/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
     <div class="">
@@ -59,6 +59,3 @@
     </div>
     <input type="submit" value="<%= __ 'login' %>">
 <% end %>
-<p>
-    <%= link_to 'top' => url_for('/') %>
-</p>

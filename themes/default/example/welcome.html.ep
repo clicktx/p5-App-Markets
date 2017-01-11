@@ -20,6 +20,10 @@ learn more, you can also browse through the documentation
     <li><%= link_to Wishlist => 'RN_customer_wishlist' %></li>
 </ul>
 
+<h1>Login</h1>
+<p>
+    <%= link_to 'login example' => '/login_example' %>
+</p>
 <p>
     <%= link_to __('login') => 'RN_customer_login' %>
 </p>
@@ -60,5 +64,3 @@ learn more, you can also browse through the documentation
 <p>
     domain <%= __d 'my_addon', 'hello' %><%= __d 'my_addon', 'hello2' %>
 </p>
-
-<%= link_to 'top' => '/' %>
