@@ -5,8 +5,7 @@ sub register {
     my ( $self, $app ) = @_;
     my $r = $app->routes->namespaces( ['Markets::Controller::Catalog'] );
 
-    # Routes
-    # TODO: routeの名前にはプリフィックス RN_ (Route Name)を付ける
+    # Route Examples
     $r->get('/')->to('example#welcome');
     $r->get('/regenerate_sid')->to('example#regenerate_sid');
     $r->get('/login_example')->to('login_example#index');
