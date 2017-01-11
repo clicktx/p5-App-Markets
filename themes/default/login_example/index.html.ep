@@ -59,6 +59,3 @@
     </div>
     <input type="submit" value="<%= __ 'login' %>">
 <% end %>
-<p>
-    <%= link_to 'top' => url_for('/') %>
-</p>

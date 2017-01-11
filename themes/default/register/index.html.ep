@@ -15,5 +15,3 @@
 <p>
     Already have an account? <%= link_to 'Sign in' => 'RN_customer_login' %>
 </p>
-
-<%= link_to 'top' => '/' %>

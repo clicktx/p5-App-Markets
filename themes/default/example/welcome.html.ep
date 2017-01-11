@@ -64,5 +64,3 @@ learn more, you can also browse through the documentation
 <p>
     domain <%= __d 'my_addon', 'hello' %><%= __d 'my_addon', 'hello2' %>
 </p>
-
-<%= link_to 'top' => '/' %>
