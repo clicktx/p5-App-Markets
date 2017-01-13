@@ -9,7 +9,7 @@ sub register {
     $app->helper(
         const => sub {
             my ( $c, $key ) = @_;
-            my $constants = $c->app->config('constants');
+            my $constants = $c->stash('constants');
             unless ( $constants->{$key} ) {
                 $c->app->log->warn("const('$key') has no constant value.");
                 croak "const('$key') has no constant value.";

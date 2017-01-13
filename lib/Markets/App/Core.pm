@@ -72,7 +72,7 @@ sub initialize_app {
     my $constants = $self->model('data-constant')->load;
     $constants->{LINK_NAME} = 'リンク先';          # ex)
     $constants->{ROOT_URL}  = 'http://google.com/';    # ex)
-    $self->config( constants => $constants );
+    $self->defaults( constants => $constants );
 
     # $self->config( constants => $self->model('data-constant')->load );
 
