@@ -8,9 +8,11 @@ use Mojo::Loader ();
 sub register {
     my ( $self, $app, $conf ) = @_;
 
-    $app->helper( const    => sub { _const(@_) } );
-    $app->helper( service  => sub { _service(@_) } );
+    # Alias helpers
     $app->helper( template => sub { shift->stash( template => shift ) } );
+
+    $app->helper( const   => sub { _const(@_) } );
+    $app->helper( service => sub { _service(@_) } );
 }
 
 sub _const {
