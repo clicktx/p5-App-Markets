@@ -8,24 +8,19 @@ use Mojo::Loader ();
 sub register {
     my ( $self, $app, $conf ) = @_;
 
-    # Get constant value
-    $app->helper(
-        const => sub {
-            my ( $c, $key ) = @_;
-            my $constants = $c->stash('constants');
-            unless ( $constants->{$key} ) {
-                $c->app->log->warn("const('$key') has no constant value.");
-                croak "const('$key') has no constant value.";
-            }
-            return $constants->{$key};
-        }
-    );
-
-    # Set stash template
+    $app->helper( const    => sub { _const(@_) } );
+    $app->helper( service  => sub { _service(@_) } );
     $app->helper( template => sub { shift->stash( template => shift ) } );
+}
 
-    # Add service helper
-    $app->helper( service => sub { _service(@_) } );
+sub _const {
+    my ( $c, $key ) = @_;
+    my $constants = $c->stash('constants');
+    unless ( $constants->{$key} ) {
+        $c->app->log->warn("const('$key') has no constant value.");
+        croak "const('$key') has no constant value.";
+    }
+    return $constants->{$key};
 }
 
 sub _service {
@@ -71,12 +66,6 @@ Markets::DefaultHelpers - Default helpers plugin for Markets
 
 Get constant value.
 
-=head2 template
-
-    $c->template('hoge/index');
-
-Alias for $c->stash(template => 'hoge/index');
-
 =head2 service
 
     # Your service
@@ -94,6 +83,12 @@ Alias for $c->stash(template => 'hoge/index');
 
 
 Service Layer accessor.
+
+=head2 template
+
+    $c->template('hoge/index');
+
+Alias for $c->stash(template => 'hoge/index');
 
 =head1 AUTHOR
 
