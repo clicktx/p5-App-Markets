@@ -121,17 +121,23 @@ sub initialize_app {
     ) if -d $locale_dir;
 
     # Form Frameworks
-    $self->plugin( 'Markets::Form',
-        methods => { valid => 'form_valid', errors => 'form_errors' } );
+    $self->plugin( 'Markets::Form', methods => { valid => 'form_valid', errors => 'form_errors' } );
 
     # Add before/after action hook
+    # MEMO: Mojoliciou::Controllerの挙動を変更
     $self->hook(
         around_action => sub {
             my ( $next, $c, $action, $last ) = @_;
             return $next->() unless $last;
 
             say "hook! around_action from Markets::App::Core";    # debug
-            $c->process($action);
+            if ( $c->can('process') ) {
+                $c->process($action);
+            }
+            else {
+                $c->app->log->warn('Controller class shoud inheritance of "Markets::Controller".');
+                $c->$action;
+            }
         }
     );
 
@@ -140,7 +146,7 @@ sub initialize_app {
             my $c = shift;
 
             # Emit filter hook (ignore static files)
-            say "hook! before_routes";                            # debug
+            say "hook! before_routes";    # debug
             say "... This route is dynamic" unless ( $c->stash('mojo.static') );
             $c->app->filter_hook->emit( filter_form => $c )
               unless $c->stash('mojo.static');
