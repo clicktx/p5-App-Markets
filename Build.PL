@@ -33,6 +33,7 @@ my %args = (
         'Mojolicious::Plugin::FormFields' => '0.05',
         'Mojolicious::Plugin::LocaleTextDomainOO' => '0.04',
         'Mojolicious::Plugin::Model' => '0.07',
+        'Scalar::Util' => '1.47',
         'Server::Starter' => '0.32',
         'Session::Token' => '1.503',
         'Starlet' => '0.30',
