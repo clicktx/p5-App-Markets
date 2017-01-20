@@ -2,6 +2,7 @@ package Markets::DefaultHelpers;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use Carp qw/croak/;
+use Scalar::Util ();
 use Mojo::Util qw/camelize/;
 use Mojo::Loader ();
 
@@ -30,16 +31,17 @@ sub _service {
     $name = camelize($name) if $name =~ /^[a-z]/;
     Carp::croak 'Service name is empty.' unless $name;
 
-    my $service;
-    return $service if $service = $c->app->{service_class}{$name};
-
-    # Load module
-    my $class = camelize( $c->app->moniker ) . "::Service::" . $name;
-    _load_class($class);
-
-    $service = $class->new( controller => $c );
-    Scalar::Util::weaken( $service->{controller} );
-
+    my $service = $c->app->{service_class}{$name};
+    if ( Scalar::Util::blessed $service ) {
+        $service->controller($c);
+        Scalar::Util::weaken $service->{controller};
+    }
+    else {
+        my $class = "Markets::Service::" . $name;
+        _load_class($class);
+        $service = $class->new($c);
+        $c->app->{service_class}{$name} = $service;
+    }
     return $service;
 }
 
