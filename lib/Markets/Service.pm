@@ -42,7 +42,11 @@ a L<Mojolicious> object.
 
 =head2 controller
 
+    # Get controller
     my $c = $service->controller;
+
+    # Set controller
+    $service->controller($c);
 
 A reference back to the application that dispatched to this service, usually
 a L<Mojolicious::Controller> object.
