@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 sub register {
     my ( $self, $app ) = @_;
     my $r = $app->routes->namespaces( ['Markets::Controller::Catalog'] );
+    $app->config( history_disable_route_names => [ 'RN_customer_login', 'RN_example' ] );
 
     # Route Examples
     $r->get('/')->to('example#welcome');

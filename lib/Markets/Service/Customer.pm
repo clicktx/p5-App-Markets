@@ -1,35 +1,40 @@
 package Markets::Service::Customer;
 use Mojo::Base 'Markets::Service';
 
-# sub get_history { $_[1]->db_session->data('history') || [] }
-sub get_history { shift->controller->db_session->data('history') || [] }
+sub get_history {
+    my $self = shift;
+    my $c    = $self->controller;
+    $c->db_session->data('history') || [ $c->cookie_session('landing_page') ];
+}
 
+# getアクセスのみ履歴として保存する
 sub add_history {
     my $self = shift;
     my $c    = $self->controller;
 
+    # 履歴を残さないルート
+    my $route_name = $c->current_route;
+    say $route_name;    #debug
+    my $disable_route_names = $self->app->config('history_disable_route_names');
+    return if grep { $_ eq $route_name } @$disable_route_names;
+
     my $history = $self->get_history;
-
-# TODO: "RN_category_name_base" の場合はどうするか？
-# プレースホルダを使っているrouteには対応できないためURLを使う方が良い
-
-    my $url = $c->req->url->to_string;
+    my $url     = $c->req->url->to_string;
 
     # リロードじゃないか
-    # queryの扱いをどうするか？　-> 別pageとする
+    # query付きgetの扱いをどうするか？　-> 別pageとして扱う
     return if @$history and $history->[0] eq $url;
 
-    # 再訪問の場合は最新に
+    # 再訪問の場合は最新の履歴とする
     @$history = grep { $_ ne $url } @$history;
 
-    # 履歴数はmaxではないか
+    # 保存する最大履歴数
     # my $max = $self->app->const('CUSTOMER_HISTORY_MAX');
 
     unshift @$history, $url;
     use DDP;
-    say "   history is";
+    say "   history is";    # debug
     p $history;
-    $c->app->log->debug('aaa');
     $c->db_session->data( history => $history );
 }
 

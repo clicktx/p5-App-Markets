@@ -23,7 +23,10 @@ sub welcome {
 
     say "counter: " . $counter;      # debug
     say $self->const('ROOT_URL');    # debug
+    say "ServerSession: ";
     say Dumper $session->data;
+    say "CookieSession: ";
+    say Dumper $self->cookie_session;
 
     # use model
     $self->app->model('logic-base')->do;
