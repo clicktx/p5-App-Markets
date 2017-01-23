@@ -60,15 +60,24 @@ sub register {
         }
     );
 
-    $app->hook(
-        after_dispatch => sub {
-            my $c = shift;
-            say "hook! after_dispatch from plugin session";          # debug
-            return if $c->stash('mojo.static');
+    # $app->hook(
+    #     after_dispatch => sub {
+    #         my $c = shift;
+    #         say "hook! after_dispatch from plugin session";          # debug
+    #         return if $c->stash('mojo.static');
+    #
+    #         # Dynamic route only
+    #         say "   ... This route is dynamic";                      # debug
+    #         say "   ... session flush";                              # debug
+    #         $c->stash($stash_key)->flush;
+    #     }
+    # );
 
-            # Dynamic route only
-            say "   ... This route is dynamic";                      # debug
-            say "   ... session flush";                              # debug
+    $app->hook(
+        after_action => sub {
+            my $c = shift;
+            say "hook! after_action from plugin session";    # debug
+            say "   ... session flush";                      # debug
             $c->stash($stash_key)->flush;
         }
     );

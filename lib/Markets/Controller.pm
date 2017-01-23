@@ -37,7 +37,6 @@ sub action_before {
     $self->app->plugins->emit_hook( before_action => $self );
 }
 
-# TODO:sessionのflush後に呼ばれるため注意
 sub action_after {
     my $self = shift;
     say "C::action_after()";
