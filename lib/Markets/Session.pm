@@ -79,7 +79,7 @@ sub register {
 
 sub _create_session {
     my ( $c, $session ) = @_;
-    my $landing_page_on_cookie = $c->session('landing_page');
+    my $landing_page_on_cookie = $c->cookie_session('landing_page');
 
     # cookieに対応している場合のみセッション生成する
     # cookieが無いときはlanding pageのurlを保存
@@ -91,7 +91,7 @@ sub _create_session {
     else {
         say "   ... created cookie landing_page.";    # debug
         my $landing_page = $c->req->url->to_string;
-        $c->session( landing_page => $landing_page );
+        $c->cookie_session( landing_page => $landing_page );
     }
 }
 
