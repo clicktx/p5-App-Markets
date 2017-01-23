@@ -4,13 +4,19 @@ use Mojo::Base 'Markets::Service';
 sub get_history {
     my $self = shift;
     my $c    = $self->controller;
-    $c->db_session->data('history') || [ $c->session('landing_page') ];
+    $c->db_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
 # getアクセスのみ履歴として保存する
 sub add_history {
     my $self = shift;
     my $c    = $self->controller;
+
+    # 履歴を残さないルート
+    my $route_name = $c->current_route;
+    say $route_name;    #debug
+    my $disable_route_names = $self->app->config('history_disable_route_names');
+    return if grep { $_ eq $route_name } @$disable_route_names;
 
     my $history = $self->get_history;
     my $url     = $c->req->url->to_string;
