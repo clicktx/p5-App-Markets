@@ -1,7 +1,11 @@
 package Markets::Service::Customer;
 use Mojo::Base 'Markets::Service';
 
-sub get_history { shift->controller->db_session->data('history') || [] }
+sub get_history {
+    my $self = shift;
+    my $c    = $self->controller;
+    $c->db_session->data('history') || [ $c->session('landing_page') ];
+}
 
 # getアクセスのみ履歴として保存する
 sub add_history {
