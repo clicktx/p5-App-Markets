@@ -12,6 +12,7 @@ sub process {
     $self->action_before();
     $self->$action();
     $self->action_after();
+    $self->finalize();
 }
 
 sub csrf_protect {
@@ -42,6 +43,8 @@ sub action_after {
     say "C::action_after()";
     $self->app->plugins->emit_hook( after_action => $self );
 }
+
+sub finalize { }
 
 1;
 __END__
