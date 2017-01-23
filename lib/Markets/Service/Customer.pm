@@ -1,7 +1,7 @@
 package Markets::Service::Customer;
 use Mojo::Base 'Markets::Service';
 
-sub get_history {
+sub load_history {
     my $self = shift;
     my $c    = $self->controller;
     $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
@@ -18,7 +18,7 @@ sub add_history {
     my $disable_route_names = $self->app->config('history_disable_route_names');
     return if grep { $_ eq $route_name } @$disable_route_names;
 
-    my $history = $self->get_history;
+    my $history = $self->load_history;
     my $url     = $c->req->url->to_string;
 
     # リロードじゃないか
