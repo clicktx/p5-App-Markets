@@ -11,6 +11,7 @@ sub register {
 
     # Alias helpers
     $app->helper( template => sub { shift->stash( template => shift ) } );
+    $app->helper( cookie_session => sub { shift->session(@_) } );
 
     $app->helper( const   => sub { _const(@_) } );
     $app->helper( service => sub { _service(@_) } );
