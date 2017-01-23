@@ -41,7 +41,7 @@ learn more, you can also browse through the documentation
 </p>
 
 <p>
-    Your visit count: <%= db_session->data('counter') %>
+    Your visit count: <%= server_session->data('counter') %>
 </p>
 
 <p>

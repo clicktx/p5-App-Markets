@@ -29,7 +29,7 @@ Markets::Model::Account
 
 =head2 remove_session
 
-    my $session = $c->db_session;
+    my $session = $c->server_session;
     my $bool = $c->model('account')->remove_session($session);
 
 return C<boolean> value.

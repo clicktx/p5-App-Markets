@@ -4,7 +4,7 @@ use Mojo::Base 'Markets::Service';
 sub get_history {
     my $self = shift;
     my $c    = $self->controller;
-    $c->db_session->data('history') || [ $c->cookie_session('landing_page') ];
+    $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
 # getアクセスのみ履歴として保存する
@@ -35,7 +35,7 @@ sub add_history {
     use DDP;
     say "   history is";    # debug
     p $history;
-    $c->db_session->data( history => $history );
+    $c->server_session->data( history => $history );
 }
 
 1;
