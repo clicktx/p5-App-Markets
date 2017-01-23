@@ -46,8 +46,8 @@ Markets::Model::Data::Configure
 App Controller.
 Snake case or Package name.
 
-    package Markets::Web::Controller::Example;
-    use Mojo::Base 'Mojolicious::Controller';
+    package Markets::Controller::Catalog::Example;
+    use Mojo::Base 'Markets::Controller::Catalog';
 
     sub example {
         my $self = shift;

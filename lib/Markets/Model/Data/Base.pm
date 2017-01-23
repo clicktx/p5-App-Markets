@@ -46,8 +46,8 @@ Your app
 App Controller.
 Snake case or Module name.
 
-    package Markets::Web::Controller::Example;
-    use Mojo::Base 'Mojolicious::Controller';
+    package Markets::Controller::Catalog::Example;
+    use Mojo::Base 'Markets::Controller::Catalog';
 
     sub welcome {
         my $self = shift;

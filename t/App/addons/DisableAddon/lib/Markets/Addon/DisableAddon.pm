@@ -29,7 +29,7 @@ sub filter_example_hook {
 }
 
 package Markets::Addon::TestAddon::Example;
-use Mojo::Base 'Mojolicious::Controller';
+use Mojo::Base 'Markets::Controller';
 
 sub welcome { shift->render( text => 'welcome' ) }
 1;
