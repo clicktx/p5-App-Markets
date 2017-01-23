@@ -1,12 +1,6 @@
 package Markets::Service::Customer;
 use Mojo::Base 'Markets::Service';
 
-sub load_history {
-    my $self = shift;
-    my $c    = $self->controller;
-    $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
-}
-
 # getアクセスのみ履歴として保存する
 sub add_history {
     my $self = shift;
@@ -38,6 +32,12 @@ sub add_history {
     $c->server_session->data( history => $history );
 }
 
+sub load_history {
+    my $self = shift;
+    my $c    = $self->controller;
+    $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
+}
+
 1;
 __END__
 
@@ -50,6 +50,18 @@ Markets::Model::Service::Customer - Application Service Layer
 =head1 DESCRIPTION
 
 =head1 METHODS
+
+=head2 add_history
+
+    # $app->config('history_disable_route_names') is unsave list.
+    $service->add_history;
+
+    Add history current URL for server session.
+    Unsave list setting in L<Markets::Routes::Catalog>.
+
+=head2 load_history
+
+    $service->load_history;
 
 =head1 AUTHOR
 
