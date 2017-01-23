@@ -14,7 +14,7 @@ sub register {
 
     # Helpers
     $app->helper( server_session => sub { shift->stash($stash_key) } );
-    $app->helper( cart       => sub { shift->stash($stash_key)->{cart} } );
+    $app->helper( cart           => sub { shift->stash($stash_key)->{cart} } );
 
     # Hooks
     $app->hook(
@@ -22,12 +22,9 @@ sub register {
             my $c = shift;
 
             say "hook! before_dispatch from plugin session";    # debug
-            my $session = Markets::Session::ServerSession->new(
-                %$args,
-                store => Markets::Session::Store::Teng->new(
-                    db => $app->db
-                )
-            );
+            my $session =
+              Markets::Session::ServerSession->new( %$args,
+                store => Markets::Session::Store::Teng->new( db => $app->db ) );
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
             $c->stash( $stash_key => $session, );
