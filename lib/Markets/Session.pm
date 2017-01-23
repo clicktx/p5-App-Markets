@@ -9,11 +9,11 @@ sub register {
     my ( $self, $app, $args ) = @_;
     $args ||= {};
 
-    my $stash_key = delete $args->{stash_key} || 'markets.session';
+    my $stash_key = delete $args->{stash_key} || 'markets.server_session';
     my $init = delete $args->{init};
 
     # Helpers
-    $app->helper( db_session => sub { shift->stash($stash_key) } );
+    $app->helper( server_session => sub { shift->stash($stash_key) } );
     $app->helper( cart       => sub { shift->stash($stash_key)->{cart} } );
 
     # Hooks
