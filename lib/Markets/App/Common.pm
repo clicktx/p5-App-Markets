@@ -1,4 +1,4 @@
-package Markets::App::Core;
+package Markets::App::Common;
 use Mojo::Base 'Mojolicious';
 
 use File::Spec;
@@ -130,7 +130,7 @@ sub initialize_app {
             my ( $next, $c, $action, $last ) = @_;
             return $next->() unless $last;
 
-            say "hook! around_action from Markets::App::Core";    # debug
+            say "hook! around_action from Markets::App::Common";    # debug
             if ( $c->can('process') ) {
                 $c->process($action);
             }
