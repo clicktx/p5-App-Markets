@@ -62,13 +62,6 @@ sub initialize_app {
       [qw /Markets::DB::Schema::Session Markets::DB::Schema::Addons/];
     $self->db->merge_schema($more_schema_classes_from_db);
 
-    # Application defaults
-    $self->config(
-        app_defaults => {
-            ADDONS_DIR => 'addons',
-        }
-    );
-
     # Models
     $self->plugin( Model => { namespaces => ['Markets::Model'] } );
 

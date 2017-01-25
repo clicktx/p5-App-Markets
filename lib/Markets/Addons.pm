@@ -10,6 +10,7 @@ use Mojolicious::Routes;
 use Markets::Util;
 use constant { PRIORITY_DEFAULT => '100' };
 
+has dir         => sub { shift->app->pref('addons_dir') };
 has namespaces  => sub { [] };
 has action_hook => sub { Markets::Addons::ActionHook->new };
 has filter_hook => sub { Markets::Addons::FilterHook->new };
@@ -19,7 +20,7 @@ sub _on { shift->on(@_) }
 
 sub get_all {
     my $self       = shift;
-    my $addons_dir = $self->app->config('app_defaults')->{ADDONS_DIR};
+    my $addons_dir = $self->dir;
     my $rel_dir    = Mojo::Home->new( $self->app->home )->rel_dir($addons_dir);
     my @all_dir    = Markets::Util::directories($rel_dir);
     my @all_addons = map { "Markets::Addon::" . $_ } @all_dir;
@@ -141,7 +142,7 @@ sub off_routes {
 sub _push_inc_path {
     my ( $self, $name ) = @_;
     $name =~ s/Markets::Addon:://;
-    my $addons_dir = $self->app->config('app_defaults')->{ADDONS_DIR};
+    my $addons_dir = $self->dir;
     my $path       = Mojo::Home->new( $self->app->home )->rel_dir("$addons_dir/$name/lib");
     push @INC, $path;
 }
