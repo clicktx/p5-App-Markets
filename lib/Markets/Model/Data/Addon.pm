@@ -7,9 +7,9 @@ sub configure {
 
     my @rows = $db->search_by_sql(
         q{
-            SELECT addons.id, addons.name, addons.is_enabled, GROUP_CONCAT(addon_hooks.hook_name) AS hooks , GROUP_CONCAT(addon_hooks.priority) AS priorities
+            SELECT addons.id, addons.name, addons.is_enabled, GROUP_CONCAT(addons_hooks.hook_name) AS hooks , GROUP_CONCAT(addons_hooks.priority) AS priorities
             FROM addons
-            LEFT JOIN addon_hooks on addons.id = addon_hooks.addon_id
+            LEFT JOIN addons_hooks on addons.id = addons_hooks.addon_id
             GROUP BY addons.id
         },
     );
