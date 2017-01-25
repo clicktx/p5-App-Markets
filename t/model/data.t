@@ -12,8 +12,8 @@ subtest 'Model Data Base' => sub {
     ok( ref $result, 'construct.' );
 };
 
-subtest 'constants' => sub {
-    my $result = $app->model('Data::Constant')->load;
+subtest 'preferences' => sub {
+    my $result = $app->model('data')->load_pref;
     isa_ok( $result, 'HASH' );
 };
 
