@@ -14,6 +14,7 @@ sub register {
     $app->helper( cookie_session => sub { shift->session(@_) } );
 
     $app->helper( const   => sub { _const(@_) } );
+    $app->helper( pref    => sub { _pref(@_) } );
     $app->helper( service => sub { _service(@_) } );
 }
 
@@ -25,6 +26,17 @@ sub _const {
         croak "const('$key') has no constant value.";
     }
     return $constants->{$key};
+}
+
+sub _pref {
+    my ( $c, $key ) = @_;
+    my $pref = $c->stash('pref');
+    unless ( $pref->{$key} ) {
+        my $e = "pref('$key') has not value.";
+        $c->app->log->fatal($e);
+        croak $e;
+    }
+    return $pref->{$key};
 }
 
 sub _service {

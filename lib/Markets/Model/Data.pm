@@ -1,6 +1,18 @@
 package Markets::Model::Data;
 use Mojo::Base 'MojoX::Model';
 
+sub load_pref {
+    my $self = shift;
+    my @rows = $self->app->db->search( 'preferences', {} );
+
+    my $pref = {};
+    foreach my $row (@rows) {
+        my $data = $row->get_columns;
+        $pref->{ $data->{key} } = $data->{value} ? $data->{value} : $data->{default_value};
+    }
+    return $pref;
+}
+
 1;
 __END__
 
