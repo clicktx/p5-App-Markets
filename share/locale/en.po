@@ -50,7 +50,7 @@ msgstr "Must be between {min} and {max} symbols"
 
 # preference summary
 msgid "pref.summary.admin_uri_prefix"
-msgsrt ""
+msgstr "preference summary for admin_uri_prefix"
 
 msgid "pref.summary.addons_dir"
-msgsrt ""
+msgstr "preference summary for addons_dir"
