@@ -23,7 +23,7 @@ sub add_history {
     @$history = grep { $_ ne $url } @$history;
 
     # 保存する最大履歴数
-    # my $max = $self->app->const('CUSTOMER_HISTORY_MAX');
+    # my $max = $self->app->pref('CUSTOMER_HISTORY_MAX');
 
     unshift @$history, $url;
     use DDP;

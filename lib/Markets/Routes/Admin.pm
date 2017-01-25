@@ -3,7 +3,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
     my ( $self, $app ) = @_;
-    my $r = $app->routes->any( $app->const('ADMIN_PAGE_PREFIX') )
+    my $r = $app->routes->any( $app->pref('admin_uri_prefix') )
       ->to( namespace => 'Markets::Controller::Admin' );
 
     # Routes for Admin

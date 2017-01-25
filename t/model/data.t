@@ -9,11 +9,11 @@ my $app = $t->app;
 
 subtest 'Model Data Base' => sub {
     my $result = $app->model('Data::Base')->new;
-    ok( ref $result, 'construct.' );
+    ok( ref $result, 'right' );
 };
 
-subtest 'constants' => sub {
-    my $result = $app->model('Data::Constant')->load;
+subtest 'preferences' => sub {
+    my $result = $app->model('data')->load_pref;
     isa_ok( $result, 'HASH' );
 };
 

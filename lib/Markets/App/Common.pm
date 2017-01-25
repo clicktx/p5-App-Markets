@@ -1,4 +1,4 @@
-package Markets::App::Core;
+package Markets::App::Common;
 use Mojo::Base 'Mojolicious';
 
 use File::Spec;
@@ -55,12 +55,12 @@ sub initialize_app {
     my $config_path = $home->rel_file("config/$mode.conf");
     $self->plugin( Config => { file => $config_path } );
 
-    # Application defaults
-    $self->config(
-        app_defaults => {
-            ADDONS_DIR => 'addons',
-        }
-    );
+    # Load schema.
+    # load config after. option schema loading.
+    # TODO: issue #6 自動で読み込むようにする
+    my $more_schema_classes_from_db =
+      [qw /Markets::DB::Schema::Session Markets::DB::Schema::Addons/];
+    $self->db->merge_schema($more_schema_classes_from_db);
 
     # Models
     $self->plugin( Model => { namespaces => ['Markets::Model'] } );
@@ -68,30 +68,18 @@ sub initialize_app {
     # Default Helpers
     $self->plugin('Markets::DefaultHelpers');
 
-    # constants
-    my $constants = $self->model('data-constant')->load;
-    $constants->{LINK_NAME} = 'リンク先';          # ex)
-    $constants->{ROOT_URL}  = 'http://google.com/';    # ex)
-    $self->defaults( constants => $constants );
-
-    # $self->config( constants => $self->model('data-constant')->load );
-
-    # load config after. option schema loading.
-    # TODO: issue #6 自動で読み込むようにする
-    my $more_schema_classes_from_db =
-      [qw /Markets::DB::Schema::Session Markets::DB::Schema::Addons/];
-    $self->db->merge_schema($more_schema_classes_from_db);
+    # Preferences
+    my $pref = $self->model('data')->load_pref;
+    $pref->{LINK_NAME} = 'リンク先';               # e.g.
+    $pref->{ROOT_URL}  = 'http://google.com/';         # e.g.
+    $self->defaults( pref => $pref );
 
     # default cookie
     $self->sessions->cookie_name('session');
-    $self->secrets( ['aaabbbccc'] );    #           change this!
+    $self->secrets( ['aaabbbccc'] );                   #           change this!
 
     # session
-    $self->plugin(
-        'Markets::Session' => {
-            expires_delta => 3600,
-        }
-    );
+    $self->plugin( 'Markets::Session' => { expires_delta => 3600 } );
 
     # locale
     $ENV{MOJO_I18N_DEBUG} = $mode eq 'development' ? 1 : 0;
@@ -99,12 +87,12 @@ sub initialize_app {
         'Markets::I18N',
         {
             # file_type => 'po',    # or 'mo'. default: po
-            default   => 'en',               # default en
+            default   => 'en',                         # default en
             languages => [qw( en ja de )],
 
             # Mojolicious::Plugin::I18N like options
-            no_header_detect  => 1,                   # option. default: false
-            support_url_langs => [qw( en ja de )],    # option
+            no_header_detect  => 1,                    # option. default: false
+            support_url_langs => [qw( en ja de )],     # option
         }
     );
 
@@ -130,7 +118,7 @@ sub initialize_app {
             my ( $next, $c, $action, $last ) = @_;
             return $next->() unless $last;
 
-            say "hook! around_action from Markets::App::Core";    # debug
+            say "hook! around_action from Markets::App::Common";    # debug
             if ( $c->can('process') ) {
                 $c->process($action);
             }

@@ -39,29 +39,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `markets`.`constants`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `markets`.`constants` (
-  `name` VARCHAR(50) NOT NULL COMMENT '',
-  `default_value` TEXT NULL COMMENT '',
-  `value` TEXT NULL COMMENT '',
-  `summary` TEXT NULL COMMENT '',
-  `label` INT NULL COMMENT '',
-  `position` INT NULL COMMENT '',
-  PRIMARY KEY (`name`)  COMMENT '')
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `markets`.`constant_labels`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `markets`.`constant_labels` (
-  `constant_label_id` INT NOT NULL COMMENT '',
-  `name` VARCHAR(255) NOT NULL COMMENT '',
-  PRIMARY KEY (`constant_label_id`)  COMMENT '');
-
-
--- -----------------------------------------------------
 -- Table `markets`.`addons`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `markets`.`addons` (
@@ -74,20 +51,34 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `markets`.`addon_hooks`
+-- Table `markets`.`addons_hooks`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `markets`.`addon_hooks` (
+CREATE TABLE IF NOT EXISTS `markets`.`addons_hooks` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
   `addon_id` INT UNSIGNED NOT NULL COMMENT '',
   `hook_name` VARCHAR(45) NOT NULL COMMENT '',
   `priority` INT UNSIGNED NOT NULL DEFAULT 100 COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '',
-  INDEX `fk_addon_hooks_addons_idx` (`addon_id` ASC)  COMMENT '',
-  CONSTRAINT `fk_addon_hooks_addons`
+  INDEX `fk_addons_hooks_addons_idx` (`addon_id` ASC)  COMMENT '',
+  CONSTRAINT `fk_addons_hooks_addons`
     FOREIGN KEY (`addon_id`)
     REFERENCES `markets`.`addons` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `markets`.`preferences`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `markets`.`preferences` (
+  `key` VARCHAR(50) NOT NULL COMMENT '',
+  `value` TEXT NULL COMMENT '',
+  `default_value` TEXT NULL COMMENT '',
+  `summary` TEXT NULL COMMENT '',
+  `label` INT NULL COMMENT '',
+  `position` INT NULL COMMENT '',
+  PRIMARY KEY (`key`)  COMMENT '')
 ENGINE = InnoDB;
 
 

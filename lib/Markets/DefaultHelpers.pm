@@ -13,18 +13,19 @@ sub register {
     $app->helper( template => sub { shift->stash( template => shift ) } );
     $app->helper( cookie_session => sub { shift->session(@_) } );
 
-    $app->helper( const   => sub { _const(@_) } );
+    $app->helper( pref    => sub { _pref(@_) } );
     $app->helper( service => sub { _service(@_) } );
 }
 
-sub _const {
+sub _pref {
     my ( $c, $key ) = @_;
-    my $constants = $c->stash('constants');
-    unless ( $constants->{$key} ) {
-        $c->app->log->warn("const('$key') has no constant value.");
-        croak "const('$key') has no constant value.";
+    my $pref = $c->stash('pref');
+    unless ( $pref->{$key} ) {
+        my $e = "pref('$key') has not value.";
+        $c->app->log->fatal($e);
+        croak $e;
     }
-    return $constants->{$key};
+    return $pref->{$key};
 }
 
 sub _service {
@@ -65,11 +66,11 @@ Markets::DefaultHelpers - Default helpers plugin for Markets
 
 =head1 HELPERS
 
-=head2 const
+=head2 pref
 
-    my $hoge = $c->const('hoge');
+    my $hoge = $c->pref('hoge');
 
-Get constant value.
+Get preference.
 
 =head2 service
 

@@ -22,7 +22,7 @@ sub welcome {
     $cart_data->{new}++;
 
     say "counter: " . $counter;      # debug
-    say $self->const('ROOT_URL');    # debug
+    say $self->pref('ROOT_URL');    # debug
     say "ServerSession: ";
     say Dumper $session->data;
     say "CookieSession: ";
