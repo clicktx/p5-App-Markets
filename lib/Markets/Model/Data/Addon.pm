@@ -1,15 +1,15 @@
-package Markets::Model::Data::Configure;
+package Markets::Model::Data::Addon;
 use Mojo::Base 'MojoX::Model';
 
-sub addons {
+sub configure {
     my $self = shift;
     my $db   = $self->app->db;
 
     my @rows = $db->search_by_sql(
         q{
-            SELECT addons.id, addons.name, addons.is_enabled, GROUP_CONCAT(addon_hooks.hook_name) AS hooks , GROUP_CONCAT(addon_hooks.priority) AS priorities
+            SELECT addons.id, addons.name, addons.is_enabled, GROUP_CONCAT(addons_hooks.hook_name) AS hooks , GROUP_CONCAT(addons_hooks.priority) AS priorities
             FROM addons
-            LEFT JOIN addon_hooks on addons.id = addon_hooks.addon_id
+            LEFT JOIN addons_hooks on addons.id = addons_hooks.addon_id
             GROUP BY addons.id
         },
     );
@@ -39,7 +39,7 @@ __END__
 
 =head1 NAME
 
-Markets::Model::Data::Configure
+Markets::Model::Data::Addon
 
 =head1 SYNOPSIS
 
@@ -52,19 +52,19 @@ Snake case or Package name.
     sub example {
         my $self = shift;
 
-        my $data = $self->model('data-configure')->method;
+        my $data = $self->model('data-addon')->method;
         # or
-        my $data = $self->model('Data::Configure')->method;
+        my $data = $self->model('Data::Addon')->method;
     }
 
 =head1 DESCRIPTION
 
 =head1 METHODS
 
-=head2 addons
+=head2 configure
 
     # Loading indtalled Addons
-    my $addon_config = $app->model('data-configure')->addons;
+    my $addon_config = $app->model('data-addon')->configure;
 
 load addon preferences from DB.
 

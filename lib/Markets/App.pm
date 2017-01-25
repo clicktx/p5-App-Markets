@@ -40,7 +40,7 @@ sub startup {
       for qw(Markets::View::EPRenderer Markets::View::EPLRenderer Markets::View::DOM);
 
     # Loading installed Addons config
-    my $addons_config = $self->model('data-configure')->addons;
+    my $addons_config = $self->model('data-addon')->configure;
 
     # Initialize all addons
     $self->addons->init($addons_config) unless $ENV{MOJO_ADDON_TEST_MODE};

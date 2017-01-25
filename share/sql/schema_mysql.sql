@@ -74,16 +74,16 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `markets`.`addon_hooks`
+-- Table `markets`.`addons_hooks`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `markets`.`addon_hooks` (
+CREATE TABLE IF NOT EXISTS `markets`.`addons_hooks` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
   `addon_id` INT UNSIGNED NOT NULL COMMENT '',
   `hook_name` VARCHAR(45) NOT NULL COMMENT '',
   `priority` INT UNSIGNED NOT NULL DEFAULT 100 COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '',
-  INDEX `fk_addon_hooks_addons_idx` (`addon_id` ASC)  COMMENT '',
-  CONSTRAINT `fk_addon_hooks_addons`
+  INDEX `fk_addons_hooks_addons_idx` (`addon_id` ASC)  COMMENT '',
+  CONSTRAINT `fk_addons_hooks_addons`
     FOREIGN KEY (`addon_id`)
     REFERENCES `markets`.`addons` (`id`)
     ON DELETE CASCADE

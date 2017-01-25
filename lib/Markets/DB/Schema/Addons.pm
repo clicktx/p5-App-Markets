@@ -10,7 +10,7 @@ table {
 };
 
 table {
-    name    'addon_hooks';
+    name    'addons_hooks';
     pk      'id';
     columns qw( id addon_id hook_name priority );
 };
