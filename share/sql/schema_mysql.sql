@@ -91,6 +91,20 @@ CREATE TABLE IF NOT EXISTS `markets`.`addons_hooks` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `markets`.`preferences`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `markets`.`preferences` (
+  `key` VARCHAR(50) NOT NULL COMMENT '',
+  `value` TEXT NULL COMMENT '',
+  `default_value` TEXT NULL COMMENT '',
+  `summary` TEXT NULL COMMENT '',
+  `label` INT NULL COMMENT '',
+  `position` INT NULL COMMENT '',
+  PRIMARY KEY (`key`)  COMMENT '')
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
