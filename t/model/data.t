@@ -9,7 +9,7 @@ my $app = $t->app;
 
 subtest 'Model Data Base' => sub {
     my $result = $app->model('Data::Base')->new;
-    ok( ref $result, 'construct.' );
+    ok( ref $result, 'right' );
 };
 
 subtest 'preferences' => sub {
