@@ -73,14 +73,14 @@ sub register {
     #     }
     # );
 
-    $app->hook(
-        after_action => sub {
-            my $c = shift;
-            say "hook! after_action from plugin session";    # debug
-            say "   ... session flush";                      # debug
-            $c->stash($stash_key)->flush;
-        }
-    );
+    # $app->hook(
+    #     after_action => sub {
+    #         my $c = shift;
+    #         say "hook! after_action from plugin session";    # debug
+    #         say "   ... session flush";                      # debug
+    #         $c->stash($stash_key)->flush;
+    #     }
+    # );
 }
 
 sub _create_session {

@@ -44,7 +44,13 @@ sub action_after {
     $self->app->plugins->emit_hook( after_action => $self );
 }
 
-sub finalize { }
+sub finalize {
+    my $self = shift;
+    say "C::finalize()";
+
+    $self->server_session->flush;
+    say "   ... session flush";    # debug
+}
 
 1;
 __END__
