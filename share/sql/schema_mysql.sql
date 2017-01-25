@@ -39,29 +39,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `markets`.`constants`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `markets`.`constants` (
-  `name` VARCHAR(50) NOT NULL COMMENT '',
-  `default_value` TEXT NULL COMMENT '',
-  `value` TEXT NULL COMMENT '',
-  `summary` TEXT NULL COMMENT '',
-  `label` INT NULL COMMENT '',
-  `position` INT NULL COMMENT '',
-  PRIMARY KEY (`name`)  COMMENT '')
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `markets`.`constant_labels`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `markets`.`constant_labels` (
-  `constant_label_id` INT NOT NULL COMMENT '',
-  `name` VARCHAR(255) NOT NULL COMMENT '',
-  PRIMARY KEY (`constant_label_id`)  COMMENT '');
-
-
--- -----------------------------------------------------
 -- Table `markets`.`addons`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `markets`.`addons` (

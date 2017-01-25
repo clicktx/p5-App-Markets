@@ -68,12 +68,6 @@ sub initialize_app {
     # Default Helpers
     $self->plugin('Markets::DefaultHelpers');
 
-    # constants
-    my $constants = $self->model('data-constant')->load;
-    $constants->{LINK_NAME} = 'リンク先';          # ex)
-    $constants->{ROOT_URL}  = 'http://google.com/';    # ex)
-    $self->defaults( constants => $constants );
-
     # Preferences
     my $pref = $self->model('data')->load_pref;
     $pref->{LINK_NAME} = 'リンク先';               # e.g.
