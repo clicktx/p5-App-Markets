@@ -10,8 +10,8 @@ sub register {
     my ( $self, $app, $conf ) = @_;
 
     # Alias helpers
-    $app->helper( template => sub { shift->stash( template => shift ) } );
     $app->helper( cookie_session => sub { shift->session(@_) } );
+    $app->helper( template => sub { shift->stash( template => shift ) } );
 
     $app->helper( pref    => sub { _pref(@_) } );
     $app->helper( service => sub { _service(@_) } );
@@ -65,6 +65,13 @@ Markets::DefaultHelpers - Default helpers plugin for Markets
 =head1 DESCRIPTION
 
 =head1 HELPERS
+
+=head2 cookie_session
+
+    $c->cookie_session( key => 'value' );
+    my $value = $c->cookie_session('key');
+
+Alias for $c->session;
 
 =head2 pref
 
