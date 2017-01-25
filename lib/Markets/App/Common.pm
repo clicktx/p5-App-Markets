@@ -55,6 +55,13 @@ sub initialize_app {
     my $config_path = $home->rel_file("config/$mode.conf");
     $self->plugin( Config => { file => $config_path } );
 
+    # Load schema.
+    # load config after. option schema loading.
+    # TODO: issue #6 自動で読み込むようにする
+    my $more_schema_classes_from_db =
+      [qw /Markets::DB::Schema::Session Markets::DB::Schema::Addons/];
+    $self->db->merge_schema($more_schema_classes_from_db);
+
     # Application defaults
     $self->config(
         app_defaults => {
@@ -75,12 +82,6 @@ sub initialize_app {
     $self->defaults( constants => $constants );
 
     # $self->config( constants => $self->model('data-constant')->load );
-
-    # load config after. option schema loading.
-    # TODO: issue #6 自動で読み込むようにする
-    my $more_schema_classes_from_db =
-      [qw /Markets::DB::Schema::Session Markets::DB::Schema::Addons/];
-    $self->db->merge_schema($more_schema_classes_from_db);
 
     # default cookie
     $self->sessions->cookie_name('session');
