@@ -1,5 +1,5 @@
 requires 'Scalar::Util',                            '1.47';
-requires 'Mojolicious',                             '== 7.13';
+requires 'Mojolicious',                             '== 7.20';
 requires 'File::Find::Rule',                        '0.34';
 requires 'Mojolicious::Plugin::Model',              '0.07';
 requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';

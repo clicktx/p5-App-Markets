@@ -2,14 +2,15 @@ package Markets::View::EPLRenderer;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use Mojo::Template;
-use Mojo::Util qw(encode md5_sum monkey_patch decode slurp);
+use Mojo::Util qw(encode md5_sum monkey_patch decode);
+use Mojo::File;
 use Carp 'croak';
 
 monkey_patch 'Mojo::Template', render_file_after_hook => sub {
     my ( $self, $c, $template_file_path ) = ( shift, shift, shift );
 
     $self->name($template_file_path) unless defined $self->{name};
-    my $template_source = slurp $template_file_path;
+    my $template_source = Mojo::File::path($template_file_path)->slurp;
 
     # emit filter. This filter was used to addons.
     $c->app->action_hook->emit(
