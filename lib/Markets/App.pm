@@ -2,6 +2,7 @@ package Markets::App;
 use Mojo::Base 'Markets::App::Common';
 use Markets::Util qw/directories/;
 use Mojo::Util qw/files/;
+use Mojo::File;
 
 # This method will run once at server start
 sub startup {
@@ -25,7 +26,13 @@ sub startup {
     ) if -d $theme_locale_dir;
 
     # [WIP] Merge lexicon
-    my @locale_files = files "$theme_locale_dir";    # map {say $_}@locale_files;
+    my $locale_files = Mojo::File->new($theme_locale_dir)->list;    # return Mojo::Collection Object
+    # $locale_files->each(
+    #     sub {
+    #         my ( $e, $num ) = @_;
+    #         say "$num: $e";
+    #     }
+    # );
     my $instance = Locale::TextDomain::OO::Singleton::Lexicon->instance;
     eval {
         $instance->merge_lexicon( 'en::', 'en:theme:', 'en::' );    # [WIP]

@@ -144,7 +144,9 @@ sub _push_inc_path {
     my ( $self, $name ) = @_;
     $name =~ s/Markets::Addon:://;
     my $addons_dir = $self->dir;
-    my $path       = Mojo::File::path("$addons_dir/$name/lib")->to_abs->to_string;
+
+    # TODO: testスクリプト用に$self->app->homeを渡す必要がある。
+    my $path = Mojo::File::path( $self->app->home, $addons_dir, $name, 'lib' )->to_abs->to_string;
     push @INC, $path;
 }
 
