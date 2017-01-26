@@ -3,6 +3,7 @@ use Mojo::Base 'Markets::EventEmitter';
 
 use Carp qw/croak/;
 use Mojo::Home;
+use Mojo::File;
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
 use Mojo::Cache;
@@ -143,7 +144,7 @@ sub _push_inc_path {
     my ( $self, $name ) = @_;
     $name =~ s/Markets::Addon:://;
     my $addons_dir = $self->dir;
-    my $path       = Mojo::Home->new( $self->app->home )->rel_dir("$addons_dir/$name/lib");
+    my $path       = Mojo::File::path("$addons_dir/$name/lib")->to_abs->to_string;
     push @INC, $path;
 }
 
