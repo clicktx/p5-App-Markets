@@ -5,7 +5,8 @@ use B;
 use Carp 'croak';
 use File::Spec;
 use Mojolicious::Renderer;
-use Mojo::Util qw/slurp decamelize/;
+use Mojo::Util qw/decamelize/;
+use Mojo::File;
 use constant {
     FORMAT  => 'html',
     HANDLER => 'ep',
@@ -125,7 +126,7 @@ sub get_template {
 
     # Try template
     if ( defined( my $path = $renderer->template_path($options) ) ) {
-        slurp $path;
+        Mojo::File::path($path)->slurp;
     }
 
     # Try DATA section
