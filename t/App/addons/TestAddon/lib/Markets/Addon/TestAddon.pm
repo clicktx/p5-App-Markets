@@ -24,8 +24,8 @@ sub register {
 
     # Add routes
     my $r = $self->routes;
-    $r->get('/')->to('test_addon-example#top');
-    $r->get('/hoo')->to('test_addon-example#hoo');
+    $r->get('/test_addon')->to('test_addon-example#top');
+    $r->get('/test_addon/hoo')->to('test_addon-example#hoo');
 
 }
 
