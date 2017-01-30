@@ -20,8 +20,7 @@ has addon_name => sub {
 has routes => sub {
     my $self             = shift;
     my $addon_class_name = $self->class_name;
-    $self->app->stash('addons')->{$addon_class_name}->{routes}->any('/')
-      ->to( namespace => __PACKAGE__ );
+    $self->app->stash('addons')->{$addon_class_name}->{routes}->to( namespace => __PACKAGE__ );
 };
 has 'app';
 

@@ -85,7 +85,7 @@ sub to_enable {
     $self->subscribe_hooks($addon_name);
 
     # Add routes in to the App.
-    $self->on_routes($addon_name);
+    $self->_add_routes($addon_name);
 }
 
 sub to_disable {
@@ -95,7 +95,7 @@ sub to_disable {
     $self->unsubscribe_hooks($addon_name);
 
     # Remove routes for App.
-    $self->off_routes($addon_name);
+    $self->_remove_routes($addon_name);
 }
 
 sub subscribe_hooks {
@@ -118,19 +118,14 @@ sub unsubscribe_hooks {
     $self->app->renderer->cache( Mojo::Cache->new );
 }
 
-sub on_routes {
+sub _add_routes {
     my ( $self, $addon_name ) = @_;
     my $routes = $self->app->stash('addons')->{$addon_name}->{routes};
 
-    if ( @{ $routes->children } ) {
-        $self->app->routes->add_child($routes);
-
-        # $self->app->routes->cache( Mojo::Cache->new ); # 無くても動作するが必要？
-    }
-
+    $self->app->routes->add_child($routes) if @{ $routes->children };
 }
 
-sub off_routes {
+sub _remove_routes {
     my ( $self, $addon_name ) = @_;
     my $routes = $self->app->routes->find($addon_name);
 
@@ -277,18 +272,6 @@ Subscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> ev
     $addons->unsubscribe_hooks('Markets::Addon::MyAddon');
 
 Unsubscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
-
-=head2 on_routes
-
-    $self->on_routes('Markets::Addon::MyAddon');
-
-Add addon routes for App.
-
-=head2 off_routes
-
-    $self->off_routes('Markets::Addon::MyAddon');
-
-Remove addons routes from App.
 
 =head2 register_addon
 
