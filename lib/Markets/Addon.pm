@@ -3,7 +3,6 @@ use Mojo::Base 'Mojolicious::Plugin';
 
 use B;
 use Carp 'croak';
-use File::Spec;
 use Mojolicious::Renderer;
 use Mojo::Util qw/decamelize/;
 use Mojo::File;
@@ -33,9 +32,10 @@ sub init {
     my $app  = $self->app;
 
     # Load lexicon file.
-    my $addons_dir  = $app->addons->dir;
-    my $addon_name  = $self->addon_name;
-    my $locale_dir  = File::Spec->catdir( $app->home, $addons_dir, $addon_name, 'locale' );
+    my $addons_dir = $app->addons->dir;
+    my $addon_name = $self->addon_name;
+    my $locale_dir = Mojo::File::path( $app->home, $addons_dir, $addon_name, 'locale' );
+
     my $text_domain = decamelize($addon_name);
     $app->lexicon(
         {
@@ -109,7 +109,7 @@ sub get_template {
 
     # Addon templates directory
     my $home = addon_home($class);
-    my $templates_dir = File::Spec->catdir( $home, 'templates' );
+    my $templates_dir = Mojo::File::path( $home, 'templates' );
 
     my $renderer = Mojolicious::Renderer->new;
     push @{ $renderer->classes }, $class;
