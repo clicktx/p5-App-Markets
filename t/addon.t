@@ -10,10 +10,11 @@ my $app = $t->app;
 
 subtest 'basic' => sub {
 
-    my @all_addons = $app->addons->_fetch_addons_dir;
-    is @all_addons, 3, 'right all addons';
+    my $uploded_addons = $app->addons->uploaded->to_array;
+    is ref $uploded_addons, 'ARRAY', 'return array ref';
+    is @{$uploded_addons}, 3, 'right all addons';
     my @sort_array =
-      sort { $a cmp $b } @all_addons;    # Hack: OSによる違いに対処
+      sort { $a cmp $b } @{$uploded_addons};    # Hack: OSによる違いに対処
     is_deeply \@sort_array,
       [
         'Markets::Addon::DisableAddon', 'Markets::Addon::NotInstallAddon',

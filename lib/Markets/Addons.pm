@@ -15,7 +15,7 @@ has dir         => sub { shift->app->pref('addons_dir') };
 has namespaces  => sub { [] };
 has action_hook => sub { Markets::Addons::ActionHook->new };
 has filter_hook => sub { Markets::Addons::FilterHook->new };
-has 'app';
+has [qw/app installed uploaded/];
 
 sub _on { shift->on(@_) }
 
@@ -25,21 +25,7 @@ sub _fetch_addons_dir {
     my $rel_dir    = Mojo::File::path( $self->app->home, $addons_dir );
     my @all_dir    = Markets::Util::directories($rel_dir);
     my @addons     = map { "Markets::Addon::" . $_ } @all_dir;
-    return @addons;
-}
-
-sub list {
-    my ( $self, $option ) = @_;
-
-    my @addons;
-    if ( $option->{not_installed} ) {
-        @addons = $self->_fetch_addons_dir;
-    }
-    else {
-        my $addons = $self->app->stash('addons');
-        @addons = keys %{$addons};
-    }
-    return wantarray ? @addons : \@addons;
+    return Mojo::Collection->new(@addons);
 }
 
 sub is_enabled {
@@ -50,7 +36,9 @@ sub is_enabled {
 
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
-    $self->app->defaults( addons => $installed_addons );
+    $self->app->defaults( addons => $installed_addons );  
+    $self->{installed} = $installed_addons;
+    $self->{uploaded} = $self->_fetch_addons_dir;
     $self->{remove_hooks} = [];
 
     my $addons = $self->app->stash('addons');
@@ -237,6 +225,18 @@ Markets::Addons::ActionHook object.
 
 Markets::Addons::FilterHook object.
 
+=head2 installed
+
+    my $installed_addons = $addons->installed;
+
+Return Hash ref.
+
+=head2 uploaded
+
+    my $uploaded = $addons->uploaded;
+
+Return L<Mojo::Collection> object.
+
 =head1 METHODS
 
 =head2 emit
@@ -255,17 +255,6 @@ This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook:
 =head2 init
 
     $addons->init(\%addon_settings);
-
-=head2 list
-
-    # Ref
-    my installed_addons = $addons->list;
-    # Array
-    my @installed_addons = $addons->list;
-
-C<option>
-
-    my $all_addons = $addons->list( { not_installed => 1 } );
 
 =head2 to_enable
 
