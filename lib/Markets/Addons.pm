@@ -221,7 +221,7 @@ Return the application object.
 
 Markets::Addons::ActionHook object.
 
-=head2 filter
+=head2 filter_hook
 
 Markets::Addons::FilterHook object.
 
