@@ -45,7 +45,7 @@ sub init {
         # Initialize routes
         $self->_init_routes($addon_name);
 
-        # Regist addon
+        # Register addon
         $app->register_addon($addon_name);
 
         # Subscribe hooks
