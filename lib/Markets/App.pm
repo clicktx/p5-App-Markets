@@ -46,10 +46,10 @@ sub startup {
       for qw(Markets::View::EPRenderer Markets::View::EPLRenderer Markets::View::DOM);
 
     # Loading installed Addons config
-    my $addons_config = $self->model('data-addon')->configure;
+    my $installed_addons = $self->model('data-addon')->configure;
 
     # Initialize all addons
-    $self->addons->init($addons_config) unless $ENV{MOJO_ADDON_TEST_MODE};
+    $self->addons->init($installed_addons) unless $ENV{MOJO_ADDON_TEST_MODE};
 
     # Routes
     $self->plugin($_) for qw(Markets::Routes::Admin Markets::Routes::Catalog);

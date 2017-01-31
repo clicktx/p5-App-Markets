@@ -49,8 +49,8 @@ sub is_enabled {
 }
 
 sub init {
-    my ( $self, $addon_settings ) = ( shift, shift // {} );
-    $self->app->defaults( addons => $addon_settings );
+    my ( $self, $installed_addons ) = ( shift, shift // {} );
+    $self->app->defaults( addons => $installed_addons );
     $self->{remove_hooks} = [];
 
     my $addons = $self->app->stash('addons');
