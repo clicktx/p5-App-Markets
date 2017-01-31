@@ -1,5 +1,5 @@
 package Markets::Model::Account;
-use Mojo::Base 'MojoX::Model';
+use Mojo::Base 'Markets::Model';
 
 sub remove_session {
     my ( $self, $session ) = @_;
@@ -40,4 +40,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin::Model> L<MojoX::Model>
+L<Markets::Model> L<Mojolicious::Plugin::Model> L<MojoX::Model>

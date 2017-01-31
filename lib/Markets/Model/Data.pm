@@ -1,5 +1,5 @@
 package Markets::Model::Data;
-use Mojo::Base 'MojoX::Model';
+use Mojo::Base 'Markets::Model';
 
 sub load_pref {
     my $self = shift;
@@ -32,4 +32,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin::Model> L<MojoX::Model>
+L<Markets::Model> L<Mojolicious::Plugin::Model> L<MojoX::Model>

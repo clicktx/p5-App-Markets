@@ -1,5 +1,5 @@
 package Markets::Model::Data::Base;
-use Mojo::Base 'MojoX::Model';
+use Mojo::Base 'Markets::Model';
 use Data::Dumper;
 
 sub do {
@@ -23,7 +23,7 @@ Markets::Model::Data::Base
 Your model
 
     package Markets::Model::Data::Base;
-    use Mojo::Base 'MojoX::Model';
+    use Mojo::Base 'Markets::Model';
 
     sub do {
       my ($self) = @_;
@@ -66,4 +66,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin::Model> L<MojoX::Model>
+L<Markets::Model> L<Mojolicious::Plugin::Model> L<MojoX::Model>

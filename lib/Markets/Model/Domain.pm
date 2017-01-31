@@ -1,5 +1,5 @@
 package Markets::Model::Domain;
-use Mojo::Base 'MojoX::Model';
+use Mojo::Base 'Markets::Model';
 
 1;
 __END__
@@ -20,4 +20,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin::Model> L<MojoX::Model>
+L<Markets::Model> L<Mojolicious::Plugin::Model> L<MojoX::Model>

@@ -1,5 +1,5 @@
 package Markets::Model::Data::Addon;
-use Mojo::Base 'MojoX::Model';
+use Mojo::Base 'Markets::Model';
 
 sub configure {
     my $self = shift;
@@ -74,4 +74,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin::Model> L<MojoX::Model>
+L<Markets::Model> L<Mojolicious::Plugin::Model> L<MojoX::Model>
