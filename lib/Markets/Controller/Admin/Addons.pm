@@ -7,7 +7,7 @@ sub index {
     my $self = shift;
 
     # All addons
-    my $all_addons = $self->app->addons->get_all;
+    my $all_addons = $self->app->addons->list;
     $self->render(
         all_addons       => $all_addons,
         installed_addons => $self->app->stash('addons'),

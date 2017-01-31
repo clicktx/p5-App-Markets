@@ -10,7 +10,7 @@ my $app = $t->app;
 
 subtest 'basic' => sub {
 
-    my $all_addons = $app->addons->get_all;
+    my $all_addons = $app->addons->list;
     is ref $all_addons, 'ARRAY', 'return array ref';
     is @{$all_addons}, 3, 'right all addons';
     my @sort_array =

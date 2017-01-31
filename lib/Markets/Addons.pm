@@ -19,12 +19,18 @@ has 'app';
 
 sub _on { shift->on(@_) }
 
-sub get_all {
+sub _fetch_addons_dir {
     my $self       = shift;
     my $addons_dir = $self->dir;
     my $rel_dir    = Mojo::Home->new( $self->app->home )->rel_dir($addons_dir);
     my @all_dir    = Markets::Util::directories($rel_dir);
     my @all_addons = map { "Markets::Addon::" . $_ } @all_dir;
+    return @all_addons;
+}
+
+sub list {
+    my $self       = shift;
+    my @all_addons = $self->_fetch_addons_dir;
     return wantarray ? @all_addons : \@all_addons;
 }
 
@@ -242,12 +248,12 @@ This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook:
 
     $addons->init(\%addon_settings);
 
-=head2 get_all
+=head2 list
 
     # Ref
-    my $all_addons = $addons->get_all;
+    my $all_addons = $addons->list;
     # Array
-    my @all_addons = $addons->get_all;
+    my @all_addons = $addons->list;
 
 =head2 to_enable
 
