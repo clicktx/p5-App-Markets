@@ -1,7 +1,6 @@
 package Markets::App;
 use Mojo::Base 'Markets::App::Common';
 use Markets::Util qw/directories/;
-use Mojo::Util qw/files/;
 use Mojo::File;
 
 # This method will run once at server start

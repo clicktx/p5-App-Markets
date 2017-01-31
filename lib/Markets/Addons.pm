@@ -22,7 +22,7 @@ sub _on { shift->on(@_) }
 sub _fetch_addons_dir {
     my $self       = shift;
     my $addons_dir = $self->dir;
-    my $rel_dir    = Mojo::Home->new( $self->app->home )->rel_dir($addons_dir);
+    my $rel_dir    = Mojo::File::path($self->app->home, $addons_dir);
     my @all_dir    = Markets::Util::directories($rel_dir);
     my @all_addons = map { "Markets::Addon::" . $_ } @all_dir;
     return @all_addons;
