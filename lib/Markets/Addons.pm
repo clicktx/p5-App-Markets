@@ -42,17 +42,16 @@ sub is_enabled {
 
 sub init {
     my ( $self, $addon_settings ) = ( shift, shift // {} );
-    my $app = $self->app;
-    $app->defaults( addons => $addon_settings, remove_hooks => [] );
+    $self->app->defaults( addons => $addon_settings, remove_hooks => [] );
 
-    my $addons = $app->stash('addons');
+    my $addons = $self->app->stash('addons');
     foreach my $addon_name ( keys %{$addons} ) {
 
         # Initialize routes
         $self->_init_routes($addon_name);
 
         # Register addon
-        $app->register_addon($addon_name);
+        $self->app->register_addon($addon_name);
 
         # Subscribe hooks
         $self->to_enable($addon_name) if $self->is_enabled($addon_name);
