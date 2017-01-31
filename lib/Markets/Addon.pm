@@ -20,7 +20,7 @@ has addon_name => sub {
 has routes => sub {
     my $self             = shift;
     my $addon_class_name = $self->class_name;
-    $self->app->stash('addons')->{$addon_class_name}->{routes}->to( namespace => __PACKAGE__ );
+    $self->app->addons->installed->{$addon_class_name}->{routes}->to( namespace => __PACKAGE__ );
 };
 has 'app';
 
@@ -56,9 +56,9 @@ sub rm_filter_hook { shift->_remove_hook( 'filter_hook', @_ ) }
 sub _add_hook {
     my ( $self, $type, $name, $cb, $arg ) =
       ( shift, shift, shift, shift, shift // {} );
-    my $addon_name = $self->class_name;
+    my $addon_class_name = $self->class_name;
 
-    my $addon          = $self->app->stash('addons')->{$addon_name};
+    my $addon          = $self->app->addons->installed->{$addon_class_name};
     my $hook_prioritie = $addon->{config}->{hook_priorities}->{$name};
 
     my $default_priority = $arg->{default_priority} || $self->app->addons->PRIORITY_DEFAULT;

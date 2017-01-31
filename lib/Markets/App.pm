@@ -53,7 +53,6 @@ sub startup {
 
     # Routes
     $self->plugin($_) for qw(Markets::Routes::Admin Markets::Routes::Catalog);
-    use DDP;p $self->addons;
 }
 
 1;

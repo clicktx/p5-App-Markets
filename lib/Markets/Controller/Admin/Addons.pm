@@ -10,14 +10,14 @@ sub index {
     my $all_addons = $self->app->addons->uploaded->to_array;
     $self->render(
         all_addons       => $all_addons,
-        installed_addons => $self->app->stash('addons'),
+        installed_addons => $self->app->addons->installed,
     );
 }
 
 sub enable {
     my $self   = shift;
     my $target = $self->param('target');
-    my $addon  = $self->stash('addons')->{$target};
+    my $addon  = $self->addons->installed->{$target};
 
     # stash addons を更新
     $addon->{is_enabled} = 1;
@@ -35,7 +35,7 @@ sub enable {
 sub disable {
     my $self   = shift;
     my $target = $self->param('target');
-    my $addon  = $self->stash('addons')->{$target};
+    my $addon  = $self->addons->installed->{$target};
 
     # stash addons を更新
     $addon->{is_enabled} = 0;

@@ -32,15 +32,14 @@ sub load_config {
 sub init_addon {
     my ( $self, $app, $name, $arg ) = ( shift, shift, shift, shift // {} );
 
-    $app->stash( 'addons', {} );
-    my $addon_config = $app->stash('addons');
+    my $installed_addons = $app->addons->installed;
     my $is_enabled   = $arg->{is_enabled} || 0;
 
-    $addon_config->{$name} = {
+    $installed_addons->{$name} = {
         is_enabled => $is_enabled,
         hooks      => [],
     };
-    $app->addons->init($addon_config);
+    $app->addons->init($installed_addons);
 }
 
 1;

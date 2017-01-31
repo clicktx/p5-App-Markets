@@ -30,18 +30,17 @@ sub _fetch_addons_dir {
 
 sub is_enabled {
     my ( $self, $addon_name ) = @_;
-    my $addons = $self->app->stash('addons');
+    my $addons = $self->app->addons->installed;
     $addons->{$addon_name}->{is_enabled};
 }
 
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
-    $self->app->defaults( addons => $installed_addons );  
     $self->{installed} = $installed_addons;
     $self->{uploaded} = $self->_fetch_addons_dir;
     $self->{remove_hooks} = [];
 
-    my $addons = $self->app->stash('addons');
+    my $addons = $self->app->addons->installed;
     foreach my $addon_name ( keys %{$addons} ) {
 
         # Initialize routes
@@ -76,7 +75,7 @@ sub _remove_hooks {
 
 sub _init_routes {
     my ( $self, $name ) = @_;
-    $self->app->stash('addons')->{$name}->{routes} =
+    $self->app->addons->installed->{$name}->{routes} =
       Mojolicious::Routes->new->name($name);
 }
 
@@ -102,7 +101,7 @@ sub to_disable {
 
 sub subscribe_hooks {
     my ( $self, $addon_name ) = @_;
-    my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
+    my $hooks = $self->app->addons->installed->{$addon_name}->{hooks};
     foreach my $hook ( @{$hooks} ) {
         my $hook_type = $hook->{type};
         $self->$hook_type->_on($hook);
@@ -112,7 +111,7 @@ sub subscribe_hooks {
 
 sub unsubscribe_hooks {
     my ( $self, $addon_name ) = @_;
-    my $hooks = $self->app->stash('addons')->{$addon_name}->{hooks};
+    my $hooks = $self->app->addons->installed->{$addon_name}->{hooks};
     foreach my $hook ( @{$hooks} ) {
         my $hook_type = $hook->{type};
         $self->$hook_type->unsubscribe( $hook->{name} => $hook );
@@ -122,7 +121,7 @@ sub unsubscribe_hooks {
 
 sub _add_routes {
     my ( $self, $addon_name ) = @_;
-    my $routes = $self->app->stash('addons')->{$addon_name}->{routes};
+    my $routes = $self->app->addons->installed->{$addon_name}->{routes};
 
     $self->app->routes->add_child($routes) if @{ $routes->children };
 }
