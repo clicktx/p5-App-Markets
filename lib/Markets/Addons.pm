@@ -50,7 +50,8 @@ sub is_enabled {
 
 sub init {
     my ( $self, $addon_settings ) = ( shift, shift // {} );
-    $self->app->defaults( addons => $addon_settings, remove_hooks => [] );
+    $self->app->defaults( addons => $addon_settings );
+    $self->{remove_hooks} = [];
 
     my $addons = $self->app->stash('addons');
     foreach my $addon_name ( keys %{$addons} ) {
@@ -71,8 +72,8 @@ sub init {
 
 sub _remove_hooks {
     my $self = shift;
-    my $remove_hooks = $self->app->stash('remove_hooks') || '';
-    return unless $remove_hooks;
+    my $remove_hooks = $self->{remove_hooks} || [];
+    return unless @{$remove_hooks};
 
     foreach my $remove_hook ( @{$remove_hooks} ) {
         my $type        = $remove_hook->{type};

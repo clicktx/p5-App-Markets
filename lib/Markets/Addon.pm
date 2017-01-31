@@ -80,7 +80,7 @@ sub _add_hook {
 
 sub _remove_hook {
     my ( $self, $type, $hook, $cb_fn_name ) = @_;
-    my $remove_hooks = $self->app->stash('remove_hooks');
+    my $remove_hooks = $self->app->addons->{remove_hooks};
     push @{$remove_hooks},
       {
         type       => $type,
