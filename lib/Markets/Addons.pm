@@ -29,28 +29,28 @@ sub _fetch_addons_dir {
 }
 
 sub is_enabled {
-    my ( $self, $addon_name ) = @_;
+    my ( $self, $addon_class_name ) = @_;
     my $addons = $self->app->addons->installed;
-    $addons->{$addon_name}->{is_enabled};
+    $addons->{$addon_class_name}->{is_enabled};
 }
 
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
-    $self->{installed} = $installed_addons;
-    $self->{uploaded} = $self->_fetch_addons_dir;
+    $self->{installed}    = $installed_addons;
+    $self->{uploaded}     = $self->_fetch_addons_dir;
     $self->{remove_hooks} = [];
 
     my $addons = $self->app->addons->installed;
-    foreach my $addon_name ( keys %{$addons} ) {
+    foreach my $addon_class_name ( keys %{$addons} ) {
 
         # Initialize routes
-        $self->_init_routes($addon_name);
+        $self->_init_routes($addon_class_name);
 
         # Register addon
-        $self->app->register_addon($addon_name);
+        $self->app->register_addon($addon_class_name);
 
         # Subscribe hooks
-        $self->to_enable($addon_name) if $self->is_enabled($addon_name);
+        $self->to_enable($addon_class_name) if $self->is_enabled($addon_class_name);
     }
 
     # Remove hooks
@@ -74,34 +74,34 @@ sub _remove_hooks {
 }
 
 sub _init_routes {
-    my ( $self, $name ) = @_;
-    $self->app->addons->installed->{$name}->{routes} =
-      Mojolicious::Routes->new->name($name);
+    my ( $self, $addon_class_name ) = @_;
+    $self->app->addons->installed->{$addon_class_name}->{routes} =
+      Mojolicious::Routes->new->name($addon_class_name);
 }
 
 sub to_enable {
-    my ( $self, $addon_name ) = @_;
+    my ( $self, $addon_class_name ) = @_;
 
     # Add hooks into the App.
-    $self->subscribe_hooks($addon_name);
+    $self->subscribe_hooks($addon_class_name);
 
     # Add routes in to the App.
-    $self->_add_routes($addon_name);
+    $self->_add_routes($addon_class_name);
 }
 
 sub to_disable {
-    my ( $self, $addon_name ) = @_;
+    my ( $self, $addon_class_name ) = @_;
 
     # Remove hooks for App.
-    $self->unsubscribe_hooks($addon_name);
+    $self->unsubscribe_hooks($addon_class_name);
 
     # Remove routes for App.
-    $self->_remove_routes($addon_name);
+    $self->_remove_routes($addon_class_name);
 }
 
 sub subscribe_hooks {
-    my ( $self, $addon_name ) = @_;
-    my $hooks = $self->app->addons->installed->{$addon_name}->{hooks};
+    my ( $self, $addon_class_name ) = @_;
+    my $hooks = $self->app->addons->installed->{$addon_class_name}->{hooks};
     foreach my $hook ( @{$hooks} ) {
         my $hook_type = $hook->{type};
         $self->$hook_type->_on($hook);
@@ -110,8 +110,8 @@ sub subscribe_hooks {
 }
 
 sub unsubscribe_hooks {
-    my ( $self, $addon_name ) = @_;
-    my $hooks = $self->app->addons->installed->{$addon_name}->{hooks};
+    my ( $self, $addon_class_name ) = @_;
+    my $hooks = $self->app->addons->installed->{$addon_class_name}->{hooks};
     foreach my $hook ( @{$hooks} ) {
         my $hook_type = $hook->{type};
         $self->$hook_type->unsubscribe( $hook->{name} => $hook );
@@ -120,15 +120,15 @@ sub unsubscribe_hooks {
 }
 
 sub _add_routes {
-    my ( $self, $addon_name ) = @_;
-    my $routes = $self->app->addons->installed->{$addon_name}->{routes};
+    my ( $self, $addon_class_name ) = @_;
+    my $routes = $self->app->addons->installed->{$addon_class_name}->{routes};
 
     $self->app->routes->add_child($routes) if @{ $routes->children };
 }
 
 sub _remove_routes {
-    my ( $self, $addon_name ) = @_;
-    my $routes = $self->app->routes->find($addon_name);
+    my ( $self, $addon_class_name ) = @_;
+    my $routes = $self->app->routes->find($addon_class_name);
 
     if ( ref $routes ) {
         $routes->remove;
@@ -137,12 +137,13 @@ sub _remove_routes {
 }
 
 sub _push_inc_path {
-    my ( $self, $name ) = @_;
-    $name =~ s/Markets::Addon:://;
+    my ( $self, $addon_class_name ) = @_;
+    $addon_class_name =~ s/Markets::Addon:://;
     my $addons_dir = $self->dir;
 
     # TODO: testスクリプト用に$self->app->homeを渡す必要がある。
-    my $path = Mojo::File::path( $self->app->home, $addons_dir, $name, 'lib' )->to_abs->to_string;
+    my $path = Mojo::File::path( $self->app->home, $addons_dir, $addon_class_name, 'lib' )
+      ->to_abs->to_string;
     push @INC, $path;
 }
 
@@ -150,20 +151,20 @@ sub _push_inc_path {
 ###  loading plugin code from Mojolicous::Plugins
 ###################################################
 sub load_addon {
-    my ( $self, $name ) = @_;
+    my ( $self, $addon_class_name ) = @_;
 
     # Try all namespaces and full module name
     # The Markets addon use full module name only!
-    $self->_push_inc_path($name) unless $name->can('new');
+    $self->_push_inc_path($addon_class_name) unless $addon_class_name->can('new');
 
-    my $suffix = $name =~ /^[a-z]/ ? camelize $name : $name;
+    my $suffix = $addon_class_name =~ /^[a-z]/ ? camelize $addon_class_name : $addon_class_name;
     my @classes = map { "${_}::$suffix" } @{ $self->namespaces };
-    for my $class ( @classes, $name ) {
+    for my $class ( @classes, $addon_class_name ) {
         return $class->new( app => $self->app ) if _load($class);
     }
 
     # Not found
-    die qq{Addon "$name" missing, maybe you need to install it?\n};
+    die qq{Addon "$addon_class_name" missing, maybe you need to install it?\n};
 }
 
 sub register_addon {
