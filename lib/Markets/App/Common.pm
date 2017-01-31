@@ -2,8 +2,6 @@ package Markets::App::Common;
 use Mojo::Base 'Mojolicious';
 
 use DBI;
-use Mojo::File;
-use Markets::Util;
 use Markets::DB;
 use Markets::Addons;
 

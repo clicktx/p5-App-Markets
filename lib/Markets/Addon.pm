@@ -3,9 +3,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 
 use B;
 use Carp 'croak';
-use Mojolicious::Renderer;
 use Mojo::Util qw/decamelize/;
-use Mojo::File;
 use constant {
     FORMAT  => 'html',
     HANDLER => 'ep',

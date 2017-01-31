@@ -4,7 +4,6 @@ use Mojo::Base 'Mojolicious::Plugin';
 use Carp qw/croak/;
 use Scalar::Util ();
 use Mojo::Util qw/camelize/;
-use Mojo::Loader ();
 
 sub register {
     my ( $self, $app, $conf ) = @_;

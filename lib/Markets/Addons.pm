@@ -1,12 +1,8 @@
 package Markets::Addons;
 use Mojo::Base 'Markets::EventEmitter';
 
-use Mojo::File;
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize/;
-use Mojo::Cache;
-use Mojolicious::Routes;
-use Markets::Util;
 use constant { PRIORITY_DEFAULT => '100' };
 
 has dir         => sub { shift->app->pref('addons_dir') };

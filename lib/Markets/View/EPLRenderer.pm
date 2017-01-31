@@ -3,7 +3,6 @@ use Mojo::Base 'Mojolicious::Plugin';
 
 use Mojo::Template;
 use Mojo::Util qw(encode md5_sum monkey_patch decode);
-use Mojo::File;
 use Carp 'croak';
 
 monkey_patch 'Mojo::Template', render_file_after_hook => sub {
