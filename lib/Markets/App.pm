@@ -1,8 +1,6 @@
 package Markets::App;
 use Mojo::Base 'Markets::App::Common';
 use Markets::Util qw/directories/;
-use Mojo::Util qw/files/;
-use Mojo::File;
 
 # This method will run once at server start
 sub startup {
@@ -17,7 +15,7 @@ sub startup {
     say $self->dumper($themes);    # debug
 
     # [WIP]loading lexicon files from themes
-    my $theme_locale_dir = File::Spec->catdir( $self->home, 'themes', 'default', 'locale' );
+    my $theme_locale_dir = Mojo::File::path( $self->home, 'themes', 'default', 'locale' );
     $self->lexicon(
         {
             search_dirs => [$theme_locale_dir],
@@ -47,10 +45,10 @@ sub startup {
       for qw(Markets::View::EPRenderer Markets::View::EPLRenderer Markets::View::DOM);
 
     # Loading installed Addons config
-    my $addons_config = $self->model('data-addon')->configure;
+    my $installed_addons = $self->model('data-addon')->configure;
 
     # Initialize all addons
-    $self->addons->init($addons_config) unless $ENV{MOJO_ADDON_TEST_MODE};
+    $self->addons->init($installed_addons) unless $ENV{MOJO_ADDON_TEST_MODE};
 
     # Routes
     $self->plugin($_) for qw(Markets::Routes::Admin Markets::Routes::Catalog);

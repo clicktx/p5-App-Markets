@@ -3,10 +3,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 
 use B;
 use Carp 'croak';
-use File::Spec;
-use Mojolicious::Renderer;
 use Mojo::Util qw/decamelize/;
-use Mojo::File;
 use constant {
     FORMAT  => 'html',
     HANDLER => 'ep',
@@ -20,7 +17,7 @@ has addon_name => sub {
 has routes => sub {
     my $self             = shift;
     my $addon_class_name = $self->class_name;
-    $self->app->stash('addons')->{$addon_class_name}->{routes}->to( namespace => __PACKAGE__ );
+    $self->app->addons->installed->{$addon_class_name}->{routes}->to( namespace => __PACKAGE__ );
 };
 has 'app';
 
@@ -33,9 +30,10 @@ sub init {
     my $app  = $self->app;
 
     # Load lexicon file.
-    my $addons_dir  = $app->addons->dir;
-    my $addon_name  = $self->addon_name;
-    my $locale_dir  = File::Spec->catdir( $app->home, $addons_dir, $addon_name, 'locale' );
+    my $addons_dir = $app->addons->dir;
+    my $addon_name = $self->addon_name;
+    my $locale_dir = Mojo::File::path( $app->home, $addons_dir, $addon_name, 'locale' );
+
     my $text_domain = decamelize($addon_name);
     $app->lexicon(
         {
@@ -56,9 +54,9 @@ sub rm_filter_hook { shift->_remove_hook( 'filter_hook', @_ ) }
 sub _add_hook {
     my ( $self, $type, $name, $cb, $arg ) =
       ( shift, shift, shift, shift, shift // {} );
-    my $addon_name = $self->class_name;
+    my $addon_class_name = $self->class_name;
 
-    my $addon          = $self->app->stash('addons')->{$addon_name};
+    my $addon          = $self->app->addons->installed->{$addon_class_name};
     my $hook_prioritie = $addon->{config}->{hook_priorities}->{$name};
 
     my $default_priority = $arg->{default_priority} || $self->app->addons->PRIORITY_DEFAULT;
@@ -80,7 +78,7 @@ sub _add_hook {
 
 sub _remove_hook {
     my ( $self, $type, $hook, $cb_fn_name ) = @_;
-    my $remove_hooks = $self->app->stash('remove_hooks');
+    my $remove_hooks = $self->app->addons->{remove_hooks};
     push @{$remove_hooks},
       {
         type       => $type,
@@ -109,7 +107,7 @@ sub get_template {
 
     # Addon templates directory
     my $home = addon_home($class);
-    my $templates_dir = File::Spec->catdir( $home, 'templates' );
+    my $templates_dir = Mojo::File::path( $home, 'templates' );
 
     my $renderer = Mojolicious::Renderer->new;
     push @{ $renderer->classes }, $class;

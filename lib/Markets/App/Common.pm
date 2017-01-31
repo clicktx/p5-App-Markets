@@ -1,9 +1,7 @@
 package Markets::App::Common;
 use Mojo::Base 'Mojolicious';
 
-use File::Spec;
 use DBI;
-use Markets::Util;
 use Markets::DB;
 use Markets::Addons;
 
@@ -97,7 +95,7 @@ sub initialize_app {
     );
 
     # loading lexicon files
-    my $locale_dir = File::Spec->catdir( $home, 'share', 'locale' );
+    my $locale_dir = Mojo::File::path( $home, 'share', 'locale' );
     $self->lexicon(
         {
             search_dirs => [$locale_dir],
