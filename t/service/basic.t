@@ -45,7 +45,7 @@ use Mojo::Base 'Markets::Controller::Catalog';
 
 sub good {
     my $c         = shift;
-    my $is_cached = $c->app->{service_class}{Test} ? 1 : 0;
+    my $is_cached = $c->app->{services}{Test} ? 1 : 0;
     my $service   = $c->service('test');
     my $is_weak   = Scalar::Util::isweak $service->{controller} ? 1 : 0;
 

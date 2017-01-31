@@ -33,7 +33,7 @@ sub _service {
     $name = camelize($name) if $name =~ /^[a-z]/;
     Carp::croak 'Service name is empty.' unless $name;
 
-    my $service = $c->app->{service_class}{$name};
+    my $service = $c->app->{services}{$name};
     if ( Scalar::Util::blessed $service ) {
         $service->controller($c);
         Scalar::Util::weaken $service->{controller};
@@ -42,7 +42,7 @@ sub _service {
         my $class = "Markets::Service::" . $name;
         _load_class($class);
         $service = $class->new($c);
-        $c->app->{service_class}{$name} = $service;
+        $c->app->{services}{$name} = $service;
     }
     return $service;
 }
