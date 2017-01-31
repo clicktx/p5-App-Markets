@@ -1,11 +1,9 @@
 package Markets::Addons;
 use Mojo::Base 'Markets::EventEmitter';
 
-use Carp qw/croak/;
-use Mojo::Home;
 use Mojo::File;
 use Mojo::Loader 'load_class';
-use Mojo::Util qw/camelize decamelize/;
+use Mojo::Util qw/camelize/;
 use Mojo::Cache;
 use Mojolicious::Routes;
 use Markets::Util;
