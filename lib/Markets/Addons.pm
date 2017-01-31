@@ -22,16 +22,24 @@ sub _on { shift->on(@_) }
 sub _fetch_addons_dir {
     my $self       = shift;
     my $addons_dir = $self->dir;
-    my $rel_dir    = Mojo::File::path($self->app->home, $addons_dir);
+    my $rel_dir    = Mojo::File::path( $self->app->home, $addons_dir );
     my @all_dir    = Markets::Util::directories($rel_dir);
-    my @all_addons = map { "Markets::Addon::" . $_ } @all_dir;
-    return @all_addons;
+    my @addons     = map { "Markets::Addon::" . $_ } @all_dir;
+    return @addons;
 }
 
 sub list {
-    my $self       = shift;
-    my @all_addons = $self->_fetch_addons_dir;
-    return wantarray ? @all_addons : \@all_addons;
+    my ( $self, $option ) = @_;
+
+    my @addons;
+    if ( $option->{not_installed} ) {
+        @addons = $self->_fetch_addons_dir;
+    }
+    else {
+        my $addons = $self->app->stash('addons');
+        @addons = keys %{$addons};
+    }
+    return wantarray ? @addons : \@addons;
 }
 
 sub is_enabled {
@@ -250,9 +258,13 @@ This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook:
 =head2 list
 
     # Ref
-    my $all_addons = $addons->list;
+    my installed_addons = $addons->list;
     # Array
-    my @all_addons = $addons->list;
+    my @installed_addons = $addons->list;
+
+C<option>
+
+    my $all_addons = $addons->list( { not_installed => 1 } );
 
 =head2 to_enable
 

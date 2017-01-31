@@ -10,7 +10,7 @@ my $app = $t->app;
 
 subtest 'basic' => sub {
 
-    my $all_addons = $app->addons->list;
+    my $all_addons = $app->addons->list( { not_installed => 1 } );
     is ref $all_addons, 'ARRAY', 'return array ref';
     is @{$all_addons}, 3, 'right all addons';
     my @sort_array =
@@ -59,8 +59,10 @@ subtest 'for TestAddon' => sub {
     $test_filter = $app->filter_hook->subscribers('filter_example_hook');
     is_deeply $test_action, [], 'removed action hooks';
     is_deeply $test_filter, [], 'removed action hooks';
+
     # $t->get_ok('/test_addon')->status_is(404);
-    $t->get_ok('/test_addon')->status_is(200)->content_like(qr/category/i);  # category扱いになるため
+    $t->get_ok('/test_addon')->status_is(200)->content_like(qr/category/i)
+      ;    # category扱いになるため
     $t->get_ok('/test_addon/hoo')->status_is(404);
 
 };
@@ -72,7 +74,8 @@ subtest 'for DisableAddon' => sub {
     is_deeply $disable_filter, [], 'no filter hooks';
 
     # $t->get_ok('/disable_addon')->status_is(404);
-    $t->get_ok('/disable_addon')->status_is(200)->content_like(qr/category/i);  # category扱いになるため
+    $t->get_ok('/disable_addon')->status_is(200)->content_like(qr/category/i)
+      ;    # category扱いになるため
 };
 
 done_testing();
