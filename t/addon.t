@@ -10,11 +10,10 @@ my $app = $t->app;
 
 subtest 'basic' => sub {
 
-    my $all_addons = $app->addons->list( { not_installed => 1 } );
-    is ref $all_addons, 'ARRAY', 'return array ref';
-    is @{$all_addons}, 3, 'right all addons';
+    my @all_addons = $app->addons->_fetch_addons_dir;
+    is @all_addons, 3, 'right all addons';
     my @sort_array =
-      sort { $a cmp $b } @{$all_addons};    # Hack: OSによる違いに対処
+      sort { $a cmp $b } @all_addons;    # Hack: OSによる違いに対処
     is_deeply \@sort_array,
       [
         'Markets::Addon::DisableAddon', 'Markets::Addon::NotInstallAddon',
