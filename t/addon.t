@@ -28,8 +28,8 @@ subtest 'basic' => sub {
 };
 
 subtest 'load addon' => sub {
-    eval { $app->addons->register_addon("NotFoundAddon") };
-    is $@, 'Addon "NotFoundAddon" missing, maybe you need to install it?' . "\n";
+    eval { $app->addons->register_addon("Markets::Addon::NotFoundAddon") };
+    is $@, 'Addon "Markets::Addon::NotFoundAddon" missing, maybe you need to upload it?' . "\n";
 };
 
 subtest 'for TestAddon' => sub {

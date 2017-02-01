@@ -49,7 +49,7 @@ sub load_addon {
     return $class->new( app => $self->app ) if _load_class($class);
 
     # Not found
-    die qq{Addon "$addon_class_name" missing, maybe you need to install it?\n};
+    die qq{Addon "$addon_class_name" missing, maybe you need to upload it?\n};
 }
 
 sub new {
