@@ -1,3 +1,4 @@
+requires 'perl',                                    '5.018';
 requires 'Scalar::Util',                            '1.47';
 requires 'Mojolicious',                             '== 7.20';
 requires 'File::Find::Rule',                        '0.34';
@@ -32,7 +33,6 @@ on test => sub {
     requires 'Test::mysqld';
     requires 'Harriet';
     requires 'Test::Perl::Critic';
-    requires 'Safe', '2.32';    # Hack for Devel::Cover
 };
 
 on develop => sub {
