@@ -6,7 +6,6 @@ use Mojo::Util qw/camelize/;
 use constant { PRIORITY_DEFAULT => '100' };
 
 has dir         => sub { shift->app->pref('addons_dir') };
-has namespaces  => sub { [] };
 has action_hook => sub { Markets::Addons::ActionHook->new };
 has filter_hook => sub { Markets::Addons::FilterHook->new };
 has [qw/app installed uploaded/];
@@ -24,7 +23,8 @@ sub init {
         $self->_init_routes($addon_class_name);
 
         # Register addon
-        my $addon = $self->register_addon($addon_class_name);
+        my $addon_pref = $installed_addons->{$addon_class_name};
+        my $addon = $self->register_addon( $addon_class_name, $addon_pref );
 
         # Subscribe hooks
         $self->to_enable($addon_class_name) if $self->is_enabled($addon_class_name);
@@ -40,18 +40,6 @@ sub is_enabled {
     $addons->{$addon_class_name}->{is_enabled};
 }
 
-sub load_addon {
-    my ( $self, $addon_class_name ) = @_;
-
-    $self->_push_inc_path($addon_class_name) unless $addon_class_name->can('new');
-
-    my $class = $addon_class_name =~ /^[a-z]/ ? camelize $addon_class_name : $addon_class_name;
-    return $class->new( app => $self->app ) if _load_class($class);
-
-    # Not found
-    die qq{Addon "$addon_class_name" missing, maybe you need to upload it?\n};
-}
-
 sub new {
     my $self = shift;
     $self = $self->SUPER::new(@_);
@@ -59,7 +47,16 @@ sub new {
     $self;
 }
 
-sub register_addon { shift->load_addon(shift)->setup( ref $_[0] ? $_[0] : {@_} ) }
+sub register_addon {
+    my ( $self, $addon_class_name, $addon_pref ) = @_;
+
+    $self->_add_inc_path($addon_class_name) unless $addon_class_name->can('new');
+
+    my $class = $addon_class_name =~ /^[a-z]/ ? camelize $addon_class_name : $addon_class_name;
+    return $class->new( app => $self->app )->setup if _load_class($class);
+
+    die qq{Addon "$addon_class_name" missing, maybe you need to upload it?\n};
+}
 
 sub subscribe_hooks {
     my ( $self, $addon_class_name ) = @_;
@@ -130,7 +127,7 @@ sub _load_class {
     ref $e ? die $e : return undef;
 }
 
-sub _push_inc_path {
+sub _add_inc_path {
     my ( $self, $addon_class_name ) = @_;
     $addon_class_name =~ s/Markets::Addon:://;
     my $addons_dir = $self->dir;
