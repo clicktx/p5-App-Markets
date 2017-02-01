@@ -24,7 +24,7 @@ sub init {
         $self->_init_routes($addon_class_name);
 
         # Register addon
-        $self->app->register_addon($addon_class_name);
+        my $addon = $self->register_addon($addon_class_name);
 
         # Subscribe hooks
         $self->to_enable($addon_class_name) if $self->is_enabled($addon_class_name);

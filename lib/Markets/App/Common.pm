@@ -24,8 +24,6 @@ has action_hook => sub { shift->addons->action_hook(@_) };
 has filter_hook => sub { shift->addons->filter_hook(@_) };
 has restart_app => sub { system shift->home . "/script/appctl --restart" };
 
-sub register_addon { shift->addons->register_addon( shift, @_ ) }
-
 sub dsn {
     my ( $self, $conf ) = @_;
     my $dsn;
