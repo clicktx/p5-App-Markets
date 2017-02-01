@@ -25,7 +25,7 @@ has 'app';
 sub addon_home { Mojo::Home->new->detect(shift) }
 sub register   { croak 'Method "register" not implemented by subclass' }
 
-sub init {
+sub setup {
     my $self = shift;
     my $app  = $self->app;
 
@@ -152,7 +152,7 @@ Markets::Addon - Markets External plugin system
   package Markets::Addon::YourAddon;
   use Mojo::Base 'Markets::Addon';
 
-  sub init {
+  sub register {
     my ($self, $app, $arg) = @_;
 
     # Your addon code here!
@@ -250,13 +250,13 @@ Get content for addon template file or DATA section.
 
 format C<html> and handler C<ep> onry. ex) template_name.html.ep
 
-=head2 init
+=head2 setup
 
 This method will be called by L<Markets::Addon> at startup time.
 
 =head2 register
 
-This method will be called after L<Markets::Addon>::init() at startup time.
+This method will be called after L<Markets::Addon>::setup() at startup time.
 Meant to be overloaded in a subclass.
 
 =head1 SEE ALSO

@@ -67,9 +67,7 @@ sub new {
     $self;
 }
 
-sub register_addon {
-    shift->load_addon(shift)->init( ref $_[0] ? $_[0] : {@_} );
-}
+sub register_addon { shift->load_addon(shift)->setup( ref $_[0] ? $_[0] : {@_} ) }
 
 sub subscribe_hooks {
     my ( $self, $addon_class_name ) = @_;
