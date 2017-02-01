@@ -40,11 +40,35 @@ sub is_enabled {
     $addons->{$addon_class_name}->{is_enabled};
 }
 
+sub load_addon {
+    ###################################################
+    ###  loading plugin code from Mojolicous::Plugins
+    ###################################################
+    my ( $self, $addon_class_name ) = @_;
+
+    # Try all namespaces and full module name
+    # The Markets addon use full module name only!
+    $self->_push_inc_path($addon_class_name) unless $addon_class_name->can('new');
+
+    my $suffix = $addon_class_name =~ /^[a-z]/ ? camelize $addon_class_name : $addon_class_name;
+    my @classes = map { "${_}::$suffix" } @{ $self->namespaces };
+    for my $class ( @classes, $addon_class_name ) {
+        return $class->new( app => $self->app ) if _load_class($class);
+    }
+
+    # Not found
+    die qq{Addon "$addon_class_name" missing, maybe you need to install it?\n};
+}
+
 sub new {
     my $self = shift;
     $self = $self->SUPER::new(@_);
     Scalar::Util::weaken $self->{app};
     $self;
+}
+
+sub register_addon {
+    shift->load_addon(shift)->init( ref $_[0] ? $_[0] : {@_} );
 }
 
 sub subscribe_hooks {
@@ -109,6 +133,13 @@ sub _init_routes {
       Mojolicious::Routes->new->name($addon_class_name);
 }
 
+sub _load_class {
+    my $class = shift;
+    return $class->isa('Markets::Addon')
+      unless my $e = load_class $class;
+    ref $e ? die $e : return undef;
+}
+
 sub _push_inc_path {
     my ( $self, $addon_class_name ) = @_;
     $addon_class_name =~ s/Markets::Addon:://;
@@ -147,39 +178,7 @@ sub _remove_routes {
 }
 
 ###################################################
-###  loading plugin code from Mojolicous::Plugins
-###################################################
-sub register_addon {
-    shift->load_addon(shift)->init( ref $_[0] ? $_[0] : {@_} );
-}
-
-sub load_addon {
-    my ( $self, $addon_class_name ) = @_;
-
-    # Try all namespaces and full module name
-    # The Markets addon use full module name only!
-    $self->_push_inc_path($addon_class_name) unless $addon_class_name->can('new');
-
-    my $suffix = $addon_class_name =~ /^[a-z]/ ? camelize $addon_class_name : $addon_class_name;
-    my @classes = map { "${_}::$suffix" } @{ $self->namespaces };
-    for my $class ( @classes, $addon_class_name ) {
-        return $class->new( app => $self->app ) if _load_class($class);
-    }
-
-    # Not found
-    die qq{Addon "$addon_class_name" missing, maybe you need to install it?\n};
-}
-
-sub _load_class {
-    my $class = shift;
-    return $class->isa('Markets::Addon')
-      unless my $e = load_class $class;
-    ref $e ? die $e : return undef;
-}
-
-###################################################
-
-# Use separate namespace
+# Separate namespace
 package Markets::Addons::ActionHook;
 use Mojo::Base 'Markets::Addons';
 sub emit { shift->SUPER::emit(@_) }
