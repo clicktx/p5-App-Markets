@@ -40,6 +40,13 @@ sub is_enabled {
     $addons->{$addon_class_name}->{is_enabled};
 }
 
+sub new {
+    my $self = shift;
+    $self = $self->SUPER::new(@_);
+    Scalar::Util::weaken $self->{app};
+    $self;
+}
+
 sub subscribe_hooks {
     my ( $self, $addon_class_name ) = @_;
     my $hooks = $self->app->addons->installed->{$addon_class_name}->{hooks};
