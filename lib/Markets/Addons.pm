@@ -41,20 +41,12 @@ sub is_enabled {
 }
 
 sub load_addon {
-    ###################################################
-    ###  loading plugin code from Mojolicous::Plugins
-    ###################################################
     my ( $self, $addon_class_name ) = @_;
 
-    # Try all namespaces and full module name
-    # The Markets addon use full module name only!
     $self->_push_inc_path($addon_class_name) unless $addon_class_name->can('new');
 
-    my $suffix = $addon_class_name =~ /^[a-z]/ ? camelize $addon_class_name : $addon_class_name;
-    my @classes = map { "${_}::$suffix" } @{ $self->namespaces };
-    for my $class ( @classes, $addon_class_name ) {
-        return $class->new( app => $self->app ) if _load_class($class);
-    }
+    my $class = $addon_class_name =~ /^[a-z]/ ? camelize $addon_class_name : $addon_class_name;
+    return $class->new( app => $self->app ) if _load_class($class);
 
     # Not found
     die qq{Addon "$addon_class_name" missing, maybe you need to install it?\n};
