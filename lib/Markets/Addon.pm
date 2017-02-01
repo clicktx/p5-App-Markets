@@ -44,6 +44,14 @@ sub init {
 
     # Call to register method for YourAddon.
     $self->register($app);
+    return $self;
+}
+
+sub new {
+    my $self = shift;
+    $self = $self->SUPER::new(@_);
+    Scalar::Util::weaken $self->{app};
+    $self;
 }
 
 sub add_action_hook { shift->_add_hook( 'action_hook', @_ ) }
