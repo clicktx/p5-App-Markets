@@ -152,7 +152,7 @@ sub load_addon {
     my $suffix = $addon_class_name =~ /^[a-z]/ ? camelize $addon_class_name : $addon_class_name;
     my @classes = map { "${_}::$suffix" } @{ $self->namespaces };
     for my $class ( @classes, $addon_class_name ) {
-        return $class->new( app => $self->app ) if _load($class);
+        return $class->new( app => $self->app ) if _load_class($class);
     }
 
     # Not found
@@ -163,10 +163,10 @@ sub register_addon {
     shift->load_addon(shift)->init( ref $_[0] ? $_[0] : {@_} );
 }
 
-sub _load {
-    my $module = shift;
-    return $module->isa('Markets::Addon')
-      unless my $e = load_class $module;
+sub _load_class {
+    my $class = shift;
+    return $class->isa('Markets::Addon')
+      unless my $e = load_class $class;
     ref $e ? die $e : return undef;
 }
 
