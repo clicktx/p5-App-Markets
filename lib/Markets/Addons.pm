@@ -11,21 +11,6 @@ has action_hook => sub { Markets::Addons::ActionHook->new };
 has filter_hook => sub { Markets::Addons::FilterHook->new };
 has [qw/app installed uploaded/];
 
-sub _fetch_addons_dir {
-    my $self       = shift;
-    my $addons_dir = $self->dir;
-    my $rel_dir    = Mojo::File::path( $self->app->home, $addons_dir );
-    my @all_dir    = Markets::Util::directories($rel_dir);
-    my @addons     = map { "Markets::Addon::" . $_ } @all_dir;
-    return Mojo::Collection->new(@addons);
-}
-
-sub is_enabled {
-    my ( $self, $addon_class_name ) = @_;
-    my $addons = $self->app->addons->installed;
-    $addons->{$addon_class_name}->{is_enabled};
-}
-
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
     $self->{installed}    = $installed_addons;
@@ -49,26 +34,20 @@ sub init {
     $self->_remove_hooks;
 }
 
-sub _remove_hooks {
-    my $self = shift;
-    my $remove_hooks = $self->{remove_hooks} || [];
-    return unless @{$remove_hooks};
-
-    foreach my $remove_hook ( @{$remove_hooks} ) {
-        my $type        = $remove_hook->{type};
-        my $hook        = $remove_hook->{hook};
-        my $subscribers = $self->app->addons->$type->subscribers($hook);
-        my $unsubscribers =
-          [ grep { $_->{cb_fn_name} eq $remove_hook->{cb_fn_name} } @{$subscribers} ];
-
-        map { $self->app->addons->$type->unsubscribe( $hook, $_ ) } @{$unsubscribers};
-    }
+sub is_enabled {
+    my ( $self, $addon_class_name ) = @_;
+    my $addons = $self->app->addons->installed;
+    $addons->{$addon_class_name}->{is_enabled};
 }
 
-sub _init_routes {
+sub subscribe_hooks {
     my ( $self, $addon_class_name ) = @_;
-    $self->app->addons->installed->{$addon_class_name}->{routes} =
-      Mojolicious::Routes->new->name($addon_class_name);
+    my $hooks = $self->app->addons->installed->{$addon_class_name}->{hooks};
+    foreach my $hook ( @{$hooks} ) {
+        my $hook_type = $hook->{type};
+        $self->$hook_type->on($hook);
+    }
+    $self->app->renderer->cache( Mojo::Cache->new );
 }
 
 sub to_enable {
@@ -91,16 +70,6 @@ sub to_disable {
     $self->_remove_routes($addon_class_name);
 }
 
-sub subscribe_hooks {
-    my ( $self, $addon_class_name ) = @_;
-    my $hooks = $self->app->addons->installed->{$addon_class_name}->{hooks};
-    foreach my $hook ( @{$hooks} ) {
-        my $hook_type = $hook->{type};
-        $self->$hook_type->on($hook);
-    }
-    $self->app->renderer->cache( Mojo::Cache->new );
-}
-
 sub unsubscribe_hooks {
     my ( $self, $addon_class_name ) = @_;
     my $hooks = $self->app->addons->installed->{$addon_class_name}->{hooks};
@@ -118,14 +87,19 @@ sub _add_routes {
     $self->app->routes->add_child($routes) if @{ $routes->children };
 }
 
-sub _remove_routes {
-    my ( $self, $addon_class_name ) = @_;
-    my $routes = $self->app->routes->find($addon_class_name);
+sub _fetch_addons_dir {
+    my $self       = shift;
+    my $addons_dir = $self->dir;
+    my $rel_dir    = Mojo::File::path( $self->app->home, $addons_dir );
+    my @all_dir    = Markets::Util::directories($rel_dir);
+    my @addons     = map { "Markets::Addon::" . $_ } @all_dir;
+    return Mojo::Collection->new(@addons);
+}
 
-    if ( ref $routes ) {
-        $routes->remove;
-        $self->app->routes->cache( Mojo::Cache->new );
-    }
+sub _init_routes {
+    my ( $self, $addon_class_name ) = @_;
+    $self->app->addons->installed->{$addon_class_name}->{routes} =
+      Mojolicious::Routes->new->name($addon_class_name);
 }
 
 sub _push_inc_path {
@@ -139,9 +113,39 @@ sub _push_inc_path {
     push @INC, $path;
 }
 
+sub _remove_hooks {
+    my $self = shift;
+    my $remove_hooks = $self->{remove_hooks} || [];
+    return unless @{$remove_hooks};
+
+    foreach my $remove_hook ( @{$remove_hooks} ) {
+        my $type        = $remove_hook->{type};
+        my $hook        = $remove_hook->{hook};
+        my $subscribers = $self->app->addons->$type->subscribers($hook);
+        my $unsubscribers =
+          [ grep { $_->{cb_fn_name} eq $remove_hook->{cb_fn_name} } @{$subscribers} ];
+
+        map { $self->app->addons->$type->unsubscribe( $hook, $_ ) } @{$unsubscribers};
+    }
+}
+
+sub _remove_routes {
+    my ( $self, $addon_class_name ) = @_;
+    my $routes = $self->app->routes->find($addon_class_name);
+
+    if ( ref $routes ) {
+        $routes->remove;
+        $self->app->routes->cache( Mojo::Cache->new );
+    }
+}
+
 ###################################################
 ###  loading plugin code from Mojolicous::Plugins
 ###################################################
+sub register_addon {
+    shift->load_addon(shift)->init( ref $_[0] ? $_[0] : {@_} );
+}
+
 sub load_addon {
     my ( $self, $addon_class_name ) = @_;
 
@@ -157,10 +161,6 @@ sub load_addon {
 
     # Not found
     die qq{Addon "$addon_class_name" missing, maybe you need to install it?\n};
-}
-
-sub register_addon {
-    shift->load_addon(shift)->init( ref $_[0] ? $_[0] : {@_} );
 }
 
 sub _load_class {
@@ -248,6 +248,18 @@ This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook:
 
     $addons->init(\%addon_settings);
 
+=head2 register_addon
+
+    $addons->register_addon('Markets::Addons::MyAddon');
+
+Load a addon from the configured by full module name and run register.
+
+=head2 subscribe_hooks
+
+    $addons->subscribe_hooks('Markets::Addon::MyAddon');
+
+Subscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
+
 =head2 to_enable
 
     $addons->to_enable('Markets::Addon::MyAddon');
@@ -260,23 +272,11 @@ Change addon status to enable.
 
 Change addon status to disable.
 
-=head2 subscribe_hooks
-
-    $addons->subscribe_hooks('Markets::Addon::MyAddon');
-
-Subscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
-
 =head2 unsubscribe_hooks
 
     $addons->unsubscribe_hooks('Markets::Addon::MyAddon');
 
 Unsubscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
-
-=head2 register_addon
-
-    $addons->register_addon('Markets::Addons::MyAddon');
-
-Load a addon from the configured by full module name and run register.
 
 =head1 SEE ALSO
 
