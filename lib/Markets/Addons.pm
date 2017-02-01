@@ -11,8 +11,6 @@ has action_hook => sub { Markets::Addons::ActionHook->new };
 has filter_hook => sub { Markets::Addons::FilterHook->new };
 has [qw/app installed uploaded/];
 
-sub _on { shift->on(@_) }
-
 sub _fetch_addons_dir {
     my $self       = shift;
     my $addons_dir = $self->dir;
@@ -98,7 +96,7 @@ sub subscribe_hooks {
     my $hooks = $self->app->addons->installed->{$addon_class_name}->{hooks};
     foreach my $hook ( @{$hooks} ) {
         my $hook_type = $hook->{type};
-        $self->$hook_type->_on($hook);
+        $self->$hook_type->on($hook);
     }
     $self->app->renderer->cache( Mojo::Cache->new );
 }
