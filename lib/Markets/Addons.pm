@@ -3,41 +3,32 @@ use Mojo::Base 'Markets::EventEmitter';
 
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize/;
-use constant { PRIORITY_DEFAULT => '100' };
+use constant { DEFAULT_PRIORITY => '100' };
 
 has dir         => sub { shift->app->pref('addons_dir') };
 has action_hook => sub { Markets::Addons::ActionHook->new };
 has filter_hook => sub { Markets::Addons::FilterHook->new };
-has [qw/app installed uploaded/];
+has [qw/app uploaded/];
 
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
-    $self->{installed}    = $installed_addons;
+
     $self->{uploaded}     = $self->_fetch_addons_dir;
     $self->{remove_hooks} = [];
 
-    my $addons = $self->app->addons->installed;
-    foreach my $addon_class_name ( keys %{$addons} ) {
-
-        # Initialize routes
-        $self->_init_routes($addon_class_name);
+    foreach my $addon_class_name ( keys %{$installed_addons} ) {
 
         # Register addon
         my $addon_pref = $installed_addons->{$addon_class_name};
         my $addon = $self->register_addon( $addon_class_name, $addon_pref );
+        $self->{installed}->{$addon_class_name} = $addon;
 
         # Subscribe hooks
-        $self->to_enable($addon_class_name) if $self->is_enabled($addon_class_name);
+        $self->to_enable($addon_class_name) if $addon->is_enabled;
     }
 
     # Remove hooks
     $self->_remove_hooks;
-}
-
-sub is_enabled {
-    my ( $self, $addon_class_name ) = @_;
-    my $addons = $self->app->addons->installed;
-    $addons->{$addon_class_name}->{is_enabled};
 }
 
 sub new {
@@ -53,14 +44,15 @@ sub register_addon {
     $self->_add_inc_path($addon_class_name) unless $addon_class_name->can('new');
 
     my $class = $addon_class_name =~ /^[a-z]/ ? camelize $addon_class_name : $addon_class_name;
-    return $class->new( app => $self->app )->setup if _load_class($class);
+    return $class->new( app => $self->app, %{$addon_pref} )->setup if _load_class($class);
 
     die qq{Addon "$addon_class_name" missing, maybe you need to upload it?\n};
 }
 
 sub subscribe_hooks {
     my ( $self, $addon_class_name ) = @_;
-    my $hooks = $self->app->addons->installed->{$addon_class_name}->{hooks};
+
+    my $hooks = $self->{installed}->{$addon_class_name}->{hooks};
     foreach my $hook ( @{$hooks} ) {
         my $hook_type = $hook->{type};
         $self->$hook_type->on($hook);
@@ -90,7 +82,7 @@ sub to_disable {
 
 sub unsubscribe_hooks {
     my ( $self, $addon_class_name ) = @_;
-    my $hooks = $self->app->addons->installed->{$addon_class_name}->{hooks};
+    my $hooks = $self->{installed}->{$addon_class_name}->{hooks};
     foreach my $hook ( @{$hooks} ) {
         my $hook_type = $hook->{type};
         $self->$hook_type->unsubscribe( $hook->{name} => $hook );
@@ -100,8 +92,7 @@ sub unsubscribe_hooks {
 
 sub _add_routes {
     my ( $self, $addon_class_name ) = @_;
-    my $routes = $self->app->addons->installed->{$addon_class_name}->{routes};
-
+    my $routes = $self->{installed}->{$addon_class_name}->routes;
     $self->app->routes->add_child($routes) if @{ $routes->children };
 }
 
@@ -112,12 +103,6 @@ sub _fetch_addons_dir {
     my @all_dir    = Markets::Util::directories($rel_dir);
     my @addons     = map { "Markets::Addon::" . $_ } @all_dir;
     return Mojo::Collection->new(@addons);
-}
-
-sub _init_routes {
-    my ( $self, $addon_class_name ) = @_;
-    $self->app->addons->installed->{$addon_class_name}->{routes} =
-      Mojolicious::Routes->new->name($addon_class_name);
 }
 
 sub _load_class {
@@ -212,9 +197,12 @@ Markets::Addons::FilterHook object.
 
 =head2 installed
 
-    my $installed_addons = $addons->installed;
+    # Getter
+    my $installed_addons = $addons->installed; # Return Hash ref.
+    my $addon = $addons->installed('Markets::Addon::Name'); # Return Markets::Addon Object.
 
-Return Hash ref.
+    # Setter
+    $addons->installed( 'Markets::Addon::Newaddon' => Markets::Addon::Newaddon->new );
 
 =head2 uploaded
 

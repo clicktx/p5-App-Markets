@@ -32,7 +32,7 @@ sub load_config {
 sub init_addon {
     my ( $self, $app, $name, $arg ) = ( shift, shift, shift, shift // {} );
 
-    my $installed_addons = $app->addons->installed;
+    my $installed_addons = $app->addons->{installed};
     my $is_enabled   = $arg->{is_enabled} || 0;
 
     $installed_addons->{$name} = {
