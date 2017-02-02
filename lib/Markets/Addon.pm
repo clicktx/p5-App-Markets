@@ -14,7 +14,7 @@ has addon_name => sub {
     my $package = __PACKAGE__;
     shift->class_name =~ /${package}::(.*)/ and $1;
 };
-has [qw/app is_enabled routes/];    # config hooks
+has [qw/app config hooks is_enabled routes/];
 
 # Make addon home path
 sub addon_home { Mojo::Home->new->detect(shift) }

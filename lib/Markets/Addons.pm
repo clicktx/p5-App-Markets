@@ -24,7 +24,7 @@ sub init {
         $self->{installed}->{$addon_class_name} = $addon;
 
         # Subscribe hooks
-        $self->to_enable($addon_class_name) if $addon->is_enabled;
+        $self->to_enable($addon) if $addon->is_enabled;
     }
 
     # Remove hooks
@@ -50,9 +50,9 @@ sub register_addon {
 }
 
 sub subscribe_hooks {
-    my ( $self, $addon_class_name ) = @_;
+    my ( $self, $addon ) = @_;
 
-    my $hooks = $self->{installed}->{$addon_class_name}->{hooks};
+    my $hooks = $addon->hooks;
     foreach my $hook ( @{$hooks} ) {
         my $hook_type = $hook->{type};
         $self->$hook_type->on($hook);
@@ -61,28 +61,28 @@ sub subscribe_hooks {
 }
 
 sub to_enable {
-    my ( $self, $addon_class_name ) = @_;
+    my ( $self, $addon ) = @_;
 
     # Add hooks into the App.
-    $self->subscribe_hooks($addon_class_name);
+    $self->subscribe_hooks($addon);
 
     # Add routes in to the App.
-    $self->_add_routes($addon_class_name);
+    $self->_add_routes($addon);
 }
 
 sub to_disable {
-    my ( $self, $addon_class_name ) = @_;
+    my ( $self, $addon ) = @_;
 
     # Remove hooks for App.
-    $self->unsubscribe_hooks($addon_class_name);
+    $self->unsubscribe_hooks($addon);
 
     # Remove routes for App.
-    $self->_remove_routes($addon_class_name);
+    $self->_remove_routes($addon);
 }
 
 sub unsubscribe_hooks {
-    my ( $self, $addon_class_name ) = @_;
-    my $hooks = $self->{installed}->{$addon_class_name}->{hooks};
+    my ( $self, $addon ) = @_;
+    my $hooks = $addon->hooks;
     foreach my $hook ( @{$hooks} ) {
         my $hook_type = $hook->{type};
         $self->$hook_type->unsubscribe( $hook->{name} => $hook );
@@ -91,9 +91,9 @@ sub unsubscribe_hooks {
 }
 
 sub _add_routes {
-    my ( $self, $addon_class_name ) = @_;
-    my $routes = $self->{installed}->{$addon_class_name}->routes;
-    $self->app->routes->add_child($routes) if @{ $routes->children };
+    my ( $self, $addon ) = @_;
+    my $r = $addon->routes;
+    $self->app->routes->add_child($r) if @{ $r->children };
 }
 
 sub _fetch_addons_dir {
@@ -140,7 +140,8 @@ sub _remove_hooks {
 }
 
 sub _remove_routes {
-    my ( $self, $addon_class_name ) = @_;
+    my ( $self, $addon ) = @_;
+    my $addon_class_name = ref $addon;
     my $routes = $self->app->routes->find($addon_class_name);
 
     if ( ref $routes ) {

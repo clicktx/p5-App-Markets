@@ -54,7 +54,9 @@ subtest 'for t/addons TestAddon' => sub {
     $t->get_ok('/test_addon/nooo')->status_is(404);
 
     # Change disable addon
-    $app->addons->to_disable('Markets::Addon::TestAddon');
+    my $addon = $app->addons->{installed}->{'Markets::Addon::TestAddon'};
+    $app->addons->to_disable($addon);
+
     $test_action = $app->action_hook->subscribers('action_example_hook');
     $test_filter = $app->filter_hook->subscribers('filter_example_hook');
     is_deeply $test_action, [], 'removed action hooks';
