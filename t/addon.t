@@ -7,6 +7,8 @@ use Data::Dumper;
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
+my $r   = $app->routes->namespaces( ['Markets::Controller'] );
+$r->find('RN_category_name_base')->remove;    # Hack for name base category
 
 subtest 'basic' => sub {
 
@@ -32,11 +34,9 @@ subtest 'load addon' => sub {
     is $@, 'Addon "Markets::Addon::NotFoundAddon" missing, maybe you need to upload it?' . "\n";
 };
 
-subtest 'for TestAddon' => sub {
+subtest 'for t/addons TestAddon' => sub {
 
     # Hooks
-    # my $test_action = $app->action_hook->{events}->{action_example_hook};
-    # my $test_filter = $app->filter_hook->{events}->{filter_example_hook};
     my $test_action = $app->action_hook->subscribers('action_example_hook');
     my $test_filter = $app->filter_hook->subscribers('filter_example_hook');
 
@@ -53,29 +53,22 @@ subtest 'for TestAddon' => sub {
     $t->get_ok('/test_addon/hoo')->status_is(200)->content_like(qr/hoo/);
     $t->get_ok('/test_addon/nooo')->status_is(404);
 
-    # Disable addon
+    # Change disable addon
     $app->addons->to_disable('Markets::Addon::TestAddon');
     $test_action = $app->action_hook->subscribers('action_example_hook');
     $test_filter = $app->filter_hook->subscribers('filter_example_hook');
     is_deeply $test_action, [], 'removed action hooks';
     is_deeply $test_filter, [], 'removed action hooks';
-
-    # $t->get_ok('/test_addon')->status_is(404);
-    $t->get_ok('/test_addon')->status_is(200)->content_like(qr/category/i)
-      ;    # category扱いになるため
+    $t->get_ok('/test_addon')->status_is(404);
     $t->get_ok('/test_addon/hoo')->status_is(404);
-
 };
 
-subtest 'for DisableAddon' => sub {
+subtest 'for t/addons DisableAddon' => sub {
     my $disable_action = $app->action_hook->subscribers('action_disable_hook');
     my $disable_filter = $app->filter_hook->subscribers('filter_disable_hook');
     is_deeply $disable_action, [], 'no action hooks';
     is_deeply $disable_filter, [], 'no filter hooks';
-
-    # $t->get_ok('/disable_addon')->status_is(404);
-    $t->get_ok('/disable_addon')->status_is(200)->content_like(qr/category/i)
-      ;    # category扱いになるため
+    $t->get_ok('/disable_addon')->status_is(404);
 };
 
 done_testing();
