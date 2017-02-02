@@ -11,6 +11,7 @@ sub register {
     # Alias helpers
     $app->helper( cookie_session => sub { shift->session(@_) } );
     $app->helper( template => sub { shift->stash( template => shift ) } );
+    $app->helper( addons  => sub { shift->app->addons(@_) } );
 
     $app->helper( pref    => sub { _pref(@_) } );
     $app->helper( service => sub { _service(@_) } );
@@ -64,6 +65,12 @@ Markets::DefaultHelpers - Default helpers plugin for Markets
 =head1 DESCRIPTION
 
 =head1 HELPERS
+
+=head2 addons
+
+    my $addons = $c->addons;
+
+Alias for $app->addons;
 
 =head2 cookie_session
 
