@@ -14,20 +14,29 @@ has addon_name => sub {
     my $package = __PACKAGE__;
     shift->class_name =~ /${package}::(.*)/ and $1;
 };
-has routes => sub {
-    my $self             = shift;
-    my $addon_class_name = $self->class_name;
-    $self->app->addons->installed->{$addon_class_name}->{routes}->to( namespace => __PACKAGE__ );
-};
-has 'app';
+has [qw/app config hooks is_enabled routes/];
 
 # Make addon home path
 sub addon_home { Mojo::Home->new->detect(shift) }
-sub register   { croak 'Method "register" not implemented by subclass' }
+
+sub new {
+    my $self = shift;
+    $self = $self->SUPER::new(@_);
+    Scalar::Util::weaken $self->{app};
+    return $self;
+}
+
+sub register { croak 'Method "register" not implemented by subclass' }
 
 sub setup {
     my $self = shift;
     my $app  = $self->app;
+
+    # Routes
+    my $addon_class_name = $self->class_name;
+    my $r = Mojolicious::Routes->new;
+    $r = $r->to( namespace => __PACKAGE__ )->name($addon_class_name);
+    $self->routes($r);
 
     # Load lexicon file.
     my $addons_dir = $app->addons->dir;
@@ -47,31 +56,20 @@ sub setup {
     return $self;
 }
 
-sub new {
-    my $self = shift;
-    $self = $self->SUPER::new(@_);
-    Scalar::Util::weaken $self->{app};
-    $self;
-}
-
 sub add_action_hook { shift->_add_hook( 'action_hook', @_ ) }
 sub add_filter_hook { shift->_add_hook( 'filter_hook', @_ ) }
 sub rm_action_hook { shift->_remove_hook( 'action_hook', @_ ) }
 sub rm_filter_hook { shift->_remove_hook( 'filter_hook', @_ ) }
 
 sub _add_hook {
-    my ( $self, $type, $name, $cb, $arg ) =
-      ( shift, shift, shift, shift, shift // {} );
+    my ( $self, $type, $name, $cb, $arg ) = ( shift, shift, shift, shift, shift // {} );
     my $addon_class_name = $self->class_name;
 
-    my $addon          = $self->app->addons->installed->{$addon_class_name};
-    my $hook_prioritie = $addon->{config}->{hook_priorities}->{$name};
-
-    my $default_priority = $arg->{default_priority} || $self->app->addons->PRIORITY_DEFAULT;
-    my $priority = $hook_prioritie ? $hook_prioritie : $default_priority;
-
-    my $hooks      = $addon->{hooks};
-    my $cb_fn_name = B::svref_2object($cb)->GV->NAME;
+    my $hook_prioritie   = $self->{config}->{hook_priorities}->{$name};
+    my $default_priority = $arg->{default_priority} || $self->app->addons->DEFAULT_PRIORITY;
+    my $priority         = $hook_prioritie ? $hook_prioritie : $default_priority;
+    my $hooks            = $self->{hooks};
+    my $cb_fn_name = B::svref_2object($cb)->GV->NAME;    # TODO: 必要か再考
 
     push @{$hooks},
       {
@@ -182,6 +180,9 @@ Return the class name of addon.
 
 Return the addon name.
 
+=head2 is_enabled
+
+Return boolean.
 
 =head2 routes
 
