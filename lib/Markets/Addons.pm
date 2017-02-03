@@ -8,7 +8,7 @@ use constant { DEFAULT_PRIORITY => '100' };
 has dir         => sub { shift->app->pref('addons_dir') };
 has action_hook => sub { Markets::Addons::ActionHook->new };
 has filter_hook => sub { Markets::Addons::FilterHook->new };
-has [qw/app installed uploaded/];
+has [qw/app installed uploaded remove_hooks/];
 
 sub addon {
     my $self = shift;
@@ -22,8 +22,8 @@ sub addon {
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
 
-    $self->{uploaded}     = $self->_fetch_addons_dir;
-    $self->{remove_hooks} = [];
+    $self->uploaded($self->_fetch_addons_dir);
+    $self->remove_hooks([]);
 
     foreach my $addon_class_name ( keys %{$installed_addons} ) {
 
@@ -42,7 +42,7 @@ sub init {
 
 sub new {
     my $self = shift;
-    $self = $self->SUPER::new(@_);
+    $self = $self->SUPER::new( app => shift );
     Scalar::Util::weaken $self->{app};
     $self;
 }
