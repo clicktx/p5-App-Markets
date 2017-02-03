@@ -3,7 +3,10 @@ use Mojo::Base 'Markets::EventEmitter';
 
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize/;
-use constant { DEFAULT_PRIORITY => '100' };
+use constant {
+    DEFAULT_PRIORITY => '100',
+    ADDON_NAME_SPACE => 'Markets::Addon',
+};
 
 has dir         => sub { shift->app->pref('addons_dir') };
 has action_hook => sub { Markets::Addons::ActionHook->new };
@@ -22,8 +25,8 @@ sub addon {
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
 
-    $self->uploaded($self->_fetch_addons_dir);
-    $self->remove_hooks([]);
+    $self->uploaded( $self->_fetch_addons_dir );
+    $self->remove_hooks( [] );
 
     foreach my $addon_class_name ( keys %{$installed_addons} ) {
 
@@ -114,7 +117,7 @@ sub _fetch_addons_dir {
     my $addons_dir = $self->dir;
     my $rel_dir    = Mojo::File::path( $self->app->home, $addons_dir );
     my @all_dir    = Markets::Util::directories($rel_dir);
-    my @addons     = map { "Markets::Addon::" . $_ } @all_dir;
+    my @addons     = map { $self->ADDON_NAME_SPACE . '::' . $_ } @all_dir;
     return Mojo::Collection->new(@addons);
 }
 
