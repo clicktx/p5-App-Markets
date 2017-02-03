@@ -31,7 +31,7 @@ subtest 'addons basic' => sub {
 
     # Get addon object
     my $addon = $app->addons->addon('Markets::Addon::TestAddon');
-    ok $addon->isa('Markets::Addon'), 'right addon($addon_name)';
+    ok( defined $addon && $addon->isa('Markets::Addon') ), 'right addon($addon_name)';
 
     # Set addon object
     my $new_addon = Markets::Addon::TestAddon->new;
@@ -43,6 +43,12 @@ subtest 'addon basic' => sub {
     my $addon = Markets::Addon::TestAddon->new;
     is $addon->class_name, 'Markets::Addon::TestAddon', 'right class name';
     is $addon->addon_name, 'TestAddon', 'right addon name';
+
+    # enable/disable
+    $addon->is_enabled(1);
+    ok $addon->is_enabled, 'right addon is enabled';
+    $addon->is_enabled(0);
+    ok !$addon->is_enabled, 'right addon is desabled';
 };
 
 subtest 'load addon' => sub {
