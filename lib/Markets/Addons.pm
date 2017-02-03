@@ -30,7 +30,7 @@ sub init {
         # Register addon
         my $addon_pref = $installed_addons->{$addon_class_name};
         my $addon = $self->register_addon( $addon_class_name, $addon_pref );
-        $self->{installed}->{$addon_class_name} = $addon;
+        $self->addon( $addon_class_name => $addon );
 
         # Subscribe hooks
         $self->to_enable($addon) if $addon->is_enabled;
