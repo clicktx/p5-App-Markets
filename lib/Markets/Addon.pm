@@ -14,20 +14,29 @@ has addon_name => sub {
     my $package = __PACKAGE__;
     shift->class_name =~ /${package}::(.*)/ and $1;
 };
-has routes => sub {
-    my $self             = shift;
-    my $addon_class_name = $self->class_name;
-    $self->app->addons->installed->{$addon_class_name}->{routes}->to( namespace => __PACKAGE__ );
-};
-has 'app';
+has [qw/app config hooks is_enabled routes/];
 
 # Make addon home path
 sub addon_home { Mojo::Home->new->detect(shift) }
-sub register   { croak 'Method "register" not implemented by subclass' }
 
-sub init {
+sub new {
+    my $self = shift;
+    $self = $self->SUPER::new(@_);
+    Scalar::Util::weaken $self->{app};
+    return $self;
+}
+
+sub register { croak 'Method "register" not implemented by subclass' }
+
+sub setup {
     my $self = shift;
     my $app  = $self->app;
+
+    # Routes
+    my $addon_class_name = $self->class_name;
+    my $r = Mojolicious::Routes->new;
+    $r = $r->to( namespace => __PACKAGE__ )->name($addon_class_name);
+    $self->routes($r);
 
     # Load lexicon file.
     my $addons_dir = $app->addons->dir;
@@ -44,6 +53,7 @@ sub init {
 
     # Call to register method for YourAddon.
     $self->register($app);
+    return $self;
 }
 
 sub add_action_hook { shift->_add_hook( 'action_hook', @_ ) }
@@ -52,18 +62,14 @@ sub rm_action_hook { shift->_remove_hook( 'action_hook', @_ ) }
 sub rm_filter_hook { shift->_remove_hook( 'filter_hook', @_ ) }
 
 sub _add_hook {
-    my ( $self, $type, $name, $cb, $arg ) =
-      ( shift, shift, shift, shift, shift // {} );
+    my ( $self, $type, $name, $cb, $arg ) = ( shift, shift, shift, shift, shift // {} );
     my $addon_class_name = $self->class_name;
 
-    my $addon          = $self->app->addons->installed->{$addon_class_name};
-    my $hook_prioritie = $addon->{config}->{hook_priorities}->{$name};
-
-    my $default_priority = $arg->{default_priority} || $self->app->addons->PRIORITY_DEFAULT;
-    my $priority = $hook_prioritie ? $hook_prioritie : $default_priority;
-
-    my $hooks      = $addon->{hooks};
-    my $cb_fn_name = B::svref_2object($cb)->GV->NAME;
+    my $hook_prioritie   = $self->{config}->{hook_priorities}->{$name};
+    my $default_priority = $arg->{default_priority} || $self->app->addons->DEFAULT_PRIORITY;
+    my $priority         = $hook_prioritie ? $hook_prioritie : $default_priority;
+    my $hooks            = $self->{hooks};
+    my $cb_fn_name = B::svref_2object($cb)->GV->NAME;    # TODO: 必要か再考
 
     push @{$hooks},
       {
@@ -144,7 +150,7 @@ Markets::Addon - Markets External plugin system
   package Markets::Addon::YourAddon;
   use Mojo::Base 'Markets::Addon';
 
-  sub init {
+  sub register {
     my ($self, $app, $arg) = @_;
 
     # Your addon code here!
@@ -174,6 +180,9 @@ Return the class name of addon.
 
 Return the addon name.
 
+=head2 is_enabled
+
+Return boolean.
 
 =head2 routes
 
@@ -242,13 +251,13 @@ Get content for addon template file or DATA section.
 
 format C<html> and handler C<ep> onry. ex) template_name.html.ep
 
-=head2 init
+=head2 setup
 
 This method will be called by L<Markets::Addon> at startup time.
 
 =head2 register
 
-This method will be called after L<Markets::Addon>::init() at startup time.
+This method will be called after L<Markets::Addon>::setup() at startup time.
 Meant to be overloaded in a subclass.
 
 =head1 SEE ALSO
