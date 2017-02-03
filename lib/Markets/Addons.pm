@@ -8,7 +8,7 @@ use constant { DEFAULT_PRIORITY => '100' };
 has dir         => sub { shift->app->pref('addons_dir') };
 has action_hook => sub { Markets::Addons::ActionHook->new };
 has filter_hook => sub { Markets::Addons::FilterHook->new };
-has [qw/app uploaded/];
+has [qw/app installed uploaded/];
 
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
@@ -142,7 +142,7 @@ sub _remove_hooks {
 sub _remove_routes {
     my ( $self, $addon ) = @_;
     my $addon_class_name = ref $addon;
-    my $routes = $self->app->routes->find($addon_class_name);
+    my $routes           = $self->app->routes->find($addon_class_name);
 
     if ( ref $routes ) {
         $routes->remove;
@@ -198,16 +198,13 @@ Markets::Addons::FilterHook object.
 
 =head2 installed
 
-    # Getter
-    my $installed_addons = $addons->installed; # Return Hash ref.
-    my $addon = $addons->installed('Markets::Addon::Name'); # Return Markets::Addon Object.
+    my $installed_addons = $addons->installed;
 
-    # Setter
-    $addons->installed( 'Markets::Addon::Newaddon' => Markets::Addon::Newaddon->new );
+Return Hash ref.
 
 =head2 uploaded
 
-    my $uploaded = $addons->uploaded;
+    my $uploaded_addons = $addons->uploaded;
 
 Return L<Mojo::Collection> object.
 
