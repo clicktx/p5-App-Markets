@@ -52,8 +52,10 @@ subtest 'addon basic' => sub {
 };
 
 subtest 'load addon' => sub {
-    eval { $app->addons->register_addon("Markets::Addon::NotFoundAddon") };
+    my $addon;
+    eval { my $addon = $app->addons->load_addon("Markets::Addon::NotFoundAddon") };
     is $@, 'Addon "Markets::Addon::NotFoundAddon" missing, maybe you need to upload it?' . "\n";
+    is $addon, undef, "don't load addon";
 };
 
 subtest 'for t/addons TestAddon' => sub {

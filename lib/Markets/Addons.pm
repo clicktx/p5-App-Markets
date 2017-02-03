@@ -32,7 +32,7 @@ sub init {
 
         # Register addon
         my $addon_pref = $installed_addons->{$addon_class_name};
-        my $addon = $self->register_addon( $addon_class_name, $addon_pref );
+        my $addon = $self->load_addon( $addon_class_name, $addon_pref );
         $self->addon( $addon_class_name => $addon );
 
         # Subscribe hooks
@@ -50,7 +50,7 @@ sub new {
     $self;
 }
 
-sub register_addon {
+sub load_addon {
     my ( $self, $addon_class_name, $addon_pref ) = @_;
 
     $self->_add_inc_path($addon_class_name) unless $addon_class_name->can('new');
@@ -252,11 +252,12 @@ This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook:
 
     $addons->init(\%addon_settings);
 
-=head2 register_addon
+=head2 load_addon
 
-    $addons->register_addon('Markets::Addons::MyAddon');
+    my $addon = $addons->load_addon( $addon_class_name, $addon_pref );
 
-Load a addon from the configured by full module name and run register.
+Load an addon from the configured by full module name.
+Return L<Markets::Addon> object.
 
 =head2 subscribe_hooks
 
