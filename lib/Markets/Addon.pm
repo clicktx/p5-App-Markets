@@ -196,6 +196,9 @@ Return L<Mojolicious::Routes> object.
 
 =head1 METHODS
 
+L<Markets::Addon> inherits all methods from L<Mojolicious::Plugin> and
+implements the following new ones.
+
 =head2 addon_home
 
   # /path/to/Markets/addon/YourAddon

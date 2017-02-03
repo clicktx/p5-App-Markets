@@ -223,8 +223,12 @@ Return Hash ref.
     my $uploaded_addons = $addons->uploaded;
 
 Return L<Mojo::Collection> object.
+The list of all uploaded addons.
 
 =head1 METHODS
+
+L<Markets::Addons> inherits all methods from L<Mojolicious::EventEmitter> and implements
+the following new ones.
 
 =head2 addon
 
@@ -261,7 +265,7 @@ Return L<Markets::Addon> object.
 
 =head2 subscribe_hooks
 
-    $addons->subscribe_hooks('Markets::Addon::MyAddon');
+    $addons->subscribe_hooks($addon);
 
 Subscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
 
@@ -279,7 +283,7 @@ Change addon status to disable.
 
 =head2 unsubscribe_hooks
 
-    $addons->unsubscribe_hooks('Markets::Addon::MyAddon');
+    $addons->unsubscribe_hooks($addon);
 
 Unsubscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
 
