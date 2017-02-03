@@ -187,7 +187,7 @@ Markets::Addons - Addon manager for Markets
 =head1 DESCRIPTION
 
 L<Markets::Addons> is L<Mojolicious::Plugins> Based.
-This module is addon maneger of Markets.
+This module is an addon manager of Markets.
 
 =head1 EVENTS
 
