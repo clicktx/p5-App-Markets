@@ -21,11 +21,8 @@ sub enable {
     my $target = $self->param('target');
     my $addon  = $self->addons->addon($target);
 
-    # stash addons を更新
-    # $addon->{is_enabled} = 1;
-    $addon->is_enabled(1);
-
     # TODO: dbの更新処理
+    # $addon->is_enabled(1); はAddons::to_enableで行う
 
     # hook routes有効化
     $self->app->addons->to_enable($addon);
@@ -38,10 +35,8 @@ sub disable {
     my $target = $self->param('target');
     my $addon  = $self->addons->addon($target);
 
-    # stash addons を更新
-    $addon->is_enabled(0);
-
     # TODO: dbの更新処理
+    # $addon->is_enabled(0); はAddons::to_disableで行う
 
     # hook routes無効化
     $self->app->addons->to_disable($addon);

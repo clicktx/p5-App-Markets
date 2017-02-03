@@ -77,6 +77,8 @@ sub to_enable {
 
     # Add routes in to the App.
     $self->_add_routes($addon);
+
+    $addon->is_enabled(1);
 }
 
 sub to_disable {
@@ -87,6 +89,8 @@ sub to_disable {
 
     # Remove routes for App.
     $self->_remove_routes($addon);
+
+    $addon->is_enabled(0);
 }
 
 sub unsubscribe_hooks {
