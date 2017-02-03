@@ -263,13 +263,13 @@ Subscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> ev
 
 =head2 to_enable
 
-    $addons->to_enable('Markets::Addon::MyAddon');
+    $addons->to_enable($addon_object);
 
 Change addon status to enable.
 
 =head2 to_disable
 
-    $addons->to_disable('Markets::Addon::MyAddon');
+    $addons->to_disable($addon_object);
 
 Change addon status to disable.
 
