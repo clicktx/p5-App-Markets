@@ -11,9 +11,10 @@ my $r   = $app->routes->namespaces( ['Markets::Controller'] );
 $r->find('RN_category_name_base')->remove;    # Hack for name base category
 
 subtest 'addons basic' => sub {
+    my $addons = $app->addons;
 
     # uploaded
-    my $uploded_addons = $app->addons->uploaded->to_array;
+    my $uploded_addons = $addons->uploaded->to_array;
     is ref $uploded_addons, 'ARRAY', 'return array ref';
     is @{$uploded_addons}, 3, 'right all addons';
     my @sort_array =
@@ -26,17 +27,23 @@ subtest 'addons basic' => sub {
       'right all addons';
 
     # installed
-    is ref $app->addons->installed, 'HASH', 'right installed method';
-    is ref $app->addons->addon,     'HASH', 'right addon method';
+    is ref $addons->installed, 'HASH', 'right installed method';
+    is ref $addons->addon,     'HASH', 'right addon method';
 
     # Get addon object
-    my $addon = $app->addons->addon('Markets::Addon::TestAddon');
+    my $addon = $addons->addon('Markets::Addon::TestAddon');
     ok( defined $addon && $addon->isa('Markets::Addon') ), 'right addon($addon_name)';
 
     # Set addon object
     my $new_addon = Markets::Addon::TestAddon->new;
-    $app->addons->addon( new_addon => $new_addon );
-    is ref $app->addons->addon('new_addon'), 'Markets::Addon::TestAddon', 'right set addon';
+    $addons->addon( new_addon => $new_addon );
+    is ref $addons->addon('new_addon'), 'Markets::Addon::TestAddon', 'right set addon';
+
+    # Load addon
+    my $not_found_addon;
+    eval { my $not_found_addon = $addons->load_addon("Markets::Addon::NotFoundAddon") };
+    is $@, 'Addon "Markets::Addon::NotFoundAddon" missing, maybe you need to upload it?' . "\n";
+    is $not_found_addon, undef, "don't load addon";
 };
 
 subtest 'addon basic' => sub {
@@ -49,13 +56,6 @@ subtest 'addon basic' => sub {
     ok $addon->is_enabled, 'right addon is enabled';
     $addon->is_enabled(0);
     ok !$addon->is_enabled, 'right addon is desabled';
-};
-
-subtest 'load addon' => sub {
-    my $addon;
-    eval { my $addon = $app->addons->load_addon("Markets::Addon::NotFoundAddon") };
-    is $@, 'Addon "Markets::Addon::NotFoundAddon" missing, maybe you need to upload it?' . "\n";
-    is $addon, undef, "don't load addon";
 };
 
 subtest 'for t/addons TestAddon' => sub {
@@ -78,8 +78,9 @@ subtest 'for t/addons TestAddon' => sub {
     $t->get_ok('/test_addon/nooo')->status_is(404);
 
     # Change disable addon
-    my $addon = $app->addons->{installed}->{'Markets::Addon::TestAddon'};
-    $app->addons->to_disable($addon);
+    my $addons = $app->addons;
+    my $addon  = $addons->addon('Markets::Addon::TestAddon');
+    $addons->to_disable($addon);
 
     $test_action = $app->action_hook->subscribers('action_example_hook');
     $test_filter = $app->filter_hook->subscribers('filter_example_hook');
