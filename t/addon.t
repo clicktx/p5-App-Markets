@@ -10,8 +10,9 @@ my $app = $t->app;
 my $r   = $app->routes->namespaces( ['Markets::Controller'] );
 $r->find('RN_category_name_base')->remove;    # Hack for name base category
 
-subtest 'basic' => sub {
+subtest 'addons basic' => sub {
 
+    # uploaded
     my $uploded_addons = $app->addons->uploaded->to_array;
     is ref $uploded_addons, 'ARRAY', 'return array ref';
     is @{$uploded_addons}, 3, 'right all addons';
@@ -24,6 +25,21 @@ subtest 'basic' => sub {
       ],
       'right all addons';
 
+    # installed
+    is ref $app->addons->installed, 'HASH', 'right installed method';
+    is ref $app->addons->addon,     'HASH', 'right addon method';
+
+    # Get addon object
+    my $addon = $app->addons->addon('Markets::Addon::TestAddon');
+    ok $addon->isa('Markets::Addon'), 'right addon($addon_name)';
+
+    # Set addon object
+    my $new_addon = Markets::Addon::TestAddon->new;
+    $app->addons->addon( new_addon => $new_addon );
+    is ref $app->addons->addon('new_addon'), 'Markets::Addon::TestAddon', 'right set addon';
+};
+
+subtest 'addon basic' => sub {
     my $addon = Markets::Addon::TestAddon->new;
     is $addon->class_name, 'Markets::Addon::TestAddon', 'right class name';
     is $addon->addon_name, 'TestAddon', 'right addon name';

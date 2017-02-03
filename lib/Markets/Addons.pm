@@ -10,6 +10,15 @@ has action_hook => sub { Markets::Addons::ActionHook->new };
 has filter_hook => sub { Markets::Addons::FilterHook->new };
 has [qw/app installed uploaded/];
 
+sub addon {
+    my $self = shift;
+    @_
+      ? @_ > 1
+          ? $self->{installed}->{ $_[0] } = $_[1]
+          : $self->{installed}->{ $_[0] }
+      : $self->{installed};
+}
+
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
 
@@ -209,6 +218,15 @@ Return Hash ref.
 Return L<Mojo::Collection> object.
 
 =head1 METHODS
+
+=head2 addon
+
+    # Getter
+    my $installed_addons = $addons->addon; # Return Hash ref
+    my $addon = $addons->addon('Markets::Addon::Name'); # Return Object
+
+    # Setter
+    $addons->addon( 'Markets::Addon::Name' => Markets::Addon::Name->new );
 
 =head2 emit
 
