@@ -10,7 +10,7 @@ use constant {
 };
 
 has class_name => sub { ref shift };
-has addon_name => sub {
+has name => sub {
     my $package = __PACKAGE__;
     shift->class_name =~ /${package}::(.*)/ and $1;
 };
@@ -40,7 +40,7 @@ sub setup {
 
     # Load lexicon file.
     my $addons_dir = $app->addons->dir;
-    my $addon_name = $self->addon_name;
+    my $addon_name = $self->name;
     my $locale_dir = Mojo::File::path( $app->home, $addons_dir, $addon_name, 'locale' );
 
     my $text_domain = decamelize($addon_name);
@@ -174,9 +174,9 @@ Return the application object.
 
 Return the class name of addon.
 
-=head2 addon_name
+=head2 name
 
-    my $addon_name = $addon->addon_name;
+    my $addon_name = $addon->name;
 
 Return the addon name.
 
