@@ -123,19 +123,20 @@ sub _fetch_addons_dir {
 
 sub _load_class {
     my $class = shift;
-    return $class->isa('Markets::Addon')
+    return $class->isa(ADDON_NAME_SPACE)
       unless my $e = load_class $class;
     ref $e ? die $e : return undef;
 }
 
 sub _add_inc_path {
     my ( $self, $addon_class_name ) = @_;
-    $addon_class_name =~ s/Markets::Addon:://;
-    my $addons_dir = $self->dir;
 
-    # TODO: testスクリプト用に$self->app->homeを渡す必要がある。
-    my $path = Mojo::File::path( $self->app->home, $addons_dir, $addon_class_name, 'lib' )
-      ->to_abs->to_string;
+    my $addons_dir = $self->dir;
+    my $namespace  = ADDON_NAME_SPACE;
+    my $dir        = ( $addon_class_name =~ /${namespace}::(.*)/ and $1 );
+
+    # testスクリプト用にabs_pathを渡す必要がある。
+    my $path = Mojo::File::path( $self->app->home, $addons_dir, $dir, 'lib' )->to_abs->to_string;
     push @INC, $path;
 }
 
