@@ -128,7 +128,7 @@ sub _load_class {
     my $class = shift;
     return $class->isa(ADDON_NAME_SPACE)
       unless my $e = load_class $class;
-    ref $e ? die $e : return undef;
+    ref $e ? die $e : return;
 }
 
 sub _add_inc_path {
