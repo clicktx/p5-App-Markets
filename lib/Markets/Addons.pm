@@ -25,7 +25,7 @@ sub addon {
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
 
-    $self->uploaded( $self->_fetch_addons_dir );
+    $self->uploaded( $self->_fetch_uploded_addons );
     $self->remove_hooks( [] );
 
     foreach my $addon_class_name ( keys %{$installed_addons} ) {
@@ -115,7 +115,7 @@ sub _add_routes {
     $self->app->routes->add_child($r) if @{ $r->children };
 }
 
-sub _fetch_addons_dir {
+sub _fetch_uploded_addons {
     my $self       = shift;
     my $addons_dir = $self->dir;
     my $rel_dir    = Mojo::File::path( $self->app->home, $addons_dir );
