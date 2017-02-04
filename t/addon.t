@@ -16,7 +16,7 @@ subtest 'addons basic' => sub {
     # uploaded
     my $uploded_addons = $addons->uploaded->to_array;
     is ref $uploded_addons, 'ARRAY', 'return array ref';
-    is @{$uploded_addons}, 3, 'right all addons';
+    # is @{$uploded_addons}, 3, 'right uploaded addons';
     my @sort_array =
       sort { $a cmp $b } @{$uploded_addons};    # Hack: OSによる違いに対処
     is_deeply \@sort_array,
@@ -24,7 +24,7 @@ subtest 'addons basic' => sub {
         'Markets::Addon::DisableAddon', 'Markets::Addon::NotInstallAddon',
         'Markets::Addon::TestAddon'
       ],
-      'right all addons';
+      'right uploaded addons';
 
     # installed
     is ref $addons->installed, 'HASH', 'right installed method';
@@ -39,11 +39,16 @@ subtest 'addons basic' => sub {
     $addons->addon( new_addon => $new_addon );
     is ref $addons->addon('new_addon'), 'Markets::Addon::TestAddon', 'right set addon';
 
-    # Load addon
-    my $not_found_addon;
-    eval { my $not_found_addon = $addons->load_addon("Markets::Addon::NotFoundAddon") };
-    is $@, 'Addon "Markets::Addon::NotFoundAddon" missing, maybe you need to upload it?' . "\n";
-    is $not_found_addon, undef, "don't load addon";
+    subtest 'load addon' => sub {
+        my $not_found_addon;
+        eval { $not_found_addon = $addons->load_addon("NotFoundAddon") };
+        is $@, 'Addon "NotFoundAddon" missing, maybe you need to upload it?' . "\n";
+
+        # Full module name
+        eval { $not_found_addon = $addons->load_addon("Markets::Addon::NotFoundAddon") };
+        is $@, 'Addon "Markets::Addon::NotFoundAddon" missing, maybe you need to upload it?' . "\n";
+        is $not_found_addon, undef, "don't load addon";
+    };
 };
 
 subtest 'addon basic' => sub {

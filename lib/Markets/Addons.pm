@@ -51,14 +51,17 @@ sub new {
 }
 
 sub load_addon {
-    my ( $self, $addon_class_name, $addon_pref ) = @_;
+    my ( $self, $name, $addon_pref ) = @_;
 
-    $self->_add_inc_path($addon_class_name) unless $addon_class_name->can('new');
+    my $full_module_name = $name =~ /^[a-z]/ ? ADDON_NAME_SPACE . '::' . camelize $name : $name;
+    $self->_add_inc_path($full_module_name) unless $full_module_name->can('new');
+    return $full_module_name->new(
+        app => $self->app,
+        %{$addon_pref}
+      )->setup
+      if _load_class($full_module_name);
 
-    my $class = $addon_class_name =~ /^[a-z]/ ? camelize $addon_class_name : $addon_class_name;
-    return $class->new( app => $self->app, %{$addon_pref} )->setup if _load_class($class);
-
-    die qq{Addon "$addon_class_name" missing, maybe you need to upload it?\n};
+    die qq{Addon "$name" missing, maybe you need to upload it?\n};
 }
 
 sub subscribe_hooks {
@@ -259,9 +262,10 @@ This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook:
 
 =head2 load_addon
 
-    my $addon = $addons->load_addon( $addon_class_name, $addon_pref );
+    my $addon = $addons->load_addon( $addon_name, $addon_pref );
+    my $addon = $addons->load_addon( $addon_full_module_name, $addon_pref );
 
-Load an addon from the configured by full module name.
+Load an addon from the configured.
 Return L<Markets::Addon> object.
 
 =head2 subscribe_hooks
