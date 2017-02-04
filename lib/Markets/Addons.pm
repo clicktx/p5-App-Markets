@@ -109,6 +109,18 @@ sub unsubscribe_hooks {
     $self->app->renderer->cache( Mojo::Cache->new );
 }
 
+sub _add_inc_path {
+    my ( $self, $addon_class_name ) = @_;
+
+    my $addons_dir = $self->dir;
+    my $namespace  = ADDON_NAME_SPACE;
+    my $dir        = ( $addon_class_name =~ /${namespace}::(.*)/ and $1 );
+
+    # testスクリプト用にabs_pathを渡す必要がある。
+    my $path = Mojo::File::path( $self->app->home, $addons_dir, $dir, 'lib' )->to_abs->to_string;
+    push @INC, $path;
+}
+
 sub _add_routes {
     my ( $self, $addon ) = @_;
     my $r = $addon->routes;
@@ -134,18 +146,6 @@ sub _load_class {
 sub _make_full_module_name {
     my $name = shift;
     return $name =~ /^[a-z]/ ? ADDON_NAME_SPACE . '::' . camelize $name : $name;
-}
-
-sub _add_inc_path {
-    my ( $self, $addon_class_name ) = @_;
-
-    my $addons_dir = $self->dir;
-    my $namespace  = ADDON_NAME_SPACE;
-    my $dir        = ( $addon_class_name =~ /${namespace}::(.*)/ and $1 );
-
-    # testスクリプト用にabs_pathを渡す必要がある。
-    my $path = Mojo::File::path( $self->app->home, $addons_dir, $dir, 'lib' )->to_abs->to_string;
-    push @INC, $path;
 }
 
 sub _remove_hooks {
