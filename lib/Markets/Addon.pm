@@ -61,7 +61,6 @@ sub rm_filter_hook { shift->_remove_hook( 'filter_hook', @_ ) }
 
 sub _add_hook {
     my ( $self, $type, $name, $cb, $arg ) = ( shift, shift, shift, shift, shift // {} );
-    my $class_name = $self->class_name;
 
     my $hook_prioritie   = $self->{config}->{hook_priorities}->{$name};
     my $default_priority = $arg->{default_priority} || $self->app->addons->DEFAULT_PRIORITY;
