@@ -53,7 +53,7 @@ sub new {
 sub load_addon {
     my ( $self, $name, $addon_pref ) = @_;
 
-    my $full_module_name = _make_full_module_name($name);
+    my $full_module_name = _make_addon_full_name($name);
     $self->_add_inc_path($full_module_name) unless $full_module_name->can('new');
     return $full_module_name->new(
         app => $self->app,
@@ -143,7 +143,7 @@ sub _load_class {
     ref $e ? die $e : return;
 }
 
-sub _make_full_module_name {
+sub _make_addon_full_name {
     my $name = shift;
     return $name =~ /^[a-z]/ ? ADDON_NAME_SPACE . '::' . camelize $name : $name;
 }
