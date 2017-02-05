@@ -54,7 +54,7 @@ subtest 'addons basic' => sub {
 subtest 'addon basic' => sub {
     my $addon = Markets::Addon::TestAddon->new;
     is $addon->class_name, 'Markets::Addon::TestAddon', 'right class name';
-    is $addon->name, 'TestAddon', 'right addon name';
+    is $addon->name, 'test_addon', 'right addon name';
 
     # enable/disable
     $addon->is_enabled(1);
