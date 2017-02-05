@@ -30,7 +30,6 @@ sub register { croak 'Method "register" not implemented by subclass' }
 
 sub setup {
     my $self = shift;
-    my $app  = $self->app;
 
     # Routes
     my $class_name = $self->class_name;
@@ -42,7 +41,7 @@ sub setup {
     my $addon_home = addon_home($class_name);
     my $addon_name = $self->name;
     my $locale_dir = Mojo::File::path( $addon_home, 'locale' );
-    $app->lexicon(
+    $self->app->lexicon(
         {
             search_dirs => [$locale_dir],
             data        => [ "*::$addon_name" => '*.po' ],    # set text domain
@@ -50,7 +49,7 @@ sub setup {
     ) if -d $locale_dir;
 
     # Call to register method for YourAddon.
-    $self->register($app);
+    $self->register($self->app);
     return $self;
 }
 
