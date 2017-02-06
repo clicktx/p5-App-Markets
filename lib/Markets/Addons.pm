@@ -54,7 +54,7 @@ sub new {
 sub load_addon {
     my ( $self, $name, $addon_pref ) = @_;
 
-    my $full_module_name = _make_addon_full_name($name);
+    my $full_module_name = _full_module_name($name);
     $self->_add_inc_path($full_module_name) unless $full_module_name->can('new');
     return $full_module_name->new(
         app => $self->app,
@@ -137,16 +137,18 @@ sub _fetch_uploded_addons {
     return Mojo::Collection->new(@addons);
 }
 
+sub _full_module_name {
+    my $name = shift;
+    my $suffix    = $name =~ /^[a-z]/ ? camelize $name : $name;
+    my $namespace = ADDON_NAME_SPACE;
+    my $class     = $suffix =~ /${namespace}::/ ? $suffix : $namespace . '::' . $suffix;
+}
+
 sub _load_class {
     my $class = shift;
     return $class->isa(ADDON_NAME_SPACE)
       unless my $e = load_class $class;
     ref $e ? die $e : return;
-}
-
-sub _make_addon_full_name {
-    my $name = shift;
-    return $name =~ /^[a-z]/ ? ADDON_NAME_SPACE . '::' . camelize $name : $name;
 }
 
 sub _remove_hooks {
@@ -246,9 +248,9 @@ the following new ones.
     my $installed_addons = $addons->addon; # Return Hash ref
 
     # Get addon Object
-    my $addon = $addons->addon('Markets::Addon::MyAddon'); # or
-    my $addon = $addons->addon('MyAddon'); # or
     my $addon = $addons->addon('my_addon');
+    my $addon = $addons->addon('MyAddon');
+    my $addon = $addons->addon('Markets::Addon::MyAddon');
 
     # Setter
     $addons->addon( 'my_addon' => Markets::Addon::MyAddon->new );
@@ -272,8 +274,9 @@ This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook:
 
 =head2 load_addon
 
-    my $addon = $addons->load_addon( $addon_name, $addon_pref );
-    my $addon = $addons->load_addon( $addon_full_module_name, $addon_pref );
+    my $addon = $addons->load_addon( 'my_addon', $addon_pref );
+    my $addon = $addons->load_addon( 'MyAddon', $addon_pref );
+    my $addon = $addons->load_addon( 'Markets::Addon::MyAddon', $addon_pref );
 
 Load an addon from the configured.
 Return L<Markets::Addon> object.
