@@ -2,7 +2,7 @@ package Markets::Addons;
 use Mojo::Base 'Markets::EventEmitter';
 
 use Mojo::Loader 'load_class';
-use Mojo::Util qw/camelize/;
+use Mojo::Util qw/camelize decamelize/;
 use constant {
     DEFAULT_PRIORITY => '100',
     ADDON_NAME_SPACE => 'Markets::Addon',
@@ -15,11 +15,12 @@ has [qw/app installed uploaded remove_hooks/];
 
 sub addon {
     my $self = shift;
-    @_
-      ? @_ > 1
-          ? $self->{installed}->{ $_[0] } = $_[1]
-          : $self->{installed}->{ $_[0] }
-      : $self->{installed};
+    return $self->{installed} unless @_;
+
+    my $namespace = ADDON_NAME_SPACE;
+    my $name = $_[0] =~ /${namespace}::(.*)/ ? decamelize $1 : decamelize $_[0];
+
+    @_ > 1 ? $self->{installed}->{$name} = $_[1] : $self->{installed}->{$name};
 }
 
 sub init {
@@ -241,12 +242,16 @@ the following new ones.
 
 =head2 addon
 
-    # Getter
+    # Get all addon object
     my $installed_addons = $addons->addon; # Return Hash ref
-    my $addon = $addons->addon('Markets::Addon::Name'); # Return Object
+
+    # Get addon Object
+    my $addon = $addons->addon('Markets::Addon::MyAddon'); # or
+    my $addon = $addons->addon('MyAddon'); # or
+    my $addon = $addons->addon('my_addon');
 
     # Setter
-    $addons->addon( 'Markets::Addon::Name' => Markets::Addon::Name->new );
+    $addons->addon( 'my_addon' => Markets::Addon::MyAddon->new );
 
 =head2 emit
 

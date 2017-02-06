@@ -33,6 +33,10 @@ subtest 'addons basic' => sub {
     # Get addon object
     my $addon = $addons->addon('Markets::Addon::TestAddon');
     ok( defined $addon && $addon->isa('Markets::Addon') ), 'right addon($addon_name)';
+    is ref $addons->addon('Markets::Addon::TestAddon'), 'Markets::Addon::TestAddon',
+      'access full module name';
+    is ref $addons->addon('TestAddon'),  'Markets::Addon::TestAddon', 'access camel case';
+    is ref $addons->addon('test_addon'), 'Markets::Addon::TestAddon', 'access snake case';
 
     # Set addon object
     my $new_addon = Markets::Addon::TestAddon->new;
