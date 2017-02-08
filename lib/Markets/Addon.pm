@@ -3,16 +3,16 @@ use Mojo::Base 'Mojolicious::Plugin';
 
 use B;
 use Carp 'croak';
-use Mojo::Util qw/decamelize/;
+use Mojo::Util qw/camelize decamelize/;
 use constant {
     FORMAT  => 'html',
     HANDLER => 'ep',
 };
 
 has class_name => sub { ref shift };
-has addon_name => sub {
+has name => sub {
     my $package = __PACKAGE__;
-    shift->class_name =~ /${package}::(.*)/ and $1;
+    shift->class_name =~ /${package}::(.*)/ and decamelize $1;
 };
 has [qw/app config hooks is_enabled routes/];
 
@@ -30,29 +30,26 @@ sub register { croak 'Method "register" not implemented by subclass' }
 
 sub setup {
     my $self = shift;
-    my $app  = $self->app;
 
     # Routes
-    my $addon_class_name = $self->class_name;
-    my $r = Mojolicious::Routes->new;
-    $r = $r->to( namespace => __PACKAGE__ )->name($addon_class_name);
+    my $class_name = $self->class_name;
+    my $r                = Mojolicious::Routes->new;
+    $r = $r->to( namespace => __PACKAGE__ )->name($class_name);
     $self->routes($r);
 
     # Load lexicon file.
-    my $addons_dir = $app->addons->dir;
-    my $addon_name = $self->addon_name;
-    my $locale_dir = Mojo::File::path( $app->home, $addons_dir, $addon_name, 'locale' );
-
-    my $text_domain = decamelize($addon_name);
-    $app->lexicon(
+    my $addon_home = addon_home($class_name);
+    my $addon_name = $self->name;
+    my $locale_dir = Mojo::File::path( $addon_home, 'locale' );
+    $self->app->lexicon(
         {
             search_dirs => [$locale_dir],
-            data        => [ "*::$text_domain" => '*.po' ],    # set text domain
+            data        => [ "*::$addon_name" => '*.po' ],    # set text domain
         }
     ) if -d $locale_dir;
 
     # Call to register method for YourAddon.
-    $self->register($app);
+    $self->register($self->app);
     return $self;
 }
 
@@ -63,7 +60,6 @@ sub rm_filter_hook { shift->_remove_hook( 'filter_hook', @_ ) }
 
 sub _add_hook {
     my ( $self, $type, $name, $cb, $arg ) = ( shift, shift, shift, shift, shift // {} );
-    my $addon_class_name = $self->class_name;
 
     my $hook_prioritie   = $self->{config}->{hook_priorities}->{$name};
     my $default_priority = $arg->{default_priority} || $self->app->addons->DEFAULT_PRIORITY;
@@ -174,9 +170,9 @@ Return the application object.
 
 Return the class name of addon.
 
-=head2 addon_name
+=head2 name
 
-    my $addon_name = $addon->addon_name;
+    my $addon_name = $addon->name;
 
 Return the addon name.
 

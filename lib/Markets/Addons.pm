@@ -2,7 +2,7 @@ package Markets::Addons;
 use Mojo::Base 'Markets::EventEmitter';
 
 use Mojo::Loader 'load_class';
-use Mojo::Util qw/camelize/;
+use Mojo::Util qw/camelize decamelize/;
 use constant {
     DEFAULT_PRIORITY => '100',
     ADDON_NAME_SPACE => 'Markets::Addon',
@@ -15,11 +15,12 @@ has [qw/app installed uploaded remove_hooks/];
 
 sub addon {
     my $self = shift;
-    @_
-      ? @_ > 1
-          ? $self->{installed}->{ $_[0] } = $_[1]
-          : $self->{installed}->{ $_[0] }
-      : $self->{installed};
+    return $self->{installed} unless @_;
+
+    my $namespace = ADDON_NAME_SPACE;
+    my $name = $_[0] =~ /${namespace}::(.*)/ ? decamelize $1 : decamelize $_[0];
+
+    @_ > 1 ? $self->{installed}->{$name} = $_[1] : $self->{installed}->{$name};
 }
 
 sub init {
@@ -53,7 +54,7 @@ sub new {
 sub load_addon {
     my ( $self, $name, $addon_pref ) = @_;
 
-    my $full_module_name = _make_full_module_name($name);
+    my $full_module_name = _full_module_name($name);
     $self->_add_inc_path($full_module_name) unless $full_module_name->can('new');
     return $full_module_name->new(
         app => $self->app,
@@ -132,8 +133,15 @@ sub _fetch_uploded_addons {
     my $addons_dir = $self->dir;
     my $rel_dir    = Mojo::File::path( $self->app->home, $addons_dir );
     my @all_dir    = Markets::Util::directories($rel_dir);
-    my @addons     = map { $self->ADDON_NAME_SPACE . '::' . $_ } @all_dir;
+    my @addons     = map { decamelize $_ } @all_dir;
     return Mojo::Collection->new(@addons);
+}
+
+sub _full_module_name {
+    my $name      = shift;
+    my $suffix    = $name =~ /^[a-z]/ ? camelize $name : $name;
+    my $namespace = ADDON_NAME_SPACE;
+    my $class     = $suffix =~ /${namespace}::/ ? $suffix : $namespace . '::' . $suffix;
 }
 
 sub _load_class {
@@ -141,11 +149,6 @@ sub _load_class {
     return $class->isa(ADDON_NAME_SPACE)
       unless my $e = load_class $class;
     ref $e ? die $e : return;
-}
-
-sub _make_full_module_name {
-    my $name = shift;
-    return $name =~ /^[a-z]/ ? ADDON_NAME_SPACE . '::' . camelize $name : $name;
 }
 
 sub _remove_hooks {
@@ -241,12 +244,16 @@ the following new ones.
 
 =head2 addon
 
-    # Getter
+    # Get all addon object
     my $installed_addons = $addons->addon; # Return Hash ref
-    my $addon = $addons->addon('Markets::Addon::Name'); # Return Object
+
+    # Get addon Object
+    my $addon = $addons->addon('my_addon');
+    my $addon = $addons->addon('MyAddon');
+    my $addon = $addons->addon('Markets::Addon::MyAddon');
 
     # Setter
-    $addons->addon( 'Markets::Addon::Name' => Markets::Addon::Name->new );
+    $addons->addon( 'my_addon' => Markets::Addon::MyAddon->new );
 
 =head2 emit
 
@@ -267,8 +274,9 @@ This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook:
 
 =head2 load_addon
 
-    my $addon = $addons->load_addon( $addon_name, $addon_pref );
-    my $addon = $addons->load_addon( $addon_full_module_name, $addon_pref );
+    my $addon = $addons->load_addon( 'my_addon', $addon_pref );
+    my $addon = $addons->load_addon( 'MyAddon', $addon_pref );
+    my $addon = $addons->load_addon( 'Markets::Addon::MyAddon', $addon_pref );
 
 Load an addon from the configured.
 Return L<Markets::Addon> object.

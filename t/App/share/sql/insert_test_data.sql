@@ -3,8 +3,8 @@
 -- -----------------------------------------------------
 
 INSERT  INTO `markets`.`addons` (`id`, `name`, `is_enabled`)
-VALUES  (1, 'Markets::Addon::TestAddon','1'),
-        (2, 'Markets::Addon::DisableAddon', '0');
+VALUES  (1, 'test_addon','1'),
+        (2, 'disable_addon', '0');
 
 -- Addon hooks
 -- -----------------------------------------------------

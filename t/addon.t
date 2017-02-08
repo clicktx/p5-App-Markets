@@ -14,16 +14,10 @@ subtest 'addons basic' => sub {
     my $addons = $app->addons;
 
     # uploaded
-    my $uploded_addons = $addons->uploaded->to_array;
+    my $uploded_addons = $addons->uploaded->sort->to_array;
     is ref $uploded_addons, 'ARRAY', 'return array ref';
-    # is @{$uploded_addons}, 3, 'right uploaded addons';
-    my @sort_array =
-      sort { $a cmp $b } @{$uploded_addons};    # Hack: OSによる違いに対処
-    is_deeply \@sort_array,
-      [
-        'Markets::Addon::DisableAddon', 'Markets::Addon::NotInstallAddon',
-        'Markets::Addon::TestAddon'
-      ],
+    is @{$uploded_addons}, 3, 'right uploaded addons';
+    is_deeply $uploded_addons, [ 'disable_addon', 'not_install_addon', 'test_addon' ],
       'right uploaded addons';
 
     # installed
@@ -33,13 +27,30 @@ subtest 'addons basic' => sub {
     # Get addon object
     my $addon = $addons->addon('Markets::Addon::TestAddon');
     ok( defined $addon && $addon->isa('Markets::Addon') ), 'right addon($addon_name)';
+    is ref $addons->addon('Markets::Addon::TestAddon'), 'Markets::Addon::TestAddon',
+      'access full module name';
+    is ref $addons->addon('TestAddon'),  'Markets::Addon::TestAddon', 'access camel case';
+    is ref $addons->addon('test_addon'), 'Markets::Addon::TestAddon', 'access snake case';
 
     # Set addon object
-    my $new_addon = Markets::Addon::TestAddon->new;
-    $addons->addon( new_addon => $new_addon );
-    is ref $addons->addon('new_addon'), 'Markets::Addon::TestAddon', 'right set addon';
+    $addons->addon( 'Markets::Addon::FirstAddon' => Markets::Addon::TestAddon->new );
+    is ref $addons->addon('first_addon'), 'Markets::Addon::TestAddon', 'set addon full module name';
+    $addons->addon( SecondAddon => Markets::Addon::TestAddon->new );
+    is ref $addons->addon('second_addon'), 'Markets::Addon::TestAddon', 'set addon camel case';
+    $addons->addon( third_addon => Markets::Addon::TestAddon->new );
+    is ref $addons->addon('third_addon'), 'Markets::Addon::TestAddon', 'set addon snake case';
 
     subtest 'load addon' => sub {
+
+        #_full_module_name
+        is Markets::Addons::_full_module_name('Markets::Addon::MyAddon'), 'Markets::Addon::MyAddon';
+        is Markets::Addons::_full_module_name('MyAddon'),                 'Markets::Addon::MyAddon';
+        is Markets::Addons::_full_module_name('my_addon'),                'Markets::Addon::MyAddon';
+
+        is ref $addons->load_addon("Markets::Addon::TestAddon"), 'Markets::Addon::TestAddon';
+        is ref $addons->load_addon("TestAddon"),                 'Markets::Addon::TestAddon';
+        is ref $addons->load_addon("test_addon"),                'Markets::Addon::TestAddon';
+
         my $not_found_addon;
         eval { $not_found_addon = $addons->load_addon("NotFoundAddon") };
         is $@, 'Addon "NotFoundAddon" missing, maybe you need to upload it?' . "\n";
@@ -54,7 +65,7 @@ subtest 'addons basic' => sub {
 subtest 'addon basic' => sub {
     my $addon = Markets::Addon::TestAddon->new;
     is $addon->class_name, 'Markets::Addon::TestAddon', 'right class name';
-    is $addon->addon_name, 'TestAddon', 'right addon name';
+    is $addon->name, 'test_addon', 'right addon name';
 
     # enable/disable
     $addon->is_enabled(1);

@@ -3,10 +3,10 @@
 <h2>Admin Mode</h2>
 
 <div class="addon-list">
-% foreach my $addon(@$all_addons){
+% $uploaded_addons->sort->each( sub { my ($addon, $num) = @_;
 %    if ($installed_addons->{$addon}){
     <div class="addon-name addon-active">
-            installed: <%= $addon %>
+            <%= $num %>. installed: <%= $addon %>
             <div class="addon-status">
                 <% if ($installed_addons->{$addon}->{is_enabled}){ %>
                     <%= link_to url_for('/admin/addons/disable')->query(target => $addon) => begin %>on<% end %>
@@ -17,10 +17,10 @@
     </div>
 %    } else {
     <div class="addon-name addon-inactive">
-        not install: <%= $addon %>
+        <%= $num %>. not install: <%= $addon %>
     </div>
 %   }
-% }
+% });
 </div>
 
 <p>
