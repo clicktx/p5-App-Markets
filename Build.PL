@@ -39,6 +39,7 @@ my %args = (
         'Starlet' => '0.30',
         'Teng' => '0.28',
         'Time::TZOffset' => '0.04',
+        'perl' => '5.018',
     },
 
     recommends => {
@@ -52,7 +53,6 @@ my %args = (
 
     test_requires => {
         'Harriet' => '0',
-        'Safe' => '2.32',
         'Test::More' => '0',
         'Test::Perl::Critic' => '0',
         'Test::mysqld' => '0',

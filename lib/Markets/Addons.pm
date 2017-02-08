@@ -2,8 +2,11 @@ package Markets::Addons;
 use Mojo::Base 'Markets::EventEmitter';
 
 use Mojo::Loader 'load_class';
-use Mojo::Util qw/camelize/;
-use constant { DEFAULT_PRIORITY => '100' };
+use Mojo::Util qw/camelize decamelize/;
+use constant {
+    DEFAULT_PRIORITY => '100',
+    ADDON_NAME_SPACE => 'Markets::Addon',
+};
 
 has dir         => sub { shift->app->pref('addons_dir') };
 has action_hook => sub { Markets::Addons::ActionHook->new };
@@ -12,24 +15,25 @@ has [qw/app installed uploaded remove_hooks/];
 
 sub addon {
     my $self = shift;
-    @_
-      ? @_ > 1
-          ? $self->{installed}->{ $_[0] } = $_[1]
-          : $self->{installed}->{ $_[0] }
-      : $self->{installed};
+    return $self->{installed} unless @_;
+
+    my $namespace = ADDON_NAME_SPACE;
+    my $name = $_[0] =~ /${namespace}::(.*)/ ? decamelize $1 : decamelize $_[0];
+
+    @_ > 1 ? $self->{installed}->{$name} = $_[1] : $self->{installed}->{$name};
 }
 
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
 
-    $self->uploaded($self->_fetch_addons_dir);
-    $self->remove_hooks([]);
+    $self->uploaded( $self->_fetch_uploded_addons );
+    $self->remove_hooks( [] );
 
     foreach my $addon_class_name ( keys %{$installed_addons} ) {
 
         # Register addon
         my $addon_pref = $installed_addons->{$addon_class_name};
-        my $addon = $self->register_addon( $addon_class_name, $addon_pref );
+        my $addon = $self->load_addon( $addon_class_name, $addon_pref );
         $self->addon( $addon_class_name => $addon );
 
         # Subscribe hooks
@@ -47,15 +51,18 @@ sub new {
     $self;
 }
 
-sub register_addon {
-    my ( $self, $addon_class_name, $addon_pref ) = @_;
+sub load_addon {
+    my ( $self, $name, $addon_pref ) = @_;
 
-    $self->_add_inc_path($addon_class_name) unless $addon_class_name->can('new');
+    my $full_module_name = _full_module_name($name);
+    $self->_add_inc_path($full_module_name) unless $full_module_name->can('new');
+    return $full_module_name->new(
+        app => $self->app,
+        %{$addon_pref}
+      )->setup
+      if _load_class($full_module_name);
 
-    my $class = $addon_class_name =~ /^[a-z]/ ? camelize $addon_class_name : $addon_class_name;
-    return $class->new( app => $self->app, %{$addon_pref} )->setup if _load_class($class);
-
-    die qq{Addon "$addon_class_name" missing, maybe you need to upload it?\n};
+    die qq{Addon "$name" missing, maybe you need to upload it?\n};
 }
 
 sub subscribe_hooks {
@@ -103,37 +110,45 @@ sub unsubscribe_hooks {
     $self->app->renderer->cache( Mojo::Cache->new );
 }
 
+sub _add_inc_path {
+    my ( $self, $addon_class_name ) = @_;
+
+    my $addons_dir = $self->dir;
+    my $namespace  = ADDON_NAME_SPACE;
+    my $dir        = ( $addon_class_name =~ /${namespace}::(.*)/ and $1 );
+
+    # testスクリプト用にabs_pathを渡す必要がある。
+    my $path = Mojo::File::path( $self->app->home, $addons_dir, $dir, 'lib' )->to_abs->to_string;
+    push @INC, $path;
+}
+
 sub _add_routes {
     my ( $self, $addon ) = @_;
     my $r = $addon->routes;
     $self->app->routes->add_child($r) if @{ $r->children };
 }
 
-sub _fetch_addons_dir {
+sub _fetch_uploded_addons {
     my $self       = shift;
     my $addons_dir = $self->dir;
     my $rel_dir    = Mojo::File::path( $self->app->home, $addons_dir );
     my @all_dir    = Markets::Util::directories($rel_dir);
-    my @addons     = map { "Markets::Addon::" . $_ } @all_dir;
+    my @addons     = map { decamelize $_ } @all_dir;
     return Mojo::Collection->new(@addons);
+}
+
+sub _full_module_name {
+    my $name      = shift;
+    my $suffix    = $name =~ /^[a-z]/ ? camelize $name : $name;
+    my $namespace = ADDON_NAME_SPACE;
+    my $class     = $suffix =~ /${namespace}::/ ? $suffix : $namespace . '::' . $suffix;
 }
 
 sub _load_class {
     my $class = shift;
-    return $class->isa('Markets::Addon')
+    return $class->isa(ADDON_NAME_SPACE)
       unless my $e = load_class $class;
-    ref $e ? die $e : return undef;
-}
-
-sub _add_inc_path {
-    my ( $self, $addon_class_name ) = @_;
-    $addon_class_name =~ s/Markets::Addon:://;
-    my $addons_dir = $self->dir;
-
-    # TODO: testスクリプト用に$self->app->homeを渡す必要がある。
-    my $path = Mojo::File::path( $self->app->home, $addons_dir, $addon_class_name, 'lib' )
-      ->to_abs->to_string;
-    push @INC, $path;
+    ref $e ? die $e : return;
 }
 
 sub _remove_hooks {
@@ -187,7 +202,7 @@ Markets::Addons - Addon manager for Markets
 =head1 DESCRIPTION
 
 L<Markets::Addons> is L<Mojolicious::Plugins> Based.
-This module is addon maneger of Markets.
+This module is an addon manager of Markets.
 
 =head1 EVENTS
 
@@ -220,17 +235,25 @@ Return Hash ref.
     my $uploaded_addons = $addons->uploaded;
 
 Return L<Mojo::Collection> object.
+The list of all uploaded addons.
 
 =head1 METHODS
 
+L<Markets::Addons> inherits all methods from L<Mojolicious::EventEmitter> and implements
+the following new ones.
+
 =head2 addon
 
-    # Getter
+    # Get all addon object
     my $installed_addons = $addons->addon; # Return Hash ref
-    my $addon = $addons->addon('Markets::Addon::Name'); # Return Object
+
+    # Get addon Object
+    my $addon = $addons->addon('my_addon');
+    my $addon = $addons->addon('MyAddon');
+    my $addon = $addons->addon('Markets::Addon::MyAddon');
 
     # Setter
-    $addons->addon( 'Markets::Addon::Name' => Markets::Addon::Name->new );
+    $addons->addon( 'my_addon' => Markets::Addon::MyAddon->new );
 
 =head2 emit
 
@@ -249,15 +272,18 @@ This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook:
 
     $addons->init(\%addon_settings);
 
-=head2 register_addon
+=head2 load_addon
 
-    $addons->register_addon('Markets::Addons::MyAddon');
+    my $addon = $addons->load_addon( 'my_addon', $addon_pref );
+    my $addon = $addons->load_addon( 'MyAddon', $addon_pref );
+    my $addon = $addons->load_addon( 'Markets::Addon::MyAddon', $addon_pref );
 
-Load a addon from the configured by full module name and run register.
+Load an addon from the configured.
+Return L<Markets::Addon> object.
 
 =head2 subscribe_hooks
 
-    $addons->subscribe_hooks('Markets::Addon::MyAddon');
+    $addons->subscribe_hooks($addon);
 
 Subscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
 
@@ -275,7 +301,7 @@ Change addon status to disable.
 
 =head2 unsubscribe_hooks
 
-    $addons->unsubscribe_hooks('Markets::Addon::MyAddon');
+    $addons->unsubscribe_hooks($addon);
 
 Unsubscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
 
