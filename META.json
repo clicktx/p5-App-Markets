@@ -4,7 +4,7 @@
       "Markets authors."
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.0.4, CPAN::Meta::Converter version 2.143240",
+   "generated_by" : "Minilla/v3.0.9, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "unknown"
    ],
@@ -61,13 +61,13 @@
             "Session::Token" : "1.503",
             "Starlet" : "0.30",
             "Teng" : "0.28",
-            "Time::TZOffset" : "0.04"
+            "Time::TZOffset" : "0.04",
+            "perl" : "5.018"
          }
       },
       "test" : {
          "requires" : {
             "Harriet" : "0",
-            "Safe" : "2.32",
             "Test::More" : "0",
             "Test::Perl::Critic" : "0",
             "Test::mysqld" : "0"
@@ -89,5 +89,6 @@
    "version" : "0.01",
    "x_contributors" : [
       "clicktx <clicktx@gmail.com>"
-   ]
+   ],
+   "x_serialization_backend" : "JSON::PP version 2.27400"
 }
