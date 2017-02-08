@@ -8,6 +8,7 @@ sub index {
 
     # All addons
     $self->render(
+        uploaded_addons  => $self->addons->uploaded,
         all_addons       => $self->addons->uploaded->to_array,
         installed_addons => $self->addons->installed,
     );
