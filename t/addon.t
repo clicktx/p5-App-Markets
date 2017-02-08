@@ -14,17 +14,10 @@ subtest 'addons basic' => sub {
     my $addons = $app->addons;
 
     # uploaded
-    my $uploded_addons = $addons->uploaded->to_array;
+    my $uploded_addons = $addons->uploaded->sort->to_array;
     is ref $uploded_addons, 'ARRAY', 'return array ref';
-
-    # is @{$uploded_addons}, 3, 'right uploaded addons';
-    my @sort_array =
-      sort { $a cmp $b } @{$uploded_addons};    # Hack: OSによる違いに対処
-    is_deeply \@sort_array,
-      [
-        'Markets::Addon::DisableAddon', 'Markets::Addon::NotInstallAddon',
-        'Markets::Addon::TestAddon'
-      ],
+    is @{$uploded_addons}, 3, 'right uploaded addons';
+    is_deeply $uploded_addons, [ 'disable_addon', 'not_install_addon', 'test_addon' ],
       'right uploaded addons';
 
     # installed
@@ -50,14 +43,13 @@ subtest 'addons basic' => sub {
     subtest 'load addon' => sub {
 
         #_full_module_name
-        is Markets::Addons::_full_module_name('Markets::Addon::MyAddon'),
-          'Markets::Addon::MyAddon';
-        is Markets::Addons::_full_module_name('MyAddon'),  'Markets::Addon::MyAddon';
-        is Markets::Addons::_full_module_name('my_addon'), 'Markets::Addon::MyAddon';
+        is Markets::Addons::_full_module_name('Markets::Addon::MyAddon'), 'Markets::Addon::MyAddon';
+        is Markets::Addons::_full_module_name('MyAddon'),                 'Markets::Addon::MyAddon';
+        is Markets::Addons::_full_module_name('my_addon'),                'Markets::Addon::MyAddon';
 
         is ref $addons->load_addon("Markets::Addon::TestAddon"), 'Markets::Addon::TestAddon';
-        is ref $addons->load_addon("TestAddon"), 'Markets::Addon::TestAddon';
-        is ref $addons->load_addon("test_addon"), 'Markets::Addon::TestAddon';
+        is ref $addons->load_addon("TestAddon"),                 'Markets::Addon::TestAddon';
+        is ref $addons->load_addon("test_addon"),                'Markets::Addon::TestAddon';
 
         my $not_found_addon;
         eval { $not_found_addon = $addons->load_addon("NotFoundAddon") };

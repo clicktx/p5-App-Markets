@@ -133,12 +133,12 @@ sub _fetch_uploded_addons {
     my $addons_dir = $self->dir;
     my $rel_dir    = Mojo::File::path( $self->app->home, $addons_dir );
     my @all_dir    = Markets::Util::directories($rel_dir);
-    my @addons     = map { $self->ADDON_NAME_SPACE . '::' . $_ } @all_dir;
+    my @addons     = map { decamelize $_ } @all_dir;
     return Mojo::Collection->new(@addons);
 }
 
 sub _full_module_name {
-    my $name = shift;
+    my $name      = shift;
     my $suffix    = $name =~ /^[a-z]/ ? camelize $name : $name;
     my $namespace = ADDON_NAME_SPACE;
     my $class     = $suffix =~ /${namespace}::/ ? $suffix : $namespace . '::' . $suffix;
