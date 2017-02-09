@@ -13,7 +13,7 @@ requires 'DBD::mysql',                              '4.033';
 requires 'Data::MessagePack',                       '0.49';
 requires 'Class::Inspector',                        '1.28';
 requires 'Server::Starter',                         '0.32';
-requires 'Starlet',                                 '0.30';
+requires 'Gazelle',                                 '0.46';
 
 # XS modules. it's a high performance!
 # See http://qiita.com/karupanerura/items/e765b23bd3bff806cc27

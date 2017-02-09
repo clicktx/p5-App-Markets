@@ -6,5 +6,5 @@ start_server \
 --pid-file=var/run/markets.pid \
 --status-file=var/run/markets.status \
 -- plackup -R lib,themes,addons,share/locale \
--s Starlet --max-workers=2 \
+-s Gazelle --max-workers=2 \
 script/markets

@@ -8,7 +8,7 @@ start_server \
 -- plackup -R lib,themes,addons,share/locale \
 -MDevel::Leak::Object=GLOBAL_bless \
 -e '$Devel::Leak::Object::TRACKSOURCELINES = 1' \
--s Starlet --max-workers=1 \
+-s Gazelle --max-workers=1 \
 script/markets
 
 # Devel::Leak::Objectはcpanfileに未記載
