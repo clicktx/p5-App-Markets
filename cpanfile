@@ -38,4 +38,5 @@ on test => sub {
 on develop => sub {
     requires 'DDP';
     requires 'Data::Dumper';
+    requires 'DBIx::QueryLog';
 };
