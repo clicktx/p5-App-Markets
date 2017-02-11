@@ -3,10 +3,10 @@ use Mojo::Base 'Markets::Model';
 
 sub load_pref {
     my $self = shift;
-    my @rows   = $self->app->dbic->resultset('Preference')->all;
 
+    my $rs = $self->app->dbic->resultset('Preference');
     my $pref = {};
-    foreach my $row (@rows) {
+    while ( my $row = $rs->next ) {
         $pref->{ $row->key_name } = $row->value ? $row->vallue : $row->default_value;
     }
     return $pref;
