@@ -20,7 +20,23 @@ has db => sub {
     my $db = Markets::DB->new( dbh => shift->dbh );
     return $db;
 };
-has addons => sub { Markets::Addons->new(@_) };
+
+$ENV{DBIC_TRACE} = 1;
+has dbic => sub {
+    say "+++++ DBIC +++++";                          # debug
+    my $self         = shift;
+    my $schema_class = "Markets::DB2::Schema";
+    eval "require $schema_class" or die "Could not load Schema Class ($schema_class). $@\n";
+
+    say "      connecting db.";                      # debug
+    my $conf   = $self->config('db') or die "Missing configuration for db";
+    my $dsn    = $self->dsn($conf);
+    my $schema = $schema_class->connect($dsn)
+      or die "Could not connect to $schema_class using DSN ";
+    return $schema;
+};
+
+has addons      => sub { Markets::Addons->new(@_) };
 has action_hook => sub { shift->addons->action_hook(@_) };
 has filter_hook => sub { shift->addons->filter_hook(@_) };
 has restart_app => sub { system shift->home . "/script/appctl --restart" };
@@ -48,8 +64,9 @@ sub initialize_app {
     # SQL debug log
     $DBIx::QueryLog::OUTPUT = sub {
         my %args = @_;
+
         # printf 'sql: %s', $args{sql};
-        $self->log->debug("sql:\n" . $args{sql});
+        $self->log->debug( "sql:\n" . $args{sql} );
     };
 
     # change log dir
@@ -74,13 +91,13 @@ sub initialize_app {
 
     # Preferences
     my $pref = $self->model('data')->load_pref;
-    $pref->{LINK_NAME} = 'リンク先';               # e.g.
-    $pref->{ROOT_URL}  = 'http://google.com/';         # e.g.
+    $pref->{LINK_NAME} = 'リンク先';          # e.g.
+    $pref->{ROOT_URL}  = 'http://google.com/';    # e.g.
     $self->defaults( pref => $pref );
 
     # default cookie
     $self->sessions->cookie_name('session');
-    $self->secrets( ['aaabbbccc'] );                   #           change this!
+    $self->secrets( ['aaabbbccc'] );              #           change this!
 
     # session
     $self->plugin( 'Markets::Session' => { expires_delta => 3600 } );
@@ -91,12 +108,12 @@ sub initialize_app {
         'Markets::I18N',
         {
             # file_type => 'po',    # or 'mo'. default: po
-            default   => 'en',                         # default en
+            default   => 'en',                    # default en
             languages => [qw( en ja de )],
 
             # Mojolicious::Plugin::I18N like options
-            no_header_detect  => 1,                    # option. default: false
-            support_url_langs => [qw( en ja de )],     # option
+            no_header_detect  => 1,                   # option. default: false
+            support_url_langs => [qw( en ja de )],    # option
         }
     );
 
