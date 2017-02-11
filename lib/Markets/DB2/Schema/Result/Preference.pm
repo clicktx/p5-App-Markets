@@ -18,14 +18,10 @@ column default_value => {
 
 column summary => { data_type => 'TEXT', };
 
-column label => {
-    data_type => 'INT',
-    size      => 7,
-};
+column label => { data_type => 'INT', };
 
 column position => {
     data_type     => 'INT',
-    size          => 7,
     default_value => 0,
 };
 
