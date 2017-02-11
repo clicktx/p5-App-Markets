@@ -7,7 +7,7 @@ sub load_pref {
 
     my $pref = {};
     foreach my $row (@rows) {
-        $pref->{ $row->key } = $row->value ? $row->vallue : $row->default_value;
+        $pref->{ $row->key_name } = $row->value ? $row->vallue : $row->default_value;
     }
     return $pref;
 }

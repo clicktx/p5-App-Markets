@@ -35,7 +35,7 @@ subtest 'merge schema' => sub {
 
     $db->merge_schema( ['t::DB::Schema'] );
     my $table = $db->schema->get_table('test');
-    is_deeply $table->{columns}, [qw/id key value/], 'right merged schema';
+    is_deeply $table->{columns}, [qw/id key_name value/], 'right merged schema';
 };
 
 done_testing();

@@ -72,13 +72,13 @@ ENGINE = InnoDB;
 -- Table `markets`.`preferences`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `markets`.`preferences` (
-  `key` VARCHAR(50) NOT NULL COMMENT '',
+  `key_name` VARCHAR(50) NOT NULL COMMENT '',
   `value` TEXT NULL COMMENT '',
   `default_value` TEXT NULL COMMENT '',
   `summary` TEXT NULL COMMENT '',
   `label` INT NULL COMMENT '',
   `position` INT NULL COMMENT '',
-  PRIMARY KEY (`key`)  COMMENT '')
+  PRIMARY KEY (`key_name`)  COMMENT '')
 ENGINE = InnoDB;
 
 

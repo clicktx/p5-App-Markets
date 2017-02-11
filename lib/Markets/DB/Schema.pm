@@ -5,8 +5,8 @@ use Teng::Schema::Declare;
 
 table {
     name    'preferences';
-    pk      'key';
-    columns qw( key value default_value summary label position );
+    pk      'key_name';
+    columns qw( key_name value default_value summary label position );
 };
 
 1;
