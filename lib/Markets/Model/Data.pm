@@ -3,12 +3,11 @@ use Mojo::Base 'Markets::Model';
 
 sub load_pref {
     my $self = shift;
-    my @rows = $self->app->db->search( 'preferences', {} );
+    my @rows   = $self->app->dbic->resultset('Preference')->all;
 
     my $pref = {};
     foreach my $row (@rows) {
-        my $data = $row->get_columns;
-        $pref->{ $data->{key} } = $data->{value} ? $data->{value} : $data->{default_value};
+        $pref->{ $row->key } = $row->value ? $row->vallue : $row->default_value;
     }
     return $pref;
 }
