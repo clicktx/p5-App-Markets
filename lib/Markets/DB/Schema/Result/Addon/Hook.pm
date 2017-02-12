@@ -1,4 +1,4 @@
-package Markets::DB2::Schema::Result::Addon::Hook;
+package Markets::DB::Schema::Result::Addon::Hook;
 use strict;
 use warnings;
 
@@ -23,6 +23,6 @@ column priority => {
     default_value => 100,
 };
 
-belongs_to addon => 'Markets::DB2::Schema::Result::Addon', 'addon_id';
+belongs_to addon => 'Markets::DB::Schema::Result::Addon', 'addon_id';
 
 1;

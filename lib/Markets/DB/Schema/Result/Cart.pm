@@ -1,4 +1,4 @@
-package Markets::DB2::Schema::Result::Cart;
+package Markets::DB::Schema::Result::Cart;
 
 use strict;
 use warnings;

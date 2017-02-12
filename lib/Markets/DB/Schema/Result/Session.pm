@@ -1,4 +1,4 @@
-package Markets::DB2::Schema::Result::Session;
+package Markets::DB::Schema::Result::Session;
 use strict;
 use warnings;
 
