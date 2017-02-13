@@ -1,12 +1,8 @@
 package Markets::DB::Schema;
 use strict;
 use warnings;
-use Teng::Schema::Declare;
+use base qw /DBIx::Class::Schema/;
 
-table {
-    name    'preferences';
-    pk      'key';
-    columns qw( key value default_value summary label position );
-};
+__PACKAGE__->load_namespaces();
 
 1;

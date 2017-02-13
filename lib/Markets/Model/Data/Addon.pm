@@ -5,32 +5,28 @@ sub configure {
     my $self = shift;
     my $db   = $self->app->db;
 
-    my @rows = $db->search_by_sql(
-        q{
-            SELECT addons.id, addons.name, addons.is_enabled, GROUP_CONCAT(addons_hooks.hook_name) AS hooks , GROUP_CONCAT(addons_hooks.priority) AS priorities
-            FROM addons
-            LEFT JOIN addons_hooks on addons.id = addons_hooks.addon_id
-            GROUP BY addons.id
-        },
+    my $addons = $db->resultset('Addon')->search(
+        {},
+        {
+            join     => 'hooks',
+            prefetch => 'hooks',
+        }
     );
-    my $result = {};
-    foreach my $row (@rows) {
-        my $data = $row->get_columns;
-        $result->{ $data->{name} } = {
-            is_enabled => $data->{is_enabled},
-            hooks      => [],
-        };
 
-        if ( $data->{hooks} ) {
-            my @hooks      = split( /,/, $data->{hooks} );
-            my @priorities = split( /,/, $data->{priorities} );
-            foreach ( my $i = 0 ; $i < @hooks ; $i++ ) {
-                $result->{ $data->{name} }->{config}->{hook_priorities}
-                  ->{ $hooks[$i] } = $priorities[$i];
-            }
+    my $conf;
+    while ( my $addon = $addons->next ) {
+        $conf->{ $addon->name } = {
+            hooks      => [],
+            is_enabled => $addon->is_enabled,
+        };
+        my @hooks = $addon->hooks or next;
+        foreach my $hook (@hooks) {
+            $conf->{ $addon->name }->{config}->{hook_priorities}->{ $hook->hook_name } =
+              $hook->priority;
         }
     }
-    return $result;
+
+    return $conf;
 }
 
 1;

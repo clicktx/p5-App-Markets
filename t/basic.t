@@ -25,17 +25,4 @@ subtest 'utility' => sub {
     is ref $addons, 'ARRAY', 'loading addons';
 };
 
-subtest 'merge schema' => sub {
-    my $db = $t->app->db;
-    is ref $db, 'Markets::DB';
-
-    eval { $db->merge_schema( ['t::DB::NoSchema'] ) };
-    like $@, qr/Can't locate object method "instance" via package/,
-      'no has schema';
-
-    $db->merge_schema( ['t::DB::Schema'] );
-    my $table = $db->schema->get_table('test');
-    is_deeply $table->{columns}, [qw/id key value/], 'right merged schema';
-};
-
 done_testing();

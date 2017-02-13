@@ -1,15 +1,17 @@
 requires 'perl',                                    '5.018';
-requires 'Scalar::Util',                            '1.47';
 requires 'Mojolicious',                             '== 7.20';
+requires 'Scalar::Util',                            '1.47';
+requires 'Try::Tiny',                               '0.28';
 requires 'File::Find::Rule',                        '0.34';
 requires 'Mojolicious::Plugin::Model',              '0.07';
 requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';
 requires 'Mojolicious::Plugin::FormFields',         '0.05';
 requires 'MojoX::Session',                          '0.33';
 requires 'Session::Token',                          '1.503';
-requires 'Teng',                                    '0.28';
 requires 'DBI',                                     '1.636';
 requires 'DBD::mysql',                              '4.033';
+requires 'DBIx::Class',                             '0.082840';
+requires 'DBIx::Class::Candy',                      '0.005002';
 requires 'Data::MessagePack',                       '0.49';
 requires 'Class::Inspector',                        '1.28';
 requires 'Server::Starter',                         '0.32';
@@ -38,4 +40,5 @@ on test => sub {
 on develop => sub {
     requires 'DDP';
     requires 'Data::Dumper';
+    requires 'DBIx::QueryLog';
 };

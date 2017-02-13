@@ -25,6 +25,8 @@ my %args = (
         'Class::Inspector' => '1.28',
         'DBD::mysql' => '4.033',
         'DBI' => '1.636',
+        'DBIx::Class' => '0.082840',
+        'DBIx::Class::Candy' => '0.005002',
         'Data::MessagePack' => '0.49',
         'File::Find::Rule' => '0.34',
         'Gazelle' => '0.46',
@@ -37,8 +39,8 @@ my %args = (
         'Scalar::Util' => '1.47',
         'Server::Starter' => '0.32',
         'Session::Token' => '1.503',
-        'Teng' => '0.28',
         'Time::TZOffset' => '0.04',
+        'Try::Tiny' => '0.28',
         'perl' => '5.018',
     },
 

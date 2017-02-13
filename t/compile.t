@@ -5,7 +5,7 @@ use Test::More;
 use_ok $_ for qw(
   Markets
   MojoX::Session
-  Markets::Session::Store::Teng
+  Markets::Session::Store::Dbic
   Mojolicious::Plugin::Model
   Mojolicious::Plugin::LocaleTextDomainOO
 );
