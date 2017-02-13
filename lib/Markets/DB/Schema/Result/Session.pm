@@ -12,13 +12,17 @@ primary_column sid => {
 column data => { data_type => 'MEDIUMTEXT', };
 
 column cart_id => {
-    data_type   => 'VARCHAR',
-    size        => 50,
+    data_type => 'VARCHAR',
+    size      => 50,
 };
 
 column expires => {
     data_type   => 'BIGINT',
     is_nullable => 1,
 };
+
+might_have
+  'cart' => 'Markets::DB::Schema::Result::Cart',
+  { 'foreign.cart_id' => 'self.cart_id' };
 
 1;
