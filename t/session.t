@@ -14,7 +14,7 @@ $tx->req->cookies($cookie);
 
 my $session = Markets::Session::ServerSession->new(
     tx            => $tx,
-    store         => Markets::Session::Store::Teng->new( db => $app->db ),
+    store         => Markets::Session::Store::Dbic->new( schema => $app->db ),
     transport     => MojoX::Session::Transport::Cookie->new,
     expires_delta => 3600,
 );
@@ -28,8 +28,9 @@ is_deeply $session->data('cart'), {}, 'cart data is empty hash after flush';
 my $cart_id = $session->cart_id;
 ok $cart_id, 'right session->cart_id';
 my $store = $session->store;
-my $result = $store->db->single( $store->table_cart, { cart_id => $cart_id } );
-is $result->data, '', 'db: cart data is empty';
+
+my $result = $store->schema->resultset( $store->resultset_cart )->find($cart_id);
+is $result->data, '', 'schema: cart data is empty';
 is $session->data('cart_checksum'), '', 'right checksum create after';
 
 # load session
@@ -48,8 +49,9 @@ $session->flush;
 $session->load;
 is $session->data('counter'), 1, 'right session value';
 is_deeply $session->data('cart'), { items => [] }, 'right cart value';
-$result = $store->db->single( $store->table_cart, { cart_id => $cart_id } );
-ok $result->data, 'db: right cart data';
+
+$result = $store->schema->resultset( $store->resultset_cart )->find($cart_id);
+ok $result->data, 'schema: right cart data';
 ok $session->data('cart_checksum'), 'right checksum set cart data after';
 
 # for cart

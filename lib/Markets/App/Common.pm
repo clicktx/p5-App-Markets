@@ -1,34 +1,17 @@
 package Markets::App::Common;
 use Mojo::Base 'Mojolicious';
 
-use DBI;
-use Markets::DB;
 use Markets::Addons;
 use DBIx::QueryLog;
 
-has dbh => sub {
-    my $self = shift;
-    my $conf = $self->config->{db} or die "Missing configuration for db";
-    my $dsn  = $self->dsn($conf);
-    my $dbh  = DBI->connect( $dsn, { RaiseError => 1 } ) or die $DBI::errstr;
-    say "connecting DB.";                            # debug
-    say '$app->dbh => ' . $dbh . 'on Markets.pm';    # debug
-    return $dbh;
-};
-has db => sub {
-    say "+++++ DB. +++++";                           # debug
-    my $db = Markets::DB->new( dbh => shift->dbh );
-    return $db;
-};
-
 $ENV{DBIC_TRACE} = 1;
-has dbic => sub {
-    say "+++++ DBIC +++++";                          # debug
+has db => sub {
+    say "+++++ DBIC +++++";    # debug
     my $self         = shift;
-    my $schema_class = "Markets::DB2::Schema";
+    my $schema_class = "Markets::DB::Schema";
     eval "require $schema_class" or die "Could not load Schema Class ($schema_class). $@\n";
 
-    say "      connecting db.";                      # debug
+    say "      connecting db.";    # debug
     my $conf   = $self->config('db') or die "Missing configuration for db";
     my $dsn    = $self->dsn($conf);
     my $schema = $schema_class->connect($dsn)
@@ -75,13 +58,6 @@ sub initialize_app {
 
     my $config_path = $home->rel_file("config/$mode.conf");
     $self->plugin( Config => { file => $config_path } );
-
-    # Load schema.
-    # load config after. option schema loading.
-    # TODO: issue #6 自動で読み込むようにする
-    my $more_schema_classes_from_db =
-      [qw /Markets::DB::Schema::Session Markets::DB::Schema::Addons/];
-    $self->db->merge_schema($more_schema_classes_from_db);
 
     # Models
     $self->plugin( Model => { namespaces => ['Markets::Model'] } );

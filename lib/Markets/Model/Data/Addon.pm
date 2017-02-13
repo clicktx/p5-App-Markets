@@ -3,7 +3,7 @@ use Mojo::Base 'Markets::Model';
 
 sub configure {
     my $self = shift;
-    my $db = $self->app->dbic;
+    my $db   = $self->app->db;
 
     my $addons = $db->resultset('Addon')->search(
         {},

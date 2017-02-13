@@ -1,7 +1,7 @@
 package Markets::Session;
 use Mojo::Base 'Mojolicious::Plugin';
 use Markets::Session::ServerSession;
-use Markets::Session::Store::Teng;
+use Markets::Session::Store::Dbic;
 use Data::Dumper;
 use DDP;
 
@@ -24,7 +24,7 @@ sub register {
             say "hook! before_dispatch from plugin session";    # debug
             my $session =
               Markets::Session::ServerSession->new( %$args,
-                store => Markets::Session::Store::Teng->new( db => $app->db ) );
+                store => Markets::Session::Store::Dbic->new( schema => $app->db ), );
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
             $c->stash( $stash_key => $session, );
