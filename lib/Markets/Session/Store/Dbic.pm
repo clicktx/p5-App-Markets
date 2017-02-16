@@ -122,25 +122,23 @@ sub load {
     my $data_column    = $self->data_column;
     my $cart_id_column = $self->cart_id_column;
 
-    my $row_session =
-      $schema->resultset( $self->resultset_session )->find( { $sid_column => $sid } );
-    return unless $row_session;
+    my $rs = $schema->resultset( $self->resultset_session )->find(
+        $sid,
+        {
+            join       => 'cart',
+            '+columns' => ["cart.${data_column}"],
+        },
+    );
+    return unless $rs;
 
-    my $expires      = $row_session->get_column($expires_column);
-    my $session_data = $row_session->get_column($data_column);
-    $session_data = $session_data ? thaw( decode_base64($session_data) ) : {};
-    my $cart_id = $row_session->get_column($cart_id_column);
-    $session_data->{cart_id} = $cart_id if $cart_id;
+    my $expires      = $rs->$expires_column;
+    my $session_data = $rs->$data_column;
+    my $cart_data    = $rs->cart->$data_column;
+    my $cart_id      = $rs->$cart_id_column;
 
-    # my $cart_data =
-    #     $session_data->{cart_checksum}
-    #   ? $schema->resultset( $self->resultset_cart )->find( { $cart_id_column => $cart_id } )
-    #   ->get_column($data_column)
-    #   : '';
-    my $cart_data =
-      $schema->resultset( $self->resultset_cart )->find( { $cart_id_column => $cart_id } )
-      ->get_column($data_column);
-    $session_data->{cart} = $cart_data ? thaw( decode_base64($cart_data) ) : '';
+    $session_data            = $session_data ? thaw( decode_base64($session_data) ) : {};
+    $session_data->{cart_id} = $cart_id      ? $cart_id                             : '';
+    $session_data->{cart}    = $cart_data    ? thaw( decode_base64($cart_data) )    : '';
 
     return ( $expires, $session_data );
 }

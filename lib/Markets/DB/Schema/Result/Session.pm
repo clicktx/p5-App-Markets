@@ -21,8 +21,10 @@ column expires => {
     is_nullable => 1,
 };
 
-might_have
-  'cart' => 'Markets::DB::Schema::Result::Cart',
-  { 'foreign.cart_id' => 'self.cart_id' };
+# belongs_to
+#   'cart' => 'Markets::DB::Schema::Result::Cart',
+#   { 'foreign.cart_id' => 'self.cart_id' };
+
+belongs_to cart => 'Markets::DB::Schema::Result::Cart', 'cart_id';
 
 1;
