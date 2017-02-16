@@ -55,7 +55,7 @@ ok $result->data, 'schema: right cart data';
 ok $session->data('cart_checksum'), 'right checksum set cart data after';
 
 # for cart
-my $cart = $session->cart;
+my $cart = $session->cart_session;
 is ref $cart, 'Markets::Session::CartSession', 'right cart object';
 
 # add cart and don't save

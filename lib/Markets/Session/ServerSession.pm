@@ -4,7 +4,7 @@ use Markets::Session::CartSession;
 use Markets::Util qw/generate_token/;
 
 has cart_id => sub { shift->data('cart_id') };
-has cart => sub { Markets::Session::CartSession->new( session => shift ) };
+has cart_session => sub { Markets::Session::CartSession->new( session => shift ) };
 
 sub create {
     my $self = shift;
@@ -62,9 +62,9 @@ Markets::Session::ServerSession - based MojoX::Session
 
 =head1 METHODS
 
-=head2 C<cart>
+=head2 C<cart_session>
 
-    my $cart = $session->cart;
+    my $cart_session = $session->cart_session;
 
 Returns new L<Markets::Session::CartSession> object.
 

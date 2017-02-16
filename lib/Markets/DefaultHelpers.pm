@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use Carp qw/croak/;
 use Scalar::Util ();
 use Mojo::Util qw/camelize/;
+use Markets::Cart;
 
 sub register {
     my ( $self, $app, $conf ) = @_;
@@ -14,6 +15,7 @@ sub register {
     $app->helper( template       => sub { shift->stash( template => shift ) } );
     $app->helper( schema         => sub { shift->app->db } );
 
+    $app->helper( cart    => sub { Markets::Cart->new(@_) } );
     $app->helper( pref    => sub { _pref(@_) } );
     $app->helper( service => sub { _service(@_) } );
 }
@@ -72,6 +74,12 @@ Markets::DefaultHelpers - Default helpers plugin for Markets
     my $addons = $c->addons;
 
 Alias for $app->addons;
+
+=head2 cart
+
+    my $cart = $c->cart;
+
+Return Markets::Cart object.
 
 =head2 cookie_session
 
