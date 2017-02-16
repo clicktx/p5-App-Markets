@@ -1,9 +1,11 @@
 package Markets::Session::Cart;
 use Mojo::Base -base;
+use Scalar::Util qw/weaken/;
+
 has 'session';
 
 sub data {
-    my $self = shift;
+    my $self      = shift;
     my $cart_data = $self->session->data->{cart};
 
     # Getter
@@ -19,6 +21,14 @@ sub flash {
 
     $self->session->_is_flushed(0);
     @_ ? delete $self->data->{ $_[0] } : $self->data( {} );
+}
+
+sub new {
+    my $class = shift;
+    my $self  = $class->SUPER::new(@_);
+
+    weaken $self->{session};
+    return $self;
 }
 
 1;
