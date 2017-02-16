@@ -172,8 +172,8 @@ sub _separate_session_data {
     my $data = shift;
 
     my %clone     = %$data;
-    my $cart_id   = delete $clone{cart_id};
     my $cart_data = delete $clone{cart};
+    my $cart_id   = $cart_data->{id};
 
     return ( \%clone, $cart_id, $cart_data );
 }
