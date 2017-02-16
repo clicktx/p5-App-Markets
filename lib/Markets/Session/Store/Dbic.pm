@@ -275,7 +275,7 @@ Delete session from database.
 
 =head1 SEE ALSO
 
-L<Markets::Session::Cart>
+L<Markets::Session::CartSession>
 
 L<DBIx::Class>
 

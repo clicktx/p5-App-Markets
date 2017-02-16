@@ -1,4 +1,4 @@
-package Markets::Session::Cart;
+package Markets::Session::CartSession;
 use Mojo::Base -base;
 use Scalar::Util qw/weaken/;
 
@@ -36,7 +36,7 @@ __END__
 
 =head1 NAME
 
-Markets::Session::Cart
+Markets::Session::CartSession
 
 =head1 SYNOPSIS
 

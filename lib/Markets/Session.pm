@@ -139,7 +139,7 @@ Markets::Session - forked from Mojolicious::Plugin::Session
 
 L<Markets::Session::ServerSession>
 
-L<Markets::Session::Cart>
+L<Markets::Session::CartSession>
 
 L<Mojolicious::Plugin::Session>
 
