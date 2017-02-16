@@ -20,8 +20,8 @@ sub create {
     my $schema         = $self->schema;
     my $sid_column     = $self->sid_column;
     my $expires_column = $self->expires_column;
-    my $data_column    = $self->data_column;
     my $cart_id_column = $self->cart_id_column;
+    my $data_column    = $self->data_column;
 
     my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
     $session_data = $session_data ? encode_base64( nfreeze($session_data) ) : '';
@@ -64,8 +64,8 @@ sub update {
     my $schema         = $self->schema;
     my $sid_column     = $self->sid_column;
     my $expires_column = $self->expires_column;
-    my $data_column    = $self->data_column;
     my $cart_id_column = $self->cart_id_column;
+    my $data_column    = $self->data_column;
 
     my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
 
@@ -119,8 +119,8 @@ sub load {
     my $schema         = $self->schema;
     my $sid_column     = $self->sid_column;
     my $expires_column = $self->expires_column;
-    my $data_column    = $self->data_column;
     my $cart_id_column = $self->cart_id_column;
+    my $data_column    = $self->data_column;
 
     my $rs = $schema->resultset( $self->resultset_session )->find(
         $sid,
