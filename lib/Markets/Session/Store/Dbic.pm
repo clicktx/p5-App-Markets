@@ -24,8 +24,8 @@ sub create {
     my $cart_id_column = $self->cart_id_column;
 
     my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
-    $session_data = $session_data ? encode_base64(nfreeze($session_data)) : '';
-    $cart_data    = %$cart_data   ? encode_base64(nfreeze($cart_data))    : '';
+    $session_data = $session_data ? encode_base64( nfreeze($session_data) ) : '';
+    $cart_data    = $cart_data    ? encode_base64( nfreeze($cart_data) )    : '';
 
     my $cb = sub {
 
@@ -61,19 +61,20 @@ sub create {
 sub update {
     my ( $self, $sid, $expires, $data ) = @_;
 
+    my $schema         = $self->schema;
+    my $sid_column     = $self->sid_column;
+    my $expires_column = $self->expires_column;
+    my $data_column    = $self->data_column;
+    my $cart_id_column = $self->cart_id_column;
+
     my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
 
     # カートの変更をチェック
-    $cart_data = %$cart_data ? encode_base64(nfreeze($cart_data)) : '';
-    my ( $is_modified, $checksum ) = _cart_checksum( $session_data, $cart_data );
-    $session_data->{cart_checksum} = $checksum;
+    my $is_modified = $cart_data->{_is_modified};
+    $cart_data->{_is_modified} = 0;
 
-    my $schema          = $self->schema;
-    my $sid_column      = $self->sid_column;
-    my $expires_column  = $self->expires_column;
-    my $data_column     = $self->data_column;
-    my $cart_id_column  = $self->cart_id_column;
-    $session_data = $session_data ? encode_base64(nfreeze($session_data)) : '';
+    $session_data = $session_data ? encode_base64( nfreeze($session_data) ) : '';
+    $cart_data    = $cart_data    ? encode_base64( nfreeze($cart_data) )    : '';
 
     my $cb = sub {
 
@@ -125,18 +126,21 @@ sub load {
       $schema->resultset( $self->resultset_session )->find( { $sid_column => $sid } );
     return unless $row_session;
 
-    my $expires         = $row_session->get_column($expires_column);
+    my $expires      = $row_session->get_column($expires_column);
     my $session_data = $row_session->get_column($data_column);
-    $session_data    = $session_data ? thaw(decode_base64($session_data)) : {};
-    my $cart_id         = $row_session->get_column($cart_id_column);
+    $session_data = $session_data ? thaw( decode_base64($session_data) ) : {};
+    my $cart_id = $row_session->get_column($cart_id_column);
     $session_data->{cart_id} = $cart_id if $cart_id;
 
+    # my $cart_data =
+    #     $session_data->{cart_checksum}
+    #   ? $schema->resultset( $self->resultset_cart )->find( { $cart_id_column => $cart_id } )
+    #   ->get_column($data_column)
+    #   : '';
     my $cart_data =
-        $session_data->{cart_checksum}
-      ? $schema->resultset( $self->resultset_cart )->find( { $cart_id_column => $cart_id } )
-      ->get_column($data_column)
-      : '';
-    $session_data->{cart} = $cart_data ? thaw(decode_base64($cart_data)) : '';
+      $schema->resultset( $self->resultset_cart )->find( { $cart_id_column => $cart_id } )
+      ->get_column($data_column);
+    $session_data->{cart} = $cart_data ? thaw( decode_base64($cart_data) ) : '';
 
     return ( $expires, $session_data );
 }
@@ -151,6 +155,7 @@ sub delete {
     # session deleteで関係するcartもdeleteされる
     my $cb = sub {
         my $session = $schema->resultset( $self->resultset_session )->find($sid)->delete;
+
         # $session->delete_related('cart');#リレーション設定により不要
     };
 
@@ -173,18 +178,6 @@ sub _separate_session_data {
     my $cart_data = delete $clone{cart};
 
     return ( \%clone, $cart_id, $cart_data );
-}
-
-# カートデータからchecksumを生成
-# カートデータが空の場合のchecksumは空文字
-sub _cart_checksum {
-    my ( $session_data, $cart_data ) = @_;
-
-    my $checksum     = $session_data->{cart_checksum};
-    my $new_checksum = $cart_data ? Mojo::Util::md5_sum($cart_data) : '';
-    my $is_modified  = $checksum ne $new_checksum ? 1 : 0;
-
-    return $is_modified, $new_checksum;
 }
 
 1;

@@ -1,4 +1,5 @@
 package Markets::Session::ServerSession;
+
 use Mojo::Base qw/MojoX::Session/;
 use Markets::Session::CartSession;
 use Markets::Util qw/generate_token/;
@@ -10,7 +11,13 @@ sub create {
     my $self = shift;
     my $sid  = $self->SUPER::create(@_);
 
-    $self->data( cart => {}, cart_checksum => '' );
+    my $cart = {
+        id           => generate_token( length => 40 ),
+        data         => {},
+        _is_modified => 0,
+    };
+
+    $self->data( cart => $cart );
     return $sid;
 }
 
