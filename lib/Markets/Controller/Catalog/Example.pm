@@ -16,11 +16,6 @@ sub welcome {
     $counter++;
     $session->data( counter => $counter );
 
-    # cart
-    my $cart      = $session->cart;
-    my $cart_data = $cart->data;
-    $cart_data->{new}++;
-
     say "counter: " . $counter;      # debug
     say $self->pref('ROOT_URL');    # debug
     say "ServerSession: ";

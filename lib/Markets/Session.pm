@@ -14,7 +14,7 @@ sub register {
 
     # Helpers
     $app->helper( server_session => sub { shift->stash($stash_key) } );
-    $app->helper( cart           => sub { shift->stash($stash_key)->{cart} } );
+    # $app->helper( cart_session   => sub { shift->stash($stash_key)->{cart_session} } );
 
     # Hooks
     $app->hook(
@@ -55,8 +55,8 @@ sub register {
             p $session->sid;
 
             # Cart
-            say "   ... Cart data: ";                                # debug
-            p $session->cart->data;
+            say "   ... CartSession data: ";                                # debug
+            p $session->cart_session->data;
         }
     );
 
@@ -139,7 +139,7 @@ Markets::Session - forked from Mojolicious::Plugin::Session
 
 L<Markets::Session::ServerSession>
 
-L<Markets::Session::Cart>
+L<Markets::Session::CartSession>
 
 L<Mojolicious::Plugin::Session>
 

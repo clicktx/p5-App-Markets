@@ -1,16 +1,25 @@
 package Markets::Session::ServerSession;
+
 use Mojo::Base qw/MojoX::Session/;
-use Markets::Session::Cart;
+use Markets::Session::CartSession;
 use Markets::Util qw/generate_token/;
 
-has cart_id => sub { shift->data('cart_id') };
-has cart => sub { Markets::Session::Cart->new( session => shift ) };
+has cart_session => sub { Markets::Session::CartSession->new(shift) };
+
+sub cart_id { shift->cart_session->cart_id(@_) };
 
 sub create {
     my $self = shift;
     my $sid  = $self->SUPER::create(@_);
 
-    $self->data( cart => {}, cart_checksum => '' );
+    # New cart
+    my $cart = {
+        id           => generate_token( length => 40 ),
+        data         => {},
+        _is_modified => 0,
+    };
+
+    $self->data( cart => $cart );
     return $sid;
 }
 
@@ -39,14 +48,6 @@ sub regenerate_sid {
     return $self->sid;
 }
 
-sub _generate_sid {
-    my $self = shift;
-    $self->SUPER::_generate_sid;
-
-    return if $self->data('cart_id');
-    $self->data( cart_id => generate_token( length => 40 ) );
-}
-
 1;
 __END__
 
@@ -60,25 +61,31 @@ Markets::Session::ServerSession - based MojoX::Session
 
 =head1 ATTRIBUTES
 
+=head2 C<cart_session>
+
+    my $cart_session = $session->cart_session;
+
+Returns new L<Markets::Session::CartSession> object.
+
 =head1 METHODS
 
-=head2 C<cart>
-
-    my $cart = $session->cart;
-
-Returns new L<Markets::Session::Cart> object.
+L<Markets::Session::ServerSession> inherits all methods from L<MojoX::Session> and implements
+the following new ones.
 
 =head2 C<cart_id>
 
     my $cart_id = $session->cart_id;
+    $session->cart_id('xxxxxxxxxx');
 
-Returns cart id.
+Get/Set cart id. SEE L<Markets::Session::CartSession>
 
 =head2 C<regenerate_sid>
 
     my $sid = $session->regenerate_sid;
 
 =head1 SEE ALSO
+
+L<Markets::Session::CartSession>
 
 L<MojoX::Session>
 

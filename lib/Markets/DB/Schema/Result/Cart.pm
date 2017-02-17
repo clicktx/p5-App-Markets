@@ -12,4 +12,6 @@ primary_column cart_id => {
 
 column data => { data_type => 'MEDIUMTEXT', };
 
+has_many session => 'Markets::DB::Schema::Result::Session', 'cart_id';
+
 1;
