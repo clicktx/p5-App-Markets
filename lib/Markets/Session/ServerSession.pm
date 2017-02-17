@@ -4,8 +4,9 @@ use Mojo::Base qw/MojoX::Session/;
 use Markets::Session::CartSession;
 use Markets::Util qw/generate_token/;
 
-has cart_id => sub { shift->cart_session->data('id') };
-has cart_session => sub { Markets::Session::CartSession->new( session => shift ) };
+has cart_session => sub { Markets::Session::CartSession->new(shift) };
+
+sub cart_id { shift->cart_session->cart_id };
 
 sub create {
     my $self = shift;
@@ -60,25 +61,30 @@ Markets::Session::ServerSession - based MojoX::Session
 
 =head1 ATTRIBUTES
 
-=head1 METHODS
-
-=head2 C<cart_id>
-
-    my $cart_id = $session->cart_id;
-
-Returns cart id.
-
 =head2 C<cart_session>
 
     my $cart_session = $session->cart_session;
 
 Returns new L<Markets::Session::CartSession> object.
 
+=head1 METHODS
+
+L<Markets::Session::ServerSession> inherits all methods from L<MojoX::Session> and implements
+the following new ones.
+
+=head2 C<cart_id>
+
+    my $cart_id = $session->cart_id;
+
+Return cart id. SEE L<Markets::Session::CartSession>
+
 =head2 C<regenerate_sid>
 
     my $sid = $session->regenerate_sid;
 
 =head1 SEE ALSO
+
+L<Markets::Session::CartSession>
 
 L<MojoX::Session>
 

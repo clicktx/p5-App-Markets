@@ -4,16 +4,24 @@ use Scalar::Util qw/weaken/;
 
 has 'session';
 
+# [WIP]
+sub cart_id {
+    my $self = shift;
+    return $self->_data('id');
+}
+
+# public用カートデータ
+# $session->{cart}->{data}
 sub data {
-    my $self      = shift;
-    my $cart_data = $self->session->data->{cart};
+    my $self = shift;
+    my $data = $self->_data('data');
 
     # Getter
-    return @_ ? $cart_data->{ $_[0] } : $cart_data if ( @_ < 2 and ref $_[0] ne 'HASH' );
+    return @_ ? $data->{ $_[0] } : $data if ( @_ < 2 and ref $_[0] ne 'HASH' );
 
     # Setter
-    $self->session->_is_flushed(0);
-    return @_ > 1 ? $cart_data->{ $_[0] } = $_[1] : $self->session->data( cart => $_[0] );
+    $self->_is_modified(1);
+    return @_ > 1 ? $data->{ $_[0] } = $_[1] : $self->_data( data => $_[0] );
 }
 
 sub flash {
@@ -24,11 +32,36 @@ sub flash {
 }
 
 sub new {
-    my $class = shift;
-    my $self  = $class->SUPER::new(@_);
+    my ( $class, $session ) = @_;
+    my $arg = $session->data('cart');
+    my $self = $class->SUPER::new( session => $session, %$arg );
 
     weaken $self->{session};
     return $self;
+}
+
+# 全てのcartデータ
+# $session->{cart}
+sub _data {
+    my $self = shift;
+    my $data = $self->session->data('cart');
+
+    # Getter
+    return @_ ? $data->{ $_[0] } : $data if ( @_ < 2 and ref $_[0] ne 'HASH' );
+
+    # Setter
+    $self->_is_modified(1);
+    return @_ > 1 ? $data->{ $_[0] } = $_[1] : $self->session->data( cart => $_[0] );
+}
+
+sub _is_modified {
+    my ( $self, $val ) = @_;
+
+    if ( defined $val ) {
+        $self->session->data('cart')->{_is_modified} = 1;
+        $self->session->_is_flushed(0);
+    }
+    return $self->data('_is_modified');
 }
 
 1;
@@ -44,7 +77,17 @@ Markets::Session::CartSession
 
 =head1 ATTRIBUTES
 
+=head2 C<session>
+
+Return L<Markets::Session::ServerSession> object.
+
 =head1 METHODS
+
+=head2 C<cart_id>
+
+    my $id = $cart->cart_id;
+
+Return cart id.
 
 =head2 C<data>
 
@@ -56,6 +99,8 @@ Markets::Session::CartSession
     $cart->data( \%cart_data ); # All cart data
     $cart->data( items => [] );
 
+Get/Set cart data.
+
 =head2 C<flash>
 
     # All data flash.
@@ -63,6 +108,8 @@ Markets::Session::CartSession
 
     # Flash Instracted data.
     $cart->flash('items');
+
+Remove cart data.
 
 =head1 SEE ALSO
 

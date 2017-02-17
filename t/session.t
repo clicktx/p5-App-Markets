@@ -22,16 +22,14 @@ my $session = Markets::Session::ServerSession->new(
 # create session
 my $sid = $session->create;
 ok $sid, 'created session';
-is_deeply $session->data('cart'), {}, 'cart data is empty hash after create';
+is_deeply $session->cart_session->data, {}, 'create new cart';
+
 $session->flush;
-is_deeply $session->data('cart'), {}, 'cart data is empty hash after flush';
+is_deeply $session->cart_session->data, {}, 'cart data after flush';
+
 my $cart_id = $session->cart_id;
 ok $cart_id, 'right session->cart_id';
-my $store = $session->store;
-
-my $result = $store->schema->resultset( $store->resultset_cart )->find($cart_id);
-is $result->data, '', 'schema: cart data is empty';
-is $session->data('cart_checksum'), '', 'right checksum create after';
+is $cart_id, $session->cart_session->cart_id, 'right cart_id';
 
 # load session
 $cookie = Mojo::Cookie::Request->new( name => 'sid', value => $sid, path => '/' );
@@ -39,41 +37,45 @@ $tx = Mojo::Transaction::HTTP->new();
 $session->tx($tx);
 $tx->req->cookies($cookie);
 is $session->load, $sid, 'loading session';
-is_deeply $session->data('cart'), {}, 'cart data is empty hash after load';
-is $session->data('cart_checksum'), '', 'right checksum load after';
+is ref $session->cart_session->data, 'HASH', 'right cart data';
+is $session->cart_session->cart_id, $cart_id, 'right cart id';
 
-# set data
+# set session data
 $session->data( counter => 1 );
-$session->data( cart => { items => [] } );
 $session->flush;
 $session->load;
 is $session->data('counter'), 1, 'right session value';
-is_deeply $session->data('cart'), { items => [] }, 'right cart value';
 
+# set cart data
+$session->cart_session->data( items => ['hoge'] );
+$session->flush;
+$session->load;
+is_deeply $session->cart_session->data('items'), ['hoge'], 'right cart value';
+
+my $store  = $session->store;
+my $result = $store->schema->resultset( $store->resultset_cart )->find($cart_id);
 $result = $store->schema->resultset( $store->resultset_cart )->find($cart_id);
 ok $result->data, 'schema: right cart data';
-ok $session->data('cart_checksum'), 'right checksum set cart data after';
 
 # for cart
 my $cart = $session->cart_session;
 is ref $cart, 'Markets::Session::CartSession', 'right cart object';
 
 # add cart and don't save
-$cart->data( payment => [] );
+$cart->data( payment => ['buzz'] );
 $session->load;
-is_deeply $cart->data, { items => [] }, 'not flush after cart data';
+is $cart->data('payment'), undef, 'not flush after cart data';
 
 # add cart and save
-$cart->data( payment => [] );
+$cart->data( payment => ['buzz'] );
 $session->flush;
 $session->load;
-is_deeply $cart->data, { items => [], payment => [] }, 'flush after load cart all data';
-is_deeply $cart->data('items'), [], 'get instracted data in the cart';
+is_deeply $cart->data('payment'), ['buzz'], 'flush after load cart all data';
 
 # get cart data
 $cart->data( items => [ {} ] );
-is_deeply $cart->data('items'), [ {} ], 'set data in the cart';
-is_deeply $session->data('cart'), { items => [ {} ], payment => [] }, 'right session data changed';
+is_deeply $cart->data('items'),                    [ {} ], 'set data in the cart';
+is_deeply $session->data('cart')->{data}->{items}, [ {} ], 'right session data changed';
 
 # all chage cart data
 $cart->data( { items => [], address => {} } );
@@ -88,25 +90,11 @@ is_deeply $cart->data, { address => {} }, 'flash instracted cart data';
 $cart->flash;
 is_deeply $cart->data, {}, 'flash all cart data';
 
-# cart_checksum
 $session->flush;
 $session->load;
-is $session->data('cart_checksum'), '', 'right checksum empty cart';
+is_deeply $cart->data, {}, 'flash all cart data after reload session';
 
-# change `session` data
-$session->data( foo => 1 );
-$session->flush;
-$session->load;
-is $session->data('cart_checksum'), '', 'modified session data after checksum';
-
-# change `cart` data
-$cart->data( items => [] );
-is $session->data('cart_checksum'), '', 'modified cart data after checksum';
-$session->flush;
-$session->load;
-ok $session->data('cart_checksum'), 'modified cart data after checksum';
-
-# regenerate session
+# regenerate session id
 my %data    = %{ $session->data };
 my $new_sid = $session->regenerate_sid;
 isnt $sid, $new_sid, 'created new sid';
