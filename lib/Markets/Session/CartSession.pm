@@ -4,11 +4,7 @@ use Scalar::Util qw/weaken/;
 
 has 'session';
 
-# [WIP]
-sub cart_id {
-    my $self = shift;
-    return $self->_data('id');
-}
+sub cart_id { shift->session->cart_id(@_) }
 
 # public用カートデータ
 # $session->{cart}->{data}
@@ -86,8 +82,9 @@ Return L<Markets::Session::ServerSession> object.
 =head2 C<cart_id>
 
     my $id = $cart->cart_id;
+    $cart->cart_id('xxxxxxxxxx');
 
-Return cart id.
+Get/Set cart id. SEE L<Markets::Session::ServerSession>
 
 =head2 C<data>
 

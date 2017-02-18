@@ -173,7 +173,7 @@ sub _separate_session_data {
 
     my %clone     = %$data;
     my $cart_data = delete $clone{cart};
-    my $cart_id   = $cart_data->{id};
+    my $cart_id   = delete $clone{cart_id};
 
     return ( \%clone, $cart_id, $cart_data );
 }
