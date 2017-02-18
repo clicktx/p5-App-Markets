@@ -11,6 +11,7 @@ sub cart_id {
     return $self->data('cart_id') unless $val;
 
     $self->data( cart_id => $val );
+    $self->cart_session->_is_modified(1);
     return $val;
 }
 

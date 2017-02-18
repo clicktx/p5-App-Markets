@@ -29,8 +29,7 @@ sub flash {
 
 sub new {
     my ( $class, $session ) = @_;
-    my $arg = $session->data('cart');
-    my $self = $class->SUPER::new( session => $session, %$arg );
+    my $self = $class->SUPER::new( session => $session );
 
     weaken $self->{session};
     return $self;

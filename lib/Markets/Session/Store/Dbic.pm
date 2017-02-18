@@ -80,7 +80,7 @@ sub update {
 
         # Update Cart
         $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )
-          ->update( { $data_column => $cart_data } )
+          ->update_or_create( { $data_column => $cart_data } )
           if $is_modified;
 
         # Update Session
