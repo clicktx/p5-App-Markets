@@ -8,7 +8,6 @@ sub add_history {
 
     # 履歴を残さないルート
     my $route_name = $c->current_route;
-    say $route_name;    #debug
     my $disable_route_names = $self->app->config('history_disable_route_names');
     return if grep { $_ eq $route_name } @$disable_route_names;
 
