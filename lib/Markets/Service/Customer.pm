@@ -38,6 +38,20 @@ sub load_history {
     $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
+sub login {
+    my ( $self, $customer_id ) = @_;
+    return unless $customer_id;
+
+    my $c = $self->controller;
+    $c->server_session->data( customer_id => $customer_id );
+    $c->cart_session->_is_modified(1);
+
+    # Regenerate sid
+    my $sid = $c->server_session->regenerate_sid;
+    say "  .. regenerate_sid: " . $sid;    #debug
+    return $sid;
+}
+
 1;
 __END__
 
