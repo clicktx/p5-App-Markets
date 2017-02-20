@@ -49,6 +49,11 @@ Markets::Model::Service::Customer - Application Service Layer
 
 =head1 DESCRIPTION
 
+=head1 ATTRIBUTES
+
+L<Markets::Service::Customer> inherits all attributes from L<Markets::Service> and implements
+the following new ones.
+
 =head1 METHODS
 
 =head2 add_history
