@@ -20,9 +20,11 @@ sub data { shift->cart_session->data(@_) }
 
 sub items {
     my $self = shift;
-
     my $items = $self->data('items') || [ [] ];
-    return c(@$items);
+
+    # All items to Mojo::Collection
+    my @data = map { c(@$_) } @$items;
+    return c(@data);
 }
 
 sub new {
