@@ -7,7 +7,7 @@ sub add_history {
     my $c    = $self->controller;
 
     # 履歴を残さないルート
-    my $route_name = $c->current_route;
+    my $route_name          = $c->current_route;
     my $disable_route_names = $self->app->config('history_disable_route_names');
     return if grep { $_ eq $route_name } @$disable_route_names;
 
@@ -57,6 +57,13 @@ sub login {
     return $sid;
 }
 
+sub logout {
+    my $self = shift;
+
+    my $session = $self->controller->server_session;
+    return $self->model('account')->remove_session($session);
+}
+
 1;
 __END__
 
@@ -94,6 +101,10 @@ the following new ones.
 =head2 login
 
     $c->service('customer')->login($customer_id);
+
+=head2 logout
+
+    $c->service('customer')->logout;
 
 =head1 AUTHOR
 
