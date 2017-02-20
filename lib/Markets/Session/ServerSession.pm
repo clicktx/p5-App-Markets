@@ -6,20 +6,27 @@ use Markets::Util qw/generate_token/;
 
 has cart_session => sub { Markets::Session::CartSession->new(shift) };
 
-sub cart_id { shift->cart_session->cart_id(@_) };
+sub cart_id {
+    my ( $self, $val ) = @_;
+    return $self->data('cart_id') unless $val;
+
+    $self->data( cart_id => $val );
+    $self->cart_session->_is_modified(1);
+    return $val;
+}
 
 sub create {
     my $self = shift;
     my $sid  = $self->SUPER::create(@_);
 
     # New cart
+    my $id = generate_token( length => 40 );
     my $cart = {
-        id           => generate_token( length => 40 ),
         data         => {},
         _is_modified => 0,
     };
+    $self->data( cart_id => $id, cart => $cart );
 
-    $self->data( cart => $cart );
     return $sid;
 }
 
@@ -75,9 +82,9 @@ the following new ones.
 =head2 C<cart_id>
 
     my $cart_id = $session->cart_id;
-    $session->cart_id('xxxxxxxxxx');
+    $cart->cart_id('xxxxxxxxxx');
 
-Get/Set cart id. SEE L<Markets::Session::CartSession>
+Get/Set cart id.
 
 =head2 C<regenerate_sid>
 

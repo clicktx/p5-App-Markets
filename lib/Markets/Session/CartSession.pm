@@ -4,11 +4,7 @@ use Scalar::Util qw/weaken/;
 
 has 'session';
 
-# [WIP]
-sub cart_id {
-    my $self = shift;
-    return $self->_data('id');
-}
+sub cart_id { shift->session->cart_id(@_) }
 
 # public用カートデータ
 # $session->{cart}->{data}
@@ -33,8 +29,7 @@ sub flash {
 
 sub new {
     my ( $class, $session ) = @_;
-    my $arg = $session->data('cart');
-    my $self = $class->SUPER::new( session => $session, %$arg );
+    my $self = $class->SUPER::new( session => $session );
 
     weaken $self->{session};
     return $self;
@@ -88,7 +83,7 @@ Return L<Markets::Session::ServerSession> object.
     my $id = $cart->cart_id;
     $cart->cart_id('xxxxxxxxxx');
 
-Get/Set cart id.
+Get/Set cart id. SEE L<Markets::Session::ServerSession>
 
 =head2 C<data>
 

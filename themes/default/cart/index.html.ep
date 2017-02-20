@@ -4,9 +4,9 @@
 <h1><%= title %></h1>
 
 <ul>
-    % foreach my $item ( @{$items} ) {
-        <li><%= dumper $item %></li>
-    % }
+    % $items->each( sub {
+        <li><%= dumper $_ %></li>
+    % });
 </ul>
 
 <ul>

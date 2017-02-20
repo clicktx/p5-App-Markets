@@ -7,8 +7,7 @@ sub add_history {
     my $c    = $self->controller;
 
     # 履歴を残さないルート
-    my $route_name = $c->current_route;
-    say $route_name;    #debug
+    my $route_name          = $c->current_route;
     my $disable_route_names = $self->app->config('history_disable_route_names');
     return if grep { $_ eq $route_name } @$disable_route_names;
 
@@ -32,10 +31,37 @@ sub add_history {
     $c->server_session->data( history => $history );
 }
 
+sub is_logged_in {
+    my $self = shift;
+    my $c    = $self->controller;
+    $c->server_session->data('customer_id') ? 1 : 0;
+}
+
 sub load_history {
     my $self = shift;
     my $c    = $self->controller;
     $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
+}
+
+sub login {
+    my ( $self, $customer_id ) = @_;
+    return unless $customer_id;
+
+    my $c = $self->controller;
+    $c->server_session->data( customer_id => $customer_id );
+    $c->cart_session->_is_modified(1);
+
+    # Regenerate sid
+    my $sid = $c->server_session->regenerate_sid;
+    say "  .. regenerate_sid: " . $sid;    #debug
+    return $sid;
+}
+
+sub logout {
+    my $self = shift;
+
+    my $session = $self->controller->server_session;
+    return $self->model('account')->remove_session($session);
 }
 
 1;
@@ -49,19 +75,36 @@ Markets::Model::Service::Customer - Application Service Layer
 
 =head1 DESCRIPTION
 
+=head1 ATTRIBUTES
+
+L<Markets::Service::Customer> inherits all attributes from L<Markets::Service> and implements
+the following new ones.
+
 =head1 METHODS
 
 =head2 add_history
 
     # $app->config('history_disable_route_names') is unsave list.
-    $service->add_history;
+    $c->service('customer')->add_history;
 
     Add history current URL for server session.
     Unsave list setting in L<Markets::Routes::Catalog>.
 
+=head2 is_logged_in
+
+    my $bool = $c->service('customer')->is_logged_in;
+
 =head2 load_history
 
-    $service->load_history;
+    my $history = $c->service('customer')->load_history;
+
+=head2 login
+
+    $c->service('customer')->login($customer_id);
+
+=head2 logout
+
+    $c->service('customer')->logout;
 
 =head1 AUTHOR
 

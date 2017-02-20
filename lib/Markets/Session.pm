@@ -14,7 +14,7 @@ sub register {
 
     # Helpers
     $app->helper( server_session => sub { shift->stash($stash_key) } );
-    # $app->helper( cart_session   => sub { shift->stash($stash_key)->{cart_session} } );
+    $app->helper( cart_session   => sub { shift->stash($stash_key)->{cart_session} } );
 
     # Hooks
     $app->hook(

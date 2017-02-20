@@ -7,18 +7,16 @@ sub index {
 
 sub add_to_cart {
     my $self = shift;
+    my $cart = $self->service('cart');
 
-    my $cart = $self->cart;
-
-    # model
-    my $items      = $cart->data('items') || [];
+    # modelで
     my $product_id = $self->param('product_id');
     my $quantity   = $self->param('quantity');
-    push @$items, { product_id => $product_id, quantity => $quantity };
-    $cart->data( items => $items );
+    my $item       = { product_id => $product_id, quantity => $quantity };
+    say "add_to_cart: errrrrrrrorroror!!!!!!!!!!!!!!!!" unless $cart->add_item($item);
 
     use DDP;
-    p $cart->data('items');
+    p $cart->data('items');    # debug
 
     $self->flash( ref => $self->req->url->to_string );
     $self->redirect_to('RN_cart');

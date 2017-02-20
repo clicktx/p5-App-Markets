@@ -80,7 +80,7 @@ sub update {
 
         # Update Cart
         $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )
-          ->update( { $data_column => $cart_data } )
+          ->update_or_create( { $data_column => $cart_data } )
           if $is_modified;
 
         # Update Session
@@ -173,7 +173,7 @@ sub _separate_session_data {
 
     my %clone     = %$data;
     my $cart_data = delete $clone{cart};
-    my $cart_id   = $cart_data->{id};
+    my $cart_id   = delete $clone{cart_id};
 
     return ( \%clone, $cart_id, $cart_data );
 }
