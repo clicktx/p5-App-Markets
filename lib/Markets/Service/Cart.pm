@@ -1,10 +1,7 @@
-package Markets::Cart;
-use Mojo::Base -base;
+package Markets::Service::Cart;
+use Mojo::Base 'Markets::Service';
 
-use Scalar::Util qw/weaken/;
 use Mojo::Collection qw/c/;
-
-has 'cart_session';
 
 sub add_item {
     my ( $self, $item ) = @_;
@@ -16,7 +13,7 @@ sub add_item {
     return $self->data( items => $items );
 }
 
-sub data { shift->cart_session->data(@_) }
+sub data { shift->controller->cart_session->data(@_) }
 
 sub items {
     my $self = shift;
@@ -27,20 +24,12 @@ sub items {
     return c(@data);
 }
 
-sub new {
-    my ( $class, $c ) = @_;
-    my $self = $class->SUPER::new( cart_session => $c->cart_session );
-
-    weaken $self->{cart_session};
-    return $self;
-}
-
 1;
 __END__
 
 =head1 NAME
 
-Markets::Cart
+Markets::Service::Cart
 
 =head1 SYNOPSIS
 
@@ -48,7 +37,7 @@ Markets::Cart
 
 =head1 ATTRIBUTES
 
-L<Markets::Cart> inherits all attributes from L<Mojo::Base> and implements
+L<Markets::Service::Cart> inherits all attributes from L<Markets::Service> and implements
 the following new ones.
 
 =head1 METHODS

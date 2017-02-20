@@ -3,7 +3,9 @@ use Mojo::Base 'Markets::Controller::Catalog';
 
 sub index {
     my $self = shift;
-    my $items = $self->cart->items;
+
+    my $cart = $self->service('cart');
+    my $items = $cart->items;
 
     # 複数配送先を無関係に
     $items = $items->flatten;
