@@ -48,8 +48,21 @@ sub finalize {
     my $self = shift;
     say "C::finalize()";
 
+    return if $self->flash('_is_redirect');
     $self->server_session->flush;
     say "   ... session flush";    # debug
+}
+
+sub redirect_to {
+    my $self = shift;
+
+    # Add redirect flag
+    $self->flash( _is_redirect => 1 );
+
+    # Don't override 3xx status
+    my $res = $self->res;
+    $res->headers->location( $self->url_for(@_) );
+    return $self->rendered( $res->is_redirect ? () : 302 );
 }
 
 1;
