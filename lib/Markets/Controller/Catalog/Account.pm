@@ -19,11 +19,9 @@ sub login {
     $self->render();
 }
 
-# TODO: $session->data()を直接使わないようにする
 sub login_authen {
     my $self    = shift;
     my $params  = $self->req->params;
-    my $session = $self->server_session;
 
     my $is_valid = $params->param('password');
     if ($is_valid) {
@@ -42,9 +40,7 @@ sub login_authen {
 
 sub logout {
     my $self = shift;
-
-    my $session = $self->server_session;
-    $self->model('account')->remove_session($session);
+    $self->service('customer')->logout;
 }
 
 sub home {
