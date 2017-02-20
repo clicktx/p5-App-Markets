@@ -4,48 +4,43 @@ use Mojo::Base 'Markets::Controller::Catalog';
 sub authorize {
     my $self = shift;
     say "authorize";    #debug
-    my $session      = $self->server_session;
-    my $referer      = $self->current_route;
-    my $redirect_url = $self->url_for('RN_customer_login')->query( ref => $referer );
-    $self->redirect_to($redirect_url) and return 0 unless $self->is_logged_in;
+    my $referer = $self->current_route;
+
+    $self->flash( ref => $referer );
+    $self->redirect_to( $self->url_for('RN_customer_login') ) and return 0
+      unless $self->service('customer')->is_logged_in;
     return 1;
 }
 
 sub login {
-    my $self    = shift;
-    my $session = $self->server_session;
-    my $params  = $self->req->params;
+    my $self = shift;
 
-    $self->render( ref => $params->param('ref') );
+    $self->flash( ref => $self->flash('ref') );
+    $self->render();
 }
 
 sub login_authen {
     my $self    = shift;
     my $params  = $self->req->params;
-    my $session = $self->server_session;
 
     my $is_valid = $params->param('password');
     if ($is_valid) {
-        $self->server_session->data( customer_id => 1 );
+        my $customer_id = 1;
+        $self->service('customer')->login($customer_id);
 
-        # Regenerate session id
-        my $sid = $session->regenerate_sid;
-        say "  .. regenerate_sid: " . $sid;    #debug
-
-        my $redirect_route = $params->param('ref') || 'RN_customer_home';
+        my $redirect_route = $self->flash('ref') || 'RN_customer_home';
         return $self->redirect_to($redirect_route);
     }
     else {
-        say "don't loged in.";                 #debug
+        say "don't loged in.";    #debug
     }
-    $self->render( template => 'account/login', ref => $params->param('ref') );
+
+    $self->render( template => 'account/login' );
 }
 
 sub logout {
     my $self = shift;
-
-    my $session = $self->server_session;
-    $self->model('account')->remove_session($session);
+    $self->service('customer')->logout;
 }
 
 sub home {

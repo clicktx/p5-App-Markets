@@ -5,6 +5,8 @@ use Scalar::Util ();
 
 has [qw/app controller/];
 
+sub model { shift->app->model(@_) }
+
 sub new {
     my ( $self, $c ) = @_;
     my $app = $c->app;
@@ -52,6 +54,12 @@ A reference back to the application that dispatched to this service, usually
 a L<Mojolicious::Controller> object.
 
 =head1 METHODS
+
+=head2 model
+
+    $service->model('hoge')->mehod;
+
+Alias $app->model().
 
 =head1 AUTHOR
 
