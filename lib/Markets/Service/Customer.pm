@@ -32,6 +32,12 @@ sub add_history {
     $c->server_session->data( history => $history );
 }
 
+sub is_logged_in {
+    my $self = shift;
+    my $c    = $self->controller;
+    $c->server_session->data('customer_id') ? 1 : 0;
+}
+
 sub load_history {
     my $self = shift;
     my $c    = $self->controller;
@@ -73,14 +79,22 @@ the following new ones.
 =head2 add_history
 
     # $app->config('history_disable_route_names') is unsave list.
-    $service->add_history;
+    $c->service('customer')->add_history;
 
     Add history current URL for server session.
     Unsave list setting in L<Markets::Routes::Catalog>.
 
+=head2 is_logged_in
+
+    my $bool = $c->service('customer')->is_logged_in;
+
 =head2 load_history
 
-    $service->load_history;
+    my $history = $c->service('customer')->load_history;
+
+=head2 login
+
+    $c->service('customer')->login($customer_id);
 
 =head1 AUTHOR
 

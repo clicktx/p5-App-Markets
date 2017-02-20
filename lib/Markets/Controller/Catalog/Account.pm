@@ -6,7 +6,7 @@ sub authorize {
     say "authorize";    #debug
     my $referer = $self->current_route;
     my $redirect_url = $self->url_for('RN_customer_login')->query( ref => $referer );
-    $self->redirect_to($redirect_url) and return 0 unless $self->is_logged_in;
+    $self->redirect_to($redirect_url) and return 0 unless $self->service('customer')->is_logged_in;
     return 1;
 }
 
