@@ -131,18 +131,22 @@ subtest 'regenerate sid' => sub {
     my %data    = %{ $session->data };
     my $new_sid = $session->regenerate_sid;
     isnt $sid, $new_sid, 'right regenerate sid';
-    is $cart_id, $session->cart_id, 'right cart_id after regenerate sid';
+    is $cart_id, $session->cart_id, 'right cart_id';
 
     my %new_data = %{ $session->data };
     is %data, %new_data, 'right session data';
-    $session->flush;
-    $session->load;
-};
+    is $session->sid, $new_sid, 'right sid';
 
-subtest 'remove session' => sub {
-    $session->expire;
     $session->flush;
-    is $session->load, undef, 'removed session';
+    $session->load($new_sid);
+    is $session->sid, $new_sid, 'right reload sid';
+    is %new_data, %{ $session->data }, 'right reload data';
+
+    subtest 'remove session' => sub {
+        $session->expire;
+        $session->flush;
+        is $session->load($new_sid), undef, 'removed session';
+    };
 };
 
 done_testing();
