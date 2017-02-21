@@ -82,7 +82,7 @@ sub update {
 
         # Update Cart
         $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )
-          ->update_or_create(
+          ->update(
             {
                 $data_column => $cart_data,
             }
@@ -106,6 +106,16 @@ sub update {
         $self->error($_);
         return;
     };
+}
+
+sub update_cart_id {
+    my ( $self, $cart_id, $new_cart_id ) = @_;
+
+    my $schema         = $self->schema;
+    my $cart_id_column = $self->cart_id_column;
+
+    return $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )
+      ->update( { $cart_id_column => $new_cart_id } ) ? 1 : 0;
 }
 
 sub update_sid {

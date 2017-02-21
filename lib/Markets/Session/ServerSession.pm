@@ -8,10 +8,11 @@ has cart_session => sub { Markets::Session::CartSession->new(shift) };
 
 sub cart_id {
     my ( $self, $val ) = @_;
-    return $self->data('cart_id') unless $val;
+    my $cart_id = $self->data('cart_id');
+    return $cart_id unless $val;
 
+    return unless $self->store->update_cart_id( $cart_id, $val );
     $self->data( cart_id => $val );
-    $self->cart_session->_is_modified(1);
     return $val;
 }
 
