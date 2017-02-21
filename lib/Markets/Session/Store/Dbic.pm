@@ -62,12 +62,11 @@ sub create {
 sub update {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    my $schema             = $self->schema;
-    my $sid_column         = $self->sid_column;
-    my $expires_column     = $self->expires_column;
-    my $cart_id_column     = $self->cart_id_column;
-    my $data_column        = $self->data_column;
-    my $customer_id_column = $self->customer_id_column;
+    my $schema         = $self->schema;
+    my $sid_column     = $self->sid_column;
+    my $expires_column = $self->expires_column;
+    my $cart_id_column = $self->cart_id_column;
+    my $data_column    = $self->data_column;
 
     my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
     my $customer_id = $session_data->{customer_id} || undef;
@@ -85,8 +84,7 @@ sub update {
         $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )
           ->update_or_create(
             {
-                $data_column        => $cart_data,
-                $customer_id_column => $customer_id,
+                $data_column => $cart_data,
             }
           ) if $is_modified;
 
@@ -111,13 +109,13 @@ sub update {
 }
 
 sub update_sid {
-    my ( $self, $sid, $new_sid ) = @_;
+    my ( $self, $original_sid, $new_sid ) = @_;
 
     my $schema     = $self->schema;
     my $sid_column = $self->sid_column;
 
-    return $schema->resultset( $self->resultset_session )->search( { $sid_column => $sid } )
-      ->update( { $sid_column => $new_sid } ) ? 1 : 0;
+    return $schema->resultset( $self->resultset_session )
+      ->search( { $sid_column => $original_sid } )->update( { $sid_column => $new_sid } ) ? 1 : 0;
 }
 
 sub load {
