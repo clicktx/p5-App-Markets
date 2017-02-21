@@ -7,12 +7,13 @@ use MIME::Base64;
 use Storable qw/nfreeze thaw/;
 
 has 'schema';
-has resultset_session => 'Session';
-has resultset_cart    => 'Cart';
-has sid_column        => 'sid';
-has expires_column    => 'expires';
-has data_column       => 'data';
-has cart_id_column    => 'cart_id';
+has resultset_session  => 'Session';
+has resultset_cart     => 'Cart';
+has sid_column         => 'sid';
+has expires_column     => 'expires';
+has data_column        => 'data';
+has cart_id_column     => 'cart_id';
+has customer_id_column => 'customer_id';
 
 sub create {
     my ( $self, $sid, $expires, $data ) = @_;
@@ -61,13 +62,15 @@ sub create {
 sub update {
     my ( $self, $sid, $expires, $data ) = @_;
 
-    my $schema         = $self->schema;
-    my $sid_column     = $self->sid_column;
-    my $expires_column = $self->expires_column;
-    my $cart_id_column = $self->cart_id_column;
-    my $data_column    = $self->data_column;
+    my $schema             = $self->schema;
+    my $sid_column         = $self->sid_column;
+    my $expires_column     = $self->expires_column;
+    my $cart_id_column     = $self->cart_id_column;
+    my $data_column        = $self->data_column;
+    my $customer_id_column = $self->customer_id_column;
 
     my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
+    my $customer_id = $session_data->{customer_id} || undef;
 
     # カートの変更をチェック
     my $is_modified = $cart_data->{_is_modified};
@@ -80,8 +83,12 @@ sub update {
 
         # Update Cart
         $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )
-          ->update_or_create( { $data_column => $cart_data } )
-          if $is_modified;
+          ->update_or_create(
+            {
+                $data_column        => $cart_data,
+                $customer_id_column => $customer_id,
+            }
+          ) if $is_modified;
 
         # Update Session
         $schema->resultset( $self->resultset_session )->search( { $sid_column => $sid } )->update(
