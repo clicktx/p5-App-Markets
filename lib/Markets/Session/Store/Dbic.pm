@@ -111,13 +111,13 @@ sub update {
 }
 
 sub update_sid {
-    my ( $self, $original_sid, $new_sid ) = @_;
+    my ( $self, $sid, $new_sid ) = @_;
 
     my $schema     = $self->schema;
     my $sid_column = $self->sid_column;
 
-    return $schema->resultset( $self->resultset_session )
-      ->search( { $sid_column => $original_sid } )->update( { $sid_column => $new_sid } ) ? 1 : 0;
+    return $schema->resultset( $self->resultset_session )->search( { $sid_column => $sid } )
+      ->update( { $sid_column => $new_sid } ) ? 1 : 0;
 }
 
 sub load {
