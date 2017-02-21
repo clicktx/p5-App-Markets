@@ -44,14 +44,12 @@ sub regenerate_sid {
 
     my $original_sid = $self->sid;
     $self->SUPER::_generate_sid;
+    return unless $self->store->update_sid( $original_sid, $self->sid );
 
     if ( $self->transport ) {
         $self->transport->tx( $self->tx );
         $self->transport->set( $self->sid, $self->expires );
     }
-
-    $self->_is_flushed(0);
-    $self->store->update_sid( $original_sid, $self->sid );
 
     return $self->sid;
 }
