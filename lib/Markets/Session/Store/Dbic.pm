@@ -168,13 +168,23 @@ sub load {
     return ( $expires, $session_data );
 }
 
+sub delete_cart {
+    my ( $self, $cart_id ) = @_;
+    my $schema         = $self->schema;
+    my $cart_id_column = $self->cart_id_column;
+
+    $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )->delete;
+}
+
 sub delete {
     my ( $self, $sid ) = @_;
 
-    my $schema         = $self->schema;
-    my $sid_column     = $self->sid_column;
-    my $cart_id_column = $self->cart_id_column;
+    my $schema     = $self->schema;
+    my $sid_column = $self->sid_column;
 
+    # my $cart_id_column = $self->cart_id_column;
+
+    # TODO: customer cart以外の場合はcartも削除するように
     # session deleteで関係するcartもdeleteされる
     my $cb = sub {
         my $session =
@@ -282,9 +292,17 @@ Update session in database.
 
 Update sid in database.
 
+=head2 C<load_cart_data>
+
+Load cart from database.
+
 =head2 C<load>
 
 Load session from database.
+
+=head2 C<delete_cart>
+
+Delete cart from database.
 
 =head2 C<delete>
 

@@ -152,6 +152,11 @@ subtest 'regenerate sid' => sub {
         $session->flush;
         is $session->load($new_sid), undef, 'removed session';
     };
+
+    subtest 'remove cart' => sub {
+        ok $session->remove_cart('not_found_cart') == 0 , 'do not removed cart';
+        is $session->remove_cart($cart_id), 1, 'removed cart';
+    };
 };
 
 done_testing();

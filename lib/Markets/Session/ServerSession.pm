@@ -58,6 +58,13 @@ sub regenerate_sid {
     return $self->sid;
 }
 
+sub remove_cart {
+    my ( $self, $id ) = @_;
+    return unless $id;
+
+    return $self->store->delete_cart($id);
+}
+
 1;
 __END__
 
@@ -99,6 +106,12 @@ Get/Set cart id.
 =head2 C<regenerate_sid>
 
     my $sid = $session->regenerate_sid;
+
+=head2 C<remove_cart>
+
+    $session->remove_cart($cart_id);
+
+Remove cart from DB.
 
 =head1 SEE ALSO
 
