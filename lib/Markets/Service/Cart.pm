@@ -16,8 +16,8 @@ sub add_item {
 sub data { shift->controller->cart_session->data(@_) }
 
 sub items {
-    my $self = shift;
-    my $items = $self->data('items') || [ [] ];
+    my ( $self, $items ) = @_;
+    $items = $self->data('items') || [ [] ] unless ref $items;
 
     # All items to Mojo::Collection
     my @data = map { c(@$_) } @$items;
@@ -56,6 +56,7 @@ Alias for L<Markets::Session::CartSession/"data">.
 =head2 C<items>
 
     my $items = $cart->items;
+    my $items = $cart->items(\@items);
 
 Return L<Mojo::Collection> object.
 
