@@ -43,14 +43,13 @@ sub regenerate_sid {
     my $self = shift;
 
     my $original_sid = $self->sid;
-    $self->SUPER::_generate_sid;
+    $self->_generate_sid;
     return unless $self->store->update_sid( $original_sid, $self->sid );
 
     if ( $self->transport ) {
         $self->transport->tx( $self->tx );
         $self->transport->set( $self->sid, $self->expires );
     }
-
     return $self->sid;
 }
 
