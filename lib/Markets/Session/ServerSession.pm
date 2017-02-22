@@ -7,13 +7,13 @@ use Markets::Util qw/generate_token/;
 has cart_session => sub { Markets::Session::CartSession->new(shift) };
 
 sub cart_id {
-    my ( $self, $val ) = @_;
+    my ( $self, $id ) = @_;
     my $cart_id = $self->data('cart_id');
-    return $cart_id unless $val;
+    return $cart_id unless $id;
 
-    return unless $self->store->update_cart_id( $cart_id, $val );
-    $self->data( cart_id => $val );
-    return $val;
+    return unless $self->store->update_cart_id( $cart_id, $id );
+    $self->data( cart_id => $id );
+    return $id;
 }
 
 sub create {
