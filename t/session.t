@@ -43,7 +43,6 @@ subtest 'store for cart' => sub {
     ok $result->data, 'schema: right cart data';
 };
 
-# load session
 subtest 'load session' => sub {
     my $cookie = Mojo::Cookie::Request->new( name => 'sid', value => $sid, path => '/' );
     my $tx = Mojo::Transaction::HTTP->new();
@@ -54,7 +53,6 @@ subtest 'load session' => sub {
     is $session->cart_session->cart_id, $cart_id, 'right cart id';
 };
 
-# set session data
 subtest 'set session data' => sub {
 
     # set and unsaved
@@ -69,7 +67,6 @@ subtest 'set session data' => sub {
     is $session->data('counter'), 1, 'right saved session data';
 };
 
-# Test for cart
 subtest 'set cart data' => sub {
 
     # set and unsaved
