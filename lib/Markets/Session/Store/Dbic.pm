@@ -177,7 +177,8 @@ sub delete {
 
     # session deleteで関係するcartもdeleteされる
     my $cb = sub {
-        my $session = $schema->resultset( $self->resultset_session )->find($sid)->delete;
+        my $session =
+          $schema->resultset( $self->resultset_session )->search( { $sid_column => $sid } )->delete;
 
         # $session->delete_related('cart');#リレーション設定により不要
     };
