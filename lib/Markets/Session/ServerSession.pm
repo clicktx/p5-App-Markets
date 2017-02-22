@@ -6,6 +6,11 @@ use Markets::Util qw/generate_token/;
 
 has cart_session => sub { Markets::Session::CartSession->new(shift) };
 
+sub cart_data {
+    my ( $self, $id ) = @_;
+    return $id ? $self->store->load_cart_data($id) : $self->cart_session->data;
+}
+
 sub cart_id {
     my ( $self, $id ) = @_;
     my $cart_id = $self->data('cart_id');
@@ -76,6 +81,13 @@ Returns new L<Markets::Session::CartSession> object.
 
 L<Markets::Session::ServerSession> inherits all methods from L<MojoX::Session> and implements
 the following new ones.
+
+=head2 C<cart_data>
+
+    my $cart_data = $session->cart_data;
+    my $cart_data = $session->cart_data($cart_id);
+
+Return cart data.
 
 =head2 C<cart_id>
 

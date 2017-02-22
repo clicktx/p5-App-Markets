@@ -128,6 +128,16 @@ sub update_sid {
       ->update( { $sid_column => $new_sid } ) ? 1 : 0;
 }
 
+sub load_cart_data {
+    my ( $self, $cart_id ) = @_;
+    my $schema      = $self->schema;
+    my $data_column = $self->data_column;
+
+    my $rs = $schema->resultset( $self->resultset_cart )->find($cart_id);
+    my $data = $rs ? thaw( decode_base64( $rs->data ) ) : undef;
+    return $data ? $data->{data} : undef;
+}
+
 sub load {
     my ( $self, $sid ) = @_;
 

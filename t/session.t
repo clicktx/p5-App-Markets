@@ -33,6 +33,7 @@ subtest 'create session' => sub {
     is_deeply $session->cart_session->data, {}, 'cart data after flush';
     ok $cart_id, 'right session->cart_id';
     is $cart_id, $session->cart_session->cart_id, 'right cart_id';
+    is $session->cart_session->cart_id, $session->cart_id, 'right cart_id';
 };
 
 subtest 'store for cart' => sub {
@@ -92,6 +93,13 @@ subtest 'get cart data' => sub {
     $cart->data( items => [ {} ] );
     is_deeply $cart->data('items'),                    [ {} ], 'set data in the cart';
     is_deeply $session->data('cart')->{data}->{items}, [ {} ], 'right session data changed';
+    $session->flush;
+    $session->load;
+
+    # from session
+    is_deeply $session->cart_data, $cart->data, 'right cart data from DB';
+    is_deeply $session->cart_data($cart_id), $cart->data, 'right cart data from DB';
+    is $session->cart_data('cart_id_hoge'), undef, 'right cart data not found cart';
 };
 
 subtest 'change all cart data' => sub {
