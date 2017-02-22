@@ -1,4 +1,4 @@
-package Markets::DB::Schema::Result::Preference;
+package Markets::Schema::Result::Preference;
 use strict;
 use warnings;
 

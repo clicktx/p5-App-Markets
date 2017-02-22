@@ -1,4 +1,4 @@
-package Markets::DB::Schema::Result::Cart;
+package Markets::Schema::Result::Cart;
 
 use strict;
 use warnings;
@@ -14,7 +14,7 @@ column data => { data_type => 'MEDIUMTEXT', };
 
 column customer_id => { data_type => 'INT' };
 
-has_many session => 'Markets::DB::Schema::Result::Session', 'cart_id';
+has_many session => 'Markets::Schema::Result::Session', 'cart_id';
 
 sub sqlt_deploy_hook {
     my ( $self, $table ) = @_;

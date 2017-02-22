@@ -1,4 +1,4 @@
-package Markets::DB::Schema;
+package Markets::Schema;
 use strict;
 use warnings;
 use base qw /DBIx::Class::Schema/;

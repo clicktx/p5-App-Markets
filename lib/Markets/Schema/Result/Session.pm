@@ -1,4 +1,4 @@
-package Markets::DB::Schema::Result::Session;
+package Markets::Schema::Result::Session;
 use strict;
 use warnings;
 
@@ -22,9 +22,9 @@ column expires => {
 };
 
 # belongs_to
-#   'cart' => 'Markets::DB::Schema::Result::Cart',
+#   'cart' => 'Markets::Schema::Result::Cart',
 #   { 'foreign.cart_id' => 'self.cart_id' };
 
-belongs_to cart => 'Markets::DB::Schema::Result::Cart', 'cart_id';
+belongs_to cart => 'Markets::Schema::Result::Cart', 'cart_id';
 
 1;

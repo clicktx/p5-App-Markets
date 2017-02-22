@@ -4,7 +4,7 @@ use t::Util;
 
 use File::Basename qw(dirname);
 use lib File::Spec->catdir( dirname(__FILE__), '..', '..', 'lib' );
-use Markets::DB::Schema;
+use Markets::Schema;
 
 $ENV{TEST_MYSQL} ||= do {
     require Test::mysqld;
@@ -33,7 +33,7 @@ $ENV{TEST_MYSQL} ||= do {
     system "mysqladmin -uroot -S $socket create markets";
 
     # create table
-    my $schema = Markets::DB::Schema->connect($dsn);
+    my $schema = Markets::Schema->connect($dsn);
     $schema->deploy;
 
     # insert data

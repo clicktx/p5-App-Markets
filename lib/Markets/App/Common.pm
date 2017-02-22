@@ -8,7 +8,7 @@ $ENV{DBIC_TRACE} = 1;
 has db => sub {
     say "+++++ DBIC +++++";    # debug
     my $self         = shift;
-    my $schema_class = "Markets::DB::Schema";
+    my $schema_class = "Markets::Schema";
     eval "require $schema_class" or die "Could not load Schema Class ($schema_class). $@\n";
 
     say "      connecting db.";    # debug
