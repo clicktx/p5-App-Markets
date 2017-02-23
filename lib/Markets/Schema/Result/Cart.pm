@@ -10,7 +10,10 @@ primary_column cart_id => {
     size      => 50,
 };
 
-column data => { data_type => 'MEDIUMTEXT', };
+column data => {
+    data_type   => 'MEDIUMTEXT',
+    is_nullable => 0,
+};
 
 has_many session => 'Markets::Schema::Result::Session', 'cart_id';
 
