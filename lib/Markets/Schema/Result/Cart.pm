@@ -12,13 +12,6 @@ primary_column cart_id => {
 
 column data => { data_type => 'MEDIUMTEXT', };
 
-column customer_id => { data_type => 'INT' };
-
 has_many session => 'Markets::Schema::Result::Session', 'cart_id';
-
-sub sqlt_deploy_hook {
-    my ( $self, $table ) = @_;
-    $table->add_index( name => 'idx_customer_id', fields => ['customer_id'] );
-}
 
 1;
