@@ -8,7 +8,7 @@ sub items {
     return if ref $cart_data ne 'HASH';
 
     # All items to Mojo::Collection
-    my $items = $cart_data->{items};
+    my $items = $cart_data->{items} || [ [] ];
     my @data = map { c(@$_) } @{$items};
     return c(@data);
 }
