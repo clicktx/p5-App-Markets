@@ -1,4 +1,4 @@
-package Markets::DB::Schema::Result::Addon;
+package Markets::Schema::Result::Addon;
 use strict;
 use warnings;
 
@@ -18,6 +18,6 @@ column is_enabled => {
     default_value => 0,
 };
 
-has_many hooks => 'Markets::DB::Schema::Result::Addon::Hook', 'addon_id';
+has_many hooks => 'Markets::Schema::Result::Addon::Hook', 'addon_id';
 
 1;

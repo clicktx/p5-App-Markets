@@ -7,12 +7,13 @@ use MIME::Base64;
 use Storable qw/nfreeze thaw/;
 
 has 'schema';
-has resultset_session => 'Session';
-has resultset_cart    => 'Cart';
-has sid_column        => 'sid';
-has expires_column    => 'expires';
-has data_column       => 'data';
-has cart_id_column    => 'cart_id';
+has resultset_session  => 'Session';
+has resultset_cart     => 'Cart';
+has sid_column         => 'sid';
+has expires_column     => 'expires';
+has data_column        => 'data';
+has cart_id_column     => 'cart_id';
+has customer_id_column => 'customer_id';
 
 sub create {
     my ( $self, $sid, $expires, $data ) = @_;
@@ -68,6 +69,7 @@ sub update {
     my $data_column    = $self->data_column;
 
     my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
+    my $customer_id = $session_data->{customer_id} || undef;
 
     # カートの変更をチェック
     my $is_modified = $cart_data->{_is_modified};
@@ -80,8 +82,11 @@ sub update {
 
         # Update Cart
         $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )
-          ->update_or_create( { $data_column => $cart_data } )
-          if $is_modified;
+          ->update(
+            {
+                $data_column => $cart_data,
+            }
+          ) if $is_modified;
 
         # Update Session
         $schema->resultset( $self->resultset_session )->search( { $sid_column => $sid } )->update(
@@ -103,14 +108,34 @@ sub update {
     };
 }
 
+sub update_cart_id {
+    my ( $self, $cart_id, $new_cart_id ) = @_;
+
+    my $schema         = $self->schema;
+    my $cart_id_column = $self->cart_id_column;
+
+    return $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )
+      ->update( { $cart_id_column => $new_cart_id } ) ? 1 : 0;
+}
+
 sub update_sid {
-    my ( $self, $original_sid, $new_sid ) = @_;
+    my ( $self, $sid, $new_sid ) = @_;
 
     my $schema     = $self->schema;
     my $sid_column = $self->sid_column;
 
-    return $schema->resultset( $self->resultset_session )
-      ->search( { $sid_column => $original_sid } )->update( { $sid_column => $new_sid } ) ? 1 : 0;
+    return $schema->resultset( $self->resultset_session )->search( { $sid_column => $sid } )
+      ->update( { $sid_column => $new_sid } ) ? 1 : 0;
+}
+
+sub load_cart_data {
+    my ( $self, $cart_id ) = @_;
+    my $schema      = $self->schema;
+    my $data_column = $self->data_column;
+
+    my $rs = $schema->resultset( $self->resultset_cart )->find($cart_id);
+    my $data = $rs ? thaw( decode_base64( $rs->data ) ) : undef;
+    return $data ? $data->{data} : undef;
 }
 
 sub load {
@@ -143,16 +168,27 @@ sub load {
     return ( $expires, $session_data );
 }
 
+sub delete_cart {
+    my ( $self, $cart_id ) = @_;
+    my $schema         = $self->schema;
+    my $cart_id_column = $self->cart_id_column;
+
+    $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )->delete;
+}
+
 sub delete {
     my ( $self, $sid ) = @_;
 
-    my $schema         = $self->schema;
-    my $sid_column     = $self->sid_column;
-    my $cart_id_column = $self->cart_id_column;
+    my $schema     = $self->schema;
+    my $sid_column = $self->sid_column;
 
+    # my $cart_id_column = $self->cart_id_column;
+
+    # TODO: customer cart以外の場合はcartも削除するように
     # session deleteで関係するcartもdeleteされる
     my $cb = sub {
-        my $session = $schema->resultset( $self->resultset_session )->find($sid)->delete;
+        my $session =
+          $schema->resultset( $self->resultset_session )->search( { $sid_column => $sid } )->delete;
 
         # $session->delete_related('cart');#リレーション設定により不要
     };
@@ -256,9 +292,17 @@ Update session in database.
 
 Update sid in database.
 
+=head2 C<load_cart_data>
+
+Load cart from database.
+
 =head2 C<load>
 
 Load session from database.
+
+=head2 C<delete_cart>
+
+Delete cart from database.
 
 =head2 C<delete>
 

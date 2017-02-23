@@ -20,12 +20,12 @@ sub login {
 }
 
 sub login_authen {
-    my $self    = shift;
-    my $params  = $self->req->params;
+    my $self   = shift;
+    my $params = $self->req->params;
 
     my $is_valid = $params->param('password');
     if ($is_valid) {
-        my $customer_id = 1;
+        my $customer_id = 123;    # debug customer_id example
         $self->service('customer')->login($customer_id);
 
         my $redirect_route = $self->flash('ref') || 'RN_customer_home';

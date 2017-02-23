@@ -1,4 +1,4 @@
-package Markets::DB::Schema::Result::Session;
+package Markets::Schema::Result::Session;
 use strict;
 use warnings;
 
@@ -9,22 +9,26 @@ primary_column sid => {
     size      => 50,
 };
 
-column data => { data_type => 'MEDIUMTEXT', };
+column data => {
+    data_type => 'MEDIUMTEXT',
+    is_nullable => 1,
+};
 
 column cart_id => {
     data_type => 'VARCHAR',
     size      => 50,
+    is_nullable => 0,
 };
 
 column expires => {
     data_type   => 'BIGINT',
-    is_nullable => 1,
+    is_nullable => 0,
 };
 
 # belongs_to
-#   'cart' => 'Markets::DB::Schema::Result::Cart',
+#   'cart' => 'Markets::Schema::Result::Cart',
 #   { 'foreign.cart_id' => 'self.cart_id' };
 
-belongs_to cart => 'Markets::DB::Schema::Result::Cart', 'cart_id';
+belongs_to cart => 'Markets::Schema::Result::Cart', 'cart_id';
 
 1;

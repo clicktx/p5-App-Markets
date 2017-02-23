@@ -6,13 +6,19 @@ use Markets::Util qw/generate_token/;
 
 has cart_session => sub { Markets::Session::CartSession->new(shift) };
 
-sub cart_id {
-    my ( $self, $val ) = @_;
-    return $self->data('cart_id') unless $val;
+sub cart_data {
+    my ( $self, $id ) = @_;
+    return $id ? $self->store->load_cart_data($id) : $self->cart_session->data;
+}
 
-    $self->data( cart_id => $val );
-    $self->cart_session->_is_modified(1);
-    return $val;
+sub cart_id {
+    my ( $self, $id ) = @_;
+    my $cart_id = $self->data('cart_id');
+    return $cart_id unless $id;
+
+    return unless $self->store->update_cart_id( $cart_id, $id );
+    $self->data( cart_id => $id );
+    return $id;
 }
 
 sub create {
@@ -30,6 +36,11 @@ sub create {
     return $sid;
 }
 
+sub customer_id {
+    my $self = shift;
+    return @_ ? $self->data( customer_id => $_[0] ) : $self->data('customer_id');
+}
+
 sub load {
     my $self = shift;
     my $sid  = $self->SUPER::load(@_);
@@ -42,17 +53,21 @@ sub regenerate_sid {
     my $self = shift;
 
     my $original_sid = $self->sid;
-    $self->SUPER::_generate_sid;
+    $self->_generate_sid;
+    return unless $self->store->update_sid( $original_sid, $self->sid );
 
     if ( $self->transport ) {
         $self->transport->tx( $self->tx );
         $self->transport->set( $self->sid, $self->expires );
     }
-
-    $self->_is_flushed(0);
-    $self->store->update_sid( $original_sid, $self->sid );
-
     return $self->sid;
+}
+
+sub remove_cart {
+    my ( $self, $id ) = @_;
+    return unless $id;
+
+    return $self->store->delete_cart($id);
 }
 
 1;
@@ -79,6 +94,13 @@ Returns new L<Markets::Session::CartSession> object.
 L<Markets::Session::ServerSession> inherits all methods from L<MojoX::Session> and implements
 the following new ones.
 
+=head2 C<cart_data>
+
+    my $cart_data = $session->cart_data;
+    my $cart_data = $session->cart_data($cart_id);
+
+Return cart data.
+
 =head2 C<cart_id>
 
     my $cart_id = $session->cart_id;
@@ -89,6 +111,12 @@ Get/Set cart id.
 =head2 C<regenerate_sid>
 
     my $sid = $session->regenerate_sid;
+
+=head2 C<remove_cart>
+
+    $session->remove_cart($cart_id);
+
+Remove cart from DB.
 
 =head1 SEE ALSO
 
