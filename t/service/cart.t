@@ -59,32 +59,4 @@ $t->get_ok('/test/create_session');
 $t->get_ok('/test/items')->status_is(200);
 $t->get_ok('/test/merge_cart')->status_is(200);
 
-# Test for private method
-subtest 'merge items' => sub {
-    my $items = [
-        { product_id => 1, quantiry => 10 },
-        { product_id => 3, quantiry => 10 },
-        { product_id => 5, quantiry => 10 },
-        { product_id => 7, quantiry => 10 },
-    ];
-    my $stored_items = [
-        { product_id => 1, quantiry => 1 },
-        { product_id => 2, quantiry => 1 },
-        { product_id => 3, quantiry => 1 },
-        { product_id => 4, quantiry => 1 },
-    ];
-
-    my $merged_items = Markets::Service::Cart::_merge_items( $items, $stored_items );
-    is_deeply $merged_items,
-      [
-        { product_id => 2, quantiry => 1 },
-        { product_id => 4, quantiry => 1 },
-        { product_id => 1, quantiry => 10 },
-        { product_id => 3, quantiry => 10 },
-        { product_id => 5, quantiry => 10 },
-        { product_id => 7, quantiry => 10 },
-      ],
-      'right merged';
-};
-
 done_testing();
