@@ -47,14 +47,34 @@ sub login {
     my ( $self, $customer_id ) = @_;
     return unless $customer_id;
 
-    my $c = $self->controller;
-    $c->server_session->data( customer_id => $customer_id );
-    $c->cart_session->_is_modified(1);
+    my $c       = $self->controller;
+    my $session = $c->server_session;
 
-    # Regenerate sid
-    my $sid = $c->server_session->regenerate_sid;
-    say "  .. regenerate_sid: " . $sid;    #debug
-    return $sid;
+    # Merge cart data
+    my $cart_data        = $session->cart_data;
+    my $stored_cart_data = $session->cart_data($customer_id);
+    my $merged_cart_data = $c->model('cart')->merge_cart( $cart_data, $stored_cart_data );
+
+    # Set cart data
+    $session->cart_session->data($merged_cart_data);
+
+    # Set customer id
+    $session->customer_id($customer_id);
+
+    {
+        my $txn = $self->app->db->txn_scope_guard;
+
+        # Change cart_id
+        $session->remove_cart($customer_id);
+        $session->cart_id($customer_id);
+
+        # Regenerate sid
+        my $sid = $session->regenerate_sid;
+        say "  .. regenerate_sid: " . $sid;    #debug
+
+        $txn->commit;
+        return $sid;
+    }
 }
 
 sub logout {
