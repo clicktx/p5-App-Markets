@@ -36,6 +36,11 @@ sub create {
     return $sid;
 }
 
+sub customer_id {
+    my $self = shift;
+    return @_ ? $self->data( customer_id => $_[0] ) : $self->data('customer_id');
+}
+
 sub load {
     my $self = shift;
     my $sid  = $self->SUPER::load(@_);

@@ -130,6 +130,18 @@ subtest 'change cart_id' => sub {
     is $cart->cart_id,    $new_cartid, 'right changed cart id after reload';
 };
 
+subtest 'customer_id' => sub {
+    my $customer_id = $session->data('customer_id');
+    is $session->customer_id, $customer_id, 'right load customer_id';
+
+    $session->customer_id('123456');
+    is $session->customer_id, 123456, 'right changed customer_id';
+
+    $session->flush;
+    $session->load;
+    is $session->customer_id, 123456, 'right changed customer_id';
+};
+
 subtest 'regenerate sid' => sub {
     my $sid     = $session->sid;
     my $cart_id = $session->cart_id;
@@ -154,7 +166,7 @@ subtest 'regenerate sid' => sub {
     };
 
     subtest 'remove cart' => sub {
-        ok $session->remove_cart('not_found_cart') == 0 , 'do not removed cart';
+        ok $session->remove_cart('not_found_cart') == 0, 'do not removed cart';
         is $session->remove_cart($cart_id), 1, 'removed cart';
     };
 };
