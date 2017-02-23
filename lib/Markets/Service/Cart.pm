@@ -7,6 +7,7 @@ sub add_item {
     my ( $self, $item ) = @_;
     return if ref $item ne 'HASH';
 
+    # TODO: [WIP]商品追加時はすべての商品を $items->[0] に保存すること
     my $items = $self->data('items');
     push @{ $items->[0] }, $item;
 
