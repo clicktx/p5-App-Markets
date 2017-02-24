@@ -4,7 +4,11 @@ use Mojo::Base 'Mojolicious';
 use Markets::Addons;
 use DBIx::QueryLog;
 
-$ENV{DBIC_TRACE} = 1;
+# $ENV{DBIC_TRACE}            = 1;
+$ENV{DBIX_QUERYLOG_COMPACT} = 1;
+$ENV{DBIX_QUERYLOG_USEQQ}   = 1;
+$ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
+
 has db => sub {
     say "+++++ DBIC +++++";    # debug
     my $self         = shift;
@@ -45,12 +49,12 @@ sub initialize_app {
     my $mode = $self->mode;
 
     # SQL debug log
-    $DBIx::QueryLog::OUTPUT = sub {
-        my %args = @_;
-
-        # printf 'sql: %s', $args{sql};
-        $self->log->debug( "sql:\n" . $args{sql} );
-    };
+    # $DBIx::QueryLog::OUTPUT = sub {
+    #     my %args = @_;
+    #
+    #     # printf 'sql: %s', $args{sql};
+    #     $self->log->debug( "sql:\n" . $args{sql} );
+    # };
 
     # change log dir
     $self->log->path( $home->rel_file("var/log/$mode.log") )
