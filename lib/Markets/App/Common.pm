@@ -7,7 +7,7 @@ use DBIx::QueryLog;
 # $ENV{DBIC_TRACE}            = 1;
 $ENV{DBIX_QUERYLOG_COMPACT} = 1;
 $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
-$ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
+# $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
 
 has db => sub {
     say "+++++ DBIC +++++";    # debug
