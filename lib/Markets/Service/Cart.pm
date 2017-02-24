@@ -36,18 +36,18 @@ the following new ones.
 
 =head2 C<add_item>
 
-    $cart->add_item( \%item );
+    $c->service('cart')->add_item( \%item );
 
 =head2 C<data>
 
-    my $data = $cart->data;
-    $cart->data( fizz => buzz );
+    my $data = $c->service('cart')->data;
+    $c->service('cart')->data( fizz => buzz );
 
 Alias for L<Markets::Session::CartSession/"data">.
 
 =head2 C<items>
 
-    my $items = $cart->items;
+    my $items = $c->service('cart')->items;
 
 Get cart items.
 Return L<Mojo::Collection> object.
