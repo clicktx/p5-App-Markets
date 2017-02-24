@@ -4,12 +4,11 @@ use Mojo::Base 'Markets::Controller::Catalog';
 sub authorize {
     my $self = shift;
     say "authorize";    #debug
-    my $referer = $self->current_route;
+    return 1 if $self->service('customer')->is_logged_in;
 
-    $self->flash( ref => $referer );
-    $self->redirect_to( $self->url_for('RN_customer_login') ) and return 0
-      unless $self->service('customer')->is_logged_in;
-    return 1;
+    $self->flash( ref => $self->current_route );
+    $self->redirect_to( $self->url_for('RN_customer_login') );
+    return 0;
 }
 
 sub login {
