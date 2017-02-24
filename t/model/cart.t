@@ -16,6 +16,11 @@ subtest 'items' => sub {
     is ref $items->[2], '';
     is $items->[0]->size, 2;
     is_deeply $items->[0]->first, {};
+
+    # empty data
+    is ref $model->items( {} ), 'Mojo::Collection', 'right cart data empty hash';
+    is ref $model->items(undef), 'Mojo::Collection', 'right cart data undefind';
+    is ref $model->items(''),    'Mojo::Collection',  'right cart data empty';
 };
 
 subtest 'merge_cart' => sub {
