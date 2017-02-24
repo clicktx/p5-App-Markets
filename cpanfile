@@ -11,6 +11,7 @@ requires 'Session::Token',                          '1.503';
 requires 'DBI',                                     '1.636';
 requires 'DBD::mysql',                              '4.033';
 requires 'DBIx::Class',                             '0.082840';
+requires 'SQL::Translator',                         '0.11021';
 requires 'DBIx::Class::Candy',                      '0.005002';
 requires 'Data::MessagePack',                       '0.49';
 requires 'Class::Inspector',                        '1.28';

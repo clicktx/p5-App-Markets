@@ -24,10 +24,6 @@ $r->get(
             $items = $c->service('cart')->items;
             is_deeply $items->to_array, [ [ { product_id => 1, quantiry => 1 } ] ],
               'right add item';
-
-            $items = $c->service('cart')->items( [ [ {} ], [ {} ] ] );
-            is ref $items, 'Mojo::Collection', 'right object';
-            is_deeply $items->to_array, [ [ {} ], [ {} ] ], 'right items';
         };
 
         subtest 'data' => sub {

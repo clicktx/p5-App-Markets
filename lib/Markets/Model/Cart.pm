@@ -4,11 +4,10 @@ use Mojo::Base 'Markets::Model';
 use Mojo::Collection qw/c/;
 
 sub items {
-    my ( $self, $cart_data ) = @_;
-    return if ref $cart_data ne 'HASH';
+    my ( $self, $cart_data ) = ( shift, shift || {} );
 
     # All items to Mojo::Collection
-    my $items = $cart_data->{items};
+    my $items = $cart_data->{items} || [ [] ];
     my @data = map { c(@$_) } @{$items};
     return c(@data);
 }

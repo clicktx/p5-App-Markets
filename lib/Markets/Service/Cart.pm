@@ -1,8 +1,6 @@
 package Markets::Service::Cart;
 use Mojo::Base 'Markets::Service';
 
-use Mojo::Collection qw/c/;
-
 sub add_item {
     my ( $self, $item ) = @_;
     return if ref $item ne 'HASH';
@@ -16,14 +14,7 @@ sub add_item {
 
 sub data { shift->controller->cart_session->data(@_) }
 
-sub items {
-    my ( $self, $items ) = @_;
-    $items = $self->data('items') || [ [] ] unless ref $items;
-
-    # All items to Mojo::Collection
-    my @data = map { c(@$_) } @$items;
-    return c(@data);
-}
+sub items { $_[0]->model('cart')->items( $_[0]->data ) }
 
 1;
 __END__
@@ -57,8 +48,8 @@ Alias for L<Markets::Session::CartSession/"data">.
 =head2 C<items>
 
     my $items = $cart->items;
-    my $items = $cart->items(\@items);
 
+Get cart items.
 Return L<Mojo::Collection> object.
 
 =head1 AUTHOR
