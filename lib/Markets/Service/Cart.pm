@@ -2,14 +2,15 @@ package Markets::Service::Cart;
 use Mojo::Base 'Markets::Service';
 
 sub add_item {
-    my ( $self, $item ) = @_;
-    return if ref $item ne 'HASH';
+    my $self = shift;
 
-    # TODO: [WIP]商品追加時はすべての商品を $items->[0] に保存すること
-    my $items = $self->data('items');
-    push @{ $items->[0] }, $item;
+    my $params = $self->controller->req->params->to_hash;
+    my $item   = $self->model('cart')->item($params);
 
-    return $self->data( items => $items );
+    my $items = $self->items->flatten;
+    $items = $self->model('cart')->add_item( $item, $items );
+
+    return $self->data( items => [ $items->to_array ] );
 }
 
 sub data { shift->controller->cart_session->data(@_) }
