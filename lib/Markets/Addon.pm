@@ -48,6 +48,11 @@ sub setup {
         }
     ) if -d $locale_dir;
 
+    # Load schema
+    # TODO: $self->is_installed を作って真の場合のみ実行させる？
+    my $result_class = $class_name . "::Schema::Result";
+    $self->app->db->storage->schema->load_namespaces( result_namespace => "+$result_class" );
+
     # Call to register method for YourAddon.
     $self->register( $self->app );
     return $self;
