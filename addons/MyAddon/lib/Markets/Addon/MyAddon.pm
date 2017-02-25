@@ -71,9 +71,9 @@ sub myaddon_replace_templates {
     }
 }
 
-sub install   { }
-sub uninstall { }
-sub update    { }
+# sub install   { }
+# sub uninstall { }
+# sub update    { }
 
 sub enable {
     my $self = shift;    # my ($self, $app, $arg) = (shift, shift, shift // {});
