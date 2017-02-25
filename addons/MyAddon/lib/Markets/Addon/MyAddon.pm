@@ -31,6 +31,11 @@ sub say_yes {
         my $dom = $c->helpers->dom->parse( ${$template_source} );
         $dom->find('h1')->first->replace('<h1>Say yes!</h1>');
 
+        # use DB example
+        my $rs = $c->app->db->resultset('MyAddonTest');
+        use DDP; p $rs;
+        # $rs->search({});
+
         # templateの書き換えを反映
         ${$template_source} = $dom;
     }
