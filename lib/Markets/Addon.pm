@@ -33,7 +33,7 @@ sub setup {
 
     # Routes
     my $class_name = $self->class_name;
-    my $r                = Mojolicious::Routes->new;
+    my $r          = Mojolicious::Routes->new;
     $r = $r->to( namespace => __PACKAGE__ )->name($class_name);
     $self->routes($r);
 
@@ -48,8 +48,13 @@ sub setup {
         }
     ) if -d $locale_dir;
 
+    # Load schema
+    # TODO: $self->is_installed を作って真の場合のみ実行させる？
+    my $result_class = $class_name . "::Schema::Result";
+    $self->app->db->storage->schema->load_namespaces( result_namespace => "+$result_class" );
+
     # Call to register method for YourAddon.
-    $self->register($self->app);
+    $self->register( $self->app );
     return $self;
 }
 
@@ -89,7 +94,24 @@ sub _remove_hook {
       };
 }
 
-sub install   { }
+sub install {
+    my $self = shift;
+
+    # Create Tables
+    my $class_name   = ref $self;
+    my $schema_class = $class_name . "::Schema";
+
+    eval "require $schema_class";
+    if ( !$@ ) {
+        my $db           = $self->app->db;
+        my $connect_info = $db->storage->connect_info;
+        my $schema       = $schema_class->connect( $connect_info->[0] );
+        $schema->deploy;
+    }
+
+    return $self;
+}
+
 sub uninstall { }
 sub update    { }
 
