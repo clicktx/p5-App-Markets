@@ -15,20 +15,30 @@ $r->get(
     '/test/items' => sub {
         my $c = shift;
 
-        subtest 'items, add_item' => sub {
+        subtest 'items' => sub {
             my $items = $c->service('cart')->items;
             is ref $items, 'Mojo::Collection', 'right object';
             is_deeply $items->to_array, [ [] ], 'right items';
+        };
 
-            $c->service('cart')->add_item( { product_id => 1, quantiry => 1 } );
-            $items = $c->service('cart')->items;
-            is_deeply $items->to_array, [ [ { product_id => 1, quantiry => 1 } ] ],
+        $c->render( text => 1 );
+    }
+);
+
+$r->post(
+    '/test/add_item' => sub {
+        my $c = shift;
+
+        subtest 'items' => sub {
+            $c->service('cart')->add_item;
+            my $items = $c->service('cart')->items;
+            is_deeply $items->to_array, [ [ { product_id => 1, quantity => 1 } ] ],
               'right add item';
         };
 
         subtest 'data' => sub {
             is_deeply $c->service('cart')->data,
-              { items => [ [ { product_id => 1, quantiry => 1 } ] ] };
+              { items => [ [ { product_id => 1, quantity => 1 } ] ] };
         };
 
         # for merge_cart test
@@ -51,8 +61,12 @@ $r->get(
     }
 );
 
+# Requests
 $t->get_ok('/test/create_session');
 $t->get_ok('/test/items')->status_is(200);
+
+my $params = { product_id => 1, quantity => 1 };
+$t->post_ok( '/test/add_item', form => $params )->status_is(200);
 $t->get_ok('/test/merge_cart')->status_is(200);
 
 done_testing();
