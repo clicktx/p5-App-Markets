@@ -7,16 +7,11 @@ sub index {
 
 sub add_to_cart {
     my $self = shift;
-    my $cart = $self->service('cart');
 
-    # modelで
-    my $product_id = $self->param('product_id');
-    my $quantity   = $self->param('quantity');
-    my $item       = { product_id => $product_id, quantity => $quantity };
-    say "add_to_cart: errrrrrrrorroror!!!!!!!!!!!!!!!!" unless $cart->add_item($item);
+    die unless $self->service('cart')->add_item;
 
     use DDP;
-    p $cart->data('items');    # debug
+    p $self->service('cart')->data;    # debug
 
     $self->flash( ref => $self->req->url->to_string );
     $self->redirect_to('RN_cart');

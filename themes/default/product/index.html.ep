@@ -10,6 +10,7 @@
 <h1>Order</h1>
 <%= form_for 'RN_add_to_cart' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
+    <%= hidden_field product_id => $product_id %>
     Quantity <%= text_field quantity => '1' %>
     <%= submit_button 'Add to Cart' %>
 <% end %>

@@ -2,14 +2,15 @@ package Markets::Service::Cart;
 use Mojo::Base 'Markets::Service';
 
 sub add_item {
-    my ( $self, $item ) = @_;
-    return if ref $item ne 'HASH';
+    my $self = shift;
 
-    # TODO: [WIP]商品追加時はすべての商品を $items->[0] に保存すること
-    my $items = $self->data('items');
-    push @{ $items->[0] }, $item;
+    my $params = $self->controller->req->params->to_hash;
+    my $item   = $self->model('cart')->item($params);
 
-    return $self->data( items => $items );
+    my $items = $self->items->flatten;
+    $items = $self->model('cart')->add_item( $item, $items );
+
+    return $self->data( items => [ $items->to_array ] );
 }
 
 sub data { shift->controller->cart_session->data(@_) }
@@ -36,18 +37,18 @@ the following new ones.
 
 =head2 C<add_item>
 
-    $cart->add_item( \%item );
+    $c->service('cart')->add_item( \%item );
 
 =head2 C<data>
 
-    my $data = $cart->data;
-    $cart->data( fizz => buzz );
+    my $data = $c->service('cart')->data;
+    $c->service('cart')->data( fizz => buzz );
 
 Alias for L<Markets::Session::CartSession/"data">.
 
 =head2 C<items>
 
-    my $items = $cart->items;
+    my $items = $c->service('cart')->items;
 
 Get cart items.
 Return L<Mojo::Collection> object.
