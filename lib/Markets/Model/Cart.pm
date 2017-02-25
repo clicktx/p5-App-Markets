@@ -3,6 +3,28 @@ use Mojo::Base 'Markets::Model';
 
 use Mojo::Collection qw/c/;
 
+sub add_item {
+    my ( $self, $item, $items ) = ( shift, shift, shift || Mojo::Collection->new );
+    return $items unless %$item;
+
+    my $in_cart = $items->first( sub { $_->{product_id} eq $item->{product_id} } );
+    if ($in_cart) { $in_cart->{quantity} += $item->{quantity} }
+    else          { push @{$items}, $item }
+
+    return $items;
+}
+
+sub item {
+    my ( $self, $params ) = @_;
+
+    my $item = {
+        product_id => $params->{product_id},
+        quantity   => $params->{quantity},
+    };
+
+    return $item;
+}
+
 sub items {
     my ( $self, $cart_data ) = ( shift, shift || {} );
 
