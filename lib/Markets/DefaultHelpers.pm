@@ -67,26 +67,26 @@ Markets::DefaultHelpers - Default helpers plugin for Markets
 
 =head1 HELPERS
 
-=head2 addons
+=head2 C<addons>
 
     my $addons = $c->addons;
 
 Alias for $app->addons;
 
-=head2 cookie_session
+=head2 C<cookie_session>
 
     $c->cookie_session( key => 'value' );
     my $value = $c->cookie_session('key');
 
 Alias for $c->session;
 
-=head2 pref
+=head2 C<pref>
 
     my $hoge = $c->pref('hoge');
 
 Get preference.
 
-=head2 service
+=head2 C<service>
 
     # Your service
     package Markets::Service::Cart;
@@ -104,13 +104,13 @@ Get preference.
 
 Service Layer accessor.
 
-=head2 schema
+=head2 C<schema>
 
     my $schema = $c->schema;
 
 Alias for $c->app->schema;
 
-=head2 template
+=head2 C<template>
 
     $c->template('hoge/index');
 

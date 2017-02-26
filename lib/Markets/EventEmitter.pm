@@ -68,14 +68,14 @@ L<Markets::EventEmitter> inherits all events from L<Mojo::EventEmitter> & L<Mojo
 
 =head1 METHODS
 
-=head2 emit
+=head2 C<emit>
 
     $e = $e->emit('name');
     $e = $e->emit('name' => $arg1, $arg2, $arg3, ...);
 
 Emit event.
 
-=head2 on
+=head2 C<on>
 
     my $hash_ref = $e->on($args_ref);
 
@@ -90,7 +90,7 @@ Emit event.
 Subscribe to event.
 Sort the Events in order of priority.
 
-=head2 unsubscribe
+=head2 C<unsubscribe>
 
   $e = $e->unsubscribe('foo');
   $e = $e->unsubscribe(foo => $hook_ref);

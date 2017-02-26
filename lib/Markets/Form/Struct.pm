@@ -122,18 +122,18 @@ Markets::Form::Struct - Form for Markets
 
 =head1 METHODS
 
-=head2 add_field
+=head2 C<add_field>
 
     $form->add_field(name, [filters], [validations]);
     $form->add_field('password', [qw/trim/], [qw/is_required is_equal/]);
 
-=head2 c
+=head2 C<c>
 
     $form->c;
 
 Return $form->{markets.controller}
 
-=head2 default_value
+=head2 C<default_value>
 
     # Get value
     my $value = $form->default_value('age');
@@ -143,7 +143,7 @@ Return $form->{markets.controller}
 
 Get/Set default value.
 
-=head2 errors
+=head2 C<errors>
 
     # Return value is hash ref.
     # ex. { password => 'Requied', login_name => 'Requied', ... }
@@ -153,7 +153,7 @@ Get/Set default value.
     # ex. 'Requied'
     my $error_message = $form->errors('password');
 
-=head2 expand_hash
+=head2 C<expand_hash>
 
     # in your controller
     $self->render(
@@ -164,27 +164,27 @@ Get/Set default value.
 
 Return default values or form paramater.
 
-=head2 fields
+=head2 C<fields>
 
     $form->fields;
     $form->fields('login');
 
 Get/Set $form->{fields} value.
 
-=head2 filters
+=head2 C<filters>
 
     $form->filters('password', ['trim']);
     my $filters = $form->filters('password');
 
 Get/Set filters.
 
-=head2 param
+=head2 C<param>
 
     my $password = $form->param('password');
 
 Get field value.
 
-= head2 params
+= head2 C<params>
 
     # Return value is hash ref.
     # ex. { password => 'xxxxxxx', login_name => 'hoge', ... }
@@ -196,17 +196,17 @@ Get field value.
 
 This method is alias of $controller->param($fields_name)
 
-=head2 remove_field
+=head2 C<remove_field>
 
     $form->remove_field('password');
 
 Remove form field.
 
-=head2 valid
+=head2 C<valid>
 
     $form->valid;
 
-=head2 validations
+=head2 C<validations>
 
     $form->validations('password', ['is_required']);
     my $validations = $form->validations('password');

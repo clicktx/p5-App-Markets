@@ -57,7 +57,7 @@ Snake case or Package name.
 
 =head1 METHODS
 
-=head2 configure
+=head2 C<configure>
 
     # Loading indtalled Addons
     my $addon_config = $app->model('data-addon')->configure;

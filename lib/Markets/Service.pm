@@ -34,7 +34,7 @@ Markets::Service - Application Service Layer
 L<Markets::Service> inherits all attributes from L<Mojo::Base> and implements
 the following new ones.
 
-=head2 app
+=head2 C<app>
 
     my $app  = $service->app;
     $service = $service->app(Mojolicious->new);
@@ -42,7 +42,7 @@ the following new ones.
 A reference back to the application that dispatched to this service, usually
 a L<Mojolicious> object.
 
-=head2 controller
+=head2 C<controller>
 
     # Get controller
     my $c = $service->controller;
@@ -55,7 +55,7 @@ a L<Mojolicious::Controller> object.
 
 =head1 METHODS
 
-=head2 model
+=head2 C<model>
 
     $service->model('hoge')->mehod;
 

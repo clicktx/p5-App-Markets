@@ -89,14 +89,14 @@ by default.
 
 L<Markets::Renderer::EPRenderer> supports the following options.
 
-=head2 name
+=head2 C<name>
 
   # Mojolicious::Lite
   plugin EPRenderer => {name => 'foo'};
 
 Handler name, defaults to C<ep>.
 
-=head2 template
+=head2 C<template>
 
   # Mojolicious::Lite
   plugin EPRenderer => {template => {line_start => '.'}};
@@ -108,7 +108,7 @@ Attribute values passed to L<Mojo::Template> object used to render templates.
 L<Markets::Renderer::EPRenderer> inherits all methods from
 L<Markets::Renderer::EPLRenderer> and implements the following new ones.
 
-=head2 register
+=head2 C<register>
 
   $plugin->register(Mojolicious->new);
   $plugin->register(Mojolicious->new, {name => 'foo'});

@@ -22,7 +22,7 @@ implements the following new ones.
 L<Markets::Controller::Catalog> inherits all methods from L<Markets::Controller> and
 implements the following new ones.
 
-=head2 is_logged_in
+=head2 C<is_logged_in>
 
 =head1 SEE ALSO
 
