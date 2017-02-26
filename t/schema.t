@@ -17,4 +17,9 @@ subtest 'time zone' => sub {
     is $schema->time_zone, 'Asia/Tokyo', 'right change time zone';
 };
 
+subtest 'methods' => sub {
+    ok $schema->now, 'right now()';
+    ok $schema->today, 'right today()';
+};
+
 done_testing();
