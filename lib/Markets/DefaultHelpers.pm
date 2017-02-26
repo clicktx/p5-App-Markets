@@ -9,10 +9,10 @@ sub register {
     my ( $self, $app, $conf ) = @_;
 
     # Alias helpers
+    # $app->helper( schema         => sub { shift->app->schema } ); # controllerから呼ばない
     $app->helper( addons         => sub { shift->app->addons(@_) } );
     $app->helper( cookie_session => sub { shift->session(@_) } );
     $app->helper( template       => sub { shift->stash( template => shift ) } );
-    $app->helper( schema         => sub { shift->app->schema } );
 
     $app->helper( pref    => sub { _pref(@_) } );
     $app->helper( service => sub { _service(@_) } );
