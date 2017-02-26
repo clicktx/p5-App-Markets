@@ -27,6 +27,7 @@ sub enable {
 
     # hook routes有効化
     $self->app->addons->to_enable($addon);
+    $self->app->restart_app;
 
     $self->redirect_to('/admin/addons');
 }
@@ -41,6 +42,7 @@ sub disable {
 
     # hook routes無効化
     $self->app->addons->to_disable($addon);
+    $self->app->restart_app;
 
     $self->redirect_to('/admin/addons');
 }

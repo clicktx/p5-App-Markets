@@ -7,6 +7,7 @@ use DBIx::QueryLog;
 # $ENV{DBIC_TRACE}            = 1;
 $ENV{DBIX_QUERYLOG_COMPACT} = 1;
 $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
+
 # $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
 
 has db => sub {
@@ -26,7 +27,9 @@ has db => sub {
 has addons      => sub { Markets::Addons->new(@_) };
 has action_hook => sub { shift->addons->action_hook(@_) };
 has filter_hook => sub { shift->addons->filter_hook(@_) };
-has restart_app => sub { system shift->home . "/script/appctl --restart" };
+
+# has restart_app => sub { system shift->home . "/script/appctl --restart" };
+has restart_app => sub { system "touch " . __FILE__ }; # 本番用に変更する
 
 sub dsn {
     my ( $self, $conf ) = @_;
