@@ -1,9 +1,9 @@
 package Markets::DefaultHelpers;
 use Mojo::Base 'Mojolicious::Plugin';
 
-use Carp qw/croak/;
+use Carp ();
 use Scalar::Util ();
-use Mojo::Util qw/camelize/;
+use Mojo::Util ();
 
 sub register {
     my ( $self, $app, $conf ) = @_;
@@ -24,14 +24,14 @@ sub _pref {
     unless ( $pref->{$key} ) {
         my $e = "pref('$key') has not value.";
         $c->app->log->fatal($e);
-        croak $e;
+        Carp::croak $e;
     }
     return $pref->{$key};
 }
 
 sub _service {
     my ( $c, $name ) = @_;
-    $name = camelize($name) if $name =~ /^[a-z]/;
+    $name = Mojo::Util::camelize($name) if $name =~ /^[a-z]/;
     Carp::croak 'Service name is empty.' unless $name;
 
     my $service = $c->app->{services}{$name};
