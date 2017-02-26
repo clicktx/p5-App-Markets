@@ -18,7 +18,7 @@ has schema => sub {
 
     say "      connecting db.";    # debug
     my $conf   = $self->config('db') or die "Missing configuration for db";
-    my $dsn    = $self->dsn($conf);
+    my $dsn    = _dsn($conf);
     my $schema = $schema_class->connect($dsn)
       or die "Could not connect to $schema_class using DSN ";
     return $schema;
@@ -27,21 +27,6 @@ has schema => sub {
 # has restart_app => sub { system shift->home . "/script/appctl --restart" };
 has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更する
 has addons      => sub { Markets::Addons->new(@_) };
-
-sub dsn {
-    my ( $self, $conf ) = @_;
-    my $dsn;
-    if ( $ENV{TEST_MYSQL} ) {
-        $dsn = $ENV{TEST_MYSQL};
-    }
-    else {
-        $dsn =
-            "DBI:$conf->{dbtype}:dbname=$conf->{dbname};"
-          . "host=$conf->{host};port=$conf->{port};"
-          . "user=$conf->{user};password=$conf->{password};";
-    }
-    return $dsn;
-}
 
 sub initialize_app {
     my $self = shift;
@@ -141,6 +126,19 @@ sub initialize_app {
               unless $c->stash('mojo.static');
         }
     );
+}
+
+sub _dsn {
+    my $conf = shift;
+    my $dsn;
+    if ( $ENV{TEST_MYSQL} ) { $dsn = $ENV{TEST_MYSQL} }
+    else {
+        $dsn =
+            "DBI:$conf->{dbtype}:dbname=$conf->{dbname};"
+          . "host=$conf->{host};port=$conf->{port};"
+          . "user=$conf->{user};password=$conf->{password};";
+    }
+    return $dsn;
 }
 
 1;
