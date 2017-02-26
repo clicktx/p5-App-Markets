@@ -3,9 +3,9 @@ use Mojo::Base 'Markets::Model';
 
 sub configure {
     my $self = shift;
-    my $db   = $self->app->db;
+    my $schema   = $self->app->schema;
 
-    my $addons = $db->resultset('Addon')->search(
+    my $addons = $schema->resultset('Addon')->search(
         {},
         {
             join     => 'hooks',

@@ -14,7 +14,7 @@ $tx->req->cookies($cookie);
 
 my $session = Markets::Session::ServerSession->new(
     tx            => $tx,
-    store         => Markets::Session::Store::Dbic->new( schema => $app->db ),
+    store         => Markets::Session::Store::Dbic->new( schema => $app->schema ),
     transport     => MojoX::Session::Transport::Cookie->new,
     expires_delta => 3600,
 );

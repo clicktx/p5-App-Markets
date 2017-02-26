@@ -12,7 +12,7 @@ sub register {
     $app->helper( addons         => sub { shift->app->addons(@_) } );
     $app->helper( cookie_session => sub { shift->session(@_) } );
     $app->helper( template       => sub { shift->stash( template => shift ) } );
-    $app->helper( schema         => sub { shift->app->db } );
+    $app->helper( schema         => sub { shift->app->schema } );
 
     $app->helper( pref    => sub { _pref(@_) } );
     $app->helper( service => sub { _service(@_) } );
@@ -108,7 +108,7 @@ Service Layer accessor.
 
     my $schema = $c->schema;
 
-Alias for $c->app->db;
+Alias for $c->app->schema;
 
 =head2 template
 

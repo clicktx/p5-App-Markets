@@ -61,7 +61,7 @@ sub login {
     $session->customer_id($customer_id);
 
     {
-        my $txn = $self->app->db->txn_scope_guard;
+        my $txn = $self->app->schema->txn_scope_guard;
 
         # Change cart_id
         $session->remove_cart($customer_id);

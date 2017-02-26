@@ -10,7 +10,7 @@ $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
 
 # $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
 
-has db => sub {
+has schema => sub {
     say "+++++ DBIC +++++";    # debug
     my $self         = shift;
     my $schema_class = "Markets::Schema";

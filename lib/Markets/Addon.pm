@@ -51,7 +51,7 @@ sub setup {
     # Load schema
     # TODO: $self->is_installed を作って真の場合のみ実行させる？
     my $result_class = $class_name . "::Schema::Result";
-    $self->app->db->storage->schema->load_namespaces( result_namespace => "+$result_class" );
+    $self->app->schema->storage->schema->load_namespaces( result_namespace => "+$result_class" );
 
     # Call to register method for YourAddon.
     $self->register( $self->app );
@@ -103,10 +103,10 @@ sub install {
 
     eval "require $schema_class";
     if ( !$@ ) {
-        my $db           = $self->app->db;
-        my $connect_info = $db->storage->connect_info;
-        my $schema       = $schema_class->connect( $connect_info->[0] );
-        $schema->deploy;
+        my $schema       = $self->app->schema;
+        my $connect_info = $schema->storage->connect_info;
+        my $self_schema  = $schema_class->connect( $connect_info->[0] );
+        $self_schema->deploy;
     }
 
     return $self;
