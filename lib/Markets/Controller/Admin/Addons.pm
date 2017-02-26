@@ -24,10 +24,10 @@ sub enable {
 
     # TODO: dbの更新処理
     # $addon->is_enabled(1); はAddons::to_enableで行う
+    # $self->app->restart_app;
 
     # hook routes有効化
     $self->app->addons->to_enable($addon);
-    $self->app->restart_app;
 
     $self->redirect_to('/admin/addons');
 }
@@ -39,10 +39,10 @@ sub disable {
 
     # TODO: dbの更新処理
     # $addon->is_enabled(0); はAddons::to_disableで行う
+    # $self->app->restart_app;
 
     # hook routes無効化
     $self->app->addons->to_disable($addon);
-    $self->app->restart_app;
 
     $self->redirect_to('/admin/addons');
 }
