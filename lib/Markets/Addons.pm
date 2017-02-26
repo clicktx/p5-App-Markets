@@ -210,27 +210,27 @@ L<Markets::Addons> inherits all events from L<Mojo::EventEmitter> & L<Markets::E
 
 =head1 ATTRIBUTES
 
-=head2 app
+=head2 C<app>
 
     my $app = $addons->app;
 
 Return the application object.
 
-=head2 action_hook
+=head2 C<action_hook>
 
 Markets::Addons::ActionHook object.
 
-=head2 filter_hook
+=head2 C<filter_hook>
 
 Markets::Addons::FilterHook object.
 
-=head2 installed
+=head2 C<installed>
 
     my $installed_addons = $addons->installed;
 
 Return Hash ref.
 
-=head2 uploaded
+=head2 C<uploaded>
 
     my $uploaded_addons = $addons->uploaded;
 
@@ -242,7 +242,7 @@ The list of all uploaded addons.
 L<Markets::Addons> inherits all methods from L<Mojolicious::EventEmitter> and implements
 the following new ones.
 
-=head2 addon
+=head2 C<addon>
 
     # Get all addon object
     my $installed_addons = $addons->addon; # Return Hash ref
@@ -255,7 +255,7 @@ the following new ones.
     # Setter
     $addons->addon( 'my_addon' => Markets::Addon::MyAddon->new );
 
-=head2 emit
+=head2 C<emit>
 
     # Emit action hook
     $addons->action_hook->emit('foo');
@@ -268,11 +268,11 @@ the following new ones.
 Emit event as action/filter hook.
 This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook::emit.
 
-=head2 init
+=head2 C<init>
 
     $addons->init(\%addon_settings);
 
-=head2 load_addon
+=head2 C<load_addon>
 
     my $addon = $addons->load_addon( 'my_addon', $addon_pref );
     my $addon = $addons->load_addon( 'MyAddon', $addon_pref );
@@ -281,25 +281,25 @@ This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook:
 Load an addon from the configured.
 Return L<Markets::Addon> object.
 
-=head2 subscribe_hooks
+=head2 C<subscribe_hooks>
 
     $addons->subscribe_hooks($addon);
 
 Subscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
 
-=head2 to_enable
+=head2 C<to_enable>
 
     $addons->to_enable($addon_object);
 
 Change addon status to enable.
 
-=head2 to_disable
+=head2 C<to_disable>
 
     $addons->to_disable($addon_object);
 
 Change addon status to disable.
 
-=head2 unsubscribe_hooks
+=head2 C<unsubscribe_hooks>
 
     $addons->unsubscribe_hooks($addon);
 

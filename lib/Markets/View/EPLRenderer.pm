@@ -114,7 +114,7 @@ by default.
 L<Markets::Renderer::EPLRenderer> inherits all methods from
 L<Markets::Renderer> and implements the following new ones.
 
-=head2 register
+=head2 C<register>
 
   $plugin->register(Mojolicious->new);
 

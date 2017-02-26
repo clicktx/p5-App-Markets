@@ -24,7 +24,7 @@ sub register {
             say "hook! before_dispatch from plugin session";    # debug
             my $session =
               Markets::Session::ServerSession->new( %$args,
-                store => Markets::Session::Store::Dbic->new( schema => $app->db ), );
+                store => Markets::Session::Store::Dbic->new( schema => $app->schema ), );
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
             $c->stash( $stash_key => $session, );
@@ -55,7 +55,7 @@ sub register {
             p $session->sid;
 
             # Cart
-            say "   ... CartSession data: ";                                # debug
+            say "   ... CartSession data: ";                         # debug
             p $session->cart_session->data;
         }
     );

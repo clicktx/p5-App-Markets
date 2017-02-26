@@ -1,18 +1,18 @@
 package Markets::DefaultHelpers;
 use Mojo::Base 'Mojolicious::Plugin';
 
-use Carp qw/croak/;
+use Carp ();
 use Scalar::Util ();
-use Mojo::Util qw/camelize/;
+use Mojo::Util ();
 
 sub register {
     my ( $self, $app, $conf ) = @_;
 
     # Alias helpers
+    # $app->helper( schema         => sub { shift->app->schema } ); # controllerから呼ばない
     $app->helper( addons         => sub { shift->app->addons(@_) } );
     $app->helper( cookie_session => sub { shift->session(@_) } );
     $app->helper( template       => sub { shift->stash( template => shift ) } );
-    $app->helper( schema         => sub { shift->app->db } );
 
     $app->helper( pref    => sub { _pref(@_) } );
     $app->helper( service => sub { _service(@_) } );
@@ -24,14 +24,14 @@ sub _pref {
     unless ( $pref->{$key} ) {
         my $e = "pref('$key') has not value.";
         $c->app->log->fatal($e);
-        croak $e;
+        Carp::croak $e;
     }
     return $pref->{$key};
 }
 
 sub _service {
     my ( $c, $name ) = @_;
-    $name = camelize($name) if $name =~ /^[a-z]/;
+    $name = Mojo::Util::camelize($name) if $name =~ /^[a-z]/;
     Carp::croak 'Service name is empty.' unless $name;
 
     my $service = $c->app->{services}{$name};
@@ -67,26 +67,26 @@ Markets::DefaultHelpers - Default helpers plugin for Markets
 
 =head1 HELPERS
 
-=head2 addons
+=head2 C<addons>
 
     my $addons = $c->addons;
 
 Alias for $app->addons;
 
-=head2 cookie_session
+=head2 C<cookie_session>
 
     $c->cookie_session( key => 'value' );
     my $value = $c->cookie_session('key');
 
 Alias for $c->session;
 
-=head2 pref
+=head2 C<pref>
 
     my $hoge = $c->pref('hoge');
 
 Get preference.
 
-=head2 service
+=head2 C<service>
 
     # Your service
     package Markets::Service::Cart;
@@ -104,13 +104,13 @@ Get preference.
 
 Service Layer accessor.
 
-=head2 schema
+=head2 C<schema>
 
     my $schema = $c->schema;
 
-Alias for $c->app->db;
+Alias for $c->app->schema;
 
-=head2 template
+=head2 C<template>
 
     $c->template('hoge/index');
 

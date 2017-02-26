@@ -3,9 +3,9 @@ use Mojo::Base 'Markets::Model';
 
 sub configure {
     my $self = shift;
-    my $db   = $self->app->db;
+    my $schema   = $self->app->schema;
 
-    my $addons = $db->resultset('Addon')->search(
+    my $addons = $schema->resultset('Addon')->search(
         {},
         {
             join     => 'hooks',
@@ -57,7 +57,7 @@ Snake case or Package name.
 
 =head1 METHODS
 
-=head2 configure
+=head2 C<configure>
 
     # Loading indtalled Addons
     my $addon_config = $app->model('data-addon')->configure;

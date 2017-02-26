@@ -51,7 +51,7 @@ sub setup {
     # Load schema
     # TODO: $self->is_installed を作って真の場合のみ実行させる？
     my $result_class = $class_name . "::Schema::Result";
-    $self->app->db->storage->schema->load_namespaces( result_namespace => "+$result_class" );
+    $self->app->schema->storage->schema->load_namespaces( result_namespace => "+$result_class" );
 
     # Call to register method for YourAddon.
     $self->register( $self->app );
@@ -103,10 +103,10 @@ sub install {
 
     eval "require $schema_class";
     if ( !$@ ) {
-        my $db           = $self->app->db;
-        my $connect_info = $db->storage->connect_info;
-        my $schema       = $schema_class->connect( $connect_info->[0] );
-        $schema->deploy;
+        my $schema       = $self->app->schema;
+        my $connect_info = $schema->storage->connect_info;
+        my $self_schema  = $schema_class->connect( $connect_info->[0] );
+        $self_schema->deploy;
     }
 
     return $self;
@@ -180,29 +180,29 @@ L<Markets::Addon> is L<Mojolicious::Plugin> base plugin system.
 
 =head1 ATRIBUTES
 
-=head2 app
+=head2 C<app>
 
     my $app = $addon->app;
 
 Return the application object.
 
-=head2 class_name
+=head2 C<class_name>
 
     my $class_name = $addon->class_name;
 
 Return the class name of addon.
 
-=head2 name
+=head2 C<name>
 
     my $addon_name = $addon->name;
 
 Return the addon name.
 
-=head2 is_enabled
+=head2 C<is_enabled>
 
 Return boolean.
 
-=head2 routes
+=head2 C<routes>
 
     my $r = $addon->routes;
 
@@ -217,14 +217,14 @@ Return L<Mojolicious::Routes> object.
 L<Markets::Addon> inherits all methods from L<Mojolicious::Plugin> and
 implements the following new ones.
 
-=head2 addon_home
+=head2 C<addon_home>
 
   # /path/to/Markets/addon/YourAddon
   &addon_home(Markets::Addon::YourAddon)
 
 Get home path for YourAddon.
 
-=head2 add_action_hook
+=head2 C<add_action_hook>
 
     sub register {
         my my ( $self, $app, $arg ) = @_;
@@ -238,7 +238,7 @@ Get home path for YourAddon.
 
 Extend L<Markets> with action hook event.
 
-=head2 add_filter_hook
+=head2 C<add_filter_hook>
 
     sub register {
         my my ( $self, $app, $arg ) = @_;
@@ -252,19 +252,19 @@ Extend L<Markets> with action hook event.
 
 Extend L<Markets> with filter hook event.
 
-=head2 rm_action_hook
+=head2 C<rm_action_hook>
 
     $addon->rm_action_hook( 'action_hook_name', 'subroutine_name');
 
 Remove L<Markets> action hook event.
 
-=head2 rm_filter_hook
+=head2 C<rm_filter_hook>
 
     $addon->rm_filter_hook( 'filter_hook_name', 'subroutine_name');
 
 Remove L<Markets> filter hook event.
 
-=head2 get_template
+=head2 C<get_template>
 
     my $content = $class->get_template('dir/template_name');
 
@@ -272,11 +272,11 @@ Get content for addon template file or DATA section.
 
 format C<html> and handler C<ep> onry. ex) template_name.html.ep
 
-=head2 setup
+=head2 C<setup>
 
 This method will be called by L<Markets::Addon> at startup time.
 
-=head2 register
+=head2 C<register>
 
 This method will be called after L<Markets::Addon>::setup() at startup time.
 Meant to be overloaded in a subclass.

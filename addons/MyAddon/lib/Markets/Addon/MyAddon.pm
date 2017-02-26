@@ -32,7 +32,7 @@ sub say_yes {
         $dom->find('h1')->first->replace('<h1>Say yes!</h1>');
 
         # use DB example
-        my $rs = $c->app->db->resultset('MyAddonTest');
+        my $rs = $c->app->schema->resultset('MyAddonTest');
         use DDP; p $rs;
         # $rs->search({});
 

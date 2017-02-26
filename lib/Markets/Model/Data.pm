@@ -4,7 +4,7 @@ use Mojo::Base 'Markets::Model';
 sub load_pref {
     my $self = shift;
 
-    my $rs   = $self->app->db->resultset('Preference');
+    my $rs   = $self->app->schema->resultset('Preference');
     my $pref = {};
     while ( my $row = $rs->next ) {
         $pref->{ $row->key_name } = $row->value ? $row->vallue : $row->default_value;

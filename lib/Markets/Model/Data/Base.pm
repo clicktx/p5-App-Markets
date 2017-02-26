@@ -4,11 +4,7 @@ use Data::Dumper;
 
 sub do {
     my ($self) = @_;
-    my $db = $self->app->db;
-    # say '$app->dbh => ' . $self->app->dbh . 'on Model::Data::Base'; 
-    # say '$app->db => ' . $db; 
-    # say $db->single(sessions => {sid => 1});
-    # say "data->do";
+    my $schema = $self->app->schema;
 }
 
 1;

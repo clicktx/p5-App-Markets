@@ -335,7 +335,7 @@ L<Extensible Markup Language (XML) 1.0|http://www.w3.org/TR/xml/>.
 
 L<Markets::View::DOM::EP> implements the following attributes.
 
-=head2 tree
+=head2 C<tree>
 
   my $tree = $html->tree;
   $html    = $html->tree(['root']);
@@ -343,7 +343,7 @@ L<Markets::View::DOM::EP> implements the following attributes.
 Document Object Model. Note that this structure should only be used very
 carefully since it is very dynamic.
 
-=head2 xml
+=head2 C<xml>
 
   my $bool = $html->xml;
   $html    = $html->xml($bool);
@@ -356,13 +356,13 @@ auto-detection based on XML declarations.
 L<Markets::View::DOM::EP> inherits all methods from L<Mojo::Base> and implements the
 following new ones.
 
-=head2 parse
+=head2 C<parse>
 
   $html = $html->parse('<foo bar="baz">I ♥ Mojolicious!</foo>');
 
 Parse HTML/XML/EP Tenmplate fragment.
 
-=head2 render
+=head2 C<render>
 
   my $str = $html->render;
 

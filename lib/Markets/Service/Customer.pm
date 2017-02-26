@@ -61,7 +61,7 @@ sub login {
     $session->customer_id($customer_id);
 
     {
-        my $txn = $self->app->db->txn_scope_guard;
+        my $txn = $self->app->schema->txn_scope_guard;
 
         # Change cart_id
         $session->remove_cart($customer_id);
@@ -101,7 +101,7 @@ the following new ones.
 
 =head1 METHODS
 
-=head2 add_history
+=head2 C<add_history>
 
     # $app->config('history_disable_route_names') is unsave list.
     $c->service('customer')->add_history;
@@ -109,19 +109,19 @@ the following new ones.
     Add history current URL for server session.
     Unsave list setting in L<Markets::Routes::Catalog>.
 
-=head2 is_logged_in
+=head2 C<is_logged_in>
 
     my $bool = $c->service('customer')->is_logged_in;
 
-=head2 load_history
+=head2 C<load_history>
 
     my $history = $c->service('customer')->load_history;
 
-=head2 login
+=head2 C<login>
 
     $c->service('customer')->login($customer_id);
 
-=head2 logout
+=head2 C<logout>
 
     $c->service('customer')->logout;
 
