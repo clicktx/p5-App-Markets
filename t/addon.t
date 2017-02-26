@@ -77,8 +77,8 @@ subtest 'addon basic' => sub {
 subtest 'for t/addons TestAddon' => sub {
 
     # Hooks
-    my $test_action = $app->action_hook->subscribers('action_example_hook');
-    my $test_filter = $app->filter_hook->subscribers('filter_example_hook');
+    my $test_action = $app->addons->action_hook->subscribers('action_example_hook');
+    my $test_filter = $app->addons->filter_hook->subscribers('filter_example_hook');
 
     is $test_action->[0]->{priority}, 100, 'right priority, action hook';
     is $test_action->[1]->{priority}, 500, 'right priority, action hook';
@@ -98,8 +98,8 @@ subtest 'for t/addons TestAddon' => sub {
     my $addon  = $addons->addon('Markets::Addon::TestAddon');
     $addons->to_disable($addon);
 
-    $test_action = $app->action_hook->subscribers('action_example_hook');
-    $test_filter = $app->filter_hook->subscribers('filter_example_hook');
+    $test_action = $app->addons->action_hook->subscribers('action_example_hook');
+    $test_filter = $app->addons->filter_hook->subscribers('filter_example_hook');
     is_deeply $test_action, [], 'removed action hooks';
     is_deeply $test_filter, [], 'removed action hooks';
     $t->get_ok('/test_addon')->status_is(404);
@@ -107,8 +107,8 @@ subtest 'for t/addons TestAddon' => sub {
 };
 
 subtest 'for t/addons DisableAddon' => sub {
-    my $disable_action = $app->action_hook->subscribers('action_disable_hook');
-    my $disable_filter = $app->filter_hook->subscribers('filter_disable_hook');
+    my $disable_action = $app->addons->action_hook->subscribers('action_disable_hook');
+    my $disable_filter = $app->addons->filter_hook->subscribers('filter_disable_hook');
     is_deeply $disable_action, [], 'no action hooks';
     is_deeply $disable_filter, [], 'no filter hooks';
     $t->get_ok('/disable_addon')->status_is(404);

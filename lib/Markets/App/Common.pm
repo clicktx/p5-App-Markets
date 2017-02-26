@@ -24,12 +24,9 @@ has db => sub {
     return $schema;
 };
 
-has addons      => sub { Markets::Addons->new(@_) };
-has action_hook => sub { shift->addons->action_hook(@_) };
-has filter_hook => sub { shift->addons->filter_hook(@_) };
-
 # has restart_app => sub { system shift->home . "/script/appctl --restart" };
-has restart_app => sub { system "touch " . __FILE__ }; # 本番用に変更する
+has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更する
+has addons      => sub { Markets::Addons->new(@_) };
 
 sub dsn {
     my ( $self, $conf ) = @_;
@@ -140,7 +137,7 @@ sub initialize_app {
             # Emit filter hook (ignore static files)
             say "hook! before_routes";    # debug
             say "... This route is dynamic" unless ( $c->stash('mojo.static') );
-            $c->app->filter_hook->emit( filter_form => $c )
+            $c->app->addons->filter_hook->emit( filter_form => $c )
               unless $c->stash('mojo.static');
         }
     );
