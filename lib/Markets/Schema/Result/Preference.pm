@@ -1,7 +1,5 @@
 package Markets::Schema::Result::Preference;
-use strict;
-use warnings;
-
+use Mojo::Base 'Markets::Schema::ResultCommon';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column key_name => {

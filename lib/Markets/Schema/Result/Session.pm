@@ -1,7 +1,5 @@
 package Markets::Schema::Result::Session;
-use strict;
-use warnings;
-
+use Mojo::Base 'Markets::Schema::ResultCommon';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column sid => {

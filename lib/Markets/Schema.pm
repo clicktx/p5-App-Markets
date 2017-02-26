@@ -1,8 +1,12 @@
 package Markets::Schema;
-use strict;
-use warnings;
-use base qw /DBIx::Class::Schema/;
+use Mojo::Base 'DBIx::Class::Schema';
+use DateTime;
 
 __PACKAGE__->load_namespaces();
+
+my $TZ = DateTime::TimeZone->new( name => 'Asia/Tokyo' );
+sub TZ    { $TZ }
+sub now   { DateTime->now( time_zone => shift->TZ ) }
+sub today { shift->now->truncate( to => 'day' ) }
 
 1;
