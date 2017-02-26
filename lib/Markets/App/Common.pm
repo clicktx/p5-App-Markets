@@ -60,6 +60,10 @@ sub initialize_app {
     $pref->{ROOT_URL}  = 'http://google.com/';    # e.g.
     $self->defaults( pref => $pref );
 
+    # TimeZone
+    # my $time_zone = 'Asia/Tokyo';                 # from preference
+    # $self->schema->time_zone($time_zone);
+
     # default cookie
     $self->sessions->cookie_name('session');
     $self->secrets( ['aaabbbccc'] );              #           change this!
