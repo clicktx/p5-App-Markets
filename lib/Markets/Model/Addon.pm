@@ -1,4 +1,4 @@
-package Markets::Model::Data::Addon;
+package Markets::Model::Addon;
 use Mojo::Base 'Markets::Model';
 
 sub configure {
@@ -35,7 +35,7 @@ __END__
 
 =head1 NAME
 
-Markets::Model::Data::Addon
+Markets::Model::Addon
 
 =head1 SYNOPSIS
 
