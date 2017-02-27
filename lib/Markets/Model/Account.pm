@@ -29,8 +29,8 @@ Markets::Model::Account
 
 =head2 C<remove_session>
 
-    my $session = $c->server_session;
-    my $bool = $c->model('account')->remove_session($session);
+    my $session = $app->server_session;
+    my $bool = $app->model('account')->remove_session($session);
 
 return C<boolean> value.
 

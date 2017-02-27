@@ -79,13 +79,13 @@ Markets::Model::Cart
 
 =head2 C<items>
 
-    my $items = $c->model('cart')->items(\%cart_data);
+    my $items = $app->model('cart')->items(\%cart_data);
 
 Return L<Mojo::Collection> object.
 
 =head2 C<merge_cart>
 
-    my $merged_cart = $c->model('cart')->merge_cart(\%cart, \%stored_cart);
+    my $merged_cart = $app->model('cart')->merge_cart(\%cart, \%stored_cart);
 
 Return \%cart.
 

@@ -39,19 +39,11 @@ Markets::Model::Addon
 
 =head1 SYNOPSIS
 
-App Controller.
 Snake case or Package name.
 
-    package Markets::Controller::Catalog::Example;
-    use Mojo::Base 'Markets::Controller::Catalog';
-
-    sub example {
-        my $self = shift;
-
-        my $data = $self->model('data-addon')->method;
-        # or
-        my $data = $self->model('Data::Addon')->method;
-    }
+    my $data = $app->model('addon')->method;
+    # or
+    my $data = $app->model('Addon')->method;
 
 =head1 DESCRIPTION
 
@@ -60,7 +52,7 @@ Snake case or Package name.
 =head2 C<configure>
 
     # Loading indtalled Addons
-    my $addon_config = $app->model('data-addon')->configure;
+    my $addon_config = $app->model('addon')->configure;
 
 load addon preferences from DB.
 
