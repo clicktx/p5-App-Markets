@@ -55,10 +55,9 @@ sub initialize_app {
     $self->plugin('Markets::DefaultHelpers');
 
     # Preferences
-    my $pref = $self->model('data')->load_pref;
+    my $pref = $self->model('common')->load_pref;
     $pref->{LINK_NAME} = 'リンク先';          # e.g.
     $pref->{ROOT_URL}  = 'http://google.com/';    # e.g.
-    $self->defaults( pref => $pref );
 
     # TimeZone
     # my $time_zone = 'Asia/Tokyo';                 # from preference
@@ -66,7 +65,7 @@ sub initialize_app {
 
     # default cookie
     $self->sessions->cookie_name('session');
-    $self->secrets( ['aaabbbccc'] );              #           change this!
+    $self->secrets( ['aaabbbccc'] );    #           change this!
 
     # session
     $self->plugin( 'Markets::Session' => { expires_delta => 3600 } );
@@ -77,7 +76,7 @@ sub initialize_app {
         'Markets::I18N',
         {
             # file_type => 'po',    # or 'mo'. default: po
-            default   => 'en',                    # default en
+            default   => 'en',               # default en
             languages => [qw( en ja de )],
 
             # Mojolicious::Plugin::I18N like options

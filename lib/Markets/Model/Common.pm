@@ -1,14 +1,18 @@
-package Markets::Model::Data;
+package Markets::Model::Common;
 use Mojo::Base 'Markets::Model';
 
 sub load_pref {
     my $self = shift;
+    my $pref = $self->app->defaults('pref') || {};
+    return $pref if %$pref;
 
+    # Load from DB
     my $rs   = $self->app->schema->resultset('Preference');
-    my $pref = {};
     while ( my $row = $rs->next ) {
         $pref->{ $row->key_name } = $row->value ? $row->vallue : $row->default_value;
     }
+
+    $self->app->defaults( pref => $pref );
     return $pref;
 }
 
@@ -17,13 +21,19 @@ __END__
 
 =head1 NAME
 
-Markets::Model::Data - Data Access Layer
+Markets::Model::Common
 
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
 
 =head1 METHODS
+
+=head2 C<load_pref>
+
+    my $preferences = $app->model('common')->load_pref;
+
+Return %$preferences
 
 =head1 AUTHOR
 
