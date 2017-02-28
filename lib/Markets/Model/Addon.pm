@@ -2,10 +2,10 @@ package Markets::Model::Addon;
 use Mojo::Base 'Markets::Model';
 
 sub configure {
-    my $self = shift;
-    my $schema   = $self->app->schema;
+    my $self   = shift;
+    my $schema = $self->app->schema;
 
-    my $addons = $schema->resultset('Addon')->search(
+    my $rs = $schema->resultset('Addon')->search(
         {},
         {
             join     => 'hooks',
@@ -14,7 +14,7 @@ sub configure {
     );
 
     my $conf;
-    while ( my $addon = $addons->next ) {
+    while ( my $addon = $rs->next ) {
         $conf->{ $addon->name } = {
             hooks      => [],
             is_enabled => $addon->is_enabled,
