@@ -8,9 +8,6 @@ my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
 subtest 'Basic' => sub {
-    my $pref = $app->model('data')->load_pref;
-    is ref $pref, 'HASH', 'right loading preferences';
-
     my $value;
     eval { $value = $app->pref('PREF_KEY'); };
     like $@, qr/pref\('PREF_KEY'\) has not value/, 'right fatal';
@@ -31,7 +28,7 @@ subtest 'Basic' => sub {
 # Default values
 subtest 'Default values' => sub {
     is $app->pref('admin_uri_prefix'), '/admin', 'right admin_uri_prefix';
-    is $app->pref('addons_dir'), 'addons', 'right addons_dir';
+    is $app->pref('addons_dir'),       'addons', 'right addons_dir';
 };
 
 done_testing();
