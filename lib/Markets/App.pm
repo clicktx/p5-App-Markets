@@ -49,7 +49,7 @@ sub startup {
     $self->addons->init($installed_addons) unless $ENV{MOJO_ADDON_TEST_MODE};
 
     # Routes
-    $self->plugin($_) for qw(Markets::Routes::Admin Markets::Routes::Catalog);
+    $self->plugin($_) for qw(Markets::Routes);
 }
 
 1;

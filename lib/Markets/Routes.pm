@@ -1,7 +1,24 @@
-package Markets::Routes::Catalog;
+package Markets::Routes;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
+    my ( $self, $app ) = @_;
+    $self->add_admin_routes($app);
+    $self->add_catalog_routes($app);
+}
+
+# Routes for Admin
+sub add_admin_routes {
+    my ( $self, $app ) = @_;
+    my $r = $app->routes->any( $app->pref('admin_uri_prefix') )
+      ->to( namespace => 'Markets::Controller::Admin' );
+
+    $r->get('/')->to('index#welcome');
+    $r->get('/:controller/:action')->to( action => 'index' );
+}
+
+# Routes for Catalog
+sub add_catalog_routes {
     my ( $self, $app ) = @_;
     my $r = $app->routes->namespaces( ['Markets::Controller::Catalog'] );
     $app->config( history_disable_route_names => [ 'RN_customer_login', 'RN_example' ] );
