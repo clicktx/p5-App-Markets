@@ -21,33 +21,7 @@ sub cart_id {
     return $id;
 }
 
-sub create {
-    my $self = shift;
-    my $sid  = $self->SUPER::create(@_);
-
-    # New cart
-    my $id = generate_token( length => 40 );
-    my $cart = {
-        data         => {},
-        _is_modified => 0,
-    };
-    $self->data( cart_id => $id, cart => $cart );
-
-    return $sid;
-}
-
-sub customer_id {
-    my $self = shift;
-    return @_ ? $self->data( customer_id => $_[0] ) : $self->data('customer_id');
-}
-
-sub load {
-    my $self = shift;
-    my $sid  = $self->SUPER::load(@_);
-
-    $self->data( cart => {} ) unless $self->data('cart');
-    return $sid;
-}
+sub customer_id { return $_[1] ? $_[0]->data( customer_id => $_[1] ) : $_[0]->data('customer_id') }
 
 sub regenerate_sid {
     my $self = shift;
@@ -68,6 +42,33 @@ sub remove_cart {
     return unless $id;
 
     return $self->store->delete_cart($id);
+}
+
+sub staff_id { return $_[1] ? $_[0]->data( staff_id => $_[1] ) : $_[0]->data('staff_id') }
+
+# Overwride methods MojoX::Session
+##################################
+sub create {
+    my $self = shift;
+    my $sid  = $self->SUPER::create(@_);
+
+    # New cart
+    my $id = generate_token( length => 40 );
+    my $cart = {
+        data         => {},
+        _is_modified => 0,
+    };
+    $self->data( cart_id => $id, cart => $cart );
+
+    return $sid;
+}
+
+sub load {
+    my $self = shift;
+    my $sid  = $self->SUPER::load(@_);
+
+    $self->data( cart => {} ) unless $self->data('cart');
+    return $sid;
 }
 
 1;
@@ -108,6 +109,13 @@ Return cart data.
 
 Get/Set cart id.
 
+=head2 C<customer_id>
+
+    my $customer_id = $session->customer_id;
+    $cart->customer_id('xxxxxxxxxx');
+
+Get/Set customer id.
+
 =head2 C<regenerate_sid>
 
     my $sid = $session->regenerate_sid;
@@ -117,6 +125,13 @@ Get/Set cart id.
     $session->remove_cart($cart_id);
 
 Remove cart from DB.
+
+=head2 C<staff_id>
+
+    my $staff_id = $session->staff_id;
+    $cart->staff_id('xxxxxxxxxx');
+
+Get/Set staff id.
 
 =head1 SEE ALSO
 
