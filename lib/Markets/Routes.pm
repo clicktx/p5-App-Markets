@@ -38,6 +38,9 @@ sub add_admin_routes {
 
     # Products
     $r->get('/products')->to('products#index')->name('RN_admin_products');
+
+    # Other e.g. /addons
+    $r->get('/:controller/:action')->to( action => 'index' );
 }
 
 # Routes for Catalog
