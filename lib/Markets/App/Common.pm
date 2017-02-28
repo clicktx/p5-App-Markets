@@ -2,9 +2,9 @@ package Markets::App::Common;
 use Mojo::Base 'Mojolicious';
 
 use Markets::Addons;
-use DBIx::QueryLog;
 
-# $ENV{DBIC_TRACE}            = 1;
+# use DBIx::QueryLog;
+$ENV{DBIC_TRACE}            = 1;
 $ENV{DBIX_QUERYLOG_COMPACT} = 1;
 $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
 
