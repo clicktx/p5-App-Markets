@@ -1,24 +1,7 @@
 package Markets::Controller::Catalog::Account;
 use Mojo::Base 'Markets::Controller::Catalog';
 
-sub authorize {
-    my $self = shift;
-    say "authorize";    #debug
-    return 1 if $self->service('customer')->is_logged_in;
-
-    $self->flash( ref => $self->current_route );
-    $self->redirect_to( $self->url_for('RN_customer_login') );
-    return 0;
-}
-
-sub login {
-    my $self = shift;
-
-    $self->flash( ref => $self->flash('ref') );
-    $self->render();
-}
-
-sub login_authen {
+sub authen {
     my $self   = shift;
     my $params = $self->req->params;
 
@@ -35,6 +18,23 @@ sub login_authen {
     }
 
     $self->render( template => 'account/login' );
+}
+
+sub authorize {
+    my $self = shift;
+    say "authorize";    #debug
+    return 1 if $self->service('customer')->is_logged_in;
+
+    $self->flash( ref => $self->current_route );
+    $self->redirect_to( $self->url_for('RN_customer_login') );
+    return 0;
+}
+
+sub login {
+    my $self = shift;
+
+    $self->flash( ref => $self->flash('ref') );
+    $self->render();
 }
 
 sub logout {
