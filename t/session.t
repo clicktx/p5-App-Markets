@@ -142,6 +142,18 @@ subtest 'customer_id' => sub {
     is $session->customer_id, 123456, 'right changed customer_id';
 };
 
+subtest 'staff_id' => sub {
+    my $staff_id = $session->data('staff_id');
+    is $session->staff_id, $staff_id, 'right load staff_id';
+
+    $session->staff_id('123456');
+    is $session->staff_id, 123456, 'right changed staff_id';
+
+    $session->flush;
+    $session->load;
+    is $session->staff_id, 123456, 'right changed staff_id';
+};
+
 subtest 'regenerate sid' => sub {
     my $sid     = $session->sid;
     my $cart_id = $session->cart_id;
