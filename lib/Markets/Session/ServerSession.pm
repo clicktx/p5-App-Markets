@@ -31,7 +31,7 @@ sub regenerate_sid {
 
     my $original_sid = $self->sid;
     $self->_generate_sid;
-    return unless $self->store->update_sid( $original_sid, $self->sid );
+    return if !$self->store->update_sid( $original_sid, $self->sid );
 
     if ( $self->transport ) {
         $self->transport->tx( $self->tx );
@@ -42,7 +42,7 @@ sub regenerate_sid {
 
 sub remove_cart {
     my ( $self, $id ) = @_;
-    return unless $id;
+    return if !$id;
 
     return $self->store->delete_cart($id);
 }
@@ -73,7 +73,7 @@ sub load {
     my $self = shift;
     my $sid  = $self->SUPER::load(@_);
 
-    $self->data( cart => {} ) unless $self->data('cart');
+    $self->data( cart => {} ) if !$self->data('cart');
     return $sid;
 }
 
