@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
     my ( $self, $app ) = @_;
+
     # TODO: 別の場所に移す
     $app->config( history_disable_route_names => [ 'RN_customer_login', 'RN_example' ] );
 
@@ -18,12 +19,16 @@ sub add_admin_routes {
       ->to( namespace => 'Markets::Controller::Admin' );
 
     # [WIP] Not required authorization
-    $r->get('/login')->to('login#index')->name('RN_admin_login');
+    $r->get('/login')->to('staff#login')->name('RN_admin_login');
+    $r->post('/login')->to('staff#authen')->name('RN_admin_login_authen');
 
     # [WIP] Required authorization
+    $r = $r->under('/')->to('staff#authorize');
     $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
     $r->get('/dashboard')->to('dashboard#index')->name('RN_admin_dashboard');
-    $r->get('/logout')->to('logout#index')->name('RN_admin_logout');
+
+    # Staff
+    $r->get('/logout')->to('staff#logout')->name('RN_admin_logout');
 
     # Settings
     $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
