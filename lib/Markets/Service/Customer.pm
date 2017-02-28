@@ -107,7 +107,7 @@ the following new ones.
     $c->service('customer')->add_history;
 
     Add history current URL for server session.
-    Unsave list setting in L<Markets::Routes::Catalog>.
+    Unsave list setting in L<Markets::Routes>.
 
 =head2 C<is_logged_in>
 
