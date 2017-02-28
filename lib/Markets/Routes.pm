@@ -3,6 +3,9 @@ use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
     my ( $self, $app ) = @_;
+    # TODO: 別の場所に移す
+    $app->config( history_disable_route_names => [ 'RN_customer_login', 'RN_example' ] );
+
     $self->add_admin_routes($app);
     $self->add_catalog_routes($app);
 }
@@ -11,21 +14,31 @@ sub register {
 sub add_admin_routes {
     my ( $self, $app ) = @_;
 
-    # [WIP] Required authorization
     my $r = $app->routes->any( $app->pref('admin_uri_prefix') )
       ->to( namespace => 'Markets::Controller::Admin' );
 
+    # [WIP] Not required authorization
+    $r->get('/login')->to('login#index')->name('RN_admin_login');
+
+    # [WIP] Required authorization
     $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
     $r->get('/dashboard')->to('dashboard#index')->name('RN_admin_dashboard');
+    $r->get('/logout')->to('logout#index')->name('RN_admin_logout');
 
-    $r->get('/:controller/:action')->to( action => 'index' );
+    # Settings
+    $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
+
+    # Orders
+    $r->get('/orders')->to('orders#index')->name('RN_admin_orders');
+
+    # Products
+    $r->get('/products')->to('products#index')->name('RN_admin_products');
 }
 
 # Routes for Catalog
 sub add_catalog_routes {
     my ( $self, $app ) = @_;
     my $r = $app->routes->namespaces( ['Markets::Controller::Catalog'] );
-    $app->config( history_disable_route_names => [ 'RN_customer_login', 'RN_example' ] );
 
     # Route Examples
     $r->get('/')->to('example#welcome')->name('RN_top');
@@ -39,7 +52,7 @@ sub add_catalog_routes {
     # Checkout
     $r->get('/checkout')->to('checkout#index')->name('RN_checkout');
 
-    # For Customer
+    # For Customers
     $r->get('/register')->to('register#index')->name('RN_customer_create_account');
     $r->post('/register')->to('register#index')->name('RN_customer_create_account');
 
