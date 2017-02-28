@@ -10,10 +10,14 @@ sub register {
 # Routes for Admin
 sub add_admin_routes {
     my ( $self, $app ) = @_;
+
+    # [WIP] Required authorization
     my $r = $app->routes->any( $app->pref('admin_uri_prefix') )
       ->to( namespace => 'Markets::Controller::Admin' );
 
-    $r->get('/')->to('index#welcome');
+    $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
+    $r->get('/dashboard')->to('dashboard#index')->name('RN_admin_dashboard');
+
     $r->get('/:controller/:action')->to( action => 'index' );
 }
 
@@ -24,7 +28,7 @@ sub add_catalog_routes {
     $app->config( history_disable_route_names => [ 'RN_customer_login', 'RN_example' ] );
 
     # Route Examples
-    $r->get('/')->to('example#welcome');
+    $r->get('/')->to('example#welcome')->name('RN_top');
     $r->get('/regenerate_sid')->to('example#regenerate_sid');
     $r->get('/login_example')->to('login_example#index');
     $r->post('/login_example/attempt')->to('login_example#attempt');

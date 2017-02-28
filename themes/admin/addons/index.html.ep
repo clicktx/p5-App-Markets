@@ -1,4 +1,4 @@
-% layout 'default';
+% layout 'admin-default';
 % title 'Welcome';
 <h2>Admin Mode</h2>
 

@@ -56,7 +56,7 @@ learn more, you can also browse through the documentation
 </p>
 
 <h1>For Admin</h1>
-<%= link_to 'admin page' => pref('admin_uri_prefix') %>
+<%= link_to 'admin page' => 'RN_admin_dashboard' %>
 
 <p>
     <%= __ 'hello' %><%= __ 'hello2' %>

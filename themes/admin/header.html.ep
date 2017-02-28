@@ -1,0 +1,6 @@
+header
+<ul>
+    <li><%= link_to 'Dashboard' => 'RN_admin_dashboard' %></li>
+    <li><%= link_to 'Catalog' => 'RN_top' %></li>
+</ul>
+<hr>

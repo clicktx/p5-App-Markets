@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+    </head>
+    <body>
+        <header>
+            <%= include 'admin/header' %>
+        </header>
+        <%= content %>
+        <footer>
+            <%= include 'admin/footer' %>
+        </footer>
+    </body>
+</html>
