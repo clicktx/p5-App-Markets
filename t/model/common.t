@@ -23,10 +23,13 @@ is $model->pref( admin_uri_prefix => 1, addons_dir => 2 ), 1, 'right update';
 is $app->pref('admin_uri_prefix'), 1, 'right preference value';
 is $app->pref('addons_dir'),       2, 'right preference value';
 
-# 強制再読込
-# $model->reload_pref;
+# reload preferences from DB
+$app->defaults('pref')->{'addons_dir'} = 1;
+is $app->pref('addons_dir'), 1;
+isa_ok $model->reload_pref, 'HASH', 'right reload prefereces';
+is $app->pref('addons_dir'), 2;
 
 # 他のテストのために値を戻しておく
-$model->pref( admin_uri_prefix => '/admin', addons_dir => 'addons' ), 1, 'right update';
+is $model->pref( admin_uri_prefix => undef, addons_dir => undef ), 1, 'right reset prefereces';
 
 done_testing();

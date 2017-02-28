@@ -2,7 +2,7 @@ package Markets::Model::Common;
 use Mojo::Base 'Markets::Model';
 use Try::Tiny;
 
-has rs_pref => sub { shift->app->schema->resultset('Preference') };
+has resultset_pref => sub { shift->app->schema->resultset('Preference') };
 
 sub load_pref {
     my $self = shift;
@@ -11,7 +11,7 @@ sub load_pref {
     return $pref if %$pref;
 
     # Load from DB
-    my $rs = $self->rs_pref;
+    my $rs = $self->resultset_pref->search;
     while ( my $row = $rs->next ) {
         $pref->{ $row->key_name } = $row->value ? $row->value : $row->default_value;
     }
@@ -27,13 +27,19 @@ sub pref {
     return @_ > 1 ? $self->_store_pref(@_) : @_ ? $pref->{ $_[0] } : $pref;
 }
 
+sub reload_pref {
+    my $self = shift;
+    $self->app->defaults( pref => {} );
+    $self->load_pref;
+}
+
 sub _store_pref {
     my $self = shift;
     return undef if @_ == 0 || @_ % 2;
 
 # DB更新
 # keyは必ず存在している必要がある。複数更新時は全てのkeyが存在している必要がある。
-    my $rs   = $self->rs_pref;
+    my $rs   = $self->resultset_pref;
     my %pref = @_;
     my $cb   = sub {
         my $cnt = 0;
