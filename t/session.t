@@ -50,7 +50,7 @@ subtest 'load session' => sub {
     $tx->req->cookies($cookie);
     is $session->load, $sid, 'loading session';
     is ref $session->cart_session->data, 'HASH', 'right cart data';
-    is $session->cart_session->cart_id, $cart_id, 'right cart id';
+    is $session->cart_session->cart_id, $cart_id, 'right cart_id';
 };
 
 subtest 'set session data' => sub {
@@ -120,14 +120,14 @@ subtest 'remove cart data' => sub {
 
 subtest 'change cart_id' => sub {
     my $new_cartid = 'aaabbbcccddd';
-    $session->cart_id($new_cartid);
-    is $session->cart_id, $new_cartid, 'right changed cart id';
-    is $cart->cart_id,    $new_cartid, 'right changed cart id';
+    is $session->cart_id($new_cartid), $new_cartid, 'right cart_id with updated';
+    is $session->cart_id, $new_cartid, 'right cart_id';
+    is $cart->cart_id,    $new_cartid, 'right cart_id';
 
     $session->flush;
     $session->load;
-    is $session->cart_id, $new_cartid, 'right changed cart id after reload';
-    is $cart->cart_id,    $new_cartid, 'right changed cart id after reload';
+    is $session->cart_id, $new_cartid, 'right changed cart_id after reload';
+    is $cart->cart_id,    $new_cartid, 'right changed cart_id after reload';
 };
 
 subtest 'customer_id' => sub {

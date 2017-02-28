@@ -14,11 +14,11 @@ sub cart_data {
 sub cart_id {
     my ( $self, $id ) = @_;
     my $cart_id = $self->data('cart_id');
-    return $cart_id unless $id;
+    return $cart_id if !$id;
 
-    return unless $self->store->update_cart_id( $cart_id, $id );
-    $self->data( cart_id => $id );
-    return $id;
+    $self->store->update_cart_id( $cart_id, $id )
+      ? ( $self->data( cart_id => $id ) and $id )
+      : undef;
 }
 
 sub customer_id {
@@ -51,7 +51,6 @@ sub staff_id {
     my ( $self, $id ) = @_;
     return $id ? $self->data( staff_id => $id ) : $self->data('staff_id');
 }
-
 
 # Overwride methods MojoX::Session
 ##################################

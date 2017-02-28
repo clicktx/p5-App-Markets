@@ -43,38 +43,20 @@ sub is_logged_in {
 #     $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 # }
 # 
-# sub login {
-#     my ( $self, $staff_id ) = @_;
-#     return unless $staff_id;
-# 
-#     my $session = $self->controller->server_session;
-# 
-#     # Merge cart data
-#     my $cart_data        = $session->cart_data;
-#     my $stored_cart_data = $session->cart_data($staff_id);
-#     my $merged_cart_data = $self->model('cart')->merge_cart( $cart_data, $stored_cart_data );
-# 
-#     # Set cart data
-#     $session->cart_session->data($merged_cart_data);
-# 
-#     # Set staff id
-#     $session->staff_id($staff_id);
-# 
-#     {
-#         my $txn = $self->app->schema->txn_scope_guard;
-# 
-#         # Change cart_id
-#         $session->remove_cart($staff_id);
-#         $session->cart_id($staff_id);
-# 
-#         # Regenerate sid
-#         my $sid = $session->regenerate_sid;
-#         say "  .. regenerate_sid: " . $sid;    #debug
-# 
-#         $txn->commit;
-#         return $sid;
-#     }
-# }
+sub login {
+    my ( $self, $staff_id ) = @_;
+    return unless $staff_id;
+
+    my $session = $self->controller->server_session;
+
+    # Set staff id
+    $session->staff_id($staff_id);
+
+    # Regenerate sid
+    my $sid = $session->regenerate_sid;
+    say "  .. regenerate_sid: " . $sid;    #debug
+    return $sid;
+}
 # 
 # sub logout {
 #     my $self = shift;
