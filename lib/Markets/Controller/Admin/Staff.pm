@@ -3,26 +3,21 @@ use Mojo::Base 'Markets::Controller::Admin';
 
 sub authen {
     my $self   = shift;
-    # my $params = $self->req->params;
-    # 
-    # my $is_valid = $params->param('password');
-    # if ($is_valid) {
-    #     my $staff_id = 123;    # debug staff_id example
-    #     $self->service('staff')->login($staff_id);
-    # 
-    #     my $redirect_route = $self->flash('ref') || 'RN_staff_home';
-    #     return $self->redirect_to($redirect_route);
-    # }
-    # else {
-    #     say "don't loged in.";    #debug
-    # }
+    my $params = $self->req->params;
 
-    $self->render( template => 'staff/login' );
+    my $is_valid = $params->param('password');
+    $self->render( template => 'staff/login' ) if !$is_valid;
+
+    my $staff_id = 456;    # debug staff_id example
+    $self->service('admin-staff')->login($staff_id);
+
+    my $route = $self->flash('ref') || 'RN_admin_dashboard';
+    return $self->redirect_to($route);
 }
 
 sub authorize {
     my $self = shift;
-    say "authorize";    #debug
+    say "authorize";       #debug
     return 1 if $self->service('admin-staff')->is_logged_in;
 
     $self->flash( ref => $self->current_route );
@@ -36,10 +31,11 @@ sub login {
     $self->flash( ref => $self->flash('ref') );
     $self->render();
 }
-# 
+
+#
 # sub logout {
 #     my $self = shift;
-#     $self->service('staff')->logout;
+#     $self->service('admin-staff')->logout;
 # }
 
 sub profile {

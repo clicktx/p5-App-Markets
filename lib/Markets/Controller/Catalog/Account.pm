@@ -6,23 +6,18 @@ sub authen {
     my $params = $self->req->params;
 
     my $is_valid = $params->param('password');
-    if ($is_valid) {
-        my $customer_id = 123;    # debug customer_id example
-        $self->service('customer')->login($customer_id);
+    $self->render( template => 'account/login' ) if !$is_valid;
 
-        my $redirect_route = $self->flash('ref') || 'RN_customer_home';
-        return $self->redirect_to($redirect_route);
-    }
-    else {
-        say "don't loged in.";    #debug
-    }
+    my $customer_id = 123;    # debug customer_id example
+    $self->service('customer')->login($customer_id);
 
-    $self->render( template => 'account/login' );
+    my $route = $self->flash('ref') || 'RN_customer_home';
+    return $self->redirect_to($route);
 }
 
 sub authorize {
     my $self = shift;
-    say "authorize";    #debug
+    say "authorize";          #debug
     return 1 if $self->service('customer')->is_logged_in;
 
     $self->flash( ref => $self->current_route );
