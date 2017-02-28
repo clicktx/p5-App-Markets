@@ -19,31 +19,31 @@ sub register {
 }
 
 sub _pref {
-    my ( $c, $key ) = @_;
-    my $pref = $c->stash('pref');
+    my ( $self, $key ) = @_;
+    my $pref = $self->stash('pref');
     unless ( $pref->{$key} ) {
         my $e = "pref('$key') has not value.";
-        $c->app->log->fatal($e);
+        $self->app->log->fatal($e);
         Carp::croak $e;
     }
     return $pref->{$key};
 }
 
 sub _service {
-    my ( $c, $name ) = @_;
+    my ( $self, $name ) = @_;
     $name = Mojo::Util::camelize($name) if $name =~ /^[a-z]/;
     Carp::croak 'Service name is empty.' unless $name;
 
-    my $service = $c->app->{services}{$name};
+    my $service = $self->app->{services}{$name};
     if ( Scalar::Util::blessed $service ) {
-        $service->controller($c);
+        $service->controller($self);
         Scalar::Util::weaken $service->{controller};
     }
     else {
         my $class = "Markets::Service::" . $name;
         _load_class($class);
-        $service = $class->new($c);
-        $c->app->{services}{$name} = $service;
+        $service = $class->new($self);
+        $self->app->{services}{$name} = $service;
     }
     return $service;
 }
@@ -103,12 +103,6 @@ Get preference.
 
 
 Service Layer accessor.
-
-=head2 C<schema>
-
-    my $schema = $c->schema;
-
-Alias for $c->app->schema;
 
 =head2 C<template>
 
