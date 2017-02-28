@@ -21,7 +21,10 @@ sub cart_id {
     return $id;
 }
 
-sub customer_id { return $_[1] ? $_[0]->data( customer_id => $_[1] ) : $_[0]->data('customer_id') }
+sub customer_id {
+    my ( $self, $id ) = @_;
+    return $id ? $self->data( customer_id => $id ) : $self->data('customer_id');
+}
 
 sub regenerate_sid {
     my $self = shift;
@@ -44,7 +47,11 @@ sub remove_cart {
     return $self->store->delete_cart($id);
 }
 
-sub staff_id { return $_[1] ? $_[0]->data( staff_id => $_[1] ) : $_[0]->data('staff_id') }
+sub staff_id {
+    my ( $self, $id ) = @_;
+    return $id ? $self->data( staff_id => $id ) : $self->data('staff_id');
+}
+
 
 # Overwride methods MojoX::Session
 ##################################
