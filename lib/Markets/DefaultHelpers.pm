@@ -1,9 +1,9 @@
 package Markets::DefaultHelpers;
 use Mojo::Base 'Mojolicious::Plugin';
 
-use Carp ();
+use Carp         ();
 use Scalar::Util ();
-use Mojo::Util ();
+use Mojo::Util   ();
 
 sub register {
     my ( $self, $app, $conf ) = @_;
@@ -19,8 +19,10 @@ sub register {
 }
 
 sub _pref {
-    my ( $self, $key ) = @_;
+    my $self = shift;
     my $pref = $self->stash('pref');
+
+    @_ ? my $key = shift : return $pref;
     unless ( $pref->{$key} ) {
         my $e = "pref('$key') has not value.";
         $self->app->log->fatal($e);
@@ -82,6 +84,7 @@ Alias for $c->session;
 
 =head2 C<pref>
 
+    my $preferences = $c->pref; # Get all preferences
     my $hoge = $c->pref('hoge');
 
 Get preference.
