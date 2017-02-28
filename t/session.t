@@ -7,17 +7,7 @@ use Test::Mojo;
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
-# use Mojo::Cookie::Response;
-my $cookie = Mojo::Cookie::Request->new( name => 'sid', value => 'bar', path => '/' );
-my $tx = Mojo::Transaction::HTTP->new();
-$tx->req->cookies($cookie);
-
-my $session = Markets::Session::ServerSession->new(
-    tx            => $tx,
-    store         => Markets::Session::Store::Dbic->new( schema => $app->schema ),
-    transport     => MojoX::Session::Transport::Cookie->new,
-    expires_delta => 3600,
-);
+my $session = t::Util::server_session($app);
 my $sid     = $session->create;
 my $cart_id = $session->cart_id;
 my $cart    = $session->cart_session;
