@@ -16,14 +16,14 @@ sub add_admin_routes {
     my ( $self, $app ) = @_;
 
     my $r = $app->routes->any( $app->pref('admin_uri_prefix') )
-      ->to( namespace => 'Markets::Controller::Admin' );
+      ->to( namespace => 'Markets::Controller::Admin' )->name('RN_admin');
 
     # [WIP] Not required authorization
     $r->get('/login')->to('staff#login')->name('RN_admin_login');
     $r->post('/login')->to('staff#login_authen')->name('RN_admin_login_authen');
 
     # [WIP] Required authorization
-    $r = $r->under('/')->to('staff#authorize');
+    $r = $r->under->to('staff#authorize')->name('RN_admin_bridge');
     $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
     $r->get('/dashboard')->to('dashboard#index')->name('RN_admin_dashboard');
 
@@ -69,7 +69,7 @@ sub add_catalog_routes {
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
     {
         # Required authorization
-        my $account = $r->under('/account')->to('account#authorize');
+        my $account = $r->under('/account')->to('account#authorize')->name('RN_customer_bridge');
         $account->get('/home')->to('account#home')->name('RN_customer_home');
         $account->get('/orders')->to('account#orders')->name('RN_customer_orders');
         $account->get('/wishlist')->to('account#wishlist')->name('RN_customer_wishlist');
