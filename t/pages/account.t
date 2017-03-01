@@ -3,16 +3,17 @@ use Mojo::Base -strict;
 use t::Util;
 use Test::More;
 use Test::Mojo;
-use Data::Dumper;
-use DDP;
 
-my $t = Test::Mojo->new('App');
+my $t   = Test::Mojo->new('App');
+my $app = $t->app;
 
-# pages
-my @pages = qw(home orders wishlist);
-foreach my $page (@pages) {
-    $t->get_ok( '/account/' . $page, 'do not access, before loged-in' )->status_is(302);
-}
+my @paths;
+subtest 'requred authrization pages' => sub {
+    foreach my $r ( @{ $app->routes->find('RN_customer_bridge')->children } ) {
+        push @paths, $r->render() if $r->is_endpoint;
+    }
+    $t->get_ok($_)->status_is( 302, 'right redirect' ) for @paths;
+};
 
 subtest 'Login process' => sub {
     $t->get_ok('/account/wishlist')->status_is(302);
@@ -40,10 +41,8 @@ subtest 'Login process' => sub {
     my $sid_loged_in = _get_sid($t);
     isnt $sid, $sid_loged_in, 'right regenerate sid';
 
-    # can access for all pages?
-    foreach my $page (@pages) {
-        $t->get_ok( '/account/' . $page )->status_is(200);
-    }
+    # Try required authrization pages
+    $t->get_ok($_)->status_is(200) for @paths;
 
     # logout
     $t->get_ok('/logout')->status_is(200);
