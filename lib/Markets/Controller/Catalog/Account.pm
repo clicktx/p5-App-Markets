@@ -60,6 +60,7 @@ sub _login_failure {
 
     # logging etc.
 
+    $self->flash( ref => $self->flash('ref') );
     $self->render( template => 'account/login' );
 }
 
