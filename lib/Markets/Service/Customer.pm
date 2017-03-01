@@ -103,10 +103,6 @@ the following new ones.
     Add history current URL for server session.
     Unsave list setting in L<Markets::Routes>.
 
-=head2 C<is_logged_in>
-
-    my $bool = $c->service('customer')->is_logged_in;
-
 =head2 C<load_history>
 
     my $history = $c->service('customer')->load_history;
