@@ -31,12 +31,6 @@ sub add_history {
     $c->server_session->data( history => $history );
 }
 
-sub is_logged_in {
-    my $self = shift;
-    my $c    = $self->controller;
-    $c->server_session->data('customer_id') ? 1 : 0;
-}
-
 sub load_history {
     my $self = shift;
     my $c    = $self->controller;
@@ -108,10 +102,6 @@ the following new ones.
 
     Add history current URL for server session.
     Unsave list setting in L<Markets::Routes>.
-
-=head2 C<is_logged_in>
-
-    my $bool = $c->service('customer')->is_logged_in;
 
 =head2 C<load_history>
 

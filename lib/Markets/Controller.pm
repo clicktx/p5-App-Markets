@@ -1,6 +1,28 @@
 package Markets::Controller;
 use Mojo::Base 'Mojolicious::Controller';
 
+sub csrf_protect {
+    my $self = shift;
+    return 1 if $self->req->method ne 'POST';
+    return 1 unless $self->validation->csrf_protect->has_error('csrf_token');
+    $self->render(
+        text   => 'Bad CSRF token!',
+        status => 403,
+    );
+    return;
+}
+
+sub is_logged_in {
+    my $self = shift;
+
+    my $target_id;
+    $target_id = 'customer_id' if $self->isa('Markets::Controller::Catalog');
+    $target_id = 'staff_id' if $self->isa('Markets::Controller::Admin');
+
+    return $target_id ? $self->server_session->data($target_id) ? 1 : 0 : undef;
+}
+
+# Action process
 sub process {
     my ( $self, $action ) = @_;
 
@@ -13,17 +35,6 @@ sub process {
     $self->$action();
     $self->action_after();
     $self->finalize();
-}
-
-sub csrf_protect {
-    my $self = shift;
-    return 1 if $self->req->method ne 'POST';
-    return 1 unless $self->validation->csrf_protect->has_error('csrf_token');
-    $self->render(
-        text   => 'Bad CSRF token!',
-        status => 403,
-    );
-    return;
 }
 
 sub init {
@@ -53,6 +64,7 @@ sub finalize {
     say "   ... session flush";    # debug
 }
 
+# Override method
 sub redirect_to {
     my $self = shift;
 
@@ -85,6 +97,16 @@ implements the following new ones.
 
 L<Markets::Controller> inherits all methods from L<Mojolicious::Controller> and
 implements the following new ones.
+
+=head2 C<csrf_protect>
+
+=head2 C<is_logged_in>
+
+    my $bool = $c->is_logged_in;
+    if ($bool){ say "Loged in" }
+    else { say "Not loged in" }
+
+Return boolean value.
 
 =head1 SEE ALSO
 

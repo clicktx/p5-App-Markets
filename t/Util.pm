@@ -17,6 +17,22 @@ BEGIN {
     }
 }
 
+sub server_session {
+    my $app = shift;
+
+    # use Mojo::Cookie::Response;
+    my $cookie = Mojo::Cookie::Request->new( name => 'sid', value => 'bar', path => '/' );
+    my $tx = Mojo::Transaction::HTTP->new();
+    $tx->req->cookies($cookie);
+
+    return Markets::Session::ServerSession->new(
+        tx            => $tx,
+        store         => Markets::Session::Store::Dbic->new( schema => $app->schema ),
+        transport     => MojoX::Session::Transport::Cookie->new,
+        expires_delta => 3600,
+    );
+}
+
 sub load_config {
     my $config_base_dir =
       File::Spec->rel2abs( File::Spec->catdir( dirname(__FILE__), 'App', 'config' ) );

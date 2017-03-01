@@ -1,5 +1,5 @@
-package Markets::Controller::Catalog::Account;
-use Mojo::Base 'Markets::Controller::Catalog';
+package Markets::Controller::Admin::Staff;
+use Mojo::Base 'Markets::Controller::Admin';
 
 sub authorize {
     my $self = shift;
@@ -7,7 +7,7 @@ sub authorize {
     return 1 if $self->is_logged_in;
 
     $self->flash( ref => $self->current_route );
-    $self->redirect_to( $self->url_for('RN_customer_login') );
+    $self->redirect_to( $self->url_for('RN_admin_login') );
     return 0;
 }
 
@@ -28,18 +28,12 @@ sub login {
 
 sub logout {
     my $self = shift;
-    $self->service('customer')->logout;
+    $self->service('admin-staff')->logout;
+
+    return $self->redirect_to('RN_admin_login');
 }
 
-sub home {
-    my $self = shift;
-}
-
-sub orders {
-    my $self = shift;
-}
-
-sub wishlist {
+sub profile {
     my $self = shift;
 }
 
@@ -48,10 +42,10 @@ sub _login_accept {
 
     # logging etc.
 
-    my $customer_id = 123;    # debug customer_id example
-    $self->service('customer')->login($customer_id);
+    my $staff_id = 456;    # debug staff_id example
+    $self->service('admin-staff')->login($staff_id);
 
-    my $route = $self->flash('ref') || 'RN_customer_home';
+    my $route = $self->flash('ref') || 'RN_admin_dashboard';
     return $self->redirect_to($route);
 }
 
@@ -61,7 +55,7 @@ sub _login_failure {
     # logging etc.
 
     $self->flash( ref => $self->flash('ref') );
-    $self->render( template => 'account/login' );
+    $self->render( template => 'staff/login' );
 }
 
 1;

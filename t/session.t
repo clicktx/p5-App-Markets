@@ -7,17 +7,7 @@ use Test::Mojo;
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
-# use Mojo::Cookie::Response;
-my $cookie = Mojo::Cookie::Request->new( name => 'sid', value => 'bar', path => '/' );
-my $tx = Mojo::Transaction::HTTP->new();
-$tx->req->cookies($cookie);
-
-my $session = Markets::Session::ServerSession->new(
-    tx            => $tx,
-    store         => Markets::Session::Store::Dbic->new( schema => $app->schema ),
-    transport     => MojoX::Session::Transport::Cookie->new,
-    expires_delta => 3600,
-);
+my $session = t::Util::server_session($app);
 my $sid     = $session->create;
 my $cart_id = $session->cart_id;
 my $cart    = $session->cart_session;
@@ -50,7 +40,7 @@ subtest 'load session' => sub {
     $tx->req->cookies($cookie);
     is $session->load, $sid, 'loading session';
     is ref $session->cart_session->data, 'HASH', 'right cart data';
-    is $session->cart_session->cart_id, $cart_id, 'right cart id';
+    is $session->cart_session->cart_id, $cart_id, 'right cart_id';
 };
 
 subtest 'set session data' => sub {
@@ -120,14 +110,14 @@ subtest 'remove cart data' => sub {
 
 subtest 'change cart_id' => sub {
     my $new_cartid = 'aaabbbcccddd';
-    $session->cart_id($new_cartid);
-    is $session->cart_id, $new_cartid, 'right changed cart id';
-    is $cart->cart_id,    $new_cartid, 'right changed cart id';
+    is $session->cart_id($new_cartid), $new_cartid, 'right cart_id with updated';
+    is $session->cart_id, $new_cartid, 'right cart_id';
+    is $cart->cart_id,    $new_cartid, 'right cart_id';
 
     $session->flush;
     $session->load;
-    is $session->cart_id, $new_cartid, 'right changed cart id after reload';
-    is $cart->cart_id,    $new_cartid, 'right changed cart id after reload';
+    is $session->cart_id, $new_cartid, 'right changed cart_id after reload';
+    is $cart->cart_id,    $new_cartid, 'right changed cart_id after reload';
 };
 
 subtest 'customer_id' => sub {
@@ -140,6 +130,18 @@ subtest 'customer_id' => sub {
     $session->flush;
     $session->load;
     is $session->customer_id, 123456, 'right changed customer_id';
+};
+
+subtest 'staff_id' => sub {
+    my $staff_id = $session->data('staff_id');
+    is $session->staff_id, $staff_id, 'right load staff_id';
+
+    $session->staff_id('123456');
+    is $session->staff_id, 123456, 'right changed staff_id';
+
+    $session->flush;
+    $session->load;
+    is $session->staff_id, 123456, 'right changed staff_id';
 };
 
 subtest 'regenerate sid' => sub {

@@ -14,13 +14,46 @@ sub cart_data {
 sub cart_id {
     my ( $self, $id ) = @_;
     my $cart_id = $self->data('cart_id');
-    return $cart_id unless $id;
+    return $cart_id if !$id;
 
-    return unless $self->store->update_cart_id( $cart_id, $id );
-    $self->data( cart_id => $id );
-    return $id;
+    $self->store->update_cart_id( $cart_id, $id )
+      ? ( $self->data( cart_id => $id ) and $id )
+      : undef;
 }
 
+sub customer_id {
+    my ( $self, $id ) = @_;
+    return $id ? $self->data( customer_id => $id ) : $self->data('customer_id');
+}
+
+sub regenerate_sid {
+    my $self = shift;
+
+    my $original_sid = $self->sid;
+    $self->_generate_sid;
+    return if !$self->store->update_sid( $original_sid, $self->sid );
+
+    if ( $self->transport ) {
+        $self->transport->tx( $self->tx );
+        $self->transport->set( $self->sid, $self->expires );
+    }
+    return $self->sid;
+}
+
+sub remove_cart {
+    my ( $self, $id ) = @_;
+    return if !$id;
+
+    return $self->store->delete_cart($id);
+}
+
+sub staff_id {
+    my ( $self, $id ) = @_;
+    return $id ? $self->data( staff_id => $id ) : $self->data('staff_id');
+}
+
+# Overwride methods MojoX::Session
+##################################
 sub create {
     my $self = shift;
     my $sid  = $self->SUPER::create(@_);
@@ -36,38 +69,12 @@ sub create {
     return $sid;
 }
 
-sub customer_id {
-    my $self = shift;
-    return @_ ? $self->data( customer_id => $_[0] ) : $self->data('customer_id');
-}
-
 sub load {
     my $self = shift;
     my $sid  = $self->SUPER::load(@_);
 
-    $self->data( cart => {} ) unless $self->data('cart');
+    $self->data( cart => {} ) if !$self->data('cart');
     return $sid;
-}
-
-sub regenerate_sid {
-    my $self = shift;
-
-    my $original_sid = $self->sid;
-    $self->_generate_sid;
-    return unless $self->store->update_sid( $original_sid, $self->sid );
-
-    if ( $self->transport ) {
-        $self->transport->tx( $self->tx );
-        $self->transport->set( $self->sid, $self->expires );
-    }
-    return $self->sid;
-}
-
-sub remove_cart {
-    my ( $self, $id ) = @_;
-    return unless $id;
-
-    return $self->store->delete_cart($id);
 }
 
 1;
@@ -108,6 +115,13 @@ Return cart data.
 
 Get/Set cart id.
 
+=head2 C<customer_id>
+
+    my $customer_id = $session->customer_id;
+    $cart->customer_id('xxxxxxxxxx');
+
+Get/Set customer id.
+
 =head2 C<regenerate_sid>
 
     my $sid = $session->regenerate_sid;
@@ -117,6 +131,13 @@ Get/Set cart id.
     $session->remove_cart($cart_id);
 
 Remove cart from DB.
+
+=head2 C<staff_id>
+
+    my $staff_id = $session->staff_id;
+    $cart->staff_id('xxxxxxxxxx');
+
+Get/Set staff id.
 
 =head1 SEE ALSO
 
