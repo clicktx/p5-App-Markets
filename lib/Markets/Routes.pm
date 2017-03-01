@@ -20,7 +20,7 @@ sub add_admin_routes {
 
     # [WIP] Not required authorization
     $r->get('/login')->to('staff#login')->name('RN_admin_login');
-    $r->post('/login')->to('staff#authen')->name('RN_admin_login_authen');
+    $r->post('/login')->to('staff#login_authen')->name('RN_admin_login_authen');
 
     # [WIP] Required authorization
     $r = $r->under('/')->to('staff#authorize');
@@ -65,7 +65,7 @@ sub add_catalog_routes {
     $r->post('/register')->to('register#index')->name('RN_customer_create_account');
 
     $r->get('/login')->to('account#login')->name('RN_customer_login');
-    $r->post('/login')->to('account#authen')->name('RN_customer_authen');
+    $r->post('/login')->to('account#login_authen')->name('RN_customer_authen');
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
     {
         # Required authorization
