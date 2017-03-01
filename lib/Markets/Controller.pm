@@ -1,6 +1,16 @@
 package Markets::Controller;
 use Mojo::Base 'Mojolicious::Controller';
 
+sub is_logged_in {
+    my $self = shift;
+
+    my $target_id;
+    $target_id = 'customer_id' if $self->isa('Markets::Controller::Catalog');
+    $target_id = 'staff_id' if $self->isa('Markets::Controller::Admin');
+
+    return $target_id ? $self->server_session->data($target_id) ? 1 : 0 : undef;
+}
+
 sub process {
     my ( $self, $action ) = @_;
 
