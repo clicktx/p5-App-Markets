@@ -18,7 +18,7 @@ sub authen {
 sub authorize {
     my $self = shift;
     say "authorize";          #debug
-    return 1 if $self->service('customer')->is_logged_in;
+    return 1 if $self->is_logged_in;
 
     $self->flash( ref => $self->current_route );
     $self->redirect_to( $self->url_for('RN_customer_login') );
