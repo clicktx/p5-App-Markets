@@ -33,14 +33,14 @@ sub add_admin_routes {
     # Settings
     $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
 
+    $r->get('/addons')->to('addons#index')->name('RN_admin_addons');
+
     # Orders
     $r->get('/orders')->to('orders#index')->name('RN_admin_orders');
 
     # Products
     $r->get('/products')->to('products#index')->name('RN_admin_products');
 
-    # Other e.g. /addons
-    $r->get('/:controller/:action')->to( action => 'index' );
 }
 
 # Routes for Catalog
