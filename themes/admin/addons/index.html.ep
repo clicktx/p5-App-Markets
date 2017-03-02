@@ -1,6 +1,7 @@
 % layout 'admin-default';
-% title 'Welcome';
-<h2>Admin Mode</h2>
+% title __('Settings') . ' / ' . __('Addons');
+
+<h1><%= title %></h1>
 
 <div class="addon-list">
 % $uploaded_addons->sort->each( sub { my ($addon, $num) = @_;
