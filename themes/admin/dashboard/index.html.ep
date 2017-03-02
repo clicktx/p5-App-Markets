@@ -3,6 +3,23 @@
 
 <h1><%= title %></h1>
 
-<p>
-    <%= link_to 'addon settings' => 'RN_admin_settings_addons' %>
-</p>
+<h2><%= __('Settings') %></h2>
+<ul>
+    <li><%= link_to 'addon settings' => 'RN_admin_settings_addons' %></li>
+    <li><%= link_to 'addon settings' => 'RN_admin_settings_addons' %></li>
+    <li><%= link_to 'addon settings' => 'RN_admin_settings_addons' %></li>
+</ul>
+
+<h2><%= __('Products') %></h2>
+<ul>
+    <li><%= link_to 'Products index' => 'RN_admin_products' %></li>
+    <li><%= link_to 'Products index' => 'RN_admin_products' %></li>
+    <li><%= link_to 'Products index' => 'RN_admin_products' %></li>
+</ul>
+
+<h2><%= __('Orders') %></h2>
+<ul>
+    <li><%= link_to 'Orders index' => 'RN_admin_orders' %></li>
+    <li><%= link_to 'Orders index' => 'RN_admin_orders' %></li>
+    <li><%= link_to 'Orders index' => 'RN_admin_orders' %></li>
+</ul>
