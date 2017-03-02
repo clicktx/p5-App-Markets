@@ -31,12 +31,15 @@ sub add_admin_routes {
     $r->get('/logout')->to('staff#logout')->name('RN_admin_logout');
 
     # Settings
-    # $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
-    my $settings = $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
-    $settings->get('/addons')->to('addons#index')->name('RN_admin_settings_addons');
+    {
+        # $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
+        my $settings = $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
+        $settings->get('/addons')->to('addons#index')->name('RN_admin_settings_addons');
+        $settings->get('/addons/:action')->to('addons#')->name('RN_admin_settings_addons_action');
+    }
 
-    $r->get('/addons')->to('addons#index')->name('RN_admin_addons');
-    $r->get('/addons/:action')->to('addons#')->name('RN_admin_addons_action');
+    # $r->get('/addons')->to('addons#index')->name('RN_admin_addons');
+    # $r->get('/addons/:action')->to('addons#')->name('RN_admin_addons_action');
 
     # Orders
     $r->get('/orders')->to('orders#index')->name('RN_admin_orders');

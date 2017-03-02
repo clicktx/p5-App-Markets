@@ -9,9 +9,9 @@
             <%= $num %>. installed: <%= $addon %>
             <div class="addon-status">
                 <% if ($installed_addons->{$addon}->{is_enabled}){ %>
-                    <%= link_to url_for('/admin/addons/disable')->query(target => $addon) => begin %>on<% end %>
+                    <%= link_to url_for('RN_admin_settings_addons_action', action => 'disable')->query(target => $addon) => begin %>on<% end %>
                 <% } else { %>
-                    <%= link_to url_for('/admin/addons/enable')->query(target => $addon) => begin %>off<% end %>
+                    <%= link_to url_for('RN_admin_settings_addons_action', action => 'enable')->query(target => $addon) => begin %>off<% end %>
                 <% }  %>
             </div>
     </div>
