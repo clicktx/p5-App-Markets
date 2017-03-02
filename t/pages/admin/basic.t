@@ -17,12 +17,19 @@ my $ua  = $t->ua;
 #     }
 #     p @paths;
 # };
-my @paths;
-subtest 'requred authrization pages' => sub {
-    foreach my $r ( @{ $app->routes->find('RN_admin_bridge')->children } ) {
-        push @paths, $r->render() if $r->is_endpoint;
+
+sub _make_path {
+    my @paths;
+    my $routes = shift;
+    foreach my $r ( @{$routes} ) {
+        if ( $r->is_endpoint ) { push @paths, $r->render }
+        else                   { _make_path( $r->children ) }
     }
-    $t->get_ok($_)->status_is( 302, 'right redirect' ) for @paths;
+    return \@paths;
+}
+subtest 'requred authrization pages' => sub {
+    my $paths = _make_path( $app->routes->find('RN_admin_bridge')->children );
+    $t->get_ok($_)->status_is( 302, 'right redirect' ) for @{$paths};
 };
 
 # $ua->max_redirects(10);
