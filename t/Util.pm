@@ -17,6 +17,15 @@ BEGIN {
     }
 }
 
+sub get_sid {
+    my $t       = shift;
+    my @cookies = $t->ua->cookie_jar->all;
+    @cookies = @{ $cookies[0] } if ref $cookies[0] eq 'ARRAY';
+    my ($sid_cookie) = grep { $_->name eq 'sid' } @cookies;
+    return $sid_cookie->value if $sid_cookie;
+    return 0;
+}
+
 sub server_session {
     my $app = shift;
 
