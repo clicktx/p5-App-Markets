@@ -13,18 +13,20 @@ requires 'DBD::mysql',                              '4.033';
 requires 'DBIx::Class',                             '0.082840';
 requires 'SQL::Translator',                         '0.11021';
 requires 'DBIx::Class::Candy',                      '0.005002';
-requires 'Data::MessagePack',                       '0.49';
-requires 'Class::Inspector',                        '1.28';
+requires 'DateTime::Format::MySQL',                 '0.06';
 requires 'Server::Starter',                         '0.32';
 requires 'Gazelle',                                 '0.46';
 
 # XS modules. it's a high performance!
 # See http://qiita.com/karupanerura/items/e765b23bd3bff806cc27
-requires 'HTTP::Parser::XS', '0.17';
-requires 'Time::TZOffset',   '0.04';
+requires 'HTTP::Parser::XS',          '0.17';
+requires 'Time::TZOffset',            '0.04';
+requires 'WWW::Form::UrlEncoded::XS', '0.24';
+requires 'Cookie::Baker::XS',         '0.07';
+requires 'JSON::XS',                  '3.02';
+requires 'Cpanel::JSON::XS',          '3.0227';
 
-#requires 'Cookie::Baker::XS', '0.06';
-#requires 'JSON::XS',          '3.02';
+# requires 'YAML::XS';
 
 on configure => sub {
     requires 'Module::Build',    '0.38';
