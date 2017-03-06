@@ -29,7 +29,7 @@ sub enable {
     # hook routes有効化
     $self->app->addons->to_enable($addon);
 
-    $self->redirect_to('/admin/addons');
+    $self->redirect_to('RN_admin_settings_addons');
 }
 
 sub disable {
@@ -44,7 +44,7 @@ sub disable {
     # hook routes無効化
     $self->app->addons->to_disable($addon);
 
-    $self->redirect_to('/admin/addons');
+    $self->redirect_to('RN_admin_settings_addons');
 }
 
 1;

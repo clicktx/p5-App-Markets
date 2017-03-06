@@ -16,31 +16,41 @@ sub add_admin_routes {
     my ( $self, $app ) = @_;
 
     my $r = $app->routes->any( $app->pref('admin_uri_prefix') )
-      ->to( namespace => 'Markets::Controller::Admin' );
+      ->to( namespace => 'Markets::Controller::Admin' )->name('RN_admin');
 
-    # [WIP] Not required authorization
-    $r->get('/login')->to('staff#login')->name('RN_admin_login');
-    $r->post('/login')->to('staff#login_authen')->name('RN_admin_login_authen');
+    # Not required authorization Routes
+    {
+        $r->get('/login')->to('staff#login')->name('RN_admin_login');
+        $r->post('/login')->to('staff#login_authen')->name('RN_admin_login_authen');
+    }
 
-    # [WIP] Required authorization
-    $r = $r->under('/')->to('staff#authorize');
-    $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
-    $r->get('/dashboard')->to('dashboard#index')->name('RN_admin_dashboard');
+    # Required authorization Routes
+    {
+        $r = $r->under->to('staff#authorize')->name('RN_admin_bridge');
+        $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
+        $r->get('/dashboard')->to('dashboard#index')->name('RN_admin_dashboard');
 
-    # Staff
-    $r->get('/logout')->to('staff#logout')->name('RN_admin_logout');
+        # Staff
+        $r->get('/logout')->to('staff#logout')->name('RN_admin_logout');
 
-    # Settings
-    $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
+        # Settings
+        {
+            # $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
+            my $settings = $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
+            $settings->get('/addons')->to('addons#index')->name('RN_admin_settings_addons');
+            $settings->get('/addons/:action')->to('addons#')
+              ->name('RN_admin_settings_addons_action');
+        }
 
-    $r->get('/addons')->to('addons#index')->name('RN_admin_addons');
+        # $r->get('/addons')->to('addons#index')->name('RN_admin_addons');
+        # $r->get('/addons/:action')->to('addons#')->name('RN_admin_addons_action');
 
-    # Orders
-    $r->get('/orders')->to('orders#index')->name('RN_admin_orders');
+        # Products
+        $r->get('/products')->to('products#index')->name('RN_admin_products');
 
-    # Products
-    $r->get('/products')->to('products#index')->name('RN_admin_products');
-
+        # Orders
+        $r->get('/orders')->to('orders#index')->name('RN_admin_orders');
+    }
 }
 
 # Routes for Catalog
@@ -68,8 +78,8 @@ sub add_catalog_routes {
     $r->post('/login')->to('account#login_authen')->name('RN_customer_authen');
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
     {
-        # Required authorization
-        my $account = $r->under('/account')->to('account#authorize');
+        # Required authorization Routes
+        my $account = $r->under('/account')->to('account#authorize')->name('RN_customer_bridge');
         $account->get('/home')->to('account#home')->name('RN_customer_home');
         $account->get('/orders')->to('account#orders')->name('RN_customer_orders');
         $account->get('/wishlist')->to('account#wishlist')->name('RN_customer_wishlist');

@@ -1,0 +1,13 @@
+% layout 'admin-default';
+% title __('Orders');
+
+<h1><%= title %></h1>
+
+<h2><%= __('Orders') %></h2>
+
+<ul>
+    <li><%= link_to __('Add order') => 'RN_admin_orders_add_order' %></li>
+    <li><%= link_to __('New order') => 'RN_admin_orders_new_order' %></li>
+    <li><%= link_to __('Insert order') => 'RN_admin_orders_insert_order' %></li>
+    <li><%= link_to __('Reports') => 'RN_admin_orders_category' %></li>
+</ul>
