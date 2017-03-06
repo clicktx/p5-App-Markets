@@ -5,7 +5,7 @@ use DateTime;
 our $VERSION   = 0.001;
 our $TIME_ZONE = 'America/Los_Angeles';
 
-__PACKAGE__->load_namespaces();
+__PACKAGE__->load_namespaces( default_resultset_class => 'ResultSetCommon' );
 
 sub time_zone { shift; return @_ ? $TIME_ZONE = shift : $TIME_ZONE }
 sub TZ { DateTime::TimeZone->new( name => $TIME_ZONE ) }
