@@ -226,12 +226,14 @@ Markets::Session::Store::Dbic - Dbic Store for MojoX::Session
     CREATE TABLE sessions (
         sid          VARCHAR(50) PRIMARY KEY,
         data         MEDIUMTEXT,
-        cart_id      VARCHAR(50),
-        expires      BIGINT NOT NULL
+        cart_id      VARCHAR(50) NOT NULL,
+        expires      BIGINT NOT NULL,
     );
     CREATE TABLE carts (
         cart_id      VARCHAR(50) PRIMARY KEY,
-        data         MEDIUMTEXT
+        data         MEDIUMTEXT NOT NULL,
+        created_at   DATETIME NOT NULL,
+        updated_at   DATETIME NOT NULL,
     );
 
     # Your App
