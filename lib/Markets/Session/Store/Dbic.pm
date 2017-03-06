@@ -199,7 +199,6 @@ sub delete {
     }
     catch {
         $self->error($_);
-        say $_;
         return;
     };
 }
