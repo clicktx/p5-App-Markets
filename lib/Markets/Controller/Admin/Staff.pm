@@ -6,7 +6,7 @@ sub authorize {
     say "authorize";    #debug
     return 1 if $self->is_logged_in;
 
-    $self->flash( ref => $self->current_route );
+    $self->flash( ref => $self->req->url->to_string );
     $self->redirect_to( $self->url_for('RN_admin_login') );
     return 0;
 }
