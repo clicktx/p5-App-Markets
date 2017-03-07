@@ -50,6 +50,7 @@ sub add_admin_routes {
 
         # Orders
         $r->get('/orders')->to('orders#index')->name('RN_admin_orders');
+        $r->get('/orders/detail/:id')->to('orders#detail')->name('RN_admin_orders_detail');
     }
 }
 
