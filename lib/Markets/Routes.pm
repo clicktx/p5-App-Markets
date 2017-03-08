@@ -70,6 +70,11 @@ sub add_catalog_routes {
 
     # Checkout
     $r->get('/checkout')->to('checkout#index')->name('RN_checkout');
+    $r->post('/checkout/address')->to('checkout#address')->name('RN_checkout_address');
+    $r->post('/checkout/shipping')->to('checkout#shipping')->name('RN_checkout_shipping');
+    $r->post('/checkout/payment')->to('checkout#payment')->name('RN_checkout_payment');
+    $r->post('/checkout/billing')->to('checkout#billing')->name('RN_checkout_billing');
+    $r->post('/checkout/complete')->to('checkout#complete')->name('RN_checkout_complete');
 
     # For Customers
     $r->get('/register')->to('register#index')->name('RN_customer_create_account');
