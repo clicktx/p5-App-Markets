@@ -1,0 +1,18 @@
+% layout 'admin-default';
+% title __('Order') . ' / ' . __('Details');
+
+<h1><%= title %></h1>
+
+<h2><%= __('Order ID') . ':' . $id %></h2>
+
+<ul>
+% while (my $item = $it->next) {
+    <li>
+        ID: <%= $item->id %> | DESCRIPTION: <%= $item->description %> | PRODUCT ID: <%= $item->product_id %> | QTY: <%= $item->quantity %>
+    </li>
+% }
+</ul>
+
+<ul>
+    <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
+</ul>
