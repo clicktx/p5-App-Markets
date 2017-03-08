@@ -6,7 +6,13 @@ primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
 };
+
 primary_column order_id => { data_type => 'INT', };
+
+column product_id => {
+    data_type   => 'INT',
+    is_nullable => 0,
+};
 
 column description => {
     data_type   => 'VARCHAR',
