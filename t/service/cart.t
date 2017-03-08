@@ -9,10 +9,28 @@ my $app = $t->app;
 
 my $r = $app->routes;
 $r->find('RN_category_name_base')->remove;    # Hack for name base category
+$r->any('/:controller/:action')->to();
 
-$r->get( '/test/create_session' => sub { shift->render( text => 1 ) } );
-$r->get(
-    '/test/items' => sub {
+# Requests
+$t->get_ok('/test/create_session');
+$t->get_ok('/test/items')->status_is(200);
+my $csrf_token = $t->tx->res->content->get_body_chunk;
+my $params = { product_id => 1, quantity => 1, csrf_token => $csrf_token };
+$t->post_ok( '/test/add_item', form => $params )->status_is(200);
+$t->get_ok('/test/merge_cart')->status_is(200);
+$t->get_ok('/test/clear_cart')->status_is(200);
+
+done_testing();
+
+{
+
+    package Markets::Controller::Catalog::Test;
+    use Mojo::Base 'Markets::Controller::Catalog';
+    use Test::More;
+
+    sub create_session { shift->render( text => 1 ) }
+
+    sub items {
         my $c = shift;
 
         subtest 'items' => sub {
@@ -21,12 +39,10 @@ $r->get(
             is_deeply $items->to_array, [ [] ], 'right items';
         };
 
-        $c->render( text => 1 );
+        $c->render( text => $c->csrf_token );
     }
-);
 
-$r->post(
-    '/test/add_item' => sub {
+    sub add_item {
         my $c = shift;
 
         subtest 'items' => sub {
@@ -47,10 +63,8 @@ $r->post(
 
         $c->render( text => 1 );
     }
-);
 
-$r->get(
-    '/test/merge_cart' => sub {
+    sub merge_cart {
         my $c = shift;
 
         subtest 'merge_cart' => sub {
@@ -59,14 +73,19 @@ $r->get(
 
         $c->render( text => 1 );
     }
-);
 
-# Requests
-$t->get_ok('/test/create_session');
-$t->get_ok('/test/items')->status_is(200);
+    sub clear_cart {
+        my $c = shift;
 
-my $params = { product_id => 1, quantity => 1 };
-$t->post_ok( '/test/add_item', form => $params )->status_is(200);
-$t->get_ok('/test/merge_cart')->status_is(200);
+        my $cart = $c->service('cart');
+        $cart->clear;
 
-done_testing();
+        subtest 'clear_cart' => sub {
+            is_deeply $cart->data, {}, 'right clear cart';
+        };
+
+        $c->render( text => 1 );
+    }
+
+    1;
+}
