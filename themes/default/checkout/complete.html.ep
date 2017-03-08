@@ -1,0 +1,6 @@
+% layout 'default';
+% title 'Thanks!';
+
+<h1><%= title %></h1>
+
+Thank you for your order!
