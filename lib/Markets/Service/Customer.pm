@@ -70,13 +70,6 @@ sub login {
     }
 }
 
-sub logout {
-    my $self = shift;
-
-    my $session = $self->controller->server_session;
-    return $self->model('account')->remove_session($session);
-}
-
 1;
 __END__
 
