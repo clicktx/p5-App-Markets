@@ -1,4 +1,4 @@
-package Markets::Model::Common;
+package Markets::Model::Pref;
 use Mojo::Base 'Markets::Model';
 use Try::Tiny;
 
@@ -67,7 +67,7 @@ __END__
 
 =head1 NAME
 
-Markets::Model::Common
+Markets::Model::Pref
 
 =head1 SYNOPSIS
 
@@ -77,7 +77,7 @@ Markets::Model::Common
 
 =head2 C<load_pref>
 
-    my $preferences = $app->model('common')->load_pref;
+    my $preferences = $app->model('pref')->load_pref;
 
 Return %$preferences
 

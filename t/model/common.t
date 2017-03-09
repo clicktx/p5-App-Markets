@@ -6,7 +6,7 @@ use Test::Mojo;
 
 my $t     = Test::Mojo->new('App');
 my $app   = $t->app;
-my $model = $app->model('common');
+my $model = $app->model('pref');
 
 isa_ok $model->load_pref, 'HASH', 'right load preferences';
 isa_ok $model->pref,      'HASH', 'right pref method';
