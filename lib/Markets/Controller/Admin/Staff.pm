@@ -3,7 +3,6 @@ use Mojo::Base 'Markets::Controller::Admin';
 
 sub authorize {
     my $self = shift;
-    say "authorize";    #debug
     return 1 if $self->is_logged_in;
 
     $self->flash( ref => $self->req->url->to_string );
@@ -12,11 +11,34 @@ sub authorize {
 }
 
 sub login_authen {
-    my $self   = shift;
-    my $params = $self->req->params;
+    my $self = shift;
 
+    # validation
+    my $params   = $self->req->params;
     my $is_valid = $params->param('password');
-    return $is_valid ? $self->_login_accept : $self->_login_failure;
+
+    if ($is_valid) {
+
+        # logging etc.
+
+        my $session  = $self->server_session;
+        my $staff_id = 456;                     # debug staff_id example
+
+        # Set staff id
+        $session->staff_id($staff_id);
+
+        # Regenerate sid
+        $session->regenerate_sid;
+
+        my $route = $self->flash('ref') || 'RN_admin_dashboard';
+        $self->redirect_to($route);
+    }
+    else {
+        # logging etc.
+
+        $self->flash( ref => $self->flash('ref') );
+        $self->render( template => 'staff/login' );
+    }
 }
 
 sub login {
@@ -28,34 +50,15 @@ sub login {
 
 sub logout {
     my $self = shift;
-    $self->service('admin-staff')->logout;
+
+    my $session = $self->server_session;
+    $self->model('account')->remove_session($session);
 
     return $self->redirect_to('RN_admin_login');
 }
 
 sub profile {
     my $self = shift;
-}
-
-sub _login_accept {
-    my $self = shift;
-
-    # logging etc.
-
-    my $staff_id = 456;    # debug staff_id example
-    $self->service('admin-staff')->login($staff_id);
-
-    my $route = $self->flash('ref') || 'RN_admin_dashboard';
-    return $self->redirect_to($route);
-}
-
-sub _login_failure {
-    my $self = shift;
-
-    # logging etc.
-
-    $self->flash( ref => $self->flash('ref') );
-    $self->render( template => 'staff/login' );
 }
 
 1;
