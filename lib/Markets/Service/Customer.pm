@@ -54,7 +54,7 @@ sub login {
     # Set customer id
     $session->customer_id($customer_id);
 
-    {
+    eval {
         my $txn = $self->app->schema->txn_scope_guard;
 
         # Change cart_id
@@ -62,11 +62,13 @@ sub login {
         $session->cart_id($customer_id);
 
         # Regenerate sid
-        my $sid = $session->regenerate_sid;
-        say "  .. regenerate_sid: " . $sid;    #debug
+        $session->regenerate_sid;
 
         $txn->commit;
-        return $sid;
+    };
+    if ( my $err = $@ ) {
+        warn $err;
+        $self->app->log->error($err);
     }
 }
 
