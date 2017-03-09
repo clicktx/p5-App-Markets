@@ -3,7 +3,6 @@ use Mojo::Base 'Markets::Controller::Catalog';
 
 sub authorize {
     my $self = shift;
-    say "authorize";    #debug
     return 1 if $self->is_logged_in;
 
     $self->flash( ref => $self->req->url->to_string );
@@ -12,11 +11,28 @@ sub authorize {
 }
 
 sub login_authen {
-    my $self   = shift;
-    my $params = $self->req->params;
+    my $self = shift;
 
+    # validation
+    my $params   = $self->req->params;
     my $is_valid = $params->param('password');
-    return $is_valid ? $self->_login_accept : $self->_login_failure;
+
+    if ($is_valid) {
+
+        # logging etc.
+
+        my $customer_id = 123;    # debug customer_id example
+        $self->service('customer')->login($customer_id);
+
+        my $route = $self->flash('ref') || 'RN_customer_home';
+        return $self->redirect_to($route);
+    }
+    else {
+        # logging etc.
+
+        $self->flash( ref => $self->flash('ref') );
+        $self->render( template => 'account/login' );
+    }
 }
 
 sub login {
@@ -28,7 +44,9 @@ sub login {
 
 sub logout {
     my $self = shift;
-    $self->service('customer')->logout;
+
+    my $session = $self->server_session;
+    $self->model('account')->remove_session($session);
 }
 
 sub home {
@@ -41,27 +59,6 @@ sub orders {
 
 sub wishlist {
     my $self = shift;
-}
-
-sub _login_accept {
-    my $self = shift;
-
-    # logging etc.
-
-    my $customer_id = 123;    # debug customer_id example
-    $self->service('customer')->login($customer_id);
-
-    my $route = $self->flash('ref') || 'RN_customer_home';
-    return $self->redirect_to($route);
-}
-
-sub _login_failure {
-    my $self = shift;
-
-    # logging etc.
-
-    $self->flash( ref => $self->flash('ref') );
-    $self->render( template => 'account/login' );
 }
 
 1;
