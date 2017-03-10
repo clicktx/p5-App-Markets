@@ -22,29 +22,25 @@ sub complete {
     $self->redirect_to('RN_cart') if !@{$items};
 
     # order作成
-    # itemsへ保存(relationで自動保存？)
-    my $cb;
-    $cb = sub {
-        $schema->resultset('Order')->create(
-            {
-                items => $items
-            }
-        );
+    my $customer_id = $self->server_session->data('customer_id');
+    my $order       = {
+        customer_id => $customer_id,
+        items       => $items,
+    };
+    p $order;
+
+    # Store order and items to DB
+    my $cb = sub {
+        $order->{order_no} = $schema->sequence('Order');
+        $schema->resultset('Order')->create($order)
     };
 
     use Try::Tiny;
-    my $res;
     try {
-        $res = $cb->();
+        $schema->txn_do($cb);
     }
     catch {
-        if ( $_ =~ /Rollback failed/ ) {
-
-            # ロールバックに失敗した場合
-        }
-
-        # 何らかのエラーによりロールバックした
-        warn $@;
+        $self->model('common')->dbic_txn_failed($_);
     };
 
     # cart sessionクリア
