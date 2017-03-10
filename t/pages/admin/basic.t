@@ -19,7 +19,10 @@ sub _make_path {
 
 subtest 'requred authrization pages' => sub {
     my $paths = _make_path( $app->routes->find('RN_admin_bridge')->children );
-    $t->get_ok($_)->status_is( 302, 'right redirect' ) for @{$paths};
+    foreach my $path ( @{$paths} ) {
+        $path .= '1' if $path =~ m(/orders/detail/);    # Hack /orders/dtail/:id
+        $t->get_ok($path)->status_is( 302, 'right redirect' );
+    }
 };
 
 subtest 'admin login process' => sub {

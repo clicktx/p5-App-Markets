@@ -13,6 +13,8 @@ sub add_item {
     return $self->data( items => [ $items->to_array ] );
 }
 
+sub clear { shift->controller->cart_session->flash(@_) }
+
 sub data { shift->controller->cart_session->data(@_) }
 
 sub items { $_[0]->model('cart')->items( $_[0]->data ) }
@@ -38,6 +40,14 @@ the following new ones.
 =head2 C<add_item>
 
     $c->service('cart')->add_item( \%item );
+
+=head2 C<clear>
+
+    # All data clear
+    $c->service('cart')->clear;
+
+    # Clear items data only
+    $c->service('cart')->clear('items');
 
 =head2 C<data>
 
