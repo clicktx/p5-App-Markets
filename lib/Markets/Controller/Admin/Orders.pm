@@ -8,7 +8,7 @@ sub index {
     my $schema = $self->app->schema;
     my $rs     = $schema->resultset('Order');
 
-    my $it = $rs->search( {}, { page => 1, row => 10, } );
+    my $itr = $rs->search( {}, { page => 1, row => 10, } );
 
     my $orders = [
         { id => 1, date => '2000-1-1' },
@@ -16,7 +16,7 @@ sub index {
         { id => 3, date => '2000-3-3' },
     ];
 
-    $self->stash( it => $it, orders => $orders );
+    $self->stash( it => $itr, orders => $orders );
 }
 
 sub detail {
@@ -25,9 +25,9 @@ sub detail {
 
     # bad!
     my $rs = $self->app->schema->resultset('Order::Item');
-    my $it = $rs->search( { order_id => $order_id } );
+    my $itr = $rs->search( { order_id => $order_id } );
 
-    $self->stash( it => $it );
+    $self->stash( it => $itr );
 }
 
 1;
