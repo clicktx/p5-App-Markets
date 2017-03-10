@@ -22,4 +22,9 @@ subtest 'methods' => sub {
     ok $schema->today, 'right today()';
 };
 
+subtest 'sequence' => sub {
+    is $schema->sequence('Order'), 1, 'right sequence';
+    is $schema->sequence('order'), 2, 'right sequence';
+};
+
 done_testing();
