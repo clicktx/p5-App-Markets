@@ -44,7 +44,7 @@ sub init_addon {
 
 sub load_config {
     my $config_base_dir =
-      File::Spec->rel2abs( File::Spec->catdir( dirname(__FILE__), 'App', 'config' ) );
+      File::Spec->rel2abs( File::Spec->catdir( dirname(__FILE__), '..', 'config' ) );
     my $config_file = File::Spec->catfile( $config_base_dir, "test.conf" );
     my $conf = do $config_file;
     unless ( ref($conf) eq 'HASH' ) {
