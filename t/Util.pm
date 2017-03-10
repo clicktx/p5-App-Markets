@@ -26,33 +26,6 @@ sub get_sid {
     return 0;
 }
 
-sub server_session {
-    my $app = shift;
-
-    # use Mojo::Cookie::Response;
-    my $cookie = Mojo::Cookie::Request->new( name => 'sid', value => 'bar', path => '/' );
-    my $tx = Mojo::Transaction::HTTP->new();
-    $tx->req->cookies($cookie);
-
-    return Markets::Session::ServerSession->new(
-        tx            => $tx,
-        store         => Markets::Session::Store::Dbic->new( schema => $app->schema ),
-        transport     => MojoX::Session::Transport::Cookie->new,
-        expires_delta => 3600,
-    );
-}
-
-sub load_config {
-    my $config_base_dir =
-      File::Spec->rel2abs( File::Spec->catdir( dirname(__FILE__), 'App', 'config' ) );
-    my $config_file = File::Spec->catfile( $config_base_dir, "test.conf" );
-    my $conf = do $config_file;
-    unless ( ref($conf) eq 'HASH' ) {
-        die "test.conf does not retun HashRef.";
-    }
-    return $conf;
-}
-
 sub init_addon {
     my ( $self, $app, $name, $arg ) = ( shift, shift, shift, shift // {} );
 
@@ -67,6 +40,33 @@ sub init_addon {
 
     # create table etc.
     _install_addon( $app, $installed_addons );
+}
+
+sub load_config {
+    my $config_base_dir =
+      File::Spec->rel2abs( File::Spec->catdir( dirname(__FILE__), 'App', 'config' ) );
+    my $config_file = File::Spec->catfile( $config_base_dir, "test.conf" );
+    my $conf = do $config_file;
+    unless ( ref($conf) eq 'HASH' ) {
+        die "test.conf does not retun HashRef.";
+    }
+    return $conf;
+}
+
+sub server_session {
+    my $app = shift;
+
+    # use Mojo::Cookie::Response;
+    my $cookie = Mojo::Cookie::Request->new( name => 'sid', value => 'bar', path => '/' );
+    my $tx = Mojo::Transaction::HTTP->new();
+    $tx->req->cookies($cookie);
+
+    return Markets::Session::ServerSession->new(
+        tx            => $tx,
+        store         => Markets::Session::Store::Dbic->new( schema => $app->schema ),
+        transport     => MojoX::Session::Transport::Cookie->new,
+        expires_delta => 3600,
+    );
 }
 
 sub _install_addon {
