@@ -23,16 +23,26 @@ sub complete {
 
     # order作成
     my $customer_id = $self->server_session->data('customer_id');
-    my $order       = {
-        customer_id => $customer_id,
-        items       => $items,
-    };
-    p $order;
+    my $order = { customer_id => $customer_id, };
 
     # Store order and items to DB
     my $cb = sub {
+
+        # Order
         $order->{order_no} = $schema->sequence('Order');
-        $schema->resultset('Order')->create($order)
+        $schema->resultset('Order')->create($order);
+
+        # Items
+        # $schema->resultset('Order')->create($order); # itemsがbulk insert されない
+
+# DBIx::Class::ResultSet https://metacpan.org/pod/DBIx::Class::ResultSet#populate
+# chekout の他に注文修正等で使う可能性があるのでresultsetにmethod化しておく？
+# $schema->resultset('Order')->create_with_bulkinsert_items($order);
+
+        # bulk insert
+        my $order_id = $schema->storage->last_insert_id;
+        my $data = $self->model('item')->to_array( $order_id, $items );
+        $schema->resultset('Order::Item')->populate($data);
     };
 
     use Try::Tiny;
