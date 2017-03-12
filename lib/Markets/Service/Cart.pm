@@ -17,6 +17,8 @@ sub clear { shift->controller->cart_session->flash(@_) }
 
 sub data { shift->controller->cart_session->data(@_) }
 
+sub has_items { shift->items->flatten->size ? 1 : 0 }
+
 sub items { $_[0]->model('cart')->items( $_[0]->data ) }
 
 1;
@@ -55,6 +57,12 @@ the following new ones.
     $c->service('cart')->data( fizz => buzz );
 
 Alias for L<Markets::Session::CartSession/"data">.
+
+=head2 C<has_items>
+
+    my $bool = $c->service('cart')->has_items;
+
+Return boolean value.
 
 =head2 C<items>
 

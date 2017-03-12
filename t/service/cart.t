@@ -38,6 +38,7 @@ done_testing();
             is ref $items, 'Mojo::Collection', 'right object';
             is_deeply $items->to_array, [ [] ], 'right items';
         };
+        is $c->service('cart')->has_items, 0, 'right false';
 
         $c->render( text => $c->csrf_token );
     }
@@ -56,6 +57,8 @@ done_testing();
             is_deeply $c->service('cart')->data,
               { items => [ [ { product_id => 1, quantity => 1 } ] ] };
         };
+
+        is $c->service('cart')->has_items, 1, 'right true';
 
         # for merge_cart test
         my $cart_id = $c->server_session->cart_id('123456');
@@ -83,6 +86,8 @@ done_testing();
         subtest 'clear_cart' => sub {
             is_deeply $cart->data, {}, 'right clear cart';
         };
+
+        is $c->service('cart')->has_items, 0, 'right false';
 
         $c->render( text => 1 );
     }
