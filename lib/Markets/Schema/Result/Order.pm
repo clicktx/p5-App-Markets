@@ -27,7 +27,7 @@ column created_at => {
 # belongs_to customer => 'Markets::Schema::Result::Customer', 'customer_id';
 
 has_many
-  items => 'Markets::Schema::Result::Order::Item',
+  shipments => 'Markets::Schema::Result::Order::Shipment',
   { 'foreign.order_id' => 'self.id' };
 
 1;
