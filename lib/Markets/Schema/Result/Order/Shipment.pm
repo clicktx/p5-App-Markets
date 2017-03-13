@@ -12,6 +12,12 @@ column order_id => {
     is_nullable => 0,
 };
 
+column shipping_address => {
+    data_type => 'VARCHAR',
+    size      => 255,
+    is_nullable => 0,
+};
+
 # belongs_to
 #   order => 'Markets::Schema::Result::Order',
 #   { 'foreign.id' => 'self.order_id' };

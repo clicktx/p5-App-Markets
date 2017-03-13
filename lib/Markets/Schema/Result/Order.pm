@@ -17,6 +17,12 @@ column customer_id => {
     is_nullable => 1,
 };
 
+column billing_address => {
+    data_type => 'VARCHAR',
+    size      => 255,
+    is_nullable => 0,
+};
+
 column created_at => {
     data_type   => 'DATETIME',
     is_nullable => 0,
