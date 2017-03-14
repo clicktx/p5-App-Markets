@@ -14,8 +14,25 @@ sub register {
     $app->helper( cookie_session => sub { shift->session(@_) } );
     $app->helper( template       => sub { shift->stash( template => shift ) } );
 
+    $app->helper( factory => sub { _factory(@_) } );
     $app->helper( pref    => sub { _pref(@_) } );
     $app->helper( service => sub { _service(@_) } );
+}
+
+sub _factory {
+    my ( $self, $name ) = ( shift, shift );
+    $name = Mojo::Util::camelize($name) if $name =~ /^[a-z]/;
+    Carp::croak 'Name is empty.' unless $name;
+
+    my $app_class     = 'Markets';
+    my $factory_class = $app_class . '::Factory::' . $name;
+    my $class         = $app_class . '::' . $name;
+
+    my $e = Mojo::Loader::load_class($factory_class);
+    die "Exception: $e" if ref $e;
+
+    my $constract_class = $e ? ( _load_class($class) or $class ) : $factory_class;
+    return $constract_class->new(@_);
 }
 
 sub _pref {
@@ -88,6 +105,16 @@ Alias for $c->session;
     my $hoge = $c->pref('hoge');
 
 Get preference.
+
+=head2 C<factory>
+
+    my $something = $c->factory('entity-something', $arg);
+
+    # Markets::Factory::Entity::Something->new($arg)
+    # or Markets::Entity::Something->new($arg)
+    # Return Markets::Entity::Something Object.
+
+Return Object.
 
 =head2 C<service>
 
