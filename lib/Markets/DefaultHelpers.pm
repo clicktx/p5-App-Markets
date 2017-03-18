@@ -24,15 +24,23 @@ sub _factory {
     $name = Mojo::Util::camelize($name) if $name =~ /^[a-z]/;
     Carp::croak 'Name is empty.' unless $name;
 
-    my $app_class     = 'Markets';
-    my $factory_class = $app_class . '::Factory::' . $name;
-    my $class         = $app_class . '::' . $name;
+    my $app_class = 'Markets';
+    my $factory   = $app_class . '::Domain::Factory::' . $name;
+    my $domain    = $app_class . '::Domain::' . $name;
 
-    my $e = Mojo::Loader::load_class($factory_class);
+    my $e = Mojo::Loader::load_class($factory);
     die "Exception: $e" if ref $e;
 
-    my $constract_class = $e ? ( _load_class($class) or $class ) : $factory_class;
-    return $constract_class->new(@_);
+    _load_class($domain);
+
+    my $app = $self->app;
+    my $params = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+    $params->{app}             = $self->app;
+    $params->{construct_class} = $domain;
+
+    # factory classが無い場合はデフォルトのfactory classを使用
+    $factory =~ s/::$name//g if $e;
+    $factory->new($params);
 }
 
 sub _pref {
