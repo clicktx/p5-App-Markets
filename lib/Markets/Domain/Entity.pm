@@ -1,10 +1,11 @@
 package Markets::Domain::Entity;
 use Mojo::Base -base;
-use Mojo::Util qw//;
+use Carp qw/croak/;
+use Mojo::Util qw/sha1_sum/;
 
-has 'entity_id';
+has entity_id => sub { croak 'Attribute "entity_id" not implemented by subclass' };
 
-sub hash_code { Mojo::Util::sha1_sum( shift->id ) }
+sub hash_code { sha1_sum( shift->id ) }
 
 sub id { shift->entity_id }
 
