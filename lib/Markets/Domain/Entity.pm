@@ -3,11 +3,9 @@ use Mojo::Base -base;
 use Carp qw/croak/;
 use Mojo::Util qw/sha1_sum/;
 
-has entity_id => sub { croak 'Attribute "entity_id" not implemented by subclass' };
+has id => sub { croak 'Attribute "id" not implemented by subclass' };
 
 sub hash_code { sha1_sum( shift->id ) }
-
-sub id { shift->entity_id }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
