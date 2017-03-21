@@ -1,4 +1,4 @@
-package Markets::Entity;
+package Markets::Domain::Entity;
 use Mojo::Base -base;
 use Mojo::Util qw//;
 
@@ -15,7 +15,7 @@ __END__
 
 =head1 NAME
 
-Markets::Entity - Entity Object Base Class
+Markets::Domain::Entity - Entity Object Base Class
 
 =head1 SYNOPSIS
 
@@ -23,7 +23,7 @@ Markets::Entity - Entity Object Base Class
 
 =head1 ATTRIBUTES
 
-L<Markets::Entity> inherits all attributes from L<Mojo::Base> and implements
+L<Markets::Domain::Entity> inherits all attributes from L<Mojo::Base> and implements
 the following new ones.
 
 =head2 C<entity_id>
