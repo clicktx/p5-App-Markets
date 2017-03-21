@@ -5,11 +5,14 @@ use Mojo::Collection qw/c/;
 sub construct {
     my $self = shift;
 
+    my $items = $self->cart_data->{items} || [];
+    my $shipments = $self->cart_data->{shipments} || [ {} ];
+
     my @shipments;
-    my $items = $self->cart_data->{items};
-    foreach my $line_items ( @{$items} ) {
-        my $shipment = $self->_shipment($line_items);
-        push @shipments, $self->app->factory( 'entity-shipment', $shipment );
+    for ( my $i = 0 ; $i < @{$items} ; $i++ ) {
+        my %ship = %{ $shipments->[$i] };
+        $ship{items} = $self->_shipment_items( $items->[$i] );
+        push @shipments, $self->app->factory( 'entity-shipment', \%ship );
     }
 
     return $self->construct_class->new(
@@ -20,7 +23,7 @@ sub construct {
     );
 }
 
-sub _shipment {
+sub _shipment_items {
     my $self       = shift;
     my $line_items = shift;
 
@@ -30,10 +33,7 @@ sub _shipment {
         push @shipment_items, $entity_item;
     }
 
-    return +{
-        address => 'aa',
-        items   => c(@shipment_items),
-    };
+    return c(@shipment_items);
 }
 
 1;
