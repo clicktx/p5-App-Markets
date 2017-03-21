@@ -1,12 +1,12 @@
 use Mojo::Base -strict;
 use Test::More;
 
-use_ok 'Markets::Entity';
+use_ok 'Markets::Domain::Entity';
 
 subtest 'Entity object base' => sub {
-    my $e1   = Markets::Entity::Hoge->new( entity_id => 1 );
-    my $e1_1 = Markets::Entity::Hoge->new( entity_id => 1 );
-    my $e2   = Markets::Entity::Fuga->new( entity_id => 2 );
+    my $e1   = Markets::Domain::Entity::Hoge->new( entity_id => 1 );
+    my $e1_1 = Markets::Domain::Entity::Hoge->new( entity_id => 1 );
+    my $e2   = Markets::Domain::Entity::Fuga->new( entity_id => 2 );
 
     is $e1->id, 1, 'right entity id';
     is $e1->is_equal($e1_1), 1, 'right equal object';
@@ -16,10 +16,10 @@ subtest 'Entity object base' => sub {
 
 done_testing();
 
-package Markets::Entity::Hoge;
-use Mojo::Base 'Markets::Entity';
+package Markets::Domain::Entity::Hoge;
+use Mojo::Base 'Markets::Domain::Entity';
 1;
 
-package Markets::Entity::Fuga;
-use Mojo::Base 'Markets::Entity';
+package Markets::Domain::Entity::Fuga;
+use Mojo::Base 'Markets::Domain::Entity';
 1;
