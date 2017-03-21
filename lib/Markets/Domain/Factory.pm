@@ -16,12 +16,9 @@ sub new {
     return $factory->construct() if $factory->can('construct');
 
     # Factory class nothing
-    # delete $params->{app}; # TODO: appは消す？
+    delete $params->{app};
     my $construct_class = delete $params->{construct_class};
-
-    my $domain = $construct_class->new( %{$params} );
-    weaken $domain->{app};
-    return $domain;
+    return $construct_class->new( %{$params} );
 }
 
 1;
