@@ -4,11 +4,11 @@ use Mojo::Util qw//;
 
 has 'entity_id';
 
+sub hash_code { Mojo::Util::sha1_sum( shift->id ) }
+
 sub id { shift->entity_id }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
-
-sub hash_code { Mojo::Util::sha1_sum( shift->id ) }
 
 1;
 __END__
@@ -33,6 +33,12 @@ the following new ones.
 
 =head1 METHODS
 
+=head2 C<hash_code>
+
+    my $sha1_sum = $entity->hash_code;
+
+Return SHA1 hash value. SEE L<Mojo::Util/sha1_sum>
+
 =head2 C<id>
 
     my $entity_id = $entity->id;
@@ -42,12 +48,6 @@ the following new ones.
     my $bool = $entity->is_equal($other_entity);
 
 Return boolean value.
-
-=head2 C<hash_code>
-
-    my $sha1_sum = $entity->hash_code;
-
-Return SHA1 hash value. SEE L<Mojo::Util/sha1_sum>
 
 =head1 AUTHOR
 
