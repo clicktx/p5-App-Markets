@@ -5,7 +5,7 @@ use Mojo::Util qw/sha1_sum/;
 
 has id => sub { croak 'Attribute "id" not implemented by subclass' };
 
-sub hash_code { sha1_sum( shift->id ) }
+sub hash_code { @_ > 1 ? sha1_sum( $_[1] ) : sha1_sum( $_[0]->id ) }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
@@ -37,8 +37,9 @@ the following new ones.
 =head2 C<hash_code>
 
     my $sha1_sum = $entity->hash_code;
+    my $sha1_sum = $entity->hash_code($bytes);
 
-Return SHA1 hash value. SEE L<Mojo::Util/sha1_sum>
+Return SHA1 checksum. Default bytes is L<Markets::Domain::Entity/id>.
 
 =head2 C<id>
 
