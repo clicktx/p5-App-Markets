@@ -10,6 +10,8 @@ sub id { shift->entity_id }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
+sub to_hash { +{ %{ shift() } } }
+
 1;
 __END__
 
@@ -48,6 +50,12 @@ Return SHA1 hash value. SEE L<Mojo::Util/sha1_sum>
     my $bool = $entity->is_equal($other_entity);
 
 Return boolean value.
+
+=head2 C<to_hash>
+
+    my $data = $entity->to_hash;
+
+Return Hash reference.
 
 =head1 AUTHOR
 

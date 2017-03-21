@@ -11,16 +11,6 @@ sub hash_code {
     Mojo::Util::sha1_sum( $self->product_id );
 }
 
-sub to_hash {
-    my $self = shift;
-    my $item = {
-        product_id => $self->product_id,
-        quantity   => $self->quantity,
-    };
-
-    return $item;
-}
-
 1;
 __END__
 
