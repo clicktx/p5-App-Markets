@@ -12,6 +12,9 @@ subtest 'Entity object base' => sub {
     is $e1->is_equal($e1_1), 1, 'right equal object';
     is $e1->is_equal($e2),   0, 'right not equal object';
     is $e1->hash_code, '356a192b7913b04c54574d18c28d46e6395428ab', 'right hash code';
+
+    eval { Markets::Domain::Entity::Hoge->new->id };
+    like $@, qr/Attribute "entity_id" not implemented by subclass/, 'right not set entity_id';
 };
 
 done_testing();
