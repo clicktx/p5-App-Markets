@@ -4,7 +4,7 @@ use Mojo::Util qw//;
 
 has [qw/ product_id quantity /];
 
-sub is_equal { shift->hash_code eq shift->hash_code ? 1 : 0 }
+has id => sub { shift->hash_code };
 
 sub hash_code {
     my $self = shift;

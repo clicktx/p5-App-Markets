@@ -3,7 +3,7 @@ use Mojo::Base 'Markets::Domain::Entity';
 
 has [qw/ cart_id shipments /];
 
-has entity_id => sub { shift->cart_id };
+has id => sub { shift->cart_id };
 
 # has 'items';
 # has item_count       => sub { shift->items->flatten->size };

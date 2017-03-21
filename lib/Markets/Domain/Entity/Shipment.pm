@@ -1,7 +1,15 @@
 package Markets::Domain::Entity::Shipment;
 use Mojo::Base 'Markets::Domain::Entity';
+use Mojo::Util qw/sha1_sum/;
 
 has [qw/ address items /];
+
+has id => sub { shift->hash_code };
+
+sub hash_code {
+    my $self = shift;
+    sha1_sum( $self->address );
+}
 
 sub item_count {
     my $cnt = 0;
