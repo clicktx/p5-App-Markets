@@ -37,7 +37,7 @@ subtest 'attributes' => sub {
 };
 
 subtest 'methods' => sub {
-    is $cart->id, '12345', 'right entity id';
+    is $cart->id, '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is_deeply $cart->to_hash, $cart_data, 'right data structure';
     is $cart->total_item_count, 3, 'right total item count';
 
