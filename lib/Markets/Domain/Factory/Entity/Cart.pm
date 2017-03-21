@@ -6,7 +6,7 @@ sub construct {
     my $self = shift;
 
     my @shipments;
-    my $items = $self->cart_data->{items} || [];
+    my $items = $self->cart_data->{items};
     foreach my $line_items ( @{$items} ) {
         my $shipment = $self->_shipment($line_items);
         push @shipments, $self->app->factory( 'entity-shipment', $shipment );
