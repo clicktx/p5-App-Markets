@@ -1,14 +1,14 @@
 package Markets::Domain::Entity::Item;
 use Mojo::Base 'Markets::Domain::Entity';
-use Mojo::Util qw//;
 
 has [qw/ product_id quantity /];
 
 has id => sub { shift->hash_code };
 
 sub hash_code {
-    my $self = shift;
-    Mojo::Util::sha1_sum( $self->product_id );
+    my $self  = shift;
+    my $bytes = $self->product_id;
+    $self->SUPER::hash_code($bytes);
 }
 
 1;
