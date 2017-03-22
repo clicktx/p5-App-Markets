@@ -6,16 +6,6 @@ use t::Util;
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
-use_ok 'Markets::Domain::Factory::Entity::Cart';
-ok $app->factory(
-    'entity-cart',
-    {
-        cart_id   => '',
-        cart_data => { items => [ [ {} ] ] }
-    }
-  ),
-  'items data only';
-
 my $cart;
 my $cart_data = {
     shipments => [ { address => 'Tokyo' }, { address => 'Osaka' } ],
