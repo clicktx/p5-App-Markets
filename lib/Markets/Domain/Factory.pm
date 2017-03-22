@@ -5,20 +5,24 @@ use Scalar::Util 'weaken';
 
 has [qw/app construct_class/];
 
+sub construct {
+    my $self = shift;
+
+    delete $self->{app};
+    my $construct_class = delete $self->{construct_class};
+
+    return bless $self, $construct_class;
+}
+
 sub new {
     my ( $self, $params ) = @_;
 
     # Attributes
-    $self->attr( [ keys %{$params} ] );
+    $self->attr( [ keys %{$params} ] ); # TODO: 不要かもしれないので検討する
 
     my $factory = $self->SUPER::new( %{$params} );
     weaken $factory->{app};
-    return $factory->construct() if $factory->can('construct');
-
-    # Factory class nothing
-    delete $params->{app};
-    my $construct_class = delete $params->{construct_class};
-    return $construct_class->new( %{$params} );
+    return $factory->construct();
 }
 
 1;
