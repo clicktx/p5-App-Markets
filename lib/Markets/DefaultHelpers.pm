@@ -20,13 +20,13 @@ sub register {
 }
 
 sub _factory {
-    my ( $self, $name ) = ( shift, shift );
-    $name = Mojo::Util::camelize($name) if $name =~ /^[a-z]/;
-    Carp::croak 'Argument empty.' unless $name;
+    my ( $self, $ns ) = ( shift, shift );
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+    Carp::croak 'Argument empty.' unless $ns;
 
     my $factory_base_class = 'Markets::Domain::Factory';
-    my $factory_class      = $factory_base_class . '::' . $name;
-    my $domain_class       = 'Markets::Domain::' . $name;
+    my $factory_class      = $factory_base_class . '::' . $ns;
+    my $domain_class       = 'Markets::Domain::' . $ns;
 
     my $e = Mojo::Loader::load_class($factory_class);
     die "Exception: $e" if ref $e;
@@ -56,20 +56,20 @@ sub _pref {
 }
 
 sub _service {
-    my ( $self, $name ) = @_;
-    $name = Mojo::Util::camelize($name) if $name =~ /^[a-z]/;
-    Carp::croak 'Service name is empty.' unless $name;
+    my ( $self, $ns ) = @_;
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+    Carp::croak 'Service name is empty.' unless $ns;
 
-    my $service = $self->app->{services}{$name};
+    my $service = $self->app->{services}{$ns};
     if ( Scalar::Util::blessed $service ) {
         $service->controller($self);
         Scalar::Util::weaken $service->{controller};
     }
     else {
-        my $class = "Markets::Service::" . $name;
+        my $class = "Markets::Service::" . $ns;
         _load_class($class);
         $service = $class->new($self);
-        $self->app->{services}{$name} = $service;
+        $self->app->{services}{$ns} = $service;
     }
     return $service;
 }
