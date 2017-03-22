@@ -18,11 +18,19 @@ sub new {
     my ( $self, $params ) = @_;
 
     # Attributes
-    $self->attr( [ keys %{$params} ] ); # TODO: 不要かもしれないので検討する
+    $self->attr( [ keys %{$params} ] );    # TODO: 不要かもしれないので検討する
 
     my $factory = $self->SUPER::new( %{$params} );
     weaken $factory->{app};
     return $factory->construct();
+}
+
+sub params {
+    my $self   = shift;
+    my %params = %{$self};
+    delete $params{app};
+    delete $params{construct_class};
+    return \%params;
 }
 
 1;
@@ -54,6 +62,12 @@ a L<Mojolicious> object.
     my $construct_class = $factory->construct_class;
 
 Get namespace as a construct class.
+
+=head2 C<params>
+
+    my $params = $factory->params;
+
+Get object parameter. Return Hash reference.
 
 =head1 AUTHOR
 
