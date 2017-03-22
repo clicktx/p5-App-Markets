@@ -44,8 +44,10 @@ sub to_hash {
 }
 
 sub total_item_count {
-    my $cnt = 0;
-    shift->shipments->each( sub { $cnt += shift->item_count } );
+    my $self = shift;
+    my $cnt  = 0;
+    $self->items->each( sub     { $cnt += shift->quantity } );
+    $self->shipments->each( sub { $cnt += shift->item_count } );
     return $cnt;
 }
 
