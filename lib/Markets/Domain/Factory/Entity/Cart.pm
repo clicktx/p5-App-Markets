@@ -5,8 +5,9 @@ use Mojo::Collection qw/c/;
 sub construct {
     my $self = shift;
 
-    my $items = $self->cart_data->{items} || [];
-    my $shipments = $self->cart_data->{shipments} || [ {} ];
+    my $data  = $self->cart_data || {};
+    my $items = $data->{items}   || [];
+    my $shipments = $data->{shipments} || [ {} ];
 
     my @shipments;
     for ( my $i = 0 ; $i < @{$items} ; $i++ ) {
