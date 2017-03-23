@@ -3,8 +3,9 @@
 
 <h1><%= title %></h1>
 
+<%= $self->stash('markets.entity.cart')->total_item_count %> items in your cart.
 <ul>
-    % $items->each( sub {
+    % $self->stash('markets.entity.cart')->items->each( sub {
         <li><%= dumper $_ %></li>
     % });
 </ul>
