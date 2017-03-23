@@ -8,8 +8,15 @@ my $app = $t->app;
 
 my $cart;
 my $cart_data = {
-    shipments => [ { address => 'Tokyo' }, { address => 'Osaka' } ],
-    items => [ [ { product_id => 1, quantity => 1 } ], [ { product_id => 2, quantity => 2 } ] ],
+    items => [
+        { product_id => 1, quantity => 1 },
+        { product_id => 2, quantity => 2 },
+        { product_id => 3, quantity => 3 },
+    ],
+    shipments => [
+        { address => 'Tokyo', items => [ { product_id => 4, quantity => 4 } ] },
+        { address => 'Osaka', items => [ { product_id => 5, quantity => 5 } ] },
+    ],
 };
 
 $cart = $app->factory(
@@ -29,7 +36,7 @@ subtest 'attributes' => sub {
 subtest 'methods' => sub {
     is $cart->id, '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is_deeply $cart->to_hash, $cart_data, 'right data structure';
-    is $cart->total_item_count, 3, 'right total item count';
+    is $cart->total_item_count, 15, 'right total item count';
 
     my $cart2 = $app->factory(
         'entity-cart',

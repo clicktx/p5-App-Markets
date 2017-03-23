@@ -20,7 +20,7 @@ ok $app->factory(
     'entity-cart',
     {
         cart_id   => '',
-        cart_data => { items => [ [ {} ] ] }
+        cart_data => { items => [ {} ] }
     }
   ),
   'argument items data only';
