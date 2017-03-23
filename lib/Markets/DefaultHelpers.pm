@@ -20,27 +20,26 @@ sub register {
 }
 
 sub _factory {
-    my ( $self, $name ) = ( shift, shift );
-    $name = Mojo::Util::camelize($name) if $name =~ /^[a-z]/;
-    Carp::croak 'Name is empty.' unless $name;
+    my ( $self, $ns ) = ( shift, shift );
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+    Carp::croak 'Argument empty.' unless $ns;
 
-    my $app_class = 'Markets';
-    my $factory   = $app_class . '::Domain::Factory::' . $name;
-    my $domain    = $app_class . '::Domain::' . $name;
+    my $factory_base_class = 'Markets::Domain::Factory';
+    my $factory_class      = $factory_base_class . '::' . $ns;
+    my $domain_class       = 'Markets::Domain::' . $ns;
 
-    my $e = Mojo::Loader::load_class($factory);
+    my $e = Mojo::Loader::load_class($factory_class);
     die "Exception: $e" if ref $e;
 
-    _load_class($domain);
+    _load_class($domain_class);
 
     my $app = $self->app;
     my $params = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
     $params->{app}             = $self->app;
-    $params->{construct_class} = $domain;
+    $params->{construct_class} = $domain_class;
 
     # factory classが無い場合はデフォルトのfactory classを使用
-    $factory =~ s/::$name//g if $e;
-    $factory->new($params);
+    return $e ? $factory_base_class->new($params) : $factory_class->new($params);
 }
 
 sub _pref {
@@ -57,20 +56,20 @@ sub _pref {
 }
 
 sub _service {
-    my ( $self, $name ) = @_;
-    $name = Mojo::Util::camelize($name) if $name =~ /^[a-z]/;
-    Carp::croak 'Service name is empty.' unless $name;
+    my ( $self, $ns ) = @_;
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+    Carp::croak 'Service name is empty.' unless $ns;
 
-    my $service = $self->app->{services}{$name};
+    my $service = $self->app->{services}{$ns};
     if ( Scalar::Util::blessed $service ) {
         $service->controller($self);
         Scalar::Util::weaken $service->{controller};
     }
     else {
-        my $class = "Markets::Service::" . $name;
+        my $class = "Markets::Service::" . $ns;
         _load_class($class);
         $service = $class->new($self);
-        $self->app->{services}{$name} = $service;
+        $self->app->{services}{$ns} = $service;
     }
     return $service;
 }

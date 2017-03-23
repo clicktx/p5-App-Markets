@@ -5,23 +5,32 @@ use Scalar::Util 'weaken';
 
 has [qw/app construct_class/];
 
+sub construct {
+    my $self = shift;
+
+    delete $self->{app};
+    my $construct_class = delete $self->{construct_class};
+
+    return bless $self, $construct_class;
+}
+
 sub new {
     my ( $self, $params ) = @_;
 
     # Attributes
-    $self->attr( [ keys %{$params} ] );
+    $self->attr( [ keys %{$params} ] );    # TODO: 不要かもしれないので検討する
 
     my $factory = $self->SUPER::new( %{$params} );
     weaken $factory->{app};
-    return $factory->construct() if $factory->can('construct');
+    return $factory->construct();
+}
 
-    # Factory class nothing
-    # delete $params->{app}; # TODO: appは消す？
-    my $construct_class = delete $params->{construct_class};
-
-    my $domain = $construct_class->new( %{$params} );
-    weaken $domain->{app};
-    return $domain;
+sub params {
+    my $self   = shift;
+    my %params = %{$self};
+    delete $params{app};
+    delete $params{construct_class};
+    return \%params;
 }
 
 1;
@@ -53,6 +62,12 @@ a L<Mojolicious> object.
     my $construct_class = $factory->construct_class;
 
 Get namespace as a construct class.
+
+=head2 C<params>
+
+    my $params = $factory->params;
+
+Get object parameter. Return Hash reference.
 
 =head1 AUTHOR
 
