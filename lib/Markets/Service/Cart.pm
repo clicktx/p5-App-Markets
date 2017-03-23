@@ -5,12 +5,12 @@ sub add_item {
     my $self = shift;
 
     my $params = $self->controller->req->params->to_hash;
-    my $item   = $self->model('cart')->item($params);
+    delete $params->{csrf_token};
 
-    my $items = $self->items->flatten;
-    $items = $self->model('cart')->add_item( $item, $items );
+    my $item = $self->controller->factory( 'entity-item', $params );
+    my $cart = $self->controller->stash('markets.entity.cart');
 
-    return $self->data( items => [ $items->to_array ] );
+    return $self->data( $cart->add_item($item)->to_hash );
 }
 
 sub clear { shift->controller->cart_session->flash(@_) }
