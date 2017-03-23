@@ -20,6 +20,25 @@ has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 # cart.total_weight
 use DDP;
 
+sub add_item {
+    my ( $self, $item ) = @_;
+
+    my $items = $self->items;
+    my $match;
+    $items->each(
+        sub {
+            my ( $element, $i ) = @_;
+            if ( $element->is_equal($item) ) {
+                my $qty = $element->quantity + $item->quantity;
+                $element->quantity($qty);
+                $match = $i;
+            }
+        }
+    );
+    push @{$items}, $item if !$match;
+    return $self;
+}
+
 sub to_hash {
     my $self = shift;
     my $hash = $self->SUPER::to_hash;
@@ -46,25 +65,6 @@ sub total_item_count {
     return $cnt;
 }
 
-sub add_item {
-    my ( $self, $item ) = @_;
-
-    my $items = $self->items;
-    my $match;
-    $items->each(
-        sub {
-            my ( $element, $i ) = @_;
-            if ( $element->is_equal($item) ) {
-                my $qty = $element->quantity + $item->quantity;
-                $element->quantity($qty);
-                $match = $i;
-            }
-        }
-    );
-    push @{$items}, $item if !$match;
-    return $self;
-}
-
 1;
 __END__
 
@@ -82,6 +82,24 @@ L<Markets::Domain::Entity::Cart> inherits all attributes from L<Markets::Domain:
 the following new ones.
 
 =head1 METHODS
+
+=head2 C<add_item>
+
+    $entity->add_item( $item_entity_object );
+
+Return Entity Cart Object.
+
+=head2 C<to_hash>
+
+    my $hash = $entity->to_hash;
+
+Return Hash reference.
+
+=head2 C<total_item_count>
+
+    my $item_count = $entity->total_item_count;
+
+Return all items quantity.
 
 =head1 AUTHOR
 
