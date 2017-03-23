@@ -13,8 +13,18 @@ sub hash_code {
 
 sub item_count {
     my $cnt = 0;
-    shift->items->each( sub { $cnt += shift->quantity } );
+    shift->items->each( sub { $cnt += $_->quantity } );
     return $cnt;
+}
+
+sub to_hash {
+    my $self = shift;
+    my $hash = $self->SUPER::to_hash;
+
+    my @items;
+    $hash->{items}->each( sub { push @items, $_->to_hash } );
+    $hash->{items} = \@items;
+    return $hash;
 }
 
 1;

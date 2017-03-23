@@ -1,7 +1,7 @@
 package Markets::Domain::Entity::Cart;
 use Mojo::Base 'Markets::Domain::Entity';
 
-has [qw/ cart_id shipments /];
+has [qw/ cart_id items shipments /];
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 
@@ -22,32 +22,27 @@ use DDP;
 
 sub to_hash {
     my $self = shift;
+    my $hash = $self->SUPER::to_hash;
 
-    my @shipments;
+    # items
     my @items;
-    $self->shipments->each(
-        sub {
-            my ( $shipment, $i ) = @_;
-            $i--;
+    $self->items->each( sub { push @items, $_->to_hash } );
+    $hash->{items} = \@items;
 
-            # Shipments
-            my $data           = $shipment->to_hash;
-            my $shipment_items = delete $data->{items};
-            $shipments[$i] = $data;
+    # shipments
+    my @shipments;
+    $self->shipments->each( sub { push @shipments, $_->to_hash } );
+    $hash->{shipments} = \@shipments;
 
-            # Items
-            $shipment_items->each( sub { push @{ $items[$i] }, shift->to_hash } );
-        }
-    );
-
-    return { shipments => \@shipments, items => \@items, };
+    delete $hash->{$_} for (qw/id cart_id/);
+    return $hash;
 }
 
 sub total_item_count {
     my $self = shift;
     my $cnt  = 0;
-    $self->items->each( sub     { $cnt += shift->quantity } );
-    $self->shipments->each( sub { $cnt += shift->item_count } );
+    $self->items->each( sub     { $cnt += $_->quantity } );
+    $self->shipments->each( sub { $cnt += $_->item_count } );
     return $cnt;
 }
 
