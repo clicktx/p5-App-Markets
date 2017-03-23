@@ -46,6 +46,25 @@ sub total_item_count {
     return $cnt;
 }
 
+sub add_item {
+    my ( $self, $item ) = @_;
+
+    my $items = $self->items;
+    my $match;
+    $items->each(
+        sub {
+            my ( $element, $i ) = @_;
+            if ( $element->is_equal($item) ) {
+                my $qty = $element->quantity + $item->quantity;
+                $element->quantity($qty);
+                $match = $i;
+            }
+        }
+    );
+    push @{$items}, $item if !$match;
+    return $self;
+}
+
 1;
 __END__
 
