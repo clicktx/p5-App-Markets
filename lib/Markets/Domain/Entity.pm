@@ -9,7 +9,12 @@ sub hash_code { @_ > 1 ? sha1_sum( $_[1] ) : sha1_sum( $_[0]->id ) }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
-sub to_hash { +{ %{ shift() } } }
+sub to_hash {
+    my $self = shift;
+    my $hash = +{ %{$self} };
+    delete $hash->{id};
+    $hash;
+}
 
 1;
 __END__
