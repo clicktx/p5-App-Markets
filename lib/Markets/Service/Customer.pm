@@ -42,7 +42,7 @@ sub login {
     return unless $customer_id;
 
     my $session   = $self->controller->server_session;
-    my $cart      = $self->controller->stash('markets.entity.cart');
+    my $cart      = $self->controller->cart;
     my $cart_data = $cart->to_hash;
 
     # Merge cart data
