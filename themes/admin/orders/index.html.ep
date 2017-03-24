@@ -17,7 +17,7 @@
 % while (my $order = $it->next) {
     <li>
         <%= link_to url_for( 'RN_admin_orders_detail', id => $order->id ) => begin %>
-            order id: <%= $order->id %> | order date: <%= $order->created_at %>
+            order id: <%= $order->id %> | order no: <%= $order->order_no %> | order date: <%= $order->created_at %>
         <% end %>
     </li>
 % }

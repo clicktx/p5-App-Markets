@@ -5,19 +5,31 @@ sub add_item {
     my $self = shift;
 
     my $params = $self->controller->req->params->to_hash;
-    my $item   = $self->model('cart')->item($params);
+    delete $params->{csrf_token};
 
-    my $items = $self->items->flatten;
-    $items = $self->model('cart')->add_item( $item, $items );
+    my $item = $self->controller->factory( 'entity-item', $params );
+    my $cart = $self->controller->cart;
 
-    return $self->data( items => [ $items->to_array ] );
+    return $self->cart_session_data( $cart->add_item($item)->to_hash );
 }
 
-sub clear { shift->controller->cart_session->flash(@_) }
+# sub clear { shift->controller->cart_session->flash(@_) }
 
-sub data { shift->controller->cart_session->data(@_) }
+sub cart_session_data { shift->controller->cart_session->data(@_) }
 
-sub items { $_[0]->model('cart')->items( $_[0]->data ) }
+# sub has_items { shift->items->flatten->size ? 1 : 0 }
+# sub has_items {
+#     my $self = shift;
+#     my $cart = $self->controller->cart;
+#     $cart->items->size ? 1 : 0;
+# }
+
+# sub items { $_[0]->model('cart')->items( $_[0]->data ) }
+# sub items {
+#     my $self = shift;
+#     my $cart = $self->controller->cart;
+#     $cart->items;
+# }
 
 1;
 __END__
@@ -49,12 +61,18 @@ the following new ones.
     # Clear items data only
     $c->service('cart')->clear('items');
 
-=head2 C<data>
+=head2 C<cart_session_data>
 
-    my $data = $c->service('cart')->data;
-    $c->service('cart')->data( fizz => buzz );
+    my $data = $c->service('cart')->cart_session_data;
+    $c->service('cart')->cart_session_data( fizz => buzz );
 
 Alias for L<Markets::Session::CartSession/"data">.
+
+=head2 C<has_items>
+
+    my $bool = $c->service('cart')->has_items;
+
+Return boolean value.
 
 =head2 C<items>
 

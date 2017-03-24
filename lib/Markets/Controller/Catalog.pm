@@ -1,6 +1,21 @@
 package Markets::Controller::Catalog;
 use Mojo::Base 'Markets::Controller';
 
+sub init {
+    my $self = shift;
+
+    my $cart_id   = $self->cart_session->cart_id;
+    my $cart_data = $self->cart_session->data;
+    my $cart      = $self->factory(
+        'entity-cart',
+        {
+            cart_id   => $cart_id,
+            cart_data => $cart_data,
+        }
+    );
+    $self->stash( 'markets.entity.cart' => $cart, 'markets.entity.shipments' => $cart->shipments );
+}
+
 1;
 __END__
 

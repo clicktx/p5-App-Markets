@@ -3,8 +3,9 @@
 
 <h1><%= title %></h1>
 
+<%= $self->cart->total_item_count %> items in your cart.
 <ul>
-    % $items->each( sub {
+    % $self->cart->items->each( sub {
         <li><%= dumper $_ %></li>
     % });
 </ul>
