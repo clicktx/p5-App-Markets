@@ -85,19 +85,19 @@ the following new ones.
 
 =head2 C<add_item>
 
-    $entity->add_item( $item_entity_object );
+    $cart->add_item( $item_entity_object );
 
 Return Entity Cart Object.
 
 =head2 C<to_hash>
 
-    my $hash = $entity->to_hash;
+    my $hash = $cart->to_hash;
 
 Return Hash reference.
 
 =head2 C<total_item_count>
 
-    my $item_count = $entity->total_item_count;
+    my $item_count = $cart->total_item_count;
 
 Return all items quantity.
 
