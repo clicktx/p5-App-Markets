@@ -8,7 +8,7 @@ sub add_item {
     delete $params->{csrf_token};
 
     my $item = $self->controller->factory( 'entity-item', $params );
-    my $cart = $self->controller->stash('markets.entity.cart');
+    my $cart = $self->controller->cart;
 
     return $self->cart_session_data( $cart->add_item($item)->to_hash );
 }
@@ -18,18 +18,18 @@ sub add_item {
 sub cart_session_data { shift->controller->cart_session->data(@_) }
 
 # sub has_items { shift->items->flatten->size ? 1 : 0 }
-sub has_items {
-    my $self = shift;
-    my $cart = $self->controller->stash('markets.entity.cart');
-    $cart->items->size ? 1 : 0;
-}
+# sub has_items {
+#     my $self = shift;
+#     my $cart = $self->controller->cart;
+#     $cart->items->size ? 1 : 0;
+# }
 
 # sub items { $_[0]->model('cart')->items( $_[0]->data ) }
-sub items {
-    my $self = shift;
-    my $cart = $self->controller->stash('markets.entity.cart');
-    $cart->items;
-}
+# sub items {
+#     my $self = shift;
+#     my $cart = $self->controller->cart;
+#     $cart->items;
+# }
 
 1;
 __END__
