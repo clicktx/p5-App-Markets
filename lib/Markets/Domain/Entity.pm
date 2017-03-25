@@ -5,15 +5,16 @@ use Mojo::Util qw/sha1_sum/;
 
 has id => sub { croak 'Attribute "id" not implemented by subclass' };
 
+sub clone { bless +{ %{ $_[0] } }, ref $_[0] }
+
 sub hash_code { @_ > 1 ? sha1_sum( $_[1] ) : sha1_sum( $_[0]->id ) }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
 sub to_hash {
-    my $self = shift;
-    my $hash = +{ %{$self} };
+    my $hash = +{ %{ +shift } };
     delete $hash->{id};
-    $hash;
+    return $hash;
 }
 
 1;
@@ -38,6 +39,12 @@ the following new ones.
     has entity_id => sub { shift->more_id };
 
 =head1 METHODS
+
+=head2 C<clone>
+
+    my $clone = $self->clone;
+
+Return object.
 
 =head2 C<hash_code>
 
