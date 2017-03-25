@@ -8,9 +8,7 @@ sub add_item {
     delete $params->{csrf_token};
 
     my $item = $self->controller->factory( 'entity-item', $params );
-    my $cart = $self->controller->cart;
-
-    return $self->cart_session_data( $cart->add_item($item)->to_hash );
+    return $self->controller->cart->add_item($item);
 }
 
 # sub clear { shift->controller->cart_session->flash(@_) }
@@ -52,6 +50,8 @@ the following new ones.
 =head2 C<add_item>
 
     $c->service('cart')->add_item( \%item );
+
+Return entity cart object.
 
 =head2 C<clear>
 
