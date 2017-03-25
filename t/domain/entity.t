@@ -9,6 +9,7 @@ subtest 'basic' => sub {
 
     my $clone = $e->clone;
     isnt $e, $clone, 'right clone';
+    is_deeply $e->to_hash, $clone->to_hash, 'right clone data structure';
 };
 
 subtest 'Entity object base' => sub {
