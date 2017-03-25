@@ -4,6 +4,7 @@ use Mojo::Base 'Markets::Domain::Entity';
 has [qw/ cart_id items shipments /];
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
+has is_modified => 0;
 
 # has 'items';
 # has item_count       => sub { shift->items->flatten->size };
@@ -53,7 +54,8 @@ sub to_hash {
     $self->shipments->each( sub { push @shipments, $_->to_hash } );
     $hash->{shipments} = \@shipments;
 
-    delete $hash->{$_} for (qw/id cart_id/);
+    # Remove no need data
+    delete $hash->{$_} for (qw/id cart_id is_modified/);
     return $hash;
 }
 
