@@ -3,6 +3,14 @@ use Test::More;
 
 use_ok 'Markets::Domain::Entity';
 
+subtest 'basic' => sub {
+    my $e = Markets::Domain::Entity->new( id => 1, hoge => 1, fuga => 2 );
+    is_deeply $e->to_hash, { hoge => 1, fuga => 2 }, 'right to_hash';
+
+    my $clone = $e->clone;
+    isnt $e, $clone, 'right clone';
+};
+
 subtest 'Entity object base' => sub {
     my $e1   = Markets::Domain::Entity::Hoge->new( id => 1 );
     my $e1_1 = Markets::Domain::Entity::Hoge->new( id => 1 );
