@@ -40,6 +40,7 @@ sub process {
 sub init {
     my $self = shift;
     say "C::init()";
+    return $self;
 }
 
 sub action_before {
@@ -47,12 +48,14 @@ sub action_before {
     say "C::action_before()";
     $self->service('customer')->add_history;
     $self->app->plugins->emit_hook( before_action => $self );
+    return $self;
 }
 
 sub action_after {
     my $self = shift;
     say "C::action_after()";
     $self->app->plugins->emit_hook( after_action => $self );
+    return $self;
 }
 
 sub finalize {
@@ -62,6 +65,7 @@ sub finalize {
     return if $self->flash('_is_redirect');
     $self->server_session->flush;
     say "   ... session flush";    # debug
+    return $self;
 }
 
 # Override method
