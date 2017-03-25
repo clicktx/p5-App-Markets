@@ -37,6 +37,8 @@ sub add_item {
         }
     );
     push @{$items}, $item if !$match;
+
+    $self->is_modified(1);
     return $self;
 }
 
