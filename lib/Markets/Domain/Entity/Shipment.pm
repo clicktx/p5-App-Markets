@@ -22,7 +22,7 @@ sub to_hash {
     my $hash = $self->SUPER::to_hash;
 
     my @items;
-    $hash->{items}->each( sub { push @items, $_->clone->to_hash } );
+    $hash->{items}->each( sub { push @items, $_->to_hash } );
     $hash->{items} = \@items;
     return $hash;
 }

@@ -48,12 +48,12 @@ sub to_hash {
 
     # items
     my @items;
-    $self->items->each( sub { push @items, $_->clone->to_hash } );
+    $self->items->each( sub { push @items, $_->to_hash } );
     $hash->{items} = \@items;
 
     # shipments
     my @shipments;
-    $self->shipments->each( sub { push @shipments, $_->clone->to_hash } );
+    $self->shipments->each( sub { push @shipments, $_->to_hash } );
     $hash->{shipments} = \@shipments;
 
     # Remove no need data
