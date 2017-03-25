@@ -85,6 +85,32 @@ Markets::Domain::Entity::Cart
 L<Markets::Domain::Entity::Cart> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<cart_id>
+
+=head2 C<id>
+
+=head2 C<is_modified>
+
+    my $bool = $cart->is_modified;
+
+Return boolean value.
+
+=head2 C<items>
+
+    my $items = $cart->items;
+    $items->each( sub { ... } );
+
+Return L<Mojo::Collection> object.
+Elements is L<Markets::Domain::Entity::Item> object.
+
+=head2 C<shipments>
+
+    my $shipments = $cart->shipments;
+    $shipments->each( sub { ... } );
+
+Return L<Mojo::Collection> object.
+Elements is L<Markets::Domain::Entity::Shipment> object.
+
 =head1 METHODS
 
 =head2 C<add_item>
