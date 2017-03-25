@@ -55,11 +55,6 @@ done_testing();
             # is_deeply $items->first->to_hash, { product_id => 1, quantity => 1 }, 'right detail';
         };
 
-        subtest 'data' => sub {
-            is_deeply $c->service('cart')->cart_session_data,
-              { items => [ { product_id => 1, quantity => 1 } ], shipments => [] };
-        };
-
         # is $c->service('cart')->has_items, 1, 'right true';
 
         # for merge_cart test

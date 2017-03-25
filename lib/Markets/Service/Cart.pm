@@ -13,8 +13,6 @@ sub add_item {
 
 # sub clear { shift->controller->cart_session->flash(@_) }
 
-sub cart_session_data { shift->controller->cart_session->data(@_) }
-
 # sub has_items { shift->items->flatten->size ? 1 : 0 }
 # sub has_items {
 #     my $self = shift;
@@ -60,13 +58,6 @@ Return entity cart object.
 
     # Clear items data only
     $c->service('cart')->clear('items');
-
-=head2 C<cart_session_data>
-
-    my $data = $c->service('cart')->cart_session_data;
-    $c->service('cart')->cart_session_data( fizz => buzz );
-
-Alias for L<Markets::Session::CartSession/"data">.
 
 =head2 C<has_items>
 
