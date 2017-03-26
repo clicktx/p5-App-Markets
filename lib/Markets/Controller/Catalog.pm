@@ -18,6 +18,7 @@ sub init {
         }
     );
     $self->stash( 'markets.entity.cart' => $cart, 'markets.entity.shipments' => $cart->shipments );
+    return $self;
 }
 
 sub finalize {
