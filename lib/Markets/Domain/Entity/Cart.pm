@@ -1,5 +1,6 @@
 package Markets::Domain::Entity::Cart;
 use Mojo::Base 'Markets::Domain::Entity';
+use Mojo::Collection qw/c/;
 
 has [qw/ cart_id items shipments /];
 
@@ -37,6 +38,16 @@ sub add_item {
         }
     );
     push @{$items}, $item if !$match;
+
+    $self->is_modified(1);
+    return $self;
+}
+
+sub clear {
+    my $self = shift;
+
+    # Remove all data
+    $self->$_( c() ) for (qw/items shipments/);
 
     $self->is_modified(1);
     return $self;

@@ -3,10 +3,8 @@ use Test::More;
 use Test::Mojo;
 use t::Util;
 
-my $t   = Test::Mojo->new('App');
-my $app = $t->app;
-
-my $cart;
+my $t         = Test::Mojo->new('App');
+my $app       = $t->app;
 my $cart_data = {
     items => [
         { product_id => 1, quantity => 1 },
@@ -19,16 +17,23 @@ my $cart_data = {
     ],
 };
 
-$cart = $app->factory(
-    'entity-cart',
-    {
-        cart_id   => '12345',
-        cart_data => $cart_data,
-    }
-);
-isa_ok $cart, 'Markets::Domain::Entity::Cart';
+sub _factory_cart {
+    $app->factory(
+        'entity-cart',
+        {
+            cart_id   => '12345',
+            cart_data => $cart_data,
+        }
+    );
+}
+
+subtest 'basic' => sub {
+    my $cart = _factory_cart;
+    isa_ok $cart, 'Markets::Domain::Entity::Cart';
+};
 
 subtest 'attributes' => sub {
+    my $cart = _factory_cart;
     is $cart->cart_id,     '12345', 'right cart_id';
     is $cart->is_modified, 0,       'right is_modified';
 
@@ -40,6 +45,7 @@ subtest 'attributes' => sub {
 };
 
 subtest 'methods' => sub {
+    my $cart = _factory_cart;
     is_deeply $cart->to_hash, $cart_data, 'right data structure';
     is $cart->id, '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->total_item_count, 15, 'right total item count';
@@ -56,7 +62,16 @@ subtest 'methods' => sub {
 };
 
 subtest 'method add_item' => sub {
-    $cart->add_item( Markets::Domain::Entity::Item->new( id => 1 ) );
+    my $cart = _factory_cart;
+    $cart->add_item( Markets::Domain::Entity::Item->new );
+    is_deeply $cart->items->last->to_hash, {}, 'right item';
+    is $cart->is_modified, 1, 'right modified';
+};
+
+subtest 'method clear' => sub {
+    my $cart = _factory_cart;
+    $cart->clear;
+    is_deeply $cart->to_hash, { items => [], shipments => [] };
     is $cart->is_modified, 1, 'right modified';
 };
 
