@@ -11,7 +11,6 @@ sub register {
     # Alias helpers
     # $app->helper( schema         => sub { shift->app->schema } ); # controllerから呼ばない
     $app->helper( addons         => sub { shift->app->addons(@_) } );
-    $app->helper( cart           => sub { shift->stash('markets.entity.cart') } );
     $app->helper( cookie_session => sub { shift->session(@_) } );
     $app->helper( template       => sub { shift->stash( template => shift ) } );
 
@@ -99,12 +98,6 @@ Markets::DefaultHelpers - Default helpers plugin for Markets
     my $addons = $c->addons;
 
 Alias for $app->addons;
-
-=head2 C<cart>
-
-    my $cart = $c->cart;
-
-Alias for entity cart object.
 
 =head2 C<cookie_session>
 

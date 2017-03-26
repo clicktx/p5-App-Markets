@@ -1,6 +1,10 @@
 package Markets::Controller::Catalog;
 use Mojo::Base 'Markets::Controller';
 
+has cart => sub {
+    @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->stash('markets.entity.cart');
+};
+
 sub init {
     my $self = shift;
 
@@ -41,6 +45,13 @@ Markets::Controller::Catalog - Controller base class
 
 L<Markets::Controller::Catalog> inherits all attributes from L<Markets::Controller> and
 implements the following new ones.
+
+=head2 C<cart>
+
+    my $cart = $c->cart;
+    $c->cart($entity_cart);
+
+Get/Set entity cart object for stash `markets.entity.cart`
 
 =head1 METHODS
 
