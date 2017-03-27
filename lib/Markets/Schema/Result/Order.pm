@@ -17,6 +17,12 @@ column customer_id => {
     is_nullable => 1,
 };
 
+column billing_address => {
+    data_type => 'VARCHAR',
+    size      => 255,
+    is_nullable => 0,
+};
+
 column created_at => {
     data_type   => 'DATETIME',
     is_nullable => 0,
@@ -27,7 +33,7 @@ column created_at => {
 # belongs_to customer => 'Markets::Schema::Result::Customer', 'customer_id';
 
 has_many
-  items => 'Markets::Schema::Result::Order::Item',
+  shipments => 'Markets::Schema::Result::Order::Shipment',
   { 'foreign.order_id' => 'self.id' };
 
 1;

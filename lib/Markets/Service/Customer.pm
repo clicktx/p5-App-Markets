@@ -41,15 +41,17 @@ sub login {
     my ( $self, $customer_id ) = @_;
     return unless $customer_id;
 
-    my $session = $self->controller->server_session;
+    my $session   = $self->controller->server_session;
+    my $cart      = $self->controller->cart;
+    my $cart_data = $cart->to_hash;
 
     # Merge cart data
-    my $cart_data        = $session->cart_data;
-    my $stored_cart_data = $session->cart_data($customer_id);
-    my $merged_cart_data = $self->model('cart')->merge_cart( $cart_data, $stored_cart_data );
+    # my $cart_data        = $session->cart_data;
+    # my $stored_cart_data = $session->cart_data($customer_id);
+    # my $merged_cart_data = $self->model('cart')->merge_cart( $cart_data, $stored_cart_data );
 
     # Set cart data
-    $session->cart_session->data($merged_cart_data);
+    $session->cart_session->data($cart_data);
 
     # Set customer id
     $session->customer_id($customer_id);

@@ -1,6 +1,38 @@
 package Markets::Controller::Catalog;
 use Mojo::Base 'Markets::Controller';
 
+has cart => sub { _cart(@_) };
+
+sub init {
+    my $self = shift;
+
+    my $cart_id   = $self->cart_session->cart_id;
+    my $cart_data = $self->cart_session->data;
+    my $cart      = $self->factory(
+        'entity-cart',
+        {
+            cart_id   => $cart_id,
+            cart_data => $cart_data,
+        }
+    );
+    $self->stash( 'markets.entity.cart' => $cart, 'markets.entity.shipments' => $cart->shipments );
+    return $self;
+}
+
+sub finalize {
+    my $self = shift;
+
+    # cartが変更されていた場合はセッションカートのデータを変更
+    $self->cart_session->data( $self->cart->to_hash ) if $self->cart->is_modified;
+
+    $self->SUPER::finalize(@_);
+    return $self;
+}
+
+sub _cart {
+    @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->stash('markets.entity.cart');
+}
+
 1;
 __END__
 
@@ -16,6 +48,13 @@ Markets::Controller::Catalog - Controller base class
 
 L<Markets::Controller::Catalog> inherits all attributes from L<Markets::Controller> and
 implements the following new ones.
+
+=head2 C<cart>
+
+    my $cart = $c->cart;
+    $c->cart($entity_cart);
+
+Get/Set entity cart object for stash `markets.entity.cart`
 
 =head1 METHODS
 

@@ -5,19 +5,27 @@ sub add_item {
     my $self = shift;
 
     my $params = $self->controller->req->params->to_hash;
-    my $item   = $self->model('cart')->item($params);
+    delete $params->{csrf_token};
 
-    my $items = $self->items->flatten;
-    $items = $self->model('cart')->add_item( $item, $items );
-
-    return $self->data( items => [ $items->to_array ] );
+    my $item = $self->controller->factory( 'entity-item', $params );
+    return $self->controller->cart->add_item($item);
 }
 
-sub clear { shift->controller->cart_session->flash(@_) }
+# sub clear { shift->controller->cart_session->flash(@_) }
 
-sub data { shift->controller->cart_session->data(@_) }
+# sub has_items { shift->items->flatten->size ? 1 : 0 }
+# sub has_items {
+#     my $self = shift;
+#     my $cart = $self->controller->cart;
+#     $cart->items->size ? 1 : 0;
+# }
 
-sub items { $_[0]->model('cart')->items( $_[0]->data ) }
+# sub items { $_[0]->model('cart')->items( $_[0]->data ) }
+# sub items {
+#     my $self = shift;
+#     my $cart = $self->controller->cart;
+#     $cart->items;
+# }
 
 1;
 __END__
@@ -41,6 +49,8 @@ the following new ones.
 
     $c->service('cart')->add_item( \%item );
 
+Return entity cart object.
+
 =head2 C<clear>
 
     # All data clear
@@ -49,12 +59,11 @@ the following new ones.
     # Clear items data only
     $c->service('cart')->clear('items');
 
-=head2 C<data>
+=head2 C<has_items>
 
-    my $data = $c->service('cart')->data;
-    $c->service('cart')->data( fizz => buzz );
+    my $bool = $c->service('cart')->has_items;
 
-Alias for L<Markets::Session::CartSession/"data">.
+Return boolean value.
 
 =head2 C<items>
 

@@ -5,13 +5,20 @@
 
 <h2><%= __('Order ID') . ':' . $id %></h2>
 
-<ul>
-% while (my $item = $it->next) {
-    <li>
-        ID: <%= $item->id %> | DESCRIPTION: <%= $item->description %> | PRODUCT ID: <%= $item->product_id %> | QTY: <%= $item->quantity %>
+<ol>
+% foreach my $shipment ( @{$shipments} ){
+    <li> shipment id: <%= $shipment->id %>
+    % my $shipment_items = $shipment->items;
+        <ol>
+    % while (my $item = $shipment_items->next) {
+        <li>
+            ID: <%= $item->id %> | DESCRIPTION: <%= $item->description %> | PRODUCT ID: <%= $item->product_id %> | QTY: <%= $item->quantity %>
+        </li>
+    % }
+</ol>
     </li>
 % }
-</ul>
+</ol>
 
 <ul>
     <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>

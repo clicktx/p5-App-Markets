@@ -11,7 +11,7 @@ sub add_to_cart {
     die unless $self->service('cart')->add_item;
 
     use DDP;
-    p $self->service('cart')->data;    # debug
+    p $self->cart->to_hash;    # debug
 
     $self->flash( ref => $self->req->url->to_string );
     $self->redirect_to('RN_cart');

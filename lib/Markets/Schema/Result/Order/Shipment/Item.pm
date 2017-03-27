@@ -1,4 +1,4 @@
-package Markets::Schema::Result::Order::Item;
+package Markets::Schema::Result::Order::Shipment::Item;
 use Mojo::Base 'Markets::Schema::ResultCommon';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -7,7 +7,10 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-primary_column order_id => { data_type => 'INT', };
+column shipment_id => {
+    data_type   => 'INT',
+    is_nullable => 0,
+};
 
 column product_id => {
     data_type   => 'INT',
@@ -25,8 +28,10 @@ column quantity => {
     is_nullable => 0,
 };
 
-belongs_to
-  order => 'Markets::Schema::Result::Order',
-  { 'foreign.id' => 'self.order_id' };
+# belongs_to
+#   order => 'Markets::Schema::Result::Order::Shipment',
+#   { 'foreign.id' => 'self.shipment_id' };
+
+belongs_to order => 'Markets::Schema::Result::Order::Shipment', 'shipment_id';
 
 1;
