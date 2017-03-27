@@ -11,6 +11,15 @@ sub hash_code { @_ > 1 ? sha1_sum( $_[1] ) : sha1_sum( $_[0]->id ) }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
+sub to_array {
+    my $self = shift;
+    my $hash = $self->to_hash;
+
+    my @keys = sort keys %{$hash};
+    my @values = map { $hash->{$_} } @keys;
+    return [ \@keys, \@values ];
+}
+
 sub to_hash {
     my $hash = +{ %{ +shift } };
     delete $hash->{id};
@@ -63,11 +72,30 @@ Return SHA1 checksum. Default bytes is L<Markets::Domain::Entity/id>.
 
 Return boolean value.
 
+=head2 C<to_array>
+
+    my $array = $entity->to_array;
+
+    # eg.
+    my $e = Markets::Domain::Entity->new({ id => 11, b => 5, a => 3, z => 15 });
+    my $array = $e->to_array;
+
+    # Return value
+    print Dumper $array;
+    $VAR1 = [
+        [ 'a', 'b', 'z' ],
+        [ 3, 5, 15 ]
+    ];
+
+Return Array reference.
+Note: Key 'id' is remove.
+
 =head2 C<to_hash>
 
     my $data = $entity->to_hash;
 
 Return Hash reference.
+Note: Key 'id' is remove.
 
 =head1 AUTHOR
 
