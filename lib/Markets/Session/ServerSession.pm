@@ -5,11 +5,7 @@ use Markets::Session::CartSession;
 use Markets::Util qw/generate_token/;
 
 has cart_session => sub { Markets::Session::CartSession->new(shift) };
-
-sub cart_data {
-    my ( $self, $id ) = @_;
-    return $id ? $self->store->load_cart_data($id) : $self->cart_session->data;
-}
+has cart         => sub { shift->cart_session };
 
 sub cart_id {
     my ( $self, $id ) = @_;
@@ -96,6 +92,12 @@ Markets::Session::ServerSession - based MojoX::Session
 
 Returns new L<Markets::Session::CartSession> object.
 
+=head2 C<cart>
+
+    my $cart_session = $session->cart;
+
+Alias for L</cart_session>
+
 =head1 METHODS
 
 L<Markets::Session::ServerSession> inherits all methods from L<MojoX::Session> and implements
@@ -104,9 +106,9 @@ the following new ones.
 =head2 C<cart_data>
 
     my $cart_data = $session->cart_data;
-    my $cart_data = $session->cart_data($cart_id);
+    $session->cart_data(\%cart_data);
 
-Return cart data.
+Get/Set cart data.
 
 =head2 C<cart_id>
 
