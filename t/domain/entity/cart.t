@@ -82,10 +82,20 @@ subtest 'method clone' => sub {
     is_deeply $cart->to_hash, $clone->to_hash, 'right all data';
 
     # items
-    isnt $cart->items->[0], $clone->items->[0], 'right reference';
-    is_deeply $cart->items->[0]->to_hash, $clone->items->[0]->to_hash, 'right data';
+    isnt $cart->items->[0], $clone->items->[0], 'right cart reference';
+    is_deeply $cart->items->[0]->to_hash, $clone->items->[0]->to_hash, 'right cart data';
 
     # shipments
+    isnt $cart->shipments->[0], $clone->shipments->[0], 'right shipment reference';
+    is_deeply $cart->shipments->[0]->to_hash, $clone->shipments->[0]->to_hash,
+      'right shipment data';
+
+    isnt $cart->shipments->[0]->items->[0], $clone->shipments->[0]->items->[0],
+      'right shipment item reference';
+    is_deeply $cart->shipments->[0]->items->[0]->to_hash,
+      $clone->shipments->[0]->items->[0]->to_hash,
+      'right shipment item data';
+
 };
 done_testing();
 __END__
