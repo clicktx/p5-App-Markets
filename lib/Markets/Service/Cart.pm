@@ -11,22 +11,6 @@ sub add_item {
     return $self->controller->cart->add_item($item);
 }
 
-# sub clear { shift->controller->cart_session->flash(@_) }
-
-# sub has_items { shift->items->flatten->size ? 1 : 0 }
-# sub has_items {
-#     my $self = shift;
-#     my $cart = $self->controller->cart;
-#     $cart->items->size ? 1 : 0;
-# }
-
-# sub items { $_[0]->model('cart')->items( $_[0]->data ) }
-# sub items {
-#     my $self = shift;
-#     my $cart = $self->controller->cart;
-#     $cart->items;
-# }
-
 1;
 __END__
 
@@ -50,27 +34,6 @@ the following new ones.
     $c->service('cart')->add_item( \%item );
 
 Return entity cart object.
-
-=head2 C<clear>
-
-    # All data clear
-    $c->service('cart')->clear;
-
-    # Clear items data only
-    $c->service('cart')->clear('items');
-
-=head2 C<has_items>
-
-    my $bool = $c->service('cart')->has_items;
-
-Return boolean value.
-
-=head2 C<items>
-
-    my $items = $c->service('cart')->items;
-
-Get cart items.
-Return L<Mojo::Collection> object.
 
 =head1 AUTHOR
 
