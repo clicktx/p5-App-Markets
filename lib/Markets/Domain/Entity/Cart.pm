@@ -54,11 +54,10 @@ sub clear {
 }
 
 sub clone {
-    my $self = shift;
-
+    my $self  = shift;
     my $clone = $self->SUPER::clone;
-    $clone->items( $self->items->map( sub         { $_->clone } ) );
-    $clone->shipments( $self->shipments->map( sub { $_->clone } ) );
+    $clone->items( $self->items->map( sub         { $_->clone } ) ) if $self->items->can('map');
+    $clone->shipments( $self->shipments->map( sub { $_->clone } ) ) if $self->shipments->can('map');
     return $clone;
 }
 
