@@ -3,6 +3,7 @@ use Mojo::Base 'Markets::Controller::Catalog';
 
 sub index {
     my $self = shift;
+    $self->render();
 }
 
 sub add_to_cart {

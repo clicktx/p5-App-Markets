@@ -47,18 +47,22 @@ sub logout {
 
     my $session = $self->server_session;
     $self->model('account')->remove_session($session);
+    $self->render();
 }
 
 sub home {
     my $self = shift;
+    $self->render();
 }
 
 sub orders {
     my $self = shift;
+    $self->render();
 }
 
 sub wishlist {
     my $self = shift;
+    $self->render();
 }
 
 1;

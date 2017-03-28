@@ -25,6 +25,7 @@ sub index {
     ];
 
     $self->stash( it => $itr, orders => $orders );
+    $self->render();
 }
 
 sub detail {
@@ -36,6 +37,7 @@ sub detail {
     my @shipments = $rs->search( { order_id => $order_id } )->all;
 
     $self->stash( shipments => \@shipments );
+    $self->render();
 }
 
 1;

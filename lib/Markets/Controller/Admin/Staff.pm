@@ -59,6 +59,7 @@ sub logout {
 
 sub profile {
     my $self = shift;
+    $self->render();
 }
 
 1;
