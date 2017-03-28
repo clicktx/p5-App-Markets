@@ -101,7 +101,7 @@ sub install {
     my $class_name   = ref $self;
     my $schema_class = $class_name . "::Schema";
 
-    eval "require $schema_class";
+    eval { require $schema_class };
     if ( !$@ ) {
         my $schema       = $self->app->schema;
         my $connect_info = $schema->storage->connect_info;
