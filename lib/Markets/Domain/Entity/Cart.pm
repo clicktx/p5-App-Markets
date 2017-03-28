@@ -62,21 +62,21 @@ sub clone {
 }
 
 sub merge {
-    my ( $clone, $stored ) = ( shift->clone, shift->clone );
+    my ( $self, $stored ) = ( shift->clone, shift->clone );
 
     # items
     foreach my $item ( @{ $stored->items } ) {
-        $clone->items->each(
+        $self->items->each(
             sub {
                 my ( $e, $i ) = @_;
                 if ( $e->is_equal($item) ) {
                     $item->quantity( $e->quantity + $item->quantity );
-                    splice @{ $clone->items }, $i - 1, 1;
+                    splice @{ $self->items }, $i - 1, 1;
                 }
             }
         );
     }
-    push @{ $stored->items }, @{ $clone->items };
+    push @{ $stored->items }, @{ $self->items };
 
     # shipments
     # TODO: [WIP]
