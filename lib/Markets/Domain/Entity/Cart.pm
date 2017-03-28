@@ -81,6 +81,7 @@ sub merge {
     # shipments
     # TODO: [WIP]
 
+    $stored->is_modified(1);
     return $stored;
 }
 

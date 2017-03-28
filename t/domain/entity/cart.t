@@ -134,6 +134,7 @@ subtest 'method merge' => sub {
         ],
       },
       'right merge data';
+    is $merged_cart->is_modified, 1, 'right modified';
 };
 
 done_testing();
