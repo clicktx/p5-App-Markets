@@ -5,6 +5,10 @@ has [qw/ address items /];
 
 has id => sub { shift->hash_code };
 
+# sub clone {
+    # NOTE: items のclone処理が必要
+# }
+
 sub hash_code {
     my $self  = shift;
     my $bytes = $self->address;

@@ -53,6 +53,15 @@ sub clear {
     return $self;
 }
 
+sub clone {
+    my $self = shift;
+
+    my $clone = $self->SUPER::clone;
+    $clone->items( $self->items->map( sub         { $_->clone } ) );
+    $clone->shipments( $self->shipments->map( sub { $_->clone } ) );
+    return $clone;
+}
+
 sub to_hash {
     my $self = shift;
     my $hash = $self->SUPER::to_hash;

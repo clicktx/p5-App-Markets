@@ -75,67 +75,85 @@ subtest 'method clear' => sub {
     is $cart->is_modified, 1, 'right modified';
 };
 
-# method merge
-# my $stored_cart_data = {
-#     items => [
-#         { product_id => 1, quantity => 1 },
-#         { product_id => 4, quantity => 4 },
-#         { product_id => 5, quantity => 5 },
-#     ],
-#     shipments => [],
-# };
-# my $stored_cart = $app->factory(
-#     'entity-cart',
-#     {
-#         cart_id   => '99999',
-#         cart_data => $stored_cart_data,
-#     }
-# );
-#
-# my $new_cart = $cart->merge();
-#
-# # is $new_cart->id, '', '';
-#
-# is_deeply $new_cart->to_hash, {
-#     items => [
-#         { product_id => 4, quantity => 4 },
-#         { product_id => 5, quantity => 5 },
-#         { product_id => 2, quantity => 2 },
-#         { product_id => 3, quantity => 3 },
-#     ],
-#     shipments => [
-#         { address => 'Tokyo', items => [ { product_id => 4, quantity => 4 } ] },
-#         { address => 'Osaka', items => [ { product_id => 5, quantity => 5 } ] },
-#
-#     ],
-#   },
-#   'right merge data';
-#
-# is_deeply $new_cart->to_hash,
-#   {
-#     items => [
-#         { product_id => 1, quantity => 1 },
-#         { product_id => 4, quantity => 4 },
-#         { product_id => 5, quantity => 5 },
-#     ],
-#     shipments => [],
-#     asides    => {
-#         items => [
-#             { product_id => 1, quantity => 1 },
-#             { product_id => 2, quantity => 2 },
-#             { product_id => 3, quantity => 3 },
-#         ],
-#         shipments => [
-#             { address => 'Tokyo', items => [ { product_id => 4, quantity => 4 } ] },
-#             { address => 'Osaka', items => [ { product_id => 5, quantity => 5 } ] },
-#         ],
-#     },
-#   },
-#   'right merge data';
-#
-# use DDP;
-# say $cart;
-# say $new_cart;
-# p $new_cart->to_hash;
+subtest 'method clone' => sub {
+    my $cart  = _factory_cart;
+    my $clone = $cart->clone;
+
+    is_deeply $cart->to_hash, $clone->to_hash, 'right all data';
+
+    # items
+    isnt $cart->items->[0], $clone->items->[0], 'right reference';
+    is_deeply $cart->items->[0]->to_hash, $clone->items->[0]->to_hash, 'right data';
+
+    # shipments
+};
+done_testing();
+__END__
+subtest 'method merge' => sub {
+    my $cart        = _factory_cart;
+    my $stored_data = {
+        items => [
+            { product_id => 1, quantity => 1 },
+            { product_id => 4, quantity => 4 },
+            { product_id => 5, quantity => 5 },
+        ],
+        shipments => [],
+    };
+    my $stored_cart = $app->factory(
+        'entity-cart',
+        {
+            cart_id   => '99999',
+            cart_data => $stored_data,
+        }
+    );
+
+    my $merged_cart = $cart->clone->merge($stored_cart);
+
+    is $merged_cart->id, '8cb2237d0679ca88db6464eac60da96345513964', 'right id';
+
+    is_deeply $merged_cart->to_hash, {
+        items => [
+            { product_id => 1, quantity => 2 },
+            { product_id => 4, quantity => 4 },
+            { product_id => 5, quantity => 5 },
+            { product_id => 2, quantity => 2 },
+            { product_id => 3, quantity => 3 },
+        ],
+        shipments => [
+            { address => 'Tokyo', items => [ { product_id => 4, quantity => 4 } ] },
+            { address => 'Osaka', items => [ { product_id => 5, quantity => 5 } ] },
+
+        ],
+      },
+      'right merge data';
+
+    # use DDP;p $merged_cart->to_hash;
+    # is_deeply $merged_cart->to_hash,
+    #   {
+    #     items => [
+    #         { product_id => 1, quantity => 1 },
+    #         { product_id => 4, quantity => 4 },
+    #         { product_id => 5, quantity => 5 },
+    #     ],
+    #     shipments => [],
+    #     asides    => {
+    #         items => [
+    #             { product_id => 1, quantity => 1 },
+    #             { product_id => 2, quantity => 2 },
+    #             { product_id => 3, quantity => 3 },
+    #         ],
+    #         shipments => [
+    #             { address => 'Tokyo', items => [ { product_id => 4, quantity => 4 } ] },
+    #             { address => 'Osaka', items => [ { product_id => 5, quantity => 5 } ] },
+    #         ],
+    #     },
+    #   },
+    #   'right merge data';
+    #
+    # use DDP;
+    # say $cart;
+    # say $merged_cart;
+    # p $merged_cart->to_hash;
+};
 
 done_testing();
