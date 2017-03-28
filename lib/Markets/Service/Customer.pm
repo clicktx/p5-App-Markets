@@ -1,5 +1,6 @@
 package Markets::Service::Customer;
 use Mojo::Base 'Markets::Service';
+use Try::Tiny;
 
 # getアクセスのみ履歴として保存する
 sub add_history {
@@ -41,22 +42,24 @@ sub login {
     my ( $self, $customer_id ) = @_;
     return unless $customer_id;
 
-    my $session   = $self->controller->server_session;
-    my $cart      = $self->controller->cart;
-    my $cart_data = $cart->to_hash;
+    my $c       = $self->controller;
+    my $session = $c->server_session;
 
     # Merge cart data
-    # my $cart_data        = $session->cart_data;
-    # my $stored_cart_data = $session->cart_data($customer_id);
-    # my $merged_cart_data = $self->model('cart')->merge_cart( $cart_data, $stored_cart_data );
-
-    # Set cart data
-    $session->cart_session->data($cart_data);
+    my $stored_cart = $c->factory(
+        'entity-cart',
+        {
+            cart_id   => $customer_id,
+            cart_data => $session->store->load_cart_data($customer_id),
+        }
+    );
+    my $merged_cart = $c->cart->merge($stored_cart);
+    $c->cart($merged_cart);
 
     # Set customer id
     $session->customer_id($customer_id);
 
-    eval {
+    try {
         my $txn = $self->app->schema->txn_scope_guard;
 
         # Change cart_id
@@ -67,11 +70,8 @@ sub login {
         $session->regenerate_sid;
 
         $txn->commit;
-    };
-    if ( my $err = $@ ) {
-        warn $err;
-        $self->app->log->error($err);
     }
+    catch { $c->model('common')->dbic_txn_failed($_) };
 }
 
 1;
