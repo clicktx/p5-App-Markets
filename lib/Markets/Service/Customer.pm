@@ -108,10 +108,6 @@ the following new ones.
 
     $c->service('customer')->login($customer_id);
 
-=head2 C<logout>
-
-    $c->service('customer')->logout;
-
 =head1 AUTHOR
 
 Markets authors.
