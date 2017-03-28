@@ -38,7 +38,7 @@ Markets::Model::Common
         $schema->txn_do($cb);
     } catch {
         $c->model('common')->dbic_txn_failed($_);
-    }
+    };
     ...
 
 =head1 AUTHOR
