@@ -53,6 +53,38 @@ sub clear {
     return $self;
 }
 
+sub clone {
+    my $self  = shift;
+    my $clone = $self->SUPER::clone;
+    $clone->items( $self->items->map( sub         { $_->clone } ) ) if $self->items->can('map');
+    $clone->shipments( $self->shipments->map( sub { $_->clone } ) ) if $self->shipments->can('map');
+    return $clone;
+}
+
+sub merge {
+    my ( $self, $stored ) = ( shift->clone, shift->clone );
+
+    # items
+    foreach my $item ( @{ $stored->items } ) {
+        $self->items->each(
+            sub {
+                my ( $e, $i ) = @_;
+                if ( $e->is_equal($item) ) {
+                    $item->quantity( $e->quantity + $item->quantity );
+                    splice @{ $self->items }, $i - 1, 1;
+                }
+            }
+        );
+    }
+    push @{ $stored->items }, @{ $self->items };
+
+    # shipments
+    # TODO: [WIP]
+
+    $stored->is_modified(1);
+    return $stored;
+}
+
 sub to_hash {
     my $self = shift;
     my $hash = $self->SUPER::to_hash;
@@ -127,6 +159,12 @@ Elements is L<Markets::Domain::Entity::Shipment> object.
 =head2 C<add_item>
 
     $cart->add_item( $item_entity_object );
+
+Return Entity Cart Object.
+
+=head2 C<merge>
+
+    my $merged = $cart->merge($stored_cart);
 
 Return Entity Cart Object.
 

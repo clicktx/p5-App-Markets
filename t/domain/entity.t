@@ -12,6 +12,12 @@ subtest 'basic' => sub {
     is_deeply $e->to_hash, $clone->to_hash, 'right clone data structure';
 };
 
+subtest 'to_array method' => sub {
+    my $data = { id => 1, hoge => 1, fuga => 2 };
+    my $e = Markets::Domain::Entity->new($data);
+    is_deeply $e->to_array, [ [qw/fuga hoge/], [qw/2 1/] ], 'right to_array';
+};
+
 subtest 'Entity object base' => sub {
     my $e1   = Markets::Domain::Entity::Hoge->new( id => 1 );
     my $e1_1 = Markets::Domain::Entity::Hoge->new( id => 1 );

@@ -13,8 +13,9 @@ my $cart_id = $session->cart_id;
 my $cart    = $session->cart_session;
 
 subtest 'create session' => sub {
-    is ref $session, 'Markets::Session::ServerSession', 'right session object';
-    is ref $cart,    'Markets::Session::CartSession',   'right cart object';
+    isa_ok $session, 'Markets::Session::ServerSession', 'right session object';
+    isa_ok $cart,    'Markets::Session::CartSession',   'right cart object';
+    isa_ok $session->cart, 'Markets::Session::CartSession', 'right alias';
 
     ok $sid, 'created session';
     is_deeply $session->cart_session->data, {}, 'create new cart';
@@ -83,10 +84,8 @@ subtest 'get cart data' => sub {
     $session->flush;
     $session->load;
 
-    # from session
-    is_deeply $session->cart_data, $cart->data, 'right cart data from DB';
-    is_deeply $session->cart_data($cart_id), $cart->data, 'right cart data from DB';
-    is $session->cart_data('cart_id_hoge'), undef, 'right cart data not found cart';
+    is_deeply $session->store->load_cart_data($cart_id), $cart->data, 'right cart data from DB';
+    is $session->store->load_cart_data('cart_id_hoge'), undef, 'right cart data not found cart';
 };
 
 subtest 'change all cart data' => sub {

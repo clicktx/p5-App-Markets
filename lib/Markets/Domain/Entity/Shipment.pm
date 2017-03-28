@@ -5,6 +5,13 @@ has [qw/ address items /];
 
 has id => sub { shift->hash_code };
 
+sub clone {
+    my $self  = shift;
+    my $clone = $self->SUPER::clone;
+    $clone->items( $self->items->map( sub { $_->clone } ) ) if $self->items->can('map');
+    return $clone;
+}
+
 sub hash_code {
     my $self  = shift;
     my $bytes = $self->address;
