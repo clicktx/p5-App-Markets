@@ -5,7 +5,7 @@ use Mojo::Util qw/sha1_sum/;
 
 has id => sub { croak 'Attribute "id" not implemented by subclass' };
 
-sub clone { bless +{ %{ $_[0] } }, ref $_[0] }
+sub clone { $_[0]->new( +{ %{ $_[0] } } ) }
 
 sub hash_code { @_ > 1 ? sha1_sum( $_[1] ) : sha1_sum( $_[0]->id ) }
 
