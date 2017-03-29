@@ -24,4 +24,7 @@ subtest 'admin page' => sub {
     #   ->content_like(qr/こんにちはmy-addon/i);
 };
 
+my $rs = $app->schema->resultset('MyAddonTest');
+is $rs->count, 0, 'right using schema';
+
 done_testing();
