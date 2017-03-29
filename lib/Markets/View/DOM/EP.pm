@@ -1,7 +1,7 @@
-package Markets::View::DOM::EP;
+package Markets::View::DOM::EP; # based on Mojo::DOM::HTML
 use Mojo::Base -base;
 
-use Mojo::Util qw(html_unescape xml_escape);
+use Mojo::Util qw(html_attr_unescape html_unescape xml_escape);
 use Scalar::Util 'weaken';
 
 has tree => sub { ['root'] };
@@ -149,7 +149,7 @@ sub parse {
                     ++$closing and next if $key eq '/';
 
                     $attrs{$key} =
-                      defined $value ? html_unescape $value : $value;
+                      defined $value ? html_attr_unescape $value : $value;
                 }
 
                 # "image" is an alias for "img"
@@ -325,7 +325,7 @@ Markets::View::DOM::EP - HTML/XML/EP Tenmplate engine
 
 =head1 DESCRIPTION
 
-L<Markets::View::DOM::EP> is forked by L<Mojo::DOM::HTML> (Mojolicious v7.00)
+L<Markets::View::DOM::EP> is forked by L<Mojo::DOM::HTML> (Mojolicious v7.29)
 
 L<Markets::View::DOM::EP> is the HTML/XML engine used by L<Mojo::DOM>, based on the
 L<HTML Living Standard|https://html.spec.whatwg.org> and the

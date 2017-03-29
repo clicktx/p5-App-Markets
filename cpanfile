@@ -1,5 +1,5 @@
 requires 'perl',                                    '5.018';
-requires 'Mojolicious',                             '== 7.20';
+requires 'Mojolicious',                             '== 7.29';
 requires 'Scalar::Util',                            '1.47';
 requires 'Try::Tiny',                               '0.28';
 requires 'File::Find::Rule',                        '0.34';
