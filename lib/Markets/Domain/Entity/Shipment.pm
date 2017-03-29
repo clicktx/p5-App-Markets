@@ -1,9 +1,10 @@
 package Markets::Domain::Entity::Shipment;
 use Mojo::Base 'Markets::Domain::Entity';
 
-has [qw/ address items /];
+has [qw/items/];
 
 has id => sub { shift->hash_code };
+has address => '';
 
 sub clone {
     my $self  = shift;

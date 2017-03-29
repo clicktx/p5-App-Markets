@@ -2,10 +2,13 @@ package Markets::Domain::Entity::Cart;
 use Mojo::Base 'Markets::Domain::Entity';
 use Mojo::Collection qw/c/;
 
-has [qw/ cart_id items shipments /];
+has [qw/ items shipments /];
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
-has is_modified => 0;
+has cart_id => '';
+
+# has _is_modified => 0;
+# has is_modified => 0;
 
 # has 'items';
 # has item_count       => sub { shift->items->flatten->size };
