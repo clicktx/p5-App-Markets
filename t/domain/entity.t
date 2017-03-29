@@ -1,11 +1,15 @@
 use Mojo::Base -strict;
 use Test::More;
+use Mojo::Util qw/sha1_sum/;
 
 use_ok 'Markets::Domain::Entity';
 
 subtest 'basic' => sub {
     my $e = Markets::Domain::Entity->new( id => 1, hoge => 1, fuga => 2 );
     is_deeply $e->to_hash, { hoge => 1, fuga => 2 }, 'right to_hash';
+
+    is $e->hash_code, sha1_sum(1), 'right hash code';
+    is $e->hash_code(2), sha1_sum(2), 'right hash code';
 
     my $clone = $e->clone;
     isnt $e, $clone, 'right clone';
