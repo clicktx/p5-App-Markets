@@ -25,13 +25,15 @@ column summary => {
 column position => {
     data_type     => 'INT',
     default_value => 0,
-    is_nullable   => 0,
+    # is_nullable   => 0,
+    is_nullable   => 1,
 };
 
 column group_id => {
     data_type     => 'INT',
     default_value => 0,
-    is_nullable   => 0,
+    # is_nullable   => 0,
+    is_nullable   => 1,
 };
 
 1;
