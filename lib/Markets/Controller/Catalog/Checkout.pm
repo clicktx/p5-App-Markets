@@ -6,6 +6,11 @@ sub index {
     $self->render();
 }
 
+sub shipping {
+    my $self = shift;
+    $self->render();
+}
+
 sub complete {
     my $self = shift;
 
