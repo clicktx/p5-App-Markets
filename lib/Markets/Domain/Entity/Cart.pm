@@ -7,9 +7,6 @@ has [qw/ items shipments /];
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 has cart_id => '';
 
-# has _is_modified => 0;
-# has is_modified => 0;
-
 # has 'items';
 # has item_count       => sub { shift->items->flatten->size };
 # has original_total_price => 0;
@@ -103,7 +100,7 @@ sub to_hash {
     $hash->{shipments} = \@shipments;
 
     # Remove no need data
-    delete $hash->{$_} for (qw/id cart_id is_modified/);
+    delete $hash->{$_} for (qw/id cart_id _is_modified/);
     return $hash;
 }
 
