@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use B;
 use Carp 'croak';
 use Mojo::Util qw/camelize decamelize/;
+use Mojo::Loader qw/load_class/;
 use constant {
     FORMAT  => 'html',
     HANDLER => 'ep',
@@ -101,14 +102,15 @@ sub install {
     my $class_name   = ref $self;
     my $schema_class = $class_name . "::Schema";
 
-    eval "require $schema_class";
-    if ( !$@ ) {
+    if ( my $e = load_class $schema_class ) {
+        die "Exception: $e" if ref $e;
+    }
+    else {
         my $schema       = $self->app->schema;
         my $connect_info = $schema->storage->connect_info;
         my $self_schema  = $schema_class->connect( $connect_info->[0] );
         $self_schema->deploy;
     }
-
     return $self;
 }
 
