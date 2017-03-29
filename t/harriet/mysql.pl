@@ -30,7 +30,7 @@ $ENV{TEST_MYSQL} ||= do {
 
     # create db
     my $socket = $mysqld->my_cnf->{socket};
-    system "mysqladmin -uroot -S $socket create markets";
+    system "mysqladmin -uroot -S $socket create t_markets_db";
 
     # create table
     my $schema = Markets::Schema->connect($dsn);
