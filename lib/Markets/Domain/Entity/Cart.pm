@@ -61,6 +61,25 @@ sub clone {
     return $clone;
 }
 
+# NOTE: アクセス毎に呼ばれる。Controller::Catalog::finalize
+#       items,shipments,shipments->itemsの全てを検査する必要があるか？
+#       速度に問題はないか？
+sub is_modified {
+
+    # @_ > 1 ? $_[0]->_is_modified( $_[1] ) : $_[0]->_is_modified
+    my $self = shift;
+
+    # Setter
+    return $self->_is_modified(1) if @_;
+
+    # Getter
+    return 1 if $self->_is_modified;
+
+    my $is_modified = 0;
+    $self->$_->each( sub { $is_modified = 1 if $_->is_modified } ) for (qw/items shipments/);
+    return $is_modified;
+}
+
 sub merge {
     my ( $self, $stored ) = ( shift->clone, shift->clone );
 
@@ -132,12 +151,6 @@ the following new ones.
 
 =head2 C<id>
 
-=head2 C<is_modified>
-
-    my $bool = $cart->is_modified;
-
-Return boolean value.
-
 =head2 C<items>
 
     my $items = $cart->items;
@@ -161,6 +174,12 @@ Elements is L<Markets::Domain::Entity::Shipment> object.
     $cart->add_item( $item_entity_object );
 
 Return Entity Cart Object.
+
+=head2 C<is_modified>
+
+    my $bool = $cart->is_modified;
+
+Return boolean value.
 
 =head2 C<merge>
 

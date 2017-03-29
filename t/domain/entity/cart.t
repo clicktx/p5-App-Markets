@@ -35,7 +35,6 @@ subtest 'basic' => sub {
 subtest 'attributes' => sub {
     my $cart = _factory_cart;
     is $cart->cart_id,     '12345', 'right cart_id';
-    is $cart->is_modified, 0,       'right is_modified';
 
     isa_ok $cart->items, 'Mojo::Collection', 'right items';
     isa_ok $cart->items->first, 'Markets::Domain::Entity::Item', 'right items';
@@ -59,6 +58,22 @@ subtest 'methods' => sub {
     );
     is $cart->is_equal($cart),  1, 'right equal entity';
     is $cart->is_equal($cart2), 0, 'right not equal entity';
+};
+
+subtest 'method is_modified' => sub {
+    my $cart = _factory_cart;
+    is $cart->is_modified, 0, 'right not modified';
+    $cart->items->first->is_modified(1);
+    is $cart->is_modified, 1, 'right modified';
+
+    $cart = _factory_cart;
+    is $cart->is_modified, 0, 'right not modified';
+    $cart->shipments->first->is_modified(1);
+    is $cart->is_modified, 1, 'right modified';
+
+    # $cart = _factory_cart;
+    # $cart->shipments->first->items->first->is_modified(1);
+    # is $cart->is_modified, 1, 'right modified';
 };
 
 subtest 'method add_item' => sub {
