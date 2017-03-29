@@ -25,6 +25,7 @@ requires 'WWW::Form::UrlEncoded::XS', '0.24';
 requires 'Cookie::Baker::XS',         '0.07';
 requires 'JSON::XS',                  '3.02';
 requires 'Cpanel::JSON::XS',          '3.0227';
+requires 'Class::C3::XS',             '0.14';
 
 # requires 'YAML::XS';
 

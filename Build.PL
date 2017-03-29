@@ -22,6 +22,7 @@ my %args = (
     },
 
     requires => {
+        'Class::C3::XS' => '0.14',
         'Cookie::Baker::XS' => '0.07',
         'Cpanel::JSON::XS' => '3.0227',
         'DBD::mysql' => '4.033',
