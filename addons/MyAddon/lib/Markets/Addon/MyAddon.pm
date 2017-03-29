@@ -13,14 +13,12 @@ sub register {
         action_replace_template => \&say_yes,
         { default_priority => 500 }    # option
     );
-    $self->add_action_hook( action_replace_template => \&myaddon_replace_templates,
-    );
-    $self->add_filter_hook( filter_form => sub { say "hook! MyAddon filter_form!" }
-    );
+    $self->add_action_hook( action_replace_template => \&myaddon_replace_templates, );
+    $self->add_filter_hook( filter_form => sub { say "hook! MyAddon filter_form!" } );
 
- # remove action hook example
- # $self->rm_action_hook('action_replace_template', 'say_yes');
- # $self->rm_action_hook('action_replace_template', 'myaddon_replace_templates');
+    # remove action hook example
+    # $self->rm_action_hook('action_replace_template', 'say_yes');
+    # $self->rm_action_hook('action_replace_template', 'myaddon_replace_templates');
 }
 
 sub say_yes {
@@ -33,7 +31,9 @@ sub say_yes {
 
         # use DB example
         my $rs = $c->app->schema->resultset('MyAddonTest');
-        use DDP; p $rs;
+        use DDP;
+        p $rs;
+
         # $rs->search({});
 
         # templateの書き換えを反映
@@ -67,6 +67,7 @@ sub myaddon_replace_templates {
     }
     else {
         say "all templates rewiright!";
+
         # どのパスでも適用させる
         my $dom = $c->helpers->dom->parse( ${$template_source} );
         my $div = $dom->at('h2');
@@ -76,7 +77,11 @@ sub myaddon_replace_templates {
     }
 }
 
-# sub install   { }
+sub install {
+    my $self = shift;
+    $self->next::method();
+}
+
 # sub uninstall { }
 # sub update    { }
 

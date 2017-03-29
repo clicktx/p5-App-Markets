@@ -1,6 +1,7 @@
 package Markets::Addon;
 use Mojo::Base 'Mojolicious::Plugin';
 
+use Class::C3;
 use B;
 use Carp 'croak';
 use Mojo::Util qw/camelize decamelize/;
