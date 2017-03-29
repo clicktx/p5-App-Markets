@@ -35,7 +35,7 @@ my %args = (
         'HTTP::Parser::XS' => '0.17',
         'JSON::XS' => '3.02',
         'MojoX::Session' => '0.33',
-        'Mojolicious' => '== 7.20',
+        'Mojolicious' => '== 7.29',
         'Mojolicious::Plugin::FormFields' => '0.05',
         'Mojolicious::Plugin::LocaleTextDomainOO' => '0.04',
         'Mojolicious::Plugin::Model' => '0.07',
