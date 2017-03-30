@@ -4,7 +4,7 @@ use Mojo::Base 'Markets::Domain::Entity';
 has [qw/items/];
 
 has id => sub { shift->hash_code };
-has address => '';
+has shipping_address => '';
 
 sub clone {
     my $self  = shift;
@@ -13,9 +13,10 @@ sub clone {
     return $clone;
 }
 
+# NOTE: [WIP] 特定する条件を決める
 sub hash_code {
     my $self  = shift;
-    my $bytes = $self->address;
+    my $bytes = $self->shipping_address;
     $self->SUPER::hash_code($bytes);
 }
 
