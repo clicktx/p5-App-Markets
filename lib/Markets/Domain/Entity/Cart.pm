@@ -56,8 +56,9 @@ sub clear {
 sub clone {
     my $self  = shift;
     my $clone = $self->SUPER::clone;
-    $clone->items( $self->items->map( sub         { $_->clone } ) ) if $self->items->can('map');
-    $clone->shipments( $self->shipments->map( sub { $_->clone } ) ) if $self->shipments->can('map');
+    foreach my $attr (qw/items shipments/) {
+        $clone->$attr( $self->$attr->map( sub { $_->clone } ) ) if $self->$attr->can('map');
+    }
     return $clone;
 }
 
@@ -108,15 +109,11 @@ sub to_hash {
     my $self = shift;
     my $hash = $self->SUPER::to_hash;
 
-    # items
-    my @items;
-    $self->items->each( sub { push @items, $_->to_hash } );
-    $hash->{items} = \@items;
-
-    # shipments
-    my @shipments;
-    $self->shipments->each( sub { push @shipments, $_->to_hash } );
-    $hash->{shipments} = \@shipments;
+    foreach my $attr (qw/items shipments/) {
+        my @array;
+        $self->$attr->each( sub { push @array, $_->to_hash } );
+        $hash->{$attr} = \@array;
+    }
 
     # Remove no need data
     delete $hash->{$_} for (qw/id cart_id _is_modified/);
