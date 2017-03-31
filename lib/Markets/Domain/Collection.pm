@@ -14,7 +14,7 @@ sub find {
 
 sub new {
     my $class = shift;
-    if (@_) { croak 'Arguments not Entity Object.' if ( ref $_[0] ) !~ /Entity/ }
+    if (@_) { croak 'Arguments not Entity Object' if ( ref $_[0] ) !~ /Entity/ }
     return bless [@_], ref $class || $class;
 }
 
