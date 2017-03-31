@@ -83,6 +83,10 @@ subtest 'method add_item' => sub {
     my $cart = _factory_cart;
     $cart->add_item( Markets::Domain::Entity::Item->new( product_id => 11 ) );
     is_deeply $cart->items->last->to_hash, { product_id => 11 }, 'right item';
+
+    $cart->add_item( Markets::Domain::Entity::Item->new( product_id => 1, quantity => 1 ) );
+    is_deeply $cart->items->first->to_hash, { product_id => 1, quantity => 2 }, 'right item';
+
     is $cart->is_modified, 1, 'right modified';
 };
 

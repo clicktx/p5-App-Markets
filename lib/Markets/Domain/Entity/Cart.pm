@@ -26,19 +26,7 @@ use DDP;
 sub add_item {
     my ( $self, $item ) = @_;
 
-    my $items = $self->items;
-    my $match;
-    $items->each(
-        sub {
-            my ( $element, $i ) = @_;
-            if ( $element->is_equal($item) ) {
-                my $qty = $element->quantity + $item->quantity;
-                $element->quantity($qty);
-                $match = $i;
-            }
-        }
-    );
-    push @{$items}, $item if !$match;
+    _add_item( $self->items, $item );
 
     $self->is_modified(1);
     return $self;
@@ -48,7 +36,7 @@ sub add_shipping_item {
     my ( $self, $item, $shipment ) = @_;
     $shipment = $self->shipments->first unless $shipment;
 
-    _add_item($shipment->shipping_items, $item);
+    _add_item( $shipment->shipping_items, $item );
 
     $self->is_modified(1);
     return $self;
@@ -56,7 +44,7 @@ sub add_shipping_item {
 
 sub _add_item {
     my $collection = shift;
-    my $item = shift;
+    my $item       = shift;
 
     my $exsist_item = $collection->find( $item->id );
     if ($exsist_item) {
