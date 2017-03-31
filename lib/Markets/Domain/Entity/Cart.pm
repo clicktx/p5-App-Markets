@@ -1,6 +1,6 @@
 package Markets::Domain::Entity::Cart;
 use Mojo::Base 'Markets::Domain::Entity';
-use Mojo::Collection qw/c/;
+use Markets::Domain::Collection qw/c/;
 
 has [qw/ items shipments /];
 
@@ -170,7 +170,7 @@ the following new ones.
     my $items = $cart->items;
     $items->each( sub { ... } );
 
-Return L<Mojo::Collection> object.
+Return L<Markets::Domain::Collection> object.
 Elements is L<Markets::Domain::Entity::Item> object.
 
 =head2 C<shipments>
@@ -178,7 +178,7 @@ Elements is L<Markets::Domain::Entity::Item> object.
     my $shipments = $cart->shipments;
     $shipments->each( sub { ... } );
 
-Return L<Mojo::Collection> object.
+Return L<Markets::Domain::Collection> object.
 Elements is L<Markets::Domain::Entity::Shipment> object.
 
 =head1 METHODS
