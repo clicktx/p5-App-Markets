@@ -12,8 +12,8 @@ my $cart_data = {
         { product_id => 3, quantity => 3 },
     ],
     shipments => [
-        { address => 'Tokyo', items => [ { product_id => 4, quantity => 4 } ] },
-        { address => 'Osaka', items => [ { product_id => 5, quantity => 5 } ] },
+        { shipping_address => 'Tokyo', shipping_items => [ { product_id => 4, quantity => 4 } ] },
+        { shipping_address => 'Osaka', shipping_items => [ { product_id => 5, quantity => 5 } ] },
     ],
 };
 
@@ -34,7 +34,7 @@ subtest 'basic' => sub {
 
 subtest 'attributes' => sub {
     my $cart = _factory_cart;
-    is $cart->cart_id,     '12345', 'right cart_id';
+    is $cart->cart_id, '12345', 'right cart_id';
 
     isa_ok $cart->items, 'Mojo::Collection', 'right items';
     isa_ok $cart->items->first, 'Markets::Domain::Entity::Item', 'right items';
@@ -105,12 +105,11 @@ subtest 'method clone' => sub {
     is_deeply $cart->shipments->[0]->to_hash, $clone->shipments->[0]->to_hash,
       'right shipment data';
 
-    isnt $cart->shipments->[0]->items->[0], $clone->shipments->[0]->items->[0],
+    isnt $cart->shipments->[0]->shipping_items->[0], $clone->shipments->[0]->shipping_items->[0],
       'right shipment item reference';
-    is_deeply $cart->shipments->[0]->items->[0]->to_hash,
-      $clone->shipments->[0]->items->[0]->to_hash,
+    is_deeply $cart->shipments->[0]->shipping_items->[0]->to_hash,
+      $clone->shipments->[0]->shipping_items->[0]->to_hash,
       'right shipment item data';
-
 };
 
 subtest 'method merge' => sub {

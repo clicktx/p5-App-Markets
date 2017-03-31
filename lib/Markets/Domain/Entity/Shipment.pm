@@ -1,7 +1,7 @@
 package Markets::Domain::Entity::Shipment;
 use Mojo::Base 'Markets::Domain::Entity';
 
-has [qw/items/];
+has [qw/shipping_items/];
 
 has id => sub { shift->hash_code };
 has shipping_address => '';
@@ -9,7 +9,7 @@ has shipping_address => '';
 sub clone {
     my $self  = shift;
     my $clone = $self->SUPER::clone;
-    $clone->items( $self->items->map( sub { $_->clone } ) ) if $self->items->can('map');
+    $clone->shipping_items( $self->shipping_items->map( sub { $_->clone } ) ) if $self->shipping_items->can('map');
     return $clone;
 }
 
@@ -22,7 +22,7 @@ sub hash_code {
 
 sub item_count {
     my $cnt = 0;
-    shift->items->each( sub { $cnt += $_->quantity } );
+    shift->shipping_items->each( sub { $cnt += $_->quantity } );
     return $cnt;
 }
 
@@ -30,9 +30,9 @@ sub to_hash {
     my $self = shift;
     my $hash = $self->SUPER::to_hash;
 
-    my @items;
-    $hash->{items}->each( sub { push @items, $_->to_hash } );
-    $hash->{items} = \@items;
+    my @shipping_items;
+    $hash->{shipping_items}->each( sub { push @shipping_items, $_->to_hash } );
+    $hash->{shipping_items} = \@shipping_items;
     return $hash;
 }
 

@@ -6,13 +6,13 @@ sub construct {
     my $self = shift;
 
     my $params = $self->params;
-    my $data = $params->{items} || [];
+    my $data = $params->{shipping_items} || [];
 
-    my @items;
+    my @shipping_items;
     foreach my $item ( @{$data} ) {
-        push @items, $self->app->factory( 'entity-item', $item );
+        push @shipping_items, $self->app->factory( 'entity-item', $item );
     }
-    $params->{items} = c(@items);
+    $params->{shipping_items} = c(@shipping_items);
 
     return $self->construct_class->new($params);
 }

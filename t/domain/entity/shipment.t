@@ -10,7 +10,7 @@ my $shipment = Markets::Domain::Entity::Shipment->new(
 );
 
 isa_ok $shipment, 'Markets::Domain::Entity::Shipment';
-can_ok $shipment, 'items';
+can_ok $shipment, 'shipping_items';
 can_ok $shipment, 'shipping_address';
 can_ok $shipment, 'item_count';
 
