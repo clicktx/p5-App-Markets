@@ -1,6 +1,7 @@
 package Markets::Domain::Entity::Cart;
 use Mojo::Base 'Markets::Domain::Entity';
 use Markets::Domain::Collection qw/c/;
+use Carp qw/croak/;
 
 has [qw/ items shipments /];
 
@@ -106,9 +107,11 @@ sub merge {
 }
 
 sub remove_item {
-    my ( $self, $item ) = @_;
+    my ( $self, $item_id ) = @_;
+    croak 'Not a Scalar argument' if ref \$item_id ne 'SCALAR';
+
     my $removed;
-    my $array = $self->items->grep( sub { $_->is_equal($item) ? ( $removed = $_ and 0 ) : 1 } );
+    my $array = $self->items->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
     $self->items($array);
     $self->is_modified(1) if $removed;
     return $removed;

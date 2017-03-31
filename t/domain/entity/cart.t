@@ -48,7 +48,7 @@ subtest 'methods' => sub {
     is_deeply $cart->to_hash, $cart_data, 'right data structure';
     is $cart->id, '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->total_item_count, 15, 'right total item count';
-    is $cart->total_quantity, 15, 'right total item count';
+    is $cart->total_quantity,   15, 'right total item count';
 
     my $cart2 = $app->factory(
         'entity-cart',
@@ -114,9 +114,11 @@ subtest 'method clone' => sub {
 };
 
 subtest 'method remove_item' => sub {
-    my $cart         = _factory_cart;
-    my $item         = Markets::Domain::Entity::Item->new( product_id => 2, quantity => 1 );
-    my $removed_item = $cart->remove_item($item);
+    my $cart = _factory_cart;
+    my $item = Markets::Domain::Entity::Item->new( product_id => 2, quantity => 1 );
+
+    my $id           = $item->id;
+    my $removed_item = $cart->remove_item($id);
     is_deeply $cart->to_hash->{items},
       [ { product_id => 1, quantity => 1 }, { product_id => 3, quantity => 3 }, ],
       'right remove item';
@@ -126,7 +128,8 @@ subtest 'method remove_item' => sub {
     # Unremove. not found item.
     $cart         = _factory_cart;
     $item         = Markets::Domain::Entity::Item->new( product_id => 123, quantity => 1 );
-    $removed_item = $cart->remove_item($item);
+    $id           = $item->id;
+    $removed_item = $cart->remove_item($id);
     is_deeply $cart->to_hash->{items},
       [
         { product_id => 1, quantity => 1 },
