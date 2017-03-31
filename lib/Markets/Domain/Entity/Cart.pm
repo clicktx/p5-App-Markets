@@ -44,6 +44,30 @@ sub add_item {
     return $self;
 }
 
+sub add_shipping_item {
+    my ( $self, $item, $shipment ) = @_;
+    $shipment = $self->shipments->first unless $shipment;
+
+    _add_item($shipment->shipping_items, $item);
+
+    $self->is_modified(1);
+    return $self;
+}
+
+sub _add_item {
+    my $collection = shift;
+    my $item = shift;
+
+    my $exsist_item = $collection->find( $item->id );
+    if ($exsist_item) {
+        my $qty = $exsist_item->quantity + $item->quantity;
+        $exsist_item->quantity($qty);
+    }
+    else {
+        push @{$collection}, $item;
+    }
+}
+
 sub clear {
     my $self = shift;
 
@@ -190,7 +214,17 @@ Elements is L<Markets::Domain::Entity::Shipment> object.
 
     $cart->add_item( $item_entity_object );
 
-Return Entity Cart Object.
+Return L<Markets::Domain::Entity::Cart> Object.
+
+=head2 C<add_shipping_item>
+
+    $cart->add_shipping_item( $item_entity_object );
+    $cart->add_shipping_item( $item_entity_object, $shipment_object );
+
+Return L<Markets::Domain::Entity::Cart> Object.
+
+C<$shipment_object> is option argument.
+default $shipments->first
 
 =head2 C<is_modified>
 

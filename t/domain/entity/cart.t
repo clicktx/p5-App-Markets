@@ -27,6 +27,8 @@ sub _factory_cart {
     );
 }
 
+use_ok 'Markets::Domain::Entity::Item';
+
 subtest 'basic' => sub {
     my $cart = _factory_cart;
     isa_ok $cart, 'Markets::Domain::Entity::Cart';
@@ -81,6 +83,20 @@ subtest 'method add_item' => sub {
     my $cart = _factory_cart;
     $cart->add_item( Markets::Domain::Entity::Item->new( product_id => 11 ) );
     is_deeply $cart->items->last->to_hash, { product_id => 11 }, 'right item';
+    is $cart->is_modified, 1, 'right modified';
+};
+
+subtest 'method add_shipping_item' => sub {
+    my $cart = _factory_cart;
+    $cart->add_shipping_item( Markets::Domain::Entity::Item->new( product_id => 11 ) );
+    is_deeply $cart->shipments->first->shipping_items->last->to_hash, { product_id => 11 },
+      'right shipping_item';
+
+    $cart->add_shipping_item(
+        Markets::Domain::Entity::Item->new( product_id => 4, quantity => 4 ) );
+    is_deeply $cart->shipments->first->shipping_items->first->to_hash,
+      { product_id => 4, quantity => 8 }, 'right sum quantity';
+
     is $cart->is_modified, 1, 'right modified';
 };
 
