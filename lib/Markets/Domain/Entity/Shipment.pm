@@ -9,7 +9,8 @@ has shipping_address => '';
 sub clone {
     my $self  = shift;
     my $clone = $self->SUPER::clone;
-    $clone->shipping_items( $self->shipping_items->map( sub { $_->clone } ) ) if $self->shipping_items->can('map');
+    $clone->shipping_items( $self->shipping_items->map( sub { $_->clone } ) )
+      if $self->shipping_items->can('map');
     return $clone;
 }
 
@@ -20,7 +21,7 @@ sub hash_code {
     $self->SUPER::hash_code($bytes);
 }
 
-sub item_count {
+sub item_count { # アイテム数のべき？
     my $cnt = 0;
     shift->shipping_items->each( sub { $cnt += $_->quantity } );
     return $cnt;
@@ -35,6 +36,8 @@ sub to_hash {
     $hash->{shipping_items} = \@shipping_items;
     return $hash;
 }
+
+sub total_quantity { shift->shipping_items->reduce( sub { $a + $b->quantity }, 0 ) }
 
 1;
 __END__

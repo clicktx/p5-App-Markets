@@ -48,6 +48,7 @@ subtest 'methods' => sub {
     is_deeply $cart->to_hash, $cart_data, 'right data structure';
     is $cart->id, '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->total_item_count, 15, 'right total item count';
+    is $cart->total_quantity, 15, 'right total item count';
 
     my $cart2 = $app->factory(
         'entity-cart',

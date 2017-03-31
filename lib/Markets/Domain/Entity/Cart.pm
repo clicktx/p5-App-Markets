@@ -120,12 +120,20 @@ sub to_hash {
     return $hash;
 }
 
-sub total_item_count {
+sub total_item_count {    # items数のべき？
     my $self = shift;
     my $cnt  = 0;
     $self->items->each( sub     { $cnt += $_->quantity } );
     $self->shipments->each( sub { $cnt += $_->item_count } );
     return $cnt;
+}
+
+sub total_quantity {
+    my $self = shift;
+    my $qty  = 0;
+    $self->items->each( sub     { $qty += $_->quantity } );
+    $self->shipments->each( sub { $qty += $_->total_quantity } );
+    return $qty;
 }
 
 1;
@@ -181,6 +189,12 @@ Return boolean value.
 =head2 C<merge>
 
     my $merged = $cart->merge($stored_cart);
+
+Return Entity Cart Object.
+
+=head2 C<move_item_to_shipment>
+
+    $cart->move_item_to_shipment($item, $shipment);
 
 Return Entity Cart Object.
 
