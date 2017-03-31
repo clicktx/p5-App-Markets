@@ -1,9 +1,18 @@
 package Markets::Domain::Collection;
 use Mojo::Base 'Mojo::Collection';
+use Carp qw/croak/;
 
-sub find   { }
+# NOTE: 同じcollectionに同一のidを持つ要素は存在しないはずなのでsearchメソッドは不要？
+sub find {
+    my ( $self, $str ) = @_;
+    $self->first( sub { $_->id eq $str } ) or undef;
+}
 
-sub search { }
+sub new {
+    my $class = shift;
+    if (@_) { croak 'Arguments not Entity Object.' if ( ref $_[0] ) !~ /Entity/ }
+    return bless [@_], ref $class || $class;
+}
 
 1;
 __END__
@@ -22,6 +31,12 @@ L<Markets::Domain::Collection> inherits all attributes from L<Mojo::Collection> 
 the following new ones.
 
 =head1 METHODS
+
+=head2 C<find>
+
+    my $entity = $collection->find($entity_id);
+
+Return L<Markets::Domain::Entity> object or undef.
 
 =head1 AUTHOR
 
