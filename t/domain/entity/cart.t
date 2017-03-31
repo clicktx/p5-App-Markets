@@ -113,6 +113,31 @@ subtest 'method clone' => sub {
       'right shipment item data';
 };
 
+subtest 'method remove_item' => sub {
+    my $cart         = _factory_cart;
+    my $item         = Markets::Domain::Entity::Item->new( product_id => 2, quantity => 1 );
+    my $removed_item = $cart->remove_item($item);
+    is_deeply $cart->to_hash->{items},
+      [ { product_id => 1, quantity => 1 }, { product_id => 3, quantity => 3 }, ],
+      'right remove item';
+    is $removed_item->is_equal($item), 1, 'right return value';
+    is $cart->is_modified, 1, 'right modified';
+
+    # Unremove. not found item.
+    $cart         = _factory_cart;
+    $item         = Markets::Domain::Entity::Item->new( product_id => 123, quantity => 1 );
+    $removed_item = $cart->remove_item($item);
+    is_deeply $cart->to_hash->{items},
+      [
+        { product_id => 1, quantity => 1 },
+        { product_id => 2, quantity => 2 },
+        { product_id => 3, quantity => 3 },
+      ],
+      'right not removed';
+    is $removed_item, undef, 'right return value';
+    is $cart->is_modified, 0, 'right not modified';
+};
+
 subtest 'method merge' => sub {
     my $cart        = _factory_cart;
     my $stored_data = {

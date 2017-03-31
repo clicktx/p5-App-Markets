@@ -105,6 +105,15 @@ sub merge {
     return $stored;
 }
 
+sub remove_item {
+    my ( $self, $item ) = @_;
+    my $removed;
+    my $array = $self->items->grep( sub { $_->is_equal($item) ? ( $removed = $_ and 0 ) : 1 } );
+    $self->items($array);
+    $self->is_modified(1) if $removed;
+    return $removed;
+}
+
 sub to_hash {
     my $self = shift;
     my $hash = $self->SUPER::to_hash;
@@ -192,11 +201,11 @@ Return boolean value.
 
 Return Entity Cart Object.
 
-=head2 C<move_item_to_shipment>
+=head2 C<remove_item>
 
-    $cart->move_item_to_shipment($item, $shipment);
+    my $removed = $cart->remove_item($item);
 
-Return Entity Cart Object.
+Return Entity Item Object or undef.
 
 =head2 C<to_hash>
 
