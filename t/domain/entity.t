@@ -11,9 +11,11 @@ subtest 'basic' => sub {
     is $e->hash_code, sha1_sum(1), 'right hash code';
     is $e->hash_code(2), sha1_sum(2), 'right hash code';
 
-    is $e->is_modified, 0, 'right not modified';
     $e->is_modified(3);
     is $e->is_modified, 1, 'right modified';
+
+    $e->is_modified(0);
+    is $e->is_modified, 0, 'right not modified';
 
     my $clone = $e->clone;
     isnt $e, $clone, 'right clone';

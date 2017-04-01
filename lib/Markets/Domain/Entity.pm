@@ -13,7 +13,7 @@ sub hash_code { @_ > 1 ? sha1_sum( $_[1] ) : sha1_sum( $_[0]->id ) }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
-sub is_modified { @_ > 1 ? $_[0]->_is_modified(1) : $_[0]->_is_modified }
+sub is_modified { @_ > 1 ? $_[0]->_is_modified( $_[1] ? 1 : 0 ) : $_[0]->_is_modified }
 
 sub to_array {
     my $self = shift;
