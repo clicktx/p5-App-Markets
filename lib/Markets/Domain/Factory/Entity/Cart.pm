@@ -7,21 +7,14 @@ sub construct {
 
     my $params = $self->params;
     my $cart_data = delete $params->{cart_data} || {};
-    my $data;
 
-    my @items;
-    $data = $cart_data->{items} || [];
-    foreach my $item ( @{$data} ) {
-        push @items, $self->app->factory( 'entity-item', $item );
+    my %entities = ( items => 'entity-item', shipments => 'entity-shipment' );
+    foreach my $attr ( keys %entities ) {
+        my $data = $cart_data->{$attr} || [];
+        my @array;
+        push @array, $self->app->factory( $entities{$attr}, $_ ) for @{$data};
+        $params->{$attr} = c(@array);
     }
-    $params->{items} = c(@items);
-
-    my @shipments;
-    $data = $cart_data->{shipments} || [];
-    foreach my $shipment ( @{$data} ) {
-        push @shipments, $self->app->factory( 'entity-shipment', $shipment );
-    }
-    $params->{shipments} = c(@shipments);
 
     return $self->construct_class->new($params);
 }
