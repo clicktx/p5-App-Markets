@@ -11,6 +11,8 @@ sub clone {
     my $clone = $self->SUPER::clone;
     $clone->shipping_items( $self->shipping_items->map( sub { $_->clone } ) )
       if $self->shipping_items->can('map');
+
+    $clone->_is_modified(0);
     return $clone;
 }
 
