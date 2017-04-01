@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Deep;
 
 use_ok 'Markets::Domain::Entity';
 use_ok 'Markets::Domain::Collection';
@@ -26,7 +27,7 @@ subtest 'find method' => sub {
 subtest 'to_data method' => sub {
     use Markets::Domain::Collection qw/c/;
     my $c = Markets::Domain::Collection->new( c(), 1, c( c(), c( 1, 2 ) ), 2 );
-    is_deeply $c->to_data, [ [], 1, [ [], [ 1, 2 ] ], 2 ], 'right dump data';
+    cmp_deeply $c->to_data, [ [], 1, [ [], [ 1, 2 ] ], 2 ], 'right dump data';
 };
 
 done_testing();

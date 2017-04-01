@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Deep;
 use Mojo::Util qw/sha1_sum/;
 
 my $pkg = 'Markets::Domain::Entity';
@@ -7,7 +8,7 @@ use_ok $pkg;
 
 subtest 'basic' => sub {
     my $e = $pkg->new( id => 1, hoge => 1, fuga => 2 );
-    is_deeply $e->to_hash, { hoge => 1, fuga => 2 }, 'right to_hash';
+    cmp_deeply $e->to_hash, { hoge => 1, fuga => 2 }, 'right to_hash';
 
     is $e->hash_code, sha1_sum(1), 'right hash code';
     is $e->hash_code(2), sha1_sum(2), 'right hash code';
@@ -25,7 +26,7 @@ subtest 'clone' => sub {
 
     my $clone = $e->clone;
     isnt $e, $clone, 'right clone';
-    is_deeply $e->to_hash, $clone->to_hash, 'right clone data structure';
+    cmp_deeply $e->to_hash, $clone->to_hash, 'right clone data structure';
 
     $e->is_modified(1);
     $clone = $e->clone;
@@ -35,7 +36,7 @@ subtest 'clone' => sub {
 subtest 'to_array method' => sub {
     my $data = { id => 1, hoge => 1, fuga => 2 };
     my $e = $pkg->new($data);
-    is_deeply $e->to_array, [ [qw/fuga hoge/], [qw/2 1/] ], 'right to_array';
+    cmp_deeply $e->to_array, [ [qw/fuga hoge/], [qw/2 1/] ], 'right to_array';
 };
 
 subtest 'Entity object base' => sub {
@@ -63,7 +64,7 @@ subtest 'to_data method' => sub {
         ),
     );
 
-    is_deeply $e->to_data,
+    cmp_deeply $e->to_data,
       {
         a  => 1,
         b  => 2,
