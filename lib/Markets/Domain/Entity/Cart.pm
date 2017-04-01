@@ -5,8 +5,13 @@ use Carp qw/croak/;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 has cart_id        => '';
-has items => sub { Markets::Domain::Collection->new };
-has shipments => sub { Markets::Domain::Collection->new };
+has items          => sub { Markets::Domain::Collection->new };
+has shipments      => sub { Markets::Domain::Collection->new };
+has shipping_items => sub {
+    shift->shipments->map( sub { $_->shipping_items->each } );
+};
+
+my @unreference_attrs = (qw/id cart_id _is_modified shipping_items/);
 
 # has 'items';
 # has item_count       => sub { shift->items->flatten->size };
@@ -75,6 +80,8 @@ sub clone {
     return $clone;
 }
 
+sub count { $_[0]->{ $_[1] }->size }
+
 # NOTE: アクセス毎に呼ばれる。Controller::Catalog::finalize
 #       items,shipments,shipments->itemsの全てを検査する必要があるか？
 #       速度に問題はないか？
@@ -140,7 +147,7 @@ sub to_hash {
     }
 
     # Remove no need data
-    delete $hash->{$_} for (qw/id cart_id _is_modified/);
+    delete $hash->{$_} for @unreference_attrs;
     return $hash;
 }
 
@@ -206,6 +213,12 @@ Return L<Markets::Domain::Entity::Cart> Object.
 
 C<$shipment_object> is option argument.
 default $shipments->first
+
+=head2 C<clear>
+
+=head2 C<clone>
+
+=head2 C<count>
 
 =head2 C<is_modified>
 
