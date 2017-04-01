@@ -49,8 +49,8 @@ subtest 'methods' => sub {
     my $cart = _factory_cart;
     is_deeply $cart->to_hash, $cart_data, 'right data structure';
     is $cart->id, '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
-    is $cart->total_item_count, 15, 'right total item count';
-    is $cart->total_quantity,   15, 'right total item count';
+    is $cart->total_item_count, 5,  'right total item count';
+    is $cart->total_quantity,   15, 'right total quantity count';
 
     my $cart2 = $app->factory(
         'entity-cart',
@@ -109,6 +109,8 @@ subtest 'method clear' => sub {
     $cart->clear;
     is_deeply $cart->to_hash, { items => [], shipments => [] };
     is $cart->is_modified, 1, 'right modified';
+    is $cart->total_item_count, 0, 'right total item count';
+    is $cart->total_quantity,   0, 'right total quantity count';
 };
 
 subtest 'method clone' => sub {

@@ -21,11 +21,7 @@ sub hash_code {
     $self->SUPER::hash_code($bytes);
 }
 
-sub item_count { # アイテム数のべき？
-    my $cnt = 0;
-    shift->shipping_items->each( sub { $cnt += $_->quantity } );
-    return $cnt;
-}
+sub item_count { shift->shipping_items->size }
 
 sub to_hash {
     my $self = shift;
@@ -37,7 +33,7 @@ sub to_hash {
     return $hash;
 }
 
-sub total_quantity { shift->shipping_items->reduce( sub { $a + $b->quantity }, 0 ) }
+sub subtotal_quantity { shift->shipping_items->reduce( sub { $a + $b->quantity }, 0 ) }
 
 1;
 __END__

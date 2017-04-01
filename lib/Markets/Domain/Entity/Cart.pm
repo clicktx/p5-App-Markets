@@ -144,20 +144,13 @@ sub to_hash {
     return $hash;
 }
 
-sub total_item_count {    # items数のべき？
-    my $self = shift;
-    my $cnt  = 0;
-    $self->items->each( sub     { $cnt += $_->quantity } );
-    $self->shipments->each( sub { $cnt += $_->item_count } );
-    return $cnt;
+sub total_item_count {
+    $_[0]->items->size + $_[0]->shipments->reduce( sub { $a + $b->item_count }, 0 );
 }
 
 sub total_quantity {
-    my $self = shift;
-    my $qty  = 0;
-    $self->items->each( sub     { $qty += $_->quantity } );
-    $self->shipments->each( sub { $qty += $_->total_quantity } );
-    return $qty;
+    $_[0]->items->reduce( sub { $a + $b->quantity }, 0 ) +
+      $_[0]->shipments->reduce( sub { $a + $b->subtotal_quantity }, 0 );
 }
 
 1;
