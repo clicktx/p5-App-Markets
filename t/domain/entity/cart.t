@@ -13,7 +13,11 @@ my $cart_data = {
     ],
     shipments => [
         { shipping_address => 'Tokyo', shipping_items => [ { product_id => 4, quantity => 4 } ] },
-        { shipping_address => 'Osaka', shipping_items => [ { product_id => 5, quantity => 5 } ] },
+        {
+            shipping_address => 'Osaka',
+            shipping_items =>
+              [ { product_id => 5, quantity => 5 }, { product_id => 6, quantity => 6 } ]
+        },
     ],
 };
 
@@ -49,8 +53,8 @@ subtest 'methods' => sub {
     my $cart = _factory_cart;
     is_deeply $cart->to_hash, $cart_data, 'right data structure';
     is $cart->id, '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
-    is $cart->total_item_count, 5,  'right total item count';
-    is $cart->total_quantity,   15, 'right total quantity count';
+    is $cart->total_item_count, 6,  'right total item count';
+    is $cart->total_quantity,   21, 'right total quantity count';
 
     my $cart2 = $app->factory(
         'entity-cart',
@@ -108,7 +112,7 @@ subtest 'method clear' => sub {
     my $cart = _factory_cart;
     $cart->clear;
     is_deeply $cart->to_hash, { items => [], shipments => [] };
-    is $cart->is_modified, 1, 'right modified';
+    is $cart->is_modified,      1, 'right modified';
     is $cart->total_item_count, 0, 'right total item count';
     is $cart->total_quantity,   0, 'right total quantity count';
 };
