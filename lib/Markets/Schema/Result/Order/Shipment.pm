@@ -25,7 +25,7 @@ column shipping_address => {
 belongs_to order => 'Markets::Schema::Result::Order', 'order_id';
 
 has_many
-  items => 'Markets::Schema::Result::Order::Shipment::Item',
+  shipping_items => 'Markets::Schema::Result::Order::Shipment::Item',
   { 'foreign.shipment_id' => 'self.id' };
 
 1;
