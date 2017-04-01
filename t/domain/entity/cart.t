@@ -51,14 +51,6 @@ subtest 'attributes' => sub {
 
     isa_ok $cart->shipments, 'Mojo::Collection', 'right shipments';
     isa_ok $cart->shipments->first, 'Markets::Domain::Entity::Shipment', 'right shipments';
-
-    use DDP;
-    p $cart->shipping_items;
-    $cart->shipping_items->each( sub { p $_} );
-    p $cart->items->size;
-    p $cart->shipping_items->size;
-    p $cart->count('items');
-    p $cart->to_hash;
 };
 
 subtest 'methods' => sub {

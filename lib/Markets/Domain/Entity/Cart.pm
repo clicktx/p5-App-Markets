@@ -81,7 +81,10 @@ sub clone {
     return $clone;
 }
 
-sub count { $_[0]->{ $_[1] }->size }
+sub count {
+    my ( $self, $attr ) = @_;
+    return $self->$attr->size;
+}
 
 # NOTE: アクセス毎に呼ばれる。Controller::Catalog::finalize
 #       items,shipments,shipments->itemsの全てを検査する必要があるか？
@@ -153,7 +156,9 @@ sub to_hash {
 }
 
 sub total_item_count {
-    $_[0]->items->size + $_[0]->shipments->reduce( sub { $a + $b->item_count }, 0 );
+
+    # $_[0]->items->size + $_[0]->shipments->reduce( sub { $a + $b->item_count }, 0 );
+    $_[0]->count('items') + $_[0]->count('shipping_items');
 }
 
 sub total_quantity {
