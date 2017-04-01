@@ -60,6 +60,7 @@ my %args = (
 
     test_requires => {
         'Harriet' => '0',
+        'Test::Deep' => '0',
         'Test::More' => '0',
         'Test::Perl::Critic' => '0',
         'Test::mysqld' => '0',

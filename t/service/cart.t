@@ -48,12 +48,12 @@ done_testing();
 
         subtest 'items' => sub {
             my $result = $c->service('cart')->add_item;
-            is_deeply $result->items->last->to_hash, { product_id => 1, quantity => 1 },
+            is_deeply $result->items->last->to_data, { product_id => 1, quantity => 1 },
               'right add cart';
 
             # my $items = $c->service('cart')->items;
             # isa_ok $items->first, 'Markets::Domain::Entity::Item', 'right add item';
-            # is_deeply $items->first->to_hash, { product_id => 1, quantity => 1 }, 'right detail';
+            # is_deeply $items->first->to_data, { product_id => 1, quantity => 1 }, 'right detail';
         };
 
         # is $c->service('cart')->has_items, 1, 'right true';

@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Deep;
 use Test::Mojo;
 use t::Util;
 
@@ -55,7 +56,7 @@ subtest 'attributes' => sub {
 
 subtest 'methods' => sub {
     my $cart = _factory_cart;
-    is_deeply $cart->to_hash, $cart_data, 'right data structure';
+    cmp_deeply $cart->to_data, $cart_data, 'right data structure';
     is $cart->id, '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->total_item_count, 6,  'right total item count';
     is $cart->total_quantity,   21, 'right total quantity count';
@@ -90,10 +91,10 @@ subtest 'method is_modified' => sub {
 subtest 'method add_item' => sub {
     my $cart = _factory_cart;
     $cart->add_item( Markets::Domain::Entity::Item->new( product_id => 11 ) );
-    is_deeply $cart->items->last->to_hash, { product_id => 11 }, 'right item';
+    cmp_deeply $cart->items->last->to_data, { product_id => 11 }, 'right item';
 
     $cart->add_item( Markets::Domain::Entity::Item->new( product_id => 1, quantity => 1 ) );
-    is_deeply $cart->items->first->to_hash, { product_id => 1, quantity => 2 }, 'right item';
+    cmp_deeply $cart->items->first->to_data, { product_id => 1, quantity => 2 }, 'right item';
 
     is $cart->is_modified, 1, 'right modified';
 };
@@ -101,12 +102,12 @@ subtest 'method add_item' => sub {
 subtest 'method add_shipping_item' => sub {
     my $cart = _factory_cart;
     $cart->add_shipping_item( Markets::Domain::Entity::Item->new( product_id => 11 ) );
-    is_deeply $cart->shipments->first->shipping_items->last->to_hash, { product_id => 11 },
+    cmp_deeply $cart->shipments->first->shipping_items->last->to_data, { product_id => 11 },
       'right shipping_item';
 
     $cart->add_shipping_item(
         Markets::Domain::Entity::Item->new( product_id => 4, quantity => 4 ) );
-    is_deeply $cart->shipments->first->shipping_items->first->to_hash,
+    cmp_deeply $cart->shipments->first->shipping_items->first->to_data,
       { product_id => 4, quantity => 8 }, 'right sum quantity';
 
     is $cart->is_modified, 1, 'right modified';
@@ -115,7 +116,7 @@ subtest 'method add_shipping_item' => sub {
 subtest 'method clear' => sub {
     my $cart = _factory_cart;
     $cart->clear;
-    is_deeply $cart->to_hash, { items => [], shipments => [] };
+    cmp_deeply $cart->to_data, { items => [], shipments => [] };
     is $cart->is_modified,      1, 'right modified';
     is $cart->total_item_count, 0, 'right total item count';
     is $cart->total_quantity,   0, 'right total quantity count';
@@ -127,22 +128,21 @@ subtest 'method clone' => sub {
     $cart->is_modified(1);
     my $clone = $cart->clone;
     is $clone->is_modified, 0, 'right modified';
-
-    is_deeply $cart->to_hash, $clone->to_hash, 'right all data';
+    cmp_deeply $cart->to_data, $clone->to_data, 'right all data';
 
     # items
     isnt $cart->items->[0], $clone->items->[0], 'right cart reference';
-    is_deeply $cart->items->[0]->to_hash, $clone->items->[0]->to_hash, 'right cart data';
+    cmp_deeply $cart->items->[0]->to_data, $clone->items->[0]->to_data, 'right cart data';
 
     # shipments
     isnt $cart->shipments->[0], $clone->shipments->[0], 'right shipment reference';
-    is_deeply $cart->shipments->[0]->to_hash, $clone->shipments->[0]->to_hash,
+    cmp_deeply $cart->shipments->[0]->to_data, $clone->shipments->[0]->to_data,
       'right shipment data';
 
     isnt $cart->shipments->[0]->shipping_items->[0], $clone->shipments->[0]->shipping_items->[0],
       'right shipment item reference';
-    is_deeply $cart->shipments->[0]->shipping_items->[0]->to_hash,
-      $clone->shipments->[0]->shipping_items->[0]->to_hash,
+    cmp_deeply $cart->shipments->[0]->shipping_items->[0]->to_data,
+      $clone->shipments->[0]->shipping_items->[0]->to_data,
       'right shipment item data';
 };
 
@@ -152,7 +152,7 @@ subtest 'method remove_item' => sub {
 
     my $id           = $item->id;
     my $removed_item = $cart->remove_item($id);
-    is_deeply $cart->to_hash->{items},
+    cmp_deeply $cart->to_data->{items},
       [ { product_id => 1, quantity => 1 }, { product_id => 3, quantity => 3 }, ],
       'right remove item';
     is $removed_item->is_equal($item), 1, 'right return value';
@@ -163,7 +163,7 @@ subtest 'method remove_item' => sub {
     $item         = Markets::Domain::Entity::Item->new( product_id => 123, quantity => 1 );
     $id           = $item->id;
     $removed_item = $cart->remove_item($id);
-    is_deeply $cart->to_hash->{items},
+    cmp_deeply $cart->to_data->{items},
       [
         { product_id => 1, quantity => 1 },
         { product_id => 2, quantity => 2 },
@@ -193,10 +193,9 @@ subtest 'method merge' => sub {
     );
 
     my $merged_cart = $cart->merge($stored_cart);
-    is_deeply $cart->to_hash,        $cart_data,   'right non-destructive';
-    is_deeply $stored_cart->to_hash, $stored_data, 'right non-destructive';
-
-    is_deeply $merged_cart->to_hash, {
+    cmp_deeply $cart->to_data,        $cart_data,   'right non-destructive';
+    cmp_deeply $stored_cart->to_data, $stored_data, 'right non-destructive';
+    cmp_deeply $merged_cart->to_data, {
         items => [
             { product_id => 4, quantity => 4 },
             { product_id => 1, quantity => 2 },
