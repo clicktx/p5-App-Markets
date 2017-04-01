@@ -3,10 +3,10 @@ use Mojo::Base 'Markets::Domain::Entity';
 use Markets::Domain::Collection qw/c/;
 use Carp qw/croak/;
 
-has [qw/ items shipments /];
-
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
-has cart_id => '';
+has cart_id        => '';
+has items => sub { Markets::Domain::Collection->new };
+has shipments => sub { Markets::Domain::Collection->new };
 
 # has 'items';
 # has item_count       => sub { shift->items->flatten->size };

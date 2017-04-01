@@ -34,8 +34,12 @@ sub _factory_cart {
 use_ok 'Markets::Domain::Entity::Item';
 
 subtest 'basic' => sub {
-    my $cart = _factory_cart;
-    isa_ok $cart, 'Markets::Domain::Entity::Cart';
+    my $cart = $app->factory('entity-cart');
+    isa_ok $cart, 'Markets::Domain::Entity';
+
+    ok $cart->id;
+    isa_ok $cart->items,     'Markets::Domain::Collection';
+    isa_ok $cart->shipments, 'Markets::Domain::Collection';
 };
 
 subtest 'attributes' => sub {
