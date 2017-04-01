@@ -77,7 +77,7 @@ sub clone {
     foreach my $attr (qw/items shipments/) {
         $clone->$attr( $self->$attr->map( sub { $_->clone } ) ) if $self->$attr->can('map');
     }
-    $clone->is_modified(0);
+    $clone->_is_modified(0);
     return $clone;
 }
 

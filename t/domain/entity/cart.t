@@ -51,6 +51,14 @@ subtest 'attributes' => sub {
 
     isa_ok $cart->shipments, 'Mojo::Collection', 'right shipments';
     isa_ok $cart->shipments->first, 'Markets::Domain::Entity::Shipment', 'right shipments';
+
+    use DDP;
+    p $cart->shipping_items;
+    $cart->shipping_items->each( sub { p $_} );
+    p $cart->items->size;
+    p $cart->shipping_items->size;
+    p $cart->count('items');
+    p $cart->to_hash;
 };
 
 subtest 'methods' => sub {
@@ -122,8 +130,11 @@ subtest 'method clear' => sub {
 };
 
 subtest 'method clone' => sub {
-    my $cart  = _factory_cart;
+    my $cart = _factory_cart;
+
+    $cart->is_modified(1);
     my $clone = $cart->clone;
+    is $clone->is_modified, 0, 'right modified';
 
     is_deeply $cart->to_hash, $clone->to_hash, 'right all data';
 
