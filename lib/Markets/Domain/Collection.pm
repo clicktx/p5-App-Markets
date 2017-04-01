@@ -1,6 +1,6 @@
 package Markets::Domain::Collection;
 use Mojo::Base 'Mojo::Collection';
-use Carp qw/croak/;
+use Scalar::Util qw/blessed/;
 
 our @EXPORT_OK = ('c');
 
@@ -12,10 +12,11 @@ sub find {
     $self->first( sub { $_->id eq $str } ) or undef;
 }
 
-sub new {
-    my $class = shift;
-    if (@_) { croak 'Arguments not Entity Object' if ( ref $_[0] ) !~ /Entity/ }
-    return bless [@_], ref $class || $class;
+sub to_data {
+    my $self = shift;
+    my @array;
+    push @array, blessed $_ ? $_->to_data : $_ for @{ $self->to_array };
+    return \@array;
 }
 
 1;
@@ -36,11 +37,23 @@ the following new ones.
 
 =head1 METHODS
 
+=head2 C<c>
+
+    my $collection = c(1, 2, 3);
+
+Construct a new array-based L<Markets::Domain::Collection> object.
+
 =head2 C<find>
 
     my $entity = $collection->find($entity_id);
 
 Return L<Markets::Domain::Entity> object or undef.
+
+=head2 C<to_data>
+
+    my $data = $collection->to_data;
+
+Turn collection into array reference. This method recursive call L<Mojo::Collection/to_array>.
 
 =head1 AUTHOR
 

@@ -2,6 +2,7 @@ package Markets::Domain::Entity;
 use Mojo::Base -base;
 use Carp qw/croak/;
 use Mojo::Util qw/sha1_sum/;
+use Scalar::Util qw/blessed/;
 
 has _is_modified => 0;
 has id => sub { croak 'Attribute "id" not implemented by subclass' };
@@ -28,6 +29,14 @@ sub to_array {
     my @keys = sort keys %{$hash};
     my @values = map { $hash->{$_} } @keys;
     return [ \@keys, \@values ];
+}
+
+sub to_data {
+    my $self = shift;
+    my $h    = $self->to_hash;
+    my %hash;
+    $hash{$_} = blessed $h->{$_} ? $h->{$_}->to_data : $h->{$_} for keys %{$h};
+    return \%hash;
 }
 
 sub to_hash {
@@ -108,6 +117,12 @@ Return boolean value.
 
 Return Array reference.
 Note: Key 'id' is remove.
+
+=head2 C<to_data>
+
+    my $data = $e->to_data;
+
+Return hash reference. This method recursive call L</to_hash>.
 
 =head2 C<to_hash>
 
