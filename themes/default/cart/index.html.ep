@@ -3,7 +3,9 @@
 
 <h1><%= title %></h1>
 
-<%= $self->cart->total_item_count %> items in your cart.
+<%= __nx('{count:num} item', '{cnt:num} items', $self->cart->total_item_count, cnt => $self->cart->total_item_count) %>
+(Total QTY: <%= $self->cart->total_quantity %>) in your cart.
+
 <ul>
     % $self->cart->items->each( sub {
         <li><%= dumper $_ %></li>
