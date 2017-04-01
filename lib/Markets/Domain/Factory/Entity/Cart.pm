@@ -1,6 +1,6 @@
 package Markets::Domain::Factory::Entity::Cart;
 use Mojo::Base 'Markets::Domain::Factory';
-use Mojo::Collection qw/c/;
+use Markets::Domain::Collection qw/c/;
 
 sub construct {
     my $self = shift;

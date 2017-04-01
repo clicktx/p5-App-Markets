@@ -1,38 +1,41 @@
 package Markets::Domain::Entity::Shipment;
 use Mojo::Base 'Markets::Domain::Entity';
-
-has [qw/ address items /];
+use Markets::Domain::Collection;
 
 has id => sub { shift->hash_code };
+has shipping_address => '';
+has shipping_items => sub { Markets::Domain::Collection->new };
 
 sub clone {
     my $self  = shift;
     my $clone = $self->SUPER::clone;
-    $clone->items( $self->items->map( sub { $_->clone } ) ) if $self->items->can('map');
+    $clone->shipping_items( $self->shipping_items->map( sub { $_->clone } ) )
+      if $self->shipping_items->can('map');
+
+    $clone->_is_modified(0);
     return $clone;
 }
 
+# NOTE: [WIP] 特定する条件を決める
 sub hash_code {
     my $self  = shift;
-    my $bytes = $self->address;
+    my $bytes = $self->shipping_address;
     $self->SUPER::hash_code($bytes);
 }
 
-sub item_count {
-    my $cnt = 0;
-    shift->items->each( sub { $cnt += $_->quantity } );
-    return $cnt;
-}
+sub item_count { shift->shipping_items->size }
 
 sub to_hash {
     my $self = shift;
     my $hash = $self->SUPER::to_hash;
 
-    my @items;
-    $hash->{items}->each( sub { push @items, $_->to_hash } );
-    $hash->{items} = \@items;
+    my @shipping_items;
+    $hash->{shipping_items}->each( sub { push @shipping_items, $_->to_hash } );
+    $hash->{shipping_items} = \@shipping_items;
     return $hash;
 }
+
+sub subtotal_quantity { shift->shipping_items->reduce( sub { $a + $b->quantity }, 0 ) }
 
 1;
 __END__

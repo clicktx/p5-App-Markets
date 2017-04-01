@@ -1,9 +1,9 @@
 package Markets::Domain::Entity::Item;
 use Mojo::Base 'Markets::Domain::Entity';
 
-has [qw/ product_id quantity /];
-
 has id => sub { shift->hash_code };
+has product_id => '';
+has quantity   => 0;
 
 sub hash_code {
     my $self  = shift;

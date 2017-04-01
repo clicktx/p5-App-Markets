@@ -9,14 +9,14 @@
 
 <h3>Secure checkout</h3>
 <ol>
-    <li><strong>Please sign in</strong></li>
+    <li>Please sign in</li>
     <li>Billing and Shipping Address</li>
-    <li>Shipping Options</li>
+    <li><strong>Shipping Options</strong></li>
     <li>Billing Options</li>
     <li>Order Confirmation</li>
 </ol>
 
-<%= form_for 'RN_checkout_shipping' => begin %>
+<%= form_for 'RN_checkout_complete' => begin %>
     <%= csrf_field %>
-    <%= submit_button 'Shipping Options' %>
+    <%= submit_button 'BUY NOW' %>
 <% end %>

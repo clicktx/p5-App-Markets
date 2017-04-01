@@ -3,13 +3,23 @@ use Mojo::Base -base;
 use Carp qw/croak/;
 use Mojo::Util qw/sha1_sum/;
 
+has _is_modified => 0;
 has id => sub { croak 'Attribute "id" not implemented by subclass' };
 
-sub clone { $_[0]->new( +{ %{ $_[0] } } ) }
+my @unreference_attrs = (qw/_is_modified id/);
+
+sub clone {
+    my $self  = shift;
+    my $clone = $self->new( +{ %{$self} } );
+    $clone->_is_modified(0);
+    return $clone;
+}
 
 sub hash_code { @_ > 1 ? sha1_sum( $_[1] ) : sha1_sum( $_[0]->id ) }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
+
+sub is_modified { @_ > 1 ? $_[0]->_is_modified( $_[1] ? 1 : 0 ) : $_[0]->_is_modified }
 
 sub to_array {
     my $self = shift;
@@ -22,7 +32,9 @@ sub to_array {
 
 sub to_hash {
     my $hash = +{ %{ +shift } };
-    delete $hash->{id};
+
+    # Remove no need data
+    delete $hash->{$_} for @unreference_attrs;
     return $hash;
 }
 
@@ -69,6 +81,13 @@ Return SHA1 checksum. Default bytes is L<Markets::Domain::Entity/id>.
 =head2 C<is_equal>
 
     my $bool = $entity->is_equal($other_entity);
+
+Return boolean value.
+
+=head2 C<is_modified>
+
+    my $bool = $entity->is_modified;
+    $entity->is_modified($bool);
 
 Return boolean value.
 

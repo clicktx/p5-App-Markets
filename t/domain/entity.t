@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Mojo::Util qw/sha1_sum/;
 
 use_ok 'Markets::Domain::Entity';
 
@@ -7,9 +8,27 @@ subtest 'basic' => sub {
     my $e = Markets::Domain::Entity->new( id => 1, hoge => 1, fuga => 2 );
     is_deeply $e->to_hash, { hoge => 1, fuga => 2 }, 'right to_hash';
 
+    is $e->hash_code, sha1_sum(1), 'right hash code';
+    is $e->hash_code(2), sha1_sum(2), 'right hash code';
+
+    $e->is_modified(3);
+    is $e->is_modified, 1, 'right modified';
+
+    $e->is_modified(0);
+    is $e->is_modified, 0, 'right not modified';
+};
+
+subtest 'clone' => sub {
+    my $data = { id => 1, hoge => 1, fuga => 2 };
+    my $e = Markets::Domain::Entity->new($data);
+
     my $clone = $e->clone;
     isnt $e, $clone, 'right clone';
     is_deeply $e->to_hash, $clone->to_hash, 'right clone data structure';
+
+    $e->is_modified(1);
+    $clone = $e->clone;
+    is $clone->is_modified, 0;
 };
 
 subtest 'to_array method' => sub {

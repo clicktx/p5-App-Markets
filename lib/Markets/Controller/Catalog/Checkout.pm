@@ -6,6 +6,44 @@ sub index {
     $self->render();
 }
 
+sub shipping {
+    my $self = shift;
+
+    my $cart = $self->cart;
+
+    # shipping address
+    # NOTE: 実際にはaddressで作成されているはず
+    {
+        my $data = { shipping_address => 'kamiizumi' };
+        my $shipment = $self->app->factory( 'entity-shipment', %{$data} );
+
+        use Markets::Domain::Collection qw/c/;
+        $cart->shipments( c($shipment) ) unless $cart->shipments->size;
+    }
+
+    # 商品をshipmentに移動
+    # cart.itemsからitemを減らす。shipment.shipping_itemsを増やす
+    # 本来は数量を考慮しなくてはならない
+    # $item.quantityが0になった場合の動作はどうする？
+    $cart->items->each(
+        sub {
+            use DDP;
+            # カートitemsから削除
+            my $item = $cart->remove_item( $_->id );
+
+            # 配送itemsに追加
+            # $cart->add_shipping_item($item => $shipment);
+            $cart->add_shipping_item($item);
+        }
+    );
+
+    # NOTE: 移動や追加をした際にis_modifiedをどのobjectに行うか
+    # $cart->is_modified(1)? しか使わなければ実行時間は早く出来る。
+    # Entity::Cart::is_modifiedも考慮して実装しよう
+
+    $self->render();
+}
+
 sub complete {
     my $self = shift;
 
@@ -13,8 +51,9 @@ sub complete {
     # itemsが無い場合は実行しない
     my $cart = $self->cart;
 
-# NOTE: 本番環境ではitemsに商品がある場合はcomplete出来ない。shipmentsに商品を全て移すべき。
-    $self->redirect_to('RN_cart') if !$cart->items->size;
+# NOTE: itemsに商品がある場合、shipping_itemsが1つも無い場合はcomplete出来ない。
+    $self->redirect_to('RN_cart') if $cart->items->size;
+    # $cart->count('items') or $cart->count('shipping_items')
 
     # cartデータからorderデータ作成
     my $order = { billing_address => 'ogikubo' };
@@ -23,10 +62,11 @@ sub complete {
 
     # items
     # NOTE: 実際にはshipmentsは作成されているはず
-    my $shipments = [ { shipping_address => 'kamiizumi' } ];
-    my $cart_data = $cart->to_hash;
-    $shipments->[0]->{items} = $cart_data->{items};
-    $order->{shipments} = $shipments;
+    # my $shipments = [ { shipping_address => 'kamiizumi' } ];
+    # my $cart_data = $cart->to_hash;
+    # $shipments->[0]->{items} = $cart_data->{items};
+    $order->{shipments} = $cart->to_hash->{shipments};
+    use DDP;p $order;
 
     # Store order
     my $schema = $self->app->schema;
