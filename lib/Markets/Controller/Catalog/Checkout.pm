@@ -63,9 +63,8 @@ sub complete {
     # items
     # NOTE: 実際にはshipmentsは作成されているはず
     # my $shipments = [ { shipping_address => 'kamiizumi' } ];
-    # my $cart_data = $cart->to_hash;
     # $shipments->[0]->{items} = $cart_data->{items};
-    $order->{shipments} = $cart->to_hash->{shipments};
+    $order->{shipments} = $cart->to_data->{shipments};
     use DDP;p $order;
 
     # Store order

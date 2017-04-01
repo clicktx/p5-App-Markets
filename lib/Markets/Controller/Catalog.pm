@@ -23,7 +23,7 @@ sub finalize {
     my $self = shift;
 
     # cartが変更されていた場合はセッションカートのデータを変更
-    $self->cart_session->data( $self->cart->to_hash ) if $self->cart->is_modified;
+    $self->cart_session->data( $self->cart->to_data ) if $self->cart->is_modified;
 
     $self->SUPER::finalize(@_);
     return $self;
