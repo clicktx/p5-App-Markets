@@ -144,11 +144,11 @@ sub to_hash {
     my $self = shift;
     my $hash = $self->SUPER::to_hash;
 
-    foreach my $attr (qw/items shipments/) {
-        my @array;
-        $self->$attr->each( sub { push @array, $_->to_hash } );
-        $hash->{$attr} = \@array;
-    }
+    # foreach my $attr (qw/items shipments/) {
+    #     my @array;
+    #     $self->$attr->each( sub { push @array, $_->to_hash } );
+    #     $hash->{$attr} = \@array;
+    # }
 
     # Remove no need data
     delete $hash->{$_} for @noneed_attrs;

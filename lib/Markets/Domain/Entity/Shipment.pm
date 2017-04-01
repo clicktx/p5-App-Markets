@@ -25,15 +25,15 @@ sub hash_code {
 
 sub item_count { shift->shipping_items->size }
 
-sub to_hash {
-    my $self = shift;
-    my $hash = $self->SUPER::to_hash;
-
-    my @shipping_items;
-    $hash->{shipping_items}->each( sub { push @shipping_items, $_->to_hash } );
-    $hash->{shipping_items} = \@shipping_items;
-    return $hash;
-}
+# sub to_hash {
+#     my $self = shift;
+#     my $hash = $self->SUPER::to_hash;
+# 
+#     my @shipping_items;
+#     $hash->{shipping_items}->each( sub { push @shipping_items, $_->to_hash } );
+#     $hash->{shipping_items} = \@shipping_items;
+#     return $hash;
+# }
 
 sub subtotal_quantity { shift->shipping_items->reduce( sub { $a + $b->quantity }, 0 ) }
 
