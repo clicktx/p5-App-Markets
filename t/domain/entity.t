@@ -16,10 +16,19 @@ subtest 'basic' => sub {
 
     $e->is_modified(0);
     is $e->is_modified, 0, 'right not modified';
+};
+
+subtest 'clone' => sub {
+    my $data = { id => 1, hoge => 1, fuga => 2 };
+    my $e = Markets::Domain::Entity->new($data);
 
     my $clone = $e->clone;
     isnt $e, $clone, 'right clone';
     is_deeply $e->to_hash, $clone->to_hash, 'right clone data structure';
+
+    $e->is_modified(1);
+    $clone = $e->clone;
+    is $clone->is_modified, 0;
 };
 
 subtest 'to_array method' => sub {
