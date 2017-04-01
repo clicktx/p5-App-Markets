@@ -11,7 +11,7 @@ has shipping_items => sub {
     shift->shipments->map( sub { $_->shipping_items->each } );
 };
 
-my @unreference_attrs = (qw/id cart_id _is_modified shipping_items/);
+my @noneed_attrs = (qw/id cart_id _is_modified shipping_items/);
 
 # has 'items';
 # has item_count       => sub { shift->items->flatten->size };
@@ -151,7 +151,7 @@ sub to_hash {
     }
 
     # Remove no need data
-    delete $hash->{$_} for @unreference_attrs;
+    delete $hash->{$_} for @noneed_attrs;
     return $hash;
 }
 
