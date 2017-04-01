@@ -51,8 +51,9 @@ sub complete {
     # itemsが無い場合は実行しない
     my $cart = $self->cart;
 
-# NOTE: 本番環境ではitemsに商品がある場合はcomplete出来ない。shipmentsに商品を全て移すべき。
-    $self->redirect_to('RN_cart') if !$cart->items->size;
+# NOTE: itemsに商品がある場合、shipping_itemsが1つも無い場合はcomplete出来ない。
+    $self->redirect_to('RN_cart') if $cart->items->size;
+    # $cart->count('items') or $cart->count('shipping_items')
 
     # cartデータからorderデータ作成
     my $order = { billing_address => 'ogikubo' };
@@ -61,10 +62,11 @@ sub complete {
 
     # items
     # NOTE: 実際にはshipmentsは作成されているはず
-    my $shipments = [ { shipping_address => 'kamiizumi' } ];
-    my $cart_data = $cart->to_hash;
-    $shipments->[0]->{items} = $cart_data->{items};
-    $order->{shipments} = $shipments;
+    # my $shipments = [ { shipping_address => 'kamiizumi' } ];
+    # my $cart_data = $cart->to_hash;
+    # $shipments->[0]->{items} = $cart_data->{items};
+    $order->{shipments} = $cart->to_hash->{shipments};
+    use DDP;p $order;
 
     # Store order
     my $schema = $self->app->schema;
