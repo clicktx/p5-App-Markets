@@ -11,7 +11,7 @@ my @unreference_attrs = (qw/_is_modified id/);
 sub clone {
     my $self  = shift;
     my $clone = $self->new( +{ %{$self} } );
-    $clone->is_modified(0);
+    $clone->_is_modified(0);
     return $clone;
 }
 

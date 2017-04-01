@@ -33,7 +33,7 @@ sub add_item {
 
     _add_item( $self->items, $item );
 
-    $self->is_modified(1);
+    $self->_is_modified(1);
     return $self;
 }
 
@@ -43,7 +43,7 @@ sub add_shipping_item {
 
     _add_item( $shipment->shipping_items, $item );
 
-    $self->is_modified(1);
+    $self->_is_modified(1);
     return $self;
 }
 
@@ -67,7 +67,7 @@ sub clear {
     # Remove all data
     $self->$_( c() ) for (qw/items shipments/);
 
-    $self->is_modified(1);
+    $self->_is_modified(1);
     return $self;
 }
 
@@ -122,7 +122,7 @@ sub merge {
     # shipments
     # TODO: [WIP]
 
-    $stored->is_modified(1);
+    $stored->_is_modified(1);
     return $stored;
 }
 
@@ -133,7 +133,7 @@ sub remove_item {
     my $removed;
     my $array = $self->items->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
     $self->items($array);
-    $self->is_modified(1) if $removed;
+    $self->_is_modified(1) if $removed;
     return $removed;
 }
 
