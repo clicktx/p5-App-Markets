@@ -4,10 +4,16 @@ use Carp qw/croak/;
 use Mojo::Util qw/sha1_sum/;
 
 has _is_modified => 0;
-
 has id => sub { croak 'Attribute "id" not implemented by subclass' };
 
-sub clone { $_[0]->new( +{ %{ $_[0] } } ) }
+my @unreference_attrs = (qw/_is_modified id/);
+
+sub clone {
+    my $self  = shift;
+    my $clone = $self->new( +{ %{$self} } );
+    $clone->is_modified(0);
+    return $clone;
+}
 
 sub hash_code { @_ > 1 ? sha1_sum( $_[1] ) : sha1_sum( $_[0]->id ) }
 
@@ -26,7 +32,9 @@ sub to_array {
 
 sub to_hash {
     my $hash = +{ %{ +shift } };
-    delete $hash->{id};
+
+    # Remove no need data
+    delete $hash->{$_} for @unreference_attrs;
     return $hash;
 }
 
