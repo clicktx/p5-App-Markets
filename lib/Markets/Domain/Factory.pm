@@ -17,9 +17,6 @@ sub construct {
 sub new {
     my ( $self, $params ) = @_;
 
-    # Attributes
-    $self->attr( [ keys %{$params} ] );    # TODO: 不要かもしれないので検討する
-
     my $factory = $self->SUPER::new( %{$params} );
     weaken $factory->{app};
     return $factory->construct();
