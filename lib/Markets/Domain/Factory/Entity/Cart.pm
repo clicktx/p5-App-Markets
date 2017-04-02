@@ -9,11 +9,11 @@ sub construct {
     my $cart_data = delete $params->{cart_data} || {};
 
     my %entities = ( items => 'entity-item', shipments => 'entity-shipment' );
-    foreach my $attr ( keys %entities ) {
-        my $data = $cart_data->{$attr} || [];
+    foreach my $key ( keys %entities ) {
+        my $data = $cart_data->{$key} || [];
         my @array;
-        push @array, $self->app->factory( $entities{$attr}, $_ ) for @{$data};
-        $params->{$attr} = c(@array);
+        push @array, $self->app->factory( $entities{$key}, $_ ) for @{$data};
+        $params->{$key} = c(@array);
     }
 
     return $self->construct_class->new($params);
