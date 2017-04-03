@@ -10,13 +10,6 @@ has entity_class => sub {
     $class;
 };
 
-sub add_param {
-    my $self = shift;
-    my %args = @_ ? @_ > 1 ? @_ : %{ $_[0] } : ();
-
-    $self->{$_} = $args{$_} for keys %args;
-}
-
 sub cook { }
 
 sub create_entity {
@@ -54,6 +47,15 @@ sub factory {
     return $obj;
 }
 
+sub params {
+    my $self = shift;
+    return wantarray ? ( %{$self} ) : { %{$self} } if !@_;
+
+    # Setter
+    my %args = @_ > 1 ? @_ : %{ $_[0] };
+    $self->{$_} = $args{$_} for keys %args;
+}
+
 sub _load_class {
     my $class = shift;
 
@@ -86,13 +88,6 @@ Get namespace as a construct entity class.
 
 =head1 METHODS
 
-=head2 C<add_param>
-
-    $factory->add_param( %param );
-    $factory->add_param( \%param );
-
-Set parameter.
-
 =head2 C<cook>
 
     # Markets::Domain::Factory::Entity::YourEntity;
@@ -113,6 +108,18 @@ Set parameter.
     my $other_factory = $factory->factory('entity-hoge');
 
 Return other factory object.
+
+=heas2 C<params>
+
+    # Getter
+    my $params = $factory->params;
+    my %params = $factory->params;
+
+    # Setter
+    $factory->params( %param );
+    $factory->params( \%param );
+
+Get/Set parameter.
 
 =head1 AUTHOR
 

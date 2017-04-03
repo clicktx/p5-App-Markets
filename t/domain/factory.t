@@ -8,9 +8,16 @@ use Test::Mojo;
 subtest 'basic' => sub {
     use_ok 'Markets::Domain::Factory';
     my $f = Markets::Domain::Factory->new;
-    $f->add_param( a => 1, b => 2 );
-    $f->add_param( { c => 3, d => 4 } );
-    is_deeply $f, { a => 1, b => 2, c => 3, d => 4 }, 'right add param';
+    $f->params( a => 1, b => 2 );
+    is_deeply $f, { a => 1, b => 2 }, 'right set params';
+
+    my $params = $f->params;
+    is_deeply $params, { a => 1, b => 2 }, 'right get reference';
+    my %params = $f->params;
+    is_deeply \%params, { a => 1, b => 2 }, 'right get hash';
+
+    $f->params( { c => 3, d => 4 } );
+    is_deeply $f, { a => 1, b => 2, c => 3, d => 4 }, 'right set param';
 };
 
 subtest 'has not cook' => sub {
@@ -55,8 +62,8 @@ subtest 'factory method using' => sub {
 };
 
 subtest 'factory helper' => sub {
-    my $t   = Test::Mojo->new('App');
-    my $app = $t->app;
+    my $t      = Test::Mojo->new('App');
+    my $app    = $t->app;
     my $entity = $app->factory('entity-bar')->create_entity();
     isa_ok $entity, 'Markets::Domain::Entity::Bar';
     isa_ok $entity->{hoge}, 'Markets::Domain::Entity::Hoge';
@@ -80,8 +87,8 @@ done_testing();
 
     sub cook {
         my $self = shift;
-        $self->add_param( f => 'fuga', h => 'hoge' );
-        $self->add_param( { a => 1, b => 2 } );
+        $self->params( f => 'fuga', h => 'hoge' );
+        $self->params( { a => 1, b => 2 } );
     }
 
     package Markets::Domain::Entity::Foo;
@@ -103,7 +110,7 @@ done_testing();
     sub cook {
         my $self = shift;
         my $hoge = $self->factory('entity-hoge')->create_entity();
-        $self->add_param( hoge => $hoge );
+        $self->params( hoge => $hoge );
     }
 
     package Markets::Domain::Entity::Bar;
