@@ -10,7 +10,7 @@ sub cook {
     foreach my $key ( keys %entities ) {
         my $data = $cart_data->{$key} || [];
         my @array;
-        push @array, $self->factory( $entities{$key}, $_ )->create_entity for @{$data};
+        push @array, $self->factory( $entities{$key}, $_ ) for @{$data};
         $self->params( $key => c(@array) );
     }
 }

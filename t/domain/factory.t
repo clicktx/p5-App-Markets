@@ -47,8 +47,7 @@ subtest 'has cook' => sub {
 };
 
 subtest 'no factory' => sub {
-    my $f      = Markets::Domain::Factory->new->factory('entity-nofactory');
-    my $entity = $f->create_entity();
+    my $entity = Markets::Domain::Factory->new->factory('entity-nofactory');
     is ref $entity, 'Markets::Domain::Entity::Nofactory', 'right namespace';
     cmp_deeply { %{$entity} }, {}, 'right parameter';
     is $entity->text, 'no factory', 'right method';
@@ -109,7 +108,7 @@ done_testing();
 
     sub cook {
         my $self = shift;
-        my $hoge = $self->factory('entity-hoge')->create_entity();
+        my $hoge = $self->factory('entity-hoge');
         $self->params( hoge => $hoge );
     }
 

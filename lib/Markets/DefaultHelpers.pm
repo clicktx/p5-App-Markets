@@ -20,7 +20,7 @@ sub register {
     $app->helper( service => sub { _service(@_) } );
 }
 
-sub _factory { shift; Markets::Domain::Factory->new->factory(@_)->create_entity }
+sub _factory { shift; Markets::Domain::Factory->new->factory(@_) }
 
 sub _pref {
     my $self = shift;
