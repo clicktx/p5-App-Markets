@@ -42,9 +42,9 @@ sub factory {
     my $e = Mojo::Loader::load_class($factory_class);
     die "Exception: $e" if ref $e;
 
-    my $obj = $e ? $factory_base_class->SUPER::new(@_) : $factory_class->new(@_);
-    $obj->entity_class($entity_class);
-    return $obj;
+    my $factory = $e ? $factory_base_class->SUPER::new(@_) : $factory_class->new(@_);
+    $factory->entity_class($entity_class);
+    return $factory;
 }
 
 sub params {
@@ -104,10 +104,12 @@ Get namespace as a construct entity class.
 
 =head2 C<factory>
 
-    my $other_factory = $factory->factory('Entity::Hoge');
-    my $other_factory = $factory->factory('entity-hoge');
+    my $other_factory = $factory->factory('Entity::Hoge', %data);
+    my $other_factory = $factory->factory('Entity::Hoge', \%data);
+    my $other_factory = $factory->factory('entity-hoge', %data );
+    my $other_factory = $factory->factory('entity-hoge', \%data );
 
-Return other factory object.
+Return factory object.
 
 =heas2 C<params>
 
