@@ -64,7 +64,7 @@ subtest 'factory method using' => sub {
 subtest 'factory helper' => sub {
     my $t      = Test::Mojo->new('App');
     my $app    = $t->app;
-    my $entity = $app->factory('entity-bar')->create_entity();
+    my $entity = $app->factory('entity-bar');
     isa_ok $entity, 'Markets::Domain::Entity::Bar';
     isa_ok $entity->{hoge}, 'Markets::Domain::Entity::Hoge';
 };

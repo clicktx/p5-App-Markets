@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use Carp         ();
 use Scalar::Util ();
 use Mojo::Util   ();
+use Markets::Domain::Factory;
 
 sub register {
     my ( $self, $app, $conf ) = @_;
@@ -19,28 +20,7 @@ sub register {
     $app->helper( service => sub { _service(@_) } );
 }
 
-sub _factory {
-    my ( $self, $ns ) = ( shift, shift );
-    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
-    Carp::croak 'Argument empty.' unless $ns;
-
-    my $factory_base_class = 'Markets::Domain::Factory';
-    my $factory_class      = $factory_base_class . '::' . $ns;
-    my $domain_class       = 'Markets::Domain::' . $ns;
-
-    my $e = Mojo::Loader::load_class($factory_class);
-    die "Exception: $e" if ref $e;
-
-    _load_class($domain_class);
-
-    my $app = $self->app;
-    my $params = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
-    $params->{app}             = $self->app;
-    $params->{construct_class} = $domain_class;
-
-    # factory classが無い場合はデフォルトのfactory classを使用
-    return $e ? $factory_base_class->new($params) : $factory_class->new($params);
-}
+sub _factory { shift; Markets::Domain::Factory->new->factory(@_)->create_entity }
 
 sub _pref {
     my $self = shift;
