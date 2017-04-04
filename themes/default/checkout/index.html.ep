@@ -16,7 +16,7 @@
     <li>Order Confirmation</li>
 </ol>
 
-<%= form_for 'RN_checkout_address' => begin %>
+<%= form_for 'RN_checkout_post' => begin %>
     <%= csrf_field %>
     <%= submit_button 'Next' %>
 <% end %>

@@ -7,6 +7,10 @@
 
 <h3>ORDER SUMMARY</h3>
 
+<pre>
+<%= dumper $self->cart->to_data %>
+</pre>
+
 <h3>Secure checkout</h3>
 <ol>
     <li>Please sign in</li>
@@ -16,12 +20,11 @@
     <li><strong>Order Confirmation</strong></li>
 </ol>
 
-<%= form_for 'RN_checkout_complete' => begin %>
+<%= form_for 'RN_checkout_complete' => ( method => 'post' ) => begin %>
     <%= csrf_field %>
     <%= submit_button 'BUY NOW' %>
 <% end %>
 
 <%= form_for 'RN_checkout_shipping' => begin %>
-    <%= csrf_field %>
     <%= submit_button 'Back to page' %>
 <% end %>

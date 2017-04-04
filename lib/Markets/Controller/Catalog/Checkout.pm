@@ -6,9 +6,27 @@ sub index {
     $self->render();
 }
 
-sub adress {
+sub index_post {
+    my $self = shift;
+
+    # $self->render( template => 'checkout/index' );
+    $self->redirect_to('RN_checkout_address');
+}
+
+sub address {
     my $self = shift;
     $self->render();
+}
+
+sub address_validate {
+    my $self = shift;
+
+    # my $params = $self->params;
+    # use DDP;
+    # p $params;
+
+    # $self->render( template => 'checkout/address' );
+    $self->redirect_to('RN_checkout_shipping');
 }
 
 sub shipping {
@@ -50,6 +68,17 @@ sub shipping {
     $self->render();
 }
 
+sub shipping_validate {
+    my $self = shift;
+
+    # my $params = $self->params;
+    # use DDP;
+    # p $params;
+
+    # $self->render( template => 'checkout/address' );
+    $self->redirect_to('RN_checkout_confirm');
+}
+
 #sub payment { }
 sub billing {
     my $self = shift;
@@ -68,7 +97,7 @@ sub complete {
     # itemsが無い場合は実行しない
     my $cart = $self->cart;
 
-# NOTE: itemsに商品がある場合、shipping_itemsが1つも無い場合はcomplete出来ない。
+    # NOTE: itemsに商品がある場合、shipping_itemsが1つも無い場合はcomplete出来ない。
     $self->redirect_to('RN_cart') if $cart->items->size;
 
     # $cart->count('items') or $cart->count('shipping_items')
@@ -97,10 +126,10 @@ sub complete {
         # Items
         # $schema->resultset('Order')->create($order); # itemsがbulk insert されない
 
-# NOTE:
-# DBIx::Class::ResultSet https://metacpan.org/pod/DBIx::Class::ResultSet#populate
-# chekout の他に注文修正等で使う可能性があるのでresultsetにmethod化しておく？
-# $schema->resultset('Order')->create_with_bulkinsert_items($order);
+        # NOTE:
+        # DBIx::Class::ResultSet https://metacpan.org/pod/DBIx::Class::ResultSet#populate
+        # chekout の他に注文修正等で使う可能性があるのでresultsetにmethod化しておく？
+        # $schema->resultset('Order')->create_with_bulkinsert_items($order);
 
         # bulk insert
         # my $items = $cart->items->first->to_array;

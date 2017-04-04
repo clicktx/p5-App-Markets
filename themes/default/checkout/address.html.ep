@@ -16,13 +16,17 @@
     <li>Order Confirmation</li>
 </ol>
 
-<%= form_for 'RN_checkout_shipping' => begin %>
+<%= form_for 'RN_checkout_address_validate' => begin %>
     <%= csrf_field %>
-    shipping address: <%= text_field shipping_address => '' %>
+    <div class="">
+        billing address: <%= text_field billing_address => 'ogikubo' %>
+    </div>
+    <div class="">
+        shipping address: <%= text_field shipping_address => 'kamiizumi' %>
+    </div>
     <%= submit_button 'Next' %>
 <% end %>
 
 <%= form_for 'RN_checkout' => begin %>
-    <%= csrf_field %>
     <%= submit_button 'Back to page' %>
 <% end %>
