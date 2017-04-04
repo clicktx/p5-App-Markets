@@ -6,6 +6,11 @@ sub index {
     $self->render();
 }
 
+sub adress {
+    my $self = shift;
+    $self->render();
+}
+
 sub shipping {
     my $self = shift;
 
@@ -28,6 +33,7 @@ sub shipping {
     $cart->items->each(
         sub {
             use DDP;
+
             # カートitemsから削除
             my $item = $cart->remove_item( $_->id );
 
@@ -44,6 +50,17 @@ sub shipping {
     $self->render();
 }
 
+#sub payment { }
+sub billing {
+    my $self = shift;
+    $self->render();
+}
+
+sub confirm {
+    my $self = shift;
+    $self->render();
+}
+
 sub complete {
     my $self = shift;
 
@@ -53,6 +70,7 @@ sub complete {
 
 # NOTE: itemsに商品がある場合、shipping_itemsが1つも無い場合はcomplete出来ない。
     $self->redirect_to('RN_cart') if $cart->items->size;
+
     # $cart->count('items') or $cart->count('shipping_items')
 
     # cartデータからorderデータ作成
@@ -65,7 +83,8 @@ sub complete {
     # my $shipments = [ { shipping_address => 'kamiizumi' } ];
     # $shipments->[0]->{items} = $cart_data->{items};
     $order->{shipments} = $cart->to_data->{shipments};
-    use DDP;p $order;
+    use DDP;
+    p $order;
 
     # Store order
     my $schema = $self->app->schema;

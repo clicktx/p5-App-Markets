@@ -74,6 +74,7 @@ sub add_catalog_routes {
     $r->post('/checkout/shipping')->to('checkout#shipping')->name('RN_checkout_shipping');
     $r->post('/checkout/payment')->to('checkout#payment')->name('RN_checkout_payment');
     $r->post('/checkout/billing')->to('checkout#billing')->name('RN_checkout_billing');
+    $r->post('/checkout/confirm')->to('checkout#confirm')->name('RN_checkout_confirm');
     $r->post('/checkout/complete')->to('checkout#complete')->name('RN_checkout_complete');
 
     # For Customers
