@@ -111,7 +111,7 @@ Get namespace as a construct entity class.
 
 Return entity object.
 
-=heas2 C<params>
+=head2 C<params>
 
     # Getter
     my $params = $factory->params;
