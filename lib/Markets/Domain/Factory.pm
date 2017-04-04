@@ -20,7 +20,7 @@ sub create_entity {
     # cooking entity
     $self->cook();
 
-    my $params = { %{$self} };
+    my $params = $self->params;
     my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
 
     # no need attributes
