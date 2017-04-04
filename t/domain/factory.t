@@ -2,39 +2,70 @@ use Mojo::Base -strict;
 
 use t::Util;
 use Test::More;
+use Test::Deep;
 use Test::Mojo;
-
-my $t   = Test::Mojo->new('App');
-my $app = $t->app;
 
 subtest 'basic' => sub {
     use_ok 'Markets::Domain::Factory';
-    my $obj =
-      Markets::Domain::Factory->new( { construct_class => 'Markets::Domain::Entity::Hoge' } );
-    isa_ok $obj, 'Markets::Domain::Entity::Hoge', 'right construct object';
+    my $f = Markets::Domain::Factory->new;
+    $f->params( a => 1, b => 2 );
+    is_deeply $f, { a => 1, b => 2 }, 'right set params';
+
+    my $params = $f->params;
+    is_deeply $params, { a => 1, b => 2 }, 'right get reference';
+    my %params = $f->params;
+    is_deeply \%params, { a => 1, b => 2 }, 'right get hash';
+
+    $f->params( { c => 3, d => 4 } );
+    is_deeply $f, { a => 1, b => 2, c => 3, d => 4 }, 'right set param';
 };
 
-subtest 'construct method nothing' => sub {
-    my $obj = Markets::Domain::Factory::Entity::Hoge->new(
-        { construct_class => 'Markets::Domain::Entity::Hoge' } );
-    isa_ok $obj, 'Markets::Domain::Entity::Hoge', 'right construct object';
-    is $obj->{hoge}, undef, 'right attributes';
+subtest 'has not cook' => sub {
+    my $f = Markets::Domain::Factory::Entity::Hoge->new();
+    is ref $f, 'Markets::Domain::Factory::Entity::Hoge', 'right namespace';
+
+    my $entity = $f->create_entity();
+    is ref $entity, 'Markets::Domain::Entity::Hoge', 'right namespace';
+    cmp_deeply { %{$entity} }, {}, 'right argument empty';
+
+    $f = Markets::Domain::Factory::Entity::Hoge->new( hoge => 1 );
+    $entity = $f->create_entity( fuga => 2 );
+    cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash';
+
+    $f = Markets::Domain::Factory::Entity::Hoge->new( { hoge => 1 } );
+    $entity = $f->create_entity( { fuga => 2 } );
+    cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash reference';
 };
 
-subtest 'construct method' => sub {
-    my $obj = Markets::Domain::Factory::Entity::Fuga->new(
-        { construct_class => 'Markets::Domain::Entity::Fuga' } );
-    isa_ok $obj, 'Markets::Domain::Entity::Fuga', 'right construct object';
-    is $obj->{fuga}, 1, 'right attributes';
+subtest 'has cook' => sub {
+    my $f = Markets::Domain::Factory::Entity::Foo->new();
+    is ref $f, 'Markets::Domain::Factory::Entity::Foo', 'right namespace';
+
+    my $entity = $f->create_entity();
+    is ref $entity, 'Markets::Domain::Entity::Foo', 'right namespace';
+    cmp_deeply { %{$entity} }, { a => 1, b => 2, f => 'fuga', h => 'hoge' }, 'right parameter';
+};
+
+subtest 'no factory' => sub {
+    my $entity = Markets::Domain::Factory->new->factory('entity-nofactory');
+    is ref $entity, 'Markets::Domain::Entity::Nofactory', 'right namespace';
+    cmp_deeply { %{$entity} }, {}, 'right parameter';
+    is $entity->text, 'no factory', 'right method';
+};
+
+subtest 'factory method using' => sub {
+    my $f      = Markets::Domain::Factory::Entity::Bar->new();
+    my $entity = $f->create_entity();
+    is ref $entity, 'Markets::Domain::Entity::Bar', 'right namespace';
+    cmp_deeply { %{$entity} }, { hoge => isa('Markets::Domain::Entity::Hoge'), }, 'right parameter';
 };
 
 subtest 'factory helper' => sub {
-
-    isa_ok $app->factory('entity-nofactory'), 'Markets::Domain::Entity::Nofactory';
-
-    my $obj = $app->factory('entity-bar');
-    isa_ok $obj, 'Markets::Domain::Entity::Bar';
-    isa_ok $obj->{hoge}, 'Markets::Domain::Entity::Hoge';
+    my $t      = Test::Mojo->new('App');
+    my $app    = $t->app;
+    my $entity = $app->factory('entity-bar');
+    isa_ok $entity, 'Markets::Domain::Entity::Bar';
+    isa_ok $entity->{hoge}, 'Markets::Domain::Entity::Hoge';
 };
 
 done_testing();
@@ -43,34 +74,31 @@ done_testing();
 
     package Markets::Domain::Factory::Entity::Hoge;
     use Mojo::Base 'Markets::Domain::Factory';
-    1;
 
     package Markets::Domain::Entity::Hoge;
     use Mojo::Base 'Markets::Domain::Entity';
-    1;
 }
 
 {
 
-    package Markets::Domain::Factory::Entity::Fuga;
+    package Markets::Domain::Factory::Entity::Foo;
     use Mojo::Base 'Markets::Domain::Factory';
 
-    sub construct {
+    sub cook {
         my $self = shift;
-        $self->construct_class->new( fuga => 1 );
+        $self->params( f => 'fuga', h => 'hoge' );
+        $self->params( { a => 1, b => 2 } );
     }
-    1;
 
-    package Markets::Domain::Entity::Fuga;
+    package Markets::Domain::Entity::Foo;
     use Mojo::Base 'Markets::Domain::Entity';
-    1;
 }
 
 {
 
     package Markets::Domain::Entity::Nofactory;
     use Mojo::Base 'Markets::Domain::Entity';
-    1;
+    sub text { 'no factory' }
 }
 
 {
@@ -78,14 +106,12 @@ done_testing();
     package Markets::Domain::Factory::Entity::Bar;
     use Mojo::Base 'Markets::Domain::Factory';
 
-    sub construct {
+    sub cook {
         my $self = shift;
-        my $hoge = $self->app->factory('entity-hoge');
-        $self->construct_class->new( hoge => $hoge );
+        my $hoge = $self->factory('entity-hoge');
+        $self->params( hoge => $hoge );
     }
-    1;
 
     package Markets::Domain::Entity::Bar;
     use Mojo::Base 'Markets::Domain::Entity';
-    1;
 }

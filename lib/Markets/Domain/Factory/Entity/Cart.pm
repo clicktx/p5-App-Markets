@@ -2,21 +2,17 @@ package Markets::Domain::Factory::Entity::Cart;
 use Mojo::Base 'Markets::Domain::Factory';
 use Markets::Domain::Collection qw/c/;
 
-sub construct {
+sub cook {
     my $self = shift;
 
-    my $params = $self->params;
-    my $cart_data = delete $params->{cart_data} || {};
-
+    my $cart_data = delete $self->{cart_data} || {};
     my %entities = ( items => 'entity-item', shipments => 'entity-shipment' );
     foreach my $key ( keys %entities ) {
         my $data = $cart_data->{$key} || [];
         my @array;
-        push @array, $self->app->factory( $entities{$key}, $_ ) for @{$data};
-        $params->{$key} = c(@array);
+        push @array, $self->factory( $entities{$key}, $_ ) for @{$data};
+        $self->params( $key => c(@array) );
     }
-
-    return $self->construct_class->new($params);
 }
 
 1;
@@ -28,8 +24,7 @@ Markets::Domain::Factory::Entity::Cart
 
 =head1 SYNOPSIS
 
-    # In controller
-    my $obj = $c->factory( 'entity-cart', %args );
+    my $entity = Markets::Domain::Factory::Entity::Cart->new( %args )->create_entity;
 
 =head1 DESCRIPTION
 

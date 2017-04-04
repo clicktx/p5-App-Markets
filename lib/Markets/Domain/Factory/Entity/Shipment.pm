@@ -2,19 +2,16 @@ package Markets::Domain::Factory::Entity::Shipment;
 use Mojo::Base 'Markets::Domain::Factory';
 use Markets::Domain::Collection qw/c/;
 
-sub construct {
+sub cook {
     my $self = shift;
 
-    my $params = $self->params;
-    my $data = $params->{shipping_items} || [];
-
+    my $data = $self->{shipping_items} || [];
     my @shipping_items;
     foreach my $item ( @{$data} ) {
-        push @shipping_items, $self->app->factory( 'entity-item', $item );
+        push @shipping_items, $self->factory( 'entity-item', $item );
     }
-    $params->{shipping_items} = c(@shipping_items);
 
-    return $self->construct_class->new($params);
+    $self->params( shipping_items => c(@shipping_items) );
 }
 
 1;
