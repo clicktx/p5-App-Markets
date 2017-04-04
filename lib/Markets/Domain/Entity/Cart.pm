@@ -123,7 +123,11 @@ sub merge {
     push @{ $stored->items }, @{ $self->items };
 
     # shipments
-    # TODO: [WIP]
+    # NOTE: [WIP]
+    # 未ログイン状態でshipmentsを設定している場合にどうするか。
+    # - ログイン状態でshipmentsを設定している（カートに保存されている）
+    # - ログアウト後に未ログイン状態でshipments設定まで進んだ後にログインする
+    # 通常はその前にログインを促すのでありえない状態ではあるが...
 
     $stored->_is_modified(1);
     return $stored;

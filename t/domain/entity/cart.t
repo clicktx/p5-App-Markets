@@ -22,20 +22,20 @@ my $cart_data = {
     ],
 };
 
-sub _factory_cart {
+sub _create_entity {
     $app->factory(
         'entity-cart',
         {
             cart_id   => '12345',
             cart_data => $cart_data,
         }
-    );
+    )->create;
 }
 
 use_ok 'Markets::Domain::Entity::Item';
 
 subtest 'basic' => sub {
-    my $cart = $app->factory('entity-cart');
+    my $cart = $app->factory('entity-cart')->create;
     isa_ok $cart, 'Markets::Domain::Entity';
 
     ok $cart->id;
@@ -44,7 +44,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'attributes' => sub {
-    my $cart = _factory_cart;
+    my $cart = _create_entity;
     is $cart->cart_id, '12345', 'right cart_id';
 
     isa_ok $cart->items, 'Mojo::Collection', 'right items';
@@ -55,7 +55,7 @@ subtest 'attributes' => sub {
 };
 
 subtest 'methods' => sub {
-    my $cart = _factory_cart;
+    my $cart = _create_entity;
     cmp_deeply $cart->to_data, $cart_data, 'right data structure';
     is $cart->id, '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->total_item_count, 6,  'right total item count';
@@ -67,29 +67,29 @@ subtest 'methods' => sub {
             cart_id   => '54321',
             cart_data => $cart_data,
         }
-    );
+    )->create;
     is $cart->is_equal($cart),  1, 'right equal entity';
     is $cart->is_equal($cart2), 0, 'right not equal entity';
 };
 
 subtest 'method is_modified' => sub {
-    my $cart = _factory_cart;
+    my $cart = _create_entity;
     is $cart->is_modified, 0, 'right not modified';
     $cart->items->first->is_modified(1);
     is $cart->is_modified, 1, 'right modified';
 
-    $cart = _factory_cart;
+    $cart = _create_entity;
     is $cart->is_modified, 0, 'right not modified';
     $cart->shipments->first->is_modified(1);
     is $cart->is_modified, 1, 'right modified';
 
-    # $cart = _factory_cart;
+    # $cart = _create_entity;
     # $cart->shipments->first->items->first->is_modified(1);
     # is $cart->is_modified, 1, 'right modified';
 };
 
 subtest 'method add_item' => sub {
-    my $cart = _factory_cart;
+    my $cart = _create_entity;
     $cart->add_item( Markets::Domain::Entity::Item->new( product_id => 11 ) );
     cmp_deeply $cart->items->last->to_data, { product_id => 11 }, 'right item';
 
@@ -100,7 +100,7 @@ subtest 'method add_item' => sub {
 };
 
 subtest 'method add_shipping_item' => sub {
-    my $cart = _factory_cart;
+    my $cart = _create_entity;
     $cart->add_shipping_item( Markets::Domain::Entity::Item->new( product_id => 11 ) );
     cmp_deeply $cart->shipments->first->shipping_items->last->to_data, { product_id => 11 },
       'right shipping_item';
@@ -114,7 +114,7 @@ subtest 'method add_shipping_item' => sub {
 };
 
 subtest 'method clear' => sub {
-    my $cart = _factory_cart;
+    my $cart = _create_entity;
     $cart->clear;
     cmp_deeply $cart->to_data, { items => [], shipments => [] };
     is $cart->is_modified,      1, 'right modified';
@@ -123,7 +123,7 @@ subtest 'method clear' => sub {
 };
 
 subtest 'method clone' => sub {
-    my $cart = _factory_cart;
+    my $cart = _create_entity;
 
     $cart->is_modified(1);
     my $clone = $cart->clone;
@@ -147,7 +147,7 @@ subtest 'method clone' => sub {
 };
 
 subtest 'method remove_item' => sub {
-    my $cart = _factory_cart;
+    my $cart = _create_entity;
     my $item = Markets::Domain::Entity::Item->new( product_id => 2, quantity => 1 );
 
     my $id           = $item->id;
@@ -159,7 +159,7 @@ subtest 'method remove_item' => sub {
     is $cart->is_modified, 1, 'right modified';
 
     # Unremove. not found item.
-    $cart         = _factory_cart;
+    $cart         = _create_entity;
     $item         = Markets::Domain::Entity::Item->new( product_id => 123, quantity => 1 );
     $id           = $item->id;
     $removed_item = $cart->remove_item($id);
@@ -175,7 +175,7 @@ subtest 'method remove_item' => sub {
 };
 
 subtest 'method merge' => sub {
-    my $cart        = _factory_cart;
+    my $cart        = _create_entity;
     my $stored_data = {
         items => [
             { product_id => 4, quantity => 4 },
@@ -190,7 +190,7 @@ subtest 'method merge' => sub {
             cart_id   => '99999',
             cart_data => $stored_data,
         }
-    );
+    )->create;
 
     my $merged_cart = $cart->merge($stored_cart);
     cmp_deeply $cart->to_data,        $cart_data,   'right non-destructive';

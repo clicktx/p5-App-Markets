@@ -52,7 +52,8 @@ sub login {
             cart_id   => $customer_id,
             cart_data => $session->store->load_cart_data($customer_id),
         }
-    );
+    )->create;
+
     my $merged_cart = $c->cart->merge($stored_cart);
     $c->cart($merged_cart);
 

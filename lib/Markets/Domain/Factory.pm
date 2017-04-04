@@ -12,6 +12,8 @@ has entity_class => sub {
 
 sub cook { }
 
+sub create { shift->create_entity(@_) }
+
 sub create_entity {
     my $self = shift;
 
@@ -44,7 +46,7 @@ sub factory {
 
     my $factory = $e ? $factory_base_class->SUPER::new(@_) : $factory_class->new(@_);
     $factory->entity_class($entity_class);
-    return $factory->create_entity;
+    return $factory;
 }
 
 sub params {
@@ -96,6 +98,10 @@ Get namespace as a construct entity class.
         # your factory codes here!
     }
 
+=head2 C<create>
+
+Alias for L</create_entity>.
+
 =head2 C<create_entity>
 
     my $entity = $factory->create_entity;
@@ -104,12 +110,12 @@ Get namespace as a construct entity class.
 
 =head2 C<factory>
 
-    my $entity = $factory->factory('Entity::Hoge', %data );
-    my $entity = $factory->factory('Entity::Hoge', \%data );
-    my $entity = $factory->factory('entity-hoge', %data );
-    my $entity = $factory->factory('entity-hoge', \%data );
+    my $new_factory = $factory->factory('Entity::Hoge', %data );
+    my $new_factory = $factory->factory('Entity::Hoge', \%data );
+    my $new_factory = $factory->factory('entity-hoge', %data );
+    my $new_factory = $factory->factory('entity-hoge', \%data );
 
-Return entity object.
+Return factory object.
 
 =heas2 C<params>
 

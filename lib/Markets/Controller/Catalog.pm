@@ -14,7 +14,7 @@ sub init {
             cart_id   => $cart_id,
             cart_data => $cart_data,
         }
-    );
+    )->create;
     $self->stash( 'markets.entity.cart' => $cart, 'markets.entity.shipments' => $cart->shipments );
     return $self;
 }
