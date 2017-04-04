@@ -1,5 +1,5 @@
 % layout 'default';
-% title 'Shipping Options';
+% title 'Billing and Shipping Address';
 
 <h1><%= title %></h1>
 
@@ -10,18 +10,19 @@
 <h3>Secure checkout</h3>
 <ol>
     <li>Please sign in</li>
-    <li>Billing and Shipping Address</li>
-    <li><strong>Shipping Options</strong></li>
+    <li><strong>Billing and Shipping Address</strong></li>
+    <li>Shipping Options</li>
     <li>Billing Options</li>
     <li>Order Confirmation</li>
 </ol>
 
-<%= form_for 'RN_checkout_confirm' => begin %>
+<%= form_for 'RN_checkout_shipping' => begin %>
     <%= csrf_field %>
+    shipping address: <%= text_field shipping_address => '' %>
     <%= submit_button 'Next' %>
 <% end %>
 
-<%= form_for 'RN_checkout_address' => begin %>
+<%= form_for 'RN_checkout' => begin %>
     <%= csrf_field %>
     <%= submit_button 'Back to page' %>
 <% end %>
