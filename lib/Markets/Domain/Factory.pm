@@ -117,7 +117,7 @@ Alias for L</create_entity>.
 
 Return factory object.
 
-=heas2 C<params>
+=head2 C<params>
 
     # Getter
     my $params = $factory->params;
