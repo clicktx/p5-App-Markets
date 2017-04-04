@@ -20,7 +20,7 @@ sub shipping {
     # NOTE: 実際にはaddressで作成されているはず
     {
         my $data = { shipping_address => 'kamiizumi' };
-        my $shipment = $self->app->factory( 'entity-shipment', %{$data} );
+        my $shipment = $self->app->factory( 'entity-shipment', %{$data} )->create;
 
         use Markets::Domain::Collection qw/collection/;
         $cart->shipments( collection($shipment) ) unless $cart->shipments->size;
