@@ -25,8 +25,9 @@ subtest 'find method' => sub {
 };
 
 subtest 'to_data method' => sub {
-    use Markets::Domain::Collection qw/c/;
-    my $c = Markets::Domain::Collection->new( c(), 1, c( c(), c( 1, 2 ) ), 2 );
+    use Markets::Domain::Collection qw/collection/;
+    my $c = Markets::Domain::Collection->new( collection(), 1,
+        collection( collection(), collection( 1, 2 ) ), 2 );
     cmp_deeply $c->to_data, [ [], 1, [ [], [ 1, 2 ] ], 2 ], 'right dump data';
 };
 

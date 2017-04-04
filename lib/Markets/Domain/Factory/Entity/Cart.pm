@@ -1,6 +1,6 @@
 package Markets::Domain::Factory::Entity::Cart;
 use Mojo::Base 'Markets::Domain::Factory';
-use Markets::Domain::Collection qw/c/;
+use Markets::Domain::Collection qw/collection/;
 
 sub cook {
     my $self = shift;
@@ -11,7 +11,7 @@ sub cook {
         my $data = $cart_data->{$key} || [];
         my @array;
         push @array, $self->factory( $entities{$key}, $_ )->create for @{$data};
-        $self->params( $key => c(@array) );
+        $self->params( $key => collection(@array) );
     }
 }
 

@@ -2,9 +2,9 @@ package Markets::Domain::Collection;
 use Mojo::Base 'Mojo::Collection';
 use Scalar::Util qw/blessed/;
 
-our @EXPORT_OK = ('c');
+our @EXPORT_OK = ('collection');
 
-sub c { __PACKAGE__->new(@_) }
+sub collection { __PACKAGE__->new(@_) }
 
 # NOTE: 同じcollectionに同一のidを持つ要素は存在しないはずなのでsearchメソッドは不要？
 sub find {
@@ -37,9 +37,9 @@ the following new ones.
 
 =head1 METHODS
 
-=head2 C<c>
+=head2 C<collection>
 
-    my $collection = c(1, 2, 3);
+    my $collection = collection(1, 2, 3);
 
 Construct a new array-based L<Markets::Domain::Collection> object.
 

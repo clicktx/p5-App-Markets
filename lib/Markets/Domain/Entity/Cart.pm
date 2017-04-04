@@ -1,6 +1,6 @@
 package Markets::Domain::Entity::Cart;
 use Mojo::Base 'Markets::Domain::Entity';
-use Markets::Domain::Collection qw/c/;
+use Markets::Domain::Collection qw/collection/;
 use Carp qw/croak/;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
@@ -65,7 +65,7 @@ sub clear {
     my $self = shift;
 
     # Remove all data
-    $self->$_( c() ) for (qw/items shipments/);
+    $self->$_( collection() ) for (qw/items shipments/);
 
     $self->_is_modified(1);
     return $self;

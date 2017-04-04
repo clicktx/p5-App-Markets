@@ -17,8 +17,8 @@ sub shipping {
         my $data = { shipping_address => 'kamiizumi' };
         my $shipment = $self->app->factory( 'entity-shipment', %{$data} );
 
-        use Markets::Domain::Collection qw/c/;
-        $cart->shipments( c($shipment) ) unless $cart->shipments->size;
+        use Markets::Domain::Collection qw/collection/;
+        $cart->shipments( collection($shipment) ) unless $cart->shipments->size;
     }
 
     # 商品をshipmentに移動

@@ -1,6 +1,6 @@
 package Markets::Domain::Factory::Entity::Shipment;
 use Mojo::Base 'Markets::Domain::Factory';
-use Markets::Domain::Collection qw/c/;
+use Markets::Domain::Collection qw/collection/;
 
 sub cook {
     my $self = shift;
@@ -11,7 +11,7 @@ sub cook {
         push @shipping_items, $self->factory( 'entity-item', $item )->create;
     }
 
-    $self->params( shipping_items => c(@shipping_items) );
+    $self->params( shipping_items => collection(@shipping_items) );
 }
 
 1;
