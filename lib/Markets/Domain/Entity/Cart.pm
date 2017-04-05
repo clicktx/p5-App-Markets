@@ -4,9 +4,9 @@ use Markets::Domain::Collection qw/collection/;
 use Carp qw/croak/;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
-has cart_id        => '';
-has items          => sub { Markets::Domain::Collection->new };
-has shipments      => sub { Markets::Domain::Collection->new };
+has cart_id   => '';
+has items     => sub { Markets::Domain::Collection->new };
+has shipments => sub { Markets::Domain::Collection->new };
 has [qw/billing_address/];
 
 my @needless_attrs = (qw/cart_id items/);
@@ -57,6 +57,10 @@ sub _add_item {
     else {
         push @{$collection}, $item;
     }
+}
+
+sub all_shipping_items {
+    shift->shipments->map( sub { $_->shipping_items->each } );
 }
 
 sub clear {
@@ -142,10 +146,6 @@ sub remove_item {
     return $removed;
 }
 
-sub all_shipping_items {
-    shift->shipments->map( sub { $_->shipping_items->each } );
-}
-
 sub to_order_data {
     my $self = shift;
     my $data = $self->to_data;
@@ -220,6 +220,12 @@ Return L<Markets::Domain::Entity::Cart> Object.
 C<$shipment_object> is option argument.
 default $shipments->first
 
+=head2 C<all_shipping_items>
+
+    my $all_shipping_items = $cart->all_shipping_items;
+
+All items in shipments.
+
 =head2 C<clear>
 
 =head2 C<clone>
@@ -243,12 +249,6 @@ Return Entity Cart Object.
     my $removed = $cart->remove_item($item);
 
 Return Entity Item Object or undef.
-
-=head2 C<all_shipping_items>
-
-    my $all_shipping_items = $cart->all_shipping_items;
-
-All items in shipments.
 
 =head2 C<to_order_data>
 
