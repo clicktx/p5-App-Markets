@@ -52,7 +52,7 @@ subtest 'attributes' => sub {
 
 subtest 'methods' => sub {
     my $cart = _create_entity;
-    cmp_deeply $cart->to_data, $test_data, 'right data structure';
+    cmp_deeply $cart->to_data, { cart_id => ignore(), %{$test_data} }, 'right data structure';
     is $cart->id,               '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->total_item_count, 6,                                          'right total item count';
     is $cart->total_quantity,   21,                                         'right total quantity count';
@@ -110,7 +110,7 @@ subtest 'method add_shipping_item' => sub {
 subtest 'method clear' => sub {
     my $cart = _create_entity;
     $cart->clear;
-    cmp_deeply $cart->to_data, { items => [], shipments => [] };
+    cmp_deeply $cart->to_data, { cart_id => ignore(), items => [], shipments => [] };
     is $cart->is_modified,      1, 'right modified';
     is $cart->total_item_count, 0, 'right total item count';
     is $cart->total_quantity,   0, 'right total quantity count';
@@ -182,11 +182,12 @@ subtest 'method merge' => sub {
     )->create;
 
     my $merged_cart = $cart->merge($stored_cart);
-    cmp_deeply $cart->to_data,        $test_data,   'right non-destructive';
-    cmp_deeply $stored_cart->to_data, $stored_data, 'right non-destructive';
+    cmp_deeply $cart->to_data,        { cart_id => ignore(), %{$test_data} },   'right non-destructive';
+    cmp_deeply $stored_cart->to_data, { cart_id => ignore(), %{$stored_data} }, 'right non-destructive';
     cmp_deeply $merged_cart->to_data,
       {
-        items => [
+        cart_id => ignore(),
+        items   => [
             { product_id => 4, quantity => 4 },
             { product_id => 1, quantity => 2 },
             { product_id => 5, quantity => 5 },

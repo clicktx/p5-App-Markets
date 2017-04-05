@@ -146,15 +146,6 @@ sub all_shipping_items {
     shift->shipments->map( sub { $_->shipping_items->each } );
 }
 
-sub to_hash {
-    my $self = shift;
-    my $hash = $self->SUPER::to_hash;
-
-    # Remove no need data
-    delete $hash->{$_} for @needless_attrs;
-    return $hash;
-}
-
 sub total_item_count {
 
     # $_[0]->items->size + $_[0]->shipments->reduce( sub { $a + $b->item_count }, 0 );
@@ -249,12 +240,6 @@ Return Entity Item Object or undef.
     my $all_shipping_items = $cart->all_shipping_items;
 
 All items in shipments.
-
-=head2 C<to_hash>
-
-    my $hash = $cart->to_hash;
-
-Return Hash reference.
 
 =head2 C<total_item_count>
 
