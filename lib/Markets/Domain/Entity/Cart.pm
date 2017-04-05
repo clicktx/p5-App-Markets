@@ -9,7 +9,7 @@ has items          => sub { Markets::Domain::Collection->new };
 has shipments      => sub { Markets::Domain::Collection->new };
 has [qw/billing_address/];
 
-my @needless_attrs = (qw/cart_id/);
+my @needless_attrs = (qw/cart_id items/);
 
 # has 'items';
 # has item_count       => sub { shift->items->flatten->size };
@@ -146,6 +146,15 @@ sub all_shipping_items {
     shift->shipments->map( sub { $_->shipping_items->each } );
 }
 
+sub to_order_data {
+    my $self = shift;
+    my $data = $self->to_data;
+
+    # Remove needless data
+    delete $data->{$_} for @needless_attrs;
+    return $data;
+}
+
 sub total_item_count {
 
     # $_[0]->items->size + $_[0]->shipments->reduce( sub { $a + $b->item_count }, 0 );
@@ -240,6 +249,10 @@ Return Entity Item Object or undef.
     my $all_shipping_items = $cart->all_shipping_items;
 
 All items in shipments.
+
+=head2 C<to_order_data>
+
+    my $order = $self->to_order_data;
 
 =head2 C<total_item_count>
 

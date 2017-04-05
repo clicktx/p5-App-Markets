@@ -200,4 +200,13 @@ subtest 'method merge' => sub {
     is $merged_cart->is_modified, 1, 'right modified';
 };
 
+subtest 'order data' => sub {
+    my $cart       = _create_entity;
+    my $order_data = { %{$cart->to_data} };
+    delete $order_data->{cart_id};
+    delete $order_data->{items};
+
+    cmp_deeply $cart->to_order_data, $order_data, 'right order data';
+};
+
 done_testing();
