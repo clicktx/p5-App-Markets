@@ -10,6 +10,7 @@ has shipments      => sub { Markets::Domain::Collection->new };
 has shipping_items => sub {
     shift->shipments->map( sub { $_->shipping_items->each } );
 };
+has [qw/billing_address/];
 
 my @noneed_attrs = (qw/id cart_id _is_modified shipping_items/);
 
