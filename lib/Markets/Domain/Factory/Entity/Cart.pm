@@ -9,7 +9,9 @@ sub cook {
     $self->_create_entity( 'items', 'entity-item', $self->params('items') || [] );
 
     # Aggregate shipments
-    $self->_create_entity( 'shipments', 'entity-shipment', $self->params('shipments') || [ {} ] );
+    my $param = $self->params('shipments') || [ {} ];
+    push @{$param}, {} unless @{$param};    # NOTE: At the time of "$param eq []"
+    $self->_create_entity( 'shipments', 'entity-shipment', $param );
 }
 
 sub _create_entity {

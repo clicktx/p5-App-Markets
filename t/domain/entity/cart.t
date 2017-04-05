@@ -22,7 +22,7 @@ sub _create_entity {
     $app->factory(
         'entity-cart',
         {
-            cart_id   => '12345',
+            cart_id => '12345',
             %{$test_data},
         }
     )->create;
@@ -60,7 +60,7 @@ subtest 'methods' => sub {
     my $cart2 = $app->factory(
         'entity-cart',
         {
-            cart_id   => '54321',
+            cart_id => '54321',
             %{$test_data},
         }
     )->create;
@@ -171,12 +171,12 @@ subtest 'method merge' => sub {
             { product_id => 1, quantity => 1 },
             { product_id => 5, quantity => 5 },
         ],
-        shipments => [],
+        shipments => [ { shipping_items => [] } ],
     };
     my $stored_cart = $app->factory(
         'entity-cart',
         {
-            cart_id   => '99999',
+            cart_id => '99999',
             %{$stored_data},
         }
     )->create;
@@ -184,7 +184,8 @@ subtest 'method merge' => sub {
     my $merged_cart = $cart->merge($stored_cart);
     cmp_deeply $cart->to_data,        $test_data,   'right non-destructive';
     cmp_deeply $stored_cart->to_data, $stored_data, 'right non-destructive';
-    cmp_deeply $merged_cart->to_data, {
+    cmp_deeply $merged_cart->to_data,
+      {
         items => [
             { product_id => 4, quantity => 4 },
             { product_id => 1, quantity => 2 },
@@ -192,11 +193,7 @@ subtest 'method merge' => sub {
             { product_id => 2, quantity => 2 },
             { product_id => 3, quantity => 3 },
         ],
-        shipments => [
-
-            # { address => 'Tokyo', items => [ { product_id => 4, quantity => 4 } ] },
-            # { address => 'Osaka', items => [ { product_id => 5, quantity => 5 } ] },
-        ],
+        shipments => [ { shipping_items => [] } ],
       },
       'right merge data';
     is $merged_cart->is_modified, 1, 'right modified';

@@ -26,6 +26,26 @@ subtest 'argument empty' => sub {
       'Markets::Domain::Entity::Cart';
 };
 
+subtest 'shipments empty hash ref' => sub {
+    my $e = $pkg->new( { shipments => [] } )->create_entity;
+    cmp_deeply $e,
+      bless {
+        items     => ignore(),
+        shipments => (
+            bless [
+                (
+                    bless {
+                        shipping_items => ( bless [], 'Markets::Domain::Collection' )
+                    },
+                    'Markets::Domain::Entity::Shipment'
+                )
+            ],
+            'Markets::Domain::Collection'
+        ),
+      },
+      'Markets::Domain::Entity::Cart';
+};
+
 subtest 'cart data empty' => sub {
     my $e = $pkg->new()->create_entity;
     cmp_deeply $e, bless {
