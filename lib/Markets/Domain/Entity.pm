@@ -7,7 +7,7 @@ use Scalar::Util qw/blessed/;
 has _is_modified => 0;
 has id => sub { croak 'Attribute "id" not implemented by subclass' };
 
-my @noneed_attrs = (qw/_is_modified id/);
+my @needless_attrs = (qw/_is_modified id/);
 
 sub clone {
     my $self  = shift;
@@ -42,8 +42,8 @@ sub to_data {
 sub to_hash {
     my $hash = +{ %{ +shift } };
 
-    # Remove no need data
-    delete $hash->{$_} for @noneed_attrs;
+    # Remove needless data
+    delete $hash->{$_} for @needless_attrs;
     return $hash;
 }
 
