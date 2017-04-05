@@ -86,22 +86,18 @@ Alias for $app->addons;
 
 Alias for $c->session;
 
+=head2 C<factory>
+
+    my $factory = $c->factory('entity-something', $arg);
+
+Return L<Markets::Domain::Factory> Object.
+
 =head2 C<pref>
 
     my $preferences = $c->pref; # Get all preferences
     my $hoge = $c->pref('hoge');
 
 Get preference.
-
-=head2 C<factory>
-
-    my $something = $c->factory('entity-something', $arg);
-
-    # Markets::Factory::Entity::Something->new($arg)
-    # or Markets::Entity::Something->new($arg)
-    # Return Markets::Entity::Something Object.
-
-Return Object.
 
 =head2 C<service>
 

@@ -14,4 +14,20 @@ subtest 'argument empty' => sub {
       'Markets::Domain::Entity::Shipment';
 };
 
+subtest 'data' => sub {
+    my $factory = $pkg->new(
+        {
+            shipping_address => 'Silicon Valley',
+            shipping_items   => [ {} ],
+        }
+    );
+    my $entity = $factory->create_entity();
+    cmp_deeply $entity,
+      bless {
+        shipping_address => 'Silicon Valley',
+        shipping_items   => ( bless [ bless {}, 'Markets::Domain::Entity::Item', ], 'Markets::Domain::Collection' ),
+      },
+      'Markets::Domain::Entity::Shipment';
+};
+
 done_testing;

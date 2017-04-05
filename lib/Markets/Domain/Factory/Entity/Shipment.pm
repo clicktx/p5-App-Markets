@@ -1,6 +1,6 @@
 package Markets::Domain::Factory::Entity::Shipment;
 use Mojo::Base 'Markets::Domain::Factory';
-use Markets::Domain::Collection qw/c/;
+use Markets::Domain::Collection qw/collection/;
 
 sub cook {
     my $self = shift;
@@ -8,10 +8,10 @@ sub cook {
     my $data = $self->{shipping_items} || [];
     my @shipping_items;
     foreach my $item ( @{$data} ) {
-        push @shipping_items, $self->factory( 'entity-item', $item );
+        push @shipping_items, $self->factory( 'entity-item', $item )->create;
     }
 
-    $self->params( shipping_items => c(@shipping_items) );
+    $self->params( shipping_items => collection(@shipping_items) );
 }
 
 1;
@@ -24,7 +24,7 @@ Markets::Domain::Factory::Entity::Shipment
 =head1 SYNOPSIS
 
     # In controller
-    my $obj = $c->factory( 'entity-cart', %args );
+    my $entity = $c->factory( 'entity-cart', %args )->create;
 
 =head1 DESCRIPTION
 

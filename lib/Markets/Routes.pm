@@ -15,8 +15,8 @@ sub register {
 sub add_admin_routes {
     my ( $self, $app ) = @_;
 
-    my $r = $app->routes->any( $app->pref('admin_uri_prefix') )
-      ->to( namespace => 'Markets::Controller::Admin' )->name('RN_admin');
+    my $r = $app->routes->any( $app->pref('admin_uri_prefix') )->to( namespace => 'Markets::Controller::Admin' )
+      ->name('RN_admin');
 
     # Not required authorization Routes
     {
@@ -38,8 +38,7 @@ sub add_admin_routes {
             # $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
             my $settings = $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
             $settings->get('/addons')->to('addons#index')->name('RN_admin_settings_addons');
-            $settings->get('/addons/:action')->to('addons#')
-              ->name('RN_admin_settings_addons_action');
+            $settings->get('/addons/:action')->to('addons#')->name('RN_admin_settings_addons_action');
         }
 
         # $r->get('/addons')->to('addons#index')->name('RN_admin_addons');
@@ -70,11 +69,22 @@ sub add_catalog_routes {
 
     # Checkout
     $r->get('/checkout')->to('checkout#index')->name('RN_checkout');
-    $r->post('/checkout/address')->to('checkout#address')->name('RN_checkout_address');
-    $r->post('/checkout/shipping')->to('checkout#shipping')->name('RN_checkout_shipping');
+    $r->post('/checkout')->to('checkout#index_post')->name('RN_checkout_post');
+
+    $r->get('/checkout/address')->to('checkout#address')->name('RN_checkout_address');
+    $r->post('/checkout/address')->to('checkout#address_validate')->name('RN_checkout_address_validate');
+    $r->get('/checkout/shipping')->to('checkout#shipping')->name('RN_checkout_shipping');
+    $r->post('/checkout/shipping_validate')->to('checkout#shipping_validate')->name('RN_checkout_shipping_validate');
     $r->post('/checkout/payment')->to('checkout#payment')->name('RN_checkout_payment');
     $r->post('/checkout/billing')->to('checkout#billing')->name('RN_checkout_billing');
-    $r->post('/checkout/complete')->to('checkout#complete')->name('RN_checkout_complete');
+
+    # $r->post('/checkout/confirm')->to('checkout#order_validate')->name('RN_checkout_confirm_validate');
+    # $r->get('/checkout/confirm')->to('checkout#confirm')->name('RN_checkout_confirm');
+    $r->any('/checkout/confirm')->to('checkout#confirm')->name('RN_checkout_confirm');
+
+    # $r->post('/checkout/complete')->to('checkout#order_validate')->name('RN_checkout_complete_validate');
+    $r->post('/checkout/complete')->to('checkout#complete_validate')->name('RN_checkout_complete_validate');
+    $r->get('/checkout/complete')->to('checkout#complete')->name('RN_checkout_complete');
 
     # For Customers
     $r->get('/register')->to('register#index')->name('RN_customer_create_account');

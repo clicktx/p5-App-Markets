@@ -1,18 +1,24 @@
 package Markets::Domain::Factory::Entity::Cart;
 use Mojo::Base 'Markets::Domain::Factory';
-use Markets::Domain::Collection qw/c/;
+use Markets::Domain::Collection qw/collection/;
 
 sub cook {
     my $self = shift;
 
-    my $cart_data = delete $self->{cart_data} || {};
-    my %entities = ( items => 'entity-item', shipments => 'entity-shipment' );
-    foreach my $key ( keys %entities ) {
-        my $data = $cart_data->{$key} || [];
-        my @array;
-        push @array, $self->factory( $entities{$key}, $_ ) for @{$data};
-        $self->params( $key => c(@array) );
-    }
+    # Aggregate items
+    $self->_create_entity( 'items', 'entity-item', $self->params('items') || [] );
+
+    # Aggregate shipments
+    my $param = $self->params('shipments') || [ {} ];
+    push @{$param}, {} unless @{$param};    # NOTE: At the time of "$param eq []"
+    $self->_create_entity( 'shipments', 'entity-shipment', $param );
+}
+
+sub _create_entity {
+    my ( $self, $aggregate, $entity, $data ) = @_;
+    my @array;
+    push @array, $self->factory( $entity, $_ )->create for @{$data};
+    $self->params( $aggregate => collection(@array) );
 }
 
 1;
@@ -24,7 +30,7 @@ Markets::Domain::Factory::Entity::Cart
 
 =head1 SYNOPSIS
 
-    my $entity = Markets::Domain::Factory::Entity::Cart->new( %args )->create_entity;
+    my $entity = Markets::Domain::Factory::Entity::Cart->new( %args )->create;
 
 =head1 DESCRIPTION
 

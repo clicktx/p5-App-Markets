@@ -1,17 +1,15 @@
 package Markets::Domain::Entity::Cart;
 use Mojo::Base 'Markets::Domain::Entity';
-use Markets::Domain::Collection qw/c/;
+use Markets::Domain::Collection qw/collection/;
 use Carp qw/croak/;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
-has cart_id        => '';
-has items          => sub { Markets::Domain::Collection->new };
-has shipments      => sub { Markets::Domain::Collection->new };
-has shipping_items => sub {
-    shift->shipments->map( sub { $_->shipping_items->each } );
-};
+has cart_id   => '';
+has items     => sub { Markets::Domain::Collection->new };
+has shipments => sub { Markets::Domain::Collection->new };
+has [qw/billing_address/];
 
-my @noneed_attrs = (qw/id cart_id _is_modified shipping_items/);
+my @needless_attrs = (qw/cart_id items/);
 
 # has 'items';
 # has item_count       => sub { shift->items->flatten->size };
@@ -61,11 +59,15 @@ sub _add_item {
     }
 }
 
+sub all_shipping_items {
+    shift->shipments->map( sub { $_->shipping_items->each } );
+}
+
 sub clear {
     my $self = shift;
 
     # Remove all data
-    $self->$_( c() ) for (qw/items shipments/);
+    $self->$_( collection() ) for (qw/items shipments/);
 
     $self->_is_modified(1);
     return $self;
@@ -123,7 +125,11 @@ sub merge {
     push @{ $stored->items }, @{ $self->items };
 
     # shipments
-    # TODO: [WIP]
+    # NOTE: [WIP]
+    # 未ログイン状態でshipmentsを設定している場合にどうするか。
+    # - ログイン状態でshipmentsを設定している（カートに保存されている）
+    # - ログアウト後に未ログイン状態でshipments設定まで進んだ後にログインする
+    # 通常はその前にログインを促すのでありえない状態ではあるが...
 
     $stored->_is_modified(1);
     return $stored;
@@ -140,25 +146,19 @@ sub remove_item {
     return $removed;
 }
 
-sub to_hash {
+sub to_order_data {
     my $self = shift;
-    my $hash = $self->SUPER::to_hash;
+    my $data = $self->to_data;
 
-    # foreach my $attr (qw/items shipments/) {
-    #     my @array;
-    #     $self->$attr->each( sub { push @array, $_->to_hash } );
-    #     $hash->{$attr} = \@array;
-    # }
-
-    # Remove no need data
-    delete $hash->{$_} for @noneed_attrs;
-    return $hash;
+    # Remove needless data
+    delete $data->{$_} for @needless_attrs;
+    return $data;
 }
 
 sub total_item_count {
 
     # $_[0]->items->size + $_[0]->shipments->reduce( sub { $a + $b->item_count }, 0 );
-    $_[0]->count('items') + $_[0]->count('shipping_items');
+    $_[0]->count('items') + $_[0]->count('all_shipping_items');
 }
 
 sub total_quantity {
@@ -220,6 +220,12 @@ Return L<Markets::Domain::Entity::Cart> Object.
 C<$shipment_object> is option argument.
 default $shipments->first
 
+=head2 C<all_shipping_items>
+
+    my $all_shipping_items = $cart->all_shipping_items;
+
+All items in shipments.
+
 =head2 C<clear>
 
 =head2 C<clone>
@@ -244,11 +250,9 @@ Return Entity Cart Object.
 
 Return Entity Item Object or undef.
 
-=head2 C<to_hash>
+=head2 C<to_order_data>
 
-    my $hash = $cart->to_hash;
-
-Return Hash reference.
+    my $order = $self->to_order_data;
 
 =head2 C<total_item_count>
 

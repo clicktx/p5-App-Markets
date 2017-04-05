@@ -8,16 +8,24 @@ use Test::Mojo;
 subtest 'basic' => sub {
     use_ok 'Markets::Domain::Factory';
     my $f = Markets::Domain::Factory->new;
+    my $p = $f->params;
+    is_deeply $p, {}, 'right get params empty hash ref';
+    my %p = $f->params;
+    is_deeply \%p, {}, 'right get params empty hash';
+
     $f->params( a => 1, b => 2 );
     is_deeply $f, { a => 1, b => 2 }, 'right set params';
 
-    my $params = $f->params;
-    is_deeply $params, { a => 1, b => 2 }, 'right get reference';
+    $p = $f->params;
+    is_deeply $p, { a => 1, b => 2 }, 'right get reference';
     my %params = $f->params;
     is_deeply \%params, { a => 1, b => 2 }, 'right get hash';
 
     $f->params( { c => 3, d => 4 } );
     is_deeply $f, { a => 1, b => 2, c => 3, d => 4 }, 'right set param';
+
+    $p = $f->params('b');
+    is $p, 2, 'right get scalar';
 };
 
 subtest 'has not cook' => sub {
@@ -47,7 +55,7 @@ subtest 'has cook' => sub {
 };
 
 subtest 'no factory' => sub {
-    my $entity = Markets::Domain::Factory->new->factory('entity-nofactory');
+    my $entity = Markets::Domain::Factory->new->factory('entity-nofactory')->create;
     is ref $entity, 'Markets::Domain::Entity::Nofactory', 'right namespace';
     cmp_deeply { %{$entity} }, {}, 'right parameter';
     is $entity->text, 'no factory', 'right method';
@@ -63,7 +71,7 @@ subtest 'factory method using' => sub {
 subtest 'factory helper' => sub {
     my $t      = Test::Mojo->new('App');
     my $app    = $t->app;
-    my $entity = $app->factory('entity-bar');
+    my $entity = $app->factory('entity-bar')->create;
     isa_ok $entity, 'Markets::Domain::Entity::Bar';
     isa_ok $entity->{hoge}, 'Markets::Domain::Entity::Hoge';
 };
@@ -108,7 +116,7 @@ done_testing();
 
     sub cook {
         my $self = shift;
-        my $hoge = $self->factory('entity-hoge');
+        my $hoge = $self->factory('entity-hoge')->create;
         $self->params( hoge => $hoge );
     }
 

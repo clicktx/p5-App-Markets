@@ -12,13 +12,15 @@ has entity_class => sub {
 
 sub cook { }
 
+sub create { shift->create_entity(@_) }
+
 sub create_entity {
     my $self = shift;
 
     # cooking entity
     $self->cook();
 
-    my $params = { %{$self} };
+    my $params = $self->params;
     my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
 
     # no need attributes
@@ -44,15 +46,14 @@ sub factory {
 
     my $factory = $e ? $factory_base_class->SUPER::new(@_) : $factory_class->new(@_);
     $factory->entity_class($entity_class);
-    return $factory->create_entity;
+    return $factory;
 }
 
 sub params {
     my $self = shift;
     return wantarray ? ( %{$self} ) : { %{$self} } if !@_;
 
-    # Setter
-    my %args = @_ > 1 ? @_ : %{ $_[0] };
+    my %args = @_ > 1 ? @_ : ( ref $_[0] ? %{ $_[0] } : return %{$self}{ $_[0] } );
     $self->{$_} = $args{$_} for keys %args;
 }
 
@@ -96,6 +97,10 @@ Get namespace as a construct entity class.
         # your factory codes here!
     }
 
+=head2 C<create>
+
+Alias for L</create_entity>.
+
 =head2 C<create_entity>
 
     my $entity = $factory->create_entity;
@@ -104,18 +109,19 @@ Get namespace as a construct entity class.
 
 =head2 C<factory>
 
-    my $entity = $factory->factory('Entity::Hoge', %data );
-    my $entity = $factory->factory('Entity::Hoge', \%data );
-    my $entity = $factory->factory('entity-hoge', %data );
-    my $entity = $factory->factory('entity-hoge', \%data );
+    my $new_factory = $factory->factory('Entity::Hoge', %data );
+    my $new_factory = $factory->factory('Entity::Hoge', \%data );
+    my $new_factory = $factory->factory('entity-hoge', %data );
+    my $new_factory = $factory->factory('entity-hoge', \%data );
 
-Return entity object.
+Return factory object.
 
 =head2 C<params>
 
     # Getter
     my $params = $factory->params;
     my %params = $factory->params;
+    my $param = $factory->params('name');
 
     # Setter
     $factory->params( %param );

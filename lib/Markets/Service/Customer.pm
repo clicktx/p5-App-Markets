@@ -46,13 +46,10 @@ sub login {
     my $session = $c->server_session;
 
     # Merge cart data
-    my $stored_cart = $c->factory(
-        'entity-cart',
-        {
-            cart_id   => $customer_id,
-            cart_data => $session->store->load_cart_data($customer_id),
-        }
-    );
+    my $cart_data = $session->store->load_cart_data($customer_id);
+    $cart_data->{cart_id} = $customer_id;
+    my $stored_cart = $c->factory( 'entity-cart', $cart_data )->create;
+
     my $merged_cart = $c->cart->merge($stored_cart);
     $c->cart($merged_cart);
 

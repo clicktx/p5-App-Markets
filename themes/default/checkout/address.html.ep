@@ -1,0 +1,32 @@
+% layout 'default';
+% title 'Billing and Shipping Address';
+
+<h1><%= title %></h1>
+
+<%= link_to 'Edit Cart' => 'RN_cart' %>
+
+<h3>ORDER SUMMARY</h3>
+
+<h3>Secure checkout</h3>
+<ol>
+    <li>Please sign in</li>
+    <li><strong>Billing and Shipping Address</strong></li>
+    <li>Shipping Options</li>
+    <li>Billing Options</li>
+    <li>Order Confirmation</li>
+</ol>
+
+<%= form_for 'RN_checkout_address_validate' => begin %>
+    <%= csrf_field %>
+    <div class="">
+        billing address: <%= text_field billing_address => 'ogikubo' %>
+    </div>
+    <div class="">
+        shipping address: <%= text_field shipping_address => 'kamiizumi' %>
+    </div>
+    <%= submit_button 'Next' %>
+<% end %>
+
+<%= form_for 'RN_checkout' => begin %>
+    <%= submit_button 'Back to page' %>
+<% end %>

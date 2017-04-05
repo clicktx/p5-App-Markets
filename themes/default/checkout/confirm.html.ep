@@ -1,5 +1,5 @@
 % layout 'default';
-% title 'Shipping Options';
+% title 'Order Confirmation';
 
 <h1><%= title %></h1>
 
@@ -7,20 +7,24 @@
 
 <h3>ORDER SUMMARY</h3>
 
+<pre>
+<%= dumper $self->cart->to_data %>
+</pre>
+
 <h3>Secure checkout</h3>
 <ol>
     <li>Please sign in</li>
     <li>Billing and Shipping Address</li>
-    <li><strong>Shipping Options</strong></li>
+    <li>Shipping Options</li>
     <li>Billing Options</li>
-    <li>Order Confirmation</li>
+    <li><strong>Order Confirmation</strong></li>
 </ol>
 
-<%= form_for 'RN_checkout_shipping_validate' => begin %>
+<%= form_for 'RN_checkout_complete' => ( method => 'post' ) => begin %>
     <%= csrf_field %>
-    <%= submit_button 'Next' %>
+    <%= submit_button 'BUY NOW' %>
 <% end %>
 
-<%= form_for 'RN_checkout_address' => begin %>
+<%= form_for 'RN_checkout_shipping' => begin %>
     <%= submit_button 'Back to page' %>
 <% end %>
