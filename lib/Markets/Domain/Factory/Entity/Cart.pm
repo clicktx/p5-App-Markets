@@ -5,14 +5,18 @@ use Markets::Domain::Collection qw/collection/;
 sub cook {
     my $self = shift;
 
-    my $params = $self->params || {};
-    my %create_entities = ( items => 'entity-item', shipments => 'entity-shipment' );
-    foreach my $key ( keys %create_entities ) {
-        my $data = $params->{$key} || [];
-        my @array;
-        push @array, $self->factory( $create_entities{$key}, $_ )->create for @{$data};
-        $self->params( $key => collection(@array) );
-    }
+    # Aggregate items
+    $self->_create_entity( 'items', 'entity-item', $self->params('items') || [] );
+
+    # Aggregate shipments
+    $self->_create_entity( 'shipments', 'entity-shipment', $self->params('shipments') || [ {} ] );
+}
+
+sub _create_entity {
+    my ( $self, $aggregate, $entity, $data ) = @_;
+    my @array;
+    push @array, $self->factory( $entity, $_ )->create for @{$data};
+    $self->params( $aggregate => collection(@array) );
 }
 
 1;
