@@ -12,7 +12,7 @@ has shipping_items => sub {
 };
 has [qw/billing_address/];
 
-my @noneed_attrs = (qw/id cart_id _is_modified shipping_items/);
+my @needless_attrs = (qw/cart_id shipping_items/);
 
 # has 'items';
 # has item_count       => sub { shift->items->flatten->size };
@@ -150,7 +150,7 @@ sub to_hash {
     my $hash = $self->SUPER::to_hash;
 
     # Remove no need data
-    delete $hash->{$_} for @noneed_attrs;
+    delete $hash->{$_} for @needless_attrs;
     return $hash;
 }
 
