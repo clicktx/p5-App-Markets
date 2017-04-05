@@ -35,16 +35,18 @@ subtest 'cart data empty' => sub {
 subtest 'argument items data only' => sub {
     my $e = $pkg->new(
         {
-            cart_id   => '',
-            cart_data => { items => [ {} ] }
+            cart_data => {
+                foo   => 'bar',
+                fizz  => 'buzz',
+                items => [ {} ],
+            }
         }
     )->create_entity;
     cmp_deeply $e,
       bless {
-        cart_id => '',
-        items   => (
-            bless [ ( bless {}, 'Markets::Domain::Entity::Item' ) ], 'Markets::Domain::Collection'
-        ),
+        foo   => 'bar',
+        fizz  => 'buzz',
+        items => ( bless [ ( bless {}, 'Markets::Domain::Entity::Item' ) ], 'Markets::Domain::Collection' ),
         shipments => ( bless [], 'Markets::Domain::Collection' ),
       },
       'Markets::Domain::Entity::Cart';

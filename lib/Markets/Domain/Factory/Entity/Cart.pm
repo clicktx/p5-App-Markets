@@ -6,13 +6,18 @@ sub cook {
     my $self = shift;
 
     my $cart_data = delete $self->{cart_data} || {};
-    my %entities = ( items => 'entity-item', shipments => 'entity-shipment' );
-    foreach my $key ( keys %entities ) {
-        my $data = $cart_data->{$key} || [];
+
+    # 必須のエンティティオブジェクト
+    my %required_entities = ( items => 'entity-item', shipments => 'entity-shipment' );
+    foreach my $key ( keys %required_entities ) {
+        my $data = delete $cart_data->{$key} || [];
         my @array;
-        push @array, $self->factory( $entities{$key}, $_ )->create for @{$data};
+        push @array, $self->factory( $required_entities{$key}, $_ )->create for @{$data};
         $self->params( $key => collection(@array) );
     }
+
+    # その他のカートデータをセット
+    $self->params($cart_data);
 }
 
 1;
