@@ -7,12 +7,9 @@ has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 has cart_id        => '';
 has items          => sub { Markets::Domain::Collection->new };
 has shipments      => sub { Markets::Domain::Collection->new };
-has shipping_items => sub {
-    shift->shipments->map( sub { $_->shipping_items->each } );
-};
 has [qw/billing_address/];
 
-my @needless_attrs = (qw/cart_id shipping_items/);
+my @needless_attrs = (qw/cart_id/);
 
 # has 'items';
 # has item_count       => sub { shift->items->flatten->size };
@@ -145,6 +142,10 @@ sub remove_item {
     return $removed;
 }
 
+sub shipping_items {
+    shift->shipments->map( sub { $_->shipping_items->each } );
+}
+
 sub to_hash {
     my $self = shift;
     my $hash = $self->SUPER::to_hash;
@@ -242,6 +243,12 @@ Return Entity Cart Object.
     my $removed = $cart->remove_item($item);
 
 Return Entity Item Object or undef.
+
+=head2 C<shipping_items>
+
+    my $all_shipping_items = $cart->shipping_items;
+
+All items in shipments.
 
 =head2 C<to_hash>
 
