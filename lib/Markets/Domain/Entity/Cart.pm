@@ -142,7 +142,7 @@ sub remove_item {
     return $removed;
 }
 
-sub shipping_items {
+sub all_shipping_items {
     shift->shipments->map( sub { $_->shipping_items->each } );
 }
 
@@ -158,7 +158,7 @@ sub to_hash {
 sub total_item_count {
 
     # $_[0]->items->size + $_[0]->shipments->reduce( sub { $a + $b->item_count }, 0 );
-    $_[0]->count('items') + $_[0]->count('shipping_items');
+    $_[0]->count('items') + $_[0]->count('all_shipping_items');
 }
 
 sub total_quantity {
@@ -244,9 +244,9 @@ Return Entity Cart Object.
 
 Return Entity Item Object or undef.
 
-=head2 C<shipping_items>
+=head2 C<all_shipping_items>
 
-    my $all_shipping_items = $cart->shipping_items;
+    my $all_shipping_items = $cart->all_shipping_items;
 
 All items in shipments.
 
