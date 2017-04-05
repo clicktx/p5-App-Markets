@@ -53,8 +53,7 @@ sub params {
     my $self = shift;
     return wantarray ? ( %{$self} ) : { %{$self} } if !@_;
 
-    # Setter
-    my %args = @_ > 1 ? @_ : %{ $_[0] };
+    my %args = @_ > 1 ? @_ : ( ref $_[0] ? %{ $_[0] } : return %{$self}{ $_[0] } );
     $self->{$_} = $args{$_} for keys %args;
 }
 
@@ -122,6 +121,7 @@ Return factory object.
     # Getter
     my $params = $factory->params;
     my %params = $factory->params;
+    my $param = $factory->params('name');
 
     # Setter
     $factory->params( %param );
