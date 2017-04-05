@@ -23,7 +23,7 @@ sub _create_entity {
         'entity-cart',
         {
             cart_id   => '12345',
-            cart_data => { %{$test_data} },
+            %{$test_data},
         }
     )->create;
 }
@@ -61,7 +61,7 @@ subtest 'methods' => sub {
         'entity-cart',
         {
             cart_id   => '54321',
-            cart_data => { %{$test_data} },
+            %{$test_data},
         }
     )->create;
     is $cart->is_equal($cart),  1, 'right equal entity';
@@ -177,7 +177,7 @@ subtest 'method merge' => sub {
         'entity-cart',
         {
             cart_id   => '99999',
-            cart_data => { %{$stored_data} },
+            %{$stored_data},
         }
     )->create;
 
