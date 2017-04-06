@@ -8,6 +8,8 @@ use Test::Mojo;
 subtest 'basic' => sub {
     use_ok 'Markets::Domain::Factory';
     my $f = Markets::Domain::Factory->new;
+
+    # params method
     my $p = $f->params;
     is_deeply $p, {}, 'right get params empty hash ref';
     my %p = $f->params;
@@ -17,15 +19,30 @@ subtest 'basic' => sub {
     is_deeply $f, { a => 1, b => 2 }, 'right set params';
 
     $p = $f->params;
-    is_deeply $p, { a => 1, b => 2 }, 'right get reference';
+    is_deeply $p, { a => 1, b => 2 }, 'right get hash reference';
     my %params = $f->params;
     is_deeply \%params, { a => 1, b => 2 }, 'right get hash';
 
     $f->params( { c => 3, d => 4 } );
-    is_deeply $f, { a => 1, b => 2, c => 3, d => 4 }, 'right set param';
+    is_deeply $f, { a => 1, b => 2, c => 3, d => 4 }, 'right set params';
 
-    $p = $f->params('b');
-    is $p, 2, 'right get scalar';
+    eval { $f->params('a') };
+    ok $@, 'getter only one argument';
+    eval { $f->params( { a => 1 } ) };
+    ok $@, 'setter only one argument';
+
+    # param method
+    $f->param( e => 5 );
+    $f->param( { f => 6 } );
+    is $f->param('e'), 5, 'right getter param';
+    is $f->param('f'), 6, 'right getter param';
+
+    eval { $f->param() };
+    ok $@, 'no arguments';
+    eval { $f->param( g => 7, h => 8 ) };
+    ok $@, 'too many arguments';
+    eval { $f->param( { g => 7, h => 8 } ) };
+    ok $@, 'too many arguments';
 };
 
 subtest 'has not cook' => sub {
@@ -117,7 +134,7 @@ done_testing();
     sub cook {
         my $self = shift;
         my $hoge = $self->factory('entity-hoge')->create;
-        $self->params( hoge => $hoge );
+        $self->param( hoge => $hoge );
     }
 
     package Markets::Domain::Entity::Bar;

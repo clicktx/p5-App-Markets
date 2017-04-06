@@ -6,10 +6,10 @@ sub cook {
     my $self = shift;
 
     # Aggregate items
-    $self->_create_entity( 'items', 'entity-item', $self->params('items') || [] );
+    $self->_create_entity( 'items', 'entity-item', $self->param('items') || [] );
 
     # Aggregate shipments
-    my $param = $self->params('shipments') || [ {} ];
+    my $param = $self->param('shipments') || [ {} ];
     push @{$param}, {} unless @{$param};    # NOTE: At the time of "$param eq []"
     $self->_create_entity( 'shipments', 'entity-shipment', $param );
 }
@@ -18,7 +18,7 @@ sub _create_entity {
     my ( $self, $aggregate, $entity, $data ) = @_;
     my @array;
     push @array, $self->factory( $entity, $_ )->create for @{$data};
-    $self->params( $aggregate => collection(@array) );
+    $self->param( $aggregate => collection(@array) );
 }
 
 1;
