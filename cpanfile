@@ -35,6 +35,7 @@ on configure => sub {
 };
 
 on test => sub {
+    requires 'Test::Harness', '==3.36';
     requires 'Test::More';
     requires 'Test::Deep';
     requires 'Test::mysqld';
