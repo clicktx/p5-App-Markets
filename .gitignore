@@ -26,5 +26,4 @@ MYMETA.yml
 !LICENSE
 .perl-version
 *.pid
-/bin/
 cpanfile.snapshot
