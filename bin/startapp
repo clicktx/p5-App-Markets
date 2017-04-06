@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# carton exec -- start_server \
+# --port=3000 \
+# --pid-file=var/run/app.pid  \
+# --status-file=var/run/app.status \
+# -- plackup ./script/markets
+
+#hypnotoad script/markets $1
+carton exec -- hypnotoad -f -w lib script/markets $1
