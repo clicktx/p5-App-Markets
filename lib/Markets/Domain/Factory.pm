@@ -49,18 +49,29 @@ sub factory {
     return $factory;
 }
 
+sub param {
+    my $self = shift;
+    @_ = ( %{ $_[0] } ) if ref $_[0];
+    croak 'Arguments empty' unless @_;
+    croak 'Arguments many, using the "params" method' if @_ > 2;
+
+    return @_ > 1 ? $self->{ $_[0] } = $_[1] : $self->{ $_[0] };
+}
+
 sub params {
     my $self = shift;
+    croak 'Only one argument, using the "param" method' if @_ == 1 and !ref $_[0];
+
     my %hash = %{$self};
 
+    # Getter params('something')
+    # return $hash{ $_[0] } if @_ == 1 and !ref $_[0];
     # Getter params()
     return wantarray ? (%hash) : {%hash} if !@_;
 
-    # Getter params('something')
-    return $hash{ $_[0] } if @_ == 1 and !ref $_[0];
-
     # Setter
     my %args = @_ > 1 ? @_ : %{ $_[0] };
+    croak 'Only one set argument, using the "param" method' if keys %args < 2;
     $self->{$_} = $args{$_} for keys %args;
 }
 
@@ -123,18 +134,28 @@ Alias for L</create_entity>.
 
 Return factory object.
 
+=head2 C<param>
+
+    # Getter
+    my $param = $factory->param('name');
+
+    # Setter
+    $factory->param( key => value );
+    $factory->param( { key => value } );
+
+Get/Set parameter.
+
 =head2 C<params>
 
     # Getter
     my $params = $factory->params;
     my %params = $factory->params;
-    my $param = $factory->params('name');
 
     # Setter
     $factory->params( %param );
     $factory->params( \%param );
 
-Get/Set parameter.
+Get/Set parameters.
 
 =head1 AUTHOR
 
