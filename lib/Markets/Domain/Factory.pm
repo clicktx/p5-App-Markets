@@ -51,9 +51,11 @@ sub factory {
 
 sub params {
     my $self = shift;
-    return wantarray ? ( %{$self} ) : { %{$self} } if !@_;
 
-    my %args = @_ > 1 ? @_ : ( ref $_[0] ? %{ $_[0] } : return %{$self}{ $_[0] } );
+    my %hash = %{$self};
+    return wantarray ? ( %hash ) : { %hash } if !@_;
+
+    my %args = @_ > 1 ? @_ : ( ref $_[0] ? %{ $_[0] } : return $hash{ $_[0] } );
     $self->{$_} = $args{$_} for keys %args;
 }
 
