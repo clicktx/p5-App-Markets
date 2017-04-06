@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [[ $1 == 'all' ]]
+    then carton exec -- prove -lvcr t addons/*/t xt
+elif [[ $1 == '' ]]
+    then carton exec -- prove -lvcr t addons/*/t
+else
+    carton exec -- prove -lvc $@
+fi
