@@ -1,4 +1,6 @@
 --color
+--merge
 --timer
 -l
+-w
 -PHarriet=t/harriet/
