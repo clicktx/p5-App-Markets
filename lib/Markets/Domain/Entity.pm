@@ -40,14 +40,14 @@ sub to_data {
 }
 
 sub to_hash {
-    my $hash = +{ %{ +shift } };
+    my %hash = %{ +shift };
 
     # Remove needless data
-    my @private = grep { $_ =~ /^_.*/} keys $hash;
+    my @private = grep { $_ =~ /^_.*/} keys %hash;
     push @needless_attrs, @private;
 
-    delete $hash->{$_} for @needless_attrs;
-    return $hash;
+    delete $hash{$_} for @needless_attrs;
+    return \%hash;
 }
 
 1;
