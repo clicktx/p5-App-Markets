@@ -142,7 +142,7 @@ sub remove_item {
     my $removed;
     my $array = $self->items->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
     $self->items($array);
-    $self->_is_modified(1) if $removed;
+    $removed ? $self->_is_modified(1) : $self->_is_modified(0);
     return $removed;
 }
 
