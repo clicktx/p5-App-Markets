@@ -1,11 +1,11 @@
 package Markets::Domain::Entity;
 use Mojo::Base -base;
+use Markets::Domain::Attribute;
 use Carp qw/croak/;
 use Mojo::Util qw/sha1_sum/;
 use Scalar::Util qw/blessed/;
 
-has _is_modified => 0;
-has id => sub { croak 'Attribute "id" not implemented by subclass' };
+has id => sub { Carp::croak 'Attribute "id" not implemented by subclass' };
 
 my @needless_attrs = (qw/id/);
 
@@ -43,7 +43,7 @@ sub to_hash {
     my %hash = %{ +shift };
 
     # Remove needless data
-    my @private = grep { $_ =~ /^_.*/} keys %hash;
+    my @private = grep { $_ =~ /^_.*/ } keys %hash;
     push @needless_attrs, @private;
 
     delete $hash{$_} for @needless_attrs;
@@ -119,7 +119,7 @@ Return boolean value.
     ];
 
 Return Array reference.
-Note: Key 'id' is remove.
+Note: Key 'id' and '_xxxx' is remove.
 
 =head2 C<to_data>
 
@@ -132,7 +132,7 @@ Return hash reference. This method recursive call L</to_hash>.
     my $data = $entity->to_hash;
 
 Return Hash reference.
-Note: Key 'id' is remove.
+Note: Key 'id' and '_xxxx' is remove.
 
 =head1 AUTHOR
 

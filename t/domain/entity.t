@@ -18,6 +18,9 @@ subtest 'basic' => sub {
 
     $e->is_modified(0);
     is $e->is_modified, 0, 'right not modified';
+
+    $e->id(111);
+    is $e->is_modified, 1, 'right modified of update attribute';
 };
 
 subtest 'clone' => sub {
@@ -82,10 +85,14 @@ subtest 'to_data method' => sub {
 
 done_testing();
 
-package Markets::Domain::Entity::Hoge;
-use Mojo::Base 'Markets::Domain::Entity';
-1;
+{
 
-package Markets::Domain::Entity::Fuga;
-use Mojo::Base 'Markets::Domain::Entity';
-1;
+    package Markets::Domain::Entity::Hoge;
+    use Mojo::Base 'Markets::Domain::Entity';
+}
+
+{
+
+    package Markets::Domain::Entity::Fuga;
+    use Mojo::Base 'Markets::Domain::Entity';
+}
