@@ -19,7 +19,7 @@ sub attr {
             Mojo::Util::monkey_patch $class, $attr, sub {
                 return exists $_[0]{$attr} ? $_[0]{$attr} : ( $_[0]{$attr} = $value->( $_[0] ) )
                   if @_ == 1;
-                $_[0]{_is_modified} = 1;
+                $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
                 $_[0]{$attr} = $_[1];
                 $_[0];
             };
@@ -28,7 +28,7 @@ sub attr {
             Mojo::Util::monkey_patch $class, $attr, sub {
                 return exists $_[0]{$attr} ? $_[0]{$attr} : ( $_[0]{$attr} = $value )
                   if @_ == 1;
-                $_[0]{_is_modified} = 1;
+                $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
                 $_[0]{$attr} = $_[1];
                 $_[0];
             };
@@ -36,7 +36,7 @@ sub attr {
         else {
             Mojo::Util::monkey_patch $class, $attr, sub {
                 return $_[0]{$attr} if @_ == 1;
-                $_[0]{_is_modified} = 1;
+                $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
                 $_[0]{$attr} = $_[1];
                 $_[0];
             };
@@ -46,22 +46,7 @@ sub attr {
 
 sub import {
     my $class = shift;
-
-    # ISA
-    {
-        my $caller = caller;
-        no strict 'refs';
-        push @{"${caller}::ISA"}, $class;
-        Mojo::Util::monkey_patch $caller, 'has', sub { attr( $caller, @_ ) };
-
-        # Add default attributes
-        $caller->attr( _is_modified => 0 );
-    }
-}
-
-sub import {
-    my $class = shift;
-    my $flag = shift;
+    my $flag  = shift;
 
     # Base
     # if ( $flag eq '-base' ) { $flag = $class }
@@ -90,6 +75,11 @@ sub import {
     # Mojo modules are strict!
     $_->import for qw(strict warnings utf8);
     feature->import(':5.10');
+}
+
+sub _is_changed {
+    my ( $attr, $obj, $value ) = @_;
+    return exists $obj->{$attr} ? $obj->{$attr} eq $value ? 0 : 1 : 1;
 }
 
 1;
