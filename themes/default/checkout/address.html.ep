@@ -19,10 +19,12 @@
 <%= form_for 'RN_checkout_address_validate' => begin %>
     <%= csrf_field %>
     <div class="">
-        billing address: <%= text_field billing_address => 'ogikubo' %>
+        billing address:
+        <%= text_field billing_address => $self->cart->billing_address || 'ogikubo' %>
     </div>
     <div class="">
-        shipping address: <%= text_field shipping_address => 'kamiizumi' %>
+        shipping address:
+        <%= text_field shipping_address => $self->cart->shipments->first->shipping_address || 'kamiizumi' %>
     </div>
     <%= submit_button 'Next' %>
 <% end %>
