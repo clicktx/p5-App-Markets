@@ -1,5 +1,5 @@
 package Markets::Domain::Entity::Cart;
-use Mojo::Base 'Markets::Domain::Entity';
+use Markets::Domain::Base 'Markets::Domain::Entity';
 use Markets::Domain::Collection qw/collection/;
 use Carp qw/croak/;
 

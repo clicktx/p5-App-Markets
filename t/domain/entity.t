@@ -19,6 +19,9 @@ subtest 'basic' => sub {
     $e->is_modified(0);
     is $e->is_modified, 0, 'right not modified';
 
+    $e->id(1);
+    is $e->is_modified, 0, 'right not modified of update attribute but no change value';
+
     $e->id(111);
     is $e->is_modified, 1, 'right modified of update attribute';
 };

@@ -1,6 +1,6 @@
 package Markets::Domain::Entity;
-use Mojo::Base -base;
-use Markets::Domain::Attribute;
+use Markets::Domain::Base;
+
 use Carp qw/croak/;
 use Mojo::Util qw/sha1_sum/;
 use Scalar::Util qw/blessed/;
