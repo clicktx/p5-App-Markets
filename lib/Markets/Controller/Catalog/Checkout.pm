@@ -29,9 +29,6 @@ sub address_validate {
     my $shipments = $self->cart->shipments;
     $shipments->first->shipping_address($shipping_address);
 
-    # NOTE: 変更を自動検知させたい
-    $self->cart->is_modified(1);    # save cart
-
     # $self->render( template => 'checkout/address' );
     $self->redirect_to('RN_checkout_shipping');
 }
@@ -48,8 +45,6 @@ sub shipping {
     # $item.quantityが0になった場合の動作はどうする？
     $cart->items->each(
         sub {
-            use DDP;
-
             # カートitemsから削除
             my $item = $cart->remove_item( $_->id );
 
