@@ -16,6 +16,7 @@ requires 'DBIx::Class::Candy',                      '0.005002';
 requires 'DateTime::Format::MySQL',                 '0.06';
 requires 'Server::Starter',                         '0.32';
 requires 'Gazelle',                                 '0.46';
+requires 'Struct::Diff',                            '0.86';
 
 # XS modules. it's a high performance!
 # See http://qiita.com/karupanerura/items/e765b23bd3bff806cc27

@@ -35,13 +35,15 @@ Markets::Domain::Collection
 L<Markets::Domain::Collection> inherits all attributes from L<Mojo::Collection> and implements
 the following new ones.
 
-=head1 METHODS
+=head1 FUNCTIONS
 
 =head2 C<collection>
 
     my $collection = collection(1, 2, 3);
 
 Construct a new array-based L<Markets::Domain::Collection> object.
+
+=head1 METHODS
 
 =head2 C<find>
 

@@ -1,5 +1,5 @@
 package Markets::Domain::Entity::Item;
-use Mojo::Base 'Markets::Domain::Entity';
+use Markets::Domain::Entity;
 
 has id => sub { shift->hash_code };
 has product_id => '';

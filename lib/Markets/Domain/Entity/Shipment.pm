@@ -1,5 +1,5 @@
 package Markets::Domain::Entity::Shipment;
-use Mojo::Base 'Markets::Domain::Entity';
+use Markets::Domain::Entity;
 use Markets::Domain::Collection;
 
 has id => sub { shift->hash_code };
