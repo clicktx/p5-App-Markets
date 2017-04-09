@@ -49,12 +49,7 @@ sub import {
     my $flag  = shift;
 
     # Base
-    # if ( $flag eq '-base' ) { $flag = $class }
-    if ( !$flag ) { $flag = $class }
-
-    # Strict
-    # elsif ( $flag eq '-strict' ) { $flag = undef }
-
+    if ( $flag eq '-base' or !$flag ) { $flag = $class }
     # Module
     elsif ( ( my $file = $flag ) && !$flag->can('new') ) {
         $file =~ s!::|'!/!g;
