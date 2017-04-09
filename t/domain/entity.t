@@ -18,6 +18,12 @@ subtest 'basic' => sub {
 
     $e->is_modified(0);
     is $e->is_modified, 0, 'right not modified';
+
+    $e->id(1);
+    is $e->is_modified, 0, 'right not modified of update attribute but no change value';
+
+    $e->id(111);
+    is $e->is_modified, 1, 'right modified of update attribute';
 };
 
 subtest 'clone' => sub {
@@ -48,6 +54,11 @@ subtest 'Entity object base' => sub {
     is $e1->is_equal($e1_1), 1, 'right equal object';
     is $e1->is_equal($e2),   0, 'right not equal object';
     is $e1->hash_code, '356a192b7913b04c54574d18c28d46e6395428ab', 'right hash code';
+
+    $e1->id(1);
+    is $e1->is_modified, 0, 'right not modified';
+    $e1->id(111);
+    is $e1->is_modified, 1, 'right modified';
 
     eval { Markets::Domain::Entity::Hoge->new->id };
     like $@, qr/Attribute "id" not implemented by subclass/, 'right not set entity id';
@@ -82,10 +93,13 @@ subtest 'to_data method' => sub {
 
 done_testing();
 
-package Markets::Domain::Entity::Hoge;
-use Mojo::Base 'Markets::Domain::Entity';
-1;
+{
 
-package Markets::Domain::Entity::Fuga;
-use Mojo::Base 'Markets::Domain::Entity';
-1;
+    package Markets::Domain::Entity::Hoge;
+    use Markets::Domain::Entity;
+}
+{
+
+    package Markets::Domain::Entity::Fuga;
+    use Markets::Domain::Entity;
+}

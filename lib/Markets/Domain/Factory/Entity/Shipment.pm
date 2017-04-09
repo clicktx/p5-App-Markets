@@ -11,7 +11,7 @@ sub cook {
         push @shipping_items, $self->factory( 'entity-item', $item )->create;
     }
 
-    $self->params( shipping_items => collection(@shipping_items) );
+    $self->param( shipping_items => collection(@shipping_items) );
 }
 
 1;

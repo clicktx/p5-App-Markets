@@ -43,6 +43,7 @@ my %args = (
         'Scalar::Util' => '1.47',
         'Server::Starter' => '0.32',
         'Session::Token' => '1.503',
+        'Struct::Diff' => '0.86',
         'Time::TZOffset' => '0.04',
         'Try::Tiny' => '0.28',
         'WWW::Form::UrlEncoded::XS' => '0.24',

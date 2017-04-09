@@ -35,6 +35,7 @@ only=1
 [Subroutines::ProhibitNestedSubs]
 [Subroutines::ProhibitReturnSort]
 [TestingAndDebugging::RequireUseStrict]
+equivalent_modules = Markets::Domain::Base Markets::Domain::Entity
 [Variables::ProhibitConditionalDeclarations]
 [Variables::RequireLexicalLoopIterators]
 
