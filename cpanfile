@@ -38,6 +38,7 @@ on configure => sub {
 on test => sub {
     requires 'Test::More';
     requires 'Test::Deep';
+    requires 'Test::Class';
     requires 'Test::mysqld';
     requires 'Harriet';
     requires 'Test::Perl::Critic';
