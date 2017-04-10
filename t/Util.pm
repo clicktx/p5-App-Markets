@@ -23,7 +23,7 @@ sub get_sid {
     @cookies = @{ $cookies[0] } if ref $cookies[0] eq 'ARRAY';
     my ($sid_cookie) = grep { $_->name eq 'sid' } @cookies;
     return $sid_cookie->value if $sid_cookie;
-    return 0;
+    return;
 }
 
 sub init_addon {
