@@ -18,12 +18,9 @@ BEGIN {
 }
 
 sub get_sid {
-    my $t       = shift;
-    my @cookies = $t->ua->cookie_jar->all;
-    @cookies = @{ $cookies[0] } if ref $cookies[0] eq 'ARRAY';
-    my ($sid_cookie) = grep { $_->name eq 'sid' } @cookies;
-    return $sid_cookie->value if $sid_cookie;
-    return;
+    my $t = shift;
+    my ($cookie) = grep { $_->name eq 'sid' } @{ $t->ua->cookie_jar->all };
+    return $cookie ? $cookie->value : undef;
 }
 
 sub init_addon {
