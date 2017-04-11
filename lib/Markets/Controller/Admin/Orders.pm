@@ -16,7 +16,7 @@ sub index {
     my $schema = $self->app->schema;
     my $rs     = $schema->resultset('Order');
 
-    my $itr = $rs->search( {}, { page => 1, row => 10, } );
+    my $itr = $rs->search( {}, { page => 1, row => 10, order_by => { -desc => 'order_no'} } );
 
     my $orders = [
         { id => 1, date => '2000-1-1' },
