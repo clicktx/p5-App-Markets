@@ -5,7 +5,7 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-has [qw/t app csrf_token/];
+has [qw/t app ua tx csrf_token/];
 
 sub setup : Test(setup) {
     my $self = shift;
@@ -13,6 +13,8 @@ sub setup : Test(setup) {
     my $t = Test::Mojo->new('App');
     $self->{t}   = $t;
     $self->{app} = $t->app;
+    $self->{ua} = $t->ua;
+    $self->{tx} = $t->tx;
 
     $t->ua->get('/');
 
@@ -21,7 +23,7 @@ sub setup : Test(setup) {
     $self->{csrf_token} = $v->{csrf_token};
 
     # redirect
-    $self->t->ua->max_redirects(1);
+    $self->ua->max_redirects(1);
 }
 
 sub basic : Tests() {
