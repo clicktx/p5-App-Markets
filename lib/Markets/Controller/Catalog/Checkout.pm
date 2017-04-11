@@ -29,10 +29,7 @@ sub address_validate {
     my $shipments = $self->cart->shipments;
     $shipments->first->shipping_address($shipping_address);
 
-    # NOTE: 変更を自動検知させたい
-    $self->cart->is_modified(1);    # save cart
-
-    # $self->render( template => 'checkout/address' );
+    # return $self->render( template => 'checkout/address' ) if $error;
     $self->redirect_to('RN_checkout_shipping');
 }
 
@@ -48,8 +45,6 @@ sub shipping {
     # $item.quantityが0になった場合の動作はどうする？
     $cart->items->each(
         sub {
-            use DDP;
-
             # カートitemsから削除
             my $item = $cart->remove_item( $_->id );
 
@@ -69,7 +64,7 @@ sub shipping {
 sub shipping_validate {
     my $self = shift;
 
-    # $self->render( template => 'checkout/address' );
+    # return $self->render( template => 'checkout/address' ) if $error;
     $self->redirect_to('RN_checkout_confirm');
 }
 
@@ -125,10 +120,10 @@ sub complete_validate {
 
     # cart sessionクリア
     # cartクリア（再生成）
-    my $newcart = $self->factory('entity-cart', {})->create;
-    $self->cart($newcart);
-    $self->cart->is_modified(1);
-
+    my $newcart = $self->factory( 'entity-cart', {} )->create;
+    # $self->cart($newcart);
+    # $self->cart->is_modified(1);
+    $self->cart_session->data( $newcart->to_data );
 
     # redirect_to thank you page
     # $self->render();

@@ -39,6 +39,7 @@ on test => sub {
     requires 'Test::Harness', '==3.36';
     requires 'Test::More';
     requires 'Test::Deep';
+    requires 'Test::Class';
     requires 'Test::mysqld';
     requires 'Harriet';
     requires 'Test::Perl::Critic';

@@ -18,13 +18,14 @@ subtest 'time zone' => sub {
 };
 
 subtest 'methods' => sub {
-    ok $schema->now, 'right now()';
+    ok $schema->now,   'right now()';
     ok $schema->today, 'right today()';
 };
 
 subtest 'sequence' => sub {
-    is $schema->sequence('Order'), 1, 'right sequence';
-    is $schema->sequence('order'), 2, 'right sequence';
+    my $cnt = $schema->sequence('Order');
+    is $schema->sequence('Order'), $cnt + 1, 'right sequence';
+    is $schema->sequence('order'), $cnt + 2, 'right sequence';
 };
 
 done_testing();
