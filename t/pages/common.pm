@@ -7,7 +7,7 @@ use Test::Mojo;
 
 has [qw/t app ua tx csrf_token/];
 
-sub setup : Test(setup) {
+sub startup : Test(startup) {
     my $self = shift;
 
     my $t = Test::Mojo->new('App');

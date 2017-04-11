@@ -6,12 +6,6 @@ use Test::More;
 use Test::Mojo;
 use DDP;
 
-# sub setup : Test(setup) {
-#     my $self = shift;
-#     $self->SUPER::setup;
-#     $self->t->ua->max_redirects(1);
-# }
-
 sub add_item : Tests() {
     my $self = shift;
     my $t    = $self->t;
