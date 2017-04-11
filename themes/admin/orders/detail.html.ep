@@ -8,7 +8,7 @@
 <ol>
 % foreach my $shipment ( @{$shipments} ){
     <li> shipment id: <%= $shipment->id %>
-    % my $shipment_items = $shipment->items;
+    % my $shipment_items = $shipment->shipping_items;
         <ol>
     % while (my $item = $shipment_items->next) {
         <li>
