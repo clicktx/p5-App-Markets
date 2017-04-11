@@ -6,6 +6,8 @@ use File::Basename qw(dirname);
 use lib File::Spec->catdir( dirname(__FILE__), '..', 'lib' );
 use lib 't/App/lib';
 use Markets::Util;
+use Mojo::Util qw(b64_decode);
+use Mojo::JSON;
 
 BEGIN {
     # Check app mode
@@ -17,13 +19,22 @@ BEGIN {
     }
 }
 
+sub get_cookie_values {
+    my $t    = shift;
+    my $name = shift;
+
+    my ($cookie) = grep { $_->name eq $name } @{ $t->ua->cookie_jar->all };
+    return unless $cookie;
+
+    my $value = $cookie->value;
+    $value =~ y/-/=/;
+    return Mojo::JSON::j( b64_decode $value);
+}
+
 sub get_sid {
-    my $t       = shift;
-    my @cookies = $t->ua->cookie_jar->all;
-    @cookies = @{ $cookies[0] } if ref $cookies[0] eq 'ARRAY';
-    my ($sid_cookie) = grep { $_->name eq 'sid' } @cookies;
-    return $sid_cookie->value if $sid_cookie;
-    return 0;
+    my $t = shift;
+    my ($cookie) = grep { $_->name eq 'sid' } @{ $t->ua->cookie_jar->all };
+    return $cookie ? $cookie->value : undef;
 }
 
 sub init_addon {

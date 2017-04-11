@@ -74,7 +74,7 @@ sub add_catalog_routes {
     $r->get('/checkout/address')->to('checkout#address')->name('RN_checkout_address');
     $r->post('/checkout/address')->to('checkout#address_validate')->name('RN_checkout_address_validate');
     $r->get('/checkout/shipping')->to('checkout#shipping')->name('RN_checkout_shipping');
-    $r->post('/checkout/shipping_validate')->to('checkout#shipping_validate')->name('RN_checkout_shipping_validate');
+    $r->post('/checkout/shipping')->to('checkout#shipping_validate')->name('RN_checkout_shipping_validate');
     $r->post('/checkout/payment')->to('checkout#payment')->name('RN_checkout_payment');
     $r->post('/checkout/billing')->to('checkout#billing')->name('RN_checkout_billing');
 
