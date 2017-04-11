@@ -6,6 +6,8 @@ use Test::More;
 use Test::Mojo;
 
 has [qw/t app ua tx csrf_token/];
+has sid            => sub { t::Util::get_sid( shift->t ) };
+has server_session => sub { t::Util::server_session( shift->t->app ) };
 
 sub startup : Test(startup) {
     my $self = shift;
@@ -13,8 +15,8 @@ sub startup : Test(startup) {
     my $t = Test::Mojo->new('App');
     $self->{t}   = $t;
     $self->{app} = $t->app;
-    $self->{ua} = $t->ua;
-    $self->{tx} = $t->tx;
+    $self->{ua}  = $t->ua;
+    $self->{tx}  = $t->tx;
 
     $t->ua->get('/');
 

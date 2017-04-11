@@ -23,8 +23,8 @@ sub add_item : Tests() {
     my ($url) = map { $_->req->url->path } @{ $t->tx->redirects };
     is $url, '/product/1', 'right post to get';
 
-    my $sid            = t::Util::get_sid($t);
-    my $server_session = t::Util::server_session( $t->app );
+    my $sid            = $self->sid;
+    my $server_session = $self->server_session;
     $server_session->load($sid);
 
     delete $post_data->{csrf_token};
