@@ -30,7 +30,7 @@ sub add_item : Tests() {
     is $url, '/product/1', 'right post to get';
 
     my $sid            = t::Util::get_sid($t);
-    my $server_session = t::Util::server_session( $self->app );
+    my $server_session = t::Util::server_session( $t->app );
     $server_session->load($sid);
 
     delete $post_data->{csrf_token};
