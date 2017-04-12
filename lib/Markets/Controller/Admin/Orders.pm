@@ -16,16 +16,22 @@ sub index {
     my $schema = $self->app->schema;
     my $rs     = $schema->resultset('Order');
 
-    my $itr = $rs->search( {}, { page => 1, row => 10, order_by => { -desc => 'order_no'} } );
+    my $itr = $rs->search( {}, { page => 1, row => 10, order_by => { -desc => 'order_no' } } );
 
-    my $orders = [
-        { id => 1, date => '2000-1-1' },
-        { id => 2, date => '2000-2-2' },
-        { id => 3, date => '2000-3-3' },
-    ];
+    my $orders = [ { id => 1, date => '2000-1-1' }, { id => 2, date => '2000-2-2' }, { id => 3, date => '2000-3-3' }, ];
 
     $self->stash( it => $itr, orders => $orders );
     $self->render();
+}
+
+sub delete {
+    my $self = shift;
+
+    my $params = $self->req->params->to_hash;
+    my $id = $params->{id};
+    $self->app->schema->resultset('Order')->find($id)->delete;
+
+    $self->redirect_to('RN_admin_orders');
 }
 
 sub detail {
