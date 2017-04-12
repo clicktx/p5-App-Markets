@@ -15,41 +15,45 @@ sub register {
 sub add_admin_routes {
     my ( $self, $app ) = @_;
 
-    my $r = $app->routes->any( $app->pref('admin_uri_prefix') )->to( namespace => 'Markets::Controller::Admin' )
-      ->name('RN_admin');
+    my $r = $app->routes->any( $app->pref('admin_uri_prefix') )->to( namespace => 'Markets::Controller::Admin' );
 
     # Not required authorization Routes
     {
-        $r->get('/login')->to('staff#login')->name('RN_admin_login');
-        $r->post('/login')->to('staff#login_authen')->name('RN_admin_login_authen');
+        my $login = $r->any('login')->to( controller => 'staff' );
+        $login->get('/')->to('#login')->name('RN_admin_login');
+        $login->post('/')->to('#login_authen')->name('RN_admin_login_authen');
     }
 
     # Required authorization Routes
+    $r = $r->under->to('staff#authorize')->name('RN_admin_bridge');
     {
-        $r = $r->under->to('staff#authorize')->name('RN_admin_bridge');
+        # Dashboard
         $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
         $r->get('/dashboard')->to('dashboard#index')->name('RN_admin_dashboard');
 
-        # Staff
+        # Logout
         $r->get('/logout')->to('staff#logout')->name('RN_admin_logout');
 
         # Settings
         {
-            # $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
-            my $settings = $r->get('/settings')->to('settings#index')->name('RN_admin_settings');
-            $settings->get('/addons')->to('addons#index')->name('RN_admin_settings_addons');
-            $settings->get('/addons/:action')->to('addons#')->name('RN_admin_settings_addons_action');
+            my $settings = $r->any('/settings')->to( controller => 'settings' );
+            $settings->get('/')->to('#index')->name('RN_admin_settings');
+            {
+                my $addons = $settings->any('/addons')->to( controller => 'addons' );
+                $addons->get('/:action')->to('addons#')->name('RN_admin_settings_addons_action');
+                $addons->get('/')->to('#index')->name('RN_admin_settings_addons');
+            }
         }
-
-        # $r->get('/addons')->to('addons#index')->name('RN_admin_addons');
-        # $r->get('/addons/:action')->to('addons#')->name('RN_admin_addons_action');
 
         # Products
         $r->get('/products')->to('products#index')->name('RN_admin_products');
 
         # Orders
-        $r->get('/orders')->to('orders#index')->name('RN_admin_orders');
-        $r->get('/orders/detail/:id')->to('orders#detail')->name('RN_admin_orders_detail');
+        {
+            my $orders = $r->any('/orders')->to( controller => 'orders' );
+            $orders->get('/')->to('#index')->name('RN_admin_orders');
+            $orders->get('/detail/:id')->to('#detail')->name('RN_admin_orders_detail');
+        }
     }
 }
 
