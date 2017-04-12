@@ -5,6 +5,7 @@ use t::Util;
 use File::Basename qw(dirname);
 use lib File::Spec->catdir( dirname(__FILE__), '..', '..', 'lib' );
 use Markets::Schema;
+use Markets::Install::Util qw/insert_data/;
 
 $ENV{TEST_MYSQL} ||= do {
     require Test::mysqld;
@@ -42,28 +43,8 @@ $ENV{TEST_MYSQL} ||= do {
     my @paths;
     push @paths, File::Spec->catdir( dirname(__FILE__), '..', '..',  'share', 'default_data.pl' );
     push @paths, File::Spec->catdir( dirname(__FILE__), '..', 'App', 'share', 'test_data.pl' );
-    _insert_data( $schema, $_ ) for @paths;
+    insert_data( $schema, $_ ) for @paths;
 
     $dsn;
 };
 print "dsn: $ENV{TEST_MYSQL} \n";
-
-# insert dafault data to DB
-use Mojo::File 'path';
-use Mojo::Util 'decode';
-
-sub _insert_data {
-    my $schema = shift;
-    my $path   = shift;
-
-    my $content = decode( 'UTF-8', path($path)->slurp );
-    my $data = eval "$content";
-
-    my @keys = keys %{$data};
-    foreach my $schema_name (@keys) {
-        my $action;
-        $action = 'create'   if ref $data->{$schema_name} eq 'HASH';
-        $action = 'populate' if ref $data->{$schema_name} eq 'ARRAY';
-        $schema->resultset($schema_name)->$action( $data->{$schema_name} );
-    }
-}
