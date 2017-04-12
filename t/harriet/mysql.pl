@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use t::Util;
 
+use File::Spec;
 use File::Basename qw(dirname);
 use lib File::Spec->catdir( dirname(__FILE__), '..', '..', 'lib' );
 use Markets::Schema;
