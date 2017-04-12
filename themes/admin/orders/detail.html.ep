@@ -20,6 +20,11 @@
 % }
 </ol>
 
+<%= form_for 'RN_admin_orders_delete' => begin %>
+    <%= csrf_field %>
+    <%= hidden_field id => $id %>
+    <%= submit_button 'Delete this Order' %>
+<% end %>
 <ul>
     <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
 </ul>
