@@ -1,15 +1,13 @@
 package Markets::Domain::Entity::Item;
 use Markets::Domain::Entity;
 
-has id => sub { shift->hash_code };
-has product_id => '';
-has quantity   => 0;
-
-sub hash_code {
+has id => sub {
     my $self  = shift;
     my $bytes = $self->product_id;
-    $self->SUPER::hash_code($bytes);
-}
+    $self->hash_code($bytes);
+};
+has product_id => '';
+has quantity   => 0;
 
 1;
 __END__

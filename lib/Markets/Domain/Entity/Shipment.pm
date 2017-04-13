@@ -2,7 +2,11 @@ package Markets::Domain::Entity::Shipment;
 use Markets::Domain::Entity;
 use Markets::Domain::Collection;
 
-has id => sub { shift->hash_code };
+has id => sub {
+    my $self = shift;
+    my $byte = $self->shipping_address;
+    $self->hash_code($byte);
+};
 has shipping_address => '';
 has shipping_items => sub { Markets::Domain::Collection->new };
 
@@ -14,13 +18,6 @@ sub clone {
 
     $clone->_is_modified(0);
     return $clone;
-}
-
-# NOTE: [WIP] 特定する条件を決める
-sub hash_code {
-    my $self  = shift;
-    my $bytes = $self->shipping_address;
-    $self->SUPER::hash_code($bytes);
 }
 
 sub item_count { shift->shipping_items->size }
