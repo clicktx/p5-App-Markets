@@ -11,36 +11,28 @@ use Markets::Install::Util;
 $ENV{TEST_MYSQL} ||= do {
     require Test::mysqld;
     print "Starting mysqld...\n";
-    my $conf    = t::Util->load_config;
-    my $db_conf = $conf->{db};
 
+    my $conf   = Markets::Install::Util::load_config();
     my $mysqld = Test::mysqld->new(
         my_cnf => {
             'skip-networking'        => '',
             'default-storage-engine' => 'innodb',
-            'socket'                 => '/tmp/mysql.sock',
+            'socket'                 => $conf->{db}->{socket},
         }
     ) or die $Test::mysqld::errstr;
     $HARRIET_GUARDS::MYSQLD = $mysqld;
 
     # dsn
-    my $dsn = $mysqld->dsn(
-        dbname   => $db_conf->{dbname},
-        user     => $db_conf->{user},
-        password => $db_conf->{password},
-    );
+    my $dsn = $mysqld->dsn( %{ $conf->{db} } );
 
     # create db
-    my $socket = $mysqld->my_cnf->{socket};
-    system "mysqladmin -uroot -S $socket create t_markets_db";
+    system 'mysqladmin -uroot -S ' . $conf->{db}->{socket} . ' create t_markets_db';
 
     # create table
     my $schema = Markets::Schema->connect($dsn);
     $schema->deploy;
 
     # insert data
-    # system "mysql -uroot -S $socket markets < share/sql/insert_default_data.sql";
-    # system "mysql -uroot -S $socket markets < t/App/share/sql/insert_test_data.sql";
     my @paths;
     push @paths, File::Spec->catdir( dirname(__FILE__), '..', '..',  'share', 'default_data.pl' );
     push @paths, File::Spec->catdir( dirname(__FILE__), '..', 'App', 'share', 'test_data.pl' );
