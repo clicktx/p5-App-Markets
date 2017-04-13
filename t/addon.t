@@ -17,8 +17,7 @@ subtest 'addons basic' => sub {
     my $uploded_addons = $addons->uploaded->sort->to_array;
     is ref $uploded_addons, 'ARRAY', 'return array ref';
     is @{$uploded_addons}, 3, 'right uploaded addons';
-    is_deeply $uploded_addons, [ 'disable_addon', 'not_install_addon', 'test_addon' ],
-      'right uploaded addons';
+    is_deeply $uploded_addons, [ 'disable_addon', 'not_install_addon', 'test_addon' ], 'right uploaded addons';
 
     # installed
     is ref $addons->installed, 'HASH', 'right installed method';
@@ -26,11 +25,12 @@ subtest 'addons basic' => sub {
 
     # Get addon object
     my $addon = $addons->addon('Markets::Addon::TestAddon');
-    ok( defined $addon && $addon->isa('Markets::Addon') ), 'right addon($addon_name)';
-    is ref $addons->addon('Markets::Addon::TestAddon'), 'Markets::Addon::TestAddon',
-      'access full module name';
-    is ref $addons->addon('TestAddon'),  'Markets::Addon::TestAddon', 'access camel case';
-    is ref $addons->addon('test_addon'), 'Markets::Addon::TestAddon', 'access snake case';
+    ok defined $addon, 'right addon method';
+    isa_ok $addon, 'Markets::Addon';
+
+    is ref $addons->addon('Markets::Addon::TestAddon'), 'Markets::Addon::TestAddon', 'access full module name';
+    is ref $addons->addon('TestAddon'),                 'Markets::Addon::TestAddon', 'access camel case';
+    is ref $addons->addon('test_addon'),                'Markets::Addon::TestAddon', 'access snake case';
 
     # Set addon object
     $addons->addon( 'Markets::Addon::FirstAddon' => Markets::Addon::TestAddon->new );

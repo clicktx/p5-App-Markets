@@ -53,17 +53,6 @@ sub init_addon {
     _install_addon( $app, $installed_addons );
 }
 
-sub load_config {
-    my $config_base_dir =
-      File::Spec->rel2abs( File::Spec->catdir( dirname(__FILE__), '..', 'config' ) );
-    my $config_file = File::Spec->catfile( $config_base_dir, "test.conf" );
-    my $conf = do $config_file;
-    unless ( ref($conf) eq 'HASH' ) {
-        die "test.conf does not retun HashRef.";
-    }
-    return $conf;
-}
-
 sub server_session {
     my $app = shift;
 
