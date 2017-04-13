@@ -1,0 +1,58 @@
+#!/usr/bin/env perl
+
+use Mojo::Base -strict;
+use File::Spec;
+use File::Basename;
+use lib File::Spec->catdir( dirname(__FILE__), '..', 'lib' );
+use Mojo::File qw/path/;
+use Markets;
+
+my $app             = Markets->new;
+my $schema          = $app->schema;
+my $current_version = $schema->schema_version;
+
+my $sql_dir = path( dirname(__FILE__), '..', 'share', 'sql' )->to_abs;
+$schema->create_ddl_dir( [qw/MySQL/], $current_version, $sql_dir, );
+
+say "Created DDL file";
+say path( $sql_dir, 'Markets-Schema-' . $current_version . '-MySQL.sql' )->to_rel();
+
+exit;
+
+__END__
+
+# print only
+use SQL::Translator;
+
+sub print_ddl {
+    my $t = SQL::Translator->new(
+
+        # debug       => 1,
+        no_comments => 0,
+        parser      => 'SQL::Translator::Parser::DBIx::Class',
+        parser_args => {
+            package => 'Markets::Schema',
+        },
+        producer => 'MySQL',
+    );
+
+    my $output = $t->translate() or die $t->error;
+    print $output, "\n";
+}
+
+=head1 NAME
+
+create_ddl
+
+=head1 SYNOPSIS
+
+    perl ./script/create_ddl
+
+=head1 DESCRIPTION
+
+Create DDL file from Markets::Schema
+markets_current_dir/share/sql/Markets-Schema-xxxxx-MySQL.sql
+
+=head1 AUTHOR
+
+Markets authors.
