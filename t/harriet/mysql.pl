@@ -6,7 +6,7 @@ use File::Spec;
 use File::Basename qw(dirname);
 use lib File::Spec->catdir( dirname(__FILE__), '..', '..', 'lib' );
 use Markets::Schema;
-use Markets::Install::Util qw/insert_data/;
+use Markets::Install::Util;
 
 $ENV{TEST_MYSQL} ||= do {
     require Test::mysqld;
@@ -44,7 +44,7 @@ $ENV{TEST_MYSQL} ||= do {
     my @paths;
     push @paths, File::Spec->catdir( dirname(__FILE__), '..', '..',  'share', 'default_data.pl' );
     push @paths, File::Spec->catdir( dirname(__FILE__), '..', 'App', 'share', 'test_data.pl' );
-    insert_data( $schema, $_ ) for @paths;
+    Markets::Install::Util::insert_data( $schema, $_ ) for @paths;
 
     $dsn;
 };
