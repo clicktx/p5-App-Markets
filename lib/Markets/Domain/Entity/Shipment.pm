@@ -1,6 +1,7 @@
 package Markets::Domain::Entity::Shipment;
 use Markets::Domain::Entity;
 use Markets::Domain::Collection;
+use Data::Clone qw/data_clone/;
 
 has id => sub { shift->hash_code };
 has shipping_address => '';
@@ -8,10 +9,9 @@ has shipping_items => sub { Markets::Domain::Collection->new };
 
 sub clone {
     my $self  = shift;
-    my $clone = $self->SUPER::clone;
+    my $clone = data_clone($self);
     $clone->shipping_items( $self->shipping_items->map( sub { $_->clone } ) )
       if $self->shipping_items->can('map');
-
     $clone->_is_modified(0);
     return $clone;
 }
