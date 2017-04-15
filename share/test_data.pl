@@ -12,4 +12,20 @@
         [qw/100 102 before_compile_template 300/],
         [qw/101 102 before_xxx_action 500/],
     ],
+
+    # Order example
+    'Order' => {
+        'billing_address' => 'New York',
+        'customer_id'     => undef,
+        'order_number'    => '1',
+        'shipments'       => [
+            {
+                'shipping_address' => 'New York',
+                'shipping_items'   => [
+                    { 'product_id' => '3', 'quantity'   => '3' },
+                    { 'product_id' => '1', 'quantity'   => '1' },
+                ]
+            }
+        ]
+    },
 }

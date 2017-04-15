@@ -1,6 +1,6 @@
 {
     # sequence
-    'Order::Sequence' => { id => 0 },
+    'Order::Sequence' => { id => 1 },
 
     # preferences
     'Preference' => [
