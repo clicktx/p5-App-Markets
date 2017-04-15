@@ -14,6 +14,7 @@ requires 'DBD::mysql',                              '4.033';
 requires 'DBIx::Class',                             '0.082840';
 requires 'SQL::Translator',                         '0.11021';
 requires 'DBIx::Class::Candy',                      '0.005002';
+requires 'DBIx::Class::ResultSet::HashRef',         '1.002';
 requires 'DateTime::Format::MySQL',                 '0.06';
 requires 'Server::Starter',                         '0.32';
 requires 'Gazelle',                                 '0.46';
