@@ -2,6 +2,7 @@ package Markets::Domain::Entity::Cart;
 use Markets::Domain::Entity;
 use Markets::Domain::Collection qw/collection/;
 use Carp qw/croak/;
+use Data::Clone qw/data_clone/;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 has cart_id   => '';
@@ -75,7 +76,7 @@ sub clear {
 
 sub clone {
     my $self  = shift;
-    my $clone = $self->SUPER::clone;
+    my $clone = data_clone($self);
     foreach my $attr (qw/items shipments/) {
         $clone->$attr( $self->$attr->map( sub { $_->clone } ) ) if $self->$attr->can('map');
     }
