@@ -16,26 +16,19 @@ sub clone {
     return $clone;
 }
 
-# NOTE: [WIP] 特定する条件を決める
 sub hash_code {
     my $self  = shift;
     my $bytes = $self->shipping_address;
+
+    # $bytes .= ...
     $self->SUPER::hash_code($bytes);
 }
 
 sub item_count { shift->shipping_items->size }
 
-# sub to_hash {
-#     my $self = shift;
-#     my $hash = $self->SUPER::to_hash;
-# 
-#     my @shipping_items;
-#     $hash->{shipping_items}->each( sub { push @shipping_items, $_->to_hash } );
-#     $hash->{shipping_items} = \@shipping_items;
-#     return $hash;
-# }
-
-sub subtotal_quantity { shift->shipping_items->reduce( sub { $a + $b->quantity }, 0 ) }
+sub subtotal_quantity {
+    shift->shipping_items->reduce( sub { $a + $b->quantity }, 0 );
+}
 
 1;
 __END__

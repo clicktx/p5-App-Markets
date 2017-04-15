@@ -7,7 +7,7 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column order_no => {
+column order_number => {
     data_type   => 'INT',
     is_nullable => 1,
 };

@@ -8,6 +8,8 @@ has quantity   => 0;
 sub hash_code {
     my $self  = shift;
     my $bytes = $self->product_id;
+
+    # $bytes .= ...;
     $self->SUPER::hash_code($bytes);
 }
 

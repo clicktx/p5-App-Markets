@@ -53,6 +53,7 @@ sub add_admin_routes {
             my $orders = $r->any('/orders')->to( controller => 'orders' );
             $orders->get('/')->to('#index')->name('RN_admin_orders');
             $orders->get('/detail/:id')->to('#detail')->name('RN_admin_orders_detail');
+            $orders->get('/edit/:id')->to('#edit')->name('RN_admin_orders_edit');
             $orders->post('/delete')->to('#delete')->name('RN_admin_orders_delete');
         }
     }

@@ -16,7 +16,7 @@ sub index {
     my $schema = $self->app->schema;
     my $rs     = $schema->resultset('Order');
 
-    my $itr = $rs->search( {}, { page => 1, row => 10, order_by => { -desc => 'order_no' } } );
+    my $itr = $rs->search( {}, { page => 1, row => 10, order_by => { -desc => 'order_number' } } );
 
     my $orders = [ { id => 1, date => '2000-1-1' }, { id => 2, date => '2000-2-2' }, { id => 3, date => '2000-3-3' }, ];
 
@@ -28,7 +28,7 @@ sub delete {
     my $self = shift;
 
     my $params = $self->req->params->to_hash;
-    my $id = $params->{id};
+    my $id     = $params->{id};
     $self->app->schema->resultset('Order')->find($id)->delete;
 
     $self->redirect_to('RN_admin_orders');
@@ -43,6 +43,55 @@ sub detail {
     my @shipments = $rs->search( { order_id => $order_id } )->all;
 
     $self->stash( shipments => \@shipments );
+    $self->render();
+}
+
+sub edit {
+    my $self     = shift;
+    my $order_id = $self->stash('id');
+
+    use DDP;
+    my $schema = $self->app->schema;
+
+    # my $order_rs          = $schema->resultset('Order')->search( { id => $order_id } );
+    my $order_rs          = $schema->resultset('Order')->find($order_id);
+    p $order_rs;
+    my $shipments_rs      = $order_rs->related_resultset('shipments');
+    p $shipments_rs;
+    my $shipping_items_rs = $shipments_rs->related_resultset('shipping_items');
+    p $shipping_items_rs;
+
+    # my $order = $order_rs->hashref_array;
+    # p $order;
+    # my $shipments = $shipments_rs->hashref_array;
+    # p $shipments;
+    # my $shipping_items = $shipping_items_rs->hashref_array;
+    # p $shipping_items;
+
+    # my $rs = $self->app->schema->resultset('Order::Shipment');
+    # my @shipments = $rs->search( { order_id => $order_id } )->all;
+
+    #####
+    # foreach my $shipment (@shipments) {
+    #     p $shipment->result_source->resultset->hashref_rs;
+    # p $shipment->hashref_rs;
+    # my $items = $shipment->shipping_items;
+    # p $items;
+    # }
+
+    # while (my $shipment = $array->next) {
+    #
+    #     p $shipment;
+    #
+    #     # my $shipping_items = $shipment->shipping_items;
+    #     # p $shipping_items;
+    #
+    #     my $items = $shipment->shipping_items->hashref_array;
+    #     p $items;
+    # }
+
+    #####
+
     $self->render();
 }
 

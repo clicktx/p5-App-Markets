@@ -95,7 +95,7 @@ sub complete_validate {
     my $cb     = sub {
 
         # Order
-        $order->{order_no} = $schema->sequence('Order');
+        $order->{order_number} = $schema->sequence('Order');
         $schema->resultset('Order')->create($order);    # NOTE: itemsはbulk insert されない
 
         # NOTE:
