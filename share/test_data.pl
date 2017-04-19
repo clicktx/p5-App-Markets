@@ -15,17 +15,23 @@
 
     # Order example
     'Order' => {
-        'billing_address' => 'New York',
+        'billing_address' => 'Silicon Valley',
         'customer_id'     => undef,
         'order_number'    => '1',
         'shipments'       => [
             {
-                'shipping_address' => 'New York',
+                'shipping_address' => 'San Francisco',
                 'shipping_items'   => [
                     { 'product_id' => '3', 'quantity'   => '3' },
                     { 'product_id' => '1', 'quantity'   => '1' },
                 ]
-            }
+            },
+            {
+                'shipping_address' => 'Los Angeles',
+                'shipping_items'   => [
+                    { 'product_id' => '2', 'quantity'   => '2' },
+                ]
+            },
         ]
     },
 }
