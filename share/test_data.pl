@@ -1,4 +1,4 @@
-{
+(
     # Addons
     'Addon' => [
         [qw/id name is_enabled/],
@@ -12,4 +12,26 @@
         [qw/100 102 before_compile_template 300/],
         [qw/101 102 before_xxx_action 500/],
     ],
-}
+
+    # Order example
+    'Order' => {
+        'billing_address' => 'Silicon Valley',
+        'customer_id'     => undef,
+        'order_number'    => '1',
+        'shipments'       => [
+            {
+                'shipping_address' => 'San Francisco',
+                'shipping_items'   => [
+                    { 'product_id' => '3', 'quantity'   => '3' },
+                    { 'product_id' => '1', 'quantity'   => '1' },
+                ]
+            },
+            {
+                'shipping_address' => 'Los Angeles',
+                'shipping_items'   => [
+                    { 'product_id' => '2', 'quantity'   => '2' },
+                ]
+            },
+        ]
+    },
+)

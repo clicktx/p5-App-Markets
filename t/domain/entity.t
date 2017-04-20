@@ -27,16 +27,21 @@ subtest 'basic' => sub {
 };
 
 subtest 'clone' => sub {
-    my $data = { id => 1, hoge => 1, fuga => 2 };
+    my $data = { id => 1, hoge => [ {}, {} ], fuga => { a => [ {}, {} ] } };
     my $e = $pkg->new($data);
+    $e->is_modified(1);
 
     my $clone = $e->clone;
+    is $clone->is_modified, 0, 'right modified flag';
+
     isnt $e, $clone, 'right clone';
     cmp_deeply $e->to_hash, $clone->to_hash, 'right clone data structure';
 
-    $e->is_modified(1);
-    $clone = $e->clone;
-    is $clone->is_modified, 0;
+    isnt $e->{hoge}, $clone->{hoge}, 'right another reference';
+    $e->{hoge}->[0] = '';
+    cmp_deeply $clone->{hoge}->[0], +{}, 'right two dimensions';
+    $e->{fuga}->{a}->[0] = { b => 1 };
+    cmp_deeply $clone->{fuga}->{a}->[0], {}, 'right three dimensions';
 };
 
 subtest 'to_array method' => sub {

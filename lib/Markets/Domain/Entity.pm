@@ -4,6 +4,7 @@ use Markets::Domain::Base;
 use Carp qw/croak/;
 use Mojo::Util qw/sha1_sum/;
 use Scalar::Util qw/blessed/;
+use Data::Clone qw/data_clone/;
 
 has id => sub { Carp::croak 'Attribute "id" not implemented by subclass' };
 
@@ -11,7 +12,7 @@ my @needless_attrs = (qw/id/);
 
 sub clone {
     my $self  = shift;
-    my $clone = $self->new( +{ %{$self} } );
+    my $clone = data_clone($self);
     $clone->_is_modified(0);
     return $clone;
 }

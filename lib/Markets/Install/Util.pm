@@ -6,6 +6,7 @@ use Mojolicious;
 use Mojo::Home;
 use Mojo::File 'path';
 use Mojo::Util 'decode';
+use Tie::IxHash;
 
 our @EXPORT_OK = (qw(insert_data));
 
@@ -28,9 +29,10 @@ Insert data to database from file.
 B<data file>
 
 Data file charset is UTF-8 only.
+Data is processed as an ordered associative arrays. See L<Tie::IxHash>.
 
     eg.
-    {
+    (
         'SchemaName1' => {
             { column1 => 'foo' },
             { column1 => 'bar' },
@@ -43,7 +45,7 @@ Data file charset is UTF-8 only.
             [ 'buz', undef , undef ],
             ...
         ],
-    }
+    )
 
 hash ref
 
@@ -64,17 +66,16 @@ sub insert_data {
     my $path   = shift;
 
     my $content = decode( 'UTF-8', path($path)->slurp );
-    my $data = eval "$content";
+    tie my %data, 'Tie::IxHash';
+    %data = eval "$content";
 
-    my @keys = keys %{$data};
-    foreach my $schema_name (@keys) {
+    foreach my $schema_name ( keys %data ) {
         my $action;
-        $action = 'create'   if ref $data->{$schema_name} eq 'HASH';
-        $action = 'populate' if ref $data->{$schema_name} eq 'ARRAY';
-        $schema->resultset($schema_name)->$action( $data->{$schema_name} );
+        $action = 'create'   if ref $data{$schema_name} eq 'HASH';
+        $action = 'populate' if ref $data{$schema_name} eq 'ARRAY';
+        $schema->resultset($schema_name)->$action( $data{$schema_name} );
     }
 }
-
 
 =over
 
@@ -96,7 +97,7 @@ sub load_config {
     my %arg              = @_;
     my $mode             = $arg{mode} || $MOJO_MODE;
     my $config_file_path = path( $MOJO_HOME, 'config', $mode . '.conf' );
-    my $conf = do $config_file_path;
+    my $conf             = do $config_file_path;
     die "development.conf does not retun HashRef" if ref($conf) ne 'HASH';
     return $conf;
 }
