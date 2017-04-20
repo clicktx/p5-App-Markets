@@ -18,6 +18,7 @@ requires 'DBIx::Class::ResultSet::HashRef',         '1.002';
 requires 'DateTime::Format::MySQL',                 '0.06';
 requires 'Server::Starter',                         '0.32';
 requires 'Gazelle',                                 '0.46';
+requires 'Tie::IxHash',                             '1.23';
 requires 'Struct::Diff',                            '0.86';
 
 # XS modules. it's a high performance!
