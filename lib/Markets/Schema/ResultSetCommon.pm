@@ -1,5 +1,6 @@
 package Markets::Schema::ResultSetCommon;
-use Mojo::Base 'DBIx::Class::ResultSet';
+# use Mojo::Base 'DBIx::Class::ResultSet';
+use Mojo::Base 'DBIx::Class::ResultSet::HashRef';
 
 # ResultCommon::insertで対応しているので不要
 # sub create {
