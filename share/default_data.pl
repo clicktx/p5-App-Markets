@@ -1,4 +1,4 @@
-{
+(
     # sequence
     'Order::Sequence' => { id => 1 },
 
@@ -8,4 +8,4 @@
         [ 'admin_uri_prefix', undef, '/admin', 'pref.summary.admin_uri_prefix', undef, undef ],
         [ 'addons_dir',       undef, 'addons', 'pref.summary.addons_dir',       undef, undef ],
     ],
-}
+)

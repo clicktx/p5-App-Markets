@@ -1,11 +1,11 @@
-{
+(
     # Addons
     'Addon' => [
         [qw/id name is_enabled/],
         [qw/1 test_addon 1/],
         [qw/2 disable_addon 0/],
     ],
-}
+)
 
 # INSERT  INTO `markets`.`addons` (`id`, `name`, `is_enabled`)
 # VALUES  (1, 'test_addon','1'),

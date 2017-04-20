@@ -1,4 +1,4 @@
-{
+(
     # Addons
     'Addon' => [
         [qw/id name is_enabled/],
@@ -34,4 +34,4 @@
             },
         ]
     },
-}
+)
