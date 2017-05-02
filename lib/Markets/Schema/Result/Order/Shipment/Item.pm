@@ -17,21 +17,19 @@ column product_id => {
     is_nullable => 0,
 };
 
-column description => {
-    data_type   => 'VARCHAR',
-    size        => 100,
-    is_nullable => 0,
-};
+# column description => {
+#     data_type   => 'VARCHAR',
+#     size        => 100,
+#     is_nullable => 0,
+# };
 
 column quantity => {
     data_type   => 'INT',
     is_nullable => 0,
 };
 
-# belongs_to
-#   order => 'Markets::Schema::Result::Order::Shipment',
-#   { 'foreign.id' => 'self.shipment_id' };
-
-belongs_to order => 'Markets::Schema::Result::Order::Shipment', 'shipment_id';
+belongs_to
+  shipment => 'Markets::Schema::Result::Order::Shipment',
+  { 'foreign.id' => 'self.shipment_id' };
 
 1;

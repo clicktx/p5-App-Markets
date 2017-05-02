@@ -13,19 +13,17 @@ column order_id => {
 };
 
 column shipping_address => {
-    data_type => 'VARCHAR',
-    size      => 255,
+    data_type   => 'VARCHAR',
+    size        => 255,
     is_nullable => 0,
 };
 
-# belongs_to
-#   order => 'Markets::Schema::Result::Order',
-#   { 'foreign.id' => 'self.order_id' };
-
-belongs_to order => 'Markets::Schema::Result::Order', 'order_id';
+belongs_to
+  order => 'Markets::Schema::Result::Order',
+  { 'foreign.id' => 'self.order_id' };
 
 has_many
-  shipping_items => 'Markets::Schema::Result::Order::Shipment::Item',
+  items => 'Markets::Schema::Result::Order::Shipment::Item',
   { 'foreign.shipment_id' => 'self.id' };
 
 1;
