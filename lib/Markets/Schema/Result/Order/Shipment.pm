@@ -12,15 +12,18 @@ column order_id => {
     is_nullable => 0,
 };
 
-column shipping_address => {
-    data_type   => 'VARCHAR',
-    size        => 255,
+column address_id => {
+    data_type   => 'INT',
     is_nullable => 0,
 };
 
 belongs_to
   order => 'Markets::Schema::Result::Order',
   { 'foreign.id' => 'self.order_id' };
+
+belongs_to
+  shipping_address => 'Markets::Schema::Result::Address',
+  { 'foreign.id' => 'self.address_id' };
 
 has_many
   items => 'Markets::Schema::Result::Order::Shipment::Item',

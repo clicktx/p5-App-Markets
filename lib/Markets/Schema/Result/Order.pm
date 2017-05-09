@@ -11,12 +11,6 @@ primary_column id => {
 #     data_type   => 'INT',
 #     is_nullable => 1,
 # };
-#
-column billing_address => {
-    data_type   => 'VARCHAR',
-    size        => 255,
-    is_nullable => 0,
-};
 
 column created_at => {
     data_type   => 'DATETIME',
@@ -24,7 +18,10 @@ column created_at => {
     timezone    => Markets::Schema->TZ,
 };
 
-# has_one billing => 'Markets::Schema::Result::Order::Billing', { 'foreign.order_id' => 'self.id' };
+# belongs_to
+#   customer => 'Markets::Schema::Result::Customer',
+#   { 'foreign.id' => 'self.customer_id' };
+
 has_many
   shipments => 'Markets::Schema::Result::Order::Shipment',
   { 'foreign.order_id' => 'self.id' };
