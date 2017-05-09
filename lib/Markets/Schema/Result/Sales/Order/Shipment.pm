@@ -1,4 +1,4 @@
-package Markets::Schema::Result::Order::Shipment;
+package Markets::Schema::Result::Sales::Order::Shipment;
 use Mojo::Base 'Markets::Schema::ResultCommon';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -17,8 +17,9 @@ column address_id => {
     is_nullable => 0,
 };
 
+# NOTE: 'order' is SQL reserved word.
 belongs_to
-  order => 'Markets::Schema::Result::Order',
+  sales_order => 'Markets::Schema::Result::Sales::Order',
   { 'foreign.id' => 'self.order_id' };
 
 belongs_to
@@ -26,7 +27,7 @@ belongs_to
   { 'foreign.id' => 'self.address_id' };
 
 has_many
-  items => 'Markets::Schema::Result::Order::Shipment::Item',
+  items => 'Markets::Schema::Result::Sales::Order::Shipment::Item',
   { 'foreign.shipment_id' => 'self.id' };
 
 1;

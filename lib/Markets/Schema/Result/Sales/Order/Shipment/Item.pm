@@ -1,4 +1,4 @@
-package Markets::Schema::Result::Order::Shipment::Item;
+package Markets::Schema::Result::Sales::Order::Shipment::Item;
 use Mojo::Base 'Markets::Schema::ResultCommon';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -29,7 +29,7 @@ column quantity => {
 };
 
 belongs_to
-  shipment => 'Markets::Schema::Result::Order::Shipment',
+  shipment => 'Markets::Schema::Result::Sales::Order::Shipment',
   { 'foreign.id' => 'self.shipment_id' };
 
 1;

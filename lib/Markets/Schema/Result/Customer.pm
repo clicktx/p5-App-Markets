@@ -25,7 +25,7 @@ column updated_at => {
 #
 
 has_many
-  orders => 'Markets::Schema::Result::Order',
+  orders => 'Markets::Schema::Result::Sales::Order',
   { 'foreign.customer_id' => 'self.id' };
 
 1;

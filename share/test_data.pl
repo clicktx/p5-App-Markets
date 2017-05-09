@@ -13,18 +13,18 @@
         [qw/101 102 before_xxx_action 500/],
     ],
 
-    'Order' => [
+    'Sales::Order' => [
         [qw/id created_at customer/],
         [ 1, '2017-06-06 20:01:35', { id => 111 } ],
         [ 2, '2017-07-07 07:02:15', { id => 112 } ],
     ],
-    'Order::Shipment' => [
+    'Sales::Order::Shipment' => [
         [qw/order_id id shipping_address/],
         [ 1, 1, { id => 1, line1 => 'Silicon Valley' } ],
         [ 1, 2, { id => 2, line1 => 'Las Vegas' } ],
         [ 2, 3, { id => 2, } ],
     ],
-    'Order::Shipment::Item' => [
+    'Sales::Order::Shipment::Item' => [
         [qw/shipment_id product_id quantity/],
         [ 1, 3, 3 ],
         [ 1, 1, 1 ],
