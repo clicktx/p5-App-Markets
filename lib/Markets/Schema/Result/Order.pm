@@ -7,10 +7,10 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-# column customer_id => {
-#     data_type   => 'INT',
-#     is_nullable => 1,
-# };
+column customer_id => {
+    data_type   => 'INT',
+    is_nullable => 0,
+};
 
 column created_at => {
     data_type   => 'DATETIME',
@@ -18,9 +18,9 @@ column created_at => {
     timezone    => Markets::Schema->TZ,
 };
 
-# belongs_to
-#   customer => 'Markets::Schema::Result::Customer',
-#   { 'foreign.id' => 'self.customer_id' };
+belongs_to
+  customer => 'Markets::Schema::Result::Customer',
+  { 'foreign.id' => 'self.customer_id' };
 
 has_many
   shipments => 'Markets::Schema::Result::Order::Shipment',

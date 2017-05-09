@@ -14,9 +14,9 @@
     ],
 
     'Order' => [
-        [qw/id created_at /],
-        [ 1, '2017-06-06 20:01:35',  ],
-        [ 2, '2017-07-07 07:02:15', ],
+        [qw/id created_at customer/],
+        [ 1, '2017-06-06 20:01:35', { id => 111 } ],
+        [ 2, '2017-07-07 07:02:15', { id => 112 } ],
     ],
     'Order::Shipment' => [
         [qw/order_id id shipping_address/],
