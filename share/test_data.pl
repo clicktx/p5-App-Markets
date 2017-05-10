@@ -13,17 +13,24 @@
         [qw/101 102 before_xxx_action 500/],
     ],
 
-    'Customer' => [
-        [qw/id/],
-        [111],
-        [112],
-    ],
     'Address' => [
         [qw/id line1/],
-        [1, 'Silicon Valley'],
-        [2, 'San Jose'],
-        [3, 'Las Vegas'],
-        [4, 'San Francisco']
+        [ 1, 'Silicon Valley' ],
+        [ 2, 'San Jose' ],
+        [ 3, 'Las Vegas' ],
+        [ 4, 'San Francisco ']
+    ],
+    'Customer' => [
+        [qw/id created_at/],
+        [ 111, '2017-06-06 19:50:05' ],
+        [ 112, '2017-07-07 07:02:15' ],
+    ],
+    'Customer::Address' => [
+        [qw/address_type customer_id address_id/],
+        [qw/post 111 1/],
+        [qw/bill 111 1/],
+        [qw/ship 111 1/],
+        [qw/ship 111 2/],
     ],
     'Sales::Order' => [
         [qw/id created_at customer_id address_id/],

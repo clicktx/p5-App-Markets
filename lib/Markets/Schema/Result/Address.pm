@@ -13,9 +13,9 @@ column line1 => {
     is_nullable => 0,
 };
 
-# belongs_to
-#   customer_address => 'Markets::Schema::Result::Customer::Address',
-#   { 'foreign.id' => 'self.customer_address_id' };
+has_many
+  customer_addresses => 'Markets::Schema::Result::Customer::Address',
+  { 'foreign.address_id' => 'self.id' };
 
 has_many
   orders => 'Markets::Schema::Result::Sales::Order',

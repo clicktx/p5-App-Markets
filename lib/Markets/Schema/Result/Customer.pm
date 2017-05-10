@@ -19,10 +19,9 @@ column updated_at => {
     timezone    => Markets::Schema->TZ,
 };
 
-# has_many
-#   addresses => 'Markets::Schema::Result::Customer::Adress',
-#   { 'foreign.customer_id' => 'self.id' };
-#
+has_many
+  addresses => 'Markets::Schema::Result::Customer::Address',
+  { 'foreign.customer_id' => 'self.id' };
 
 has_many
   orders => 'Markets::Schema::Result::Sales::Order',
