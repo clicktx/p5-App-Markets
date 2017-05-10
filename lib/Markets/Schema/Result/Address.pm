@@ -18,6 +18,10 @@ column line1 => {
 #   { 'foreign.id' => 'self.customer_address_id' };
 
 has_many
+  orders => 'Markets::Schema::Result::Sales::Order',
+  { 'foreign.address_id' => 'self.id' };
+
+has_many
   shipments => 'Markets::Schema::Result::Sales::Order::Shipment',
   { 'foreign.address_id' => 'self.id' };
 

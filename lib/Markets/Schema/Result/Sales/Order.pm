@@ -12,6 +12,11 @@ column customer_id => {
     is_nullable => 0,
 };
 
+column address_id => {
+    data_type   => 'INT',
+    is_nullable => 0,
+};
+
 column created_at => {
     data_type   => 'DATETIME',
     is_nullable => 0,
@@ -21,6 +26,10 @@ column created_at => {
 belongs_to
   customer => 'Markets::Schema::Result::Customer',
   { 'foreign.id' => 'self.customer_id' };
+
+belongs_to
+  postal_address => 'Markets::Schema::Result::Address',
+  { 'foreign.id' => 'self.address_id' };
 
 has_many
   shipments => 'Markets::Schema::Result::Sales::Order::Shipment',
