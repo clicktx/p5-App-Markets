@@ -110,15 +110,6 @@ subtest 'method add_shipping_item' => sub {
     is $cart->is_modified, 1, 'right modified';
 };
 
-subtest 'method clear' => sub {
-    my $cart = _create_entity;
-    $cart->clear;
-    cmp_deeply $cart->to_data, { cart_id => ignore(), items => [], shipments => [] };
-    is $cart->is_modified,      1, 'right modified';
-    is $cart->total_item_count, 0, 'right total item count';
-    is $cart->total_quantity,   0, 'right total quantity count';
-};
-
 subtest 'method clone' => sub {
     my $cart = _create_entity;
 

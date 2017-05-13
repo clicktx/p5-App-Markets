@@ -64,16 +64,6 @@ sub all_shipping_items {
     shift->shipments->map( sub { $_->shipping_items->each } );
 }
 
-sub clear {
-    my $self = shift;
-
-    # Remove all data
-    $self->$_( collection() ) for (qw/items shipments/);
-
-    $self->_is_modified(1);
-    return $self;
-}
-
 sub clone {
     my $self  = shift;
     my $clone = data_clone($self);
@@ -226,8 +216,6 @@ default $shipments->first
     my $all_shipping_items = $cart->all_shipping_items;
 
 All items in shipments.
-
-=head2 C<clear>
 
 =head2 C<clone>
 
