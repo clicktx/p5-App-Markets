@@ -15,7 +15,7 @@ sub index {
             page     => 1,
             row      => 10,
             # order_by => { -desc => 'order_id' },
-            prefetch => { sales_order => 'postal_address' },
+            prefetch => { sales_order => 'billing_address' },
             # prefetch => [{ sales_order => 'postal_address' }, 'shipping_address' ],
         }
     );

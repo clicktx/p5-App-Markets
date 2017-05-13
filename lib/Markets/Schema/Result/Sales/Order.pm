@@ -28,7 +28,7 @@ belongs_to
   { 'foreign.id' => 'self.customer_id' };
 
 belongs_to
-  postal_address => 'Markets::Schema::Result::Address',
+  billing_address => 'Markets::Schema::Result::Address',
   { 'foreign.id' => 'self.address_id' };
 
 has_many
