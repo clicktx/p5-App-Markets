@@ -13,6 +13,16 @@
         [qw/101 102 before_xxx_action 500/],
     ],
 
+    # 'Sales::Order' => {
+    #     customer => {
+    #         # postal_address => {},?
+    #     },
+    #     billing_address => {},
+    #     # payment => { billing_address => {} },?
+    #     shipments => [
+    #         { shipping_address => {} }
+    #     ],
+    # },
     'Address' => [
         [qw/id line1/],
         [ 1, 'Silicon Valley' ],
