@@ -19,6 +19,7 @@ my $test_data = {
             shipping_items => [ { product_id => 5, quantity => 5 }, { product_id => 6, quantity => 6 } ]
         },
     ],
+    billing_address => { line1 => 'Gunma' },
 };
 
 sub _create_entity {
@@ -176,11 +177,24 @@ subtest 'method merge' => sub {
     )->create;
 
     my $merged_cart = $cart->merge($stored_cart);
-    cmp_deeply $cart->to_data,        { cart_id => ignore(), %{$test_data} },   'right non-destructive';
-    cmp_deeply $stored_cart->to_data, { cart_id => ignore(), %{$stored_data} }, 'right non-destructive';
+    cmp_deeply $cart->to_data,
+      {
+        cart_id         => ignore(),
+        billing_address => ignore(),
+        %{$test_data}
+      },
+      'right non-destructive';
+    cmp_deeply $stored_cart->to_data,
+      {
+        cart_id         => ignore(),
+        billing_address => ignore(),
+        %{$stored_data}
+      },
+      'right non-destructive';
     cmp_deeply $merged_cart->to_data,
       {
         cart_id => ignore(),
+        billing_address => ignore(),
         items   => [
             { product_id => 4, quantity => 4 },
             { product_id => 1, quantity => 2 },
