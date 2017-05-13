@@ -10,10 +10,13 @@ my $test_data = {
     items =>
       [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 }, { product_id => 3, quantity => 3 }, ],
     shipments => [
-        { shipping_address => 'Tokyo', shipping_items => [ { product_id => 4, quantity => 4 } ] },
         {
-            shipping_address => 'Osaka',
-            shipping_items   => [ { product_id => 5, quantity => 5 }, { product_id => 6, quantity => 6 } ]
+            shipping_address => { line1 => 'Tokyo' },
+            shipping_items => [ { product_id => 4, quantity => 4 } ]
+        },
+        {
+            shipping_address => { line1 => 'Osaka' },
+            shipping_items => [ { product_id => 5, quantity => 5 }, { product_id => 6, quantity => 6 } ]
         },
     ],
 };
@@ -171,7 +174,7 @@ subtest 'method merge' => sub {
             { product_id => 1, quantity => 1 },
             { product_id => 5, quantity => 5 },
         ],
-        shipments => [ { shipping_items => [] } ],
+        shipments => [ { shipping_address => {}, shipping_items => [] } ],
     };
     my $stored_cart = $app->factory(
         'entity-cart',
@@ -194,7 +197,7 @@ subtest 'method merge' => sub {
             { product_id => 2, quantity => 2 },
             { product_id => 3, quantity => 3 },
         ],
-        shipments => [ { shipping_items => [] } ],
+        shipments => [ { shipping_address => {}, shipping_items => [] } ],
       },
       'right merge data';
     is $merged_cart->is_modified, 1, 'right modified';
@@ -202,7 +205,7 @@ subtest 'method merge' => sub {
 
 subtest 'order data' => sub {
     my $cart       = _create_entity;
-    my $order_data = { %{$cart->to_data} };
+    my $order_data = { %{ $cart->to_data } };
     delete $order_data->{cart_id};
     delete $order_data->{items};
 

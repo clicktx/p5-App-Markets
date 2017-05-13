@@ -8,7 +8,8 @@ use_ok 'Markets::Domain::Factory::Entity::Cart';
 
 my $shipments = bless [
     bless {
-        shipping_items => ( bless [], 'Markets::Domain::Collection' )
+        shipping_address => ( bless {}, 'Markets::Domain::Entity::Address' ),
+        shipping_items => ( bless [], 'Markets::Domain::Collection' ),
     },
     'Markets::Domain::Entity::Shipment'
   ],

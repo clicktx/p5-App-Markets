@@ -10,22 +10,25 @@ subtest 'argument empty' => sub {
     my $factory = $pkg->new();
     my $entity  = $factory->create_entity();
     cmp_deeply $entity,
-      bless { shipping_items => ( bless [], 'Markets::Domain::Collection' ) },
+      bless {
+        shipping_address => ( bless {}, 'Markets::Domain::Entity::Address' ),
+        shipping_items => ( bless [], 'Markets::Domain::Collection' ),
+      },
       'Markets::Domain::Entity::Shipment';
 };
 
 subtest 'data' => sub {
     my $factory = $pkg->new(
         {
-            shipping_address => 'Silicon Valley',
-            shipping_items   => [ {} ],
+            shipping_address => { line1 => 'Silicon Valley' },
+            shipping_items   => [       {} ],
         }
     );
     my $entity = $factory->create_entity();
     cmp_deeply $entity,
       bless {
-        shipping_address => 'Silicon Valley',
-        shipping_items   => ( bless [ bless {}, 'Markets::Domain::Entity::Item', ], 'Markets::Domain::Collection' ),
+        shipping_address => ( bless { line1 => 'Silicon Valley' }, 'Markets::Domain::Entity::Address' ),
+        shipping_items => ( bless [ bless {}, 'Markets::Domain::Entity::Item', ], 'Markets::Domain::Collection' ),
       },
       'Markets::Domain::Entity::Shipment';
 };
