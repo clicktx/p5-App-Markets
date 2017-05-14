@@ -79,25 +79,6 @@ sub count {
     return $self->$attr->size;
 }
 
-# NOTE: アクセス毎に呼ばれる。Controller::Catalog::finalize
-#       items,shipments,shipments->itemsの全てを検査する必要があるか？
-#       速度に問題はないか？
-sub is_modified {
-
-    # @_ > 1 ? $_[0]->_is_modified( $_[1] ) : $_[0]->_is_modified
-    my $self = shift;
-
-    # Setter
-    return $self->_is_modified(1) if @_;
-
-    # Getter
-    return 1 if $self->_is_modified;
-
-    my $is_modified = 0;
-    $self->$_->each( sub { $is_modified = 1 if $_->is_modified } ) for (qw/items shipments/);
-    return $is_modified;
-}
-
 sub merge {
     my ( $self, $stored ) = ( shift->clone, shift->clone );
 

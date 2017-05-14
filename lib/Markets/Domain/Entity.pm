@@ -21,7 +21,29 @@ sub hash_code { @_ > 1 ? sha1_sum( $_[1] ) : sha1_sum( $_[0]->id ) }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
-sub is_modified { @_ > 1 ? $_[0]->_is_modified( $_[1] ? 1 : 0 ) : $_[0]->_is_modified }
+# sub is_modified { @_ > 1 ? $_[0]->_is_modified( $_[1] ? 1 : 0 ) : $_[0]->_is_modified }
+sub is_modified {
+    my $self = shift;
+
+    # Setter
+    return $self->_is_modified( $_[0] ? 1 : 0 ) if @_;
+
+    # Getter
+    return 1 if $self->_is_modified;
+
+    # Recursive call for attributes
+    my $is_modified = 0;
+    foreach my $attr ( keys %{$self} ) {
+        $self->can($attr) ? my $obj = $self->$attr : next;
+        if ( $obj->isa('Markets::Domain::Entity') ) {
+            $is_modified = 1 if $obj->is_modified;
+        }
+        elsif ( $obj->isa('Mojo::Collection') ) {
+            $obj->each( sub { $is_modified = 1 if $_->is_modified } );
+        }
+    }
+    return $is_modified;
+}
 
 sub to_array {
     my $self = shift;

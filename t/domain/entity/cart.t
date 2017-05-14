@@ -72,22 +72,6 @@ subtest 'methods' => sub {
     is $cart->is_equal($cart2), 0, 'right not equal entity';
 };
 
-subtest 'method is_modified' => sub {
-    my $cart = _create_entity;
-    is $cart->is_modified, 0, 'right not modified';
-    $cart->items->first->is_modified(1);
-    is $cart->is_modified, 1, 'right modified';
-
-    $cart = _create_entity;
-    is $cart->is_modified, 0, 'right not modified';
-    $cart->shipments->first->is_modified(1);
-    is $cart->is_modified, 1, 'right modified';
-
-    # $cart = _create_entity;
-    # $cart->shipments->first->items->first->is_modified(1);
-    # is $cart->is_modified, 1, 'right modified';
-};
-
 subtest 'method add_item' => sub {
     my $cart = _create_entity;
     $cart->add_item( Markets::Domain::Entity::Item->new( product_id => 11 ) );

@@ -2,6 +2,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
 use Mojo::Util qw/sha1_sum/;
+use Mojo::Collection qw/c/;
 
 my $pkg = 'Markets::Domain::Entity';
 use_ok $pkg;
@@ -94,6 +95,41 @@ subtest 'to_data method' => sub {
         },
       },
       'right dump data';
+};
+
+subtest 'is_modified' => sub {
+    my $make_entity = sub {
+        my $e = $pkg->new(
+            a => 1,
+            e => $pkg->new( x => 1 ),
+            c => c( $pkg->new( y => 1 ), $pkg->new( e => $pkg->new( z => 1 ) ) ),
+        );
+        $e->attr( [qw/a e c/] );
+        $e->e->attr('x');
+        $e->c->[0]->attr('y');
+        $e->c->[1]->attr('e');
+        $e->c->[1]->e->attr('z');
+        return $e;
+    };
+    my $e;
+
+    $e = $make_entity->();
+    $e->a(2);
+    is $e->is_modified, 1;
+
+    # Entity
+    $e = $make_entity->();
+    $e->e->x(2);
+    is $e->is_modified, 1;
+
+    # Collection
+    $e = $make_entity->();
+    $e->c->[0]->y(2);
+    is $e->is_modified, 1;
+
+    $e = $make_entity->();
+    $e->c->[1]->e->z(2);
+    is $e->is_modified, 1;
 };
 
 done_testing();
