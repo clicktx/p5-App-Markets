@@ -20,11 +20,11 @@
     <%= csrf_field %>
     <div class="">
         billing address:
-        <%= text_field billing_address => $self->cart->billing_address || 'ogikubo' %>
+        <%= text_field billing_address => $self->cart->billing_address->line1 || 'ogikubo' %>
     </div>
     <div class="">
         shipping address:
-        <%= text_field shipping_address => $self->cart->shipments->first->shipping_address || 'kamiizumi' %>
+        <%= text_field shipping_address => $self->cart->shipments->first->shipping_address->line1 || 'kamiizumi' %>
     </div>
     <%= submit_button 'Next' %>
 <% end %>

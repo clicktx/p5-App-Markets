@@ -24,10 +24,11 @@ sub address_validate {
     my $billing_address  = $self->param('billing_address');
     my $shipping_address = $self->param('shipping_address');
 
-    $self->cart->billing_address($billing_address);
-
+    $self->cart->billing_address->line1($billing_address);
     my $shipments = $self->cart->shipments;
-    $shipments->first->shipping_address($shipping_address);
+
+    # $shipments->first->shipping_address->line1($shipping_address);
+    $shipments->[0]->shipping_address->line1($shipping_address);
 
     # return $self->render( template => 'checkout/address' ) if $error;
     $self->redirect_to('RN_checkout_shipping');
@@ -88,15 +89,19 @@ sub complete_validate {
 
     # Make order data
     my $order = $cart->to_order_data;
-    $order->{customer_id} = $self->server_session->data('customer_id');
+
+    # Customer id
+    my $customer_id = $self->server_session->data('customer_id');
+    $order->{customer} = { id => $customer_id };
 
     # Store order
     my $schema = $self->app->schema;
     my $cb     = sub {
 
         # Order
-        $order->{order_number} = $schema->sequence('Order');
-        $schema->resultset('Order')->create($order);    # NOTE: itemsはbulk insert されない
+        # $order->{order_number} = $schema->sequence('Order');
+        # $schema->resultset('Order')->create($order);    # NOTE: itemsはbulk insert されない
+        $schema->resultset('Sales::Order')->create($order);
 
         # NOTE:
         # DBIx::Class::ResultSet https://metacpan.org/pod/DBIx::Class::ResultSet#populate
@@ -121,8 +126,6 @@ sub complete_validate {
     # cart sessionクリア
     # cartクリア（再生成）
     my $newcart = $self->factory( 'entity-cart', {} )->create;
-    # $self->cart($newcart);
-    # $self->cart->is_modified(1);
     $self->cart_session->data( $newcart->to_data );
 
     # redirect_to thank you page

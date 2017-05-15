@@ -27,7 +27,7 @@ belongs_to
   { 'foreign.id' => 'self.address_id' };
 
 has_many
-  items => 'Markets::Schema::Result::Sales::Order::Shipment::Item',
+  shipping_items => 'Markets::Schema::Result::Sales::Order::Shipment::Item',
   { 'foreign.shipment_id' => 'self.id' };
 
 1;
