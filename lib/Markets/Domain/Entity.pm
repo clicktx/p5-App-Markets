@@ -34,12 +34,14 @@ sub is_modified {
     # Recursive call for attributes
     my $is_modified = 0;
     foreach my $attr ( keys %{$self} ) {
-        $self->can($attr) ? my $obj = $self->$attr : next;
-        if ( $obj->isa('Markets::Domain::Entity') ) {
-            $is_modified = 1 if $obj->is_modified;
+        next if !$self->can($attr);
+        next if !Scalar::Util::blessed( $self->$attr );
+
+        if ( $self->$attr->isa('Markets::Domain::Entity') ) {
+            $is_modified = 1 if $self->$attr->is_modified;
         }
-        elsif ( $obj->isa('Mojo::Collection') ) {
-            $obj->each( sub { $is_modified = 1 if $_->is_modified } );
+        elsif ( $self->$attr->isa('Mojo::Collection') ) {
+            $self->$attr->each( sub { $is_modified = 1 if $_->is_modified } );
         }
     }
     return $is_modified;

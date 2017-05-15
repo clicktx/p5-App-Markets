@@ -101,6 +101,7 @@ subtest 'is_modified' => sub {
     my $make_entity = sub {
         my $e = $pkg->new(
             a => 1,
+            b => 1,
             e => $pkg->new( x => 1 ),
             c => c( $pkg->new( y => 1 ), $pkg->new( e => $pkg->new( z => 1 ) ) ),
         );
@@ -114,6 +115,11 @@ subtest 'is_modified' => sub {
     my $e;
 
     $e = $make_entity->();
+    is $e->is_modified, 0;
+
+    $e->{b} = 2;
+    is $e->is_modified, 0;
+
     $e->a(2);
     is $e->is_modified, 1;
 
