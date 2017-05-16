@@ -13,25 +13,51 @@
         [qw/101 102 before_xxx_action 500/],
     ],
 
-    # Order example
-    'Order' => {
-        'billing_address' => 'Silicon Valley',
-        'customer_id'     => undef,
-        'order_number'    => '1',
-        'shipments'       => [
-            {
-                'shipping_address' => 'San Francisco',
-                'shipping_items'   => [
-                    { 'product_id' => '3', 'quantity'   => '3' },
-                    { 'product_id' => '1', 'quantity'   => '1' },
-                ]
-            },
-            {
-                'shipping_address' => 'Los Angeles',
-                'shipping_items'   => [
-                    { 'product_id' => '2', 'quantity'   => '2' },
-                ]
-            },
-        ]
-    },
+    # 'Sales::Order' => {
+    #     customer => {
+    #         # postal_address => {},?
+    #     },
+    #     billing_address => {},
+    #     # payment => { billing_address => {} },?
+    #     shipments => [
+    #         { shipping_address => {} }
+    #     ],
+    # },
+    'Address' => [
+        [qw/id line1/],
+        [ 1, 'Silicon Valley' ],
+        [ 2, 'San Jose' ],
+        [ 3, 'Las Vegas' ],
+        [ 4, 'San Francisco ']
+    ],
+    'Customer' => [
+        [qw/id created_at/],
+        [ 111, '2017-06-06 19:50:05' ],
+        [ 112, '2017-07-07 07:02:15' ],
+    ],
+    'Customer::Address' => [
+        [qw/address_type customer_id address_id/],
+        [qw/post 111 1/],
+        [qw/bill 111 1/],
+        [qw/ship 111 1/],
+        [qw/ship 111 2/],
+    ],
+    'Sales::Order' => [
+        [qw/id created_at customer_id address_id/],
+        [ 1, '2017-06-06 20:01:35', 111, 1 ],
+        [ 2, '2017-07-07 07:02:15', 112, 2 ],
+    ],
+    'Sales::Order::Shipment' => [
+        [qw/order_id id address_id/],
+        [ 1, 1, 1 ],
+        [ 1, 2, 3 ],
+        [ 2, 3, 4 ],
+    ],
+    'Sales::Order::Shipment::Item' => [
+        [qw/shipment_id product_id quantity/],
+        [ 1, 3, 3 ],
+        [ 1, 1, 1 ],
+        [ 2, 2, 2 ],
+        [ 3, 4, 4 ],
+    ],
 )

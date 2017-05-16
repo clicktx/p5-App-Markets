@@ -1,4 +1,4 @@
-package Markets::Schema::Result::Order::Shipment::Item;
+package Markets::Schema::Result::Sales::Order::Shipment::Item;
 use Mojo::Base 'Markets::Schema::ResultCommon';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -17,21 +17,19 @@ column product_id => {
     is_nullable => 0,
 };
 
-column description => {
-    data_type   => 'VARCHAR',
-    size        => 100,
-    is_nullable => 0,
-};
+# column description => {
+#     data_type   => 'VARCHAR',
+#     size        => 100,
+#     is_nullable => 0,
+# };
 
 column quantity => {
     data_type   => 'INT',
     is_nullable => 0,
 };
 
-# belongs_to
-#   order => 'Markets::Schema::Result::Order::Shipment',
-#   { 'foreign.id' => 'self.shipment_id' };
-
-belongs_to order => 'Markets::Schema::Result::Order::Shipment', 'shipment_id';
+belongs_to
+  shipment => 'Markets::Schema::Result::Sales::Order::Shipment',
+  { 'foreign.id' => 'self.shipment_id' };
 
 1;

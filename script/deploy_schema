@@ -27,7 +27,7 @@ foreach my $path (@paths) {
     die $@ if $@;
 }
 
-
+say 'All process completed.';
 exit;
 
 __END__

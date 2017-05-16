@@ -3,9 +3,8 @@ use Markets::Domain::Entity;
 use Markets::Domain::Collection;
 use Data::Clone qw/data_clone/;
 
-has id => sub { shift->hash_code };
-has shipping_address => '';
 has shipping_items => sub { Markets::Domain::Collection->new };
+has [qw/id shipping_address/];
 
 sub clone {
     my $self  = shift;
@@ -14,14 +13,6 @@ sub clone {
       if $self->shipping_items->can('map');
     $clone->_is_modified(0);
     return $clone;
-}
-
-sub hash_code {
-    my $self  = shift;
-    my $bytes = $self->shipping_address;
-
-    # $bytes .= ...
-    $self->SUPER::hash_code($bytes);
 }
 
 sub item_count { shift->shipping_items->size }

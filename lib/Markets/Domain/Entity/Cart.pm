@@ -64,16 +64,6 @@ sub all_shipping_items {
     shift->shipments->map( sub { $_->shipping_items->each } );
 }
 
-sub clear {
-    my $self = shift;
-
-    # Remove all data
-    $self->$_( collection() ) for (qw/items shipments/);
-
-    $self->_is_modified(1);
-    return $self;
-}
-
 sub clone {
     my $self  = shift;
     my $clone = data_clone($self);
@@ -87,25 +77,6 @@ sub clone {
 sub count {
     my ( $self, $attr ) = @_;
     return $self->$attr->size;
-}
-
-# NOTE: アクセス毎に呼ばれる。Controller::Catalog::finalize
-#       items,shipments,shipments->itemsの全てを検査する必要があるか？
-#       速度に問題はないか？
-sub is_modified {
-
-    # @_ > 1 ? $_[0]->_is_modified( $_[1] ) : $_[0]->_is_modified
-    my $self = shift;
-
-    # Setter
-    return $self->_is_modified(1) if @_;
-
-    # Getter
-    return 1 if $self->_is_modified;
-
-    my $is_modified = 0;
-    $self->$_->each( sub { $is_modified = 1 if $_->is_modified } ) for (qw/items shipments/);
-    return $is_modified;
 }
 
 sub merge {
@@ -226,8 +197,6 @@ default $shipments->first
     my $all_shipping_items = $cart->all_shipping_items;
 
 All items in shipments.
-
-=head2 C<clear>
 
 =head2 C<clone>
 

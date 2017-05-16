@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Thu Apr 13 09:08:41 2017
+-- Created on Wed May 10 20:06:03 2017
 -- 
 SET foreign_key_checks=0;
 
@@ -17,6 +17,17 @@ CREATE TABLE addons (
   UNIQUE addons_name (name)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS addresses;
+
+--
+-- Table: addresses
+--
+CREATE TABLE addresses (
+  id integer NOT NULL auto_increment,
+  line1 VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
 DROP TABLE IF EXISTS carts;
 
 --
@@ -28,6 +39,18 @@ CREATE TABLE carts (
   created_at datetime NOT NULL,
   updated_at datetime NOT NULL,
   PRIMARY KEY (cart_id)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS customers;
+
+--
+-- Table: customers
+--
+CREATE TABLE customers (
+  id integer NOT NULL auto_increment,
+  created_at datetime NOT NULL,
+  updated_at datetime NULL,
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS my_addon_tests;
@@ -51,20 +74,6 @@ CREATE TABLE order_sequences (
   PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS orders;
-
---
--- Table: orders
---
-CREATE TABLE orders (
-  id integer NOT NULL auto_increment,
-  order_no integer NULL,
-  customer_id integer NULL,
-  billing_address VARCHAR(255) NOT NULL,
-  created_at datetime NOT NULL,
-  PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
 DROP TABLE IF EXISTS preferences;
 
 --
@@ -80,6 +89,16 @@ CREATE TABLE preferences (
   PRIMARY KEY (key_name)
 );
 
+DROP TABLE IF EXISTS reference_address_types;
+
+--
+-- Table: reference_address_types
+--
+CREATE TABLE reference_address_types (
+  address_type CHAR(4) NOT NULL,
+  PRIMARY KEY (address_type)
+) ENGINE=InnoDB;
+
 DROP TABLE IF EXISTS addon_hooks;
 
 --
@@ -93,20 +112,6 @@ CREATE TABLE addon_hooks (
   INDEX addon_hooks_idx_addon_id (addon_id),
   PRIMARY KEY (id),
   CONSTRAINT addon_hooks_fk_addon_id FOREIGN KEY (addon_id) REFERENCES addons (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS order_shipments;
-
---
--- Table: order_shipments
---
-CREATE TABLE order_shipments (
-  id integer NOT NULL auto_increment,
-  order_id integer NOT NULL,
-  shipping_address VARCHAR(255) NOT NULL,
-  INDEX order_shipments_idx_order_id (order_id),
-  PRIMARY KEY (id),
-  CONSTRAINT order_shipments_fk_order_id FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS sessions;
@@ -124,20 +129,71 @@ CREATE TABLE sessions (
   CONSTRAINT sessions_fk_cart_id FOREIGN KEY (cart_id) REFERENCES carts (cart_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS order_shipment_items;
+DROP TABLE IF EXISTS sales_orders;
 
 --
--- Table: order_shipment_items
+-- Table: sales_orders
 --
-CREATE TABLE order_shipment_items (
+CREATE TABLE sales_orders (
+  id integer NOT NULL auto_increment,
+  customer_id integer NOT NULL,
+  address_id integer NOT NULL,
+  created_at datetime NOT NULL,
+  INDEX sales_orders_idx_customer_id (customer_id),
+  INDEX sales_orders_idx_address_id (address_id),
+  PRIMARY KEY (id),
+  CONSTRAINT sales_orders_fk_customer_id FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT sales_orders_fk_address_id FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS customer_addresses;
+
+--
+-- Table: customer_addresses
+--
+CREATE TABLE customer_addresses (
+  id integer NOT NULL auto_increment,
+  address_type CHAR(4) NOT NULL,
+  customer_id integer NOT NULL,
+  address_id integer NOT NULL,
+  INDEX customer_addresses_idx_address_id (address_id),
+  INDEX customer_addresses_idx_address_type (address_type),
+  INDEX customer_addresses_idx_customer_id (customer_id),
+  PRIMARY KEY (id),
+  CONSTRAINT customer_addresses_fk_address_id FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT customer_addresses_fk_address_type FOREIGN KEY (address_type) REFERENCES reference_address_types (address_type) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT customer_addresses_fk_customer_id FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS sales_order_shipments;
+
+--
+-- Table: sales_order_shipments
+--
+CREATE TABLE sales_order_shipments (
+  id integer NOT NULL auto_increment,
+  order_id integer NOT NULL,
+  address_id integer NOT NULL,
+  INDEX sales_order_shipments_idx_order_id (order_id),
+  INDEX sales_order_shipments_idx_address_id (address_id),
+  PRIMARY KEY (id),
+  CONSTRAINT sales_order_shipments_fk_order_id FOREIGN KEY (order_id) REFERENCES sales_orders (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT sales_order_shipments_fk_address_id FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS sales_order_shipment_items;
+
+--
+-- Table: sales_order_shipment_items
+--
+CREATE TABLE sales_order_shipment_items (
   id integer NOT NULL auto_increment,
   shipment_id integer NOT NULL,
   product_id integer NOT NULL,
-  description VARCHAR(100) NOT NULL,
   quantity integer NOT NULL,
-  INDEX order_shipment_items_idx_shipment_id (shipment_id),
+  INDEX sales_order_shipment_items_idx_shipment_id (shipment_id),
   PRIMARY KEY (id),
-  CONSTRAINT order_shipment_items_fk_shipment_id FOREIGN KEY (shipment_id) REFERENCES order_shipments (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT sales_order_shipment_items_fk_shipment_id FOREIGN KEY (shipment_id) REFERENCES sales_order_shipments (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 SET foreign_key_checks=1;

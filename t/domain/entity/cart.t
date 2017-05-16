@@ -10,12 +10,16 @@ my $test_data = {
     items =>
       [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 }, { product_id => 3, quantity => 3 }, ],
     shipments => [
-        { shipping_address => 'Tokyo', shipping_items => [ { product_id => 4, quantity => 4 } ] },
         {
-            shipping_address => 'Osaka',
-            shipping_items   => [ { product_id => 5, quantity => 5 }, { product_id => 6, quantity => 6 } ]
+            shipping_address => { line1 => 'Tokyo' },
+            shipping_items => [ { product_id => 4, quantity => 4 } ]
+        },
+        {
+            shipping_address => { line1 => 'Osaka' },
+            shipping_items => [ { product_id => 5, quantity => 5 }, { product_id => 6, quantity => 6 } ]
         },
     ],
+    billing_address => { line1 => 'Gunma' },
 };
 
 sub _create_entity {
@@ -68,22 +72,6 @@ subtest 'methods' => sub {
     is $cart->is_equal($cart2), 0, 'right not equal entity';
 };
 
-subtest 'method is_modified' => sub {
-    my $cart = _create_entity;
-    is $cart->is_modified, 0, 'right not modified';
-    $cart->items->first->is_modified(1);
-    is $cart->is_modified, 1, 'right modified';
-
-    $cart = _create_entity;
-    is $cart->is_modified, 0, 'right not modified';
-    $cart->shipments->first->is_modified(1);
-    is $cart->is_modified, 1, 'right modified';
-
-    # $cart = _create_entity;
-    # $cart->shipments->first->items->first->is_modified(1);
-    # is $cart->is_modified, 1, 'right modified';
-};
-
 subtest 'method add_item' => sub {
     my $cart = _create_entity;
     $cart->add_item( Markets::Domain::Entity::Item->new( product_id => 11 ) );
@@ -105,15 +93,6 @@ subtest 'method add_shipping_item' => sub {
       { product_id => 4, quantity => 8 }, 'right sum quantity';
 
     is $cart->is_modified, 1, 'right modified';
-};
-
-subtest 'method clear' => sub {
-    my $cart = _create_entity;
-    $cart->clear;
-    cmp_deeply $cart->to_data, { cart_id => ignore(), items => [], shipments => [] };
-    is $cart->is_modified,      1, 'right modified';
-    is $cart->total_item_count, 0, 'right total item count';
-    is $cart->total_quantity,   0, 'right total quantity count';
 };
 
 subtest 'method clone' => sub {
@@ -171,7 +150,7 @@ subtest 'method merge' => sub {
             { product_id => 1, quantity => 1 },
             { product_id => 5, quantity => 5 },
         ],
-        shipments => [ { shipping_items => [] } ],
+        shipments => [ { shipping_address => {}, shipping_items => [] } ],
     };
     my $stored_cart = $app->factory(
         'entity-cart',
@@ -182,11 +161,24 @@ subtest 'method merge' => sub {
     )->create;
 
     my $merged_cart = $cart->merge($stored_cart);
-    cmp_deeply $cart->to_data,        { cart_id => ignore(), %{$test_data} },   'right non-destructive';
-    cmp_deeply $stored_cart->to_data, { cart_id => ignore(), %{$stored_data} }, 'right non-destructive';
+    cmp_deeply $cart->to_data,
+      {
+        cart_id         => ignore(),
+        billing_address => ignore(),
+        %{$test_data}
+      },
+      'right non-destructive';
+    cmp_deeply $stored_cart->to_data,
+      {
+        cart_id         => ignore(),
+        billing_address => ignore(),
+        %{$stored_data}
+      },
+      'right non-destructive';
     cmp_deeply $merged_cart->to_data,
       {
         cart_id => ignore(),
+        billing_address => ignore(),
         items   => [
             { product_id => 4, quantity => 4 },
             { product_id => 1, quantity => 2 },
@@ -194,7 +186,7 @@ subtest 'method merge' => sub {
             { product_id => 2, quantity => 2 },
             { product_id => 3, quantity => 3 },
         ],
-        shipments => [ { shipping_items => [] } ],
+        shipments => [ { shipping_address => {}, shipping_items => [] } ],
       },
       'right merge data';
     is $merged_cart->is_modified, 1, 'right modified';
@@ -202,7 +194,7 @@ subtest 'method merge' => sub {
 
 subtest 'order data' => sub {
     my $cart       = _create_entity;
-    my $order_data = { %{$cart->to_data} };
+    my $order_data = { %{ $cart->to_data } };
     delete $order_data->{cart_id};
     delete $order_data->{items};
 

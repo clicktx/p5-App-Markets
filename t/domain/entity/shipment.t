@@ -4,7 +4,7 @@ use Test::More;
 use_ok 'Markets::Domain::Entity::Shipment';
 
 subtest 'basic' => sub {
-    my $shipment = Markets::Domain::Entity::Shipment->new;
+    my $shipment = Markets::Domain::Entity::Shipment->new( { id => 1 } );
     isa_ok $shipment, 'Markets::Domain::Entity';
 
     ok $shipment->id;
@@ -13,7 +13,7 @@ subtest 'basic' => sub {
 
 my $shipment = Markets::Domain::Entity::Shipment->new(
     {
-        shipping_address => 'Tokyo',
+        id => 1,
     }
 );
 
@@ -22,12 +22,12 @@ can_ok $shipment, 'shipping_items';
 can_ok $shipment, 'shipping_address';
 can_ok $shipment, 'item_count';
 
-is $shipment->hash_code, '963dd210cc93a4597038ceabe0fe93b258a362b9', 'right hash_code';
-is $shipment->id,        '963dd210cc93a4597038ceabe0fe93b258a362b9', '';
+is $shipment->hash_code, '356a192b7913b04c54574d18c28d46e6395428ab', 'right hash_code';
+is $shipment->id, 1, 'right id';
 
 my $shipment2 = Markets::Domain::Entity::Shipment->new(
     {
-        shipping_address => 'Osaka',
+        id => 2,
     }
 );
 
