@@ -10,7 +10,7 @@ sub init {
     $cart_data->{cart_id} = $self->cart_session->cart_id;
 
     my $cart = $self->factory( 'entity-cart', $cart_data )->create;
-    $self->stash( 'markets.entity.cart' => $cart, 'markets.entity.shipments' => $cart->shipments );
+    $self->stash( 'markets.entity.cart' => $cart );
 
     return $self;
 }

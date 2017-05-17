@@ -4,25 +4,18 @@
 <h1><%= title %></h1>
 
 <ul>
-% foreach my $order (@{$orders}) {
-    <li>
-        <%= link_to url_for( 'RN_admin_orders_detail', id => $order->{id} ) => begin %>
-            order id: <%= $order->{id} %> | order date: <%= $order->{date} %>
-        <% end %>
-    </li>
-% }
-</ul>
-
-<ul>
-% while (my $order = $it->next) {
+% while (my $shipment = $itr->next) {
     <li>
         [
-        <%= link_to url_for( 'RN_admin_orders_edit', id => $order->id ) => begin %>
-            edit order
+        <%= link_to url_for( 'RN_admin_orders_edit', id => $shipment->id ) => begin %>
+            edit
         <% end %>
         ]
-        <%= link_to url_for( 'RN_admin_orders_detail', id => $order->id ) => begin %>
-            order id: <%= $order->id %> | order number: <%= $order->order_number %> | order date: <%= $order->created_at %>
+        <% my $order = $shipment->order_header; %>
+        <%= link_to url_for( 'RN_admin_orders_detail', id => $shipment->id ) => begin %>
+            order id: <%= $order->id %>  ship id: <%= $shipment->id %>
+            <%= $order->created_at %>
+            <%= $order->billing_address->line1 %> to <%= $shipment->shipping_address->line1 %>
         <% end %>
     </li>
 % }

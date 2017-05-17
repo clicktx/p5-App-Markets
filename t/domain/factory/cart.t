@@ -8,7 +8,8 @@ use_ok 'Markets::Domain::Factory::Entity::Cart';
 
 my $shipments = bless [
     bless {
-        shipping_items => ( bless [], 'Markets::Domain::Collection' )
+        shipping_address => ( bless {}, 'Markets::Domain::Entity::Address' ),
+        shipping_items => ( bless [], 'Markets::Domain::Collection' ),
     },
     'Markets::Domain::Entity::Shipment'
   ],
@@ -20,6 +21,7 @@ subtest 'argument empty' => sub {
       bless {
         items => ( bless [], 'Markets::Domain::Collection' ),
         shipments => $shipments,
+        billing_address => ( bless {}, 'Markets::Domain::Entity::Address' ),
       },
       'Markets::Domain::Entity::Cart';
 };
@@ -30,6 +32,7 @@ subtest 'shipments empty hash ref' => sub {
       bless {
         items     => ignore(),
         shipments => $shipments,
+        billing_address => ignore(),
       },
       'Markets::Domain::Entity::Cart';
 };
@@ -40,6 +43,7 @@ subtest 'cart data empty' => sub {
       bless {
         items => ( bless [], 'Markets::Domain::Collection' ),
         shipments => ignore(),
+        billing_address => ignore(),
       },
       'Markets::Domain::Entity::Cart';
 };
@@ -58,6 +62,7 @@ subtest 'argument items data only' => sub {
         fizz      => 'buzz',
         items     => ( bless [ ( bless {}, 'Markets::Domain::Entity::Item' ) ], 'Markets::Domain::Collection' ),
         shipments => ignore(),
+        billing_address => ignore(),
       },
       'Markets::Domain::Entity::Cart';
 };
@@ -71,6 +76,7 @@ subtest 'argument shipments data only' => sub {
       bless {
         items     => ignore(),
         shipments => $shipments,
+        billing_address => ignore(),
       },
       'Markets::Domain::Entity::Cart';
 };

@@ -5,13 +5,16 @@ use Markets::Domain::Collection qw/collection/;
 sub cook {
     my $self = shift;
 
-    my $data = $self->{shipping_items} || [];
+    # shipping_items
     my @shipping_items;
-    foreach my $item ( @{$data} ) {
+    foreach my $item ( @{ $self->{shipping_items} } ) {
         push @shipping_items, $self->factory( 'entity-item', $item )->create;
     }
-
     $self->param( shipping_items => collection(@shipping_items) );
+
+    # shipping_address
+    my $shipping_address = $self->factory( 'entity-address', $self->{shipping_address} || {} )->create;
+    $self->param( shipping_address => $shipping_address );
 }
 
 1;

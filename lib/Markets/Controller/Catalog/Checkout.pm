@@ -21,13 +21,14 @@ sub address {
 sub address_validate {
     my $self = shift;
 
-    my $billing_address  = $self->param('billing_address');
-    my $shipping_address = $self->param('shipping_address');
+    my $billing_address  = $self->param('billing_address.line1');
+    my $shipping_address = $self->param('shipping_address.line1');
 
-    $self->cart->billing_address($billing_address);
-
+    $self->cart->billing_address->line1($billing_address);
     my $shipments = $self->cart->shipments;
-    $shipments->first->shipping_address($shipping_address);
+
+    # $shipments->first->shipping_address->line1($shipping_address);
+    $shipments->[0]->shipping_address->line1($shipping_address);
 
     # return $self->render( template => 'checkout/address' ) if $error;
     $self->redirect_to('RN_checkout_shipping');
@@ -88,15 +89,44 @@ sub complete_validate {
 
     # Make order data
     my $order = $cart->to_order_data;
-    $order->{customer_id} = $self->server_session->data('customer_id');
+
+    # Customer id
+    # ログイン購入
+    my $customer_id = $self->server_session->data('customer_id');
+    if ($customer_id) {
+        $order->{customer} = { id => $customer_id };
+    }
+    else {
+        # ゲスト購入
+        # emailからcustomer_idを算出？新規顧客の場合はcustomer作成
+        $order->{customer} = {};
+    }
+
+    # Address正規化
+    my $schema_address = $self->app->schema->resultset('Address');
+
+    # billing_address
+    my $billing_address = $schema_address->find( { line1 => $order->{billing_address}->{line1} } );
+    $order->{billing_address} = { id => $billing_address->id } if $billing_address;
+
+    # shipping_address
+    foreach my $shipment ( @{ $order->{shipments} } ) {
+        my $result = $schema_address->find( { line1 => $shipment->{shipping_address}->{line1} } );
+        next unless $result;
+        my $shipping_address_id = $result->id;
+        $shipment->{shipping_address} = { id => $shipping_address_id };
+    }
+    use DDP;
+    p $order;    # debug
 
     # Store order
     my $schema = $self->app->schema;
     my $cb     = sub {
 
         # Order
-        $order->{order_number} = $schema->sequence('Order');
-        $schema->resultset('Order')->create($order);    # NOTE: itemsはbulk insert されない
+        # $order->{order_number} = $schema->sequence('Order');
+        # $schema->resultset('Order')->create($order);    # NOTE: itemsはbulk insert されない
+        $schema->resultset('Sales::OrderHeader')->create($order);
 
         # NOTE:
         # DBIx::Class::ResultSet https://metacpan.org/pod/DBIx::Class::ResultSet#populate
@@ -121,8 +151,6 @@ sub complete_validate {
     # cart sessionクリア
     # cartクリア（再生成）
     my $newcart = $self->factory( 'entity-cart', {} )->create;
-    # $self->cart($newcart);
-    # $self->cart->is_modified(1);
     $self->cart_session->data( $newcart->to_data );
 
     # redirect_to thank you page

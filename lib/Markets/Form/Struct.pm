@@ -184,7 +184,7 @@ Get/Set filters.
 
 Get field value.
 
-= head2 C<params>
+=head2 C<params>
 
     # Return value is hash ref.
     # ex. { password => 'xxxxxxx', login_name => 'hoge', ... }

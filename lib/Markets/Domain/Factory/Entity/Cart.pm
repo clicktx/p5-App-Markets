@@ -5,6 +5,10 @@ use Markets::Domain::Collection qw/collection/;
 sub cook {
     my $self = shift;
 
+    # billing_address
+    my $billing_address = $self->factory( 'entity-address', $self->{billing_address} || {} )->create;
+    $self->param( billing_address => $billing_address );
+
     # Aggregate items
     $self->_create_entity( 'items', 'entity-item', $self->param('items') || [] );
 

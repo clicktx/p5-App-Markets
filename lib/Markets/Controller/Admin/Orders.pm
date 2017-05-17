@@ -4,23 +4,23 @@ use Mojo::Base 'Markets::Controller::Admin';
 sub index {
     my $self = shift;
 
-    # my $orders = $self->model('admin-orders')->list( $cart, { page => 1 } );
-    # my $orders = $self->service('admin-orders')->list( { page => 1 } );
-    # my $orders = [
-    #     { id => 1, date => '2000-1-1' },
-    #     { id => 2, date => '2000-2-2' },
-    #     { id => 3, date => '2000-3-3' },
-    # ];
+    # eg.
+    # my $order = $self->factory( 'entity-order', {} )->create;
 
     # bad!
     my $schema = $self->app->schema;
-    my $rs     = $schema->resultset('Order');
+    my $itr = $schema->resultset('Sales::Order::Shipment')->search(
+        {},
+        {
+            page     => 1,
+            row      => 10,
+            # order_by => { -desc => 'order_header_id' },
+            prefetch => { order_header => 'billing_address' },
+            # prefetch => [{ order_header => 'postal_address' }, 'shipping_address' ],
+        }
+    );
 
-    my $itr = $rs->search( {}, { page => 1, row => 10, order_by => { -desc => 'order_number' } } );
-
-    my $orders = [ { id => 1, date => '2000-1-1' }, { id => 2, date => '2000-2-2' }, { id => 3, date => '2000-3-3' }, ];
-
-    $self->stash( it => $itr, orders => $orders );
+    $self->stash( itr => $itr );
     $self->render();
 }
 
@@ -54,9 +54,9 @@ sub edit {
     my $schema = $self->app->schema;
 
     # my $order_rs          = $schema->resultset('Order')->search( { id => $order_id } );
-    my $order_rs          = $schema->resultset('Order')->find($order_id);
+    my $order_rs = $schema->resultset('Order')->find($order_id);
     p $order_rs;
-    my $shipments_rs      = $order_rs->related_resultset('shipments');
+    my $shipments_rs = $order_rs->related_resultset('shipments');
     p $shipments_rs;
     my $shipping_items_rs = $shipments_rs->related_resultset('shipping_items');
     p $shipping_items_rs;

@@ -55,16 +55,16 @@ sub test_04_address_validate : Tests() {
 
     my $post_data = {
         csrf_token       => $self->csrf_token,
-        billing_address  => 'Silicon Valley',
-        shipping_address => 'San Francisco',
+        'billing_address.line1'  => 'Silicon Valley',
+        'shipping_address.line1' => 'San Francisco',
     };
     $t->post_ok( '/checkout/address', form => $post_data )->status_is(200);
     my ($url) = map { $_->req->url->path } @{ $t->tx->redirects };
     is $url, '/checkout/address', 'right post to get';
 
     my $cart = $self->server_session->cart;
-    is $cart->data('billing_address'), 'Silicon Valley', '';
-    is $cart->data('shipments')->[0]->{shipping_address}, 'San Francisco', '';
+    is $cart->data('billing_address')->{line1}, 'Silicon Valley', '';
+    is $cart->data('shipments')->[0]->{shipping_address}->{line1}, 'San Francisco', '';
 }
 
 sub test_05_shipping : Tests() {
@@ -103,11 +103,11 @@ sub test_11_complete_validate : Tests() {
 
     # NOTE: もっとスマートにテストを書きたい
     # Entity order objectを使うとか
-    my $last_order = $self->app->schema->resultset('Order')->search( {}, { order_by => { -desc => 'id' } } )->first;
-    is $last_order->billing_address, 'Silicon Valley', 'right billing address';
+    my $last_order = $self->app->schema->resultset('Sales::OrderHeader')->search( {}, { order_by => { -desc => 'id' } } )->first;
+    is $last_order->billing_address->line1, 'Silicon Valley', 'right billing address';
 
     my $shipment1 = $last_order->shipments->first;
-    is $shipment1->shipping_address, 'San Francisco', 'right shipping address';
+    is $shipment1->shipping_address->line1, 'San Francisco', 'right shipping address';
 
     my $items = $shipment1->shipping_items;
     my $row   = $items->next;
