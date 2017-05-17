@@ -14,9 +14,9 @@ sub index {
         {
             page     => 1,
             row      => 10,
-            # order_by => { -desc => 'order_id' },
-            prefetch => { sales_order => 'billing_address' },
-            # prefetch => [{ sales_order => 'postal_address' }, 'shipping_address' ],
+            # order_by => { -desc => 'order_header_id' },
+            prefetch => { order_header => 'billing_address' },
+            # prefetch => [{ order_header => 'postal_address' }, 'shipping_address' ],
         }
     );
 

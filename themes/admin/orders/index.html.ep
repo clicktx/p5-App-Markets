@@ -11,7 +11,7 @@
             edit
         <% end %>
         ]
-        <% my $order = $shipment->sales_order; %>
+        <% my $order = $shipment->order_header; %>
         <%= link_to url_for( 'RN_admin_orders_detail', id => $shipment->id ) => begin %>
             order id: <%= $order->id %>  ship id: <%= $shipment->id %>
             <%= $order->created_at %>

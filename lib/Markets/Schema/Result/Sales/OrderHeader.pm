@@ -1,4 +1,4 @@
-package Markets::Schema::Result::Sales::Order;
+package Markets::Schema::Result::Sales::OrderHeader;
 use Mojo::Base 'Markets::Schema::ResultCommon';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -33,6 +33,6 @@ belongs_to
 
 has_many
   shipments => 'Markets::Schema::Result::Sales::Order::Shipment',
-  { 'foreign.order_id' => 'self.id' };
+  { 'foreign.order_header_id' => 'self.id' };
 
 1;

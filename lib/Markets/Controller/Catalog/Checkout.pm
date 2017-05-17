@@ -126,7 +126,7 @@ sub complete_validate {
         # Order
         # $order->{order_number} = $schema->sequence('Order');
         # $schema->resultset('Order')->create($order);    # NOTE: itemsはbulk insert されない
-        $schema->resultset('Sales::Order')->create($order);
+        $schema->resultset('Sales::OrderHeader')->create($order);
 
         # NOTE:
         # DBIx::Class::ResultSet https://metacpan.org/pod/DBIx::Class::ResultSet#populate

@@ -42,13 +42,13 @@
         [qw/ship 111 1/],
         [qw/ship 111 2/],
     ],
-    'Sales::Order' => [
+    'Sales::OrderHeader' => [
         [qw/id created_at customer_id address_id/],
         [ 1, '2017-06-06 20:01:35', 111, 1 ],
         [ 2, '2017-07-07 07:02:15', 112, 2 ],
     ],
     'Sales::Order::Shipment' => [
-        [qw/order_id id address_id/],
+        [qw/order_header_id id address_id/],
         [ 1, 1, 1 ],
         [ 1, 2, 3 ],
         [ 2, 3, 4 ],

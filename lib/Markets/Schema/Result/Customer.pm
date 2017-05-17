@@ -24,7 +24,7 @@ has_many
   { 'foreign.customer_id' => 'self.id' };
 
 has_many
-  orders => 'Markets::Schema::Result::Sales::Order',
+  order_headers => 'Markets::Schema::Result::Sales::OrderHeader',
   { 'foreign.customer_id' => 'self.id' };
 
 1;

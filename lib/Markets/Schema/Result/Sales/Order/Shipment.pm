@@ -7,7 +7,7 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column order_id => {
+column order_header_id => {
     data_type   => 'INT',
     is_nullable => 0,
 };
@@ -19,8 +19,8 @@ column address_id => {
 
 # NOTE: 'order' is SQL reserved word.
 belongs_to
-  sales_order => 'Markets::Schema::Result::Sales::Order',
-  { 'foreign.id' => 'self.order_id' };
+  order_header => 'Markets::Schema::Result::Sales::OrderHeader',
+  { 'foreign.id' => 'self.order_header_id' };
 
 belongs_to
   shipping_address => 'Markets::Schema::Result::Address',

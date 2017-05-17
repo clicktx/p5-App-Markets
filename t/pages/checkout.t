@@ -103,7 +103,7 @@ sub test_11_complete_validate : Tests() {
 
     # NOTE: もっとスマートにテストを書きたい
     # Entity order objectを使うとか
-    my $last_order = $self->app->schema->resultset('Sales::Order')->search( {}, { order_by => { -desc => 'id' } } )->first;
+    my $last_order = $self->app->schema->resultset('Sales::OrderHeader')->search( {}, { order_by => { -desc => 'id' } } )->first;
     is $last_order->billing_address->line1, 'Silicon Valley', 'right billing address';
 
     my $shipment1 = $last_order->shipments->first;
