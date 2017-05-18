@@ -13,9 +13,11 @@
         [qw/101 102 before_xxx_action 500/],
     ],
 
-    # 'Sales::Order' => {
+    # 'Sales::OrderHeader' => {
     #     customer => {
-    #         # postal_address => {},?
+    #         emails => [
+    #             { email => { address => 'a@e.com' } }
+    #         ],
     #     },
     #     billing_address => {},
     #     # payment => { billing_address => {} },?
@@ -23,6 +25,11 @@
     #         { shipping_address => {} }
     #     ],
     # },
+    'Email' => [
+        [qw/id address is_verified/],
+        [ 1, 'a@b.com', 1 ],
+        [ 2, 'c@d.org', 0 ],
+    ],
     'Address' => [
         [qw/id line1/],
         [ 1, 'Silicon Valley' ],
@@ -34,6 +41,11 @@
         [qw/id created_at/],
         [ 111, '2017-06-06 19:50:05' ],
         [ 112, '2017-07-07 07:02:15' ],
+    ],
+    'Customer::Email' => [
+        [qw/customer_id email_id is_primary/],
+        [ 111, 1, 1 ],
+        [ 111, 2, 0 ],
     ],
     'Customer::Address' => [
         [qw/type customer_id address_id/],
