@@ -36,7 +36,7 @@
         [ 112, '2017-07-07 07:02:15' ],
     ],
     'Customer::Address' => [
-        [qw/address_type customer_id address_id/],
+        [qw/type customer_id address_id/],
         [qw/post 111 1/],
         [qw/bill 111 1/],
         [qw/ship 111 1/],

@@ -17,15 +17,15 @@ column address_id => {
     is_nullable => 0,
 };
 
-column address_type => {
+column type => {
     data_type   => 'CHAR',
     size        => 4,
     is_nullable => 0,
 };
 
-unique_constraint ui_customer_id_address_id_address_type => [qw/customer_id address_id address_type/];
+unique_constraint ui_customer_id_address_id_type => [qw/customer_id address_id type/];
 
-belongs_to address_type => 'Markets::Schema::Result::Reference::AddressType';
+belongs_to type => 'Markets::Schema::Result::Reference::AddressType';
 
 belongs_to
   customer => 'Markets::Schema::Result::Customer',
