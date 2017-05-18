@@ -20,6 +20,10 @@ column updated_at => {
 };
 
 has_many
+  emails => 'Markets::Schema::Result::Customer::Email',
+  { 'foreign.customer_id' => 'self.id' };
+
+has_many
   addresses => 'Markets::Schema::Result::Customer::Address',
   { 'foreign.customer_id' => 'self.id' };
 
