@@ -25,6 +25,10 @@ sub login_authen {
         $self->service('customer')->login($customer_id);
 
         my $route = $self->flash('ref') || 'RN_customer_home';
+
+# NOTE: redirect する前にURLを検証する必要がある？
+# [高木浩光＠自宅の日記 - ログイン成功時のリダイレクト先として任意サイトの指定が可能であってはいけない](http://takagi-hiromitsu.jp/diary/20070512.html)
+# session cookieの改竄は可能？
         return $self->redirect_to($route);
     }
     else {
