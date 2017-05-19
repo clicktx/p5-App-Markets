@@ -9,7 +9,7 @@ primary_column id => {
 
 column hash => {
     data_type   => 'VARCHAR',
-    size        => 255,
+    size        => 128,
     is_nullable => 0,
 };
 
@@ -24,6 +24,8 @@ column updated_at => {
     is_nullable => 1,
     timezone    => Markets::Schema->TZ,
 };
+
+# answer question hint create_by_user_id is_active
 
 might_have
   customer => 'Markets::Schema::Result::Customer',
