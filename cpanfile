@@ -4,6 +4,7 @@ requires 'Scalar::Util',                            '1.47';
 requires 'Try::Tiny',                               '0.28';
 requires 'File::Find::Rule',                        '0.34';
 requires 'Data::Clone',                             '0.004';
+requires 'Mojolicious::Plugin::Scrypt',             '0.01';
 requires 'Mojolicious::Plugin::Model',              '0.07';
 requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';
 requires 'Mojolicious::Plugin::FormFields',         '0.05';
