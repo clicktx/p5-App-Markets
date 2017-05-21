@@ -1,8 +1,6 @@
 package Markets::Controller::Catalog;
 use Mojo::Base 'Markets::Controller';
 
-has cart => sub { _cart(@_) };
-
 sub init {
     my $self = shift;
 
@@ -23,10 +21,6 @@ sub finalize {
 
     $self->SUPER::finalize(@_);
     return $self;
-}
-
-sub _cart {
-    @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->stash('markets.entity.cart');
 }
 
 1;

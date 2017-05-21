@@ -15,10 +15,13 @@ sub register {
     $app->helper( cookie_session => sub { shift->session(@_) } );
     $app->helper( template       => sub { shift->stash( template => shift ) } );
 
+    $app->helper( cart    => sub { _cart(@_) } );
     $app->helper( factory => sub { _factory(@_) } );
     $app->helper( pref    => sub { _pref(@_) } );
     $app->helper( service => sub { _service(@_) } );
 }
+
+sub _cart { @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->stash('markets.entity.cart') }
 
 sub _factory { shift; Markets::Domain::Factory->new->factory(@_) }
 
