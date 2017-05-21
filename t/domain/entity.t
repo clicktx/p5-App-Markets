@@ -30,6 +30,7 @@ subtest 'basic' => sub {
 subtest 'clone' => sub {
     my $data = { id => 1, hoge => [ {}, {} ], fuga => { a => [ {}, {} ] } };
     my $e = $pkg->new($data);
+    $e->attr( [qw/hoge fuga/] );
     $e->is_modified(1);
 
     my $clone = $e->clone;

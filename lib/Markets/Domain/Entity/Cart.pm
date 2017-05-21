@@ -2,7 +2,6 @@ package Markets::Domain::Entity::Cart;
 use Markets::Domain::Entity;
 use Markets::Domain::Collection;
 use Carp qw/croak/;
-use Data::Clone qw/data_clone/;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 has cart_id   => '';
@@ -25,7 +24,6 @@ my @needless_attrs = (qw/cart_id items/);
 # cart.original_total_price
 # cart.total_price
 # cart.total_weight
-use DDP;
 
 sub add_item {
     my ( $self, $item ) = @_;
@@ -62,16 +60,6 @@ sub _add_item {
 
 sub all_shipping_items {
     shift->shipments->map( sub { $_->shipping_items->each } );
-}
-
-sub clone {
-    my $self  = shift;
-    my $clone = data_clone($self);
-    foreach my $attr (qw/items shipments/) {
-        $clone->$attr( $self->$attr->map( sub { $_->clone } ) ) if $self->$attr->can('map');
-    }
-    $clone->_is_modified(0);
-    return $clone;
 }
 
 sub count {
