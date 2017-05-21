@@ -26,8 +26,10 @@ Markets::Domain::Factory::Entity::Shipment
 
 =head1 SYNOPSIS
 
+    my $entity = Markets::Domain::Factory::Entity::Shipment->new( %args )->create;
+
     # In controller
-    my $entity = $c->factory( 'entity-cart', %args )->create;
+    my $entity = $c->factory( 'entity-shipment', %args )->create;
 
 =head1 DESCRIPTION
 

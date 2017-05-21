@@ -36,6 +36,9 @@ Markets::Domain::Factory::Entity::Cart
 
     my $entity = Markets::Domain::Factory::Entity::Cart->new( %args )->create;
 
+    # In controller
+    my $entity = $c->factory( 'entity-cart', %args )->create;
+
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
