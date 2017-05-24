@@ -71,7 +71,6 @@ sub params {
 
     # Setter
     my %args = @_ > 1 ? @_ : %{ $_[0] };
-    croak 'Only one set argument, using the "param" method' if keys %args < 2;
     $self->{$_} = $args{$_} for keys %args;
 }
 
