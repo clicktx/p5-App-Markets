@@ -25,7 +25,7 @@ __END__
 
 =head1 NAME
 
-Markets::Service::Cart
+Markets::Service::Cart - Application Service Layer
 
 =head1 SYNOPSIS
 
@@ -40,9 +40,15 @@ the following new ones.
 
 =head2 C<add_item>
 
-    $c->service('cart')->add_item( \%item );
+    my $cart = $c->service('cart')->add_item();
 
-Return entity cart object.
+Return L<Markets::Domain::Entity::Cart> object.
+
+=head2 C<create_entity>
+
+    my $cart = $c->service('cart')->create_entity();
+
+Return L<Markets::Domain::Entity::Cart> object.
 
 =head1 AUTHOR
 
