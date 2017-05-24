@@ -11,6 +11,15 @@ sub add_item {
     return $self->controller->cart->add_item($item);
 }
 
+sub create_entity {
+    my $self = shift;
+
+    my $cart_data = $self->controller->cart_session->data;
+    $cart_data->{cart_id} = $self->controller->cart_session->cart_id;
+
+    return $self->app->factory('entity-cart')->create($cart_data);
+}
+
 1;
 __END__
 
