@@ -6,7 +6,7 @@ sub cook {
     my $self = shift;
 
     # billing_address
-    my $billing_address = $self->factory( 'entity-address', $self->{billing_address} || {} )->create;
+    my $billing_address = $self->factory('entity-address')->create( $self->{billing_address} || {} );
     $self->param( billing_address => $billing_address );
 
     # Aggregate items
@@ -21,7 +21,7 @@ sub cook {
 sub _create_entity {
     my ( $self, $aggregate, $entity, $data ) = @_;
     my @array;
-    push @array, $self->factory( $entity, $_ )->create for @{$data};
+    push @array, $self->factory($entity)->create($_) for @{$data};
     $self->param( $aggregate => collection(@array) );
 }
 
@@ -37,7 +37,7 @@ Markets::Domain::Factory::Entity::Cart
     my $entity = Markets::Domain::Factory::Entity::Cart->new( %args )->create;
 
     # In controller
-    my $entity = $c->factory( 'entity-cart', %args )->create;
+    my $entity = $c->factory('entity-cart')->create(%args);
 
 =head1 DESCRIPTION
 

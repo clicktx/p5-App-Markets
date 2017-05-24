@@ -91,7 +91,7 @@ Alias for $c->session;
 
 =head2 C<factory>
 
-    my $factory = $c->factory('entity-something', $arg);
+    my $factory = $c->factory('entity-something');
 
 Return L<Markets::Domain::Factory> Object.
 

@@ -5,7 +5,7 @@ sub index {
     my $self = shift;
 
     # eg.
-    # my $order = $self->factory( 'entity-order', {} )->create;
+    # my $order = $self->factory('entity-order')->create({});
 
     # bad!
     my $schema = $self->app->schema;

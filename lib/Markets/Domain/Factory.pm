@@ -17,17 +17,19 @@ sub create { shift->create_entity(@_) }
 sub create_entity {
     my $self = shift;
 
+    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+    $self->params($args);
+
     # cooking entity
     $self->cook();
 
     my $params = $self->params;
-    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
 
     # no need attributes
     delete $params->{entity_class};
 
     _load_class( $self->entity_class );
-    return $self->entity_class->new( %{$params}, %{$args} );
+    return $self->entity_class->new( %{$params} );
 }
 
 sub factory {
@@ -71,7 +73,6 @@ sub params {
 
     # Setter
     my %args = @_ > 1 ? @_ : %{ $_[0] };
-    croak 'Only one set argument, using the "param" method' if keys %args < 2;
     $self->{$_} = $args{$_} for keys %args;
 }
 
@@ -91,6 +92,9 @@ __END__
 Markets::Domain::Factory
 
 =head1 SYNOPSIS
+
+    my $factory = Markets::Domain::Factory->new->factory('entity-hoge');
+    my $entity = $factory->create(%data);
 
 =head1 DESCRIPTION
 
@@ -127,10 +131,10 @@ Alias for L</create_entity>.
 
 =head2 C<factory>
 
-    my $new_factory = $factory->factory('Entity::Hoge', %data );
-    my $new_factory = $factory->factory('Entity::Hoge', \%data );
-    my $new_factory = $factory->factory('entity-hoge', %data );
-    my $new_factory = $factory->factory('entity-hoge', \%data );
+    my $new_factory = $factory->factory( 'Entity::Hoge', %data );
+    my $new_factory = $factory->factory( 'Entity::Hoge', \%data );
+    my $new_factory = $factory->factory( 'entity-hoge', %data );
+    my $new_factory = $factory->factory( 'entity-hoge', \%data );
 
 Return factory object.
 

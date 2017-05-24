@@ -15,7 +15,8 @@ subtest 'basic' => sub {
     my %p = $f->params;
     is_deeply \%p, {}, 'right get params empty hash';
 
-    $f->params( a => 1, b => 2 );
+    $f->params( a => 1 );
+    $f->params( b => 2 );
     is_deeply $f, { a => 1, b => 2 }, 'right set params';
 
     $p = $f->params;
@@ -28,10 +29,6 @@ subtest 'basic' => sub {
 
     eval { $f->params('a') };
     ok $@, 'getter only one argument';
-    eval { $f->params( a => 1 ) };
-    ok $@, 'setter only one argument';
-    eval { $f->params( { a => 1 } ) };
-    ok $@, 'setter only one argument';
 
     # param method
     $f->param( e => 5 );
@@ -45,6 +42,14 @@ subtest 'basic' => sub {
     ok $@, 'too many arguments';
     eval { $f->param( { g => 7, h => 8 } ) };
     ok $@, 'too many arguments';
+};
+
+subtest 'factory method' => sub {
+    my $f = Markets::Domain::Factory->factory('entity-hoge');
+    isa_ok $f, 'Markets::Domain::Factory::Entity::Hoge';
+
+    $f = Markets::Domain::Factory->factory('entity-nofactory');
+    isa_ok $f, 'Markets::Domain::Factory', 'right no factory';
 };
 
 subtest 'has not cook' => sub {
