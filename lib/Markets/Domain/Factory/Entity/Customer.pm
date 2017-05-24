@@ -6,7 +6,7 @@ sub cook {
     my $self = shift;
 
     # password
-    my $password = $self->factory( 'entity-password', $self->{password} || {} )->create;
+    my $password = $self->factory('entity-password')->create( $self->{password} || {} );
     $self->param( password => $password );
 
     # emails
@@ -25,7 +25,7 @@ Markets::Domain::Factory::Entity::Customer
     my $entity = Markets::Domain::Factory::Entity::Customer->new( %args )->create;
 
     # In controller
-    my $entity = $c->factory( 'entity-customer', %args )->create;
+    my $entity = $c->factory('entity-customer')->create(%args);
 
 =head1 DESCRIPTION
 

@@ -131,10 +131,10 @@ Alias for L</create_entity>.
 
 =head2 C<factory>
 
-    my $new_factory = $factory->factory('Entity::Hoge', %data );
-    my $new_factory = $factory->factory('Entity::Hoge', \%data );
-    my $new_factory = $factory->factory('entity-hoge', %data );
-    my $new_factory = $factory->factory('entity-hoge', \%data );
+    my $new_factory = $factory->factory( 'Entity::Hoge', %data );
+    my $new_factory = $factory->factory( 'Entity::Hoge', \%data );
+    my $new_factory = $factory->factory( 'entity-hoge', %data );
+    my $new_factory = $factory->factory( 'entity-hoge', \%data );
 
 Return factory object.
 
