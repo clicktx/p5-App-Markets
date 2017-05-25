@@ -25,11 +25,18 @@ sub create_entity {
 
     my $params = $self->params;
 
-    # no need attributes
+    # no need parameter
     delete $params->{entity_class};
 
+    # Create entity
     _load_class( $self->entity_class );
-    return $self->entity_class->new( %{$params} );
+    my $entity = $self->entity_class->new( %{$params} );
+
+    # Add attributes
+    my @keys = keys %{$entity};
+    $entity->attr($_) for @keys;
+
+    return $entity;
 }
 
 sub factory {

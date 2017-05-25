@@ -92,6 +92,13 @@ subtest 'factory method using' => sub {
     cmp_deeply { %{$entity} }, { hoge => isa('Markets::Domain::Entity::Hoge'), }, 'right parameter';
 };
 
+subtest 'has attributes' => sub {
+    my $entity = Markets::Domain::Factory->new->factory('entity-nofactory')->create( { a => 1, b => 2 } );
+    eval { is $entity->a, 1 };
+    eval { is $entity->b, 2 };
+    ok !$@;
+};
+
 subtest 'factory helper' => sub {
     my $t      = Test::Mojo->new('App');
     my $app    = $t->app;
