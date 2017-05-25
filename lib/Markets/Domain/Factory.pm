@@ -42,9 +42,10 @@ sub create_entity {
     _load_class( $self->entity_class );
     my $entity = $self->entity_class->new( %{$params} );
 
+    # NOTE: attributesは Markets::Domain::Entity::XXX で明示する方が良い?
     # Add attributes
-    my @keys = keys %{$entity};
-    $entity->attr($_) for @keys;
+    # my @keys = keys %{$entity};
+    # $entity->attr($_) for @keys;
 
     return $entity;
 }
