@@ -99,6 +99,15 @@ subtest 'has attributes' => sub {
     ok !$@;
 };
 
+subtest 'add_aggregate method' => sub {
+    my $f = Markets::Domain::Factory->new->factory('entity-agg');
+    eval { $f->add_aggregate( 'hoges', 'hoge', {} ) };
+    ok $@, 'bad data type';
+
+    my $entity = $f->create;
+    isa_ok $entity->hoges, 'Markets::Domain::Collection', '';
+};
+
 subtest 'factory helper' => sub {
     my $t      = Test::Mojo->new('App');
     my $app    = $t->app;
@@ -152,5 +161,19 @@ done_testing();
     }
 
     package Markets::Domain::Entity::Bar;
+    use Mojo::Base 'Markets::Domain::Entity';
+}
+
+{
+
+    package Markets::Domain::Factory::Entity::Agg;
+    use Mojo::Base 'Markets::Domain::Factory';
+
+    sub cook {
+        my $self = shift;
+        $self->add_aggregate( 'hoges', 'entity-hoge', [ {} ] );
+    }
+
+    package Markets::Domain::Entity::Agg;
     use Mojo::Base 'Markets::Domain::Entity';
 }

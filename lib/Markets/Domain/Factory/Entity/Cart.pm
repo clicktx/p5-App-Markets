@@ -10,19 +10,12 @@ sub cook {
     $self->param( billing_address => $billing_address );
 
     # Aggregate items
-    $self->_create_entity( 'items', 'entity-item', $self->param('items') || [] );
+    $self->add_aggregate( 'items', 'entity-item', $self->param('items') || [] );
 
     # Aggregate shipments
     my $param = $self->param('shipments') || [ {} ];
     push @{$param}, {} unless @{$param};    # NOTE: At the time of "$param eq []"
-    $self->_create_entity( 'shipments', 'entity-shipment', $param );
-}
-
-sub _create_entity {
-    my ( $self, $aggregate, $entity, $data ) = @_;
-    my @array;
-    push @array, $self->factory($entity)->create($_) for @{$data};
-    $self->param( $aggregate => collection(@array) );
+    $self->add_aggregate( 'shipments', 'entity-shipment', $param );
 }
 
 1;

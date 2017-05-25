@@ -3,12 +3,22 @@ use Mojo::Base -base;
 use Carp 'croak';
 use Mojo::Util;
 use Mojo::Loader;
+use Markets::Domain::Collection qw/collection/;
 
 has entity_class => sub {
     my $class = ref shift;
     $class =~ s/::Factory//;
     $class;
 };
+
+sub add_aggregate {
+    my ( $self, $aggregate, $entity, $data ) = @_;
+    croak 'Data type array only' if ref $data ne 'ARRAY';
+    my @array;
+    push @array, $self->factory($entity)->create($_) for @{$data};
+    $self->param( $aggregate => collection(@array) );
+    return $self;
+}
 
 sub cook { }
 
@@ -117,6 +127,13 @@ the following new ones.
 Get namespace as a construct entity class.
 
 =head1 METHODS
+
+=head2 C<add_aggregate>
+
+    my $entity = $factory->add_aggregate( $accessor_name, $target_entity, \@data );
+    my $entity = $factory->add_aggregate( 'items', 'entity-item', \@data );
+
+Added aggregate.
 
 =head2 C<cook>
 
