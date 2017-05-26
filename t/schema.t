@@ -9,8 +9,8 @@ my $app    = $t->app;
 my $schema = $app->schema;
 
 subtest 'time zone' => sub {
-    is ref $schema->TZ, 'DateTime::TimeZone::America::Los_Angeles', 'right object';
-    is $schema->time_zone, 'America/Los_Angeles', 'right default time zone';
+    is ref $schema->TZ, 'DateTime::TimeZone::UTC', 'right object';
+    is $schema->time_zone, 'UTC', 'right default time zone';
 
     $schema->time_zone('Asia/Tokyo');
     is ref $schema->TZ, 'DateTime::TimeZone::Asia::Tokyo', 'right change object';
