@@ -10,6 +10,9 @@ sub cook {
     $self->param( password => $password );
 
     # emails
+    # my $emails = collection(qw/1 2 3/);
+    # $self->param( emails => $emails );
+
     # billing_addresses
 }
 
