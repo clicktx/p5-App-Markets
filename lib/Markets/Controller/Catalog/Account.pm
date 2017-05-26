@@ -14,9 +14,24 @@ sub login_authen {
     my $self = shift;
 
     # validation
-    my $params   = $self->req->params;
-    my $is_valid = $params->param('password');
+    my $email    = $self->param('email');
+    my $password = $self->param('password');
+    my $customer = $self->service('customer')->create_entity( email => $email );
 
+    if ( !$customer->id ) {
+
+        # logging
+        say "not find customer";
+    }
+
+    # use DDP;p $customer;
+    # p $customer->id;
+    # p $customer->password;
+    # p $customer->password->hash;
+    # p $customer->emails;
+    # say $customer->created_at->time_zone->name;
+
+    my $is_valid;
     if ($is_valid) {
 
         # logging etc.
