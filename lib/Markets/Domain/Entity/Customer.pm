@@ -1,9 +1,11 @@
 package Markets::Domain::Entity::Customer;
 use Markets::Domain::Entity;
 use Markets::Domain::Collection;
-use Carp qw/croak/;
+use Markets::Domain::Entity::Password;
 
-has [qw/id password/];
+has [qw/id created_at updated_at/];
+has password => sub { Markets::Domain::Entity::Password->new };
+has emails   => sub { Markets::Domain::Collection->new };
 
 1;
 __END__
