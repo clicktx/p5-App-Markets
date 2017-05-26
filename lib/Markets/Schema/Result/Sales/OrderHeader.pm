@@ -19,7 +19,7 @@ column address_id => {
 
 column created_at => {
     data_type   => 'DATETIME',
-    is_nullable => 0,
+    is_nullable => 1,
     timezone    => Markets::Schema->TZ,
 };
 
