@@ -92,12 +92,12 @@ subtest 'factory method using' => sub {
     cmp_deeply { %{$entity} }, { hoge => isa('Markets::Domain::Entity::Hoge'), }, 'right parameter';
 };
 
-subtest 'has attributes' => sub {
-    my $entity = Markets::Domain::Factory->new->factory('entity-nofactory')->create( { a => 1, b => 2 } );
-    eval { is $entity->a, 1 };
-    eval { is $entity->b, 2 };
-    ok !$@;
-};
+# subtest 'has attributes' => sub {
+#     my $entity = Markets::Domain::Factory->new->factory('entity-nofactory')->create( { a => 1, b => 2 } );
+#     eval { is $entity->a, 1 };
+#     eval { is $entity->b, 2 };
+#     ok !$@;
+# };
 
 subtest 'add_aggregate method' => sub {
     my $f = Markets::Domain::Factory->new->factory('entity-agg');
@@ -105,6 +105,7 @@ subtest 'add_aggregate method' => sub {
     ok $@, 'bad data type';
 
     my $entity = $f->create;
+    $entity->attr('hoges');
     isa_ok $entity->hoges, 'Markets::Domain::Collection', '';
 };
 
