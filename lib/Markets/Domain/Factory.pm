@@ -1,8 +1,10 @@
 package Markets::Domain::Factory;
 use Mojo::Base -base;
 use Carp 'croak';
+use DateTime::Format::Strptime;
 use Mojo::Util;
 use Mojo::Loader;
+use Markets::Schema;
 use Markets::Domain::Collection qw/collection/;
 
 has entity_class => sub {
@@ -28,6 +30,19 @@ sub create_entity {
     my $self = shift;
 
     my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+
+    # inflate datetime
+    my @keys = grep { $_ =~ qr/^.+_at$/ } keys %{$args};
+    foreach my $key (@keys) {
+        next unless $args->{$key};
+
+        my $strp = DateTime::Format::Strptime->new(
+            pattern   => '%Y-%m-%d %H:%M:%S',
+            time_zone => $Markets::Schema::TIME_ZONE,
+        );
+        $args->{$key} = $strp->parse_datetime( $args->{$key} );
+    }
+
     $self->params($args);
 
     # cooking entity

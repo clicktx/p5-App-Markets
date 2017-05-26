@@ -109,6 +109,12 @@ subtest 'add_aggregate method' => sub {
     isa_ok $entity->hoges, 'Markets::Domain::Collection', '';
 };
 
+subtest 'inflate datetime for *_at' => sub {
+    my $f = Markets::Domain::Factory->new->factory('entity-bar')->create( { created_at => '2017-5-26 19:17:06' } );
+    isa_ok $f->{created_at}, 'DateTime';
+    is $f->{created_at}->ymd, '2017-05-26';
+};
+
 subtest 'factory helper' => sub {
     my $t      = Test::Mojo->new('App');
     my $app    = $t->app;
