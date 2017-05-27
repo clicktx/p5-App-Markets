@@ -11,7 +11,7 @@
 
     # reference table
     'Reference::AddressType' => [
-        [ qw/address_type/ ],
+        [ qw/type/ ],
         [ 'post' ],
         [ 'bill' ],
         [ 'ship' ],

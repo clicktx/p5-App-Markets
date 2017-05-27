@@ -1,14 +1,26 @@
 package Markets::Domain::Factory;
 use Mojo::Base -base;
 use Carp 'croak';
+use DateTime::Format::Strptime;
 use Mojo::Util;
 use Mojo::Loader;
+use Markets::Schema;
+use Markets::Domain::Collection qw/collection/;
 
 has entity_class => sub {
     my $class = ref shift;
     $class =~ s/::Factory//;
     $class;
 };
+
+sub add_aggregate {
+    my ( $self, $aggregate, $entity, $data ) = @_;
+    croak 'Data type array only' if ref $data ne 'ARRAY';
+    my @array;
+    push @array, $self->factory($entity)->create($_) for @{$data};
+    $self->param( $aggregate => collection(@array) );
+    return $self;
+}
 
 sub cook { }
 
@@ -17,17 +29,40 @@ sub create { shift->create_entity(@_) }
 sub create_entity {
     my $self = shift;
 
+    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+
+    # inflate datetime
+    my @keys = grep { $_ =~ qr/^.+_at$/ } keys %{$args};
+    foreach my $key (@keys) {
+        next unless $args->{$key};
+
+        my $strp = DateTime::Format::Strptime->new(
+            pattern   => '%Y-%m-%d %H:%M:%S',
+            time_zone => $Markets::Schema::TIME_ZONE,
+        );
+        $args->{$key} = $strp->parse_datetime( $args->{$key} );
+    }
+
+    $self->params($args);
+
     # cooking entity
     $self->cook();
 
     my $params = $self->params;
-    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
 
-    # no need attributes
+    # no need parameter
     delete $params->{entity_class};
 
+    # Create entity
     _load_class( $self->entity_class );
-    return $self->entity_class->new( %{$params}, %{$args} );
+    my $entity = $self->entity_class->new( %{$params} );
+
+    # NOTE: attributesは Markets::Domain::Entity::XXX で明示する方が良い?
+    # Add attributes
+    # my @keys = keys %{$entity};
+    # $entity->attr($_) for @keys;
+
+    return $entity;
 }
 
 sub factory {
@@ -71,7 +106,6 @@ sub params {
 
     # Setter
     my %args = @_ > 1 ? @_ : %{ $_[0] };
-    croak 'Only one set argument, using the "param" method' if keys %args < 2;
     $self->{$_} = $args{$_} for keys %args;
 }
 
@@ -92,6 +126,9 @@ Markets::Domain::Factory
 
 =head1 SYNOPSIS
 
+    my $factory = Markets::Domain::Factory->new->factory('entity-hoge');
+    my $entity = $factory->create(%data);
+
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
@@ -106,6 +143,13 @@ the following new ones.
 Get namespace as a construct entity class.
 
 =head1 METHODS
+
+=head2 C<add_aggregate>
+
+    my $entity = $factory->add_aggregate( $accessor_name, $target_entity, \@data );
+    my $entity = $factory->add_aggregate( 'items', 'entity-item', \@data );
+
+Added aggregate.
 
 =head2 C<cook>
 
@@ -127,10 +171,10 @@ Alias for L</create_entity>.
 
 =head2 C<factory>
 
-    my $new_factory = $factory->factory('Entity::Hoge', %data );
-    my $new_factory = $factory->factory('Entity::Hoge', \%data );
-    my $new_factory = $factory->factory('entity-hoge', %data );
-    my $new_factory = $factory->factory('entity-hoge', \%data );
+    my $new_factory = $factory->factory( 'Entity::Hoge', %data );
+    my $new_factory = $factory->factory( 'Entity::Hoge', \%data );
+    my $new_factory = $factory->factory( 'entity-hoge', %data );
+    my $new_factory = $factory->factory( 'entity-hoge', \%data );
 
 Return factory object.
 

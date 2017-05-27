@@ -67,6 +67,9 @@ sub initialize_app {
     $self->sessions->cookie_name('session');
     $self->secrets( ['aaabbbccc'] );    #           change this!
 
+    # password
+    $self->plugin('Scrypt');
+
     # session
     $self->plugin( 'Markets::Session' => { expires_delta => 3600 } );
 

@@ -29,12 +29,11 @@ subtest 'Login process' => sub {
     $t->get_ok('/account/wishlist');
 
     # password failure
-    $t->post_ok( '/login', form => { csrf_token => $csrf_token, customer_id => 'default' } )
+    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'c@x.org', password => '2' } )
       ->status_is( 200, 'password failure' );
 
     # accept and redirect to wishlist?
-    $t->post_ok( '/login',
-        form => { csrf_token => $csrf_token, customer_id => 'default', password => 'pass' } )
+    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'c@x.org', password => '1' } )
       ->status_is( 302, 'right accepr to redirect' )
       ->header_like( location => qr/wishlist/, 'right location after redirect' );
 

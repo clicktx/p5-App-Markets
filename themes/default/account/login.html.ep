@@ -7,7 +7,7 @@
 <p>
     <%= form_for 'RN_customer_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
         <%= csrf_field %>
-        Customer ID <%= text_field customer_id => 'defaulte' %>
+        Email <%= email_field email => 'c@x.org' %>
         Password <%= password_field 'password' %>
         <%= submit_button 'ok' %>
     <% end %>

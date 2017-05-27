@@ -4,7 +4,7 @@ use DateTime;
 use Mojo::Util 'camelize';
 
 our $VERSION   = 0.001;
-our $TIME_ZONE = 'America/Los_Angeles';
+our $TIME_ZONE = 'UTC';
 
 __PACKAGE__->load_namespaces( default_resultset_class => 'ResultSetCommon' );
 

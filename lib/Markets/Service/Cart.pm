@@ -7,8 +7,17 @@ sub add_item {
     my $params = $self->controller->req->params->to_hash;
     delete $params->{csrf_token};
 
-    my $item = $self->controller->factory( 'entity-item', $params )->create;
+    my $item = $self->controller->factory('entity-item')->create($params);
     return $self->controller->cart->add_item($item);
+}
+
+sub create_entity {
+    my $self = shift;
+
+    my $cart_data = $self->controller->cart_session->data;
+    $cart_data->{cart_id} = $self->controller->cart_session->cart_id;
+
+    return $self->app->factory('entity-cart')->create($cart_data);
 }
 
 1;
@@ -16,7 +25,7 @@ __END__
 
 =head1 NAME
 
-Markets::Service::Cart
+Markets::Service::Cart - Application Service Layer
 
 =head1 SYNOPSIS
 
@@ -31,9 +40,15 @@ the following new ones.
 
 =head2 C<add_item>
 
-    $c->service('cart')->add_item( \%item );
+    my $cart = $c->service('cart')->add_item();
 
-Return entity cart object.
+Return L<Markets::Domain::Entity::Cart> object.
+
+=head2 C<create_entity>
+
+    my $cart = $c->service('cart')->create_entity();
+
+Return L<Markets::Domain::Entity::Cart> object.
 
 =head1 AUTHOR
 

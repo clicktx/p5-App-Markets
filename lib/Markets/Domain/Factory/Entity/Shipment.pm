@@ -8,12 +8,12 @@ sub cook {
     # shipping_items
     my @shipping_items;
     foreach my $item ( @{ $self->{shipping_items} } ) {
-        push @shipping_items, $self->factory( 'entity-item', $item )->create;
+        push @shipping_items, $self->factory('entity-item')->create($item);
     }
     $self->param( shipping_items => collection(@shipping_items) );
 
     # shipping_address
-    my $shipping_address = $self->factory( 'entity-address', $self->{shipping_address} || {} )->create;
+    my $shipping_address = $self->factory('entity-address')->create( $self->{shipping_address} || {} );
     $self->param( shipping_address => $shipping_address );
 }
 
@@ -26,8 +26,10 @@ Markets::Domain::Factory::Entity::Shipment
 
 =head1 SYNOPSIS
 
+    my $entity = Markets::Domain::Factory::Entity::Shipment->new( %args )->create;
+
     # In controller
-    my $entity = $c->factory( 'entity-cart', %args )->create;
+    my $entity = $c->factory('entity-shipment')->create(%args);
 
 =head1 DESCRIPTION
 

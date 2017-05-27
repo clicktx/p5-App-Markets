@@ -150,7 +150,7 @@ sub complete_validate {
 
     # cart sessionクリア
     # cartクリア（再生成）
-    my $newcart = $self->factory( 'entity-cart', {} )->create;
+    my $newcart = $self->factory('entity-cart')->create( {} );
     $self->cart_session->data( $newcart->to_data );
 
     # redirect_to thank you page
