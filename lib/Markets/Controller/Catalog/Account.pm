@@ -13,45 +13,35 @@ sub authorize {
 sub login_authen {
     my $self = shift;
 
-    # validation
     my $email    = $self->param('email');
     my $password = $self->param('password');
     my $customer = $self->service('customer')->create_entity( email => $email );
 
-    if ( !$customer->id ) {
-
-        # logging
-        say "not find customer";
-    }
-
-    # use DDP;p $customer;
-    # p $customer->id;
-    # p $customer->password;
-    # p $customer->password->hash;
-    # p $customer->emails;
-    # say $customer->created_at->time_zone->name;
-
     my $is_valid;
-    if ($is_valid) {
+    if ( $customer->id ) {
+        if ( $self->scrypt_verify( $password, $customer->password->hash ) ) {
 
-        # logging etc.
+            # logging etc.
 
-        my $customer_id = 123;    # debug customer_id example
-        $self->service('customer')->login($customer_id);
+            $self->service('customer')->login( $customer->id );
 
-        my $route = $self->flash('ref') || 'RN_customer_home';
+            my $route = $self->flash('ref') || 'RN_customer_home';
 
 # NOTE: redirect する前にURLを検証する必要がある？
 # [高木浩光＠自宅の日記 - ログイン成功時のリダイレクト先として任意サイトの指定が可能であってはいけない](http://takagi-hiromitsu.jp/diary/20070512.html)
 # session cookieの改竄は可能？
-        return $self->redirect_to($route);
+            return $self->redirect_to($route);
+        }
+        else {
+            $self->app->log->warn('Customer login fail: password mismatch');
+        }
     }
     else {
-        # logging etc.
-
-        $self->flash( ref => $self->flash('ref') );
-        $self->render( template => 'account/login' );
+        $self->app->log->warn('Customer login fail: email not found');
     }
+
+    $self->flash( ref => $self->flash('ref') );
+    $self->render( template => 'account/login' );
 }
 
 sub login {
