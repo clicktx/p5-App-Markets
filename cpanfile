@@ -47,6 +47,7 @@ on test => sub {
     requires 'Test::Class';
     requires 'Test::mysqld';
     requires 'Harriet';
+    requires 'DateTime::Format::MySQL';
     requires 'Test::Perl::Critic';
 };
 
