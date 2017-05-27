@@ -13,6 +13,12 @@ my @needless_attrs = (qw/id/);
 sub clone {
     my $self  = shift;
     my $clone = data_clone($self);
+
+    my @attributes = keys %{$self};
+    foreach my $attr (@attributes) {
+        next unless blessed( $self->$attr );
+        $clone->$attr( $self->$attr->map( sub { $_->clone } ) ) if $self->$attr->can('map');
+    }
     $clone->_is_modified(0);
     return $clone;
 }

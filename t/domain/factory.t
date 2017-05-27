@@ -15,7 +15,8 @@ subtest 'basic' => sub {
     my %p = $f->params;
     is_deeply \%p, {}, 'right get params empty hash';
 
-    $f->params( a => 1, b => 2 );
+    $f->params( a => 1 );
+    $f->params( b => 2 );
     is_deeply $f, { a => 1, b => 2 }, 'right set params';
 
     $p = $f->params;
@@ -28,10 +29,6 @@ subtest 'basic' => sub {
 
     eval { $f->params('a') };
     ok $@, 'getter only one argument';
-    eval { $f->params( a => 1 ) };
-    ok $@, 'setter only one argument';
-    eval { $f->params( { a => 1 } ) };
-    ok $@, 'setter only one argument';
 
     # param method
     $f->param( e => 5 );
@@ -45,6 +42,14 @@ subtest 'basic' => sub {
     ok $@, 'too many arguments';
     eval { $f->param( { g => 7, h => 8 } ) };
     ok $@, 'too many arguments';
+};
+
+subtest 'factory method' => sub {
+    my $f = Markets::Domain::Factory->factory('entity-hoge');
+    isa_ok $f, 'Markets::Domain::Factory::Entity::Hoge';
+
+    $f = Markets::Domain::Factory->factory('entity-nofactory');
+    isa_ok $f, 'Markets::Domain::Factory', 'right no factory';
 };
 
 subtest 'has not cook' => sub {
@@ -85,6 +90,29 @@ subtest 'factory method using' => sub {
     my $entity = $f->create_entity();
     is ref $entity, 'Markets::Domain::Entity::Bar', 'right namespace';
     cmp_deeply { %{$entity} }, { hoge => isa('Markets::Domain::Entity::Hoge'), }, 'right parameter';
+};
+
+# subtest 'has attributes' => sub {
+#     my $entity = Markets::Domain::Factory->new->factory('entity-nofactory')->create( { a => 1, b => 2 } );
+#     eval { is $entity->a, 1 };
+#     eval { is $entity->b, 2 };
+#     ok !$@;
+# };
+
+subtest 'add_aggregate method' => sub {
+    my $f = Markets::Domain::Factory->new->factory('entity-agg');
+    eval { $f->add_aggregate( 'hoges', 'hoge', {} ) };
+    ok $@, 'bad data type';
+
+    my $entity = $f->create;
+    $entity->attr('hoges');
+    isa_ok $entity->hoges, 'Markets::Domain::Collection', '';
+};
+
+subtest 'inflate datetime for *_at' => sub {
+    my $f = Markets::Domain::Factory->new->factory('entity-bar')->create( { created_at => '2017-5-26 19:17:06' } );
+    isa_ok $f->{created_at}, 'DateTime';
+    is $f->{created_at}->ymd, '2017-05-26';
 };
 
 subtest 'factory helper' => sub {
@@ -140,5 +168,19 @@ done_testing();
     }
 
     package Markets::Domain::Entity::Bar;
+    use Mojo::Base 'Markets::Domain::Entity';
+}
+
+{
+
+    package Markets::Domain::Factory::Entity::Agg;
+    use Mojo::Base 'Markets::Domain::Factory';
+
+    sub cook {
+        my $self = shift;
+        $self->add_aggregate( 'hoges', 'entity-hoge', [ {} ] );
+    }
+
+    package Markets::Domain::Entity::Agg;
     use Mojo::Base 'Markets::Domain::Entity';
 }

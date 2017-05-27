@@ -6,23 +6,16 @@ sub cook {
     my $self = shift;
 
     # billing_address
-    my $billing_address = $self->factory( 'entity-address', $self->{billing_address} || {} )->create;
+    my $billing_address = $self->factory('entity-address')->create( $self->{billing_address} || {} );
     $self->param( billing_address => $billing_address );
 
     # Aggregate items
-    $self->_create_entity( 'items', 'entity-item', $self->param('items') || [] );
+    $self->add_aggregate( 'items', 'entity-item', $self->param('items') || [] );
 
     # Aggregate shipments
     my $param = $self->param('shipments') || [ {} ];
     push @{$param}, {} unless @{$param};    # NOTE: At the time of "$param eq []"
-    $self->_create_entity( 'shipments', 'entity-shipment', $param );
-}
-
-sub _create_entity {
-    my ( $self, $aggregate, $entity, $data ) = @_;
-    my @array;
-    push @array, $self->factory( $entity, $_ )->create for @{$data};
-    $self->param( $aggregate => collection(@array) );
+    $self->add_aggregate( 'shipments', 'entity-shipment', $param );
 }
 
 1;
@@ -35,6 +28,9 @@ Markets::Domain::Factory::Entity::Cart
 =head1 SYNOPSIS
 
     my $entity = Markets::Domain::Factory::Entity::Cart->new( %args )->create;
+
+    # In controller
+    my $entity = $c->factory('entity-cart')->create(%args);
 
 =head1 DESCRIPTION
 

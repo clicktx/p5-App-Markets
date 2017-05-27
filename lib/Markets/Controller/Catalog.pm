@@ -1,15 +1,10 @@
 package Markets::Controller::Catalog;
 use Mojo::Base 'Markets::Controller';
 
-has cart => sub { _cart(@_) };
-
 sub init {
     my $self = shift;
 
-    my $cart_data = $self->cart_session->data;
-    $cart_data->{cart_id} = $self->cart_session->cart_id;
-
-    my $cart = $self->factory( 'entity-cart', $cart_data )->create;
+    my $cart = $self->service('cart')->create_entity();
     $self->stash( 'markets.entity.cart' => $cart );
 
     return $self;
@@ -23,10 +18,6 @@ sub finalize {
 
     $self->SUPER::finalize(@_);
     return $self;
-}
-
-sub _cart {
-    @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->stash('markets.entity.cart');
 }
 
 1;

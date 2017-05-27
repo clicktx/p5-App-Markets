@@ -9,7 +9,7 @@ primary_column id => {
 
 column address => {
     data_type   => 'VARCHAR',
-    size        => 255,
+    size        => 64,
     is_nullable => 0,
 };
 
@@ -18,6 +18,8 @@ column is_verified => {
     is_nullable   => 0,
     default_value => 0,
 };
+
+unique_constraint ui_address => [qw/address/];
 
 might_have
   customer_email => 'Markets::Schema::Result::Customer::Email',
