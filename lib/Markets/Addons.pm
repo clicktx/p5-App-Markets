@@ -3,15 +3,16 @@ use Mojo::Base 'Markets::EventEmitter';
 
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
+use Mojo::File;
+use Mojo::Collection;
 use constant {
     DEFAULT_PRIORITY => '100',
     ADDON_NAME_SPACE => 'Markets::Addon',
 };
 
-has dir         => sub { shift->app->pref('addons_dir') };
-has action_hook => sub { Markets::Addons::ActionHook->new };
-has filter_hook => sub { Markets::Addons::FilterHook->new };
-has [qw/app installed uploaded remove_hooks/];
+has dir             => sub { shift->app->pref('addons_dir') };
+has remove_triggers => sub { [] };
+has [qw/app installed uploaded/];
 
 sub addon {
     my $self = shift;
@@ -23,11 +24,13 @@ sub addon {
     @_ > 1 ? $self->{installed}->{$name} = $_[1] : $self->{installed}->{$name};
 }
 
+sub emit_trriger { shift->emit(@_) }
+
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
 
     $self->uploaded( $self->_fetch_uploded_addons );
-    $self->remove_hooks( [] );
+    $self->remove_triggers( [] );
 
     foreach my $addon_class_name ( keys %{$installed_addons} ) {
 
@@ -36,12 +39,12 @@ sub init {
         my $addon = $self->load_addon( $addon_class_name, $addon_pref );
         $self->addon( $addon_class_name => $addon );
 
-        # Subscribe hooks
+        # Subscribe triggers
         $self->to_enable($addon) if $addon->is_enabled;
     }
 
-    # Remove hooks
-    $self->_remove_hooks;
+    # Remove triggers
+    $self->_remove_triggers;
 }
 
 sub new {
@@ -65,48 +68,39 @@ sub load_addon {
     die qq{Addon "$name" missing, maybe you need to upload it?\n};
 }
 
-sub subscribe_hooks {
+sub subscribe_triggers {
     my ( $self, $addon ) = @_;
+    $self->on($_) for @{$addon->triggers};
 
-    my $hooks = $addon->hooks;
-    foreach my $hook ( @{$hooks} ) {
-        my $hook_type = $hook->{type};
-        $self->$hook_type->on($hook);
-    }
+    # rebuild cache
     $self->app->renderer->cache( Mojo::Cache->new );
 }
 
 sub to_enable {
     my ( $self, $addon ) = @_;
 
-    # Add hooks into the App.
-    $self->subscribe_hooks($addon);
-
     # Add routes in to the App.
     $self->_add_routes($addon);
 
+    $self->subscribe_triggers($addon);
     $addon->is_enabled(1);
 }
 
 sub to_disable {
     my ( $self, $addon ) = @_;
 
-    # Remove hooks for App.
-    $self->unsubscribe_hooks($addon);
-
     # Remove routes for App.
     $self->_remove_routes($addon);
 
+    $self->unsubscribe_triggers($addon);
     $addon->is_enabled(0);
 }
 
-sub unsubscribe_hooks {
+sub unsubscribe_triggers {
     my ( $self, $addon ) = @_;
-    my $hooks = $addon->hooks;
-    foreach my $hook ( @{$hooks} ) {
-        my $hook_type = $hook->{type};
-        $self->$hook_type->unsubscribe( $hook->{name} => $hook );
-    }
+    $self->unsubscribe( $_->{name} => $_ ) for @{ $addon->triggers };
+
+    # rebuild cache
     $self->app->renderer->cache( Mojo::Cache->new );
 }
 
@@ -151,19 +145,18 @@ sub _load_class {
     ref $e ? die $e : return;
 }
 
-sub _remove_hooks {
-    my $self = shift;
-    my $remove_hooks = $self->{remove_hooks} || [];
-    return unless @{$remove_hooks};
+sub _remove_triggers {
+    my $self            = shift;
+    my $remove_triggers = $self->{remove_triggers};
+    return unless @{$remove_triggers};
 
-    foreach my $remove_hook ( @{$remove_hooks} ) {
-        my $type        = $remove_hook->{type};
-        my $hook        = $remove_hook->{hook};
-        my $subscribers = $self->app->addons->$type->subscribers($hook);
+    foreach my $remove_trigger ( @{$remove_triggers} ) {
+        my $trigger     = $remove_trigger->{trigger};
+        my $subscribers = $self->app->addons->subscribers($trigger);
         my $unsubscribers =
-          [ grep { $_->{cb_fn_name} eq $remove_hook->{cb_fn_name} } @{$subscribers} ];
+          [ grep { $_->{cb_fn_name} eq $remove_trigger->{cb_fn_name} } @{$subscribers} ];
 
-        map { $self->app->addons->$type->unsubscribe( $hook, $_ ) } @{$unsubscribers};
+        map { $self->app->addons->unsubscribe( $trigger, $_ ) } @{$unsubscribers};
     }
 }
 
@@ -177,16 +170,6 @@ sub _remove_routes {
         $self->app->routes->cache( Mojo::Cache->new );
     }
 }
-
-###################################################
-# Separate namespace
-package Markets::Addons::ActionHook;
-use Mojo::Base 'Markets::Addons';
-sub emit { shift->SUPER::emit(@_) }
-
-package Markets::Addons::FilterHook;
-use Mojo::Base 'Markets::Addons';
-sub emit { shift->SUPER::emit(@_) }
 
 1;
 
@@ -215,14 +198,6 @@ L<Markets::Addons> inherits all events from L<Mojo::EventEmitter> & L<Markets::E
     my $app = $addons->app;
 
 Return the application object.
-
-=head2 C<action_hook>
-
-Markets::Addons::ActionHook object.
-
-=head2 C<filter_hook>
-
-Markets::Addons::FilterHook object.
 
 =head2 C<installed>
 
@@ -255,18 +230,11 @@ the following new ones.
     # Setter
     $addons->addon( 'my_addon' => Markets::Addon::MyAddon->new );
 
-=head2 C<emit>
+=head2 C<emit_trriger>
 
-    # Emit action hook
-    $addons->action_hook->emit('foo');
-    $addons->action_hook->emit(foo => 123);
+    $app->addons->emit_trriger( xxx_trigger_name => $foo, $bar, $baz );
 
-    # Emit filter hook
-    $addons->filter_hook->emit('foo');
-    $addons->filter_hook->emit(foo => 123);
-
-Emit event as action/filter hook.
-This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook::emit.
+Emit events as triggers.
 
 =head2 C<init>
 
@@ -281,11 +249,11 @@ This method is Markets::Addons::ActionHook::emit or Markets::Addons::FilterHook:
 Load an addon from the configured.
 Return L<Markets::Addon> object.
 
-=head2 C<subscribe_hooks>
+=head2 C<subscribe_triggers>
 
-    $addons->subscribe_hooks($addon);
+    $addons->subscribe_triggers($addon);
 
-Subscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
+Subscribe trigger events.
 
 =head2 C<to_enable>
 
@@ -299,11 +267,11 @@ Change addon status to enable.
 
 Change addon status to disable.
 
-=head2 C<unsubscribe_hooks>
+=head2 C<unsubscribe_triggers>
 
-    $addons->unsubscribe_hooks($addon);
+    $addons->unsubscribe_triggers($addon);
 
-Unsubscribe to C<Markets::Addons::ActionHook> or C<Markets::Addons::FilterHook> event.
+Unsubscribe trigger events.
 
 =head1 SEE ALSO
 

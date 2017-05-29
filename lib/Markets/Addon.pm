@@ -17,6 +17,7 @@ has name => sub {
     shift->class_name =~ /${package}::(.*)/ and decamelize $1;
 };
 has [qw/app config hooks is_enabled routes/];
+has triggers => sub { [] };
 
 # Make addon home path
 sub addon_home { Mojo::Home->new->detect(shift) }
@@ -60,39 +61,34 @@ sub setup {
     return $self;
 }
 
-sub add_action_hook { shift->_add_hook( 'action_hook', @_ ) }
-sub add_filter_hook { shift->_add_hook( 'filter_hook', @_ ) }
-sub rm_action_hook { shift->_remove_hook( 'action_hook', @_ ) }
-sub rm_filter_hook { shift->_remove_hook( 'filter_hook', @_ ) }
+sub _remove_trigger {
+    my ( $self, $trigger, $cb_fn_name ) = @_;
+    my $remove_triggers = $self->app->addons->remove_triggers;
+    push @{$remove_triggers},
+      {
+        trigger       => $trigger,
+        cb_fn_name => $cb_fn_name,
+      };
+}
+sub rm_trigger { shift->_remove_trigger(@_) }
 
-sub _add_hook {
-    my ( $self, $type, $name, $cb, $arg ) = ( shift, shift, shift, shift, shift // {} );
+sub trigger { shift->_add_trigger(@_) }
 
-    my $hook_prioritie   = $self->{config}->{hook_priorities}->{$name};
-    my $default_priority = $arg->{default_priority} || $self->app->addons->DEFAULT_PRIORITY;
-    my $priority         = $hook_prioritie ? $hook_prioritie : $default_priority;
-    my $hooks            = $self->{hooks};
-    my $cb_fn_name = B::svref_2object($cb)->GV->NAME;    # TODO: 必要か再考
+sub _add_trigger {
+    my ( $self, $name, $cb, $opt ) = ( shift, shift, shift, shift // {} );
 
-    push @{$hooks},
+    my $trigger_priority = $self->{config}->{trigger_priorities}->{$name};
+    my $default_priority = $opt->{default_priority} || $self->app->addons->DEFAULT_PRIORITY;
+    my $priority         = $trigger_priority ? $trigger_priority : $default_priority;
+    my $cb_fn_name       = B::svref_2object($cb)->GV->NAME;                                    # TODO: 必要か再考
+
+    push @{ $self->triggers },
       {
         name             => $name,
-        type             => $type,
         cb               => $cb,
         cb_fn_name       => $cb_fn_name,
         priority         => $priority,
         default_priority => $default_priority,
-      };
-}
-
-sub _remove_hook {
-    my ( $self, $type, $hook, $cb_fn_name ) = @_;
-    my $remove_hooks = $self->app->addons->{remove_hooks};
-    push @{$remove_hooks},
-      {
-        type       => $type,
-        hook       => $hook,
-        cb_fn_name => $cb_fn_name,
       };
 }
 
@@ -227,46 +223,6 @@ implements the following new ones.
 
 Get home path for YourAddon.
 
-=head2 C<add_action_hook>
-
-    sub register {
-        my my ( $self, $app, $arg ) = @_;
-        $self->add_action_hook(
-            'action_hook_name' => \&fizz,
-            { default_priority => 500 }    # option
-        );
-    }
-
-    sub fizz { ... }
-
-Extend L<Markets> with action hook event.
-
-=head2 C<add_filter_hook>
-
-    sub register {
-        my my ( $self, $app, $arg ) = @_;
-        $self->add_filter_hook(
-            'filter_hook_name' => \&buzz,
-            { default_priority => 500 }    # option
-        );
-    }
-
-    sub buzz { ... }
-
-Extend L<Markets> with filter hook event.
-
-=head2 C<rm_action_hook>
-
-    $addon->rm_action_hook( 'action_hook_name', 'subroutine_name');
-
-Remove L<Markets> action hook event.
-
-=head2 C<rm_filter_hook>
-
-    $addon->rm_filter_hook( 'filter_hook_name', 'subroutine_name');
-
-Remove L<Markets> filter hook event.
-
 =head2 C<get_template>
 
     my $content = $class->get_template('dir/template_name');
@@ -275,14 +231,35 @@ Get content for addon template file or DATA section.
 
 format C<html> and handler C<ep> onry. ex) template_name.html.ep
 
-=head2 C<setup>
-
-This method will be called by L<Markets::Addon> at startup time.
-
 =head2 C<register>
 
 This method will be called after L<Markets::Addon>::setup() at startup time.
 Meant to be overloaded in a subclass.
+
+=head2 C<rm_trigger>
+
+    $addon->rm_trigger( 'trigger_name', 'subroutine_name');
+
+Remove L<Markets> trigger event.
+
+=head2 C<setup>
+
+This method will be called by L<Markets::Addon> at startup time.
+
+=head2 C<trigger>
+
+    sub register {
+        my my ( $self, $app, $arg ) = @_;
+        $self->trigger(
+            trigger_name => \&fizz,
+            { default_priority => 500 }    # option
+        );
+        $self->trigger( tirgger2 => sub { say "trigger2" }, { default_priority => 300 } );
+    }
+
+    sub fizz { say "trigger" }
+
+Extend L<Markets> trigger event.
 
 =head1 SEE ALSO
 

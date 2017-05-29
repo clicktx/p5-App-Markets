@@ -9,30 +9,30 @@ my $home  = $class->addon_home;    # get this addon home abs path.
 sub register {
     my ( $self, $app, $conf ) = @_;
 
-    $self->add_action_hook(
-        action_replace_template => \&say_yes,
+    $self->trigger(
+        replace_template => => \&say_yes,
         { default_priority => 500 }    # option
     );
-    $self->add_action_hook( action_replace_template => \&myaddon_replace_templates, );
-    $self->add_filter_hook( filter_form => sub { say "hook! MyAddon filter_form!" } );
+
+    $self->trigger( filter_form => sub { say "hook! MyAddon filter_form!" } );
 
     # remove action hook example
-    # $self->rm_action_hook('action_replace_template', 'say_yes');
-    # $self->rm_action_hook('action_replace_template', 'myaddon_replace_templates');
+    # $self->rm_trigger('replace_template', 'say_yes');
+    # $self->rm_trigger('replace_template', 'myaddon_replace_templates');
 }
 
 sub say_yes {
     my ( $c, $file_path, $template_source ) = @_;
     say "hook say_yes: ";
-    if ( $file_path =~ m|admin/index/welcome| ) {
+    if ( $file_path =~ m|admin/dashboard| ) {
         say "match -> $file_path";
         my $dom = $c->helpers->dom->parse( ${$template_source} );
         $dom->find('h1')->first->replace('<h1>Say yes!</h1>');
 
         # use DB example
-        my $rs = $c->app->schema->resultset('MyAddonTest');
-        use DDP;
-        p $rs;
+        # my $rs = $c->app->schema->resultset('MyAddonTest');
+        # use DDP;
+        # p $rs;
 
         # $rs->search({});
 
@@ -48,7 +48,7 @@ sub myaddon_replace_templates {
     my ( $c, $file_path, $template_source ) = @_;
     say "filter hook: before_compile_template.";
 
-    if ( $file_path =~ m|admin/index/welcome| ) {
+    if ( $file_path =~ m|admin/dashboard| ) {
         say "match  -> $file_path";
 
         # テンプレートを利用
