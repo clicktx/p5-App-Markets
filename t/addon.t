@@ -76,41 +76,41 @@ subtest 'addon basic' => sub {
 
 subtest 'for t/addons TestAddon' => sub {
 
-    # Hooks
-    my $test_action = $app->addons->action_hook->subscribers('action_example_hook');
-    my $test_filter = $app->addons->filter_hook->subscribers('filter_example_hook');
+    # Triggers
+    my $test_action = $app->addons->subscribers('action_example_trigger');
+    my $test_filter = $app->addons->subscribers('filter_example_trigger');
 
-    is $test_action->[0]->{priority}, 100, 'right priority, action hook';
-    is $test_action->[1]->{priority}, 500, 'right priority, action hook';
-    is ref $test_action->[0]->{cb}, 'CODE', 'right code ref, action hook';
+    is $test_action->[0]->{priority}, 100, 'right priority, action trigger';
+    is $test_action->[1]->{priority}, 500, 'right priority, action trigger';
+    is ref $test_action->[0]->{cb}, 'CODE', 'right code ref, action trigger';
 
-    is $test_filter->[0]->{priority}, 10,  'right priority, filter hook';
-    is $test_filter->[1]->{priority}, 100, 'right priority, filter hook';
-    is ref $test_filter->[0]->{cb}, 'CODE', 'right code ref, filter hook';
+    is $test_filter->[0]->{priority}, 10,  'right priority, filter trigger';
+    is $test_filter->[1]->{priority}, 100, 'right priority, filter trigger';
+    is ref $test_filter->[0]->{cb}, 'CODE', 'right code ref, filter trigger';
 
     # Routes
     $t->get_ok('/test_addon')->status_is(200)->content_like(qr/top/);
     $t->get_ok('/test_addon/hoo')->status_is(200)->content_like(qr/hoo/);
     $t->get_ok('/test_addon/nooo')->status_is(404);
 
-    # Change disable addon
+    # Change status to disable
     my $addons = $app->addons;
     my $addon  = $addons->addon('Markets::Addon::TestAddon');
     $addons->to_disable($addon);
 
-    $test_action = $app->addons->action_hook->subscribers('action_example_hook');
-    $test_filter = $app->addons->filter_hook->subscribers('filter_example_hook');
-    is_deeply $test_action, [], 'removed action hooks';
-    is_deeply $test_filter, [], 'removed action hooks';
+    $test_action = $app->addons->subscribers('action_example_trigger');
+    $test_filter = $app->addons->subscribers('filter_example_trigger');
+    is_deeply $test_action, [], 'removed action triggers';
+    is_deeply $test_filter, [], 'removed action triggers';
     $t->get_ok('/test_addon')->status_is(404);
     $t->get_ok('/test_addon/hoo')->status_is(404);
 };
 
 subtest 'for t/addons DisableAddon' => sub {
-    my $disable_action = $app->addons->action_hook->subscribers('action_disable_hook');
-    my $disable_filter = $app->addons->filter_hook->subscribers('filter_disable_hook');
-    is_deeply $disable_action, [], 'no action hooks';
-    is_deeply $disable_filter, [], 'no filter hooks';
+    my $disable_action = $app->addons->subscribers('action_disable_trigger');
+    my $disable_filter = $app->addons->subscribers('filter_disable_trigger');
+    is_deeply $disable_action, [], 'no action triggers';
+    is_deeply $disable_filter, [], 'no filter triggers';
     $t->get_ok('/disable_addon')->status_is(404);
 };
 

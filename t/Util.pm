@@ -45,7 +45,7 @@ sub init_addon {
 
     $installed_addons->{$name} = {
         is_enabled => $is_enabled,
-        hooks      => [],
+        triggers      => [],
     };
     $app->addons->init($installed_addons);
 

@@ -4,23 +4,23 @@ use Mojo::Base 'Markets::Addon';
 sub register {
     my ( $self, $app, $conf ) = @_;
 
-    # Add hooks
-    $self->add_action_hook(
-        'action_example_hook' => \&action_example_hook,
+    # Add triggers
+    $self->trigger(
+        'action_example_trigger' => \&action_example_trigger,
         { default_priority => 500 }
     );
-    $self->add_action_hook( 'action_example_hook' => \&action_example_hook, );
-    $self->add_filter_hook(
-        'filter_example_hook' => \&filter_example_hook,
+    $self->trigger( 'action_example_trigger' => \&action_example_trigger, );
+    $self->trigger(
+        'filter_example_trigger' => \&filter_example_trigger,
         { default_priority => 10 }
     );
-    $self->add_filter_hook( 'filter_example_hook' => \&filter_example_hook, );
+    $self->trigger( 'filter_example_trigger' => \&filter_example_trigger, );
 
-    # Add hook and remove.
-    $self->add_action_hook( 'action_example_hook' => \&rm_act_hook, );
-    $self->add_filter_hook( 'filter_example_hook' => \&rm_flt_hook, );
-    $self->rm_action_hook('action_example_hook', 'rm_act_hook');
-    $self->rm_filter_hook('filter_example_hook', 'rm_flt_hook');
+    # Add trigger and remove.
+    $self->trigger( 'action_example_trigger' => \&rm_act_trigger, );
+    $self->trigger( 'filter_example_trigger' => \&rm_flt_trigger, );
+    $self->rm_trigger('action_example_trigger', 'rm_act_trigger');
+    $self->rm_trigger('filter_example_trigger', 'rm_flt_trigger');
 
     # Add routes
     my $r = $self->routes;
@@ -29,10 +29,10 @@ sub register {
 
 }
 
-sub action_example_hook { my ( $c, $arg ) = @_ }
-sub filter_example_hook { my ( $c, $arg ) = @_ }
-sub rm_act_hook   { }
-sub rm_flt_hook   { }
+sub action_example_trigger { my ( $c, $arg ) = @_ }
+sub filter_example_trigger { my ( $c, $arg ) = @_ }
+sub rm_act_trigger   { }
+sub rm_flt_trigger   { }
 
 package Markets::Addon::TestAddon::Example;
 use Mojo::Base 'Markets::Controller';
