@@ -16,7 +16,7 @@ has name => sub {
     my $package = __PACKAGE__;
     shift->class_name =~ /${package}::(.*)/ and decamelize $1;
 };
-has [qw/app config hooks is_enabled routes/];
+has [qw/app config is_enabled routes/];
 has triggers => sub { [] };
 
 # Make addon home path

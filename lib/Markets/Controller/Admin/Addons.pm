@@ -26,7 +26,7 @@ sub enable {
     # $addon->is_enabled(1); はAddons::to_enableで行う
     # $self->app->restart_app;
 
-    # hook routes有効化
+    # trigger routes有効化
     $self->app->addons->to_enable($addon);
 
     $self->redirect_to('RN_admin_settings_addons');
@@ -41,7 +41,7 @@ sub disable {
     # $addon->is_enabled(0); はAddons::to_disableで行う
     # $self->app->restart_app;
 
-    # hook routes無効化
+    # trigger routes無効化
     $self->app->addons->to_disable($addon);
 
     $self->redirect_to('RN_admin_settings_addons');

@@ -11,7 +11,7 @@ monkey_patch 'Mojo::Template', render_file_after_hook => sub {
     $self->name($template_file_path) unless defined $self->{name};
     my $template_source = Mojo::File::path($template_file_path)->slurp;
 
-    # emit filter. This filter was used to addons.
+    # emit trigger. This trigger was used to addons.
     $c->app->addons->emit_trriger(
         replace_template => $c,
         $template_file_path, \$template_source,

@@ -5,26 +5,26 @@ sub register {
     my ( $self, $app, $conf ) = @_;
 
     $self->trigger(
-        'action_example_hook' => \&action_example_hook,
+        'action_example_trigger' => \&action_example_trigger,
         { default_priority => 1 }
     );
     $self->trigger(
-        'filter_example_hook' => \&filter_example_hook,
+        'filter_example_trigger' => \&filter_example_trigger,
         { default_priority => 1 }
     );
 
-    $self->trigger( 'action_disable_hook' => sub {} );
-    $self->trigger( 'filter_disable_hook' => sub {} );
+    $self->trigger( 'action_disable_trigger' => sub {} );
+    $self->trigger( 'filter_disable_trigger' => sub {} );
 
     my $r = $self->routes;
     $r->get('/')->to('test_addon-example#welcome');
 }
 
-sub action_example_hook {
+sub action_example_trigger {
     my ( $c, $arg ) = @_;
 }
 
-sub filter_example_hook {
+sub filter_example_trigger {
     my ( $c, $arg ) = @_;
 }
 

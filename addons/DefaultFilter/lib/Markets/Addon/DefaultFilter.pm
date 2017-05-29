@@ -17,7 +17,7 @@ sub register {
 
 sub query_convert_ja {
     my ($c) = @_;
-    say "hook! DefaultFilter!";
+    say "trigger! DefaultFilter!";
     return if $c->app->language ne 'ja';
     say "language is ja.";
     my $query = $c->req;

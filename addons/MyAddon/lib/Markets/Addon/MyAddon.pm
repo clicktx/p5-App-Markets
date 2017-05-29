@@ -14,16 +14,16 @@ sub register {
         { default_priority => 500 }    # option
     );
 
-    $self->trigger( filter_form => sub { say "hook! MyAddon filter_form!" } );
+    $self->trigger( filter_form => sub { say "trigger! MyAddon filter_form!" } );
 
-    # remove action hook example
+    # remove action trigger example
     # $self->rm_trigger('replace_template', 'say_yes');
     # $self->rm_trigger('replace_template', 'myaddon_replace_templates');
 }
 
 sub say_yes {
     my ( $c, $file_path, $template_source ) = @_;
-    say "hook say_yes: ";
+    say "trigger say_yes: ";
     if ( $file_path =~ m|admin/dashboard| ) {
         say "match -> $file_path";
         my $dom = $c->helpers->dom->parse( ${$template_source} );
@@ -43,10 +43,10 @@ sub say_yes {
 
 # 各フックポイントを関数で定義する
 
-# コンパイル前のテンプレートに適用されるhook
+# コンパイル前のテンプレートに適用されるtrigger
 sub myaddon_replace_templates {
     my ( $c, $file_path, $template_source ) = @_;
-    say "filter hook: before_compile_template.";
+    say "trigger: before_compile_template.";
 
     if ( $file_path =~ m|admin/dashboard| ) {
         say "match  -> $file_path";
