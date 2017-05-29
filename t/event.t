@@ -2,11 +2,10 @@ use Mojo::Base -strict;
 
 use Test::More;
 use Markets::EventEmitter;
-use Markets::Addons;
 
 # Normal event
 my $e = Markets::EventEmitter->new;
-my $called;
+my $called = 0;
 $e->on(
     {
         name => 'test1',
@@ -111,81 +110,5 @@ ok !$e->unsubscribe('foo')->has_subscribers('foo'), 'no subscribers';
 is scalar @{ $e->subscribers('foo') }, 0, 'no subscribers';
 $e->emit('foo');
 is $counter, 5, 'event was not emitted again';
-
-# action priority
-my $addon_namespace = 'Markets::Addon::Test';
-my $cb = sub { $called++ };
-$e = Markets::Addons::ActionHook->new;
-$e->on(
-    {
-        name     => 'test1',
-        cb       => $cb,
-        priority => 400,
-    }
-);
-$e->on(
-    {
-        name     => 'test1',
-        cb       => $cb,
-        priority => 200,
-    }
-);
-$e->on(
-    {
-        name     => 'test1',
-        cb       => $cb,
-        priority => 1000,
-    }
-);
-$e->on(
-    {
-        name     => 'test1',
-        cb       => $cb,
-        priority => 400,
-    }
-);
-
-my @priority;
-foreach my $event ( @{ $e->{events}{test1} } ) {
-    push @priority, $event->{priority};
-}
-is_deeply \@priority, [ 200, 400, 400, 1000 ], 'right action_hook->on priority';
-
-# filter priority
-$e = Markets::Addons::FilterHook->new;
-$e->on(
-    {
-        name     => 'test1',
-        cb       => $cb,
-        priority => 400,
-    }
-);
-$e->on(
-    {
-        name     => 'test1',
-        cb       => $cb,
-        priority => 200,
-    }
-);
-$e->on(
-    {
-        name     => 'test1',
-        cb       => $cb,
-        priority => 1000,
-    }
-);
-$e->on(
-    {
-        name     => 'test1',
-        cb       => $cb,
-        priority => 400,
-    }
-);
-
-@priority = ();
-foreach my $event ( @{ $e->{events}{test1} } ) {
-    push @priority, $event->{priority};
-}
-is_deeply \@priority, [ 200, 400, 400, 1000 ], 'right filter_hook->on priority';
 
 done_testing();

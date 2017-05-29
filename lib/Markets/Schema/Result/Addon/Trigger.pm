@@ -1,4 +1,4 @@
-package Markets::Schema::Result::Addon::Hook;
+package Markets::Schema::Result::Addon::Trigger;
 use Mojo::Base 'Markets::Schema::ResultCommon';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -9,7 +9,7 @@ column addon_id => {
     is_nullable => 1,
 };
 
-column hook_name => {
+column trigger_name => {
     data_type   => 'VARCHAR',
     size        => 50,
     is_nullable => 1,

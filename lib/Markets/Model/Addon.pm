@@ -8,21 +8,21 @@ sub configure {
     my $rs = $schema->resultset('Addon')->search(
         {},
         {
-            join     => 'hooks',
-            prefetch => 'hooks',
+            join     => 'triggers',
+            prefetch => 'triggers',
         }
     );
 
     my $conf;
     while ( my $addon = $rs->next ) {
         $conf->{ $addon->name } = {
-            hooks      => [],
+            triggers      => [],
             is_enabled => $addon->is_enabled,
         };
-        my @hooks = $addon->hooks or next;
-        foreach my $hook (@hooks) {
-            $conf->{ $addon->name }->{config}->{hook_priorities}->{ $hook->hook_name } =
-              $hook->priority;
+        my @triggers = $addon->triggers or next;
+        foreach my $trigger (@triggers) {
+            $conf->{ $addon->name }->{config}->{trigger_priorities}->{ $trigger->trigger_name } =
+              $trigger->priority;
         }
     }
 
