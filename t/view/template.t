@@ -18,13 +18,13 @@ my $c = Test::Mojo->new('App');
 # File
 $mt = Mojo::Template->new;
 my $file = catfile dirname(__FILE__), 'templates', 'test.mt';
-$output = $mt->render_file_after_hook($c,  $file, 3 );
+$output = $mt->render_file_after($c,  $file, 3 );
 like $output, qr/23\nHello World!/, 'file';
 
 # Exception in file
 $mt     = Mojo::Template->new;
 $file   = catfile dirname(__FILE__), 'templates', 'exception.mt';
-$output = $mt->render_file_after_hook($c, $file);
+$output = $mt->render_file_after($c, $file);
 isa_ok $output, 'Mojo::Exception', 'right exception';
 like $output->message, qr/exception\.mt line 2/, 'message contains filename';
 ok $output->verbose, 'verbose exception';
@@ -38,7 +38,7 @@ like "$output", qr/exception\.mt line 2/, 'right result';
 
 # Exception in file (different name)
 $mt     = Mojo::Template->new;
-$output = $mt->name('"foo.mt" from DATA section')->render_file_after_hook($c, $file);
+$output = $mt->name('"foo.mt" from DATA section')->render_file_after($c, $file);
 isa_ok $output, 'Mojo::Exception', 'right exception';
 like $output->message, qr/foo\.mt from DATA section line 2/,
   'message contains filename';
@@ -54,7 +54,7 @@ like "$output", qr/foo\.mt from DATA section line 2/, 'right result';
 # Exception with UTF-8 context
 $mt     = Mojo::Template->new;
 $file   = catfile dirname(__FILE__), 'templates', 'utf8_exception.mt';
-$output = $mt->render_file_after_hook($c, $file);
+$output = $mt->render_file_after($c, $file);
 isa_ok $output, 'Mojo::Exception', 'right exception';
 ok $output->verbose, 'verbose exception';
 is $output->lines_before->[0][1], '☃', 'right line';
@@ -75,7 +75,7 @@ is $output->lines_after->[0], undef, 'no lines after';
 # Different encodings
 $mt = Mojo::Template->new( encoding => 'shift_jis' );
 $file = catfile dirname(__FILE__), 'templates', 'utf8_exception.mt';
-ok !eval { $mt->render_file_after_hook($c, $file) }, 'file not rendered';
+ok !eval { $mt->render_file_after($c, $file) }, 'file not rendered';
 like $@, qr/invalid encoding/, 'right error';
 
 # Custom escape function

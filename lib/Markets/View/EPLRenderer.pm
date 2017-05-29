@@ -5,7 +5,7 @@ use Mojo::Template;
 use Mojo::Util qw(encode md5_sum monkey_patch decode);
 use Carp 'croak';
 
-monkey_patch 'Mojo::Template', render_file_after_hook => sub {
+monkey_patch 'Mojo::Template', render_file_after => sub {
     my ( $self, $c, $template_file_path ) = ( shift, shift, shift );
 
     $self->name($template_file_path) unless defined $self->{name};
@@ -60,7 +60,7 @@ sub _render {
             # Try template
             if ( defined( my $template_file_path = $renderer->template_path($options) ) ) {
                 $c->app->log->debug(qq{Rendering template "$name"});
-                $$output = $mt->name(qq{template "$name"})->render_file_after_hook( $c, $template_file_path, @args );
+                $$output = $mt->name(qq{template "$name"})->render_file_after( $c, $template_file_path, @args );
             }
 
             # Try DATA section
