@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 
 use Class::C3;
 use B;
+use Sub::Util qw/subname set_subname/;
 use Carp 'croak';
 use Mojo::Util qw/camelize decamelize/;
 use Mojo::Loader qw/load_class/;
@@ -134,25 +135,25 @@ sub _add_trigger {
     my $trigger_priority = $self->{config}->{trigger_priorities}->{$name};
     my $default_priority = $opt->{default_priority} || $self->app->addons->DEFAULT_PRIORITY;
     my $priority         = $trigger_priority ? $trigger_priority : $default_priority;
-    my $cb_fn_name       = B::svref_2object($cb)->GV->NAME;                                    # TODO: 必要か再考
+    my $cb_sub_name      = subname($cb);
 
     push @{ $self->triggers },
       {
         name             => $name,
         cb               => $cb,
-        cb_fn_name       => $cb_fn_name,
+        cb_sub_name      => $cb_sub_name,
         priority         => $priority,
         default_priority => $default_priority,
       };
 }
 
 sub _remove_trigger {
-    my ( $self, $trigger, $cb_fn_name ) = @_;
+    my ( $self, $trigger, $cb_sub_name ) = @_;
     my $remove_triggers = $self->app->addons->remove_triggers;
     push @{$remove_triggers},
       {
-        trigger    => $trigger,
-        cb_fn_name => $cb_fn_name,
+        trigger     => $trigger,
+        cb_sub_name => $cb_sub_name,
       };
 }
 
