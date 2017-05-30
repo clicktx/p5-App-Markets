@@ -1,11 +1,12 @@
 requires 'perl',                                    '5.018';
-requires 'Mojolicious',                             '== 7.29';
 requires 'Scalar::Util',                            '1.47';
+requires 'Sub::Util',                               '1.47';
 requires 'Try::Tiny',                               '0.28';
 requires 'File::Find::Rule',                        '0.34';
 requires 'DateTime',                                '1.42';
 requires 'DateTime::Format::Strptime',              '1.73';
 requires 'Data::Clone',                             '0.004';
+requires 'Mojolicious',                             '== 7.29';
 requires 'Mojolicious::Plugin::Scrypt',             '0.01';
 requires 'Mojolicious::Plugin::Model',              '0.07';
 requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';
@@ -32,6 +33,7 @@ requires 'Cookie::Baker::XS',         '0.07';
 requires 'JSON::XS',                  '3.02';
 requires 'Cpanel::JSON::XS',          '3.0227';
 requires 'Class::C3::XS',             '0.14';
+requires 'List::Util::XS',            '1.47';
 
 # requires 'YAML::XS';
 

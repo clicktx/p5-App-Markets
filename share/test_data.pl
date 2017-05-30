@@ -9,8 +9,8 @@
     ],
     'Addon::Trigger' => [
         [qw/id addon_id trigger_name priority/],
-        [qw/100 102 before_compile_template 300/],
-        [qw/101 102 before_xxx_action 500/],
+        [qw/100 102 replace_template 333/],
+        [qw/101 102 filter_form 555/],
     ],
 
     # 'Sales::OrderHeader' => {

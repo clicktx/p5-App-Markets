@@ -19,8 +19,8 @@ sub register {
     # Add trigger and remove.
     $self->trigger( 'action_example_trigger' => \&rm_act_trigger, );
     $self->trigger( 'filter_example_trigger' => \&rm_flt_trigger, );
-    $self->rm_trigger('action_example_trigger', 'rm_act_trigger');
-    $self->rm_trigger('filter_example_trigger', 'rm_flt_trigger');
+    $self->rm_trigger('action_example_trigger' => 'Markets::Addon::TestAddon::rm_act_trigger');
+    $self->rm_trigger('filter_example_trigger' => 'Markets::Addon::TestAddon::rm_flt_trigger');
 
     # Add routes
     my $r = $self->routes;
