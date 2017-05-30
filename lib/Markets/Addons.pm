@@ -24,7 +24,7 @@ sub addon {
     @_ > 1 ? $self->{installed}->{$name} = $_[1] : $self->{installed}->{$name};
 }
 
-sub emit_trriger { shift->trigger->emit(@_) }
+sub emit_trigger { shift->trigger->emit(@_) }
 
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
@@ -199,9 +199,9 @@ the following new ones.
     # Setter
     $addons->addon( 'my_addon' => Markets::Addon::MyAddon->new );
 
-=head2 C<emit_trriger>
+=head2 C<emit_trigger>
 
-    $app->addons->emit_trriger( xxx_trigger_name => $foo, $bar, $baz );
+    $app->addons->emit_trigger( xxx_trigger_name => $foo, $bar, $baz );
 
 Emit events as triggers.
 
