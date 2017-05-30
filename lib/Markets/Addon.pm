@@ -213,6 +213,10 @@ Return boolean.
 
 Return L<Mojolicious::Routes> object.
 
+=head2 C<triggers>
+
+Return array ref.This is an add trigger list.
+
 =head1 METHODS
 
 L<Markets::Addon> inherits all methods from L<Mojolicious::Plugin> and
@@ -242,7 +246,7 @@ Meant to be overloaded in a subclass.
 
     $addon->rm_trigger( 'trigger_name', 'subroutine_name');
 
-Remove L<Markets> trigger event.
+Remove L<Markets::Trigger> trigger event.
 
 =head2 C<setup>
 
@@ -261,11 +265,11 @@ This method will be called by L<Markets::Addon> at startup time.
 
     sub fizz { say "trigger" }
 
-Extend L<Markets> trigger event.
+Extend L<Markets::Trigger> trigger event.
 
 =head1 SEE ALSO
 
-L<Markets::Addons> L<Mojolicious::Plugin>
+L<Markets::Addons> L<Markets::Trigger> L<Mojolicious::Plugin>
 
 =cut
 

@@ -50,7 +50,7 @@ sub unsubscribe_triggers {
 
 =head1 NAME
 
-Markets::Trigger - Addon manager for Markets
+Markets::Trigger - Event for Markets
 
 =head1 SYNOPSIS
 

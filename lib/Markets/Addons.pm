@@ -153,12 +153,11 @@ Markets::Addons - Addon manager for Markets
 
 =head1 DESCRIPTION
 
-L<Markets::Addons> is L<Mojolicious::Plugins> Based.
-This module is an addon manager of Markets.
+L<Markets::Addons> is L<Mojolicious::Plugins> based addon maneger for L<Markets>.
 
 =head1 EVENTS
 
-L<Markets::Addons> inherits all events from L<Mojo::EventEmitter> & L<Markets::EventEmitter>.
+L<Markets::Addons> inherits all events from L<Mojo::Base>.
 
 =head1 ATTRIBUTES
 
@@ -183,7 +182,7 @@ The list of all uploaded addons.
 
 =head1 METHODS
 
-L<Markets::Addons> inherits all methods from L<Mojolicious::EventEmitter> and implements
+L<Markets::Addons> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
 
 =head2 C<addon>
@@ -203,7 +202,7 @@ the following new ones.
 
     $app->addons->emit_trigger( xxx_trigger_name => $foo, $bar, $baz );
 
-Emit events as triggers.
+Emit L<Markets::Trigger> events as triggers.
 
 =head2 C<init>
 
@@ -232,6 +231,6 @@ Change addon status to disable.
 
 =head1 SEE ALSO
 
-L<Markets::EventEmitter> L<Mojolicious::Plugins> L<Mojo::EventEmitter>
+L<Markets::Trigger> L<Markets::Addon>
 
 =cut
