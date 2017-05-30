@@ -1,17 +1,17 @@
 package Markets::Addons;
-use Mojo::Base 'Markets::EventEmitter';
+use Mojo::Base -base;
+use Markets::Trigger;
 
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
 use Mojo::File;
 use Mojo::Collection;
 use constant {
-    DEFAULT_PRIORITY => '100',
     ADDON_NAME_SPACE => 'Markets::Addon',
 };
 
-has dir             => sub { shift->app->pref('addons_dir') };
-has remove_triggers => sub { [] };
+has dir => sub { shift->app->pref('addons_dir') };
+has trigger => sub { Markets::Trigger->new( shift->app ) };
 has [qw/app installed uploaded/];
 
 sub addon {
@@ -24,13 +24,13 @@ sub addon {
     @_ > 1 ? $self->{installed}->{$name} = $_[1] : $self->{installed}->{$name};
 }
 
-sub emit_trriger { shift->emit(@_) }
+sub emit_trigger { shift->trigger->emit(@_) }
 
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
 
     $self->uploaded( $self->_fetch_uploded_addons );
-    $self->remove_triggers( [] );
+    $self->trigger->remove_list( [] );
 
     foreach my $addon_class_name ( keys %{$installed_addons} ) {
 
@@ -44,7 +44,7 @@ sub init {
     }
 
     # Remove triggers
-    $self->_remove_triggers;
+    $self->trigger->remove_triggers;
 }
 
 sub new {
@@ -68,21 +68,13 @@ sub load_addon {
     die qq{Addon "$name" missing, maybe you need to upload it?\n};
 }
 
-sub subscribe_triggers {
-    my ( $self, $addon ) = @_;
-    $self->on($_) for @{$addon->triggers};
-
-    # rebuild cache
-    $self->app->renderer->cache( Mojo::Cache->new );
-}
-
 sub to_enable {
     my ( $self, $addon ) = @_;
 
     # Add routes in to the App.
     $self->_add_routes($addon);
 
-    $self->subscribe_triggers($addon);
+    $self->trigger->subscribe_triggers( $addon->triggers );
     $addon->is_enabled(1);
 }
 
@@ -92,16 +84,8 @@ sub to_disable {
     # Remove routes for App.
     $self->_remove_routes($addon);
 
-    $self->unsubscribe_triggers($addon);
+    $self->trigger->unsubscribe_triggers( $addon->triggers );
     $addon->is_enabled(0);
-}
-
-sub unsubscribe_triggers {
-    my ( $self, $addon ) = @_;
-    $self->unsubscribe( $_->{name} => $_ ) for @{ $addon->triggers };
-
-    # rebuild cache
-    $self->app->renderer->cache( Mojo::Cache->new );
 }
 
 sub _add_inc_path {
@@ -145,21 +129,6 @@ sub _load_class {
     ref $e ? die $e : return;
 }
 
-sub _remove_triggers {
-    my $self            = shift;
-    my $remove_triggers = $self->{remove_triggers};
-    return unless @{$remove_triggers};
-
-    foreach my $remove_trigger ( @{$remove_triggers} ) {
-        my $trigger     = $remove_trigger->{trigger};
-        my $subscribers = $self->app->addons->subscribers($trigger);
-        my $unsubscribers =
-          [ grep { $_->{cb_sub_name} eq $remove_trigger->{cb_sub_name} } @{$subscribers} ];
-
-        map { $self->app->addons->unsubscribe( $trigger, $_ ) } @{$unsubscribers};
-    }
-}
-
 sub _remove_routes {
     my ( $self, $addon ) = @_;
     my $addon_class_name = ref $addon;
@@ -184,12 +153,11 @@ Markets::Addons - Addon manager for Markets
 
 =head1 DESCRIPTION
 
-L<Markets::Addons> is L<Mojolicious::Plugins> Based.
-This module is an addon manager of Markets.
+L<Markets::Addons> is L<Mojolicious::Plugins> based addon maneger for L<Markets>.
 
 =head1 EVENTS
 
-L<Markets::Addons> inherits all events from L<Mojo::EventEmitter> & L<Markets::EventEmitter>.
+L<Markets::Addons> inherits all events from L<Mojo::Base>.
 
 =head1 ATTRIBUTES
 
@@ -214,7 +182,7 @@ The list of all uploaded addons.
 
 =head1 METHODS
 
-L<Markets::Addons> inherits all methods from L<Mojolicious::EventEmitter> and implements
+L<Markets::Addons> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
 
 =head2 C<addon>
@@ -230,11 +198,11 @@ the following new ones.
     # Setter
     $addons->addon( 'my_addon' => Markets::Addon::MyAddon->new );
 
-=head2 C<emit_trriger>
+=head2 C<emit_trigger>
 
-    $app->addons->emit_trriger( xxx_trigger_name => $foo, $bar, $baz );
+    $app->addons->emit_trigger( xxx_trigger_name => $foo, $bar, $baz );
 
-Emit events as triggers.
+Emit L<Markets::Trigger> events as triggers.
 
 =head2 C<init>
 
@@ -249,12 +217,6 @@ Emit events as triggers.
 Load an addon from the configured.
 Return L<Markets::Addon> object.
 
-=head2 C<subscribe_triggers>
-
-    $addons->subscribe_triggers($addon);
-
-Subscribe trigger events.
-
 =head2 C<to_enable>
 
     $addons->to_enable($addon_object);
@@ -267,14 +229,8 @@ Change addon status to enable.
 
 Change addon status to disable.
 
-=head2 C<unsubscribe_triggers>
-
-    $addons->unsubscribe_triggers($addon);
-
-Unsubscribe trigger events.
-
 =head1 SEE ALSO
 
-L<Markets::EventEmitter> L<Mojolicious::Plugins> L<Mojo::EventEmitter>
+L<Markets::Trigger> L<Markets::Addon>
 
 =cut

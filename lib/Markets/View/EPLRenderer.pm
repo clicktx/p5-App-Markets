@@ -12,7 +12,7 @@ monkey_patch 'Mojo::Template', render_file_after => sub {
     my $template_source = Mojo::File::path($template_file_path)->slurp;
 
     # emit trigger. This trigger was used to addons.
-    $c->app->addons->emit_trriger(
+    $c->app->addons->emit_trigger(
         replace_template => $c,
         $template_file_path, \$template_source,
     );
