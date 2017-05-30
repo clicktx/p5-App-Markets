@@ -22,106 +22,14 @@ has triggers => sub { [] };
 # Make addon home path
 sub addon_home { Mojo::Home->new->detect(shift) }
 
-sub new {
-    my $self = shift;
-    $self = $self->SUPER::new(@_);
-    Scalar::Util::weaken $self->{app};
-    return $self;
+sub disable {
+
+    # check: 現在disableなら処理をしない
 }
-
-sub register { croak 'Method "register" not implemented by subclass' }
-
-sub setup {
-    my $self = shift;
-
-    # Routes
-    my $class_name = $self->class_name;
-    my $r          = Mojolicious::Routes->new;
-    $r = $r->to( namespace => __PACKAGE__ )->name($class_name);
-    $self->routes($r);
-
-    # Load lexicon file.
-    my $addon_home = addon_home($class_name);
-    my $addon_name = $self->name;
-    my $locale_dir = Mojo::File::path( $addon_home, 'locale' );
-    $self->app->lexicon(
-        {
-            search_dirs => [$locale_dir],
-            data        => [ "*::$addon_name" => '*.po' ],    # set text domain
-        }
-    ) if -d $locale_dir;
-
-    # Load schema
-    # TODO: $self->is_installed を作って真の場合のみ実行させる？
-    my $result_class = $class_name . "::Schema::Result";
-    $self->app->schema->storage->schema->load_namespaces( result_namespace => "+$result_class" );
-
-    # Call to register method for YourAddon.
-    $self->register( $self->app );
-    return $self;
-}
-
-sub _remove_trigger {
-    my ( $self, $trigger, $cb_fn_name ) = @_;
-    my $remove_triggers = $self->app->addons->remove_triggers;
-    push @{$remove_triggers},
-      {
-        trigger       => $trigger,
-        cb_fn_name => $cb_fn_name,
-      };
-}
-sub rm_trigger { shift->_remove_trigger(@_) }
-
-sub trigger { shift->_add_trigger(@_) }
-
-sub _add_trigger {
-    my ( $self, $name, $cb, $opt ) = ( shift, shift, shift, shift // {} );
-
-    my $trigger_priority = $self->{config}->{trigger_priorities}->{$name};
-    my $default_priority = $opt->{default_priority} || $self->app->addons->DEFAULT_PRIORITY;
-    my $priority         = $trigger_priority ? $trigger_priority : $default_priority;
-    my $cb_fn_name       = B::svref_2object($cb)->GV->NAME;                                    # TODO: 必要か再考
-
-    push @{ $self->triggers },
-      {
-        name             => $name,
-        cb               => $cb,
-        cb_fn_name       => $cb_fn_name,
-        priority         => $priority,
-        default_priority => $default_priority,
-      };
-}
-
-sub install {
-    my $self = shift;
-
-    # Create Tables
-    my $class_name   = ref $self;
-    my $schema_class = $class_name . "::Schema";
-
-    if ( my $e = load_class $schema_class ) {
-        die "Exception: $e" if ref $e;
-    }
-    else {
-        my $schema       = $self->app->schema;
-        my $connect_info = $schema->storage->connect_info;
-        my $self_schema  = $schema_class->connect( $connect_info->[0] );
-        $self_schema->deploy;
-    }
-    return $self;
-}
-
-sub uninstall { }
-sub update    { }
 
 sub enable {
 
     # check: 現在enableなら処理をしない
-}
-
-sub disable {
-
-    # check: 現在disableなら処理をしない
 }
 
 sub get_template {
@@ -153,6 +61,99 @@ sub get_template {
     # No template
     else { "Not found template." }
 
+}
+
+sub install {
+    my $self = shift;
+
+    # Create Tables
+    my $class_name   = ref $self;
+    my $schema_class = $class_name . "::Schema";
+
+    if ( my $e = load_class $schema_class ) {
+        die "Exception: $e" if ref $e;
+    }
+    else {
+        my $schema       = $self->app->schema;
+        my $connect_info = $schema->storage->connect_info;
+        my $self_schema  = $schema_class->connect( $connect_info->[0] );
+        $self_schema->deploy;
+    }
+    return $self;
+}
+
+sub new {
+    my $self = shift;
+    $self = $self->SUPER::new(@_);
+    Scalar::Util::weaken $self->{app};
+    return $self;
+}
+
+sub register { croak 'Method "register" not implemented by subclass' }
+
+sub rm_trigger { shift->_remove_trigger(@_) }
+
+sub setup {
+    my $self = shift;
+
+    # Routes
+    my $class_name = $self->class_name;
+    my $r          = Mojolicious::Routes->new;
+    $r = $r->to( namespace => __PACKAGE__ )->name($class_name);
+    $self->routes($r);
+
+    # Load lexicon file.
+    my $addon_home = addon_home($class_name);
+    my $addon_name = $self->name;
+    my $locale_dir = Mojo::File::path( $addon_home, 'locale' );
+    $self->app->lexicon(
+        {
+            search_dirs => [$locale_dir],
+            data        => [ "*::$addon_name" => '*.po' ],    # set text domain
+        }
+    ) if -d $locale_dir;
+
+    # Load schema
+    # TODO: $self->is_installed を作って真の場合のみ実行させる？
+    my $result_class = $class_name . "::Schema::Result";
+    $self->app->schema->storage->schema->load_namespaces( result_namespace => "+$result_class" );
+
+    # Call to register method for YourAddon.
+    $self->register( $self->app );
+    return $self;
+}
+
+sub trigger { shift->_add_trigger(@_) }
+
+sub uninstall { }
+sub update    { }
+
+sub _add_trigger {
+    my ( $self, $name, $cb, $opt ) = ( shift, shift, shift, shift // {} );
+
+    my $trigger_priority = $self->{config}->{trigger_priorities}->{$name};
+    my $default_priority = $opt->{default_priority} || $self->app->addons->DEFAULT_PRIORITY;
+    my $priority         = $trigger_priority ? $trigger_priority : $default_priority;
+    my $cb_fn_name       = B::svref_2object($cb)->GV->NAME;                                    # TODO: 必要か再考
+
+    push @{ $self->triggers },
+      {
+        name             => $name,
+        cb               => $cb,
+        cb_fn_name       => $cb_fn_name,
+        priority         => $priority,
+        default_priority => $default_priority,
+      };
+}
+
+sub _remove_trigger {
+    my ( $self, $trigger, $cb_fn_name ) = @_;
+    my $remove_triggers = $self->app->addons->remove_triggers;
+    push @{$remove_triggers},
+      {
+        trigger    => $trigger,
+        cb_fn_name => $cb_fn_name,
+      };
 }
 
 =encoding utf8
