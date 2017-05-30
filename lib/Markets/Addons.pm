@@ -1,17 +1,17 @@
 package Markets::Addons;
-use Mojo::Base 'Markets::EventEmitter';
+use Mojo::Base -base;
+use Markets::Trigger;
 
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
 use Mojo::File;
 use Mojo::Collection;
 use constant {
-    DEFAULT_PRIORITY => '100',
     ADDON_NAME_SPACE => 'Markets::Addon',
 };
 
-has dir             => sub { shift->app->pref('addons_dir') };
-has remove_triggers => sub { [] };
+has dir => sub { shift->app->pref('addons_dir') };
+has trigger => sub { Markets::Trigger->new( shift->app ) };
 has [qw/app installed uploaded/];
 
 sub addon {
@@ -24,13 +24,13 @@ sub addon {
     @_ > 1 ? $self->{installed}->{$name} = $_[1] : $self->{installed}->{$name};
 }
 
-sub emit_trriger { shift->emit(@_) }
+sub emit_trriger { shift->trigger->emit(@_) }
 
 sub init {
     my ( $self, $installed_addons ) = ( shift, shift // {} );
 
     $self->uploaded( $self->_fetch_uploded_addons );
-    $self->remove_triggers( [] );
+    $self->trigger->remove_list( [] );
 
     foreach my $addon_class_name ( keys %{$installed_addons} ) {
 
@@ -44,7 +44,7 @@ sub init {
     }
 
     # Remove triggers
-    $self->_remove_triggers;
+    $self->trigger->remove_triggers;
 }
 
 sub new {
@@ -68,21 +68,13 @@ sub load_addon {
     die qq{Addon "$name" missing, maybe you need to upload it?\n};
 }
 
-sub subscribe_triggers {
-    my ( $self, $addon ) = @_;
-    $self->on($_) for @{$addon->triggers};
-
-    # rebuild cache
-    $self->app->renderer->cache( Mojo::Cache->new );
-}
-
 sub to_enable {
     my ( $self, $addon ) = @_;
 
     # Add routes in to the App.
     $self->_add_routes($addon);
 
-    $self->subscribe_triggers($addon);
+    $self->trigger->subscribe_triggers( $addon->triggers );
     $addon->is_enabled(1);
 }
 
@@ -92,16 +84,8 @@ sub to_disable {
     # Remove routes for App.
     $self->_remove_routes($addon);
 
-    $self->unsubscribe_triggers($addon);
+    $self->trigger->unsubscribe_triggers( $addon->triggers );
     $addon->is_enabled(0);
-}
-
-sub unsubscribe_triggers {
-    my ( $self, $addon ) = @_;
-    $self->unsubscribe( $_->{name} => $_ ) for @{ $addon->triggers };
-
-    # rebuild cache
-    $self->app->renderer->cache( Mojo::Cache->new );
 }
 
 sub _add_inc_path {
@@ -143,21 +127,6 @@ sub _load_class {
     return $class->isa(ADDON_NAME_SPACE)
       unless my $e = load_class $class;
     ref $e ? die $e : return;
-}
-
-sub _remove_triggers {
-    my $self            = shift;
-    my $remove_triggers = $self->{remove_triggers};
-    return unless @{$remove_triggers};
-
-    foreach my $remove_trigger ( @{$remove_triggers} ) {
-        my $trigger     = $remove_trigger->{trigger};
-        my $subscribers = $self->app->addons->subscribers($trigger);
-        my $unsubscribers =
-          [ grep { $_->{cb_sub_name} eq $remove_trigger->{cb_sub_name} } @{$subscribers} ];
-
-        map { $self->app->addons->unsubscribe( $trigger, $_ ) } @{$unsubscribers};
-    }
 }
 
 sub _remove_routes {
@@ -249,12 +218,6 @@ Emit events as triggers.
 Load an addon from the configured.
 Return L<Markets::Addon> object.
 
-=head2 C<subscribe_triggers>
-
-    $addons->subscribe_triggers($addon);
-
-Subscribe trigger events.
-
 =head2 C<to_enable>
 
     $addons->to_enable($addon_object);
@@ -266,12 +229,6 @@ Change addon status to enable.
     $addons->to_disable($addon_object);
 
 Change addon status to disable.
-
-=head2 C<unsubscribe_triggers>
-
-    $addons->unsubscribe_triggers($addon);
-
-Unsubscribe trigger events.
 
 =head1 SEE ALSO
 

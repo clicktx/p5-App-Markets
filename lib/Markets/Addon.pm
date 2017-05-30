@@ -133,7 +133,7 @@ sub _add_trigger {
     my ( $self, $name, $cb, $opt ) = ( shift, shift, shift, shift // {} );
 
     my $trigger_priority = $self->{config}->{trigger_priorities}->{$name};
-    my $default_priority = $opt->{default_priority} || $self->app->addons->DEFAULT_PRIORITY;
+    my $default_priority = $opt->{default_priority} || $self->app->addons->trigger->DEFAULT_PRIORITY;
     my $priority         = $trigger_priority ? $trigger_priority : $default_priority;
     my $cb_sub_name      = subname($cb);
 
@@ -149,8 +149,8 @@ sub _add_trigger {
 
 sub _remove_trigger {
     my ( $self, $trigger, $cb_sub_name ) = @_;
-    my $remove_triggers = $self->app->addons->remove_triggers;
-    push @{$remove_triggers},
+    my $array = $self->app->addons->trigger->remove_list;
+    push @{$array},
       {
         trigger     => $trigger,
         cb_sub_name => $cb_sub_name,

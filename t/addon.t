@@ -77,8 +77,8 @@ subtest 'addon basic' => sub {
 subtest 'for t/addons TestAddon' => sub {
 
     # Triggers
-    my $test_action = $app->addons->subscribers('action_example_trigger');
-    my $test_filter = $app->addons->subscribers('filter_example_trigger');
+    my $test_action = $app->addons->trigger->subscribers('action_example_trigger');
+    my $test_filter = $app->addons->trigger->subscribers('filter_example_trigger');
 
     is $test_action->[0]->{priority}, 100, 'right priority, action trigger';
     is $test_action->[1]->{priority}, 500, 'right priority, action trigger';
@@ -98,8 +98,8 @@ subtest 'for t/addons TestAddon' => sub {
     my $addon  = $addons->addon('Markets::Addon::TestAddon');
     $addons->to_disable($addon);
 
-    $test_action = $app->addons->subscribers('action_example_trigger');
-    $test_filter = $app->addons->subscribers('filter_example_trigger');
+    $test_action = $app->addons->trigger->subscribers('action_example_trigger');
+    $test_filter = $app->addons->trigger->subscribers('filter_example_trigger');
     is_deeply $test_action, [], 'removed action triggers';
     is_deeply $test_filter, [], 'removed action triggers';
     $t->get_ok('/test_addon')->status_is(404);
@@ -107,8 +107,8 @@ subtest 'for t/addons TestAddon' => sub {
 };
 
 subtest 'for t/addons DisableAddon' => sub {
-    my $disable_action = $app->addons->subscribers('action_disable_trigger');
-    my $disable_filter = $app->addons->subscribers('filter_disable_trigger');
+    my $disable_action = $app->addons->trigger->subscribers('action_disable_trigger');
+    my $disable_filter = $app->addons->trigger->subscribers('filter_disable_trigger');
     is_deeply $disable_action, [], 'no action triggers';
     is_deeply $disable_filter, [], 'no filter triggers';
     $t->get_ok('/disable_addon')->status_is(404);

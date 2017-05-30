@@ -1,10 +1,10 @@
 use Mojo::Base -strict;
 
 use Test::More;
-use Markets::Addons;
+use Markets::Trigger;
 
 # priority
-my $e = Markets::Addons->new;
+my $e = Markets::Trigger->new;
 
 my $custom;
 my $cb = sub { $custom += shift };
@@ -49,10 +49,10 @@ $e->on(
         cb       => $cb,
     }
 );
-$e->emit_trriger( test2 => 1 );
+$e->emit( test2 => 1 );
 is $custom, 1, 'trigger has been emited';
 
-$e->emit_trriger( test1 => 1 );
+$e->emit( test1 => 1 );
 is $custom, 5, 'trigger has been emited';
 
 done_testing();
