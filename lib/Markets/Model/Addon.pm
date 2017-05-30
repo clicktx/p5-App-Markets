@@ -3,20 +3,14 @@ use Mojo::Base 'Markets::Model';
 
 sub configure {
     my $self   = shift;
-    my $schema = $self->app->schema;
 
-    my $rs = $schema->resultset('Addon')->search(
-        {},
-        {
-            join     => 'triggers',
-            prefetch => 'triggers',
-        }
-    );
+    my $schema = $self->app->schema;
+    my $rs = $schema->resultset('Addon')->search( {}, { prefetch => 'triggers' } );
 
     my $conf;
     while ( my $addon = $rs->next ) {
         $conf->{ $addon->name } = {
-            triggers      => [],
+            triggers   => [],
             is_enabled => $addon->is_enabled,
         };
         my @triggers = $addon->triggers or next;
@@ -25,7 +19,6 @@ sub configure {
               $trigger->priority;
         }
     }
-
     return $conf;
 }
 
