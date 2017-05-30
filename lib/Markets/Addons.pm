@@ -154,7 +154,7 @@ sub _remove_triggers {
         my $trigger     = $remove_trigger->{trigger};
         my $subscribers = $self->app->addons->subscribers($trigger);
         my $unsubscribers =
-          [ grep { $_->{cb_fn_name} eq $remove_trigger->{cb_fn_name} } @{$subscribers} ];
+          [ grep { $_->{cb_sub_name} eq $remove_trigger->{cb_sub_name} } @{$subscribers} ];
 
         map { $self->app->addons->unsubscribe( $trigger, $_ ) } @{$unsubscribers};
     }
