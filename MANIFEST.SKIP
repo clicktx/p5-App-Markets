@@ -1,0 +1,22 @@
+.DS_Store
+.git
+,/
+.perl-version
+.perlcriticrc
+.perltidyrc
+.proverc
+.travis.yml
+Build.PL
+Changes
+config/
+cpanfile
+cpanfile.snapshot
+local/
+themes/
+var/log/
+LICENSE
+MANIFEST			This list of files
+META.json
+minil.toml
+public/
+README.md
