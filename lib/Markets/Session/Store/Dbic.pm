@@ -81,12 +81,11 @@ sub update {
     my $cb = sub {
 
         # Update Cart
-        $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )
-          ->update(
+        $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )->update(
             {
                 $data_column => $cart_data,
             }
-          ) if $is_modified;
+        ) if $is_modified;
 
         # Update Session
         $schema->resultset( $self->resultset_session )->search( { $sid_column => $sid } )->update(
@@ -147,13 +146,7 @@ sub load {
     my $cart_id_column = $self->cart_id_column;
     my $data_column    = $self->data_column;
 
-    my $rs = $schema->resultset( $self->resultset_session )->find(
-        $sid,
-        {
-            join       => 'cart',
-            '+columns' => ["cart.${data_column}"],
-        },
-    );
+    my $rs = $schema->resultset( $self->resultset_session )->find( $sid, { prefetch => ['cart'], }, );
     return unless $rs;
 
     my $expires      = $rs->$expires_column;
