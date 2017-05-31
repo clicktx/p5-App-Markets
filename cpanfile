@@ -51,12 +51,13 @@ on test => sub {
     requires 'Harriet';
     requires 'DateTime::Format::MySQL';
     requires 'Test::Perl::Critic';
-    requires 'Test::Vars',         '0.014';
-    requires 'ExtUtils::Manifest', '1.70';
 };
 
 on develop => sub {
     requires 'DDP';
     requires 'Data::Dumper';
     requires 'DBIx::QueryLog';
+    requires 'Test::Vars',         '0.014';
+    requires 'ExtUtils::Manifest', '1.70';
+    requires 'Test::Perl::Metrics::Lite';
 };
