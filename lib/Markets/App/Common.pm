@@ -1,6 +1,6 @@
 package Markets::App::Common;
 use Mojo::Base 'Mojolicious';
-
+use Mojo::Log;
 use Markets::Addons;
 
 # use DBIx::QueryLog;
@@ -27,6 +27,11 @@ has schema => sub {
 # has restart_app => sub { system shift->home . "/script/appctl --restart" };
 has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更する
 has addons      => sub { Markets::Addons->new(@_) };
+
+# logging
+has db_log       => sub { shift->_log('db') };
+has admin_log    => sub { shift->_log('admin') };
+has customer_log => sub { shift->_log('customer') };
 
 sub initialize_app {
     my $self = shift;
@@ -147,4 +152,45 @@ sub _dsn {
     return $dsn;
 }
 
+sub _log {
+    my $self     = shift;
+    my $log_name = shift . ".log";
+
+    # Check if we have a log directory that is writable
+    my $log  = Mojo::Log->new;
+    my $home = $self->home;
+    my $mode = $self->mode;
+    $log->path( $home->child( 'var', 'log', $log_name ) )
+      if -d $home->child( 'var', 'log' ) && -w _;
+
+    # Reduced log output outside of development mode
+    return $mode eq 'development' ? $log : $log->level('info');
+}
+
 1;
+
+=encoding utf8
+
+=head1 NAME
+
+Markets::App::Common
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 ATTRIBUTES
+
+L<Markets::App::Common> inherits all attributes from L<Mojolicious> and implements the
+following new ones.
+
+=head1 METHODS
+
+L<Markets::App::Common> inherits all methods from L<Mojolicious> and implements
+the following new ones.
+
+=head1 SEE ALSO
+
+L<Mojolicious>
+
+=cut
