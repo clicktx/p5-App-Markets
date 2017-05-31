@@ -32,7 +32,7 @@ use Mojo::Util qw(monkey_patch);
 }
 
 sub register {
-    my ( $self, $app, $conf ) = @_;
+    my ( $self, $app ) = @_;
     $app->helper( dom => sub { Mojo::DOM->new } );
 }
 

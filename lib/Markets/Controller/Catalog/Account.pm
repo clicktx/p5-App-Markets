@@ -17,7 +17,6 @@ sub login_authen {
     my $password = $self->param('password');
     my $customer = $self->service('customer')->create_entity( email => $email );
 
-    my $is_valid;
     if ( $customer->id ) {
         if ( $self->scrypt_verify( $password, $customer->password->hash ) ) {
 

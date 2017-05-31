@@ -24,7 +24,7 @@ sub startup {
     ) if -d $theme_locale_dir;
 
     # [WIP] Merge lexicon
-    my $locale_files = Mojo::File->new($theme_locale_dir)->list;    # return Mojo::Collection Object
+    # my $locale_files = Mojo::File->new($theme_locale_dir)->list;    # return Mojo::Collection Object
     # $locale_files->each(
     #     sub {
     #         my ( $e, $num ) = @_;
