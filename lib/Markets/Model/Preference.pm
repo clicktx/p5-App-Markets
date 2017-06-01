@@ -11,6 +11,8 @@ sub load_pref {
     return $pref if %$pref;
 
     # Load from DB
+    $self->app->log->debug( 'Loading preferences from DB via ' . __PACKAGE__ );
+
     my $rs = $self->resultset_pref->search;
     while ( my $row = $rs->next ) {
         $pref->{ $row->key_name } = $row->value ? $row->value : $row->default_value;
@@ -29,6 +31,8 @@ sub value {
 
 sub reload_pref {
     my $self = shift;
+    $self->app->log->debug('Reloaded preferences');
+
     $self->app->defaults( pref => {} );
     $self->load_pref;
 }
@@ -45,7 +49,7 @@ sub _store_pref {
         my $cnt = 0;
         foreach my $key ( keys %pref ) {
             $rs->search( { key_name => $key } )->update( { value => $pref{$key} } ) < 1
-              ? $self->app->log->error("Don't update preference. '$key' is not found.")
+              ? $self->app->error_log->error("Don't update preference. '$key' is not found.")
               : $cnt++;
         }
         $cnt;
@@ -54,7 +58,7 @@ sub _store_pref {
     return 0
       unless try { $self->app->schema->txn_do($cb) }
     catch {
-        $self->app->log->error( "Don't update preference. " . $_ );
+        $self->app->error_log->error( "Don't update preference. " . $_ );
         return 0;
     };
 
