@@ -20,7 +20,7 @@ sub load_pref {
     return $pref;
 }
 
-sub pref {
+sub value {
     my $self = shift;
 
     my $pref = $self->load_pref;
@@ -81,14 +81,14 @@ Markets::Model::Pref
 
 Return %$preferences
 
-=head2 C<pref>
+=head2 C<value>
 
     # Getter
-    my $hash_ref = $app->model('pref')->pref;
-    my $scalar = $app->model('pref')->pref('pref_key');
+    my $hash_ref = $app->model('pref')->value;
+    my $scalar = $app->model('pref')->value('pref_key');
 
     # Setter
-    $app->model('pref')->pref( pref_key => 'pref_value', pref_key2 => 'pref_value2', ... );
+    $app->model('pref')->value( pref_key => 'pref_value', pref_key2 => 'pref_value2', ... );
 
 Get/Set preference.
 
