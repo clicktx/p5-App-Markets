@@ -29,6 +29,7 @@ has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更�
 has addons      => sub { Markets::Addons->new(@_) };
 
 # logging
+has error_log       => sub { shift->_log('error') };
 has db_log       => sub { shift->_log('db') };
 has admin_log    => sub { shift->_log('admin') };
 has customer_log => sub { shift->_log('customer') };
