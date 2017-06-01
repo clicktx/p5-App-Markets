@@ -71,7 +71,7 @@ __END__
 
 =head1 NAME
 
-Markets::Model::Pref
+Markets::Model::Preference
 
 =head1 SYNOPSIS
 
