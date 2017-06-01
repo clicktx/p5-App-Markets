@@ -1,4 +1,4 @@
-package Markets::Model::Pref;
+package Markets::Model::Preference;
 use Mojo::Base 'Markets::Model';
 use Try::Tiny;
 
@@ -37,8 +37,8 @@ sub _store_pref {
     my $self = shift;
     return undef if @_ == 0 || @_ % 2;
 
-# DB更新
-# keyは必ず存在している必要がある。複数更新時は全てのkeyが存在している必要がある。
+ # DB更新
+ # keyは必ず存在している必要がある。複数更新時は全てのkeyが存在している必要がある。
     my $rs   = $self->resultset_pref;
     my %pref = @_;
     my $cb   = sub {

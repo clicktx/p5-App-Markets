@@ -6,10 +6,10 @@ use Test::Mojo;
 
 my $t     = Test::Mojo->new('App');
 my $app   = $t->app;
-my $model = $app->model('pref');
+my $model = $app->model('preference');
 
 isa_ok $model->load_pref, 'HASH', 'right load preferences';
-isa_ok $model->value,      'HASH', 'right pref method';
+isa_ok $model->value,      'HASH', 'right value method';
 is $model->value('not_key'),    undef,    'right not found key';
 is $model->value('addons_dir'), 'addons', 'right getter';
 
