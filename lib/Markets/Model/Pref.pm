@@ -84,11 +84,11 @@ Return %$preferences
 =head2 C<pref>
 
     # Getter
-    my $preferences = $app->pref;
-    my $pref = $app->pref('pref_key');
+    my $hash_ref = $app->model('pref')->pref;
+    my $scalar = $app->model('pref')->pref('pref_key');
 
     # Setter
-    $app->pref( pref_key => 'pref_value', pref_key2 => 'pref_value2', ... );
+    $app->model('pref')->pref( pref_key => 'pref_value', pref_key2 => 'pref_value2', ... );
 
 Get/Set preference.
 
