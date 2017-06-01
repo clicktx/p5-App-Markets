@@ -1,4 +1,4 @@
-package Markets::Model::Pref;
+package Markets::Model::Preference;
 use Mojo::Base 'Markets::Model';
 use Try::Tiny;
 
@@ -11,6 +11,8 @@ sub load_pref {
     return $pref if %$pref;
 
     # Load from DB
+    $self->app->log->debug( 'Loading preferences from DB via ' . __PACKAGE__ );
+
     my $rs = $self->resultset_pref->search;
     while ( my $row = $rs->next ) {
         $pref->{ $row->key_name } = $row->value ? $row->value : $row->default_value;
@@ -20,7 +22,7 @@ sub load_pref {
     return $pref;
 }
 
-sub pref {
+sub value {
     my $self = shift;
 
     my $pref = $self->load_pref;
@@ -29,6 +31,8 @@ sub pref {
 
 sub reload_pref {
     my $self = shift;
+    $self->app->log->debug('Reloaded preferences');
+
     $self->app->defaults( pref => {} );
     $self->load_pref;
 }
@@ -37,15 +41,15 @@ sub _store_pref {
     my $self = shift;
     return undef if @_ == 0 || @_ % 2;
 
-# DB更新
-# keyは必ず存在している必要がある。複数更新時は全てのkeyが存在している必要がある。
+ # DB更新
+ # keyは必ず存在している必要がある。複数更新時は全てのkeyが存在している必要がある。
     my $rs   = $self->resultset_pref;
     my %pref = @_;
     my $cb   = sub {
         my $cnt = 0;
         foreach my $key ( keys %pref ) {
             $rs->search( { key_name => $key } )->update( { value => $pref{$key} } ) < 1
-              ? $self->app->log->error("Don't update preference. '$key' is not found.")
+              ? $self->app->error_log->error("Don't update preference. '$key' is not found.")
               : $cnt++;
         }
         $cnt;
@@ -54,7 +58,7 @@ sub _store_pref {
     return 0
       unless try { $self->app->schema->txn_do($cb) }
     catch {
-        $self->app->log->error( "Don't update preference. " . $_ );
+        $self->app->error_log->error( "Don't update preference. " . $_ );
         return 0;
     };
 
@@ -67,7 +71,7 @@ __END__
 
 =head1 NAME
 
-Markets::Model::Pref
+Markets::Model::Preference
 
 =head1 SYNOPSIS
 
@@ -81,14 +85,14 @@ Markets::Model::Pref
 
 Return %$preferences
 
-=head2 C<pref>
+=head2 C<value>
 
     # Getter
-    my $preferences = $app->pref;
-    my $pref = $app->pref('pref_key');
+    my $hash_ref = $app->model('pref')->value;
+    my $scalar = $app->model('pref')->value('pref_key');
 
     # Setter
-    $app->pref( pref_key => 'pref_value', pref_key2 => 'pref_value2', ... );
+    $app->model('pref')->value( pref_key => 'pref_value', pref_key2 => 'pref_value2', ... );
 
 Get/Set preference.
 

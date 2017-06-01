@@ -7,12 +7,14 @@ sub dbic_txn_failed {
     if ( $err =~ /Rollback failed/ ) {
 
         # ロールバックに失敗した場合
-        $self->app->log->fatal($err);
+        $self->app->db_log->fatal($err);
+        $self->app->error_log->fatal($err);
         die $err;
     }
     else {
         # 何らかのエラーによりロールバックした
-        $self->app->log->warn($err);
+        $self->app->db_log->warn($err);
+        $self->app->error_log->warn($err);
         warn $err;
     }
 }
