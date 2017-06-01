@@ -17,14 +17,14 @@ subtest 'dbic_txn_failed' => sub {
 
     $err = 'error Rollback failed error';
     eval { $model->dbic_txn_failed($err) };
-    $history = $app->log->history->[0];
+    $history = $app->error_log->history->[0];
     is $history->[1], 'fatal', 'right log level';
     is $history->[2], $err, 'right log message';
     like $@, qr/$err/, 'right died';
 
     $err = 'error message';
     eval { $model->dbic_txn_failed($err) };
-    $history = $app->log->history->[1];
+    $history = $app->error_log->history->[1];
     is $history->[1], 'warn', 'right log level';
     is $history->[2], $err, 'right log message';
     is $@, '', 'right not died';
