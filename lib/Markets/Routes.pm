@@ -45,6 +45,12 @@ sub add_admin_routes {
             }
         }
 
+        # Preferences
+        {
+            my $pref = $r->any('/preferences')->to( controller => 'preference' );
+            $pref->get('/')->to('#index')->name('RN_admin_preferences');
+        }
+
         # Products
         $r->get('/products')->to('products#index')->name('RN_admin_products');
 

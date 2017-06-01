@@ -5,8 +5,7 @@
 
 <h2><%= __('Settings') %></h2>
 <ul>
-    <li><%= link_to 'addon settings' => 'RN_admin_settings_addons' %></li>
-    <li><%= link_to 'addon settings' => 'RN_admin_settings_addons' %></li>
+    <li><%= link_to 'preferences' => 'RN_admin_preferences' %></li>
     <li><%= link_to 'addon settings' => 'RN_admin_settings_addons' %></li>
 </ul>
 

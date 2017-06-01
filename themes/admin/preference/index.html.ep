@@ -1,0 +1,12 @@
+% layout 'admin-default';
+% title __('Preferences');
+
+<h1><%= title %></h1>
+
+<p>
+    <%= link_to 'click here' => url_for %> to reload the page or
+    <%= link_to 'front page' => '../' %>
+    <%= link_to '/' => begin %>
+        top
+    <% end %>
+</p>
