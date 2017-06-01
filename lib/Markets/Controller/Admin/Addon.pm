@@ -1,4 +1,4 @@
-package Markets::Controller::Admin::Addons;
+package Markets::Controller::Admin::Addon;
 use Mojo::Base 'Markets::Controller::Admin';
 use Data::Dumper;
 
@@ -29,7 +29,7 @@ sub enable {
     # trigger routes有効化
     $self->app->addons->to_enable($addon);
 
-    $self->redirect_to('RN_admin_settings_addons');
+    $self->redirect_to('RN_admin_settings_addon');
 }
 
 sub disable {
@@ -44,7 +44,7 @@ sub disable {
     # trigger routes無効化
     $self->app->addons->to_disable($addon);
 
-    $self->redirect_to('RN_admin_settings_addons');
+    $self->redirect_to('RN_admin_settings_addon');
 }
 
 1;

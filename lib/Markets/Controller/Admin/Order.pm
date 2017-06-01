@@ -1,4 +1,4 @@
-package Markets::Controller::Admin::Orders;
+package Markets::Controller::Admin::Order;
 use Mojo::Base 'Markets::Controller::Admin';
 
 sub index {
