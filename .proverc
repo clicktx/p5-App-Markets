@@ -3,4 +3,4 @@
 --timer
 -l
 -w
--PHarriet=t/harriet/
+-PHarriet=./t/harriet

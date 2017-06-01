@@ -22,10 +22,10 @@ sub register {
     push @{ $app->renderer->classes }, 'Markets::Addon::Newpage';
 
     # Add link
-    $self->add_action_hook( action_replace_template => \&action_replace_template, );
+    $self->trigger( replace_template => \&replace_template, );
 }
 
-sub action_replace_template {
+sub replace_template {
     my ( $c, $file_path, $template_source ) = @_;
 
     if ( $file_path =~ m|default/example/welcome| ) {

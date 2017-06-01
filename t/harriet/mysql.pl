@@ -1,10 +1,10 @@
 use strict;
 use warnings;
-use t::Util;
 
 use File::Spec;
 use File::Basename qw(dirname);
-use lib File::Spec->catdir( dirname(__FILE__), '..', '..', 'lib' );
+use lib File::Spec->catdir( dirname(__FILE__), '..', '..', 'lib' ), File::Spec->catdir( dirname(__FILE__), '..', '..' );
+use t::Util;
 use Markets::Schema;
 use Markets::Install::Util;
 use Mojo::File qw/path/;

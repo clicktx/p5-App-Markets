@@ -1,0 +1,12 @@
+.DS_Store
+,/
+.perl-version
+.perlcriticrc
+.perltidyrc
+.proverc
+.travis.yml
+local/
+cpanfile
+cpanfile.snapshot
+var/log/
+public/

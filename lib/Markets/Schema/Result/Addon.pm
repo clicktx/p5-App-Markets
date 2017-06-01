@@ -16,6 +16,6 @@ column is_enabled => {
     default_value => 0,
 };
 
-has_many hooks => 'Markets::Schema::Result::Addon::Hook', 'addon_id';
+has_many triggers => 'Markets::Schema::Result::Addon::Trigger', 'addon_id';
 
 1;

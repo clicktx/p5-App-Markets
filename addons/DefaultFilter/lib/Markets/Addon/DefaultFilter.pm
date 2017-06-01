@@ -9,7 +9,7 @@ my $home  = $class->addon_home;    # get this addon home abs path.
 sub register {
     my ( $self, $app, $conf ) = @_;
 
-    $self->add_filter_hook(
+    $self->trigger(
         filter_form => \&query_convert_ja,
         { default_priority => -9999 }
     );
@@ -17,7 +17,7 @@ sub register {
 
 sub query_convert_ja {
     my ($c) = @_;
-    say "hook! DefaultFilter!";
+    say "trigger! DefaultFilter!";
     return if $c->app->language ne 'ja';
     say "language is ja.";
     my $query = $c->req;

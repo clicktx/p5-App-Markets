@@ -69,7 +69,6 @@ sub update {
     my $data_column    = $self->data_column;
 
     my ( $session_data, $cart_id, $cart_data ) = _separate_session_data($data);
-    my $customer_id = $session_data->{customer_id} || undef;
 
     # カートの変更をチェック
     my $is_modified = $cart_data->{_is_modified};
@@ -81,12 +80,11 @@ sub update {
     my $cb = sub {
 
         # Update Cart
-        $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )
-          ->update(
+        $schema->resultset( $self->resultset_cart )->search( { $cart_id_column => $cart_id } )->update(
             {
                 $data_column => $cart_data,
             }
-          ) if $is_modified;
+        ) if $is_modified;
 
         # Update Session
         $schema->resultset( $self->resultset_session )->search( { $sid_column => $sid } )->update(
@@ -135,25 +133,18 @@ sub load_cart_data {
 
     my $rs = $schema->resultset( $self->resultset_cart )->find($cart_id);
     my $data = $rs ? thaw( decode_base64( $rs->data ) ) : undef;
-    return $data ? $data->{data} : undef;
+    return $data ? $data->{$data_column} : undef;
 }
 
 sub load {
     my ( $self, $sid ) = @_;
 
     my $schema         = $self->schema;
-    my $sid_column     = $self->sid_column;
     my $expires_column = $self->expires_column;
     my $cart_id_column = $self->cart_id_column;
     my $data_column    = $self->data_column;
 
-    my $rs = $schema->resultset( $self->resultset_session )->find(
-        $sid,
-        {
-            join       => 'cart',
-            '+columns' => ["cart.${data_column}"],
-        },
-    );
+    my $rs = $schema->resultset( $self->resultset_session )->find( $sid, { prefetch => ['cart'], }, );
     return unless $rs;
 
     my $expires      = $rs->$expires_column;

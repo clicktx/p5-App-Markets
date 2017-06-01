@@ -5,15 +5,15 @@ use Mojo::Template;
 use Mojo::Util qw(encode md5_sum monkey_patch decode);
 use Carp 'croak';
 
-monkey_patch 'Mojo::Template', render_file_after_hook => sub {
+monkey_patch 'Mojo::Template', render_file_after => sub {
     my ( $self, $c, $template_file_path ) = ( shift, shift, shift );
 
     $self->name($template_file_path) unless defined $self->{name};
     my $template_source = Mojo::File::path($template_file_path)->slurp;
 
-    # emit filter. This filter was used to addons.
-    $c->app->addons->action_hook->emit(
-        action_replace_template => $c,
+    # emit trigger. This trigger was used to addons.
+    $c->app->addons->emit_trigger(
+        replace_template => $c,
         $template_file_path, \$template_source,
     );
 
@@ -60,9 +60,7 @@ sub _render {
             # Try template
             if ( defined( my $template_file_path = $renderer->template_path($options) ) ) {
                 $c->app->log->debug(qq{Rendering template "$name"});
-                $$output =
-                  $mt->name(qq{template "$name"})
-                  ->render_file_after_hook( $c, $template_file_path, @args );
+                $$output = $mt->name(qq{template "$name"})->render_file_after( $c, $template_file_path, @args );
             }
 
             # Try DATA section

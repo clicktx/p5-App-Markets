@@ -81,7 +81,7 @@ Emit event.
 
     $e->on(
         {
-            name     => 'hook_name'
+            name     => 'trigger_name'
             cb       => \&cb,
             priority => $int,
         }
@@ -93,7 +93,7 @@ Sort the Events in order of priority.
 =head2 C<unsubscribe>
 
   $e = $e->unsubscribe('foo');
-  $e = $e->unsubscribe(foo => $hook_ref);
+  $e = $e->unsubscribe(foo => $trigger_ref);
 
 Unsubscribe from event.
 

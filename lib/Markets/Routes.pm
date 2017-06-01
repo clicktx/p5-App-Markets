@@ -36,21 +36,27 @@ sub add_admin_routes {
 
         # Settings
         {
-            my $settings = $r->any('/settings')->to( controller => 'settings' );
+            my $settings = $r->any('/settings')->to( controller => 'setting' );
             $settings->get('/')->to('#index')->name('RN_admin_settings');
             {
-                my $addons = $settings->any('/addons')->to( controller => 'addons' );
-                $addons->get('/:action')->to('addons#')->name('RN_admin_settings_addons_action');
-                $addons->get('/')->to('#index')->name('RN_admin_settings_addons');
+                my $addons = $settings->any('/addon')->to( controller => 'addon' );
+                $addons->get('/:action')->to('addon#')->name('RN_admin_settings_addon_action');
+                $addons->get('/')->to('#index')->name('RN_admin_settings_addon');
             }
         }
 
+        # Preferences
+        {
+            my $pref = $r->any('/preferences')->to( controller => 'preference' );
+            $pref->get('/')->to('#index')->name('RN_admin_preferences');
+        }
+
         # Products
-        $r->get('/products')->to('products#index')->name('RN_admin_products');
+        $r->get('/products')->to('admin-product#index')->name('RN_admin_products');
 
         # Orders
         {
-            my $orders = $r->any('/orders')->to( controller => 'orders' );
+            my $orders = $r->any('/orders')->to( controller => 'order' );
             $orders->get('/')->to('#index')->name('RN_admin_orders');
             $orders->get('/detail/:id')->to('#detail')->name('RN_admin_orders_detail');
             $orders->get('/edit/:id')->to('#edit')->name('RN_admin_orders_edit');

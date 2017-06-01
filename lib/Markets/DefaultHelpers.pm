@@ -7,7 +7,7 @@ use Mojo::Util   ();
 use Markets::Domain::Factory;
 
 sub register {
-    my ( $self, $app, $conf ) = @_;
+    my ( $self, $app ) = @_;
 
     # Alias helpers
     # $app->helper( schema         => sub { shift->app->schema } ); # controllerから呼ばない
