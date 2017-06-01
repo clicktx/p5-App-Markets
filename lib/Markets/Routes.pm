@@ -52,7 +52,7 @@ sub add_admin_routes {
         }
 
         # Products
-        $r->get('/products')->to('products#index')->name('RN_admin_products');
+        $r->get('/products')->to('admin-product#index')->name('RN_admin_products');
 
         # Orders
         {
