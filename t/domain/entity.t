@@ -2,7 +2,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
 use Mojo::Util qw/sha1_sum/;
-use Mojo::Collection qw/c/;
+use Markets::Domain::Collection qw/collection/;
 
 my $pkg = 'Markets::Domain::Entity';
 use_ok $pkg;
@@ -104,7 +104,7 @@ subtest 'is_modified' => sub {
             a => 1,
             b => 1,
             e => $pkg->new( x => 1 ),
-            c => c( $pkg->new( y => 1 ), $pkg->new( e => $pkg->new( z => 1 ) ) ),
+            c => collection( $pkg->new( y => 1 ), $pkg->new( e => $pkg->new( z => 1 ) ) ),
         );
         $e->attr( [qw/a e c/] );
         $e->e->attr('x');
