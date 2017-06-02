@@ -27,7 +27,6 @@ sub hash_code { @_ > 1 ? sha1_sum( $_[1] ) : sha1_sum( $_[0]->id ) }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
-# sub is_modified { @_ > 1 ? $_[0]->_is_modified( $_[1] ? 1 : 0 ) : $_[0]->_is_modified }
 sub is_modified {
     my $self = shift;
 
@@ -46,7 +45,7 @@ sub is_modified {
         if ( $self->$attr->isa('Markets::Domain::Entity') ) {
             $is_modified = 1 if $self->$attr->is_modified;
         }
-        elsif ( $self->$attr->isa('Mojo::Collection') ) {
+        elsif ( $self->$attr->isa('Markets::Domain::Collection') ) {
             $self->$attr->each( sub { $is_modified = 1 if $_->is_modified } );
         }
     }
