@@ -2,9 +2,14 @@ package Markets::Schema::Result::Preference;
 use Mojo::Base 'Markets::Schema::ResultCommon';
 use DBIx::Class::Candy -autotable => v1;
 
-primary_column key_name => {
+primary_column id => {
+    data_type         => 'INT',
+    is_auto_increment => 1,
+};
+
+column key_name => {
     data_type => 'VARCHAR',
-    size      => 50,
+    size      => 32,
 };
 
 column value => {
@@ -35,5 +40,7 @@ column group_id => {
     # is_nullable   => 0,
     is_nullable   => 1,
 };
+
+unique_constraint ui_key_name => [qw/key_name/];
 
 1;
