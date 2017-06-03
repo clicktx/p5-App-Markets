@@ -7,7 +7,7 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column key_name => {
+column name => {
     data_type => 'VARCHAR',
     size      => 32,
 };
@@ -41,6 +41,6 @@ column group_id => {
     is_nullable   => 1,
 };
 
-unique_constraint ui_key_name => [qw/key_name/];
+unique_constraint ui_name => [qw/name/];
 
 1;
