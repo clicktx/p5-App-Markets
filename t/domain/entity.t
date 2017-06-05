@@ -3,6 +3,7 @@ use Test::More;
 use Test::Deep;
 use Mojo::Util qw/sha1_sum/;
 use Markets::Domain::Collection qw/collection/;
+use Markets::Domain::IxHash qw/ix_hash/;
 
 my $pkg = 'Markets::Domain::Entity';
 use_ok $pkg;
@@ -105,12 +106,14 @@ subtest 'is_modified' => sub {
             b => 1,
             e => $pkg->new( x => 1 ),
             c => collection( $pkg->new( y => 1 ), $pkg->new( e => $pkg->new( z => 1 ) ) ),
+            d => ix_hash( aa => $pkg->new( f => 1, g => 1 ) ),
         );
-        $e->attr( [qw/a e c/] );
+        $e->attr( [qw/a b c d e/] );
         $e->e->attr('x');
         $e->c->[0]->attr('y');
         $e->c->[1]->attr('e');
         $e->c->[1]->e->attr('z');
+        $e->d->aa->attr( [qw/f g/] );
         return $e;
     };
     my $e;
@@ -136,6 +139,15 @@ subtest 'is_modified' => sub {
 
     $e = $make_entity->();
     $e->c->[1]->e->z(2);
+    is $e->is_modified, 1;
+
+    # IxHash
+    $e = $make_entity->();
+    $e->d->aa->f(2);
+    is $e->is_modified, 1;
+
+    $e = $make_entity->();
+    $e->d->aa->g(2);
     is $e->is_modified, 1;
 };
 

@@ -48,6 +48,9 @@ sub is_modified {
         elsif ( $self->$attr->isa('Markets::Domain::Collection') ) {
             $self->$attr->each( sub { $is_modified = 1 if $_->is_modified } );
         }
+        elsif ( $self->$attr->isa('Markets::Domain::IxHash') ) {
+            $self->$attr->each( sub { $is_modified = 1 if $_[1]->is_modified } );
+        }
     }
     return $is_modified;
 }
