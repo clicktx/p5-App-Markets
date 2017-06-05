@@ -4,9 +4,9 @@
 
     # preferences
     'Preference' => [
-        [ 'name', 'value', 'default_value', 'summary', 'position', 'group_id' ],
-        [ 'admin_uri_prefix', undef, '/admin', 'pref.summary.admin_uri_prefix', undef, undef ],
-        [ 'addons_dir',       undef, 'addons', 'pref.summary.addons_dir',       undef, undef ],
+        [ 'name', 'value', 'default_value', 'title', 'summary', 'position', 'group_id' ],
+        [ 'admin_uri_prefix', undef, '/admin', 'pref.title.admin_uri_prefix', 'pref.summary.admin_uri_prefix', 100, 1 ],
+        [ 'addons_dir',       undef, 'addons', 'pref.title.addons_dir', 'pref.summary.addons_dir',       200, 1 ],
     ],
 
     # reference table
