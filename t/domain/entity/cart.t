@@ -47,10 +47,10 @@ subtest 'attributes' => sub {
     my $cart = _create_entity;
     is $cart->cart_id, '12345', 'right cart_id';
 
-    isa_ok $cart->items, 'Mojo::Collection', 'right items';
+    isa_ok $cart->items, 'Markets::Domain::Collection', 'right items';
     isa_ok $cart->items->first, 'Markets::Domain::Entity::Item', 'right items';
 
-    isa_ok $cart->shipments, 'Mojo::Collection', 'right shipments';
+    isa_ok $cart->shipments, 'Markets::Domain::Collection', 'right shipments';
     isa_ok $cart->shipments->first, 'Markets::Domain::Entity::Shipment', 'right shipments';
 };
 

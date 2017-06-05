@@ -15,7 +15,7 @@ sub load_pref {
 
     my $rs = $self->resultset_pref->search;
     while ( my $row = $rs->next ) {
-        $pref->{ $row->key_name } = $row->value ? $row->value : $row->default_value;
+        $pref->{ $row->name } = $row->value ? $row->value : $row->default_value;
     }
 
     $self->app->defaults( pref => $pref );
@@ -48,7 +48,7 @@ sub _store_pref {
     my $cb   = sub {
         my $cnt = 0;
         foreach my $key ( keys %pref ) {
-            $rs->search( { key_name => $key } )->update( { value => $pref{$key} } ) < 1
+            $rs->search( { name => $key } )->update( { value => $pref{$key} } ) < 1
               ? $self->app->error_log->error("Don't update preference. '$key' is not found.")
               : $cnt++;
         }
