@@ -66,8 +66,10 @@ sub create_entity {
 
 sub factory {
     my ( $self, $ns ) = ( shift, shift );
-    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
     Carp::croak 'Argument empty' unless $ns;
+
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+    $ns = 'Entity::' . $ns          if $ns !~ /^Entity::/;
 
     my $factory_base_class = __PACKAGE__;
     my $factory_class      = $factory_base_class . '::' . $ns;

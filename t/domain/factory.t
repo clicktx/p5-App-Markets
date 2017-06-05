@@ -48,6 +48,9 @@ subtest 'factory method' => sub {
     my $f = Markets::Domain::Factory->factory('entity-hoge');
     isa_ok $f, 'Markets::Domain::Factory::Entity::Hoge';
 
+    $f = Markets::Domain::Factory->factory('hoge');
+    isa_ok $f, 'Markets::Domain::Factory::Entity::Hoge', 'not "entity-" prefix';
+
     $f = Markets::Domain::Factory->factory('entity-nofactory');
     isa_ok $f, 'Markets::Domain::Factory', 'right no factory';
 };
