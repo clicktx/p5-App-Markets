@@ -102,9 +102,9 @@ subtest 'factory method using' => sub {
 #     ok !$@;
 # };
 
-subtest 'add_aggregate method' => sub {
+subtest 'aggregate method' => sub {
     my $f = Markets::Domain::Factory->new->factory('entity-agg');
-    eval { $f->add_aggregate( 'hoges', 'entity-hoge', 'abc' ) };
+    eval { $f->aggregate( 'hoges', 'entity-hoge', 'abc' ) };
     ok $@, 'bad data type';
 
     my $entity = $f->create;
@@ -183,8 +183,8 @@ done_testing();
 
     sub cook {
         my $self = shift;
-        $self->add_aggregate( 'hoges', 'entity-hoge', [ {} ] );
-        $self->add_aggregate( 'bars', 'entity-bar', { a => {} } );
+        $self->aggregate( 'hoges', 'entity-hoge', [ {} ] );
+        $self->aggregate( 'bars', 'entity-bar', { a => {} } );
     }
 
     package Markets::Domain::Entity::Agg;
