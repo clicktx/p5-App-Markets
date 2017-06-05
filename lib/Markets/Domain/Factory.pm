@@ -14,11 +14,11 @@ has entity_class => sub {
 };
 
 sub add_aggregate {
-    my ( $self, $aggregate, $entity, $data ) = @_;
+    my ( $self, $accessor, $entity, $data ) = @_;
     croak 'Data type array only' if ref $data ne 'ARRAY';
     my @array;
     push @array, $self->factory($entity)->create($_) for @{$data};
-    $self->param( $aggregate => collection(@array) );
+    $self->param( $accessor => collection(@array) );
     return $self;
 }
 
