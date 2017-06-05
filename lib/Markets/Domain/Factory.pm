@@ -6,6 +6,7 @@ use Mojo::Util;
 use Mojo::Loader;
 use Markets::Schema;
 use Markets::Domain::Collection qw/collection/;
+use Markets::Domain::IxHash qw/ix_hash/;
 
 has entity_class => sub {
     my $class = ref shift;
@@ -14,12 +15,10 @@ has entity_class => sub {
 };
 
 sub add_aggregate {
-    my ( $self, $accessor, $entity, $data ) = @_;
-    croak 'Data type array only' if ref $data ne 'ARRAY';
-    my @array;
-    push @array, $self->factory($entity)->create($_) for @{$data};
-    $self->param( $accessor => collection(@array) );
-    return $self;
+    my $self = shift;
+    if    ( ref $_[2] eq 'ARRAY' ) { $self->_aggregate_array(@_) }
+    elsif ( ref $_[2] eq 'HASH' )  { $self->_aggregate_hash(@_) }
+    else                           { croak 'Data type is not ArrayRef or HashRef' }
 }
 
 sub cook { }
@@ -109,6 +108,25 @@ sub params {
     $self->{$_} = $args{$_} for keys %args;
 }
 
+sub _aggregate_array {
+    my ( $self, $accessor, $entity, $data ) = @_;
+    my @array;
+    push @array, $self->factory($entity)->create($_) for @{$data};
+    $self->param( $accessor => collection(@array) );
+    return $self;
+}
+
+sub _aggregate_hash {
+    my ( $self, $accessor, $entity, $data ) = @_;
+    my $hash = {};
+    foreach my $key ( keys %{$data} ) {
+        my $value = $self->factory($entity)->create( $data->{$key} );
+        $hash->{$key} = $value;
+    }
+    $self->param( $accessor => ix_hash( %{$hash} ) );
+    return $self;
+}
+
 sub _load_class {
     my $class = shift;
 
@@ -146,8 +164,13 @@ Get namespace as a construct entity class.
 
 =head2 C<add_aggregate>
 
+    # Collection
     my $entity = $factory->add_aggregate( $accessor_name, $target_entity, \@data );
     my $entity = $factory->add_aggregate( 'items', 'entity-item', \@data );
+
+    # IxHash
+    my $entity = $factory->add_aggregate( $accessor_name, $target_entity, \%data );
+    my $entity = $factory->add_aggregate( 'items', 'entity-item', \%data );
 
 Added aggregate.
 

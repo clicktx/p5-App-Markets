@@ -101,12 +101,14 @@ subtest 'factory method using' => sub {
 
 subtest 'add_aggregate method' => sub {
     my $f = Markets::Domain::Factory->new->factory('entity-agg');
-    eval { $f->add_aggregate( 'hoges', 'hoge', {} ) };
+    eval { $f->add_aggregate( 'hoges', 'entity-hoge', 'abc' ) };
     ok $@, 'bad data type';
 
     my $entity = $f->create;
     $entity->attr('hoges');
-    isa_ok $entity->hoges, 'Markets::Domain::Collection', '';
+    $entity->attr('bars');
+    isa_ok $entity->hoges, 'Markets::Domain::Collection', 'right aggregate array';
+    isa_ok $entity->bars,  'Markets::Domain::IxHash',     'right aggregate hash';
 };
 
 subtest 'inflate datetime for *_at' => sub {
@@ -179,6 +181,7 @@ done_testing();
     sub cook {
         my $self = shift;
         $self->add_aggregate( 'hoges', 'entity-hoge', [ {} ] );
+        $self->add_aggregate( 'bars', 'entity-bar', { a => {} } );
     }
 
     package Markets::Domain::Entity::Agg;
