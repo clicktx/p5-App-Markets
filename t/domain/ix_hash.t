@@ -7,6 +7,10 @@ use_ok 'Markets::Domain::IxHash';
 use DDP;
 my $h = Markets::Domain::IxHash->new( a => 10, b => 20, c => 30, d => 40, e => 50 );
 
+subtest 'attributes'=> sub {
+    can_ok $h, $_ for $h->keys;
+};
+
 subtest 'each' => sub {
     my %key_value = $h->each;
     cmp_deeply \%key_value, { a => 10, b => 20, c => 30, d => 40, e => 50 };

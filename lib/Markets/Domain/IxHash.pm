@@ -1,5 +1,5 @@
 package Markets::Domain::IxHash;
-use Mojo::Base -strict;
+use Mojo::Base -base;
 
 use Exporter 'import';
 use Scalar::Util 'blessed';
@@ -29,7 +29,10 @@ sub new {
     my %hash;
     tie %hash, 'Tie::IxHash';
     %hash = @_;
-    return bless \%hash, ref $class || $class;
+    my $obj = bless \%hash, ref $class || $class;
+
+    $obj->attr( \@{ $obj->keys } );
+    return $obj;
 }
 
 sub to_data {
