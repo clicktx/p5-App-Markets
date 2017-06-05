@@ -14,7 +14,7 @@ has entity_class => sub {
     $class;
 };
 
-sub add_aggregate {
+sub aggregate {
     my $self = shift;
     if    ( ref $_[2] eq 'ARRAY' ) { $self->_aggregate_array(@_) }
     elsif ( ref $_[2] eq 'HASH' )  { $self->_aggregate_hash(@_) }
@@ -164,15 +164,15 @@ Get namespace as a construct entity class.
 
 =head1 METHODS
 
-=head2 C<add_aggregate>
+=head2 C<aggregate>
 
     # Collection
-    my $entity = $factory->add_aggregate( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->add_aggregate( 'items', 'entity-item', \@data );
+    my $entity = $factory->aggregate( $accessor_name, $target_entity, \@data );
+    my $entity = $factory->aggregate( 'items', 'entity-item', \@data );
 
     # IxHash
-    my $entity = $factory->add_aggregate( $accessor_name, $target_entity, \%data );
-    my $entity = $factory->add_aggregate( 'items', 'entity-item', \%data );
+    my $entity = $factory->aggregate( $accessor_name, $target_entity, \%data );
+    my $entity = $factory->aggregate( 'items', 'entity-item', \%data );
 
 Added aggregate.
 

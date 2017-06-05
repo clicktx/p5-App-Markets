@@ -5,7 +5,7 @@ sub cook {
     my $self = shift;
 
     # Aggregate items
-    $self->add_aggregate( items => 'entity-preference-item', $self->param('items') || {} );
+    $self->aggregate( items => 'entity-preference-item', $self->param('items') || {} );
 }
 
 1;
