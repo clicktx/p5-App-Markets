@@ -25,6 +25,31 @@ subtest 'each' => sub {
     cmp_deeply \@data, [qw/a 10 1 b 20 2 c 30 3 d 40 4 e 50 5/];
 };
 
+subtest 'first' => sub {
+    my ( $key, $value ) = $h->first;
+    is $key,   'a';
+    is $value, 10;
+
+    # Regex
+    ( $key, $value ) = $h->first( [qr/b/] );
+    is $key,   'b';
+    is $value, '20';
+    ( $key, $value ) = $h->first( [ undef, qr/2/ ] );
+    is $key,   'b';
+    is $value, '20';
+    ( $key, $value ) = $h->first( [ qr/c/, qr/3/ ] );
+    is $key,   'c';
+    is $value, '30';
+    ( $key, $value ) = $h->first( [ qr/a/, qr/2/ ] );
+    is $key,   undef;
+    is $value, undef;
+
+    # Function
+    ( $key, $value ) = $h->first( sub { my ( $key, $value ) = @_; $value > 30 } );
+    is $key,   'd';
+    is $value, '40';
+};
+
 subtest 'keys' => sub {
     my $keys = $h->keys;
     my @keys = $h->keys;

@@ -2,6 +2,7 @@ package Markets::Domain::IxHash;
 use Mojo::Base -base;
 
 use Exporter 'import';
+use List::Util;
 use Scalar::Util 'blessed';
 use Tie::IxHash;
 
@@ -16,6 +17,15 @@ sub each {
     $_->$cb( $self->{$_}, $i++ ) for $self->keys;
 
     return $self;
+}
+
+sub first {
+    my ( $self, $cb ) = ( shift, shift );
+    my @keys = $self->keys;
+    return $keys[0] => $self->{ $keys[0] } unless $cb;
+    return ( List::Util::pairfirst { $a =~ ( $cb->[0] || qr// ) && $b =~ ( $cb->[1] || qr// ) } %{$self} )
+      if ref $cb eq 'ARRAY';
+    return ( List::Util::pairfirst { $cb->( $a, $b ) } %{$self} );
 }
 
 sub keys {
@@ -90,6 +100,23 @@ Construct a new index-hash-based L<Markets::Domain::IxHash> object.
       my ($key, $value, $num) = @_;
       say "$num: $key => $value";
     });
+
+=head2 C<first>
+
+    my ( $key, $value ) = $ix_hash->first;
+    my ( $key, $value ) = $ix_hash->first( [ qr//, qr// ] );
+    my ( $key, $value ) = $ix_hash->first( sub {...} );
+
+    # Find first key-value pair that "key" contains the word "mojo"
+    my ( $key, $value ) = $collection->first([ qr/mojo/i ]);
+    # Find first key-value pair that "value" contains the word "jo"
+    my ( $key, $value ) = $collection->first([ undef, qr/jo/i ]);
+    # Find first key-value pair that "key" contains the word "mo" and "value" contains the word "jo"
+    my ( $key, $value ) = $collection->first([ qr/mo/i, qr/jo/i ]);
+
+    # Find first key-value pair that value is greater than 5
+    my ( $key, $value ) = $ix_hash->first( sub { my ( $key, $value ) = @_; $value > 5 } );
+
 
 =head2 C<keys>
 
