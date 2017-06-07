@@ -33,6 +33,8 @@ sub keys {
     return wantarray ? @keys : \@keys;
 }
 
+sub last { ( @{ $_[0]->keys }[-1], @{ $_[0]->values }[-1] ) }
+
 sub new {
     my $class = shift;
 
@@ -122,6 +124,12 @@ Construct a new index-hash-based L<Markets::Domain::IxHash> object.
 
     my @keys = $ix_hash->keys;
     my $keys = $ix_hash->keys;
+
+=head2 C<last>
+
+    my ( $key, $value ) = $ix_hash->last;
+
+Return the last key-value pair.
 
 =head2 C<size>
 

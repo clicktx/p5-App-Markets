@@ -57,6 +57,12 @@ subtest 'keys' => sub {
     is_deeply \@keys, [qw/a b c d e/];
 };
 
+subtest 'last' => sub {
+    my ( $key, $value ) = $h->last;
+    is $key, 'e';
+    is $value, 50;
+};
+
 subtest 'size' => sub {
     my $size = $h->size;
     is $size, 5;
