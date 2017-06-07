@@ -28,6 +28,13 @@ sub first {
     return ( List::Util::pairfirst { $cb->( $a, $b ) } %{$self} );
 }
 
+sub grep {
+    my ( $self, $cb ) = ( shift, shift );
+    return $self->new( List::Util::pairgrep { $a =~ ( $cb->[0] || qr// ) && $b =~ ( $cb->[1] || qr// ) } %{$self} )
+      if ref $cb eq 'ARRAY';
+    return $self->new( List::Util::pairgrep { $cb->( $a, $b ) } %{$self} );
+}
+
 sub keys {
     my @keys = keys %{ shift() };
     return wantarray ? @keys : \@keys;
@@ -124,6 +131,10 @@ Construct a new index-hash-based L<Markets::Domain::IxHash> object.
     # Find first key-value pair that value is greater than 5
     my ( $key, $value ) = $ix_hash->first( sub { my ( $key, $value ) = @_; $value > 5 } );
 
+=head2 C<grep>
+
+    my $new = $ix_hash->grep( [ qr//, qr// ] );
+    my $new = $ix_hash->grep( sub {...} );
 
 =head2 C<keys>
 

@@ -50,6 +50,31 @@ subtest 'first' => sub {
     is $value, '40';
 };
 
+subtest 'grep' => sub {
+    my $new;
+
+    # Regex
+    $new = $h->grep( [ qr//, qr// ] );
+    isa_ok $new, 'Markets::Domain::IxHash';
+    is_deeply \@{ $new->pairs }, [qw/a 10 b 20 c 30 d 40 e 50/];
+    $new = $h->grep( [ qr/c|e/, qr// ] );
+    is_deeply \@{ $new->pairs }, [qw/c 30 e 50/];
+    $new = $h->grep( [ undef, qr/3|5/ ] );
+    is_deeply \@{ $new->pairs }, [qw/c 30 e 50/];
+    $new = $h->grep( [ qr/c/, qr/3|5/ ] );
+    is_deeply \@{ $new->pairs }, [qw/c 30/];
+
+    # Function
+    $new = $h->grep( sub { } );
+    is_deeply \@{ $new->pairs }, [];
+    $new = $h->grep( sub { 1 } );
+    is_deeply \@{ $new->pairs }, [qw/a 10 b 20 c 30 d 40 e 50/];
+    $new = $h->grep( sub { my ( $key, $value ) = @_; $key eq 'c' or $key eq 'e' } );
+    is_deeply \@{ $new->pairs }, [qw/c 30 e 50/];
+    $new = $h->grep( sub { my ( $key, $value ) = @_; $value > 20 } );
+    is_deeply \@{ $new->pairs }, [qw/c 30 d 40 e 50/];
+};
+
 subtest 'keys' => sub {
     my $keys = $h->keys;
     my @keys = $h->keys;
