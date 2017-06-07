@@ -10,7 +10,10 @@ sub value {
     if ( @_ > 1 ) {
 
         # Setter
-        return $self->items->{ $_[0] }->value( $_[1] );
+        while (@_) {
+            my ( $key, $value ) = ( shift, shift );
+            $self->items->{$key}->value($value);
+        }
     }
     else {
         # Getter
