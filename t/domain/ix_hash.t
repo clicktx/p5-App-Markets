@@ -7,7 +7,7 @@ use_ok 'Markets::Domain::IxHash';
 use DDP;
 my $h = Markets::Domain::IxHash->new( a => 10, b => 20, c => 30, d => 40, e => 50 );
 
-subtest 'attributes'=> sub {
+subtest 'attributes' => sub {
     can_ok $h, $_ for $h->keys;
 };
 
@@ -51,6 +51,13 @@ subtest 'to_data' => sub {
     );
     my $data = $h->to_data;
     cmp_deeply $data, { a => { a1 => { a2 => 1 } }, b => { b1 => 2 }, c => 3 };
+};
+
+subtest 'values' => sub {
+    my $values = $h->values;
+    my @values = $h->values;
+    is_deeply $values,  [qw/10 20 30 40 50/];
+    is_deeply \@values, [qw/10 20 30 40 50/];
 };
 
 done_testing();

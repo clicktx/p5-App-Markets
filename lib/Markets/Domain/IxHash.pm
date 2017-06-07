@@ -52,6 +52,11 @@ sub to_data {
 
 sub to_hash { +{ %{ shift() } } }
 
+sub values {
+    my @values = values %{ shift() };
+    return wantarray ? @values : \@values;
+}
+
 1;
 __END__
 
