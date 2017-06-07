@@ -19,7 +19,6 @@ subtest 'each' => sub {
     $h->each(
         sub {
             my ( $key, $value, $num ) = @_;
-            say "$num: ", "$key => ", "$value";
             push @data, ( $key, $value, $num );
         }
     );
@@ -31,6 +30,11 @@ subtest 'keys' => sub {
     my @keys = $h->keys;
     is_deeply $keys,  [qw/a b c d e/];
     is_deeply \@keys, [qw/a b c d e/];
+};
+
+subtest 'size' => sub {
+    my $size = $h->size;
+    is $size, 5;
 };
 
 subtest 'to_hash' => sub {

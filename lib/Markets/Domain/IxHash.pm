@@ -35,6 +35,8 @@ sub new {
     return $obj;
 }
 
+sub size { scalar @{ shift->keys } }
+
 sub to_data {
     my $self = shift;
 
@@ -89,11 +91,21 @@ Construct a new index-hash-based L<Markets::Domain::IxHash> object.
     my @keys = $ix_hash->keys;
     my $keys = $ix_hash->keys;
 
+=head2 C<size>
+
+    my $size = $ix_hash->size;
+
+Number of key-value pair in IxHash.
+
 =head2 C<to_data>
 
     my $hash_ref = $ix_hash->to_data;
 
 =head2 C<to_hash>
+
+    my $hash = $ix_hash->to_hash;
+
+Turn IxHash into hash reference.
 
 =head1 AUTHOR
 
