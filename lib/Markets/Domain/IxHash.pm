@@ -47,6 +47,11 @@ sub new {
     return $obj;
 }
 
+sub pairs {
+    my @array = %{ shift() };
+    wantarray ? @array : \@array;
+}
+
 sub size { scalar @{ shift->keys } }
 
 sub to_data {
@@ -130,6 +135,11 @@ Construct a new index-hash-based L<Markets::Domain::IxHash> object.
     my ( $key, $value ) = $ix_hash->last;
 
 Return the last key-value pair.
+
+=head2 C<pairs>
+
+    my $array = $ix_hash->pairs;
+    my @array = $ix_hash->pairs;
 
 =head2 C<size>
 

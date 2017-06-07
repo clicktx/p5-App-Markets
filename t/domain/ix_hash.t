@@ -59,8 +59,15 @@ subtest 'keys' => sub {
 
 subtest 'last' => sub {
     my ( $key, $value ) = $h->last;
-    is $key, 'e';
+    is $key,   'e';
     is $value, 50;
+};
+
+subtest 'pairs' => sub {
+    my $array = $h->pairs;
+    my @array = $h->pairs;
+    is_deeply $array,  [qw/a 10 b 20 c 30 d 40 e 50/];
+    is_deeply \@array, [qw/a 10 b 20 c 30 d 40 e 50/];
 };
 
 subtest 'size' => sub {
