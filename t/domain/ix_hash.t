@@ -48,6 +48,12 @@ subtest 'first' => sub {
     ( $key, $value ) = $h->first( sub { my ( $key, $value ) = @_; $value > 30 } );
     is $key,   'd';
     is $value, '40';
+    ( $key, $value ) = $h->first( sub { $a eq 'd' } );
+    is $key,   'd';
+    is $value, '40';
+    ( $key, $value ) = $h->first( sub { $b > 30 } );
+    is $key,   'd';
+    is $value, '40';
 };
 
 subtest 'grep' => sub {
@@ -72,6 +78,11 @@ subtest 'grep' => sub {
     $new = $h->grep( sub { my ( $key, $value ) = @_; $key eq 'c' or $key eq 'e' } );
     is_deeply \@{ $new->pairs }, [qw/c 30 e 50/];
     $new = $h->grep( sub { my ( $key, $value ) = @_; $value > 20 } );
+    is_deeply \@{ $new->pairs }, [qw/c 30 d 40 e 50/];
+
+    $new = $h->grep( sub { $a eq 'c' or $a eq 'e' } );
+    is_deeply \@{ $new->pairs }, [qw/c 30 e 50/];
+    $new = $h->grep( sub { $b > 20 } );
     is_deeply \@{ $new->pairs }, [qw/c 30 d 40 e 50/];
 };
 

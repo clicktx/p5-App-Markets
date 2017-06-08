@@ -25,14 +25,30 @@ sub first {
     return $keys[0] => $self->{ $keys[0] } unless $cb;
     return ( List::Util::pairfirst { $a =~ ( $cb->[0] || qr// ) && $b =~ ( $cb->[1] || qr// ) } %{$self} )
       if ref $cb eq 'ARRAY';
-    return ( List::Util::pairfirst { $cb->( $a, $b ) } %{$self} );
+
+    my $caller = caller;
+    no strict 'refs';
+    my @list = List::Util::pairfirst {
+        local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
+        $a->$cb($b)
+    }
+    %{$self};
+    return @list;
 }
 
 sub grep {
     my ( $self, $cb ) = ( shift, shift );
     return $self->new( List::Util::pairgrep { $a =~ ( $cb->[0] || qr// ) && $b =~ ( $cb->[1] || qr// ) } %{$self} )
       if ref $cb eq 'ARRAY';
-    return $self->new( List::Util::pairgrep { $cb->( $a, $b ) } %{$self} );
+
+    my $caller = caller;
+    no strict 'refs';
+    my @list = List::Util::pairgrep {
+        local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
+        $a->$cb($b)
+    }
+    %{$self};
+    return $self->new(@list);
 }
 
 sub keys {
@@ -141,13 +157,26 @@ Construct a new index-hash-based L<Markets::Domain::IxHash> object.
     # Find first key-value pair that "key" contains the word "mo" and "value" contains the word "jo"
     my ( $key, $value ) = $collection->first([ qr/mo/i, qr/jo/i ]);
 
+    # Find first key-value pair that key is 'hoge'
+    my ( $key, $value ) = $ix_hash->first( sub { $a eq 'hoge' } );
+    my ( $key, $value ) = $ix_hash->first( sub { my ( $key, $value ) = @_; $key eq 'hoge' } );
+
     # Find first key-value pair that value is greater than 5
+    my ( $key, $value ) = $ix_hash->first( sub { $b > 5 } );
     my ( $key, $value ) = $ix_hash->first( sub { my ( $key, $value ) = @_; $value > 5 } );
 
 =head2 C<grep>
 
     my $new = $ix_hash->grep( [ qr//, qr// ] );
     my $new = $ix_hash->grep( sub {...} );
+
+
+
+    my $new = $ix_hash->grep( sub { $a eq 'hoge' } );
+    my $new = $ix_hash->grep( sub { my ($key, $value) = @_; $key eq 'hoge' } );
+
+    my $new = $ix_hash->grep( sub { $b > 100 } );
+    my $new = $ix_hash->grep( sub { my ($key, $value) = @_; $value > 100 } );
 
 =head2 C<keys>
 
