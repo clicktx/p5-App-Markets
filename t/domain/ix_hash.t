@@ -88,13 +88,14 @@ subtest 'last' => sub {
     is $value, 50;
 };
 
-# NOTE: 本当は $h->map( sub { $a => $b + 1 } ); と書けたら...
 subtest 'map' => sub {
     my $new;
     $new = $h->map( sub { } );
     isa_ok $new, 'Markets::Domain::IxHash';
     is_deeply \@{ $new->pairs }, [];
     $new = $h->map( sub { my ( $key, $value ) = @_; $key => $value + 1 } );
+    is_deeply \@{ $new->pairs }, [qw/a 11 b 21 c 31 d 41 e 51/];
+    $new = $h->map( sub { $a => $b + 1 } );
     is_deeply \@{ $new->pairs }, [qw/a 11 b 21 c 31 d 41 e 51/];
 };
 

@@ -44,7 +44,15 @@ sub last { ( @{ $_[0]->keys }[-1], @{ $_[0]->values }[-1] ) }
 
 sub map {
     my ( $self, $cb ) = ( shift, shift );
-    return $self->new( List::Util::pairmap { $cb->( $a, $b ) } %{$self} );
+
+    my $caller = caller;
+    no strict 'refs';
+    my @list = List::Util::pairmap {
+        local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
+        $a->$cb($b);
+    }
+    %{$self};
+    return $self->new(@list);
 }
 
 sub new {
@@ -155,6 +163,8 @@ Return the last key-value pair.
 =head2 C<map>
 
     my $new = $ix_hash->map( sub {...} );
+
+    my $new = $ix_hash->map( sub { $a => $b + 1 } );
     my $new = $ix_hash->map( sub { my ( $key, $value ) = @_; $key => $value + 1 } );
 
 =head2 C<pairs>
