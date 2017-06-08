@@ -42,6 +42,11 @@ sub keys {
 
 sub last { ( @{ $_[0]->keys }[-1], @{ $_[0]->values }[-1] ) }
 
+sub map {
+    my ( $self, $cb ) = ( shift, shift );
+    return $self->new( List::Util::pairmap { $cb->( $a, $b ) } %{$self} );
+}
+
 sub new {
     my $class = shift;
 
@@ -146,6 +151,11 @@ Construct a new index-hash-based L<Markets::Domain::IxHash> object.
     my ( $key, $value ) = $ix_hash->last;
 
 Return the last key-value pair.
+
+=head2 C<map>
+
+    my $new = $ix_hash->map( sub {...} );
+    my $new = $ix_hash->map( sub { my ( $key, $value ) = @_; $key => $value + 1 } );
 
 =head2 C<pairs>
 
