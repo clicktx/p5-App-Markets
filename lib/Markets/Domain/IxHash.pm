@@ -13,9 +13,15 @@ sub ix_hash { __PACKAGE__->new(@_) }
 sub each {
     my ( $self, $cb ) = @_;
     return %{$self} unless $cb;
-    my $i = 1;
-    $_->$cb( $self->{$_}, $i++ ) for $self->keys;
 
+    my $i = 1;
+    my $caller = caller;
+    foreach my $a ( @{ $self->keys } ) {
+        my $b = $self->{$a};
+        no strict 'refs';
+        local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
+        $a->$cb( $b, $i++ );
+    }
     return $self;
 }
 
@@ -139,7 +145,9 @@ Construct a new index-hash-based L<Markets::Domain::IxHash> object.
     $ix_hash  = $ix_hash->each(sub {...});
 
     # Make a numbered key value pair
-    $ix_hash->each(sub {
+    $ix_hash->each( sub { say "num:$_[2] $a => $b" } );
+
+    $ix_hash->each( sub {
       my ($key, $value, $num) = @_;
       say "$num: $key => $value";
     });

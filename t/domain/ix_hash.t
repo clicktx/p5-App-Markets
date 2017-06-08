@@ -23,6 +23,10 @@ subtest 'each' => sub {
         }
     );
     cmp_deeply \@data, [qw/a 10 1 b 20 2 c 30 3 d 40 4 e 50 5/];
+
+    @data = ();
+    $h->each( sub { push @data, ( $a, $b, $_[2] ) } );
+    cmp_deeply \@data, [qw/a 10 1 b 20 2 c 30 3 d 40 4 e 50 5/];
 };
 
 subtest 'first' => sub {
