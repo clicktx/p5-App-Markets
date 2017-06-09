@@ -38,17 +38,6 @@
     Your visit count: <%= server_session->data('counter') %>
 </p>
 
-<p>
-    <%= link_to pref('LINK_NAME') => pref('ROOT_URL') %> or
-    <%= link_to app->pref('LINK_NAME') => pref('ROOT_URL') %> or
-    <%= link_to pref('LINK_NAME') => pref('ROOT_URL') %>
-</p>
-<p>
-    <%= link_to pref('ROOT_URL') => begin %>
-        <%= pref('LINK_NAME') %>
-    <% end %>
-</p>
-
 <h1>For Admin</h1>
 <%= link_to 'admin page' => 'RN_admin_dashboard' %>
 
