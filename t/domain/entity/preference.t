@@ -46,10 +46,16 @@ subtest 'methods' => sub {
     can_ok $pref, 'value';
 
     # value()
-    is $pref->value('pref1'), 11;    # default value
-    $pref->value( pref1 => 1 );
-    is $pref->value('pref1'), 1;
-    is $pref->is_modified, 1;
+    is $pref->value('pref1'), 11, 'right default value';
+    $pref->value( pref1 => 1, pref2 => 2 );
+    is $pref->value('pref1'), 1, 'right set value';
+    is $pref->value('pref2'), 2, 'right set value';
+    is $pref->is_modified, 1, 'right modified';
+
+    eval { $pref->value( pref3 => 3 ) };
+    ok $@, 'right set value error';
+    eval { $pref->value('pref3') };
+    ok $@, 'right get value error';
 };
 
 done_testing();

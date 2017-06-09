@@ -14,6 +14,7 @@ sub value {
         # Setter
         while (@_) {
             my ( $key, $value ) = ( shift, shift );
+            croak "Not found preference '$key'" unless $self->items->{$key};
             $self->items->{$key}->value($value);
         }
     }
