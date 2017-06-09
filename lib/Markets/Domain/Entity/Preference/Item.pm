@@ -1,7 +1,7 @@
 package Markets::Domain::Entity::Preference::Item;
 use Markets::Domain::Entity;
 
-has [qw/value default_value/];
+has [qw/value default_value position group_id/];
 
 1;
 __END__
