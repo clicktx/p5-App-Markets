@@ -15,10 +15,26 @@ has entity_class => sub {
 };
 
 sub aggregate {
-    my $self = shift;
-    if    ( ref $_[2] eq 'ARRAY' ) { $self->_aggregate_array(@_) }
-    elsif ( ref $_[2] eq 'HASH' )  { $self->_aggregate_hash(@_) }
-    else                           { croak 'Data type is not ArrayRef or HashRef' }
+    my ( $self, $accessor, $entity, $data ) = @_;
+    croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
+
+    my @array;
+    push @array, $self->factory($entity)->create($_) for @{$data};
+    $self->param( $accessor => collection(@array) );
+    return $self;
+}
+
+sub aggregate_kvlist {
+    my ( $self, $accessor, $entity, $data ) = @_;
+    croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
+
+    my @kvlist;
+    while ( @{$data} ) {
+        my ( $key, $value ) = ( shift @{$data}, shift @{$data} );
+        push @kvlist, ( $key, $self->factory($entity)->create($value) );
+    }
+    $self->param( $accessor => ix_hash(@kvlist) );
+    return $self;
 }
 
 sub cook { }
@@ -110,25 +126,6 @@ sub params {
     $self->{$_} = $args{$_} for keys %args;
 }
 
-sub _aggregate_array {
-    my ( $self, $accessor, $entity, $data ) = @_;
-    my @array;
-    push @array, $self->factory($entity)->create($_) for @{$data};
-    $self->param( $accessor => collection(@array) );
-    return $self;
-}
-
-sub _aggregate_hash {
-    my ( $self, $accessor, $entity, $data ) = @_;
-    my $hash = {};
-    foreach my $key ( keys %{$data} ) {
-        my $value = $self->factory($entity)->create( $data->{$key} );
-        $hash->{$key} = $value;
-    }
-    $self->param( $accessor => ix_hash( %{$hash} ) );
-    return $self;
-}
-
 sub _load_class {
     my $class = shift;
 
@@ -166,15 +163,19 @@ Get namespace as a construct entity class.
 
 =head2 C<aggregate>
 
-    # Collection
+    my @data = (qw/a b c d e f/);
     my $entity = $factory->aggregate( $accessor_name, $target_entity, \@data );
     my $entity = $factory->aggregate( 'items', 'entity-item', \@data );
 
-    # IxHash
-    my $entity = $factory->aggregate( $accessor_name, $target_entity, \%data );
-    my $entity = $factory->aggregate( 'items', 'entity-item', \%data );
+Create C<Markets::Domain::Collection> type aggregate.
 
-Added aggregate.
+=head2 C<aggregate_kvlist>
+
+    my @data = ( key => 'value', key2 => 'value2', ... );
+    my $entity = $factory->aggregate_kv( $accessor_name, $target_entity, \@data );
+    my $entity = $factory->aggregate_kv( 'items', 'entity-item', \@data );
+
+Create C<Markets::Domain::IxHash> type aggregate.
 
 =head2 C<cook>
 

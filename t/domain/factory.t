@@ -1,9 +1,6 @@
 use Mojo::Base -strict;
-
-use t::Util;
 use Test::More;
 use Test::Deep;
-use Test::Mojo;
 
 subtest 'basic' => sub {
     use_ok 'Markets::Domain::Factory';
@@ -120,14 +117,6 @@ subtest 'inflate datetime for *_at' => sub {
     is $f->{created_at}->ymd, '2017-05-26';
 };
 
-subtest 'factory helper' => sub {
-    my $t      = Test::Mojo->new('App');
-    my $app    = $t->app;
-    my $entity = $app->factory('entity-bar')->create;
-    isa_ok $entity, 'Markets::Domain::Entity::Bar';
-    isa_ok $entity->{hoge}, 'Markets::Domain::Entity::Hoge';
-};
-
 done_testing();
 
 {
@@ -184,7 +173,7 @@ done_testing();
     sub cook {
         my $self = shift;
         $self->aggregate( 'hoges', 'entity-hoge', [ {} ] );
-        $self->aggregate( 'bars', 'entity-bar', { a => {} } );
+        $self->aggregate_kvlist( 'bars', 'entity-bar', [ a => {} ] );
     }
 
     package Markets::Domain::Entity::Agg;
