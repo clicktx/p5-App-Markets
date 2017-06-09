@@ -1,50 +1,44 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
-use Test::Mojo;
-use t::Util;
-use Tie::IxHash;
-
-my $t   = Test::Mojo->new('App');
-my $app = $t->app;
+use Markets::Domain::Factory;
 
 use_ok 'Markets::Domain::Entity::Preference';
 
-# NOTE: position昇順になっている
-my %items;
-tie %items, 'Tie::IxHash';
-%items = (
-    hoge => {
-        id            => 3,
-        value         => '',
-        default_value => '33',
-        position      => 100,
-        group_id      => 2,
-    },
-    fuga => {
-        id            => 4,
-        value         => '',
-        default_value => '44',
-        position      => 200,
-        group_id      => 1,
-    },
-    pref2 => {
-        id            => 2,
-        value         => '',
-        default_value => '22',
-        position      => 300,
-        group_id      => 2,
-    },
-    pref1 => {
-        id            => 1,
-        value         => '',
-        default_value => '11',
-        position      => 500,
-        group_id      => 1,
-    },
-);
+my $data = {
+    items => [
+        hoge => {
+            id            => 3,
+            value         => '',
+            default_value => '33',
+            position      => 100,
+            group_id      => 2,
+        },
+        fuga => {
+            id            => 4,
+            value         => '',
+            default_value => '44',
+            position      => 200,
+            group_id      => 1,
+        },
+        pref2 => {
+            id            => 2,
+            value         => '',
+            default_value => '22',
+            position      => 300,
+            group_id      => 2,
+        },
+        pref1 => {
+            id            => 1,
+            value         => '',
+            default_value => '11',
+            position      => 500,
+            group_id      => 1,
+        },
+    ],
+};
 
-my $pref = $app->factory('entity-preference')->create( { items => \%items } );
+my $pref = Markets::Domain::Factory->factory('entity-preference')->create($data);
 
 subtest 'basic' => sub {
     isa_ok $pref, 'Markets::Domain::Entity';
