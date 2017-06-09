@@ -3,14 +3,14 @@ use Mojo::Base 'Markets::Service';
 
 sub create_entity {
     my $self = shift;
-
     my $result = $self->app->schema->resultset('Preference')->search( {} );
-    my $pref = {};
+
+    my @items;
     while ( my $row = $result->next ) {
-        my %data = $row->get_columns;
-        $pref->{ $data{name} } = \%data;
+        my %data = $row->get_inflated_columns;
+        push @items, ( $row->name => \%data );
     }
-    return $self->app->factory('entity-preference')->create( { items => $pref } );
+    return $self->app->factory('entity-preference')->create( { items => \@items } );
 }
 
 sub load {
