@@ -1,11 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
-use Test::Mojo;
-use t::Util;
-
-my $t   = Test::Mojo->new('App');
-my $app = $t->app;
 
 use_ok 'Markets::Domain::Entity::Preference::Item';
 
@@ -20,7 +15,7 @@ my $data = {
     group_id      => 1,
 };
 
-my $e = $app->factory('entity-preference-item')->create($data);
+my $e = Markets::Domain::Entity::Preference::Item->new($data);
 
 subtest 'basic' => sub {
     isa_ok $e, 'Markets::Domain::Entity';
