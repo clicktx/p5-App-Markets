@@ -1,6 +1,5 @@
 package Markets::Domain::Entity::Preference;
 use Markets::Domain::Entity;
-use Scalar::Util qw/blessed/;
 use Carp qw/croak/;
 
 has 'items';
@@ -9,19 +8,19 @@ sub value {
     my $self = shift;
     return undef unless @_;
 
+    # Setter
     if ( @_ > 1 ) {
-
-        # Setter
         while (@_) {
             my ( $key, $value ) = ( shift, shift );
             croak "Not found preference '$key'" unless $self->items->{$key};
             $self->items->{$key}->value($value);
         }
     }
+
+    # Getter
     else {
-        # Getter
         my $name = shift;
-        croak "'$name' is not set preference" unless blessed $self->items->{$name};
+        croak "'$name' is not set preference" unless $self->items->{$name};
         my $value = $self->items->{$name}->value;
         return $value ? $value : $self->items->{$name}->default_value;
     }
