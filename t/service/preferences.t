@@ -4,10 +4,17 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-my $t     = Test::Mojo->new('App');
-my $app   = $t->app;
-my $model = $app->model('preference');
+my $t   = Test::Mojo->new('App');
+my $app = $t->app;
 
+use_ok 'Markets::Service::Preference';
+my $pref = $app->service('preference');
+
+can_ok $pref, 'load';
+
+done_testing();
+
+__END__
 subtest 'Basic' => sub {
     isa_ok $model->load_pref, 'HASH', 'right load preferences';
     isa_ok $model->value,     'HASH', 'right value method';
