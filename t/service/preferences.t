@@ -11,6 +11,17 @@ use_ok 'Markets::Service::Preference';
 my $pref = $app->service('preference');
 
 can_ok $pref, 'load';
+can_ok $pref, 'store';
+
+subtest 'store' => sub {
+    ok !$pref->store, 'unmodified preference(s)';
+
+    $app->pref( pref_test1 => 1, pref_test2 => 2 );
+    ok $pref->store, 'modified preference(s)';
+    my $resultset = $app->schema->resultset('Preference');
+    is $resultset->find( { name => 'pref_test1' } )->value, 1, 'right update DB';
+    is $resultset->find( { name => 'pref_test2' } )->value, 2, 'right update DB';
+};
 
 done_testing();
 

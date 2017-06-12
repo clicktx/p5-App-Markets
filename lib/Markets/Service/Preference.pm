@@ -1,9 +1,13 @@
 package Markets::Service::Preference;
 use Mojo::Base 'Markets::Service';
+use Try::Tiny;
+
+my $stash_key = 'markets.entity.preference';
+has resultset => sub { shift->app->schema->resultset('Preference') };
 
 sub create_entity {
     my $self = shift;
-    my $result = $self->app->schema->resultset('Preference')->search( {} );
+    my $result = $self->resultset->search( {} );
 
     my @items;
     while ( my $row = $result->next ) {
@@ -16,8 +20,27 @@ sub create_entity {
 sub load {
     my $self = shift;
     my $pref = $self->create_entity;
-    $self->app->defaults( 'markets.entity.preference' => $pref );
+    $self->app->defaults( $stash_key => $pref );
     return $pref;
+}
+
+sub store {
+    my $self = shift;
+
+    my $pref = $self->app->stash($stash_key);
+    return unless $pref->is_modified;
+
+    my $cb = sub {
+        $pref->items->each(
+            sub {
+                $self->resultset->search( { id => $b->id } )->update( { value => $b->value } ) if $b->is_modified;
+            }
+        );
+    };
+
+    try { $self->app->schema->txn_do($cb) }
+    catch { $self->app->error_log->error("Don't update preference. "); return };
+    return 1;
 }
 
 1;
@@ -53,6 +76,13 @@ Return L<Markets::Domain::Entity::Preference> object.
 
 Loading preference from DB.
 And set application defaults 'markets.entity.preference' into C<Markets::Domain::Entity::Preference> object.
+
+=head2 C<store>
+
+    $app->service('preference')->store();
+
+Store the data into database, if C<is_modified> is ture.
+Updates are modified data only.
 
 =head1 AUTHOR
 
