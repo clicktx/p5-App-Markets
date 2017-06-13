@@ -1,4 +1,14 @@
 (
+    # Preferences test
+    # preferences
+    'Preference' => [
+        [ 'name', 'value', 'default_value', 'title', 'summary', 'position', 'group_id' ],
+        [ 'pref_test1', undef, 'test1', '', '', 100, 1 ],
+        [ 'pref_test2', undef, 'test2', '', '', 200, 1 ],
+        [ 'pref_test3', undef, 'test3', '', '', 300, 1 ],
+        [ 'pref_test4', undef, 'test4', '', '', 400, 1 ],
+    ],
+
     # Addons
     'Addon' => [
         [qw/id name is_enabled/],

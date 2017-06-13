@@ -17,7 +17,6 @@ sub welcome {
     $session->data( counter => $counter );
 
     say "counter: " . $counter;      # debug
-    say $self->pref('ROOT_URL');    # debug
     say "ServerSession: ";
     say Dumper $session->data;
     say "CookieSession: ";

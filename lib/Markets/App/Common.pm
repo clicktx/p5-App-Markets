@@ -60,9 +60,7 @@ sub initialize_app {
     $self->plugin('Markets::DefaultHelpers');
 
     # Preferences
-    my $pref = $self->model('preference')->load_pref;
-    $pref->{LINK_NAME} = 'リンク先';          # e.g.
-    $pref->{ROOT_URL}  = 'http://google.com/';    # e.g.
+    $self->service('preference')->load;
 
     # TimeZone
     # my $time_zone = 'Asia/Tokyo';                 # from preference

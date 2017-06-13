@@ -27,15 +27,8 @@ sub _factory { shift; Markets::Domain::Factory->new->factory(@_) }
 
 sub _pref {
     my $self = shift;
-    my $pref = $self->stash('pref');
-
-    @_ ? my $key = shift : return $pref;
-    unless ( $pref->{$key} ) {
-        my $e = "pref('$key') has not value.";
-        $self->app->log->fatal($e);
-        Carp::croak $e;
-    }
-    return $pref->{$key};
+    my $pref = $self->stash('markets.entity.preference');
+    return @_ ? $pref->value(@_) : $pref;
 }
 
 sub _service {
@@ -97,10 +90,16 @@ Return L<Markets::Domain::Factory> Object.
 
 =head2 C<pref>
 
-    my $preferences = $c->pref; # Get all preferences
+    # Get preference entity
+    my $entity_preference = $c->pref;
+
+    # Getter
     my $hoge = $c->pref('hoge');
 
-Get preference.
+    # Setter
+    $c->pref( hoge => 'fizz', fuga => 'bazz' );
+
+Get/Set preference.
 
 =head2 C<service>
 

@@ -49,6 +49,7 @@ sub add_admin_routes {
         {
             my $pref = $r->any('/preferences')->to( controller => 'preference' );
             $pref->get('/')->to('#index')->name('RN_admin_preferences');
+            $pref->post('/')->to('#update')->name('RN_admin_preferences_update');
         }
 
         # Products

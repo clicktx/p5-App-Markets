@@ -1,11 +1,8 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
-use Test::Mojo;
-use t::Util;
+use Markets::Domain::Factory;
 
-my $t         = Test::Mojo->new('App');
-my $app       = $t->app;
 my $test_data = {
     items =>
       [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 }, { product_id => 3, quantity => 3 }, ],
@@ -23,19 +20,18 @@ my $test_data = {
 };
 
 sub _create_entity {
-    $app->factory(
-        'entity-cart',
+    Markets::Domain::Factory->factory('entity-cart')->create(
         {
             cart_id => '12345',
             %{$test_data},
         }
-    )->create;
+    );
 }
 
 use_ok 'Markets::Domain::Entity::Item';
 
 subtest 'basic' => sub {
-    my $cart = $app->factory('entity-cart')->create;
+    my $cart = Markets::Domain::Factory->factory('entity-cart')->create();
     isa_ok $cart, 'Markets::Domain::Entity';
 
     ok $cart->id;
@@ -61,13 +57,13 @@ subtest 'methods' => sub {
     is $cart->total_item_count, 6,                                          'right total item count';
     is $cart->total_quantity,   21,                                         'right total quantity count';
 
-    my $cart2 = $app->factory(
-        'entity-cart',
+    my $cart2 = Markets::Domain::Factory->factory('entity-cart')->create(
         {
             cart_id => '54321',
             %{$test_data},
         }
-    )->create;
+    );
+
     is $cart->is_equal($cart),  1, 'right equal entity';
     is $cart->is_equal($cart2), 0, 'right not equal entity';
 };
@@ -152,14 +148,12 @@ subtest 'method merge' => sub {
         ],
         shipments => [ { shipping_address => {}, shipping_items => [] } ],
     };
-    my $stored_cart = $app->factory(
-        'entity-cart',
+    my $stored_cart = Markets::Domain::Factory->factory('entity-cart')->create(
         {
             cart_id => '99999',
             %{$stored_data},
         }
-    )->create;
-
+    );
     my $merged_cart = $cart->merge($stored_cart);
     cmp_deeply $cart->to_data,
       {
@@ -177,9 +171,9 @@ subtest 'method merge' => sub {
       'right non-destructive';
     cmp_deeply $merged_cart->to_data,
       {
-        cart_id => ignore(),
+        cart_id         => ignore(),
         billing_address => ignore(),
-        items   => [
+        items           => [
             { product_id => 4, quantity => 4 },
             { product_id => 1, quantity => 2 },
             { product_id => 5, quantity => 5 },

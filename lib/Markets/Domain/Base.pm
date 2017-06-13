@@ -46,10 +46,11 @@ sub attr {
 
 sub import {
     my $class = shift;
-    my $flag  = shift || '';
+    my $flag = shift || '';
 
     # Base
     if ( $flag eq '-base' or !$flag ) { $flag = $class }
+
     # Module
     elsif ( ( my $file = $flag ) && !$flag->can('new') ) {
         $file =~ s!::|'!/!g;
@@ -74,6 +75,7 @@ sub import {
 
 sub _is_changed {
     my ( $attr, $obj, $value ) = @_;
+    $obj->{$attr} = '' unless defined $obj->{$attr};    # undef to ''
     return exists $obj->{$attr} ? $obj->{$attr} eq $value ? 0 : 1 : 1;
 }
 

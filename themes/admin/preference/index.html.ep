@@ -3,10 +3,13 @@
 
 <h1><%= title %></h1>
 
-<p>
-    <%= link_to 'click here' => url_for %> to reload the page or
-    <%= link_to 'front page' => '../' %>
-    <%= link_to '/' => begin %>
-        top
-    <% end %>
-</p>
+<%= form_for 'RN_admin_preferences_update' => begin %>
+    <% $preferences->each( sub { %>
+        <div class="">
+            <%= $a %>
+            <%= text_field "pref.$a", value => $b->value, placeholder => $b->default_value %>
+        </div>
+    <% }); %>
+    <%= csrf_field %>
+    <%= submit_button 'submit' %>
+<% end %>

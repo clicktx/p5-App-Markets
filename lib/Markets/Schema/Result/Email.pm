@@ -1,5 +1,5 @@
 package Markets::Schema::Result::Email;
-use Mojo::Base 'Markets::Schema::ResultCommon';
+use Mojo::Base 'Markets::Schema::Base::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column id => {

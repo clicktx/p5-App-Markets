@@ -4,10 +4,28 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-my $t     = Test::Mojo->new('App');
-my $app   = $t->app;
-my $model = $app->model('preference');
+my $t   = Test::Mojo->new('App');
+my $app = $t->app;
 
+use_ok 'Markets::Service::Preference';
+my $pref = $app->service('preference');
+
+can_ok $pref, 'load';
+can_ok $pref, 'store';
+
+subtest 'store' => sub {
+    ok !$pref->store, 'unmodified preference(s)';
+
+    $app->pref( pref_test1 => 1, pref_test2 => 2 );
+    ok $pref->store, 'modified preference(s)';
+    my $resultset = $app->schema->resultset('Preference');
+    is $resultset->find( { name => 'pref_test1' } )->value, 1, 'right update DB';
+    is $resultset->find( { name => 'pref_test2' } )->value, 2, 'right update DB';
+};
+
+done_testing();
+
+__END__
 subtest 'Basic' => sub {
     isa_ok $model->load_pref, 'HASH', 'right load preferences';
     isa_ok $model->value,     'HASH', 'right value method';
