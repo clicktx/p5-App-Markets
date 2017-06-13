@@ -21,6 +21,8 @@ sub load {
     my $self = shift;
     my $pref = $self->create_entity;
     $self->app->defaults( $stash_key => $pref );
+
+    $self->app->log->debug( 'Loading preferences from DB via ' . __PACKAGE__ );
     return $pref;
 }
 
