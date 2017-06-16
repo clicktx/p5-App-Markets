@@ -30,7 +30,7 @@ sub field {
 # sub fields {
 #     my $self = shift;
 #     my $class = ref $self || $self;
-# 
+#
 #     no strict 'refs';
 #     return %{"${class}::fields"};
 # }
@@ -51,11 +51,15 @@ sub import {
     no warnings 'once';
     push @{"${caller}::ISA"}, $class;
     tie %{"${caller}::fields"}, 'Tie::IxHash';
+    monkey_patch $caller, 'has_field', sub { add( $caller, @_ ) };
+}
 
-    monkey_patch $caller, 'has_field', sub {
-        my $name = shift;
-        ${"${caller}::fields"}{$name} = Markets::Form::Field->new( name => $name, @_ );
-    };
+sub add {
+    my ( $self, $field_name ) = ( shift, shift );
+    return unless ( my $class = ref $self || $self ) && $field_name;
+
+    no strict 'refs';
+    ${"${class}::fields"}{$field_name} = Markets::Form::Field->new( name => $field_name, @_ );
 }
 
 1;
