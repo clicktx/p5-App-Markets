@@ -5,6 +5,7 @@ use Tie::IxHash;
 use Markets::Form::Field;
 
 has 'legend';
+has 'params';
 
 sub add {
     my ( $self, $field_name ) = ( shift, shift );
@@ -68,6 +69,62 @@ sub remove {
 
     no strict 'refs';
     delete ${"${class}::fields"}{$field_name};
+}
+
+sub _id {
+    my $str = shift;
+    my $key = $str;
+    my $id  = $str;
+    $key =~ s/\.\d\./.[]./g;
+    $id =~ s/\./_/g;
+    return ( $key, $id );
+}
+
+sub render_label {
+    my $self = shift;
+    my $name = shift;
+
+    my ( $key, $id ) = _id($name);
+    my $field = $self->field($key);
+
+    return sub { shift->label_for( $id => $field->label, class => 'aa-class' ) };
+}
+
+sub render {
+    my $self = shift;
+    my $name = shift;
+
+    my ( $key, $id ) = _id($name);
+    my $field = $self->field($key);
+
+    my $method;
+    $method = 'text_field';
+
+    return sub { shift->$method( $name => ( id => $id ) ) };
+}
+
+sub renderRow {
+    my $self = shift;
+    return sub {
+        my $app = shift;
+
+        my $form;
+        $self->each(
+            sub {
+
+                $form .= $app->text_field( $b->name ) . "\n";
+            }
+        );
+
+        # my $tree = ['tag', 'fieldset', undef, undef, [ 'tag', 'aaa' ], [ 'tag', 'aaa' ] ];
+        my $tree = [ 'tag', 'fieldset', undef, undef ];
+        my $root = Mojo::ByteStream->new( Mojo::DOM::HTML::_render($tree) );
+        my $dom  = Mojo::DOM->new($root);
+
+        # $dom->at('fieldset')->append_content('123')->root;
+        $dom->at('fieldset')->append_content( "\n" . $form )->root;
+        $dom;
+    };
 }
 
 1;
