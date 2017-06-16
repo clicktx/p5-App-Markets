@@ -62,6 +62,14 @@ sub add {
     ${"${class}::fields"}{$field_name} = Markets::Form::Field->new( name => $field_name, @_ );
 }
 
+sub remove {
+    my ( $self, $field_name ) = ( shift, shift );
+    return unless ( my $class = ref $self || $self ) && $field_name;
+
+    no strict 'refs';
+    delete ${"${class}::fields"}{$field_name};
+}
+
 1;
 
 =encoding utf8
