@@ -7,11 +7,11 @@ use_ok 'Markets::Form::FieldSet';
 use Markets::Form::Type::Test;
 my $fs = Markets::Form::Type::Test->new;
 
-subtest 'each' => sub {
-    my @keys;
-    $fs->each( sub { push @keys, $a; isa_ok $b, 'Markets::Form::Field'; } );
-    is_deeply \@keys, [qw/email item.[].id name address/], 'right each keys';
-};
+# subtest 'each' => sub {
+#     my @keys;
+#     $fs->each( sub { push @keys, $a; isa_ok $b, 'Markets::Form::Field'; } );
+#     is_deeply \@keys, [qw/email item.[].id name address/], 'right each keys';
+# };
 
 subtest 'field' => sub {
     my $f = $fs->field('email');
@@ -23,8 +23,8 @@ subtest 'keys' => sub {
     is_deeply \@keys, [qw/email item.[].id name address/], 'right keys';
 };
 
-subtest 'add/remove' => sub {
-    $fs->add( aaa => ( type => 'text' ) );
+subtest 'append/remove' => sub {
+    $fs->append( aaa => ( type => 'text' ) );
     my @keys = $fs->keys;
     is_deeply \@keys, [qw/email item.[].id name address aaa/], 'right keys';
 
