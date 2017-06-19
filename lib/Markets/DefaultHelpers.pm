@@ -18,11 +18,12 @@ sub register {
     $app->helper( cookie_session => sub { shift->session(@_) } );
     $app->helper( template       => sub { shift->stash( template => shift ) } );
 
-    $app->helper( cart    => sub { _cart(@_) } );
-    $app->helper( factory => sub { _factory(@_) } );
-    $app->helper( form    => sub { _form(@_) } );
-    $app->helper( pref    => sub { _pref(@_) } );
-    $app->helper( service => sub { _service(@_) } );
+    $app->helper( cart        => sub { _cart(@_) } );
+    $app->helper( factory     => sub { _factory(@_) } );
+    $app->helper( form        => sub { _form(@_) } );
+    $app->helper( form_widget => sub { _form_widget(@_) } );
+    $app->helper( pref        => sub { _pref(@_) } );
+    $app->helper( service     => sub { _service(@_) } );
 }
 
 sub _cart { @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->stash('markets.entity.cart') }
@@ -45,6 +46,13 @@ sub _form {
     $formset = $class->new( params => $params );
     $self->stash($FORM_STASH)->{$ns} = $formset;
     return $formset;
+}
+
+sub _form_widget {
+    my $self = shift;
+    my $arg  = shift;
+    my ( $form, $field ) = $arg =~ /(.*?)\.(.*)/;
+    return _form( $self, $form )->render($field)->($self);
 }
 
 sub _pref {

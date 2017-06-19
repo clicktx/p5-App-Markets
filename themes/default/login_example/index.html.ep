@@ -7,9 +7,18 @@
 <%= form_for '/login_example/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
-    <%= form('example')->render_label("email")->(app) %>
-    <%= form('example')->render("email")->(app) %>
+    <h4>longer version</h4>
+    <div class="">
+        <%= form('example')->render_label("email")->(app) %>
+        <%= form('example')->render("email")->(app) %>
+    </div>
 
+    <h4>smart version</h4>
+    <div class="">
+        <%= form_widget('example.address') %>
+    </div>
+
+    <h4>in loop</h4>
     % my $i = 0;foreach my $data (@{$item}) {
         % my $name = 'item.' . $i . '.name';
         <div class="">

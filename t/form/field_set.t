@@ -41,4 +41,9 @@ subtest 'params' => sub {
     is $fs->params->param('a'),     undef,     'right empty param';
 };
 
+subtest 'render tags' => sub {
+    is ref $fs->render('email'),       'CODE', 'right render method';
+    is ref $fs->render_label('email'), 'CODE', 'right render_label method';
+};
+
 done_testing();
