@@ -33,4 +33,12 @@ subtest 'append/remove' => sub {
     is_deeply \@keys, [qw/email item.[].id address aaa/], 'right keys';
 };
 
+subtest 'params' => sub {
+    isa_ok $fs->params, 'Mojo::Parameters';
+    $fs->params->append( email => 'a@b.com' );
+
+    is $fs->params->param('email'), 'a@b.com', 'right get param';
+    is $fs->params->param('a'),     undef,     'right empty param';
+};
+
 done_testing();

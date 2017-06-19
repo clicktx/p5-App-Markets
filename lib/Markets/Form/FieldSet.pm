@@ -3,10 +3,11 @@ use Mojo::Base -base;
 use Mojo::Util qw/monkey_patch/;
 use Tie::IxHash;
 use Scalar::Util qw/weaken/;
+use Mojo::Parameters;
 use Markets::Form::Field;
 
 has 'legend';
-has 'params';
+has params => sub { Mojo::Parameters->new };
 
 sub append {
     my ( $self, $field_key ) = ( shift, shift );
@@ -144,6 +145,13 @@ Markets::Form::Field
 
 
 =head1 DESCRIPTION
+
+=head1 ATTRIBUTES
+
+=head2 C<params>
+
+    my $params = $fieldset->params;
+    $fieldset->params( Mojo::Parameters->new );
 
 =head1 FUNCTIONS
 
