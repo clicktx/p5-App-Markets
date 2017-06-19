@@ -104,7 +104,8 @@ sub initialize_app {
     ) if -d $locale_dir;
 
     # Form Frameworks
-    $self->plugin( 'Markets::Form', methods => { valid => 'form_valid', errors => 'form_errors' } );
+    # $self->plugin( 'Markets::Form', methods => { valid => 'form_valid', errors => 'form_errors' } );
+    # $self->plugin('Markets::FormExpand');
 
     # Add before/after action hook
     # MEMO: Mojoliciou::Controllerの挙動を変更
