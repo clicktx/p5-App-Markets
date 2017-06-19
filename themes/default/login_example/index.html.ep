@@ -3,59 +3,22 @@
 
 <h2><%= __('login') %></h2>
 
-% unless ( form_valid() ){
-    <div class="alert alert-danger">
-        error
-    </div>
-% }
-<%= dumper form_errors %>
+
 <%= form_for '/login_example/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
-    <div class="">
-        <%= field('login.cart.0')->text %>
-        <% if ( field('login.cart.0')->error ){ %><%= field('login.cart.0')->error %><% } %>
-    </div>
-    <div class="">
-        <%= field('login.cart.2')->text %>
-        <% if ( field('login.cart.2')->error ){ %><%= field('login.cart.2')->error %><% } %>
-    </div>
-    <div class="">
-        <%= field('login.item.0.no')->text %>
-        <% if ( field('login.item.0.no')->error ){ %><%= field('login.item.0.no')->error %><% } %>
-    </div>
-    <div class="">
-        <%= field('login.item.1.no')->text %>
-        <% if ( field('login.item.1.no')->error ){ %><%= field('login.item.1.no')->error %><% } %>
-    </div>
-    <div class="">
-        <%= field('login.opt.type')->text %>
-        <% if ( field('login.opt.type')->error ){ %><%= field('login.opt.type')->error %><% } %>
-    </div>
-    <div class="">
-        <%= field('login.opt.color')->text %>
-        <% if ( field('login.opt.color')->error ){ %><%= field('login.opt.color')->error %><% } %>
-    </div>
-    <% my $f = fields('login'); %>
-    <div class="">
-        <%= $f->label('name', class => 'class') %>
-        <%= $f->text('name', class => 'class', placeholder => __('login.name.placeholder') ) %>
-        <%= __ 'login.name.description' %>
-        <% if ( $f->errors('name') ){ %><%= $f->errors('name') %><% } %>
-    </div>
-    <div class="">
-        <%= field('login.password')->label(class => 'fefe') %>
-        <%= field('login.password')->text %>
-        <% if ( field('login.password')->error ){ %>
-            <%= field('login.password')->error %>
-        <% } %>
-    </div>
-    <div class="">
-        <%= field('login.confirm_password')->label(class => 'fefe') %>
-        <%= field('login.confirm_password')->text %>
-        <% if ( field('login.confirm_password')->error ){ %>
-            <%= field('login.confirm_password')->error %>
-        <% } %>
-    </div>
+    <%= form('example')->render_label("email")->(app) %>
+    <%= form('example')->render("email")->(app) %>
+
+    % my $i = 0;foreach my $data (@{$item}) {
+        % my $name = 'item.' . $i . '.name';
+        <div class="">
+            <%= $data->{id} %>
+            <%= $data->{name} %>
+            <%= form('example')->render_label($name)->(app) %>
+            <%= form('example')->render($name)->(app) %>
+        </div>
+    % $i++ }
+
     <input type="submit" value="<%= __ 'login' %>">
 <% end %>
