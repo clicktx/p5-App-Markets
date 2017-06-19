@@ -123,6 +123,7 @@ sub _field_key { $_ = shift; s/\.\d/.[]/g; $_ }
 # sub _key_id { return ( _key( $_[0] ), _id( $_[0] ) ) }
 
 1;
+__END__
 
 =encoding utf8
 
