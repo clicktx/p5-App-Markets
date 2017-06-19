@@ -6,6 +6,9 @@ use Scalar::Util ();
 use Mojo::Util   ();
 use Markets::Domain::Factory;
 
+my $FORM_CLASS = 'Markets::Form::Type';
+my $FORM_STASH = 'markets.form';
+
 sub register {
     my ( $self, $app ) = @_;
 
@@ -17,6 +20,7 @@ sub register {
 
     $app->helper( cart    => sub { _cart(@_) } );
     $app->helper( factory => sub { _factory(@_) } );
+    $app->helper( form    => sub { _form(@_) } );
     $app->helper( pref    => sub { _pref(@_) } );
     $app->helper( service => sub { _service(@_) } );
 }
@@ -24,6 +28,24 @@ sub register {
 sub _cart { @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->stash('markets.entity.cart') }
 
 sub _factory { shift; Markets::Domain::Factory->new->factory(@_) }
+
+sub _form {
+    my ( $self, $ns, $params ) = @_;
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+    Carp::croak 'Arguments empty' unless $ns;
+
+    $self->stash( $FORM_STASH => {} ) unless $self->stash($FORM_STASH);
+    my $formset = $self->stash($FORM_STASH)->{$ns};
+    return $formset if $formset;
+
+    my $class = $FORM_CLASS . "::" . $ns;
+    _load_class($class);
+
+    $params = $self->req->params unless $params;
+    $formset = $class->new( params => $params );
+    $self->stash($FORM_STASH)->{$ns} = $formset;
+    return $formset;
+}
 
 sub _pref {
     my $self = shift;
