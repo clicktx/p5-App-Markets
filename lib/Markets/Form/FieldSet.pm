@@ -23,7 +23,7 @@ sub each {
 
     no strict 'refs';
     foreach my $a ( $self->keys ) {
-        my $b = %{"${class}::field_list"}{$a};
+        my $b = ${"${class}::field_list"}{$a};
         local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
         $a->$cb($b);
     }
