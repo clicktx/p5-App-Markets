@@ -12,7 +12,7 @@ sub _input {
     my $self = shift;
 
     my %attrs = %{$self};
-    delete $attrs{$_} for qw/label/;
+    delete $attrs{$_} for qw/field_key label/;
 
     my $method = $self->type . '_field';
     return sub { shift->$method( $self->name, id => $self->id, %attrs ) };
