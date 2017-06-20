@@ -9,23 +9,24 @@
 
     <h4>longer version</h4>
     <div class="">
-        <%= form('example')->render_label("email")->(app) %>
-        <%= form('example')->render("email")->(app) %>
+        <%= form_set('example')->render_label("email")->(app) %>
+        <%= form_set('example')->render("email")->(app) %>
     </div>
 
     <h4>smart version</h4>
     <div class="">
+        <%= form_label('example.address') %>
         <%= form_widget('example.address') %>
     </div>
 
     <h4>in loop</h4>
-    % my $i = 0;foreach my $data (@{$item}) {
-        % my $name = 'item.' . $i . '.name';
+    % my $i = 0; foreach my $data (@{$item}) {
+        % my $name = 'example.item.' . $i . '.name';
         <div class="">
             <%= $data->{id} %>
             <%= $data->{name} %>
-            <%= form('example')->render_label($name)->(app) %>
-            <%= form('example')->render($name)->(app) %>
+            <%= form_label($name) %>
+            <%= form_widget($name) %>
         </div>
     % $i++ }
 
