@@ -20,7 +20,7 @@ sub register {
 
     $app->helper( cart        => sub { _cart(@_) } );
     $app->helper( factory     => sub { _factory(@_) } );
-    $app->helper( form        => sub { _form(@_) } );
+    $app->helper( form_set    => sub { _form_set(@_) } );
     $app->helper( form_label  => sub { _form_render( @_, 'render_label' ) } );
     $app->helper( form_widget => sub { _form_render( @_, 'render' ) } );
     $app->helper( pref        => sub { _pref(@_) } );
@@ -31,7 +31,7 @@ sub _cart { @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->sta
 
 sub _factory { shift; Markets::Domain::Factory->new->factory(@_) }
 
-sub _form {
+sub _form_set {
     my ( $self, $ns, $params ) = @_;
     $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
     Carp::croak 'Arguments empty' unless $ns;
@@ -53,7 +53,7 @@ sub _form_render {
     my $self = shift;
     my ( $form, $field ) = shift =~ /(.+?)\.(.+)/;
     my $method = shift;
-    return _form( $self, $form )->$method($field)->($self);
+    return _form_set( $self, $form )->$method($field)->($self);
 }
 
 sub _pref {
