@@ -6,7 +6,7 @@ use Scalar::Util qw/weaken/;
 use Mojo::Parameters;
 use Markets::Form::Field;
 
-has 'legend';
+# has 'legend';
 has params => sub { Mojo::Parameters->new };
 
 sub append {
@@ -17,25 +17,26 @@ sub append {
     ${"${class}::field_list"}{$field_key} = +{@_};
 }
 
-sub each {
-    my ( $self, $cb ) = @_;
-    my $class = ref $self || $self;
-    my $caller = caller;
-
-    no strict 'refs';
-    foreach my $a ( $self->keys ) {
-        my $b = ${"${class}::field_list"}{$a};
-        local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
-        $a->$cb($b);
-    }
-}
+# sub each {
+#     my ( $self, $cb ) = @_;
+#     my $class = ref $self || $self;
+#     my $caller = caller;
+#
+#     no strict 'refs';
+#     foreach my $a ( $self->keys ) {
+#         my $b = ${"${class}::field_list"}{$a};
+#         local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
+#         $a->$cb($b);
+#     }
+# }
 
 sub field {
     my ( $self, $name ) = ( shift, shift );
     my $args = @_ > 1 ? +{@_} : shift || {};
-
     my $class = ref $self || $self;
-    my $key = _field_key($name);
+
+    my $key = $name;
+    $key =~ s/\.\d/.[]/g;
 
     no strict 'refs';
     my $attrs = $key ? ${"${class}::field_list"}{$key} : {};
@@ -117,7 +118,7 @@ sub render {
 #     };
 # }
 
-sub _field_key { $_ = shift; s/\.\d/.[]/g; $_ }
+# sub _field_key { $_ = shift; s/\.\d/.[]/g; $_ }
 
 # sub _id { $_ = shift; s/\./_/g; $_ }
 #
