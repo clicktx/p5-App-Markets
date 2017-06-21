@@ -27,6 +27,8 @@ sub AUTOLOAD {
     return _hidden( $self, %attr, @_ ) if $method eq 'hidden';
 
     # textarea
+    return _text_area( $self, %attr, @_ ) if $method eq 'textarea';
+
     # select
     # checkbox radio
 
@@ -55,6 +57,18 @@ sub _label {
     return sub {
         my $app = shift;
         $app->label_for( $field->id => $app->__( $field->label ) );
+    };
+}
+
+sub _text_area {
+    my $field         = shift;
+    my %arg           = @_;
+    my $default_value = delete $arg{default_value};
+
+    return sub {
+        my $app = shift;
+        $arg{placeholder} = $app->__( $arg{placeholder} );
+        $app->text_area( $field->name => $app->__($default_value), %arg );
     };
 }
 
