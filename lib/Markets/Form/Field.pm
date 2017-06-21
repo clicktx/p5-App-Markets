@@ -13,26 +13,24 @@ sub AUTOLOAD {
     # label
     return _label( $self, @_ ) if $method eq 'label_for';
 
-    # input
     my %attr = %{$self};
     $attr{id} = $self->id;
     delete $attr{$_} for qw(field_key type label);
-
-    my @basic = qw(email number search tel text url password);
-    my @other = qw(color range date month time week file);
-    for my $name (@basic) {
-        return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
-    }
-    for my $name (@other) {
-        delete $attr{$_} for qw(placeholder);
-        return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
-    }
 
     # hidden
     return _hidden( $self, %attr, @_ ) if $method eq 'hidden';
 
     # textarea
     return _text_area( $self, %attr, @_ ) if $method eq 'textarea';
+
+    # input
+    for my $name (qw(email number search tel text url password)) {
+        return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
+    }
+    for my $name (qw(color range date month time week file)) {
+        delete $attr{$_} for qw(placeholder);
+        return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
+    }
 
     # select
     # checkbox radio
