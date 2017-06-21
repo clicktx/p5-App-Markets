@@ -3,7 +3,8 @@ use Mojo::Base -base;
 use Carp qw/croak/;
 
 has id => sub { $_ = shift->name; s/\./_/g; $_ };
-has [qw/field_key name type label help error_message default_value value placeholder/];
+has [qw(field_key default_value help label error_message)];
+has [qw(name type value placeholder checked selected)];
 
 sub AUTOLOAD {
     my $self = shift;
