@@ -3,8 +3,8 @@ use Mojo::Base -base;
 use Carp qw/croak/;
 
 has id => sub { $_ = shift->name; s/\./_/g; $_ };
-has [qw(field_key default_value help label error_message)];
-has [qw(name type value placeholder checked selected)];
+has [qw(field_key default_value choices help label error_message)];
+has [qw(name type value placeholder checked)];
 
 sub AUTOLOAD {
     my $self = shift;
@@ -32,8 +32,16 @@ sub AUTOLOAD {
         return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
     }
 
-    # select
     # checkbox radio
+    $attr{checked} = 'checked' if $attr{checked};
+    return _input( $self, method => 'check_box',    %attr, @_ ) if $method eq 'checkbox';
+    return _input( $self, method => 'radio_button', %attr, @_ ) if $method eq 'radio';
+
+    # select
+    return _select( $self, %attr, @_ ) if $method eq 'select';
+
+    # [WIP] choice
+    # return _choice( $self, %attr, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
@@ -60,6 +68,17 @@ sub _label {
     return sub {
         my $app = shift;
         $app->label_for( $field->id => $app->__( $field->label ) );
+    };
+}
+
+sub _select {
+    my $field   = shift;
+    my %arg     = @_;
+    my $choices = delete $arg{choices} || [];
+
+    return sub {
+        my $app = shift;
+        $app->select_field( $field->name => $choices, %arg );
     };
 }
 
