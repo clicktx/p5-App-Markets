@@ -45,8 +45,7 @@ sub _input {
     my $method = delete $arg{method};
     return sub {
         my $app = shift;
-
-        # $arg{placeholder} = $app->__( $arg{placeholder} );
+        $arg{placeholder} = $app->__( $arg{placeholder} );
         $app->$method( $field->name, %arg );
     };
 }
