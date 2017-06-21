@@ -15,11 +15,15 @@ sub AUTOLOAD {
     # input
     my %attr = %{$self};
     $attr{id} = $self->id;
-    delete $attr{$_} for qw/field_key type label/;
+    delete $attr{$_} for qw(field_key type label);
 
-    my @time  = qw(datetime date month time week);
-    my @other = qw(file password);
-    for my $name ( @time, @other, qw(color email number range search tel text url) ) {
+    my @basic = qw(email number search tel text url password);
+    my @other = qw(color range date month time week file);
+    for my $name (@basic) {
+        return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
+    }
+    for my $name (@other) {
+        delete $attr{$_} for qw(placeholder);
         return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
     }
 
@@ -47,7 +51,7 @@ sub _input {
     my $method = delete $arg{method};
     return sub {
         my $app = shift;
-        $arg{placeholder} = $app->__( $arg{placeholder} );
+        $arg{placeholder} = $app->__( $arg{placeholder} ) if $arg{placeholder};
         $app->$method( $field->name, %arg );
     };
 }
@@ -67,7 +71,7 @@ sub _text_area {
 
     return sub {
         my $app = shift;
-        $arg{placeholder} = $app->__( $arg{placeholder} );
+        $arg{placeholder} = $app->__( $arg{placeholder} ) if $arg{placeholder};
         $app->text_area( $field->name => $app->__($default_value), %arg );
     };
 }
