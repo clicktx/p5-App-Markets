@@ -13,6 +13,8 @@ my $fs = Markets::Form::Type::Test->new;
 #     is_deeply \@keys, [qw/email item.[].id name address/], 'right each keys';
 # };
 
+can_ok $fs, 'c', 'right c function';
+
 subtest 'field' => sub {
     my $f = $fs->field('email');
     isa_ok $f, 'Markets::Form::Field';
@@ -31,6 +33,19 @@ subtest 'append/remove' => sub {
     $fs->remove('name');
     @keys = $fs->keys;
     is_deeply \@keys, [qw/email item.[].id address aaa/], 'right keys';
+};
+
+subtest 'params' => sub {
+    isa_ok $fs->params, 'Mojo::Parameters';
+    $fs->params->append( email => 'a@b.com' );
+
+    is $fs->params->param('email'), 'a@b.com', 'right get param';
+    is $fs->params->param('a'),     undef,     'right empty param';
+};
+
+subtest 'render tags' => sub {
+    is ref $fs->render('email'),       'CODE', 'right render method';
+    is ref $fs->render_label('email'), 'CODE', 'right render_label method';
 };
 
 done_testing();

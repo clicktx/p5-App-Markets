@@ -3,10 +3,12 @@ use Mojo::Base -base;
 use Mojo::Util qw/monkey_patch/;
 use Tie::IxHash;
 use Scalar::Util qw/weaken/;
+use Mojo::Parameters;
+use Mojo::Collection;
 use Markets::Form::Field;
 
-has 'legend';
-has 'params';
+# has 'legend';
+has params => sub { Mojo::Parameters->new };
 
 sub append {
     my ( $self, $field_key ) = ( shift, shift );
@@ -16,25 +18,26 @@ sub append {
     ${"${class}::field_list"}{$field_key} = +{@_};
 }
 
-sub each {
-    my ( $self, $cb ) = @_;
-    my $class = ref $self || $self;
-    my $caller = caller;
-
-    no strict 'refs';
-    foreach my $a ( $self->keys ) {
-        my $b = %{"${class}::field_list"}{$a};
-        local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
-        $a->$cb($b);
-    }
-}
+# sub each {
+#     my ( $self, $cb ) = @_;
+#     my $class = ref $self || $self;
+#     my $caller = caller;
+#
+#     no strict 'refs';
+#     foreach my $a ( $self->keys ) {
+#         my $b = ${"${class}::field_list"}{$a};
+#         local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
+#         $a->$cb($b);
+#     }
+# }
 
 sub field {
     my ( $self, $name ) = ( shift, shift );
     my $args = @_ > 1 ? +{@_} : shift || {};
-
     my $class = ref $self || $self;
-    my $key = _field_key($name);
+
+    my $key = $name;
+    $key =~ s/\.\d/.[]/g;
 
     no strict 'refs';
     my $attrs = $key ? ${"${class}::field_list"}{$key} : {};
@@ -66,6 +69,7 @@ sub import {
     push @{"${caller}::ISA"}, $class;
     tie %{"${caller}::field_list"}, 'Tie::IxHash';
     monkey_patch $caller, 'has_field', sub { append( $caller, @_ ) };
+    monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
 }
 
 sub remove {
@@ -116,13 +120,14 @@ sub render {
 #     };
 # }
 
-sub _field_key { $_ = shift; s/\.\d/.[]/g; $_ }
+# sub _field_key { $_ = shift; s/\.\d/.[]/g; $_ }
 
 # sub _id { $_ = shift; s/\./_/g; $_ }
 #
 # sub _key_id { return ( _key( $_[0] ), _id( $_[0] ) ) }
 
 1;
+__END__
 
 =encoding utf8
 
@@ -144,7 +149,20 @@ Markets::Form::Field
 
 =head1 DESCRIPTION
 
+=head1 ATTRIBUTES
+
+=head2 C<params>
+
+    my $params = $fieldset->params;
+    $fieldset->params( Mojo::Parameters->new );
+
 =head1 FUNCTIONS
+
+=head2 C<c>
+
+    my $collection = c(1, 2, 3);
+
+Construct a new array-based L<Mojo::Collection> object.
 
 =head2 C<has_field>
 

@@ -7,16 +7,34 @@
 <%= form_for '/login_example/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
-    <%= form('example')->render_label("email")->(app) %>
-    <%= form('example')->render("email")->(app) %>
+    <h4>longer version</h4>
+    <div class="">
+        <%= form_set('example')->render_label("email")->(app) %>
+        <%= form_set('example')->render("email")->(app) %>
+    </div>
 
-    % my $i = 0;foreach my $data (@{$item}) {
-        % my $name = 'item.' . $i . '.name';
+    <h4>smart version</h4>
+    <div class="">
+        <%= form_label('example.address') %>
+        <%= form_widget('example.address') %>
+    </div>
+    <div class="">
+        <%= form_label('example.note') %>
+        <%= form_widget('example.note') %>
+    </div>
+    <div class="">
+        <%= form_label('example.country') %>
+        <%= form_widget('example.country') %>
+    </div>
+
+    <h4>in loop</h4>
+    % my $i = 0; foreach my $data (@{$item}) {
+        % my $name = 'example.item.' . $i . '.name';
         <div class="">
             <%= $data->{id} %>
             <%= $data->{name} %>
-            <%= form('example')->render_label($name)->(app) %>
-            <%= form('example')->render($name)->(app) %>
+            <%= form_label($name) %>
+            <%= form_widget($name) %>
         </div>
     % $i++ }
 
