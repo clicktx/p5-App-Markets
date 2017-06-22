@@ -4,6 +4,7 @@ use Mojo::Util qw/monkey_patch/;
 use Tie::IxHash;
 use Scalar::Util qw/weaken/;
 use Mojo::Parameters;
+use Mojo::Collection;
 use Markets::Form::Field;
 
 # has 'legend';
@@ -68,6 +69,7 @@ sub import {
     push @{"${caller}::ISA"}, $class;
     tie %{"${caller}::field_list"}, 'Tie::IxHash';
     monkey_patch $caller, 'has_field', sub { append( $caller, @_ ) };
+    monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
 }
 
 sub remove {
@@ -155,6 +157,12 @@ Markets::Form::Field
     $fieldset->params( Mojo::Parameters->new );
 
 =head1 FUNCTIONS
+
+=head2 C<c>
+
+    my $collection = c(1, 2, 3);
+
+Construct a new array-based L<Mojo::Collection> object.
 
 =head2 C<has_field>
 
