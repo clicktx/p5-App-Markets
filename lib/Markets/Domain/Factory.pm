@@ -6,6 +6,7 @@ use Mojo::Util;
 use Mojo::Loader;
 use Markets::Schema;
 use Markets::Domain::Collection qw/collection/;
+use Markets::Domain::IxHash qw/ix_hash/;
 
 has entity_class => sub {
     my $class = ref shift;
@@ -13,12 +14,26 @@ has entity_class => sub {
     $class;
 };
 
-sub add_aggregate {
-    my ( $self, $aggregate, $entity, $data ) = @_;
-    croak 'Data type array only' if ref $data ne 'ARRAY';
+sub aggregate {
+    my ( $self, $accessor, $entity, $data ) = @_;
+    croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
+
     my @array;
     push @array, $self->factory($entity)->create($_) for @{$data};
-    $self->param( $aggregate => collection(@array) );
+    $self->param( $accessor => collection(@array) );
+    return $self;
+}
+
+sub aggregate_kvlist {
+    my ( $self, $accessor, $entity, $data ) = @_;
+    croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
+
+    my @kvlist;
+    while ( @{$data} ) {
+        my ( $key, $value ) = ( shift @{$data}, shift @{$data} );
+        push @kvlist, ( $key, $self->factory($entity)->create($value) );
+    }
+    $self->param( $accessor => ix_hash(@kvlist) );
     return $self;
 }
 
@@ -67,8 +82,10 @@ sub create_entity {
 
 sub factory {
     my ( $self, $ns ) = ( shift, shift );
-    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
     Carp::croak 'Argument empty' unless $ns;
+
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+    $ns = 'Entity::' . $ns          if $ns !~ /^Entity::/;
 
     my $factory_base_class = __PACKAGE__;
     my $factory_class      = $factory_base_class . '::' . $ns;
@@ -144,12 +161,21 @@ Get namespace as a construct entity class.
 
 =head1 METHODS
 
-=head2 C<add_aggregate>
+=head2 C<aggregate>
 
-    my $entity = $factory->add_aggregate( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->add_aggregate( 'items', 'entity-item', \@data );
+    my @data = (qw/a b c d e f/);
+    my $entity = $factory->aggregate( $accessor_name, $target_entity, \@data );
+    my $entity = $factory->aggregate( 'items', 'entity-item', \@data );
 
-Added aggregate.
+Create C<Markets::Domain::Collection> type aggregate.
+
+=head2 C<aggregate_kvlist>
+
+    my @data = ( key => 'value', key2 => 'value2', ... );
+    my $entity = $factory->aggregate_kv( $accessor_name, $target_entity, \@data );
+    my $entity = $factory->aggregate_kv( 'items', 'entity-item', \@data );
+
+Create C<Markets::Domain::IxHash> type aggregate.
 
 =head2 C<cook>
 

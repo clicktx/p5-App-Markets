@@ -39,7 +39,7 @@ my %args = (
         'JSON::XS' => '3.02',
         'List::Util::XS' => '1.47',
         'MojoX::Session' => '0.33',
-        'Mojolicious' => '== 7.29',
+        'Mojolicious' => '== 7.32',
         'Mojolicious::Plugin::FormFields' => '0.05',
         'Mojolicious::Plugin::LocaleTextDomainOO' => '0.04',
         'Mojolicious::Plugin::Model' => '0.07',

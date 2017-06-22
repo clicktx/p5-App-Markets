@@ -2,8 +2,8 @@ package Markets::App::Common;
 use Mojo::Base 'Mojolicious';
 use Mojo::Log;
 use Markets::Addons;
+use DBIx::QueryLog;
 
-# use DBIx::QueryLog;
 $ENV{DBIC_TRACE}            = 1;
 $ENV{DBIX_QUERYLOG_COMPACT} = 1;
 $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
@@ -29,7 +29,7 @@ has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更�
 has addons      => sub { Markets::Addons->new(@_) };
 
 # logging
-has error_log       => sub { shift->_log('error') };
+has error_log    => sub { shift->_log('error') };
 has db_log       => sub { shift->_log('db') };
 has admin_log    => sub { shift->_log('admin') };
 has customer_log => sub { shift->_log('customer') };
@@ -40,12 +40,11 @@ sub initialize_app {
     my $mode = $self->mode;
 
     # SQL debug log
-    # $DBIx::QueryLog::OUTPUT = sub {
-    #     my %args = @_;
-    #
-    #     # printf 'sql: %s', $args{sql};
-    #     $self->log->debug( "sql:\n" . $args{sql} );
-    # };
+    # DBIx::QueryLog->threshold(0.1); # sec
+    $DBIx::QueryLog::OUTPUT = sub {
+        my %param = @_;
+        $self->db_log->debug("[$param{time}] $param{sql}");
+    };
 
     # change log dir
     $self->log->path( $home->rel_file("var/log/$mode.log") )
@@ -61,9 +60,7 @@ sub initialize_app {
     $self->plugin('Markets::DefaultHelpers');
 
     # Preferences
-    my $pref = $self->model('preference')->load_pref;
-    $pref->{LINK_NAME} = 'リンク先';          # e.g.
-    $pref->{ROOT_URL}  = 'http://google.com/';    # e.g.
+    $self->service('preference')->load;
 
     # TimeZone
     # my $time_zone = 'Asia/Tokyo';                 # from preference
@@ -107,7 +104,8 @@ sub initialize_app {
     ) if -d $locale_dir;
 
     # Form Frameworks
-    $self->plugin( 'Markets::Form', methods => { valid => 'form_valid', errors => 'form_errors' } );
+    # $self->plugin( 'Markets::Form', methods => { valid => 'form_valid', errors => 'form_errors' } );
+    # $self->plugin('Markets::FormExpand');
 
     # Add before/after action hook
     # MEMO: Mojoliciou::Controllerの挙動を変更

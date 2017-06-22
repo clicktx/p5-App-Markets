@@ -1,9 +1,6 @@
 use Mojo::Base -strict;
-
-use t::Util;
 use Test::More;
 use Test::Deep;
-use Test::Mojo;
 
 subtest 'basic' => sub {
     use_ok 'Markets::Domain::Factory';
@@ -47,6 +44,9 @@ subtest 'basic' => sub {
 subtest 'factory method' => sub {
     my $f = Markets::Domain::Factory->factory('entity-hoge');
     isa_ok $f, 'Markets::Domain::Factory::Entity::Hoge';
+
+    $f = Markets::Domain::Factory->factory('hoge');
+    isa_ok $f, 'Markets::Domain::Factory::Entity::Hoge', 'not "entity-" prefix';
 
     $f = Markets::Domain::Factory->factory('entity-nofactory');
     isa_ok $f, 'Markets::Domain::Factory', 'right no factory';
@@ -99,28 +99,22 @@ subtest 'factory method using' => sub {
 #     ok !$@;
 # };
 
-subtest 'add_aggregate method' => sub {
+subtest 'aggregate method' => sub {
     my $f = Markets::Domain::Factory->new->factory('entity-agg');
-    eval { $f->add_aggregate( 'hoges', 'hoge', {} ) };
+    eval { $f->aggregate( 'hoges', 'entity-hoge', 'abc' ) };
     ok $@, 'bad data type';
 
     my $entity = $f->create;
     $entity->attr('hoges');
-    isa_ok $entity->hoges, 'Markets::Domain::Collection', '';
+    $entity->attr('bars');
+    isa_ok $entity->hoges, 'Markets::Domain::Collection', 'right aggregate array';
+    isa_ok $entity->bars,  'Markets::Domain::IxHash',     'right aggregate hash';
 };
 
 subtest 'inflate datetime for *_at' => sub {
     my $f = Markets::Domain::Factory->new->factory('entity-bar')->create( { created_at => '2017-5-26 19:17:06' } );
     isa_ok $f->{created_at}, 'DateTime';
     is $f->{created_at}->ymd, '2017-05-26';
-};
-
-subtest 'factory helper' => sub {
-    my $t      = Test::Mojo->new('App');
-    my $app    = $t->app;
-    my $entity = $app->factory('entity-bar')->create;
-    isa_ok $entity, 'Markets::Domain::Entity::Bar';
-    isa_ok $entity->{hoge}, 'Markets::Domain::Entity::Hoge';
 };
 
 done_testing();
@@ -178,7 +172,8 @@ done_testing();
 
     sub cook {
         my $self = shift;
-        $self->add_aggregate( 'hoges', 'entity-hoge', [ {} ] );
+        $self->aggregate( 'hoges', 'entity-hoge', [ {} ] );
+        $self->aggregate_kvlist( 'bars', 'entity-bar', [ a => {} ] );
     }
 
     package Markets::Domain::Entity::Agg;

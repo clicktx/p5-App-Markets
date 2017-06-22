@@ -1,10 +1,10 @@
 package Markets::Schema::Result::Session;
-use Mojo::Base 'Markets::Schema::ResultCommon';
+use Mojo::Base 'Markets::Schema::Base::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column sid => {
-    data_type => 'VARCHAR',
-    size      => 50,
+    data_type => 'CHAR',
+    size      => 40,
 };
 
 column data => {

@@ -1,3 +1,5 @@
+# .git # NOTE: needed minilla
+.git/objects/
 .DS_Store
 ,/
 .perl-version

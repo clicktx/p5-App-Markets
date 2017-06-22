@@ -6,6 +6,9 @@ use Scalar::Util ();
 use Mojo::Util   ();
 use Markets::Domain::Factory;
 
+my $FORM_CLASS = 'Markets::Form::Type';
+my $FORM_STASH = 'markets.form';
+
 sub register {
     my ( $self, $app ) = @_;
 
@@ -15,27 +18,48 @@ sub register {
     $app->helper( cookie_session => sub { shift->session(@_) } );
     $app->helper( template       => sub { shift->stash( template => shift ) } );
 
-    $app->helper( cart    => sub { _cart(@_) } );
-    $app->helper( factory => sub { _factory(@_) } );
-    $app->helper( pref    => sub { _pref(@_) } );
-    $app->helper( service => sub { _service(@_) } );
+    $app->helper( cart        => sub { _cart(@_) } );
+    $app->helper( factory     => sub { _factory(@_) } );
+    $app->helper( form_set    => sub { _form_set(@_) } );
+    $app->helper( form_label  => sub { _form_render( @_, 'render_label' ) } );
+    $app->helper( form_widget => sub { _form_render( @_, 'render' ) } );
+    $app->helper( pref        => sub { _pref(@_) } );
+    $app->helper( service     => sub { _service(@_) } );
 }
 
 sub _cart { @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->stash('markets.entity.cart') }
 
 sub _factory { shift; Markets::Domain::Factory->new->factory(@_) }
 
+sub _form_set {
+    my ( $self, $ns, $params ) = @_;
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+    Carp::croak 'Arguments empty' unless $ns;
+
+    $self->stash( $FORM_STASH => {} ) unless $self->stash($FORM_STASH);
+    my $formset = $self->stash($FORM_STASH)->{$ns};
+    return $formset if $formset;
+
+    my $class = $FORM_CLASS . "::" . $ns;
+    _load_class($class);
+
+    $params = $self->req->params unless $params;
+    $formset = $class->new( params => $params );
+    $self->stash($FORM_STASH)->{$ns} = $formset;
+    return $formset;
+}
+
+sub _form_render {
+    my $self = shift;
+    my ( $form, $field ) = shift =~ /(.+?)\.(.+)/;
+    my $method = shift;
+    return _form_set( $self, $form )->$method($field)->($self);
+}
+
 sub _pref {
     my $self = shift;
-    my $pref = $self->stash('pref');
-
-    @_ ? my $key = shift : return $pref;
-    unless ( $pref->{$key} ) {
-        my $e = "pref('$key') has not value.";
-        $self->app->log->fatal($e);
-        Carp::croak $e;
-    }
-    return $pref->{$key};
+    my $pref = $self->stash('markets.entity.preference');
+    return @_ ? $pref->value(@_) : $pref;
 }
 
 sub _service {
@@ -97,10 +121,16 @@ Return L<Markets::Domain::Factory> Object.
 
 =head2 C<pref>
 
-    my $preferences = $c->pref; # Get all preferences
+    # Get preference entity
+    my $entity_preference = $c->pref;
+
+    # Getter
     my $hoge = $c->pref('hoge');
 
-Get preference.
+    # Setter
+    $c->pref( hoge => 'fizz', fuga => 'bazz' );
+
+Get/Set preference.
 
 =head2 C<service>
 

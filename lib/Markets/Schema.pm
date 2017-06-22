@@ -6,7 +6,7 @@ use Mojo::Util 'camelize';
 our $VERSION   = 0.001;
 our $TIME_ZONE = 'UTC';
 
-__PACKAGE__->load_namespaces( default_resultset_class => 'ResultSetCommon' );
+__PACKAGE__->load_namespaces( default_resultset_class => 'Base::ResultSet' );
 
 sub time_zone { shift; return @_ ? $TIME_ZONE = shift : $TIME_ZONE }
 sub TZ { DateTime::TimeZone->new( name => $TIME_ZONE ) }

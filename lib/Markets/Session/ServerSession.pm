@@ -55,7 +55,7 @@ sub create {
     my $sid  = $self->SUPER::create(@_);
 
     # New cart
-    my $id = generate_token( length => 40 );
+    my $id = generate_token( length => 40, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
     my $cart = {
         data         => {},
         _is_modified => 0,

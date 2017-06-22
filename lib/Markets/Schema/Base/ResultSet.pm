@@ -1,8 +1,8 @@
-package Markets::Schema::ResultSetCommon;
+package Markets::Schema::Base::ResultSet;
 # use Mojo::Base 'DBIx::Class::ResultSet';
 use Mojo::Base 'DBIx::Class::ResultSet::HashRef';
 
-# ResultCommon::insertで対応しているので不要
+# Base::Result::insertで対応しているので不要
 # sub create {
 #     my $self = shift;
 #

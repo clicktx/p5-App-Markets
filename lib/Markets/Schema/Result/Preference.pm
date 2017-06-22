@@ -1,10 +1,16 @@
 package Markets::Schema::Result::Preference;
-use Mojo::Base 'Markets::Schema::ResultCommon';
+use Mojo::Base 'Markets::Schema::Base::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-primary_column key_name => {
+primary_column id => {
+    data_type         => 'INT',
+    is_auto_increment => 1,
+};
+
+column name => {
     data_type => 'VARCHAR',
-    size      => 50,
+    size      => 32,
+    is_nullable => 0,
 };
 
 column value => {
@@ -17,23 +23,30 @@ column default_value => {
     is_nullable => 0,
 };
 
+column title => {
+    data_type => 'VARCHAR',
+    size      => 64,
+    is_nullable => 1,
+};
+
 column summary => {
-    data_type   => 'TEXT',
+    data_type => 'VARCHAR',
+    size      => 128,
     is_nullable => 1,
 };
 
 column position => {
     data_type     => 'INT',
-    default_value => 0,
-    # is_nullable   => 0,
-    is_nullable   => 1,
+    default_value => 100,
+    is_nullable   => 0,
 };
 
 column group_id => {
     data_type     => 'INT',
-    default_value => 0,
-    # is_nullable   => 0,
-    is_nullable   => 1,
+    default_value => 1,
+    is_nullable   => 0,
 };
+
+unique_constraint ui_name => [qw/name/];
 
 1;
