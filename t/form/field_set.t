@@ -13,7 +13,10 @@ my $fs = Markets::Form::Type::Test->new;
 #     is_deeply \@keys, [qw/email item.[].id name address/], 'right each keys';
 # };
 
-can_ok $fs, 'c', 'right c function';
+subtest 'c' => sub {
+    ok $fs->can('c');
+    isa_ok $fs->c( 1, 2, 3 ), 'Mojo::Collection';
+};
 
 subtest 'field' => sub {
     my $f = $fs->field('email');
