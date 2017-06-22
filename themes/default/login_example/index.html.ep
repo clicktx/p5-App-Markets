@@ -18,6 +18,14 @@
         <%= form_label('example.address') %>
         <%= form_widget('example.address') %>
     </div>
+    <div class="">
+        <%= form_label('example.note') %>
+        <%= form_widget('example.note') %>
+    </div>
+    <div class="">
+        <%= form_label('example.country') %>
+        <%= form_widget('example.country') %>
+    </div>
 
     <h4>in loop</h4>
     % my $i = 0; foreach my $data (@{$item}) {
