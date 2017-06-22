@@ -1,6 +1,8 @@
 package Markets::Form::Field;
 use Mojo::Base -base;
 use Carp qw/croak/;
+use Scalar::Util qw/blessed/;
+use Mojo::Collection 'c';
 
 has id => sub { $_ = shift->name; s/\./_/g; $_ };
 has [qw(field_key default_value choices help label error_message)];
@@ -32,10 +34,14 @@ sub AUTOLOAD {
         return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
     }
 
-    # checkbox radio
-    $attr{checked} = 'checked' if $attr{checked};
-    return _input( $self, method => 'check_box',    %attr, @_ ) if $method eq 'checkbox';
-    return _input( $self, method => 'radio_button', %attr, @_ ) if $method eq 'radio';
+    # checkbox/radio
+    if ( $method eq 'checkbox' || $method eq 'radio' ) {
+
+        # true to "checked"
+        $attr{checked} ? $attr{checked} = 'checked' : delete $attr{checked};
+        return _input( $self, method => 'check_box',    %attr, @_ ) if $method eq 'checkbox';
+        return _input( $self, method => 'radio_button', %attr, @_ ) if $method eq 'radio';
+    }
 
     # select
     return _select( $self, %attr, @_ ) if $method eq 'select';
@@ -78,8 +84,36 @@ sub _select {
 
     return sub {
         my $app = shift;
-        $app->select_field( $field->name => $choices, %arg );
+        $app->select_field( $field->name => _choices( $app, $choices ), %arg );
     };
+}
+
+# I18N and bool selected
+sub _choices {
+    my $app     = shift;
+    my $choices = shift;
+
+    for my $group ( @{$choices} ) {
+        next unless ref $group;
+
+        # optgroup
+        if ( blessed $group && $group->isa('Mojo::Collection') ) {
+            my ( $label, $values, %attrs ) = @{$group};
+            $label  = $app->__($label);
+            $values = _choices( $app, $values );
+            $group  = c( $label => $values, %attrs );
+        }
+        else {
+            my ( $label, $value ) = @{$group};
+            $label = $app->__($label);
+
+            # true to "selected"
+            my %attr = ( @{$group}[ 2 .. $#$group ] );
+            $attr{selected} ? $attr{selected} = 'selected' : delete $attr{selected};
+            $group = [ $label, $value, %attr ];
+        }
+    }
+    return $choices;
 }
 
 sub _text_area {
