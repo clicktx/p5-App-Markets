@@ -23,7 +23,7 @@ sub AUTOLOAD {
     return _hidden( $self, %attr, @_ ) if $method eq 'hidden';
 
     # textarea
-    return _text_area( $self, %attr, @_ ) if $method eq 'textarea';
+    return _textarea( $self, %attr, @_ ) if $method eq 'textarea';
 
     # input
     for my $name (qw(email number search tel text url password)) {
@@ -116,7 +116,7 @@ sub _choices {
     return $choices;
 }
 
-sub _text_area {
+sub _textarea {
     my $field         = shift;
     my %arg           = @_;
     my $default_value = delete $arg{default_value};
