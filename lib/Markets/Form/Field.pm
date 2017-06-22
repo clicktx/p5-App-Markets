@@ -52,6 +52,34 @@ sub AUTOLOAD {
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
 
+# I18N and bool selected
+sub _choices {
+    my $app     = shift;
+    my $choices = shift;
+
+    for my $group ( @{$choices} ) {
+        next unless ref $group;
+
+        # optgroup
+        if ( blessed $group && $group->isa('Mojo::Collection') ) {
+            my ( $label, $values, %attrs ) = @{$group};
+            $label  = $app->__($label);
+            $values = _choices( $app, $values );
+            $group  = c( $label => $values, %attrs );
+        }
+        else {
+            my ( $label, $value ) = @{$group};
+            $label = $app->__($label);
+
+            # true to "selected"
+            my %attr = ( @{$group}[ 2 .. $#$group ] );
+            $attr{selected} ? $attr{selected} = 'selected' : delete $attr{selected};
+            $group = [ $label, $value, %attr ];
+        }
+    }
+    return $choices;
+}
+
 sub _hidden {
     my $field = shift;
     return sub { shift->hidden_field( $field->name, $field->value, @_ ) };
@@ -86,34 +114,6 @@ sub _select {
         my $app = shift;
         $app->select_field( $field->name => _choices( $app, $choices ), %arg );
     };
-}
-
-# I18N and bool selected
-sub _choices {
-    my $app     = shift;
-    my $choices = shift;
-
-    for my $group ( @{$choices} ) {
-        next unless ref $group;
-
-        # optgroup
-        if ( blessed $group && $group->isa('Mojo::Collection') ) {
-            my ( $label, $values, %attrs ) = @{$group};
-            $label  = $app->__($label);
-            $values = _choices( $app, $values );
-            $group  = c( $label => $values, %attrs );
-        }
-        else {
-            my ( $label, $value ) = @{$group};
-            $label = $app->__($label);
-
-            # true to "selected"
-            my %attr = ( @{$group}[ 2 .. $#$group ] );
-            $attr{selected} ? $attr{selected} = 'selected' : delete $attr{selected};
-            $group = [ $label, $value, %attr ];
-        }
-    }
-    return $choices;
 }
 
 sub _textarea {
