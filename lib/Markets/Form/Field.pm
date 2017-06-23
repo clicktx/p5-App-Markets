@@ -47,7 +47,7 @@ sub AUTOLOAD {
     return _select( $self, %attr, @_ ) if $method eq 'select';
 
     # choice
-    return _choice_list_field( $self, %attr, @_ ) if $method eq 'choice';
+    return _choice_widget( $self, %attr, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
@@ -67,7 +67,7 @@ sub _choice_field {
     return $c->tag( 'label', sub { $checkbox . $pair->[0] } );
 }
 
-sub _choice_list_field {
+sub _choice_widget {
     my $field = shift;
     my %arg   = @_;
 
