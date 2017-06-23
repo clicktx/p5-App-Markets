@@ -47,12 +47,12 @@ sub AUTOLOAD {
     return _select( $self, %attr, @_ ) if $method eq 'select';
 
     # choice
-    return _choice( $self, %attr, @_ ) if $method eq 'choice';
+    return _choice_list( $self, %attr, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
 
-sub _choice {
+sub _choice_list {
     my $field = shift;
     my %arg   = @_;
 
@@ -63,7 +63,8 @@ sub _choice {
 
     # radio
     if ( $flag == 1 ) {
-        return _radio_list( $field, $choices, %arg );
+        $arg{type} = 'radio';
+        return _list_field( $field, $choices, %arg );
     }
 
     # select-multiple
@@ -77,7 +78,8 @@ sub _choice {
 
     # checkbox
     elsif ( $flag == 11 ) {
-        return _checkbox_list( $field, $choices, %arg );
+        $arg{type} = 'checkbox';
+        return _list_field( $field, $choices, %arg );
     }
 
     # select
@@ -89,7 +91,8 @@ sub _choice {
     }
 }
 
-sub __checkbox_label {
+# check_box or radio_button into the label
+sub _choice {
     my ( $app, $values, $pair ) = ( shift, shift, shift );
 
     $pair = [ $pair, $pair ] unless ref $pair eq 'ARRAY';
@@ -98,15 +101,19 @@ sub __checkbox_label {
     delete $attrs{checked} if keys %$values;
     $attrs{checked} = undef if $attrs{checked} || $values->{ $pair->[1] };
 
-    my $checkbox = $app->check_box( $attrs{name} => %attrs );
+    my $method = delete $attrs{type} eq 'checkbox' ? 'check_box' : 'radio_button';
+    my $checkbox = $app->$method( $attrs{name} => %attrs );
     return $app->tag( 'label', sub { $checkbox . $pair->[0] } );
 }
 
-sub _checkbox_list {
+sub _list_field {
     my $field   = shift;
     my $choices = shift;
+    my %arg     = @_;
 
-    my $name = $field->name;    # 'name[]'にする？
+    # my $name = $field->name;    # 'name[]'にする？
+    my $name = $arg{name};    # 'name[]'にする？
+    delete $arg{$_} for qw(id value);
 
     return sub {
         my $app = shift;
@@ -117,13 +124,12 @@ sub _checkbox_list {
         for my $group ( @{$choices} ) {
             if ( blessed $group && $group->isa('Mojo::Collection') ) {
                 my ( $label, $values, %attrs ) = @$group;
-                my $content = join "\n",
-                  map { $app->tag( 'li', __checkbox_label( $app, \%values, $_, name => $name ) ) } @$values;
+                my $content = join "\n", map { $app->tag( 'li', _choice( $app, \%values, $_, %arg ) ) } @$values;
                 $content = $app->tag( 'ul', sub { "\n" . $content . "\n" } );
                 $groups .= $app->tag( 'li', sub { $label . "\n" . $content . "\n" } ) . "\n";
             }
             else {
-                my $row = __checkbox_label( $app, \%values, $group, name => $name );
+                my $row = _choice( $app, \%values, $group, %arg );
                 $groups .= $app->tag( 'li' => sub { $row } ) . "\n";
             }
         }
