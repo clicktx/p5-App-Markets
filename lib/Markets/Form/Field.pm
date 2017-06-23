@@ -168,8 +168,8 @@ sub _list_field {
     my $choices = shift;
     my %arg     = @_;
 
-    # my $name = $field->name;    # 'name[]'にする？
-    my $name = $arg{name};    # 'name[]'にする？
+    # NOTE: multipleの場合はname属性を xxx[] に変更する？
+    my $name = $arg{name};
     delete $arg{$_} for qw(id value);
 
     return sub {
