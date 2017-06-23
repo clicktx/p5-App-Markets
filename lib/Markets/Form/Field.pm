@@ -64,7 +64,9 @@ sub _choice_field {
 
     my $method = delete $attrs{type} eq 'checkbox' ? 'check_box' : 'radio_button';
     my $checkbox = $c->$method( $attrs{name} => %attrs );
-    return $c->tag( 'label', sub { $checkbox . $pair->[0] } );
+
+    my $label = $c->__( $pair->[0] );
+    return $c->tag( 'label', sub { $checkbox . $label } );
 }
 
 sub _choice_widget {
@@ -179,6 +181,8 @@ sub _list_field {
         for my $group ( @{$choices} ) {
             if ( blessed $group && $group->isa('Mojo::Collection') ) {
                 my ( $label, $values, %attrs ) = @$group;
+
+                $label = $c->__($label);
                 my $content = join "\n", map { $c->tag( 'li', _choice_field( $c, \%values, $_, %arg ) ) } @$values;
                 $content = $c->tag( 'ul', sub { "\n" . $content . "\n" } );
                 $groups .= $c->tag( 'li', sub { $label . "\n" . $content . "\n" } ) . "\n";
