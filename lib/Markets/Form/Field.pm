@@ -5,7 +5,7 @@ use Scalar::Util qw/blessed/;
 use Mojo::Collection 'c';
 
 has id => sub { $_ = shift->name; s/\./_/g; $_ };
-has [qw(field_key default_value choices help label error_message)];
+has [qw(field_key default_value choices help label error_message multiple expanded)];
 has [qw(name type value placeholder checked)];
 
 sub AUTOLOAD {
@@ -46,10 +46,89 @@ sub AUTOLOAD {
     # select
     return _select( $self, %attr, @_ ) if $method eq 'select';
 
-    # [WIP] choice
-    # return _choice( $self, %attr, @_ ) if $method eq 'choice';
+    # choice
+    return _choice( $self, %attr, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
+}
+
+sub _choice {
+    my $field = shift;
+    my %arg   = @_;
+
+    my $choices = delete $arg{choices} || [];
+    my $multiple = delete $arg{multiple} ? 1 : 0;
+    my $expanded = delete $arg{expanded} ? 1 : 0;
+    my $flag     = $multiple . $expanded;
+
+    # radio
+    if ( $flag == 1 ) {
+        return _radio_list( $field, $choices, %arg );
+    }
+
+    # select-multiple
+    elsif ( $flag == 10 ) {
+        $arg{multiple} = undef;
+        return sub {
+            my $app = shift;
+            $app->select_field( $field->name => _choices( $app, $choices ), %arg );
+        };
+    }
+
+    # checkbox
+    elsif ( $flag == 11 ) {
+        return _checkbox_list( $field, $choices, %arg );
+    }
+
+    # select
+    else {
+        return sub {
+            my $app = shift;
+            $app->select_field( $field->name => _choices( $app, $choices ), %arg );
+        };
+    }
+}
+
+sub __checkbox_label {
+    my ( $app, $values, $pair ) = ( shift, shift, shift );
+
+    $pair = [ $pair, $pair ] unless ref $pair eq 'ARRAY';
+
+    my %attrs = ( value => $pair->[1], @$pair[ 2 .. $#$pair ], @_ );
+    delete $attrs{checked} if keys %$values;
+    $attrs{checked} = undef if $attrs{checked} || $values->{ $pair->[1] };
+
+    my $checkbox = $app->check_box( $attrs{name} => %attrs );
+    return $app->tag( 'label', sub { $checkbox . $pair->[0] } );
+}
+
+sub _checkbox_list {
+    my $field   = shift;
+    my $choices = shift;
+
+    my $name = $field->name;    # 'name[]'にする？
+
+    return sub {
+        my $app = shift;
+
+        my %values = map { $_ => 1 } @{ $app->every_param($name) };
+
+        my $groups = "\n";
+        for my $group ( @{$choices} ) {
+            if ( blessed $group && $group->isa('Mojo::Collection') ) {
+                my ( $label, $values, %attrs ) = @$group;
+                my $content = join "\n",
+                  map { $app->tag( 'li', __checkbox_label( $app, \%values, $_, name => $name ) ) } @$values;
+                $content = $app->tag( 'ul', sub { "\n" . $content . "\n" } );
+                $groups .= $app->tag( 'li', sub { $label . "\n" . $content . "\n" } ) . "\n";
+            }
+            else {
+                my $row = __checkbox_label( $app, \%values, $group, name => $name );
+                $groups .= $app->tag( 'li' => sub { $row } ) . "\n";
+            }
+        }
+        $app->tag( 'ul' => sub { $groups } );
+    };
 }
 
 # I18N and bool selected
