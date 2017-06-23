@@ -54,7 +54,7 @@ sub AUTOLOAD {
 
 # check_box or radio_button into the label
 sub _choice_field {
-    my ( $app, $values, $pair ) = ( shift, shift, shift );
+    my ( $c, $values, $pair ) = ( shift, shift, shift );
 
     $pair = [ $pair, $pair ] unless ref $pair eq 'ARRAY';
 
@@ -63,8 +63,8 @@ sub _choice_field {
     $attrs{checked} = undef if $attrs{checked} || $values->{ $pair->[1] };
 
     my $method = delete $attrs{type} eq 'checkbox' ? 'check_box' : 'radio_button';
-    my $checkbox = $app->$method( $attrs{name} => %attrs );
-    return $app->tag( 'label', sub { $checkbox . $pair->[0] } );
+    my $checkbox = $c->$method( $attrs{name} => %attrs );
+    return $c->tag( 'label', sub { $checkbox . $pair->[0] } );
 }
 
 sub _choice_list_field {
@@ -86,8 +86,8 @@ sub _choice_list_field {
     elsif ( $flag == 10 ) {
         $arg{multiple} = undef;
         return sub {
-            my $app = shift;
-            $app->select_field( $field->name => _choices( $app, $choices ), %arg );
+            my $c = shift;
+            $c->select_field( $field->name => _choices( $c, $choices ), %arg );
         };
     }
 
@@ -100,15 +100,15 @@ sub _choice_list_field {
     # select
     else {
         return sub {
-            my $app = shift;
-            $app->select_field( $field->name => _choices( $app, $choices ), %arg );
+            my $c = shift;
+            $c->select_field( $field->name => _choices( $c, $choices ), %arg );
         };
     }
 }
 
 # I18N and bool selected
 sub _choices {
-    my $app     = shift;
+    my $c       = shift;
     my $choices = shift;
 
     for my $group ( @{$choices} ) {
@@ -117,13 +117,13 @@ sub _choices {
         # optgroup
         if ( blessed $group && $group->isa('Mojo::Collection') ) {
             my ( $label, $values, %attrs ) = @{$group};
-            $label  = $app->__($label);
-            $values = _choices( $app, $values );
+            $label  = $c->__($label);
+            $values = _choices( $c, $values );
             $group  = c( $label => $values, %attrs );
         }
         else {
             my ( $label, $value ) = @{$group};
-            $label = $app->__($label);
+            $label = $c->__($label);
 
             # true to "selected"
             my %attr = ( @{$group}[ 2 .. $#$group ] );
@@ -145,17 +145,17 @@ sub _input {
 
     my $method = delete $arg{method};
     return sub {
-        my $app = shift;
-        $arg{placeholder} = $app->__( $arg{placeholder} ) if $arg{placeholder};
-        $app->$method( $field->name, %arg );
+        my $c = shift;
+        $arg{placeholder} = $c->__( $arg{placeholder} ) if $arg{placeholder};
+        $c->$method( $field->name, %arg );
     };
 }
 
 sub _label {
     my $field = shift;
     return sub {
-        my $app = shift;
-        $app->label_for( $field->id => $app->__( $field->label ) );
+        my $c = shift;
+        $c->label_for( $field->id => $c->__( $field->label ) );
     };
 }
 
@@ -169,24 +169,24 @@ sub _list_field {
     delete $arg{$_} for qw(id value);
 
     return sub {
-        my $app = shift;
+        my $c = shift;
 
-        my %values = map { $_ => 1 } @{ $app->every_param($name) };
+        my %values = map { $_ => 1 } @{ $c->every_param($name) };
 
         my $groups = "\n";
         for my $group ( @{$choices} ) {
             if ( blessed $group && $group->isa('Mojo::Collection') ) {
                 my ( $label, $values, %attrs ) = @$group;
-                my $content = join "\n", map { $app->tag( 'li', _choice_field( $app, \%values, $_, %arg ) ) } @$values;
-                $content = $app->tag( 'ul', sub { "\n" . $content . "\n" } );
-                $groups .= $app->tag( 'li', sub { $label . "\n" . $content . "\n" } ) . "\n";
+                my $content = join "\n", map { $c->tag( 'li', _choice_field( $c, \%values, $_, %arg ) ) } @$values;
+                $content = $c->tag( 'ul', sub { "\n" . $content . "\n" } );
+                $groups .= $c->tag( 'li', sub { $label . "\n" . $content . "\n" } ) . "\n";
             }
             else {
-                my $row = _choice_field( $app, \%values, $group, %arg );
-                $groups .= $app->tag( 'li' => sub { $row } ) . "\n";
+                my $row = _choice_field( $c, \%values, $group, %arg );
+                $groups .= $c->tag( 'li' => sub { $row } ) . "\n";
             }
         }
-        $app->tag( 'ul' => sub { $groups } );
+        $c->tag( 'ul' => sub { $groups } );
     };
 }
 
@@ -196,8 +196,8 @@ sub _select {
     my $choices = delete $arg{choices} || [];
 
     return sub {
-        my $app = shift;
-        $app->select_field( $field->name => _choices( $app, $choices ), %arg );
+        my $c = shift;
+        $c->select_field( $field->name => _choices( $c, $choices ), %arg );
     };
 }
 
@@ -207,9 +207,9 @@ sub _textarea {
     my $default_value = delete $arg{default_value};
 
     return sub {
-        my $app = shift;
-        $arg{placeholder} = $app->__( $arg{placeholder} ) if $arg{placeholder};
-        $app->text_area( $field->name => $app->__($default_value), %arg );
+        my $c = shift;
+        $arg{placeholder} = $c->__( $arg{placeholder} ) if $arg{placeholder};
+        $c->text_area( $field->name => $c->__($default_value), %arg );
     };
 }
 
