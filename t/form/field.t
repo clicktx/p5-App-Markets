@@ -7,7 +7,7 @@ use Mojo::Collection 'c';
 
 use_ok 'Markets::Form::Field';
 
-my $t   = Test::Mojo->new('App');
+my $t = Test::Mojo->new('App');
 my $c = $t->app->build_controller;
 
 my $f = Markets::Form::Field->new(
@@ -87,7 +87,7 @@ subtest 'radio checkbox' => sub {
     for my $type (qw/radio checkbox/) {
         my $dom = Mojo::DOM->new( $f->$type->($c) );
         is_deeply $dom->at('*')->attr,
-          { checked => 'checked', type => $type, id => 'country', name => 'country', value => 'USA' },
+          { checked => undef, type => $type, id => 'country', name => 'country', value => 'USA' },
           "right $type checked";
     }
 };

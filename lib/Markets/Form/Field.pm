@@ -38,7 +38,7 @@ sub AUTOLOAD {
     if ( $method eq 'checkbox' || $method eq 'radio' ) {
 
         # true to "checked"
-        $attr{checked} ? $attr{checked} = 'checked' : delete $attr{checked};
+        $attr{checked} ? $attr{checked} = undef : delete $attr{checked};
         return _input( $self, method => 'check_box',    %attr, @_ ) if $method eq 'checkbox';
         return _input( $self, method => 'radio_button', %attr, @_ ) if $method eq 'radio';
     }
