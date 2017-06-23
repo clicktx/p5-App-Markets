@@ -89,7 +89,7 @@ sub _choice_widget {
         $arg{multiple} = undef;
         return sub {
             my $c = shift;
-            $c->select_field( $field->name => _choices( $c, $choices ), %arg );
+            $c->select_field( $field->name => _choices_for_select( $c, $choices ), %arg );
         };
     }
 
@@ -103,14 +103,14 @@ sub _choice_widget {
     else {
         return sub {
             my $c = shift;
-            $c->select_field( $field->name => _choices( $c, $choices ), %arg );
+            $c->select_field( $field->name => _choices_for_select( $c, $choices ), %arg );
         };
     }
 }
 
 # I18N and bool selected
 # NOTE: This function is used only for "$c->select_field" helper
-sub _choices {
+sub _choices_for_select {
     my $c       = shift;
     my $choices = shift;
 
@@ -121,7 +121,7 @@ sub _choices {
         if ( blessed $group && $group->isa('Mojo::Collection') ) {
             my ( $label, $values, %attrs ) = @{$group};
             $label  = $c->__($label);
-            $values = _choices( $c, $values );
+            $values = _choices_for_select( $c, $values );
             $group  = c( $label => $values, %attrs );
         }
         else {
@@ -203,7 +203,7 @@ sub _select {
 
     return sub {
         my $c = shift;
-        $c->select_field( $field->name => _choices( $c, $choices ), %arg );
+        $c->select_field( $field->name => _choices_for_select( $c, $choices ), %arg );
     };
 }
 
