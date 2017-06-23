@@ -47,12 +47,27 @@ sub AUTOLOAD {
     return _select( $self, %attr, @_ ) if $method eq 'select';
 
     # choice
-    return _choice_list( $self, %attr, @_ ) if $method eq 'choice';
+    return _choice_list_field( $self, %attr, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
 
-sub _choice_list {
+# check_box or radio_button into the label
+sub _choice_field {
+    my ( $app, $values, $pair ) = ( shift, shift, shift );
+
+    $pair = [ $pair, $pair ] unless ref $pair eq 'ARRAY';
+
+    my %attrs = ( value => $pair->[1], @$pair[ 2 .. $#$pair ], @_ );
+    delete $attrs{checked} if keys %$values;
+    $attrs{checked} = undef if $attrs{checked} || $values->{ $pair->[1] };
+
+    my $method = delete $attrs{type} eq 'checkbox' ? 'check_box' : 'radio_button';
+    my $checkbox = $app->$method( $attrs{name} => %attrs );
+    return $app->tag( 'label', sub { $checkbox . $pair->[0] } );
+}
+
+sub _choice_list_field {
     my $field = shift;
     my %arg   = @_;
 
@@ -89,52 +104,6 @@ sub _choice_list {
             $app->select_field( $field->name => _choices( $app, $choices ), %arg );
         };
     }
-}
-
-# check_box or radio_button into the label
-sub _choice {
-    my ( $app, $values, $pair ) = ( shift, shift, shift );
-
-    $pair = [ $pair, $pair ] unless ref $pair eq 'ARRAY';
-
-    my %attrs = ( value => $pair->[1], @$pair[ 2 .. $#$pair ], @_ );
-    delete $attrs{checked} if keys %$values;
-    $attrs{checked} = undef if $attrs{checked} || $values->{ $pair->[1] };
-
-    my $method = delete $attrs{type} eq 'checkbox' ? 'check_box' : 'radio_button';
-    my $checkbox = $app->$method( $attrs{name} => %attrs );
-    return $app->tag( 'label', sub { $checkbox . $pair->[0] } );
-}
-
-sub _list_field {
-    my $field   = shift;
-    my $choices = shift;
-    my %arg     = @_;
-
-    # my $name = $field->name;    # 'name[]'にする？
-    my $name = $arg{name};    # 'name[]'にする？
-    delete $arg{$_} for qw(id value);
-
-    return sub {
-        my $app = shift;
-
-        my %values = map { $_ => 1 } @{ $app->every_param($name) };
-
-        my $groups = "\n";
-        for my $group ( @{$choices} ) {
-            if ( blessed $group && $group->isa('Mojo::Collection') ) {
-                my ( $label, $values, %attrs ) = @$group;
-                my $content = join "\n", map { $app->tag( 'li', _choice( $app, \%values, $_, %arg ) ) } @$values;
-                $content = $app->tag( 'ul', sub { "\n" . $content . "\n" } );
-                $groups .= $app->tag( 'li', sub { $label . "\n" . $content . "\n" } ) . "\n";
-            }
-            else {
-                my $row = _choice( $app, \%values, $group, %arg );
-                $groups .= $app->tag( 'li' => sub { $row } ) . "\n";
-            }
-        }
-        $app->tag( 'ul' => sub { $groups } );
-    };
 }
 
 # I18N and bool selected
@@ -190,6 +159,37 @@ sub _label {
     };
 }
 
+sub _list_field {
+    my $field   = shift;
+    my $choices = shift;
+    my %arg     = @_;
+
+    # my $name = $field->name;    # 'name[]'にする？
+    my $name = $arg{name};    # 'name[]'にする？
+    delete $arg{$_} for qw(id value);
+
+    return sub {
+        my $app = shift;
+
+        my %values = map { $_ => 1 } @{ $app->every_param($name) };
+
+        my $groups = "\n";
+        for my $group ( @{$choices} ) {
+            if ( blessed $group && $group->isa('Mojo::Collection') ) {
+                my ( $label, $values, %attrs ) = @$group;
+                my $content = join "\n", map { $app->tag( 'li', _choice_field( $app, \%values, $_, %arg ) ) } @$values;
+                $content = $app->tag( 'ul', sub { "\n" . $content . "\n" } );
+                $groups .= $app->tag( 'li', sub { $label . "\n" . $content . "\n" } ) . "\n";
+            }
+            else {
+                my $row = _choice_field( $app, \%values, $group, %arg );
+                $groups .= $app->tag( 'li' => sub { $row } ) . "\n";
+            }
+        }
+        $app->tag( 'ul' => sub { $groups } );
+    };
+}
+
 sub _select {
     my $field   = shift;
     my %arg     = @_;
@@ -224,10 +224,11 @@ Markets::Form::Field
 
 =head1 SYNOPSIS
 
-    package MyForm::Field::User;
+    package Markets::Form::Type::User;
+    use Mojo::Base -strict;
     use Markets::Form::Field;
 
-    has_field 'name';
+    has_field email => ( type => 'email', placeholder => 'use@mail.com', label => 'E-mail' );
 
 =head1 DESCRIPTION
 
