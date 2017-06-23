@@ -107,6 +107,7 @@ sub _choice_widget {
 }
 
 # I18N and bool selected
+# NOTE: This function is used only for "$c->select_field" helper
 sub _choices {
     my $c       = shift;
     my $choices = shift;
@@ -159,6 +160,7 @@ sub _label {
     };
 }
 
+# checkbox list or radio button list
 sub _list_field {
     my $field   = shift;
     my $choices = shift;
