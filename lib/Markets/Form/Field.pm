@@ -180,19 +180,19 @@ sub _list_field {
 
         my %values = map { $_ => 1 } @{ $c->every_param($name) };
 
-        my $groups = "\n";
+        my $groups = '';
         for my $group ( @{$choices} ) {
             if ( blessed $group && $group->isa('Mojo::Collection') ) {
                 my ( $label, $values, %attrs ) = @$group;
 
                 $label = $c->__($label);
-                my $content = join "\n", map { $c->tag( 'li', _choice_field( $c, \%values, $_, %arg ) ) } @$values;
-                $content = $c->tag( 'ul', sub { "\n" . $content . "\n" } );
-                $groups .= $c->tag( 'li', sub { $label . "\n" . $content . "\n" } ) . "\n";
+                my $content = join '', map { $c->tag( 'li', _choice_field( $c, \%values, $_, %arg ) ) } @$values;
+                $content = $c->tag( 'ul', sub { $content } );
+                $groups .= $c->tag( 'li', sub { $label . $content } );
             }
             else {
                 my $row = _choice_field( $c, \%values, $group, %arg );
-                $groups .= $c->tag( 'li' => sub { $row } ) . "\n";
+                $groups .= $c->tag( 'li' => sub { $row } );
             }
         }
         $c->tag( 'ul' => sub { $groups } );
