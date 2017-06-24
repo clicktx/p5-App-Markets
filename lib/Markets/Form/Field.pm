@@ -57,10 +57,13 @@ sub _choice_field {
     my ( $c, $values, $pair ) = ( shift, shift, shift );
 
     $pair = [ $pair, $pair ] unless ref $pair eq 'ARRAY';
-
     my %attrs = ( value => $pair->[1], @$pair[ 2 .. $#$pair ], @_ );
-    delete $attrs{checked} if keys %$values;
-    $attrs{checked} = undef if $attrs{checked} || $values->{ $pair->[1] };
+
+    if ( keys %$values ) { delete $attrs{checked} }
+    else {    # default checked(bool)
+        $attrs{checked} ? $attrs{checked} = undef : delete $attrs{checked};
+    }
+    $attrs{checked} = undef if $values->{ $pair->[1] };
 
     my $method = delete $attrs{type} eq 'checkbox' ? 'check_box' : 'radio_button';
     my $checkbox = $c->$method( $attrs{name} => %attrs );
