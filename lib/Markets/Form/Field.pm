@@ -180,22 +180,27 @@ sub _list_field {
 
         my %values = map { $_ => 1 } @{ $c->every_param($name) };
 
+        my $root_class;
         my $groups = '';
         for my $group ( @{$choices} ) {
             if ( blessed $group && $group->isa('Mojo::Collection') ) {
                 my ( $label, $values, %attrs ) = @$group;
+                $root_class = 'form-choice-groups' unless $root_class;
 
                 $label = $c->__($label);
-                my $content = join '', map { $c->tag( 'li', _choice_field( $c, \%values, $_, %arg ) ) } @$values;
-                $content = $c->tag( 'ul', sub { $content } );
-                $groups .= $c->tag( 'li', sub { $label . $content } );
+                my $content = join '',
+                  map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %arg ) ) }
+                  @$values;
+                $content = $c->tag( 'ul', class => 'form-choices', sub { $content } );
+                $groups .= $c->tag( 'li', class => 'form-choice-group', sub { $label . $content } );
             }
             else {
+                $root_class = 'form-choices' unless $root_class;
                 my $row = _choice_field( $c, \%values, $group, %arg );
-                $groups .= $c->tag( 'li' => sub { $row } );
+                $groups .= $c->tag( 'li', class => 'form-choice-item', sub { $row } );
             }
         }
-        $c->tag( 'ul' => sub { $groups } );
+        $c->tag( 'ul', class => $root_class, sub { $groups } );
     };
 }
 
@@ -240,6 +245,116 @@ Markets::Form::Field
     has_field email => ( type => 'email', placeholder => 'use@mail.com', label => 'E-mail' );
 
 =head1 DESCRIPTION
+
+
+=head1 METHODS
+
+Return code refference.
+L<Mojolicious::Plugin::TagHelpers> wrapper method.
+
+=head2 C<choice>
+
+    my $f = Markets::Form::Field->new( name => 'country' );
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
+
+    # Select field
+    $f->multiple(0);
+    $f->expanded(0);
+
+    <select id="country" name="country">
+        <optgroup label="EU">
+            <option value="de">de</option>
+            <option value="en">en</option>
+        </optgroup>
+        <optgroup label="Asia">
+            <option value="cn">China</option>
+            <option selected="selected" value="jp">Japan</option>
+        </optgroup>
+    </select>
+
+    # Select field multiple
+    $f->multiple(1);
+    $f->expanded(0);
+
+    <select id="country" multiple name="country">
+        <optgroup label="EU">
+            <option value="de">de</option>
+            <option value="en">en</option>
+        </optgroup>
+        <optgroup label="Asia">
+            <option value="cn">China</option>
+            <option selected="selected" value="jp">Japan</option>
+        </optgroup>
+    </select>
+
+Rendering Select Field and Select Field multiple tag.
+See L<Mojolicious::Plugin::TagHelpers/select_field>
+
+    $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 1 ], 'cn' ] );
+
+    # Radio button
+    $f->multiple(0);
+    $f->expanded(1);
+    say $f->choice->($c);
+
+    # HTML
+    <ul class="form-choices">
+        <li class="form-choice-item">
+            <label><input name="country" type="radio" value="jp">Japan</label>
+        </li>
+        <li class="form-choice-item">
+            <label><input checked name="country" type="radio" value="de">Germany</label>
+        </li>
+        <li class="form-choice-item">
+            <label><input name="country" type="radio" value="cn">cn</label>
+        </li>
+    </ul>
+
+    # Check box
+    $f->multiple(1);
+    $f->expanded(1);
+    say $f->choice->($c);
+
+    # HTML
+    <ul class="form-choices">
+        <li class="form-choice-item">
+            <label><input name="country" type="checkbox" value="jp">Japan</label>
+        </li>
+        <li class="form-choice-item">
+            <label><input checked name="country" type="checkbox" value="de">Germany</label>
+        </li>
+        <li class="form-choice-item">
+            <label><input name="country" type="checkbox" value="cn">cn</label>
+        </li>
+    </ul>
+
+    # Group choices
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
+    say $f->choice->($c);
+
+    # HTML
+    <ul class="form-choice-groups">
+        <li class="form-choice-group">EU
+            <ul class="form-choices">
+                <li class="form-choice-item">
+                    <label><input name="country" type="checkbox" value="de">de</label>
+                </li>
+                <li class="form-choice-item">
+                    <label><input name="country" type="checkbox" value="en">en</label>
+                </li>
+            </ul>
+        </li>
+        <li class="form-choice-group">Asia
+            <ul class="form-choices">
+                <li class="form-choice-item">
+                    <label><input name="country" type="checkbox" value="cn">China</label>
+                </li>
+                <li class="form-choice-item">
+                    <label><input checked name="country" type="checkbox" value="jp">Japan</label>
+                </li>
+            </ul>
+        </li>
+    </ul>
 
 =head1 SEE ALSO
 

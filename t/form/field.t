@@ -178,7 +178,9 @@ subtest 'choice' => sub {
     $f->multiple(0);
     $f->expanded(1);
     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 0 ], 'cn' ] );
-    $dom   = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice->($c) );
+    is_deeply $dom->at('ul')->attr, { class => 'form-choices' },     'right class';
+    is_deeply $dom->at('li')->attr, { class => 'form-choice-item' }, 'right class';
     $input = $dom->find('input');
     is_deeply $input->[1]->attr, { name => 'country', type => 'radio', value => 'de' }, 'right type is radio';
 
@@ -189,6 +191,8 @@ subtest 'choice' => sub {
 
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
     $dom = Mojo::DOM->new( $f->choice->($c) );
+    is_deeply $dom->at('ul')->attr, { class => 'form-choice-groups' }, 'right class';
+    is_deeply $dom->at('li')->attr, { class => 'form-choice-group' },  'right class';
     my $child;
     $child = $dom->at('ul')->child_nodes;
     is $child->[0]->text, 'ヨーロッパ', 'right group label';
