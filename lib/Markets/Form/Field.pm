@@ -258,7 +258,16 @@ All methods is L<Mojolicious::Plugin::TagHelpers> wrapper method.
 
 =head2 C<checkbox>
 
-    my $f = Markets::Form::Field->new( name => 'country' );
+    my $f = Markets::Form::Field->new(
+        name    => 'agreed',
+        value   => 'yes',
+        label   => 'I agreed',
+        checked => 1,
+    );
+    say $f->checkbox->($c);
+
+    # HTML
+    <label><input checked name="agreed" type="checkbox" value="yes">I agreed</label>
 
 =head2 C<choice>
 
@@ -385,6 +394,17 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
 =head2 C<password>
 
 =head2 C<radio>
+
+    my $f = Markets::Form::Field->new(
+        name    => 'agreed',
+        value   => 'yes',
+        label   => 'I agreed',
+        checked => 1,
+    );
+    say $f->radio->($c);
+
+    # HTML
+    <label><input checked name="agreed" type="radio" value="yes">I agreed</label>
 
 =head2 C<range>
 
