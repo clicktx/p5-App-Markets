@@ -28,3 +28,6 @@ msgstr "ヨーロッパ"
 
 msgid "Asia"
 msgstr "アジア"
+
+msgid "I agreed"
+msgstr "私は同意した"

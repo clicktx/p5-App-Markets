@@ -36,11 +36,15 @@ sub AUTOLOAD {
 
     # checkbox/radio
     if ( $method eq 'checkbox' || $method eq 'radio' ) {
+        delete $attr{id};
+        $attr{type} = $method;
 
-        # true to "checked"
-        $attr{checked} ? $attr{checked} = undef : delete $attr{checked};
-        return _input( $self, method => 'check_box',    %attr, @_ ) if $method eq 'checkbox';
-        return _input( $self, method => 'radio_button', %attr, @_ ) if $method eq 'radio';
+        my @args = @_;
+        return sub {
+            my $c = shift;
+            my %values = map { $_ => 1 } @{ $c->every_param( $attr{name} ) };
+            _choice_field( $c, \%values, $self->label, %attr, @args );
+        };
     }
 
     # select
@@ -253,6 +257,8 @@ Return code refference.
 All methods is L<Mojolicious::Plugin::TagHelpers> wrapper method.
 
 =head2 C<checkbox>
+
+    my $f = Markets::Form::Field->new( name => 'country' );
 
 =head2 C<choice>
 

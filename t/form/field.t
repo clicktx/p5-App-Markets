@@ -67,31 +67,29 @@ subtest 'textarea' => sub {
 
 subtest 'radio checkbox' => sub {
     my $f = Markets::Form::Field->new(
-        field_key => 'country',
-        name      => 'country',
-        value     => 'USA',
+        name  => 'agreed',
+        value => 'yes',
+        label => 'I agreed',
     );
 
     for my $type (qw/radio checkbox/) {
         my $dom = Mojo::DOM->new( $f->$type->($c) );
-        is_deeply $dom->at('*')->attr, { type => $type, id => 'country', name => 'country', value => 'USA' },
-          "right $type";
+        is $dom->at('*')->tag, 'label', "right $type parent";
+        is $dom->at('*')->text, '私は同意した', "right $type label text";
+        is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type";
     }
 
-    $f->checked(undef);
+    $f->checked(0);
     for my $type (qw/radio checkbox/) {
         my $dom = Mojo::DOM->new( $f->$type->($c) );
-        is_deeply $dom->at('*')->attr,
-          { type => $type, id => 'country', name => 'country', value => 'USA' },
-          "right $type unchecked";
+        is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
     }
 
     # bool "checked"
     $f->checked(1);
     for my $type (qw/radio checkbox/) {
         my $dom = Mojo::DOM->new( $f->$type->($c) );
-        is_deeply $dom->at('*')->attr,
-          { checked => undef, type => $type, id => 'country', name => 'country', value => 'USA' },
+        is_deeply $dom->at('input')->attr, { checked => undef, type => $type, name => 'agreed', value => 'yes' },
           "right $type checked";
     }
 };
