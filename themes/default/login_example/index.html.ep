@@ -19,12 +19,24 @@
         <%= form_widget('example.address') %>
     </div>
     <div class="">
+        <%= form_label('example.agreed') %>
+        <%= form_widget('example.agreed') %>
+    </div>
+    <div class="">
         <%= form_label('example.note') %>
         <%= form_widget('example.note') %>
     </div>
     <div class="">
         <%= form_label('example.country') %>
         <%= form_widget('example.country') %>
+    </div>
+    <div class="">
+        <%= form_label('example.country2') %>
+        <%= form_widget('example.country2') %>
+    </div>
+    <div class="">
+        <%= form_label('example.country3') %>
+        <%= form_widget('example.country3') %>
     </div>
 
     <h4>in loop</h4>
