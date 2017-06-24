@@ -34,10 +34,14 @@ subtest 'input basic' => sub {
 
 subtest 'input other' => sub {
     my @types = qw(color range date month time week file);
+    my $dom;
     for my $type (@types) {
-        my $dom = Mojo::DOM->new( $f->$type->($c) );
+        $dom = Mojo::DOM->new( $f->$type->($c) );
         is_deeply $dom->at('*')->attr, { type => $type, id => 'item_0_name', name => 'item.0.name' }, "right $type";
     }
+    $dom = Mojo::DOM->new( $f->datetime->($c) );
+    is_deeply $dom->at('*')->attr, { type => 'datetime-local', id => 'item_0_name', name => 'item.0.name' },
+      "right datetime";
 };
 
 subtest 'hidden' => sub {

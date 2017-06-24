@@ -29,7 +29,7 @@ sub AUTOLOAD {
     for my $name (qw(email number search tel text url password)) {
         return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
     }
-    for my $name (qw(color range date month time week file)) {
+    for my $name (qw(color range date month time week file datetime)) {
         delete $attr{$_} for qw(placeholder);
         return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
     }
