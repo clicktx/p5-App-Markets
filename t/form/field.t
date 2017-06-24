@@ -152,4 +152,58 @@ subtest 'select' => sub {
     is_deeply @{$child_child}[1]->attr, { value => 'jp', selected => 'selected' }, 'right option selected';
 };
 
+subtest 'choice' => sub {
+    my $f = Markets::Form::Field->new(
+        field_key => 'country',
+        name      => 'country',
+    );
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
+
+    my $dom;
+
+    # select
+    $f->multiple(0);
+    $f->expanded(0);
+    $dom = Mojo::DOM->new( $f->choice->($c) );
+    is $dom->at('*')->tag, 'select', 'right tag';
+
+    # select multiple
+    $f->multiple(1);
+    $f->expanded(0);
+    $dom = Mojo::DOM->new( $f->choice->($c) );
+    is $dom->at('*')->attr->{multiple}, undef, 'right multiple';
+
+    # radio list
+    my $input;
+    $f->multiple(0);
+    $f->expanded(1);
+    $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 0 ], 'cn' ] );
+    $dom   = Mojo::DOM->new( $f->choice->($c) );
+    $input = $dom->find('input');
+    is_deeply $input->[1]->attr, { name => 'country', type => 'radio', value => 'de' }, 'right type is radio';
+
+    $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 1 ], 'cn' ] );
+    $dom   = Mojo::DOM->new( $f->choice->($c) );
+    $input = $dom->find('input');
+    is_deeply $input->[1]->attr, { checked => undef, name => 'country', type => 'radio', value => 'de' }, 'right attr';
+
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
+    $dom = Mojo::DOM->new( $f->choice->($c) );
+    my $child;
+    $child = $dom->at('ul')->child_nodes;
+    is $child->[0]->text, 'ヨーロッパ', 'right group label';
+    is $child->[1]->text, 'アジア',       'right group label';
+    $input = $dom->find('input');
+    is_deeply $input->[3]->attr, { checked => undef, name => 'country', type => 'radio', value => 'jp' }, 'right attr';
+
+    # checkbox list
+    $f->multiple(1);
+    $f->expanded(1);
+    $dom   = Mojo::DOM->new( $f->choice->($c) );
+    $input = $dom->find('input');
+    is_deeply $input->[0]->attr, { name => 'country', type => 'checkbox', value => 'de' }, 'right type is checkbox';
+    is_deeply $input->[3]->attr, { checked => undef, name => 'country', type => 'checkbox', value => 'jp' },
+      'right checked';
+};
+
 done_testing();
