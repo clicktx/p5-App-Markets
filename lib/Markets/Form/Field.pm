@@ -250,7 +250,9 @@ Markets::Form::Field
 =head1 METHODS
 
 Return code refference.
-L<Mojolicious::Plugin::TagHelpers> wrapper method.
+All methods is L<Mojolicious::Plugin::TagHelpers> wrapper method.
+
+=head2 C<checkbox>
 
 =head2 C<choice>
 
@@ -356,6 +358,48 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
         </li>
     </ul>
 
+=head2 C<color>
+
+=head2 C<date>
+
+=head2 C<datetime>
+
+=head2 C<email>
+
+=head2 C<file>
+
+=head2 C<label_for>
+
+=head2 C<month>
+
+=head2 C<number>
+
+=head2 C<hidden>
+
+=head2 C<password>
+
+=head2 C<radio>
+
+=head2 C<range>
+
+=head2 C<search>
+
+=head2 C<select>
+
+=head2 C<tel>
+
+=head2 C<text>
+
+=head2 C<textarea>
+
+=head2 C<time>
+
+=head2 C<url>
+
+=head2 C<week>
+
 =head1 SEE ALSO
+
+L<Mojolicious::Plugin::TagHelpers>
 
 =cut
