@@ -4,7 +4,7 @@
 <h2><%= __('login') %></h2>
 
 
-<%= form_for '/login_example/attempt' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+<%= form_for '/login_example' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
     <h4>longer version</h4>

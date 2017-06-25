@@ -2,16 +2,12 @@ package Markets::Controller::Catalog::LoginExample;
 use Mojo::Base 'Markets::Controller::Catalog';
 
 my @data = (
-    email => 'aa@bb.com',
+    email         => 'aa@bb.com',
     'item.0.name' => 'aa',
     'item.1.name' => 'bb',
     'item.2.name' => 'cc',
 );
-my $item = [
-    { id => 0, name => 'aa' },
-    { id => 1, name => 'bb' },
-    { id => 2, name => 'cc' },
-];
+my $item = [ { id => 0, name => 'aa' }, { id => 1, name => 'bb' }, { id => 2, name => 'cc' }, ];
 
 sub index {
     my $self = shift;
@@ -19,13 +15,16 @@ sub index {
     # my $params = Mojo::Parameters->new( @data );
     # my $form = $self->form( 'example' => $params );
     # my $form = $self->form('example')->append_params($params);
+    $self->stash( item => $item );
+    return $self->render unless $self->validation->has_data;
 
-    $self->render( item => $item );
+    $self->render();
 }
 
 sub attempt {
     my $self = shift;
     use DDP;
+
     # my $form = $self->form('example');
 
     $self->render( item => $item, template => 'login_example/index', );
@@ -47,19 +46,10 @@ sub init_form {
     my ( $self, $form ) = @_;
 
     $form->add_field( 'name', [], ['is_example'] );
-    $form->add_field(
-        'password',
-        [ 'trim', 'only_digits' ],
-        [ 'required', { range_length => [ 4, 8 ] }, ]
-    );
-    $form->add_field(
-        'confirm_password',
-        [ 'trim', 'only_digits' ],
-        [ 'required', { equal_to => 'password' }, ]
-    );
+    $form->add_field( 'password', [ 'trim', 'only_digits' ], [ 'required', { range_length => [ 4, 8 ] }, ] );
+    $form->add_field( 'confirm_password', [ 'trim', 'only_digits' ], [ 'required', { equal_to => 'password' }, ] );
 
-    $form->add_field( 'cart.[]', ['trim'],
-        [ 'required', { min_length => 6 }, { max_length => 7 }, ] );
+    $form->add_field( 'cart.[]', ['trim'], [ 'required', { min_length => 6 }, { max_length => 7 }, ] );
     $form->add_field( 'item.[].no', ['trim'], ['required'] );
     $form->add_field( 'opt.type',   ['trim'], ['required'] );
     $form->add_field( 'opt.color',  ['trim'], ['required'] );
@@ -71,8 +61,8 @@ sub init_form {
 sub index {
     my $self = shift;
 
-    my $form = $self->form('login');  #or
-                                      # my $form = $self->form->fields('login');
+    my $form = $self->form('login');    #or
+                                        # my $form = $self->form->fields('login');
     $self->init_form($form);
 
     # Set default value
