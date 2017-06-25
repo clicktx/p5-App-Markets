@@ -12,26 +12,26 @@ sub AUTOLOAD {
     my $self = shift;
     my ( $package, $method ) = our $AUTOLOAD =~ /^(.+)::(.+)$/;
 
-    # label
-    return _label( $self, @_ ) if $method eq 'label_for';
-
     my %attrs = %{$self};
     $attrs{id} = $self->id;
-    delete $attrs{$_} for qw(field_key type label);
+
+    # label
+    return _label(%attrs) if $method eq 'label_for';
 
     # hidden
-    return _hidden( $self, %attrs, @_ ) if $method eq 'hidden';
+    delete $attrs{$_} for qw(field_key type label);
+    return _hidden( %attrs, @_ ) if $method eq 'hidden';
 
     # textarea
-    return _textarea( $self, %attrs, @_ ) if $method eq 'textarea';
+    return _textarea( %attrs, @_ ) if $method eq 'textarea';
 
     # input
     for my $name (qw(email number search tel text url password)) {
-        return _input( $self, method => "${name}_field", %attrs, @_ ) if $method eq $name;
+        return _input( "${name}_field", %attrs, @_ ) if $method eq $name;
     }
     for my $name (qw(color range date month time week file datetime)) {
         delete $attrs{$_} for qw(placeholder);
-        return _input( $self, method => "${name}_field", %attrs, @_ ) if $method eq $name;
+        return _input( "${name}_field", %attrs, @_ ) if $method eq $name;
     }
 
     # checkbox/radio
@@ -48,10 +48,10 @@ sub AUTOLOAD {
     }
 
     # select
-    return _select( $self, %attrs, @_ ) if $method eq 'select';
+    return _select( %attrs, @_ ) if $method eq 'select';
 
     # choice
-    return _choice_widget( $self, %attrs, @_ ) if $method eq 'choice';
+    return _choice_widget( %attrs, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
@@ -77,8 +77,7 @@ sub _choice_field {
 }
 
 sub _choice_widget {
-    my $field = shift;
-    my %args   = @_;
+    my %args = @_;
 
     my $choices = delete $args{choices} || [];
     my $multiple = delete $args{multiple} ? 1 : 0;
@@ -88,7 +87,7 @@ sub _choice_widget {
     # radio
     if ( $flag == 1 ) {
         $args{type} = 'radio';
-        return _list_field( $field, $choices, %args );
+        return _list_field( $choices, %args );
     }
 
     # select-multiple
@@ -96,21 +95,21 @@ sub _choice_widget {
         $args{multiple} = undef;
         return sub {
             my $c = shift;
-            $c->select_field( $field->name => _choices_for_select( $c, $choices ), %args );
+            $c->select_field( $args{name} => _choices_for_select( $c, $choices ), %args );
         };
     }
 
     # checkbox
     elsif ( $flag == 11 ) {
         $args{type} = 'checkbox';
-        return _list_field( $field, $choices, %args );
+        return _list_field( $choices, %args );
     }
 
     # select
     else {
         return sub {
             my $c = shift;
-            $c->select_field( $field->name => _choices_for_select( $c, $choices ), %args );
+            $c->select_field( $args{name} => _choices_for_select( $c, $choices ), %args );
         };
     }
 }
@@ -145,44 +144,41 @@ sub _choices_for_select {
 }
 
 sub _hidden {
-    my $field = shift;
-    return sub { shift->hidden_field( $field->name, $field->value, @_ ) };
+    my %attrs = @_;
+    return sub { shift->hidden_field( $attrs{name}, $attrs{value}, @_ ) };
 }
 
 sub _input {
-    my $field = shift;
-    my %args   = @_;
+    my $method = shift;
+    my %attrs  = @_;
 
-    my $method = delete $args{method};
+    my $name = delete $attrs{name};
     return sub {
         my $c = shift;
-        $args{placeholder} = $c->__( $args{placeholder} ) if $args{placeholder};
-        $c->$method( $field->name, %args );
+        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+        $c->$method( $name, %attrs );
     };
 }
 
 sub _label {
-    my $field = shift;
+    my %attrs = @_;
     return sub {
         my $c = shift;
-        $c->label_for( $field->id => $c->__( $field->label ) );
+        $c->label_for( $attrs{id} => $c->__( $attrs{label} ) );
     };
 }
 
+# NOTE: multipleの場合はname属性を xxx[] に変更する？
 # checkbox list or radio button list
 sub _list_field {
-    my $field   = shift;
     my $choices = shift;
-    my %args     = @_;
+    my %args    = @_;
 
-    # NOTE: multipleの場合はname属性を xxx[] に変更する？
-    my $name = $field->name;
     delete $args{$_} for qw(id value);
-
     return sub {
         my $c = shift;
 
-        my %values = map { $_ => 1 } @{ $c->every_param($name) };
+        my %values = map { $_ => 1 } @{ $c->every_param( $args{name} ) };
 
         my $root_class;
         my $groups = '';
@@ -209,25 +205,26 @@ sub _list_field {
 }
 
 sub _select {
-    my $field   = shift;
-    my %args     = @_;
-    my $choices = delete $args{choices} || [];
+    my %attrs = @_;
 
+    my $choices = delete $attrs{choices} || [];
+    my $name = delete $attrs{name};
     return sub {
         my $c = shift;
-        $c->select_field( $field->name => _choices_for_select( $c, $choices ), %args );
+        $c->select_field( $name => _choices_for_select( $c, $choices ), %attrs );
     };
 }
 
 sub _textarea {
-    my $field         = shift;
-    my %args           = @_;
-    my $default_value = delete $args{default_value};
+    my %attrs = @_;
+
+    my $name          = delete $attrs{name};
+    my $default_value = delete $attrs{default_value};
 
     return sub {
         my $c = shift;
-        $args{placeholder} = $c->__( $args{placeholder} ) if $args{placeholder};
-        $c->text_area( $field->name => $c->__($default_value), %args );
+        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+        $c->text_area( $name => $c->__($default_value), %attrs );
     };
 }
 
