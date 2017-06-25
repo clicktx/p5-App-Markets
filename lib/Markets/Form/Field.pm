@@ -76,6 +76,7 @@ sub _choice_field {
     return $c->tag( 'label', sub { $checkbox . $label } );
 }
 
+# NOTE: multipleの場合はname属性を xxx[] に変更する？
 sub _choice_widget {
     my %args = @_;
 
@@ -93,23 +94,29 @@ sub _choice_widget {
     # select-multiple
     elsif ( $flag == 10 ) {
         $args{multiple} = undef;
+
+        # my $name = (delete $args{name}) . '[]';
+        my $name = delete $args{name};
         return sub {
             my $c = shift;
-            $c->select_field( $args{name} => _choices_for_select( $c, $choices ), %args );
+            $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
         };
     }
 
     # checkbox
     elsif ( $flag == 11 ) {
+
+        # $args{name} = $args{name}. '[]';
         $args{type} = 'checkbox';
         return _list_field( $choices, %args );
     }
 
     # select
     else {
+        my $name = delete $args{name};
         return sub {
             my $c = shift;
-            $c->select_field( $args{name} => _choices_for_select( $c, $choices ), %args );
+            $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
         };
     }
 }
@@ -145,7 +152,7 @@ sub _choices_for_select {
 
 sub _hidden {
     my %attrs = @_;
-    return sub { shift->hidden_field( $attrs{name}, $attrs{value}, @_ ) };
+    return sub { shift->hidden_field( $attrs{name} => $attrs{value} ) };
 }
 
 sub _input {
@@ -168,7 +175,6 @@ sub _label {
     };
 }
 
-# NOTE: multipleの場合はname属性を xxx[] に変更する？
 # checkbox list or radio button list
 sub _list_field {
     my $choices = shift;
