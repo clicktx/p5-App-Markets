@@ -176,7 +176,7 @@ sub _list_field {
     my %arg     = @_;
 
     # NOTE: multipleの場合はname属性を xxx[] に変更する？
-    my $name = $arg{name};
+    my $name = $field->name;
     delete $arg{$_} for qw(id value);
 
     return sub {
@@ -196,7 +196,7 @@ sub _list_field {
                   map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %arg ) ) }
                   @$values;
                 $content = $c->tag( 'ul', class => 'form-choices', sub { $content } );
-                $groups .= $c->tag( 'li', class => 'form-choice-group', sub { $label . $content } );
+                $groups .= $c->tag( 'li', class => 'form-choice-group', %attrs, sub { $label . $content } );
             }
             else {
                 $root_class = 'form-choices' unless $root_class;

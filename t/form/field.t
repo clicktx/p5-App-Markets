@@ -191,6 +191,10 @@ subtest 'choice' => sub {
     $input = $dom->find('input');
     is_deeply $input->[1]->attr, { checked => undef, name => 'country', type => 'radio', value => 'de' }, 'right attr';
 
+    $f->choices( [ c( EU => [ 'de', 'en' ], class => 'test-class' ) ] );
+    $dom = Mojo::DOM->new( $f->choice->($c) );
+    is_deeply $dom->at('li')->attr, { class => 'test-class' }, 'right class';
+
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
     $dom = Mojo::DOM->new( $f->choice->($c) );
     is_deeply $dom->at('ul')->attr, { class => 'form-choice-groups' }, 'right class';
