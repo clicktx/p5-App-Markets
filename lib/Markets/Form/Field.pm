@@ -15,43 +15,43 @@ sub AUTOLOAD {
     # label
     return _label( $self, @_ ) if $method eq 'label_for';
 
-    my %attr = %{$self};
-    $attr{id} = $self->id;
-    delete $attr{$_} for qw(field_key type label);
+    my %attrs = %{$self};
+    $attrs{id} = $self->id;
+    delete $attrs{$_} for qw(field_key type label);
 
     # hidden
-    return _hidden( $self, %attr, @_ ) if $method eq 'hidden';
+    return _hidden( $self, %attrs, @_ ) if $method eq 'hidden';
 
     # textarea
-    return _textarea( $self, %attr, @_ ) if $method eq 'textarea';
+    return _textarea( $self, %attrs, @_ ) if $method eq 'textarea';
 
     # input
     for my $name (qw(email number search tel text url password)) {
-        return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
+        return _input( $self, method => "${name}_field", %attrs, @_ ) if $method eq $name;
     }
     for my $name (qw(color range date month time week file datetime)) {
-        delete $attr{$_} for qw(placeholder);
-        return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
+        delete $attrs{$_} for qw(placeholder);
+        return _input( $self, method => "${name}_field", %attrs, @_ ) if $method eq $name;
     }
 
     # checkbox/radio
     if ( $method eq 'checkbox' || $method eq 'radio' ) {
-        delete $attr{id};
-        $attr{type} = $method;
+        delete $attrs{id};
+        $attrs{type} = $method;
 
         my @args = @_;
         return sub {
             my $c = shift;
-            my %values = map { $_ => 1 } @{ $c->every_param( $attr{name} ) };
-            _choice_field( $c, \%values, $self->label, %attr, @args );
+            my %values = map { $_ => 1 } @{ $c->every_param( $attrs{name} ) };
+            _choice_field( $c, \%values, $self->label, %attrs, @args );
         };
     }
 
     # select
-    return _select( $self, %attr, @_ ) if $method eq 'select';
+    return _select( $self, %attrs, @_ ) if $method eq 'select';
 
     # choice
-    return _choice_widget( $self, %attr, @_ ) if $method eq 'choice';
+    return _choice_widget( $self, %attrs, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
@@ -78,39 +78,39 @@ sub _choice_field {
 
 sub _choice_widget {
     my $field = shift;
-    my %arg   = @_;
+    my %args   = @_;
 
-    my $choices = delete $arg{choices} || [];
-    my $multiple = delete $arg{multiple} ? 1 : 0;
-    my $expanded = delete $arg{expanded} ? 1 : 0;
+    my $choices = delete $args{choices} || [];
+    my $multiple = delete $args{multiple} ? 1 : 0;
+    my $expanded = delete $args{expanded} ? 1 : 0;
     my $flag     = $multiple . $expanded;
 
     # radio
     if ( $flag == 1 ) {
-        $arg{type} = 'radio';
-        return _list_field( $field, $choices, %arg );
+        $args{type} = 'radio';
+        return _list_field( $field, $choices, %args );
     }
 
     # select-multiple
     elsif ( $flag == 10 ) {
-        $arg{multiple} = undef;
+        $args{multiple} = undef;
         return sub {
             my $c = shift;
-            $c->select_field( $field->name => _choices_for_select( $c, $choices ), %arg );
+            $c->select_field( $field->name => _choices_for_select( $c, $choices ), %args );
         };
     }
 
     # checkbox
     elsif ( $flag == 11 ) {
-        $arg{type} = 'checkbox';
-        return _list_field( $field, $choices, %arg );
+        $args{type} = 'checkbox';
+        return _list_field( $field, $choices, %args );
     }
 
     # select
     else {
         return sub {
             my $c = shift;
-            $c->select_field( $field->name => _choices_for_select( $c, $choices ), %arg );
+            $c->select_field( $field->name => _choices_for_select( $c, $choices ), %args );
         };
     }
 }
@@ -136,9 +136,9 @@ sub _choices_for_select {
             $label = $c->__($label);
 
             # true to "selected"
-            my %attr = ( @{$group}[ 2 .. $#$group ] );
-            $attr{selected} ? $attr{selected} = 'selected' : delete $attr{selected};
-            $group = [ $label, $value, %attr ];
+            my %attrs = ( @{$group}[ 2 .. $#$group ] );
+            $attrs{selected} ? $attrs{selected} = 'selected' : delete $attrs{selected};
+            $group = [ $label, $value, %attrs ];
         }
     }
     return $choices;
@@ -151,13 +151,13 @@ sub _hidden {
 
 sub _input {
     my $field = shift;
-    my %arg   = @_;
+    my %args   = @_;
 
-    my $method = delete $arg{method};
+    my $method = delete $args{method};
     return sub {
         my $c = shift;
-        $arg{placeholder} = $c->__( $arg{placeholder} ) if $arg{placeholder};
-        $c->$method( $field->name, %arg );
+        $args{placeholder} = $c->__( $args{placeholder} ) if $args{placeholder};
+        $c->$method( $field->name, %args );
     };
 }
 
@@ -173,11 +173,11 @@ sub _label {
 sub _list_field {
     my $field   = shift;
     my $choices = shift;
-    my %arg     = @_;
+    my %args     = @_;
 
     # NOTE: multipleの場合はname属性を xxx[] に変更する？
     my $name = $field->name;
-    delete $arg{$_} for qw(id value);
+    delete $args{$_} for qw(id value);
 
     return sub {
         my $c = shift;
@@ -193,14 +193,14 @@ sub _list_field {
 
                 $label = $c->__($label);
                 my $content = join '',
-                  map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %arg ) ) }
+                  map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %args ) ) }
                   @$values;
                 $content = $c->tag( 'ul', class => 'form-choices', sub { $content } );
                 $groups .= $c->tag( 'li', class => 'form-choice-group', %attrs, sub { $label . $content } );
             }
             else {
                 $root_class = 'form-choices' unless $root_class;
-                my $row = _choice_field( $c, \%values, $group, %arg );
+                my $row = _choice_field( $c, \%values, $group, %args );
                 $groups .= $c->tag( 'li', class => 'form-choice-item', sub { $row } );
             }
         }
@@ -210,24 +210,24 @@ sub _list_field {
 
 sub _select {
     my $field   = shift;
-    my %arg     = @_;
-    my $choices = delete $arg{choices} || [];
+    my %args     = @_;
+    my $choices = delete $args{choices} || [];
 
     return sub {
         my $c = shift;
-        $c->select_field( $field->name => _choices_for_select( $c, $choices ), %arg );
+        $c->select_field( $field->name => _choices_for_select( $c, $choices ), %args );
     };
 }
 
 sub _textarea {
     my $field         = shift;
-    my %arg           = @_;
-    my $default_value = delete $arg{default_value};
+    my %args           = @_;
+    my $default_value = delete $args{default_value};
 
     return sub {
         my $c = shift;
-        $arg{placeholder} = $c->__( $arg{placeholder} ) if $arg{placeholder};
-        $c->text_area( $field->name => $c->__($default_value), %arg );
+        $args{placeholder} = $c->__( $args{placeholder} ) if $args{placeholder};
+        $c->text_area( $field->name => $c->__($default_value), %args );
     };
 }
 
