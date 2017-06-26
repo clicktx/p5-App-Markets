@@ -112,7 +112,11 @@ sub validations {
     return \%validations;
 }
 
-sub _replace_key { $_ = shift; s/\.\d/.[]/g; $_ }
+sub _replace_key {
+    my $arg = shift;
+    $arg =~ s/\.\d/.[]/g;
+    $arg;
+}
 
 1;
 __END__
