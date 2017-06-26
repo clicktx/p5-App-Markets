@@ -10,7 +10,7 @@ my $fs = Markets::Form::Type::Test->new;
 # subtest 'each' => sub {
 #     my @keys;
 #     $fs->each( sub { push @keys, $a; isa_ok $b, 'Markets::Form::Field'; } );
-#     is_deeply \@keys, [qw/email item.[].id name address/], 'right each keys';
+#     is_deeply \@keys, [qw/email name address item.[].id/], 'right each keys';
 # };
 
 subtest 'attributes' => sub {
@@ -29,7 +29,7 @@ subtest 'field' => sub {
 
 subtest 'keys' => sub {
     my @keys = $fs->keys;
-    is_deeply \@keys, [qw/email item.[].id name address/], 'right keys';
+    is_deeply \@keys, [qw/email name address item.[].id/], 'right keys';
     my $keys = $fs->keys;
     is ref $keys, 'ARRAY', 'right scalar';
 };
@@ -37,11 +37,11 @@ subtest 'keys' => sub {
 subtest 'append/remove' => sub {
     $fs->append( aaa => ( type => 'text' ) );
     my @keys = $fs->keys;
-    is_deeply \@keys, [qw/email item.[].id name address aaa/], 'right keys';
+    is_deeply \@keys, [qw/email name address item.[].id aaa/], 'right keys';
 
     $fs->remove('name');
     @keys = $fs->keys;
-    is_deeply \@keys, [qw/email item.[].id address aaa/], 'right keys';
+    is_deeply \@keys, [qw/email address item.[].id aaa/], 'right keys';
 };
 
 subtest 'params' => sub {
