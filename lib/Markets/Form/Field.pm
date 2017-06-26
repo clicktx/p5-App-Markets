@@ -13,6 +13,7 @@ sub AUTOLOAD {
     my ( $package, $method ) = our $AUTOLOAD =~ /^(.+)::(.+)$/;
 
     my %attrs = %{$self};
+    delete $attrs{$_} for qw(filters validations);
     $attrs{id} = $self->id;
 
     # label
