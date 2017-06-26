@@ -7,7 +7,6 @@ use Mojo::Parameters;
 use Mojo::Collection;
 use Markets::Form::Field;
 
-# has 'legend';
 has params => sub { Mojo::Parameters->new };
 has 'controller';
 

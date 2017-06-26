@@ -44,7 +44,7 @@ sub _form_set {
     _load_class($class);
 
     $params = $self->req->params unless $params;
-    $formset = $class->new( params => $params );
+    $formset = $class->new( params => $params, controller => $self );
     $self->stash($FORM_STASH)->{$ns} = $formset;
     return $formset;
 }
