@@ -9,7 +9,6 @@ use Markets::Form::Field;
 
 has field_list => sub { {} };
 has controller => sub { Mojolicious::Controller->new };
-has params     => sub { shift->controller->req->params };
 
 sub append {
     my ( $self, $field_key ) = ( shift, shift );
@@ -79,6 +78,8 @@ sub import {
     monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
 }
 
+sub params { shift->controller->req->params(@_) }
+
 sub remove {
     my ( $self, $field_key ) = ( shift, shift );
     return unless ( my $class = ref $self || $self ) && $field_key;
@@ -144,13 +145,6 @@ Markets::Form::Field
 
 Return L<Mojolicious::Controller> object.
 
-=head2 C<params>
-
-    my $params = $fieldset->params;
-    $fieldset->params( Mojo::Parameters->new );
-
-Return L<Mojo::Parameters> object.
-
 =head1 FUNCTIONS
 
 =head2 C<c>
@@ -181,6 +175,19 @@ Construct a new array-based L<Mojo::Collection> object.
     my $field = $fieldset->field('field_name');
 
 Return L<Markets::Form::Field> object.
+
+=head2 C<params>
+
+    my $params = $fieldset->params;
+    my $params_hash_ref = $fieldset->params->to_hash;
+
+    # Longer Version
+    my $params = $fieldset->controller->req->params;
+
+    # Append parameter
+    $fieldset->params->append( email => 'a@b.com' );
+
+Return L<Mojo::Parameters> object.
 
 =head2 C<remove>
 
