@@ -25,7 +25,7 @@ sub append {
 #     my $caller = caller;
 #
 #     no strict 'refs';
-#     foreach my $a ( $self->keys ) {
+#     foreach my $a ( $self->field_keys ) {
 #         my $b = ${"${class}::field_list"}{$a};
 #         local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
 #         $a->$cb($b);
@@ -45,13 +45,13 @@ sub field {
     return Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
 }
 
-sub keys {
+sub field_keys {
     my $self = shift;
     my $class = ref $self || $self;
 
     no strict 'refs';
-    my @keys = keys %{"${class}::field_list"};
-    return wantarray ? @keys : \@keys;
+    my @field_keys = keys %{"${class}::field_list"};
+    return wantarray ? @field_keys : \@field_keys;
 }
 
 sub new {
@@ -138,7 +138,7 @@ sub validations {
     my $field_list = $self->field_list;
     return $field_list->{$field_key}->{validations} if $field_key;
 
-    my %validations = map { $_ => $field_list->{$_}->{validations} } @{ $self->keys };
+    my %validations = map { $_ => $field_list->{$_}->{validations} } @{ $self->field_keys };
     return \%validations;
 }
 
@@ -189,6 +189,13 @@ Construct a new array-based L<Mojo::Collection> object.
 =head2 C<append>
 
     $fieldset->append( 'field_name' => ( %args ) );
+
+=head2 C<field_keys>
+
+    my @field_keys = $fieldset->field_keys;
+
+    # Return array refference
+    my $field_keys = $fieldset->field_keys;
 
 =head2 C<field>
 

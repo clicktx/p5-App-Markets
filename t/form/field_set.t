@@ -20,9 +20,9 @@ subtest 'validations' => sub {
 };
 
 # subtest 'each' => sub {
-#     my @keys;
-#     $fs->each( sub { push @keys, $a; isa_ok $b, 'Markets::Form::Field'; } );
-#     is_deeply \@keys, [qw/email name address item.[].id/], 'right each keys';
+#     my @field_keys;
+#     $fs->each( sub { push @field_keys, $a; isa_ok $b, 'Markets::Form::Field'; } );
+#     is_deeply \@field_keys, [qw/email name address item.[].id/], 'right each field_keys';
 # };
 
 subtest 'attributes' => sub {
@@ -39,11 +39,11 @@ subtest 'field' => sub {
     isa_ok $f, 'Markets::Form::Field';
 };
 
-subtest 'keys' => sub {
-    my @keys = $fs->keys;
-    is_deeply \@keys, [qw/email name address item.[].id/], 'right keys';
-    my $keys = $fs->keys;
-    is ref $keys, 'ARRAY', 'right scalar';
+subtest 'field_keys' => sub {
+    my @field_keys = $fs->field_keys;
+    is_deeply \@field_keys, [qw/email name address item.[].id/], 'right field_keys';
+    my $field_keys = $fs->field_keys;
+    is ref $field_keys, 'ARRAY', 'right scalar';
 };
 
 subtest 'params' => sub {
@@ -62,12 +62,12 @@ subtest 'render tags' => sub {
 # This test should be done at the end!
 subtest 'append/remove' => sub {
     $fs->append( aaa => ( type => 'text' ) );
-    my @keys = $fs->keys;
-    is_deeply \@keys, [qw/email name address item.[].id aaa/], 'right keys';
+    my @field_keys = $fs->field_keys;
+    is_deeply \@field_keys, [qw/email name address item.[].id aaa/], 'right field_keys';
 
     $fs->remove('name');
-    @keys = $fs->keys;
-    is_deeply \@keys, [qw/email address item.[].id aaa/], 'right keys';
+    @field_keys = $fs->field_keys;
+    is_deeply \@field_keys, [qw/email address item.[].id aaa/], 'right field_keys';
 };
 
 done_testing();
