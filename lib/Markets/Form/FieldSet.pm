@@ -9,6 +9,7 @@ use Markets::Form::Field;
 
 # has 'legend';
 has params => sub { Mojo::Parameters->new };
+has 'controller';
 
 sub append {
     my ( $self, $field_key ) = ( shift, shift );
@@ -58,6 +59,7 @@ sub new {
     my $self  = $class->SUPER::new(@_);
 
     weaken $self->{params};
+    weaken $self->{controller};
     return $self;
 }
 
