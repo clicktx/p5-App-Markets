@@ -7,8 +7,9 @@ use Mojo::Parameters;
 use Mojo::Collection;
 use Markets::Form::Field;
 
-has params => sub { Mojo::Parameters->new };
-has 'controller';
+has params     => sub { Mojo::Parameters->new };
+has controller => sub { Mojolicious::Controller->new };
+has field_list => sub { {} };
 
 sub append {
     my ( $self, $field_key ) = ( shift, shift );
@@ -59,6 +60,10 @@ sub new {
 
     weaken $self->{params};
     weaken $self->{controller};
+
+    no strict 'refs';
+    $self->{field_list} = \%{"${class}::field_list"};
+
     return $self;
 }
 

@@ -14,7 +14,7 @@ my $fs = Markets::Form::Type::Test->new;
 # };
 
 subtest 'attributes' => sub {
-    ok( $fs->can($_), "right $_" ) for qw(controller params);
+    ok( $fs->can($_), "right $_" ) for qw(controller params field_list);
 };
 
 subtest 'c' => sub {
