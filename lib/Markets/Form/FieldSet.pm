@@ -133,6 +133,15 @@ sub render {
 #
 # sub _key_id { return ( _key( $_[0] ), _id( $_[0] ) ) }
 
+sub validations {
+    my ( $self, $field_key ) = ( shift, shift );
+    my $field_list = $self->field_list;
+    return $field_list->{$field_key}->{validations} if $field_key;
+
+    my %validations = map { $_ => $field_list->{$_}->{validations} } @{ $self->keys };
+    return \%validations;
+}
+
 1;
 __END__
 
@@ -190,6 +199,14 @@ Return L<Markets::Form::Field> object.
 =head2 C<remove>
 
     $fieldset->remove('field_name');
+
+=head2 C<validations>
+
+    # Return array refference
+    my $validations = $fieldset->validations('email');
+
+    # Return hash refference
+    my $validations = $fieldset->validations;
 
 =head1 SEE ALSO
 

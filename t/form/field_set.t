@@ -7,6 +7,18 @@ use_ok 'Markets::Form::FieldSet';
 use Markets::Form::Type::Test;
 my $fs = Markets::Form::Type::Test->new;
 
+subtest 'validations' => sub {
+    is_deeply $fs->validations('email'), [qw/required email/], 'right get validations';
+    is_deeply $fs->validations,
+      {
+        email        => [qw/required email/],
+        name         => [qw/required/],
+        address      => [qw/required/],
+        'item.[].id' => [qw/required/],
+      },
+      'right all field_key validations';
+};
+
 # subtest 'each' => sub {
 #     my @keys;
 #     $fs->each( sub { push @keys, $a; isa_ok $b, 'Markets::Form::Field'; } );
