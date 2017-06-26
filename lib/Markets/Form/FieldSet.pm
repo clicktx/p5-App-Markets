@@ -36,12 +36,12 @@ sub field {
     my $args = @_ > 1 ? +{@_} : shift || {};
     my $class = ref $self || $self;
 
-    my $key = $name;
-    $key =~ s/\.\d/.[]/g;
+    my $field_key = $name;
+    $field_key =~ s/\.\d/.[]/g;
 
     no strict 'refs';
-    my $attrs = $key ? ${"${class}::field_list"}{$key} : {};
-    return Markets::Form::Field->new( field_key => $key, name => $name, %{$args}, %{$attrs} );
+    my $attrs = $field_key ? ${"${class}::field_list"}{$field_key} : {};
+    return Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
 }
 
 sub keys {
