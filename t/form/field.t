@@ -15,6 +15,7 @@ my $f = Markets::Form::Field->new(
     name        => 'item.0.name',
     label       => 'label text',
     placeholder => 'example',
+    required    => 1,
 );
 
 subtest 'label' => sub {
@@ -28,7 +29,14 @@ subtest 'input basic' => sub {
     for my $type (@types) {
         my $dom = Mojo::DOM->new( $f->$type->($c) );
         is_deeply $dom->at('*')->attr,
-          { type => $type, id => 'item_0_name', name => 'item.0.name', placeholder => 'example' }, "right $type";
+          {
+            type        => $type,
+            id          => 'item_0_name',
+            name        => 'item.0.name',
+            placeholder => 'example',
+            required    => undef,
+          },
+          "right $type";
     }
 };
 
@@ -37,10 +45,23 @@ subtest 'input other' => sub {
     my $dom;
     for my $type (@types) {
         $dom = Mojo::DOM->new( $f->$type->($c) );
-        is_deeply $dom->at('*')->attr, { type => $type, id => 'item_0_name', name => 'item.0.name' }, "right $type";
+        is_deeply $dom->at('*')->attr,
+          {
+            type     => $type,
+            id       => 'item_0_name',
+            name     => 'item.0.name',
+            required => undef,
+          },
+          "right $type";
     }
     $dom = Mojo::DOM->new( $f->datetime->($c) );
-    is_deeply $dom->at('*')->attr, { type => 'datetime-local', id => 'item_0_name', name => 'item.0.name' },
+    is_deeply $dom->at('*')->attr,
+      {
+        type     => 'datetime-local',
+        id       => 'item_0_name',
+        name     => 'item.0.name',
+        required => undef,
+      },
       "right datetime";
 };
 

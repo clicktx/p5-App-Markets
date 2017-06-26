@@ -15,6 +15,7 @@ sub AUTOLOAD {
     my %attrs = %{$self};
     delete $attrs{$_} for qw(filters validations);
     $attrs{id} = $self->id;
+    $attrs{required} ? $attrs{required} = undef : delete $attrs{required};
 
     # label
     return _label(%attrs) if $method eq 'label_for';
@@ -250,7 +251,30 @@ Markets::Form::Field
     use Mojo::Base -strict;
     use Markets::Form::Field;
 
-    has_field email => ( type => 'email', placeholder => 'use@mail.com', label => 'E-mail' );
+    has_field email => (
+        type        => 'email',
+        placeholder => 'use@mail.com',
+        label       => 'E-mail',
+        required    => 1,
+        class       => 'hoge-class',
+        filters     => [],
+        validations => [],
+    );
+
+    has_field 'item.[].id' => (
+        type  => 'hidden',
+    );
+
+    has_field country => (
+        type     => 'choice',
+        expanded => 0,
+        multiple => 1,
+        choices  => [
+            c( EU => [ [ Germany => 'de' ], [ England => 'en' ] ] ),
+            c( Asia => [ [ Chaina => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ),
+        ],
+    );
+
 
 =head1 DESCRIPTION
 
