@@ -34,16 +34,6 @@ subtest 'keys' => sub {
     is ref $keys, 'ARRAY', 'right scalar';
 };
 
-subtest 'append/remove' => sub {
-    $fs->append( aaa => ( type => 'text' ) );
-    my @keys = $fs->keys;
-    is_deeply \@keys, [qw/email name address item.[].id aaa/], 'right keys';
-
-    $fs->remove('name');
-    @keys = $fs->keys;
-    is_deeply \@keys, [qw/email address item.[].id aaa/], 'right keys';
-};
-
 subtest 'params' => sub {
     isa_ok $fs->params, 'Mojo::Parameters';
     $fs->params->append( email => 'a@b.com' );
@@ -55,6 +45,17 @@ subtest 'params' => sub {
 subtest 'render tags' => sub {
     is ref $fs->render('email'),       'CODE', 'right render method';
     is ref $fs->render_label('email'), 'CODE', 'right render_label method';
+};
+
+# This test should be done at the end!
+subtest 'append/remove' => sub {
+    $fs->append( aaa => ( type => 'text' ) );
+    my @keys = $fs->keys;
+    is_deeply \@keys, [qw/email name address item.[].id aaa/], 'right keys';
+
+    $fs->remove('name');
+    @keys = $fs->keys;
+    is_deeply \@keys, [qw/email address item.[].id aaa/], 'right keys';
 };
 
 done_testing();
