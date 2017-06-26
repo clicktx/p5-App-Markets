@@ -45,8 +45,7 @@ sub field {
     my $args = @_ > 1 ? +{@_} : shift || {};
     my $class = ref $self || $self;
 
-    my $field_key = $name;
-    $field_key =~ s/\.\d/.[]/g;
+    my $field_key = _replace_key($name);
 
     no strict 'refs';
     my $attrs = $field_key ? ${"${class}::field_list"}{$field_key} : {};
@@ -112,6 +111,8 @@ sub validations {
     my %validations = map { $_ => $field_list->{$_}->{validations} } @{ $self->field_keys };
     return \%validations;
 }
+
+sub _replace_key { $_ = shift; s/\.\d/.[]/g; $_ }
 
 1;
 __END__
