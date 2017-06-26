@@ -1,23 +1,15 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Mojo;
 use t::Util;
 
 use_ok 'Markets::Form::FieldSet';
 
-use Markets::Form::Type::Test;
-my $fs = Markets::Form::Type::Test->new;
+my $t = Test::Mojo->new('App');
+my $c = $t->app->build_controller;
 
-subtest 'validations' => sub {
-    is_deeply $fs->validations('email'), [qw/required email/], 'right get validations';
-    is_deeply $fs->validations,
-      {
-        email        => [qw/required email/],
-        name         => [qw/required/],
-        address      => [qw/required/],
-        'item.[].id' => [qw/required/],
-      },
-      'right all field_key validations';
-};
+use Markets::Form::Type::Test;
+my $fs = Markets::Form::Type::Test->new( controller => $c );
 
 # subtest 'each' => sub {
 #     my @field_keys;
@@ -57,6 +49,18 @@ subtest 'params' => sub {
 subtest 'render tags' => sub {
     is ref $fs->render('email'),       'CODE', 'right render method';
     is ref $fs->render_label('email'), 'CODE', 'right render_label method';
+};
+
+subtest 'validations' => sub {
+    is_deeply $fs->validations('email'), [qw/required email/], 'right get validations';
+    is_deeply $fs->validations,
+      {
+        email        => [qw/required email/],
+        name         => [qw/required/],
+        address      => [qw/required/],
+        'item.[].id' => [qw/required/],
+      },
+      'right all field_key validations';
 };
 
 # This test should be done at the end!
