@@ -49,7 +49,8 @@ sub keys {
     my $class = ref $self || $self;
 
     no strict 'refs';
-    return keys %{"${class}::field_list"};
+    my @keys = keys %{"${class}::field_list"};
+    return wantarray ? @keys : \@keys;
 }
 
 sub new {

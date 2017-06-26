@@ -26,6 +26,8 @@ subtest 'field' => sub {
 subtest 'keys' => sub {
     my @keys = $fs->keys;
     is_deeply \@keys, [qw/email item.[].id name address/], 'right keys';
+    my $keys = $fs->keys;
+    is ref $keys, 'ARRAY', 'right scalar';
 };
 
 subtest 'append/remove' => sub {
