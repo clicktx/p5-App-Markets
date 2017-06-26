@@ -30,7 +30,7 @@ sub _cart { @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->sta
 sub _factory { shift; Markets::Domain::Factory->new->factory(@_) }
 
 sub _form_set {
-    my ( $self, $ns, $params ) = @_;
+    my ( $self, $ns ) = @_;
     $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
     Carp::croak 'Arguments empty' unless $ns;
 
@@ -41,8 +41,7 @@ sub _form_set {
     my $class = $FORM_CLASS . "::" . $ns;
     _load_class($class);
 
-    $params = $self->req->params unless $params;
-    $formset = $class->new( params => $params, controller => $self );
+    $formset = $class->new( controller => $self );
     $self->stash($FORM_STASH)->{$ns} = $formset;
     return $formset;
 }

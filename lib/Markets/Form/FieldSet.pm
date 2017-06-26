@@ -4,13 +4,12 @@ use Mojo::Util qw/monkey_patch/;
 use Tie::IxHash;
 use Scalar::Util qw/weaken/;
 use Mojolicious::Controller;
-use Mojo::Parameters;
 use Mojo::Collection;
 use Markets::Form::Field;
 
 has field_list => sub { {} };
 has controller => sub { Mojolicious::Controller->new };
-has params     => sub { Mojo::Parameters->new };
+has params     => sub { shift->controller->req->params };
 
 sub append {
     my ( $self, $field_key ) = ( shift, shift );
