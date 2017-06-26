@@ -32,6 +32,15 @@ sub append {
 #     }
 # }
 
+sub field_keys {
+    my $self = shift;
+    my $class = ref $self || $self;
+
+    no strict 'refs';
+    my @field_keys = keys %{"${class}::field_list"};
+    return wantarray ? @field_keys : \@field_keys;
+}
+
 sub field {
     my ( $self, $name ) = ( shift, shift );
     my $args = @_ > 1 ? +{@_} : shift || {};
@@ -43,15 +52,6 @@ sub field {
     no strict 'refs';
     my $attrs = $field_key ? ${"${class}::field_list"}{$field_key} : {};
     return Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
-}
-
-sub field_keys {
-    my $self = shift;
-    my $class = ref $self || $self;
-
-    no strict 'refs';
-    my @field_keys = keys %{"${class}::field_list"};
-    return wantarray ? @field_keys : \@field_keys;
 }
 
 sub new {
@@ -103,36 +103,6 @@ sub render {
     $field->$method;
 }
 
-# sub renderRow {
-#     my $self = shift;
-#     return sub {
-#         my $app = shift;
-#
-#         my $form;
-#         $self->each(
-#             sub {
-#
-#                 $form .= $app->text_field( $b->name ) . "\n";
-#             }
-#         );
-#
-#         # my $tree = ['tag', 'fieldset', undef, undef, [ 'tag', 'aaa' ], [ 'tag', 'aaa' ] ];
-#         my $tree = [ 'tag', 'fieldset', undef, undef ];
-#         my $root = Mojo::ByteStream->new( Mojo::DOM::HTML::_render($tree) );
-#         my $dom  = Mojo::DOM->new($root);
-#
-#         # $dom->at('fieldset')->append_content('123')->root;
-#         $dom->at('fieldset')->append_content( "\n" . $form )->root;
-#         $dom;
-#     };
-# }
-
-# sub _field_key { $_ = shift; s/\.\d/.[]/g; $_ }
-
-# sub _id { $_ = shift; s/\./_/g; $_ }
-#
-# sub _key_id { return ( _key( $_[0] ), _id( $_[0] ) ) }
-
 sub validations {
     my ( $self, $field_key ) = ( shift, shift );
     my $field_list = $self->field_list;
@@ -167,10 +137,19 @@ Markets::Form::Field
 
 =head1 ATTRIBUTES
 
+=head2 C<controller>
+
+    my $controller = $fieldset->controller;
+    $fieldset->controller( Mojolicious::Controller->new );
+
+Return L<Mojolicious::Controller> object.
+
 =head2 C<params>
 
     my $params = $fieldset->params;
     $fieldset->params( Mojo::Parameters->new );
+
+Return L<Mojo::Parameters> object.
 
 =head1 FUNCTIONS
 
@@ -206,6 +185,18 @@ Return L<Markets::Form::Field> object.
 =head2 C<remove>
 
     $fieldset->remove('field_name');
+
+=head2 C<render_label>
+
+    $fieldset->render_label('email');
+
+Return code refference.
+
+=head2 C<render>
+
+    $fieldset->render('email');
+
+Return code refference.
 
 =head2 C<validations>
 
