@@ -7,26 +7,26 @@ has_field email => (
     placeholder => '',
     label       => 'E-mail',
     filters     => [],
-    validations => [qw/required email/],
+    validations => [qw/email/],
 );
 
 has_field name => (
     type        => 'text',
     filters     => [],
-    validations => [qw/required/],
+    validations => [qw//],
 );
 
 has_field address => (
     type        => 'text',
     filters     => [],
-    validations => [qw/required/],
+    validations => [qw//],
 );
 
 has_field 'item.[].id' => (
     type        => 'text',
     label       => 'Item ',
     filters     => [],
-    validations => [qw/required/],
+    validations => [qw//],
 );
 
 1;

@@ -52,13 +52,13 @@ subtest 'render tags' => sub {
 };
 
 subtest 'validations' => sub {
-    is_deeply $fs->validations('email'), [qw/required email/], 'right get validations';
+    is_deeply $fs->validations('email'), [qw/email/], 'right get validations';
     is_deeply $fs->validations,
       {
-        email        => [qw/required email/],
-        name         => [qw/required/],
-        address      => [qw/required/],
-        'item.[].id' => [qw/required/],
+        email        => [qw/email/],
+        name         => [qw//],
+        address      => [qw//],
+        'item.[].id' => [qw//],
       },
       'right all field_key validations';
 };
