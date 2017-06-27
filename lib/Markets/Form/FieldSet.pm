@@ -27,19 +27,6 @@ sub checks {
     return \%checks;
 }
 
-# sub each {
-#     my ( $self, $cb ) = @_;
-#     my $class = ref $self || $self;
-#     my $caller = caller;
-#
-#     no strict 'refs';
-#     foreach my $a ( $self->field_keys ) {
-#         my $b = ${"${class}::field_list"}{$a};
-#         local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
-#         $a->$cb($b);
-#     }
-# }
-
 sub field_keys {
     my $self = shift;
     my $class = ref $self || $self;
@@ -65,12 +52,10 @@ sub new {
     my $class = shift;
     my $self  = $class->SUPER::new(@_);
 
-    weaken $self->{params};
     weaken $self->{controller};
 
     no strict 'refs';
     $self->{field_list} = \%{"${class}::field_list"};
-
     return $self;
 }
 
