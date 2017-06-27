@@ -3,6 +3,10 @@ use Mojo::Base -base;
 use Carp qw/croak/;
 use Scalar::Util qw/blessed/;
 use Mojo::Collection 'c';
+use Mojo::ByteStream 'b';
+
+our $required_class = 'form-required-field-icon';
+our $required_icon  = '*';
 
 has id => sub { $_ = shift->name; s/\./_/g; $_ };
 has [qw(field_key default_value choices help label error_message multiple expanded)];
@@ -12,46 +16,48 @@ sub AUTOLOAD {
     my $self = shift;
     my ( $package, $method ) = our $AUTOLOAD =~ /^(.+)::(.+)$/;
 
-    # label
-    return _label( $self, @_ ) if $method eq 'label_for';
+    my %attrs = %{$self};
+    delete $attrs{$_} for qw(filters validations);
+    $attrs{id} = $self->id;
+    $attrs{required} ? $attrs{required} = undef : delete $attrs{required};
 
-    my %attr = %{$self};
-    $attr{id} = $self->id;
-    delete $attr{$_} for qw(field_key type label);
+    # label
+    return _label(%attrs) if $method eq 'label_for';
 
     # hidden
-    return _hidden( $self, %attr, @_ ) if $method eq 'hidden';
+    delete $attrs{$_} for qw(field_key type label);
+    return _hidden( %attrs, @_ ) if $method eq 'hidden';
 
     # textarea
-    return _textarea( $self, %attr, @_ ) if $method eq 'textarea';
+    return _textarea( %attrs, @_ ) if $method eq 'textarea';
 
     # input
     for my $name (qw(email number search tel text url password)) {
-        return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
+        return _input( "${name}_field", %attrs, @_ ) if $method eq $name;
     }
     for my $name (qw(color range date month time week file datetime)) {
-        delete $attr{$_} for qw(placeholder);
-        return _input( $self, method => "${name}_field", %attr, @_ ) if $method eq $name;
+        delete $attrs{$_} for qw(placeholder);
+        return _input( "${name}_field", %attrs, @_ ) if $method eq $name;
     }
 
     # checkbox/radio
     if ( $method eq 'checkbox' || $method eq 'radio' ) {
-        delete $attr{id};
-        $attr{type} = $method;
+        delete $attrs{id};
+        $attrs{type} = $method;
 
         my @args = @_;
         return sub {
             my $c = shift;
-            my %values = map { $_ => 1 } @{ $c->every_param( $attr{name} ) };
-            _choice_field( $c, \%values, $self->label, %attr, @args );
+            my %values = map { $_ => 1 } @{ $c->every_param( $attrs{name} ) };
+            _choice_field( $c, \%values, $self->label, %attrs, @args );
         };
     }
 
     # select
-    return _select( $self, %attr, @_ ) if $method eq 'select';
+    return _select( %attrs, @_ ) if $method eq 'select';
 
     # choice
-    return _choice_widget( $self, %attr, @_ ) if $method eq 'choice';
+    return _choice_widget( %attrs, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
@@ -76,41 +82,47 @@ sub _choice_field {
     return $c->tag( 'label', sub { $checkbox . $label } );
 }
 
+# NOTE: multipleの場合はname属性を xxx[] に変更する？
 sub _choice_widget {
-    my $field = shift;
-    my %arg   = @_;
+    my %args = @_;
 
-    my $choices = delete $arg{choices} || [];
-    my $multiple = delete $arg{multiple} ? 1 : 0;
-    my $expanded = delete $arg{expanded} ? 1 : 0;
+    my $choices = delete $args{choices} || [];
+    my $multiple = delete $args{multiple} ? 1 : 0;
+    my $expanded = delete $args{expanded} ? 1 : 0;
     my $flag     = $multiple . $expanded;
 
     # radio
     if ( $flag == 1 ) {
-        $arg{type} = 'radio';
-        return _list_field( $field, $choices, %arg );
+        $args{type} = 'radio';
+        return _list_field( $choices, %args );
     }
 
     # select-multiple
     elsif ( $flag == 10 ) {
-        $arg{multiple} = undef;
+        $args{multiple} = undef;
+
+        # my $name = (delete $args{name}) . '[]';
+        my $name = delete $args{name};
         return sub {
             my $c = shift;
-            $c->select_field( $field->name => _choices_for_select( $c, $choices ), %arg );
+            $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
         };
     }
 
     # checkbox
     elsif ( $flag == 11 ) {
-        $arg{type} = 'checkbox';
-        return _list_field( $field, $choices, %arg );
+
+        # $args{name} = $args{name}. '[]';
+        $args{type} = 'checkbox';
+        return _list_field( $choices, %args );
     }
 
     # select
     else {
+        my $name = delete $args{name};
         return sub {
             my $c = shift;
-            $c->select_field( $field->name => _choices_for_select( $c, $choices ), %arg );
+            $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
         };
     }
 }
@@ -136,53 +148,69 @@ sub _choices_for_select {
             $label = $c->__($label);
 
             # true to "selected"
-            my %attr = ( @{$group}[ 2 .. $#$group ] );
-            $attr{selected} ? $attr{selected} = 'selected' : delete $attr{selected};
-            $group = [ $label, $value, %attr ];
+            my %attrs = ( @{$group}[ 2 .. $#$group ] );
+            $attrs{selected} ? $attrs{selected} = 'selected' : delete $attrs{selected};
+            $group = [ $label, $value, %attrs ];
         }
     }
     return $choices;
 }
 
 sub _hidden {
-    my $field = shift;
-    return sub { shift->hidden_field( $field->name, $field->value, @_ ) };
+    my %attrs = @_;
+    return sub { shift->hidden_field( $attrs{name} => $attrs{value} ) };
 }
 
 sub _input {
-    my $field = shift;
-    my %arg   = @_;
+    my $method = shift;
+    my %attrs  = @_;
 
-    my $method = delete $arg{method};
-    return sub {
-        my $c = shift;
-        $arg{placeholder} = $c->__( $arg{placeholder} ) if $arg{placeholder};
-        $c->$method( $field->name, %arg );
-    };
+    my $name          = delete $attrs{name};
+    my $default_value = delete $attrs{default_value};
+
+    if ( $method eq 'password_field' || $method eq 'file_field' ) {
+        return sub {
+            my $c = shift;
+            $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+            $c->$method( $name, %attrs );
+        };
+    }
+    else {
+        return sub {
+            my $c = shift;
+            $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+
+            delete $attrs{value} unless defined $attrs{value};
+            $c->$method( $name => $c->__($default_value), %attrs );
+        };
+    }
 }
 
 sub _label {
-    my $field = shift;
+    my %attrs = @_;
+
     return sub {
         my $c = shift;
-        $c->label_for( $field->id => $c->__( $field->label ) );
+
+        my $required_html =
+          exists $attrs{required}
+          ? '<span class="' . $required_class . '">' . $required_icon . '</span>'
+          : '';
+        my $content = b( $c->__( $attrs{label} ) . $required_html );
+        $c->label_for( $attrs{id} => $content );
     };
 }
 
 # checkbox list or radio button list
 sub _list_field {
-    my $field   = shift;
     my $choices = shift;
-    my %arg     = @_;
+    my %args    = @_;
 
-    # NOTE: multipleの場合はname属性を xxx[] に変更する？
-    my $name = $arg{name};
-    delete $arg{$_} for qw(id value);
-
+    delete $args{$_} for qw(id value);
     return sub {
         my $c = shift;
 
-        my %values = map { $_ => 1 } @{ $c->every_param($name) };
+        my %values = map { $_ => 1 } @{ $c->every_param( $args{name} ) };
 
         my $root_class;
         my $groups = '';
@@ -193,14 +221,14 @@ sub _list_field {
 
                 $label = $c->__($label);
                 my $content = join '',
-                  map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %arg ) ) }
+                  map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %args ) ) }
                   @$values;
                 $content = $c->tag( 'ul', class => 'form-choices', sub { $content } );
-                $groups .= $c->tag( 'li', class => 'form-choice-group', sub { $label . $content } );
+                $groups .= $c->tag( 'li', class => 'form-choice-group', %attrs, sub { $label . $content } );
             }
             else {
                 $root_class = 'form-choices' unless $root_class;
-                my $row = _choice_field( $c, \%values, $group, %arg );
+                my $row = _choice_field( $c, \%values, $group, %args );
                 $groups .= $c->tag( 'li', class => 'form-choice-item', sub { $row } );
             }
         }
@@ -209,25 +237,26 @@ sub _list_field {
 }
 
 sub _select {
-    my $field   = shift;
-    my %arg     = @_;
-    my $choices = delete $arg{choices} || [];
+    my %attrs = @_;
 
+    my $choices = delete $attrs{choices} || [];
+    my $name = delete $attrs{name};
     return sub {
         my $c = shift;
-        $c->select_field( $field->name => _choices_for_select( $c, $choices ), %arg );
+        $c->select_field( $name => _choices_for_select( $c, $choices ), %attrs );
     };
 }
 
 sub _textarea {
-    my $field         = shift;
-    my %arg           = @_;
-    my $default_value = delete $arg{default_value};
+    my %attrs = @_;
+
+    my $name          = delete $attrs{name};
+    my $default_value = delete $attrs{default_value};
 
     return sub {
         my $c = shift;
-        $arg{placeholder} = $c->__( $arg{placeholder} ) if $arg{placeholder};
-        $c->text_area( $field->name => $c->__($default_value), %arg );
+        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+        $c->text_area( $name => $c->__($default_value), %attrs );
     };
 }
 
@@ -246,7 +275,30 @@ Markets::Form::Field
     use Mojo::Base -strict;
     use Markets::Form::Field;
 
-    has_field email => ( type => 'email', placeholder => 'use@mail.com', label => 'E-mail' );
+    has_field email => (
+        type        => 'email',
+        placeholder => 'use@mail.com',
+        label       => 'E-mail',
+        required    => 1,
+        class       => 'hoge-class',
+        filters     => [],
+        validations => [],
+    );
+
+    has_field 'item.[].id' => (
+        type  => 'hidden',
+    );
+
+    has_field country => (
+        type     => 'choice',
+        expanded => 0,
+        multiple => 1,
+        choices  => [
+            c( EU => [ [ Germany => 'de' ], [ England => 'en' ] ] ),
+            c( Asia => [ [ Chaina => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ),
+        ],
+    );
+
 
 =head1 DESCRIPTION
 

@@ -74,8 +74,8 @@ sub add_catalog_routes {
     # Route Examples
     $r->get('/')->to('example#welcome')->name('RN_top');
     $r->get('/regenerate_sid')->to('example#regenerate_sid');
-    $r->get('/login_example')->to('login_example#index');
-    $r->post('/login_example/attempt')->to('login_example#attempt');
+    $r->any('/login_example')->to('login_example#index');
+    # $r->post('/login_example/attempt')->to('login_example#attempt');
 
     # Cart
     $r->get('/cart')->to('cart#index')->name('RN_cart');
