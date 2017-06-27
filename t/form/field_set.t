@@ -64,6 +64,45 @@ subtest 'checks' => sub {
       'right all field_key validations';
 };
 
+subtest 'validate' => sub {
+
+    # Set form parameters
+    $fs->params->pairs(
+        [
+            email       => 'a@b33',
+            name        => '',
+            address     => 'ny',
+            'item.0.id' => 11,
+            'item.1.id' => '',
+            'item.2.id' => 33,
+        ]
+    );
+    my $result = $fs->validate;
+    ok !$result, 'right failed validation';
+
+    my $v = $fs->controller->validation;
+    my ( $check, $result, @args ) = @{ $v->error('email') };
+    is $check, 'like', 'right validation error';
+    is_deeply $v->error('name'),      ['required'], 'right required';
+    is_deeply $v->error('item.1.id'), ['required'], 'right required';
+
+    # Create new request
+    $c = $t->app->build_controller;
+    $fs = Markets::Form::Type::Test->new( controller => $c );
+    $fs->params->pairs(
+        [
+            email       => 'a@b.c',
+            name        => 'frank',
+            address     => 'ny',
+            'item.0.id' => 11,
+            'item.1.id' => 22,
+            'item.2.id' => 33,
+        ]
+    );
+    $result = $fs->validate;
+    ok $result, 'right validation';
+};
+
 # This test should be done at the end!
 subtest 'append/remove' => sub {
     $fs->append( aaa => ( type => 'text' ) );

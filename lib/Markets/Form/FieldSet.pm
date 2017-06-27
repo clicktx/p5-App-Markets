@@ -112,6 +112,36 @@ sub render {
     $field->$method;
 }
 
+sub validate {
+    my $self = shift;
+
+    my $v     = $self->controller->validation;
+    my $names = $self->params->names;
+    foreach my $field_key ( @{ $self->field_keys } ) {
+
+        my $required = $self->field_list->{$field_key}->{required};
+        my $cheks    = $self->checks($field_key);
+        if ( $field_key =~ m/\.\[\]/ ) {
+            my @match = grep { my $name = _replace_key($_); $field_key eq $name } @{$names};
+            $v->required($_) for @match;
+        }
+        else {
+            $required ? $v->required($field_key) : $v->optional($field_key);
+            _do_check( $v, $_ ) for @$cheks;
+        }
+    }
+    return $v->has_error ? undef : 1;
+}
+
+sub _do_check {
+    my $v = shift;
+
+    my ( $check, $args ) = ref $_[0] ? %{ $_[0] } : ( $_[0], undef );
+    return $v->$check unless $args;
+
+    return ref $args eq 'ARRAY' ? $v->$check( @{$args} ) : $v->$check($args);
+}
+
 sub _replace_key {
     my $arg = shift;
     $arg =~ s/\.\d/.[]/g;
@@ -129,14 +159,21 @@ Markets::Form::Field
 
 =head1 SYNOPSIS
 
-    package MyForm::Field::User;
+    # Your form field class
+    package Markets::Form::Type::User;
     use Markets::Form::FieldSet;
 
     has_field 'name' => ( %args );
-
+    ...
 
     # In controller
-    my $fieldset = MyForm::Field::User->new(%params);
+    my $fieldset = $c->form_set('user');
+
+    if ( $fieldset->validate ){
+        $c->render( text => 'thanks');
+    } else {
+        $c->render( text => 'validation failure');
+    }
 
 
 =head1 DESCRIPTION
@@ -217,6 +254,13 @@ Return code refference.
     $fieldset->render('email');
 
 Return code refference.
+
+=head2 C<validate>
+
+    my $bool = $fieldset->validate;
+    say 'Validation failure!' unless $bool;
+
+Return boolean. success return true.
 
 =head1 SEE ALSO
 
