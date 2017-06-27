@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Deep;
 use Test::Mojo;
 use t::Util;
 
@@ -52,10 +53,10 @@ subtest 'render tags' => sub {
 };
 
 subtest 'validations' => sub {
-    is_deeply $fs->validations('email'), [qw/email/], 'right get validations';
-    is_deeply $fs->validations,
+    cmp_deeply $fs->validations('email'), [ { size => ignore() }, { like => ignore() } ], 'right get validations';
+    cmp_deeply $fs->validations,
       {
-        email        => [qw/email/],
+        email        => [ { size => ignore() }, { like => ignore() } ],
         name         => [qw//],
         address      => [qw//],
         'item.[].id' => [qw//],
