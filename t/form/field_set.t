@@ -34,7 +34,7 @@ subtest 'field' => sub {
 
 subtest 'field_keys' => sub {
     my @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/email name address item.[].id/], 'right field_keys';
+    is_deeply \@field_keys, [qw/email name address item.[].id item.[].name/], 'right field_keys';
     my $field_keys = $fs->field_keys;
     is ref $field_keys, 'ARRAY', 'right scalar';
 };
@@ -56,10 +56,11 @@ subtest 'checks' => sub {
     cmp_deeply $fs->checks('email'), [ { size => ignore() }, { like => ignore() } ], 'right get validations';
     cmp_deeply $fs->checks,
       {
-        email        => [ { size => ignore() }, { like => ignore() } ],
-        name         => [qw//],
-        address      => [qw//],
-        'item.[].id' => [qw//],
+        email          => [ { size => ignore() }, { like => ignore() } ],
+        name           => [qw//],
+        address        => [qw//],
+        'item.[].id'   => [qw//],
+        'item.[].name' => [qw//],
       },
       'right all field_key validations';
 };
@@ -69,12 +70,15 @@ subtest 'validate' => sub {
     # Set form parameters
     $fs->params->pairs(
         [
-            email       => 'a@b33',
-            name        => '',
-            address     => 'ny',
-            'item.0.id' => 11,
-            'item.1.id' => '',
-            'item.2.id' => 33,
+            email         => 'a@b33',
+            name          => '',
+            address       => 'ny',
+            'item.0.id'   => 11,
+            'item.1.id'   => '',
+            'item.2.id'   => 33,
+            'item.0.name' => '',
+            'item.1.name' => '',
+            'item.2.name' => '',
         ]
     );
     my $result = $fs->validate;
@@ -91,12 +95,15 @@ subtest 'validate' => sub {
     $fs = Markets::Form::Type::Test->new( controller => $c );
     $fs->params->pairs(
         [
-            email       => 'a@b.c',
-            name        => 'frank',
-            address     => 'ny',
-            'item.0.id' => 11,
-            'item.1.id' => 22,
-            'item.2.id' => 33,
+            email         => 'a@b.c',
+            name          => 'frank',
+            address       => 'ny',
+            'item.0.id'   => 11,
+            'item.1.id'   => 22,
+            'item.2.id'   => 33,
+            'item.0.name' => '',
+            'item.1.name' => '',
+            'item.2.name' => '',
         ]
     );
     $result = $fs->validate;
@@ -107,11 +114,11 @@ subtest 'validate' => sub {
 subtest 'append/remove' => sub {
     $fs->append( aaa => ( type => 'text' ) );
     my @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/email name address item.[].id aaa/], 'right field_keys';
+    is_deeply \@field_keys, [qw/email name address item.[].id item.[].name aaa/], 'right field_keys';
 
     $fs->remove('name');
     @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/email address item.[].id aaa/], 'right field_keys';
+    is_deeply \@field_keys, [qw/email address item.[].id item.[].name aaa/], 'right field_keys';
 };
 
 done_testing();

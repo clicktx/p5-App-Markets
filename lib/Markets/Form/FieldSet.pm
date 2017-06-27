@@ -113,17 +113,20 @@ sub render {
 }
 
 sub validate {
-    my $self = shift;
-
+    my $self  = shift;
     my $v     = $self->controller->validation;
     my $names = $self->params->names;
-    foreach my $field_key ( @{ $self->field_keys } ) {
 
+    foreach my $field_key ( @{ $self->field_keys } ) {
         my $required = $self->field_list->{$field_key}->{required};
         my $cheks    = $self->checks($field_key);
+
         if ( $field_key =~ m/\.\[\]/ ) {
             my @match = grep { my $name = _replace_key($_); $field_key eq $name } @{$names};
-            $v->required($_) for @match;
+            foreach my $key (@match) {
+                $required ? $v->required($key) : $v->optional($key);
+                _do_check( $v, $_ ) for @$cheks;
+            }
         }
         else {
             $required ? $v->required($field_key) : $v->optional($field_key);
