@@ -33,4 +33,11 @@ has_field 'item.[].id' => (
     validations => [qw//],
 );
 
+has_field 'item.[].name' => (
+    type        => 'text',
+    label       => 'Item ',
+    filters     => [],
+    validations => [qw//],
+);
+
 1;
