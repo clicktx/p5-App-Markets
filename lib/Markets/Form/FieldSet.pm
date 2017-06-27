@@ -3,12 +3,12 @@ use Mojo::Base -base;
 use Mojo::Util qw/monkey_patch/;
 use Tie::IxHash;
 use Scalar::Util qw/weaken/;
-use Mojo::Parameters;
+use Mojolicious::Controller;
 use Mojo::Collection;
 use Markets::Form::Field;
 
-# has 'legend';
-has params => sub { Mojo::Parameters->new };
+has field_list => sub { {} };
+has controller => sub { Mojolicious::Controller->new };
 
 sub append {
     my ( $self, $field_key ) = ( shift, shift );
@@ -18,45 +18,44 @@ sub append {
     ${"${class}::field_list"}{$field_key} = +{@_};
 }
 
-# sub each {
-#     my ( $self, $cb ) = @_;
-#     my $class = ref $self || $self;
-#     my $caller = caller;
-#
-#     no strict 'refs';
-#     foreach my $a ( $self->keys ) {
-#         my $b = ${"${class}::field_list"}{$a};
-#         local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
-#         $a->$cb($b);
-#     }
-# }
+sub checks {
+    my ( $self, $field_key ) = ( shift, shift );
+    my $field_list = $self->field_list;
+    return $field_list->{$field_key}->{validations} if $field_key;
+
+    my %checks = map { $_ => $field_list->{$_}->{validations} } @{ $self->field_keys };
+    return \%checks;
+}
+
+sub field_keys {
+    my $self = shift;
+    my $class = ref $self || $self;
+
+    no strict 'refs';
+    my @field_keys = keys %{"${class}::field_list"};
+    return wantarray ? @field_keys : \@field_keys;
+}
 
 sub field {
     my ( $self, $name ) = ( shift, shift );
     my $args = @_ > 1 ? +{@_} : shift || {};
     my $class = ref $self || $self;
 
-    my $key = $name;
-    $key =~ s/\.\d/.[]/g;
+    my $field_key = _replace_key($name);
 
     no strict 'refs';
-    my $attrs = $key ? ${"${class}::field_list"}{$key} : {};
-    return Markets::Form::Field->new( field_key => $key, name => $name, %{$args}, %{$attrs} );
-}
-
-sub keys {
-    my $self = shift;
-    my $class = ref $self || $self;
-
-    no strict 'refs';
-    return keys %{"${class}::field_list"};
+    my $attrs = $field_key ? ${"${class}::field_list"}{$field_key} : {};
+    return Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
 }
 
 sub new {
     my $class = shift;
     my $self  = $class->SUPER::new(@_);
 
-    weaken $self->{params};
+    weaken $self->{controller};
+
+    no strict 'refs';
+    $self->{field_list} = \%{"${class}::field_list"};
     return $self;
 }
 
@@ -71,6 +70,8 @@ sub import {
     monkey_patch $caller, 'has_field', sub { append( $caller, @_ ) };
     monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
 }
+
+sub params { shift->controller->req->params(@_) }
 
 sub remove {
     my ( $self, $field_key ) = ( shift, shift );
@@ -96,35 +97,44 @@ sub render {
     $field->$method;
 }
 
-# sub renderRow {
-#     my $self = shift;
-#     return sub {
-#         my $app = shift;
-#
-#         my $form;
-#         $self->each(
-#             sub {
-#
-#                 $form .= $app->text_field( $b->name ) . "\n";
-#             }
-#         );
-#
-#         # my $tree = ['tag', 'fieldset', undef, undef, [ 'tag', 'aaa' ], [ 'tag', 'aaa' ] ];
-#         my $tree = [ 'tag', 'fieldset', undef, undef ];
-#         my $root = Mojo::ByteStream->new( Mojo::DOM::HTML::_render($tree) );
-#         my $dom  = Mojo::DOM->new($root);
-#
-#         # $dom->at('fieldset')->append_content('123')->root;
-#         $dom->at('fieldset')->append_content( "\n" . $form )->root;
-#         $dom;
-#     };
-# }
+sub validate {
+    my $self  = shift;
+    my $v     = $self->controller->validation;
+    my $names = $self->params->names;
 
-# sub _field_key { $_ = shift; s/\.\d/.[]/g; $_ }
+    foreach my $field_key ( @{ $self->field_keys } ) {
+        my $required = $self->field_list->{$field_key}->{required};
+        my $cheks    = $self->checks($field_key);
 
-# sub _id { $_ = shift; s/\./_/g; $_ }
-#
-# sub _key_id { return ( _key( $_[0] ), _id( $_[0] ) ) }
+        if ( $field_key =~ m/\.\[\]/ ) {
+            my @match = grep { my $name = _replace_key($_); $field_key eq $name } @{$names};
+            foreach my $key (@match) {
+                $required ? $v->required($key) : $v->optional($key);
+                _do_check( $v, $_ ) for @$cheks;
+            }
+        }
+        else {
+            $required ? $v->required($field_key) : $v->optional($field_key);
+            _do_check( $v, $_ ) for @$cheks;
+        }
+    }
+    return $v->has_error ? undef : 1;
+}
+
+sub _do_check {
+    my $v = shift;
+
+    my ( $check, $args ) = ref $_[0] ? %{ $_[0] } : ( $_[0], undef );
+    return $v->$check unless $args;
+
+    return ref $args eq 'ARRAY' ? $v->$check( @{$args} ) : $v->$check($args);
+}
+
+sub _replace_key {
+    my $arg = shift;
+    $arg =~ s/\.\d/.[]/g;
+    $arg;
+}
 
 1;
 __END__
@@ -137,24 +147,33 @@ Markets::Form::Field
 
 =head1 SYNOPSIS
 
-    package MyForm::Field::User;
+    # Your form field class
+    package Markets::Form::Type::User;
     use Markets::Form::FieldSet;
 
     has_field 'name' => ( %args );
-
+    ...
 
     # In controller
-    my $fieldset = MyForm::Field::User->new(%params);
+    my $fieldset = $c->form_set('user');
+
+    if ( $fieldset->validate ){
+        $c->render( text => 'thanks');
+    } else {
+        $c->render( text => 'validation failure');
+    }
 
 
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
-=head2 C<params>
+=head2 C<controller>
 
-    my $params = $fieldset->params;
-    $fieldset->params( Mojo::Parameters->new );
+    my $controller = $fieldset->controller;
+    $fieldset->controller( Mojolicious::Controller->new );
+
+Return L<Mojolicious::Controller> object.
 
 =head1 FUNCTIONS
 
@@ -174,15 +193,62 @@ Construct a new array-based L<Mojo::Collection> object.
 
     $fieldset->append( 'field_name' => ( %args ) );
 
+=head2 C<checks>
+
+    # Return array refference
+    my $checks = $fieldset->checks('email');
+
+    # Return hash refference
+    my $checks = $fieldset->checks;
+
+=head2 C<field_keys>
+
+    my @field_keys = $fieldset->field_keys;
+
+    # Return array refference
+    my $field_keys = $fieldset->field_keys;
+
 =head2 C<field>
 
     my $field = $fieldset->field('field_name');
 
 Return L<Markets::Form::Field> object.
 
+=head2 C<params>
+
+    my $params = $fieldset->params;
+    my $params_hash_ref = $fieldset->params->to_hash;
+
+    # Longer Version
+    my $params = $fieldset->controller->req->params;
+
+    # Append parameter
+    $fieldset->params->append( email => 'a@b.com' );
+
+Return L<Mojo::Parameters> object.
+
 =head2 C<remove>
 
     $fieldset->remove('field_name');
+
+=head2 C<render_label>
+
+    $fieldset->render_label('email');
+
+Return code refference.
+
+=head2 C<render>
+
+    $fieldset->render('email');
+
+Return code refference.
+
+=head2 C<validate>
+
+    my $bool = $fieldset->validate;
+    say 'Validation failure!' unless $bool;
+
+Return boolean. success return true.
 
 =head1 SEE ALSO
 
