@@ -12,22 +12,21 @@ my $item = [ { id => 0, name => 'aa' }, { id => 1, name => 'bb' }, { id => 2, na
 sub index {
     my $self = shift;
 
-    # my $params = Mojo::Parameters->new( @data );
-    # my $form = $self->form( 'example' => $params );
-    # my $form = $self->form('example')->append_params($params);
+    my $validation = $self->validation;
     $self->stash( item => $item );
-    return $self->render unless $self->validation->has_data;
+    return $self->render unless $validation->has_data;
+
+    my $form = $self->form_set('example');
+    if ( $form->validate ) {
+        say 'validation success.';
+    }
+    else {
+        say 'validation failure!';
+        use DDP;
+        p $validation;
+    }
 
     $self->render();
-}
-
-sub attempt {
-    my $self = shift;
-    use DDP;
-
-    # my $form = $self->form('example');
-
-    $self->render( item => $item, template => 'login_example/index', );
 }
 
 package Markets::Controller::Catalog::LoginExample::Before;
