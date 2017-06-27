@@ -52,9 +52,9 @@ subtest 'render tags' => sub {
     is ref $fs->render_label('email'), 'CODE', 'right render_label method';
 };
 
-subtest 'validations' => sub {
-    cmp_deeply $fs->validations('email'), [ { size => ignore() }, { like => ignore() } ], 'right get validations';
-    cmp_deeply $fs->validations,
+subtest 'checks' => sub {
+    cmp_deeply $fs->checks('email'), [ { size => ignore() }, { like => ignore() } ], 'right get validations';
+    cmp_deeply $fs->checks,
       {
         email        => [ { size => ignore() }, { like => ignore() } ],
         name         => [qw//],

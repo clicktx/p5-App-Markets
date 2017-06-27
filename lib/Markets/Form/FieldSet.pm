@@ -18,6 +18,15 @@ sub append {
     ${"${class}::field_list"}{$field_key} = +{@_};
 }
 
+sub checks {
+    my ( $self, $field_key ) = ( shift, shift );
+    my $field_list = $self->field_list;
+    return $field_list->{$field_key}->{validations} if $field_key;
+
+    my %checks = map { $_ => $field_list->{$_}->{validations} } @{ $self->field_keys };
+    return \%checks;
+}
+
 # sub each {
 #     my ( $self, $cb ) = @_;
 #     my $class = ref $self || $self;
@@ -103,15 +112,6 @@ sub render {
     $field->$method;
 }
 
-sub validations {
-    my ( $self, $field_key ) = ( shift, shift );
-    my $field_list = $self->field_list;
-    return $field_list->{$field_key}->{validations} if $field_key;
-
-    my %validations = map { $_ => $field_list->{$_}->{validations} } @{ $self->field_keys };
-    return \%validations;
-}
-
 sub _replace_key {
     my $arg = shift;
     $arg =~ s/\.\d/.[]/g;
@@ -168,6 +168,14 @@ Construct a new array-based L<Mojo::Collection> object.
 
     $fieldset->append( 'field_name' => ( %args ) );
 
+=head2 C<checks>
+
+    # Return array refference
+    my $checks = $fieldset->checks('email');
+
+    # Return hash refference
+    my $checks = $fieldset->checks;
+
 =head2 C<field_keys>
 
     my @field_keys = $fieldset->field_keys;
@@ -209,14 +217,6 @@ Return code refference.
     $fieldset->render('email');
 
 Return code refference.
-
-=head2 C<validations>
-
-    # Return array refference
-    my $validations = $fieldset->validations('email');
-
-    # Return hash refference
-    my $validations = $fieldset->validations;
 
 =head1 SEE ALSO
 
