@@ -3,6 +3,10 @@ use Mojo::Base -base;
 use Carp qw/croak/;
 use Scalar::Util qw/blessed/;
 use Mojo::Collection 'c';
+use Mojo::ByteStream 'b';
+
+our $required_class = 'form-required-field-icon';
+our $required_icon  = '*';
 
 has id => sub { $_ = shift->name; s/\./_/g; $_ };
 has [qw(field_key default_value choices help label error_message multiple expanded)];
@@ -184,9 +188,16 @@ sub _input {
 
 sub _label {
     my %attrs = @_;
+
     return sub {
         my $c = shift;
-        $c->label_for( $attrs{id} => $c->__( $attrs{label} ) );
+
+        my $required_html =
+          exists $attrs{required}
+          ? '<span class="' . $required_class . '">' . $required_icon . '</span>'
+          : '';
+        my $content = b( $c->__( $attrs{label} ) . $required_html );
+        $c->label_for( $attrs{id} => $content );
     };
 }
 
