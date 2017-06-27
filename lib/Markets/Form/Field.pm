@@ -161,12 +161,25 @@ sub _input {
     my $method = shift;
     my %attrs  = @_;
 
-    my $name = delete $attrs{name};
-    return sub {
-        my $c = shift;
-        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
-        $c->$method( $name, %attrs );
-    };
+    my $name          = delete $attrs{name};
+    my $default_value = delete $attrs{default_value};
+
+    if ( $method eq 'password_field' || $method eq 'file_field' ) {
+        return sub {
+            my $c = shift;
+            $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+            $c->$method( $name, %attrs );
+        };
+    }
+    else {
+        return sub {
+            my $c = shift;
+            $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+
+            delete $attrs{value} unless defined $attrs{value};
+            $c->$method( $name => $c->__($default_value), %attrs );
+        };
+    }
 }
 
 sub _label {

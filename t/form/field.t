@@ -11,11 +11,12 @@ my $t = Test::Mojo->new('App');
 my $c = $t->app->build_controller;
 
 my $f = Markets::Form::Field->new(
-    field_key   => 'item.[].name',
-    name        => 'item.0.name',
-    label       => 'label text',
-    placeholder => 'example',
-    required    => 1,
+    field_key     => 'item.[].name',
+    name          => 'item.0.name',
+    label         => 'label text',
+    placeholder   => 'example',
+    default_value => 'sss',
+    required      => 1,
 );
 
 subtest 'label' => sub {
@@ -25,7 +26,7 @@ subtest 'label' => sub {
 };
 
 subtest 'input basic' => sub {
-    my @types = qw(email number search tel text url password);
+    my @types = qw(email number search tel text url);
     for my $type (@types) {
         my $dom = Mojo::DOM->new( $f->$type->($c) );
         is_deeply $dom->at('*')->attr,
@@ -35,13 +36,26 @@ subtest 'input basic' => sub {
             name        => 'item.0.name',
             placeholder => 'example',
             required    => undef,
+            value       => 'sss',
           },
           "right $type";
     }
+
+    # password_field
+    my $dom = Mojo::DOM->new( $f->password->($c) );
+    is_deeply $dom->at('*')->attr,
+      {
+        type        => 'password',
+        id          => 'item_0_name',
+        name        => 'item.0.name',
+        placeholder => 'example',
+        required    => undef,
+      },
+      "right password";
 };
 
 subtest 'input other' => sub {
-    my @types = qw(color range date month time week file);
+    my @types = qw(color range date month time week);
     my $dom;
     for my $type (@types) {
         $dom = Mojo::DOM->new( $f->$type->($c) );
@@ -51,13 +65,28 @@ subtest 'input other' => sub {
             id       => 'item_0_name',
             name     => 'item.0.name',
             required => undef,
+            value    => 'sss',
           },
           "right $type";
     }
+
+    # datetime-local
     $dom = Mojo::DOM->new( $f->datetime->($c) );
     is_deeply $dom->at('*')->attr,
       {
         type     => 'datetime-local',
+        id       => 'item_0_name',
+        name     => 'item.0.name',
+        required => undef,
+        value    => 'sss',
+      },
+      "right datetime";
+
+    # file_field
+    $dom = Mojo::DOM->new( $f->file->($c) );
+    is_deeply $dom->at('*')->attr,
+      {
+        type     => 'file',
         id       => 'item_0_name',
         name     => 'item.0.name',
         required => undef,
