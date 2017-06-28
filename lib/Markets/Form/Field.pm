@@ -3,7 +3,6 @@ use Mojo::Base -base;
 use Carp qw/croak/;
 use Scalar::Util qw/blessed/;
 use Mojo::Collection 'c';
-use Mojo::ByteStream 'b';
 
 our $required_class = 'form-required-field-icon';
 our $required_icon  = '*';
@@ -196,8 +195,8 @@ sub _label {
           exists $attrs{required}
           ? '<span class="' . $required_class . '">' . $required_icon . '</span>'
           : '';
-        my $content = b( $c->__( $attrs{label} ) . $required_html );
-        $c->label_for( $attrs{id} => $content );
+        my $content = $c->__( $attrs{label} ) . $required_html;
+        $c->label_for( $attrs{id} => sub { $content } );
     };
 }
 
