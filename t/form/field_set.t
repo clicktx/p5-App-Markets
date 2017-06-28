@@ -85,7 +85,7 @@ subtest 'validate' => sub {
     ok !$result, 'right failed validation';
 
     my $v = $fs->controller->validation;
-    my ( $check, $result, @args ) = @{ $v->error('email') };
+    my ( $check, $res, @args ) = @{ $v->error('email') };
     is $check, 'like', 'right validation error';
     is_deeply $v->error('name'),      ['required'], 'right required';
     is_deeply $v->error('item.1.id'), ['required'], 'right required';
