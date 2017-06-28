@@ -13,7 +13,7 @@ use Markets::Form::Type::Test;
 my $fs = Markets::Form::Type::Test->new( controller => $c );
 
 subtest 'attributes' => sub {
-    ok( $fs->can($_), "right $_" ) for qw(controller params field_list);
+    ok( $fs->can($_), "right $_" ) for qw(controller field_list);
 };
 
 subtest 'c' => sub {
@@ -31,14 +31,6 @@ subtest 'field_keys' => sub {
     is_deeply \@field_keys, [qw/email name address item.[].id item.[].name/], 'right field_keys';
     my $field_keys = $fs->field_keys;
     is ref $field_keys, 'ARRAY', 'right scalar';
-};
-
-subtest 'params' => sub {
-    isa_ok $fs->params, 'Mojo::Parameters';
-    $fs->params->append( email => 'a@b.com' );
-
-    is $fs->params->param('email'), 'a@b.com', 'right get param';
-    is $fs->params->param('a'),     undef,     'right empty param';
 };
 
 subtest 'render tags' => sub {
@@ -77,7 +69,7 @@ subtest 'filters' => sub {
 subtest 'validate' => sub {
 
     # Set form parameters
-    $fs->params->pairs(
+    $c->req->params->pairs(
         [
             email         => 'a@b33',
             name          => '',
@@ -102,7 +94,7 @@ subtest 'validate' => sub {
     # Create new request
     $c = $t->app->build_controller;
     $fs = Markets::Form::Type::Test->new( controller => $c );
-    $fs->params->pairs(
+    $c->req->params->pairs(
         [
             email         => 'a@b.c',
             name          => 'frank',
@@ -124,7 +116,7 @@ subtest 'validate with filter' => sub {
     # Create new request
     $c = $t->app->build_controller;
     $fs = Markets::Form::Type::Test->new( controller => $c );
-    $fs->params->pairs(
+    $c->req->params->pairs(
         [
             'item.0.name' => ' aaa ',
             'item.1.name' => ' bbb ',
