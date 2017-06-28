@@ -12,10 +12,12 @@ has_field email => (
 );
 
 has_field name => (
-    type        => 'text',
-    required    => 1,
-    filters     => [],
-    validations => [qw//],
+    type     => 'text',
+    required => 1,
+
+    # not set filters and validations
+    # filters     => [],
+    # validations => [qw//],
 );
 
 has_field address => (
@@ -36,7 +38,7 @@ has_field 'item.[].id' => (
 has_field 'item.[].name' => (
     type        => 'text',
     label       => 'Item ',
-    filters     => [],
+    filters     => [qw/trim/],
     validations => [qw//],
 );
 

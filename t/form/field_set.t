@@ -12,12 +12,6 @@ my $c = $t->app->build_controller;
 use Markets::Form::Type::Test;
 my $fs = Markets::Form::Type::Test->new( controller => $c );
 
-# subtest 'each' => sub {
-#     my @field_keys;
-#     $fs->each( sub { push @field_keys, $a; isa_ok $b, 'Markets::Form::Field'; } );
-#     is_deeply \@field_keys, [qw/email name address item.[].id/], 'right each field_keys';
-# };
-
 subtest 'attributes' => sub {
     ok( $fs->can($_), "right $_" ) for qw(controller params field_list);
 };
@@ -53,16 +47,31 @@ subtest 'render tags' => sub {
 };
 
 subtest 'checks' => sub {
+    is $fs->checks('hoge'), undef, 'right not exist field_key';
     cmp_deeply $fs->checks('email'), [ { size => ignore() }, { like => ignore() } ], 'right get validations';
     cmp_deeply $fs->checks,
       {
         email          => [ { size => ignore() }, { like => ignore() } ],
-        name           => [qw//],
-        address        => [qw//],
-        'item.[].id'   => [qw//],
-        'item.[].name' => [qw//],
+        name           => [],
+        address        => [],
+        'item.[].id'   => [],
+        'item.[].name' => [],
       },
       'right all field_key validations';
+};
+
+subtest 'filters' => sub {
+    is $fs->filters('hoge'), undef, 'right not exist field_key';
+    is ref $fs->filters('name'), 'ARRAY', 'right filters';
+    cmp_deeply $fs->filters,
+      {
+        email          => [],
+        name           => [],
+        address        => [],
+        'item.[].id'   => [],
+        'item.[].name' => [qw/trim/],
+      },
+      'right all filters';
 };
 
 subtest 'validate' => sub {
@@ -85,7 +94,7 @@ subtest 'validate' => sub {
     ok !$result, 'right failed validation';
 
     my $v = $fs->controller->validation;
-    my ( $check, $result, @args ) = @{ $v->error('email') };
+    my ( $check, $res, @args ) = @{ $v->error('email') };
     is $check, 'like', 'right validation error';
     is_deeply $v->error('name'),      ['required'], 'right required';
     is_deeply $v->error('item.1.id'), ['required'], 'right required';
@@ -108,6 +117,25 @@ subtest 'validate' => sub {
     );
     $result = $fs->validate;
     ok $result, 'right validation';
+};
+
+subtest 'validate with filter' => sub {
+
+    # Create new request
+    $c = $t->app->build_controller;
+    $fs = Markets::Form::Type::Test->new( controller => $c );
+    $fs->params->pairs(
+        [
+            'item.0.name' => ' aaa ',
+            'item.1.name' => ' bbb ',
+            'item.2.name' => ' ccc ',
+        ]
+    );
+    $fs->validate;
+    my $v = $c->validation;
+    is $v->param('item.0.name'), 'aaa';
+    is $v->param('item.1.name'), 'bbb';
+    is $v->param('item.2.name'), 'ccc';
 };
 
 # This test should be done at the end!
