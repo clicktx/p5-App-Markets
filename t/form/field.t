@@ -266,4 +266,26 @@ subtest 'choice' => sub {
       'right checked';
 };
 
+subtest 'field-with-error' => sub {
+    my $f = Markets::Form::Field->new(
+        field_key => 'country.[].id',
+        name      => 'country.0.id',
+        label     => 'Country Name',
+    );
+
+    # Set validaion error
+    $c->validation->error( 'country.0.id' => ['custom_check'] );
+
+    # label
+    my $dom = Mojo::DOM->new( $f->label_for->($c) );
+    ok $dom->find('.field-with-error')->size, 'right class';
+
+    # choice
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
+    $f->multiple(1);
+    $f->expanded(1);
+    $dom = Mojo::DOM->new( $f->choice->($c) );
+    ok $dom->find('ul.field-with-error')->size, 'right class';
+};
+
 done_testing();
