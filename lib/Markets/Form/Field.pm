@@ -3,7 +3,6 @@ use Mojo::Base -base;
 use Carp qw/croak/;
 use Scalar::Util qw/blessed/;
 use Mojo::Collection 'c';
-use Mojo::ByteStream 'b';
 
 our $required_class = 'form-required-field-icon';
 our $required_icon  = '*';
@@ -196,8 +195,8 @@ sub _label {
           exists $attrs{required}
           ? '<span class="' . $required_class . '">' . $required_icon . '</span>'
           : '';
-        my $content = b( $c->__( $attrs{label} ) . $required_html );
-        $c->label_for( $attrs{id} => $content );
+        my $content = $c->__( $attrs{label} ) . $required_html;
+        _validation( $c, $attrs{name}, 'label', for => $attrs{id}, sub { $content } );
     };
 }
 
@@ -232,7 +231,7 @@ sub _list_field {
                 $groups .= $c->tag( 'li', class => 'form-choice-item', sub { $row } );
             }
         }
-        $c->tag( 'ul', class => $root_class, sub { $groups } );
+        _validation( $c, $args{name}, 'ul', class => $root_class, sub { $groups } );
     };
 }
 
@@ -258,6 +257,13 @@ sub _textarea {
         $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
         $c->text_area( $name => $c->__($default_value), %attrs );
     };
+}
+
+# This code from Mojolicious::Plugin::TagHelpers
+sub _validation {
+    my ( $c, $name ) = ( shift, shift );
+    return $c->tag(@_) unless $c->validation->has_error($name);
+    return $c->helpers->tag_with_error(@_);
 }
 
 1;
