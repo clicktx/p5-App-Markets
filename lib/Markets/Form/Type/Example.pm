@@ -66,6 +66,8 @@ has_field note => (
     placeholder   => 'Note',
     cols          => 40,
     default_value => 'This is note',
+    filters       => [],
+    validations   => [],
 );
 
 has_field agreed => (

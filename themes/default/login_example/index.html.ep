@@ -3,14 +3,26 @@
 
 <h2><%= __('login') %></h2>
 
+%= stylesheet begin
+.field-with-error {
+    background-color: #f00;
+}
+% end
 
 <%= form_for '/login_example' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
-    <h4>longer version</h4>
+    <h4>longer version(example)</h4>
     <div class="">
         <%= form_set('example')->render_label("email")->(app) %>
         <%= form_set('example')->render("email")->(app) %>
+    </div>
+
+
+    <h4>smart version</h4>
+    <div class="">
+        <%= form_label('example.email') %>
+        <%= form_widget('example.email') %>
     </div>
     <div class="">
         <%= form_label('example.password') %>
@@ -21,7 +33,6 @@
         <%= form_widget('example.password_again') %>
     </div>
 
-    <h4>smart version</h4>
     <div class="">
         <%= form_label('example.address') %>
         <%= form_widget('example.address') %>
