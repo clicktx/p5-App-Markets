@@ -12,12 +12,6 @@ my $c = $t->app->build_controller;
 use Markets::Form::Type::Test;
 my $fs = Markets::Form::Type::Test->new( controller => $c );
 
-# subtest 'each' => sub {
-#     my @field_keys;
-#     $fs->each( sub { push @field_keys, $a; isa_ok $b, 'Markets::Form::Field'; } );
-#     is_deeply \@field_keys, [qw/email name address item.[].id/], 'right each field_keys';
-# };
-
 subtest 'attributes' => sub {
     ok( $fs->can($_), "right $_" ) for qw(controller params field_list);
 };
@@ -53,6 +47,7 @@ subtest 'render tags' => sub {
 };
 
 subtest 'checks' => sub {
+    is $fs->checks('hoge'), undef, 'right not exist field_key';
     cmp_deeply $fs->checks('email'), [ { size => ignore() }, { like => ignore() } ], 'right get validations';
     cmp_deeply $fs->checks,
       {
@@ -67,7 +62,7 @@ subtest 'checks' => sub {
 
 subtest 'filters' => sub {
     is $fs->filters('hoge'), undef, 'right not exist field_key';
-    is ref $fs->filters('email'), 'ARRAY', 'right filters';
+    is ref $fs->filters('name'), 'ARRAY', 'right filters';
     cmp_deeply $fs->filters,
       {
         email          => [],

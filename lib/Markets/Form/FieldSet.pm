@@ -18,14 +18,7 @@ sub append {
     ${"${class}::field_list"}{$field_key} = +{@_};
 }
 
-sub checks {
-    my ( $self, $field_key ) = ( shift, shift );
-    my $field_list = $self->field_list;
-    return $field_list->{$field_key}->{validations} if $field_key;
-
-    my %checks = map { $_ => $field_list->{$_}->{validations} } @{ $self->field_keys };
-    return \%checks;
-}
+sub checks { shift->_get_data_from_field( shift, 'validations' ) }
 
 sub field_keys {
     my $self = shift;

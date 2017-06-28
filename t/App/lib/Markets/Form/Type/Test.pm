@@ -17,7 +17,7 @@ has_field name => (
 
     # not set filters and validations
     # filters     => [],
-    validations => [qw//],
+    # validations => [qw//],
 );
 
 has_field address => (
