@@ -48,6 +48,8 @@ sub field {
     return Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
 }
 
+sub filters { shift->_get_data_from_field( shift, 'filters' ) }
+
 sub new {
     my $class = shift;
     my $self  = $class->SUPER::new(@_);
@@ -104,21 +106,35 @@ sub validate {
 
     foreach my $field_key ( @{ $self->field_keys } ) {
         my $required = $self->field_list->{$field_key}->{required};
+        my $filters  = $self->filters($field_key);
         my $cheks    = $self->checks($field_key);
 
         if ( $field_key =~ m/\.\[\]/ ) {
             my @match = grep { my $name = _replace_key($_); $field_key eq $name } @{$names};
             foreach my $key (@match) {
-                $required ? $v->required($key) : $v->optional($key);
+                $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
                 _do_check( $v, $_ ) for @$cheks;
             }
         }
         else {
-            $required ? $v->required($field_key) : $v->optional($field_key);
+            $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
             _do_check( $v, $_ ) for @$cheks;
         }
     }
     return $v->has_error ? undef : 1;
+}
+
+sub _get_data_from_field {
+    my ( $self, $key, $type ) = @_;
+
+    if ($key) {
+        my %field_list = %{ $self->field_list };
+        return $field_list{$key} ? $field_list{$key}->{$type} || [] : undef;
+    }
+    else {
+        my %data = map { $_ => $self->field_list->{$_}->{$type} || [] } @{ $self->field_keys };
+        return \%data || {};
+    }
 }
 
 sub _do_check {
@@ -213,6 +229,14 @@ Construct a new array-based L<Mojo::Collection> object.
     my $field = $fieldset->field('field_name');
 
 Return L<Markets::Form::Field> object.
+
+=head2 C<filters>
+
+    # Return array refference
+    my $filters = $fieldset->filters('field_key');
+
+    # Return hash refference
+    my $filters = $fieldset->filters;
 
 =head2 C<params>
 

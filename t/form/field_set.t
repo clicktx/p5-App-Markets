@@ -57,12 +57,26 @@ subtest 'checks' => sub {
     cmp_deeply $fs->checks,
       {
         email          => [ { size => ignore() }, { like => ignore() } ],
-        name           => [qw//],
-        address        => [qw//],
-        'item.[].id'   => [qw//],
-        'item.[].name' => [qw//],
+        name           => [],
+        address        => [],
+        'item.[].id'   => [],
+        'item.[].name' => [],
       },
       'right all field_key validations';
+};
+
+subtest 'filters' => sub {
+    is $fs->filters('hoge'), undef, 'right not exist field_key';
+    is ref $fs->filters('email'), 'ARRAY', 'right filters';
+    cmp_deeply $fs->filters,
+      {
+        email          => [],
+        name           => [],
+        address        => [],
+        'item.[].id'   => [],
+        'item.[].name' => [qw/trim/],
+      },
+      'right all filters';
 };
 
 subtest 'validate' => sub {
@@ -108,6 +122,25 @@ subtest 'validate' => sub {
     );
     $result = $fs->validate;
     ok $result, 'right validation';
+};
+
+subtest 'validate with filter' => sub {
+
+    # Create new request
+    $c = $t->app->build_controller;
+    $fs = Markets::Form::Type::Test->new( controller => $c );
+    $fs->params->pairs(
+        [
+            'item.0.name' => ' aaa ',
+            'item.1.name' => ' bbb ',
+            'item.2.name' => ' ccc ',
+        ]
+    );
+    $fs->validate;
+    my $v = $c->validation;
+    is $v->param('item.0.name'), 'aaa';
+    is $v->param('item.1.name'), 'bbb';
+    is $v->param('item.2.name'), 'ccc';
 };
 
 # This test should be done at the end!
