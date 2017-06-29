@@ -56,7 +56,7 @@ sub AUTOLOAD {
     return _select( %attrs, @_ ) if $method eq 'select';
 
     # choice
-    return _choice_widget( %attrs, @_ ) if $method eq 'choice';
+    return _choice_list_widget( %attrs, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
@@ -82,7 +82,7 @@ sub _choice_field {
 }
 
 # NOTE: multipleの場合はname属性を xxx[] に変更する？
-sub _choice_widget {
+sub _choice_list_widget {
     my %args = @_;
 
     my $choices = delete $args{choices} || [];
