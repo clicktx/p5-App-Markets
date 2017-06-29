@@ -34,13 +34,13 @@ sub field {
     my $class = ref $self || $self;
 
     my $field_key = _replace_key($name);
-    return $self->{_field}->{$field_key} if $self->{_field}->{$field_key};
+    my $cache_key = $name eq $field_key ? $field_key : "$field_key=$name";
+    return $self->{_field}->{$cache_key} if $self->{_field}->{$cache_key};
 
     no strict 'refs';
     my $attrs = $field_key ? ${"${class}::schema"}{$field_key} : {};
     my $field = Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
-    $self->{_field}->{$field_key} = $field;
-
+    $self->{_field}->{$cache_key} = $field;
     return $field;
 }
 
