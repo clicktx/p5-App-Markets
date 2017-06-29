@@ -85,7 +85,11 @@ sub render {
     my $self = shift;
     my $name = shift;
 
-    my $field = $self->field( $name, value => $self->controller->req->params->param($name) );
+    my %attrs;
+    my $value = $self->controller->req->params->param($name);
+    $attrs{value} = $value if defined $value;
+
+    my $field = $self->field( $name, %attrs );
     my $method = $field->type || 'text';
     $field->$method;
 }
