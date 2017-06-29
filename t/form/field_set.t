@@ -13,7 +13,7 @@ use_ok 'Markets::Form::Type::Test';
 my $fs = Markets::Form::Type::Test->new( controller => $c );
 
 subtest 'attributes' => sub {
-    ok( $fs->can($_), "right $_" ) for qw(controller field_list);
+    ok( $fs->can($_), "right $_" ) for qw(controller schema);
 };
 
 subtest 'c' => sub {
@@ -83,15 +83,18 @@ subtest 'validate' => sub {
     # Set form parameters
     $c->req->params->pairs(
         [
-            email         => 'a@b33',
-            name          => '',
-            address       => 'ny',
-            'item.0.id'   => 11,
-            'item.1.id'   => '',
-            'item.2.id'   => 33,
-            'item.0.name' => '',
-            'item.1.name' => '',
-            'item.2.name' => '',
+            email              => 'a@b33',
+            name               => '',
+            address            => 'ny',
+            'favorite_color[]' => 'red',
+            'luky_number[]'    => 2,
+            'luky_number[]'    => 3,
+            'item.0.id'        => 11,
+            'item.1.id'        => '',
+            'item.2.id'        => 33,
+            'item.0.name'      => '',
+            'item.1.name'      => '',
+            'item.2.name'      => '',
         ]
     );
     my $result = $fs->validate;
@@ -108,18 +111,18 @@ subtest 'validate' => sub {
     $fs = Markets::Form::Type::Test->new( controller => $c );
     $c->req->params->pairs(
         [
-            email          => 'a@b.c',
-            name           => 'frank',
-            address        => 'ny',
-            favorite_color => 'red',
-            luky_number    => 2,
-            luky_number    => 3,
-            'item.0.id'    => 11,
-            'item.1.id'    => 22,
-            'item.2.id'    => 33,
-            'item.0.name'  => '',
-            'item.1.name'  => '',
-            'item.2.name'  => '',
+            email              => 'a@b.c',
+            name               => 'frank',
+            address            => 'ny',
+            'favorite_color[]' => 'red',
+            'luky_number[]'    => 2,
+            'luky_number[]'    => 3,
+            'item.0.id'        => 11,
+            'item.1.id'        => 22,
+            'item.2.id'        => 33,
+            'item.0.name'      => '',
+            'item.1.name'      => '',
+            'item.2.name'      => '',
         ]
     );
     $result = $fs->validate;

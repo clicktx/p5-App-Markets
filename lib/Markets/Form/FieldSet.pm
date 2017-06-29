@@ -113,6 +113,10 @@ sub validate {
         my $filters  = $self->filters($field_key);
         my $checks   = $self->checks($field_key);
 
+        # multiple field: eg. parameter_name = "favorite_color[]"
+        $field_key .= '[]' if $self->schema($field_key)->{multiple};
+
+        # expanding field: e.g. field_key = "user.[].id" parameter_name = "user.0.id"
         if ( $field_key =~ m/\.\[\]/ ) {
             my @match = grep { my $name = _replace_key($_); $field_key eq $name } @{$names};
             foreach my $key (@match) {
