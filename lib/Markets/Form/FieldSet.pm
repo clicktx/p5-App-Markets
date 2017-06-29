@@ -7,7 +7,7 @@ use Mojolicious::Controller;
 use Mojo::Collection;
 use Markets::Form::Field;
 
-has field_list => sub { {} };
+has schema => sub { {} };
 has controller => sub { Mojolicious::Controller->new };
 
 sub append {
@@ -15,7 +15,7 @@ sub append {
     return unless ( my $class = ref $self || $self ) && $field_key;
 
     no strict 'refs';
-    ${"${class}::field_list"}{$field_key} = +{@_};
+    ${"${class}::schema"}{$field_key} = +{@_};
 }
 
 sub checks { shift->_get_data_from_field( shift, 'validations' ) }
@@ -25,7 +25,7 @@ sub field_keys {
     my $class = ref $self || $self;
 
     no strict 'refs';
-    my @field_keys = keys %{"${class}::field_list"};
+    my @field_keys = keys %{"${class}::schema"};
     return wantarray ? @field_keys : \@field_keys;
 }
 
@@ -38,7 +38,7 @@ sub field {
     return $self->{_field}->{$field_key} if $self->{_field}->{$field_key};
 
     no strict 'refs';
-    my $attrs = $field_key ? ${"${class}::field_list"}{$field_key} : {};
+    my $attrs = $field_key ? ${"${class}::schema"}{$field_key} : {};
     my $field = Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
     $self->{_field}->{$field_key} = $field;
 
@@ -54,7 +54,7 @@ sub new {
     weaken $self->{controller};
 
     no strict 'refs';
-    $self->{field_list} = \%{"${class}::field_list"};
+    $self->{schema} = \%{"${class}::schema"};
     return $self;
 }
 
@@ -65,7 +65,7 @@ sub import {
     no strict 'refs';
     no warnings 'once';
     push @{"${caller}::ISA"}, $class;
-    tie %{"${caller}::field_list"}, 'Tie::IxHash';
+    tie %{"${caller}::schema"}, 'Tie::IxHash';
     monkey_patch $caller, 'has_field', sub { append( $caller, @_ ) };
     monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
 }
@@ -75,7 +75,7 @@ sub remove {
     return unless ( my $class = ref $self || $self ) && $field_key;
 
     no strict 'refs';
-    delete ${"${class}::field_list"}{$field_key};
+    delete ${"${class}::schema"}{$field_key};
 }
 
 sub render_label {
@@ -104,7 +104,7 @@ sub validate {
     my $names = $self->controller->req->params->names;
 
     foreach my $field_key ( @{ $self->field_keys } ) {
-        my $required = $self->field_list->{$field_key}->{required};
+        my $required = $self->schema->{$field_key}->{required};
         my $filters  = $self->filters($field_key);
         my $cheks    = $self->checks($field_key);
 
@@ -127,11 +127,11 @@ sub _get_data_from_field {
     my ( $self, $key, $type ) = @_;
 
     if ($key) {
-        my %field_list = %{ $self->field_list };
-        return $field_list{$key} ? $field_list{$key}->{$type} || [] : undef;
+        my %schema = %{ $self->schema };
+        return $schema{$key} ? $schema{$key}->{$type} || [] : undef;
     }
     else {
-        my %data = map { $_ => $self->field_list->{$_}->{$type} || [] } @{ $self->field_keys };
+        my %data = map { $_ => $self->schema->{$_}->{$type} || [] } @{ $self->field_keys };
         return \%data || {};
     }
 }
