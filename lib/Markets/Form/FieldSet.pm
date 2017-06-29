@@ -111,18 +111,18 @@ sub validate {
     foreach my $field_key ( @{ $self->field_keys } ) {
         my $required = $self->schema->{$field_key}->{required};
         my $filters  = $self->filters($field_key);
-        my $cheks    = $self->checks($field_key);
+        my $checks   = $self->checks($field_key);
 
         if ( $field_key =~ m/\.\[\]/ ) {
             my @match = grep { my $name = _replace_key($_); $field_key eq $name } @{$names};
             foreach my $key (@match) {
                 $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
-                _do_check( $v, $_ ) for @$cheks;
+                _do_check( $v, $_ ) for @$checks;
             }
         }
         else {
             $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
-            _do_check( $v, $_ ) for @$cheks;
+            _do_check( $v, $_ ) for @$checks;
         }
     }
     return $v->has_error ? undef : 1;
