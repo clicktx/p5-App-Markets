@@ -56,7 +56,7 @@ sub AUTOLOAD {
     return _select( %attrs, @_ ) if $method eq 'select';
 
     # choice
-    return _choice_widget( %attrs, @_ ) if $method eq 'choice';
+    return _choice_list_widget( %attrs, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
@@ -82,13 +82,16 @@ sub _choice_field {
 }
 
 # NOTE: multipleの場合はname属性を xxx[] に変更する？
-sub _choice_widget {
+sub _choice_list_widget {
     my %args = @_;
 
     my $choices = delete $args{choices} || [];
     my $multiple = delete $args{multiple} ? 1 : 0;
     my $expanded = delete $args{expanded} ? 1 : 0;
     my $flag     = $multiple . $expanded;
+
+    # Add suffix for multiple
+    $args{name} .= '[]' if $multiple;
 
     # radio
     if ( $flag == 1 ) {
@@ -99,8 +102,6 @@ sub _choice_widget {
     # select-multiple
     elsif ( $flag == 10 ) {
         $args{multiple} = undef;
-
-        # my $name = (delete $args{name}) . '[]';
         my $name = delete $args{name};
         return sub {
             my $c = shift;
@@ -110,8 +111,6 @@ sub _choice_widget {
 
     # checkbox
     elsif ( $flag == 11 ) {
-
-        # $args{name} = $args{name}. '[]';
         $args{type} = 'checkbox';
         return _list_field( $choices, %args );
     }
@@ -295,7 +294,7 @@ Markets::Form::Field
         type  => 'hidden',
     );
 
-    has_field country => (
+    has_field 'country[]' => (
         type     => 'choice',
         expanded => 0,
         multiple => 1,
@@ -331,7 +330,6 @@ All methods is L<Mojolicious::Plugin::TagHelpers> wrapper method.
 
     my $f = Markets::Form::Field->new( name => 'country' );
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
-
     # Select field
     $f->multiple(0);
     $f->expanded(0);
@@ -348,10 +346,12 @@ All methods is L<Mojolicious::Plugin::TagHelpers> wrapper method.
     </select>
 
     # Select field multiple
+    my $f = Markets::Form::Field->new( name => 'country[]' );
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
     $f->multiple(1);
     $f->expanded(0);
 
-    <select id="country" multiple name="country">
+    <select id="country" multiple name="country[]">
         <optgroup label="EU">
             <option value="de">de</option>
             <option value="en">en</option>
@@ -386,6 +386,8 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     </ul>
 
     # Check box
+    my $f = Markets::Form::Field->new( name => 'country[]' );
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
     $f->multiple(1);
     $f->expanded(1);
     say $f->choice->($c);
@@ -393,13 +395,13 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     # HTML
     <ul class="form-choices">
         <li class="form-choice-item">
-            <label><input name="country" type="checkbox" value="jp">Japan</label>
+            <label><input name="country[]" type="checkbox" value="jp">Japan</label>
         </li>
         <li class="form-choice-item">
-            <label><input checked name="country" type="checkbox" value="de">Germany</label>
+            <label><input checked name="country[]" type="checkbox" value="de">Germany</label>
         </li>
         <li class="form-choice-item">
-            <label><input name="country" type="checkbox" value="cn">cn</label>
+            <label><input name="country[]" type="checkbox" value="cn">cn</label>
         </li>
     </ul>
 
@@ -412,24 +414,33 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
         <li class="form-choice-group">EU
             <ul class="form-choices">
                 <li class="form-choice-item">
-                    <label><input name="country" type="checkbox" value="de">de</label>
+                    <label><input name="country[]" type="checkbox" value="de">de</label>
                 </li>
                 <li class="form-choice-item">
-                    <label><input name="country" type="checkbox" value="en">en</label>
+                    <label><input name="country[]" type="checkbox" value="en">en</label>
                 </li>
             </ul>
         </li>
         <li class="form-choice-group">Asia
             <ul class="form-choices">
                 <li class="form-choice-item">
-                    <label><input name="country" type="checkbox" value="cn">China</label>
+                    <label><input name="country[]" type="checkbox" value="cn">China</label>
                 </li>
                 <li class="form-choice-item">
-                    <label><input checked name="country" type="checkbox" value="jp">Japan</label>
+                    <label><input checked name="country[]" type="checkbox" value="jp">Japan</label>
                 </li>
             </ul>
         </li>
     </ul>
+
+In case of C<multiple>, it is necessary to add "[]" after the field name.
+This field always has multiple values.
+
+    # eg.
+    {
+        'country[]' => [ 'value1' ]
+        'city[]' => [ 'value1', 'value2' ]
+    }
 
 =head2 C<color>
 

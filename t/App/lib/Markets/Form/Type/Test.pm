@@ -17,14 +17,34 @@ has_field name => (
 
     # not set filters and validations
     # filters     => [],
-    # validations => [qw//],
+    # validations => [],
 );
 
 has_field address => (
     type        => 'text',
     required    => 1,
     filters     => [],
-    validations => [qw//],
+    validations => [],
+);
+
+has_field favorite_color => (
+    type        => 'choice',
+    multiple    => 1,
+    expanded    => 1,
+    required    => 1,
+    filters     => [],
+    validations => [],
+    choices     => [qw(red green blue yellow black)],
+);
+
+has_field luky_number => (
+    type        => 'choice',
+    multiple    => 1,
+    expanded    => 1,
+    required    => 1,
+    filters     => [],
+    validations => [],
+    choices     => [qw(1 2 3 4 5 6 7 8 9)],
 );
 
 has_field 'item.[].id' => (
@@ -32,14 +52,14 @@ has_field 'item.[].id' => (
     label       => 'Item ',
     required    => 1,
     filters     => [],
-    validations => [qw//],
+    validations => [],
 );
 
 has_field 'item.[].name' => (
     type        => 'text',
     label       => 'Item ',
     filters     => [qw/trim/],
-    validations => [qw//],
+    validations => [],
 );
 
 1;

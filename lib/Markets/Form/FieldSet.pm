@@ -7,7 +7,6 @@ use Mojolicious::Controller;
 use Mojo::Collection;
 use Markets::Form::Field;
 
-has field_list => sub { {} };
 has controller => sub { Mojolicious::Controller->new };
 
 sub append {
@@ -15,17 +14,17 @@ sub append {
     return unless ( my $class = ref $self || $self ) && $field_key;
 
     no strict 'refs';
-    ${"${class}::field_list"}{$field_key} = +{@_};
+    ${"${class}::schema"}{$field_key} = +{@_};
 }
 
-sub checks { shift->_get_data_from_field( shift, 'validations' ) }
+sub checks { shift->_get_data( shift, 'validations' ) }
 
 sub field_keys {
     my $self = shift;
     my $class = ref $self || $self;
 
     no strict 'refs';
-    my @field_keys = keys %{"${class}::field_list"};
+    my @field_keys = keys %{"${class}::schema"};
     return wantarray ? @field_keys : \@field_keys;
 }
 
@@ -35,22 +34,23 @@ sub field {
     my $class = ref $self || $self;
 
     my $field_key = _replace_key($name);
+    return $self->{_field}->{$field_key} if $self->{_field}->{$field_key};
 
     no strict 'refs';
-    my $attrs = $field_key ? ${"${class}::field_list"}{$field_key} : {};
-    return Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
+    my $attrs = $field_key ? ${"${class}::schema"}{$field_key} : {};
+    my $field = Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
+    $self->{_field}->{$field_key} = $field;
+
+    return $field;
 }
 
-sub filters { shift->_get_data_from_field( shift, 'filters' ) }
+sub filters { shift->_get_data( shift, 'filters' ) }
 
 sub new {
     my $class = shift;
     my $self  = $class->SUPER::new(@_);
 
     weaken $self->{controller};
-
-    no strict 'refs';
-    $self->{field_list} = \%{"${class}::field_list"};
     return $self;
 }
 
@@ -61,7 +61,7 @@ sub import {
     no strict 'refs';
     no warnings 'once';
     push @{"${caller}::ISA"}, $class;
-    tie %{"${caller}::field_list"}, 'Tie::IxHash';
+    tie %{"${caller}::schema"}, 'Tie::IxHash';
     monkey_patch $caller, 'has_field', sub { append( $caller, @_ ) };
     monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
 }
@@ -71,7 +71,7 @@ sub remove {
     return unless ( my $class = ref $self || $self ) && $field_key;
 
     no strict 'refs';
-    delete ${"${class}::field_list"}{$field_key};
+    delete ${"${class}::schema"}{$field_key};
 }
 
 sub render_label {
@@ -85,9 +85,22 @@ sub render {
     my $self = shift;
     my $name = shift;
 
-    my $field = $self->field( $name, value => $self->controller->req->params->param($name) );
+    my %attrs;
+    my $value = $self->controller->req->params->param($name);
+    $attrs{value} = $value if defined $value;
+
+    my $field = $self->field( $name, %attrs );
     my $method = $field->type || 'text';
     $field->$method;
+}
+
+sub schema {
+    my ( $self, $field_key ) = @_;
+    my $class = ref $self || $self;
+
+    no strict 'refs';
+    my %schema = %{"${class}::schema"};
+    return $field_key ? $schema{$field_key} : \%schema;
 }
 
 sub validate {
@@ -96,19 +109,24 @@ sub validate {
     my $names = $self->controller->req->params->names;
 
     foreach my $field_key ( @{ $self->field_keys } ) {
-        my $required = $self->field_list->{$field_key}->{required};
-        my $cheks    = $self->checks($field_key);
+        my $required = $self->schema->{$field_key}->{required};
+        my $filters  = $self->filters($field_key);
+        my $checks   = $self->checks($field_key);
 
+        # multiple field: eg. parameter_name = "favorite_color[]"
+        $field_key .= '[]' if $self->schema($field_key)->{multiple};
+
+        # expanding field: e.g. field_key = "user.[].id" parameter_name = "user.0.id"
         if ( $field_key =~ m/\.\[\]/ ) {
             my @match = grep { my $name = _replace_key($_); $field_key eq $name } @{$names};
             foreach my $key (@match) {
-                $required ? $v->required($key) : $v->optional($key);
-                _do_check( $v, $_ ) for @$cheks;
+                $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
+                _do_check( $v, $_ ) for @$checks;
             }
         }
         else {
-            $required ? $v->required($field_key) : $v->optional($field_key);
-            _do_check( $v, $_ ) for @$cheks;
+            $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
+            _do_check( $v, $_ ) for @$checks;
         }
     }
     return $v->has_error ? undef : 1;
@@ -123,11 +141,19 @@ sub _do_check {
     return ref $args eq 'ARRAY' ? $v->$check( @{$args} ) : $v->$check($args);
 }
 
-sub _replace_key {
-    my $arg = shift;
-    $arg =~ s/\.\d/.[]/g;
-    $arg;
+sub _get_data {
+    my ( $self, $field_key, $attr_name ) = @_;
+
+    if ($field_key) {
+        return %{ $self->schema }{$field_key} ? %{ $self->schema }{$field_key}->{$attr_name} || [] : undef;
+    }
+    else {
+        my %data = map { $_ => $self->schema->{$_}->{$attr_name} || [] } @{ $self->field_keys };
+        return \%data || {};
+    }
 }
+
+sub _replace_key { my $arg = shift; $arg =~ s/\.\d/.[]/g; $arg; }
 
 1;
 __END__
@@ -189,9 +215,11 @@ Construct a new array-based L<Mojo::Collection> object.
 =head2 C<checks>
 
     # Return array refference
+    # [ 'validation1', 'validation2', ... ]
     my $checks = $fieldset->checks('email');
 
     # Return hash refference
+    # { field_key => [ 'validation1', 'validation2', ... ], field_key2 => [ 'validation1', 'validation2', ... ] }
     my $checks = $fieldset->checks;
 
 =head2 C<field_keys>
@@ -206,13 +234,16 @@ Construct a new array-based L<Mojo::Collection> object.
     my $field = $fieldset->field('field_name');
 
 Return L<Markets::Form::Field> object.
+Object once created are cached in "$fieldset->{_field}->{$field_key}".
 
 =head2 C<filters>
 
     # Return array refference
+    # [ 'filter1', 'filter2', ... ]
     my $filters = $fieldset->filters('field_key');
 
     # Return hash refference
+    # { field_key => [ 'filter1', 'filter2', ... ], field_key2 => [ 'filter1', 'filter2', ... ] }
     my $filters = $fieldset->filters;
 
 =head2 C<remove>
@@ -230,6 +261,14 @@ Return code refference.
     $fieldset->render('email');
 
 Return code refference.
+
+=head2 C<schema>
+
+    my $schema = $fieldset->schema;
+
+    my $field_schema = $fieldset->schema('field_key');
+
+Return hash refference. Get a field definition.
 
 =head2 C<validate>
 
