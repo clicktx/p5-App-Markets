@@ -145,7 +145,7 @@ sub _get_data {
     my ( $self, $field_key, $attr_name ) = @_;
 
     if ($field_key) {
-        return %{ $self->schema }{$field_key} ? %{ $self->schema }{$field_key}->{$attr_name} || [] : undef;
+        return ${ $self->schema }{$field_key} ? ${ $self->schema }{$field_key}->{$attr_name} || [] : undef;
     }
     else {
         my %data = map { $_ => $self->schema->{$_}->{$attr_name} || [] } @{ $self->field_keys };
