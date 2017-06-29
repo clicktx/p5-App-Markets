@@ -17,7 +17,7 @@ sub append {
     ${"${class}::schema"}{$field_key} = +{@_};
 }
 
-sub checks { shift->_get_data_from_field( shift, 'validations' ) }
+sub checks { shift->_get_data( shift, 'validations' ) }
 
 sub field_keys {
     my $self = shift;
@@ -44,7 +44,7 @@ sub field {
     return $field;
 }
 
-sub filters { shift->_get_data_from_field( shift, 'filters' ) }
+sub filters { shift->_get_data( shift, 'filters' ) }
 
 sub new {
     my $class = shift;
@@ -128,7 +128,16 @@ sub validate {
     return $v->has_error ? undef : 1;
 }
 
-sub _get_data_from_field {
+sub _do_check {
+    my $v = shift;
+
+    my ( $check, $args ) = ref $_[0] ? %{ $_[0] } : ( $_[0], undef );
+    return $v->$check unless $args;
+
+    return ref $args eq 'ARRAY' ? $v->$check( @{$args} ) : $v->$check($args);
+}
+
+sub _get_data {
     my ( $self, $key, $type ) = @_;
 
     if ($key) {
@@ -140,20 +149,7 @@ sub _get_data_from_field {
     }
 }
 
-sub _do_check {
-    my $v = shift;
-
-    my ( $check, $args ) = ref $_[0] ? %{ $_[0] } : ( $_[0], undef );
-    return $v->$check unless $args;
-
-    return ref $args eq 'ARRAY' ? $v->$check( @{$args} ) : $v->$check($args);
-}
-
-sub _replace_key {
-    my $arg = shift;
-    $arg =~ s/\.\d/.[]/g;
-    $arg;
-}
+sub _replace_key { my $arg = shift; $arg =~ s/\.\d/.[]/g; $arg; }
 
 1;
 __END__
