@@ -142,13 +142,13 @@ sub _do_check {
 }
 
 sub _get_data {
-    my ( $self, $key, $type ) = @_;
+    my ( $self, $field_key, $attr_name ) = @_;
 
-    if ($key) {
-        return %{ $self->schema }{$key} ? %{ $self->schema }{$key}->{$type} || [] : undef;
+    if ($field_key) {
+        return %{ $self->schema }{$field_key} ? %{ $self->schema }{$field_key}->{$attr_name} || [] : undef;
     }
     else {
-        my %data = map { $_ => $self->schema->{$_}->{$type} || [] } @{ $self->field_keys };
+        my %data = map { $_ => $self->schema->{$_}->{$attr_name} || [] } @{ $self->field_keys };
         return \%data || {};
     }
 }
