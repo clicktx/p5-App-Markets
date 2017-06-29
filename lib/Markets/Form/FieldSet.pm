@@ -7,7 +7,6 @@ use Mojolicious::Controller;
 use Mojo::Collection;
 use Markets::Form::Field;
 
-has schema => sub { {} };
 has controller => sub { Mojolicious::Controller->new };
 
 sub append {
@@ -52,9 +51,6 @@ sub new {
     my $self  = $class->SUPER::new(@_);
 
     weaken $self->{controller};
-
-    no strict 'refs';
-    $self->{schema} = \%{"${class}::schema"};
     return $self;
 }
 
@@ -96,6 +92,15 @@ sub render {
     my $field = $self->field( $name, %attrs );
     my $method = $field->type || 'text';
     $field->$method;
+}
+
+sub schema {
+    my ( $self, $field_key ) = @_;
+    my $class = ref $self || $self;
+
+    no strict 'refs';
+    my %schema = %{"${class}::schema"};
+    return $field_key ? $schema{$field_key} : \%schema;
 }
 
 sub validate {
@@ -253,6 +258,14 @@ Return code refference.
     $fieldset->render('email');
 
 Return code refference.
+
+=head2 C<schema>
+
+    my $schema = $fieldset->schema;
+
+    my $field_schema = $fieldset->schema('field_key');
+
+Return hash refference. Get a field definition.
 
 =head2 C<validate>
 
