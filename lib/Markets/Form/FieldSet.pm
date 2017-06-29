@@ -132,8 +132,7 @@ sub _get_data_from_field {
     my ( $self, $key, $type ) = @_;
 
     if ($key) {
-        my %schema = %{ $self->schema };
-        return $schema{$key} ? $schema{$key}->{$type} || [] : undef;
+        return %{ $self->schema }{$key} ? %{ $self->schema }{$key}->{$type} || [] : undef;
     }
     else {
         my %data = map { $_ => $self->schema->{$_}->{$type} || [] } @{ $self->field_keys };
@@ -216,9 +215,11 @@ Construct a new array-based L<Mojo::Collection> object.
 =head2 C<checks>
 
     # Return array refference
+    # [ 'validation1', 'validation2', ... ]
     my $checks = $fieldset->checks('email');
 
     # Return hash refference
+    # { field_key => [ 'validation1', 'validation2', ... ], field_key2 => [ 'validation1', 'validation2', ... ] }
     my $checks = $fieldset->checks;
 
 =head2 C<field_keys>
@@ -238,9 +239,11 @@ Object once created are cached in "$fieldset->{_field}->{$field_key}".
 =head2 C<filters>
 
     # Return array refference
+    # [ 'filter1', 'filter2', ... ]
     my $filters = $fieldset->filters('field_key');
 
     # Return hash refference
+    # { field_key => [ 'filter1', 'filter2', ... ], field_key2 => [ 'filter1', 'filter2', ... ] }
     my $filters = $fieldset->filters;
 
 =head2 C<remove>
