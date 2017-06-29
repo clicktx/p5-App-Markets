@@ -21,6 +21,13 @@ subtest 'c' => sub {
     isa_ok $fs->c( 1, 2, 3 ), 'Mojo::Collection';
 };
 
+subtest 'schema' => sub {
+    my $schema = $fs->schema;
+    is ref $schema, 'HASH';
+    my $field_schema = $fs->schema('email');
+    is ref $field_schema, 'HASH';
+};
+
 subtest 'field' => sub {
     my $f = $fs->field('email');
     isa_ok $f, 'Markets::Form::Field';
