@@ -48,9 +48,9 @@ sub _form_set {
 
 sub _form_render {
     my $self = shift;
-    my ( $form, $field ) = shift =~ /(.+?)\.(.+)/;
+    my ( $form, $field_key ) = shift =~ /(.+?)\.(.+)/;
     my $method = shift;
-    return _form_set( $self, $form )->$method($field)->($self);
+    return _form_set( $self, $form )->$method($field_key)->($self);
 }
 
 sub _pref {
@@ -133,7 +133,7 @@ Return L<Markets::Domain::Factory> Object.
     # Longer Version
     %= form_set('example')->render_label('email')->(app)
 
-Rendering tag from Markets::Form::Type::xxx has field.
+Rendering tag from Markets::Form::Type::xxx.
 L<Mojolicious::Plugin::TagHelpers> wrapper method.
 
 =head2 C<form_widget>
@@ -144,7 +144,7 @@ L<Mojolicious::Plugin::TagHelpers> wrapper method.
     # Longer Version
     %= form_set('example')->render_widget('email')->(app)
 
-Rendering tag from Markets::Form::Type::xxx has field.
+Rendering tag from Markets::Form::Type::xxx.
 L<Mojolicious::Plugin::TagHelpers> wrapper method.
 
 =head2 C<pref>

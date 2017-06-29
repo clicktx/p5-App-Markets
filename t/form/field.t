@@ -219,7 +219,7 @@ subtest 'choice' => sub {
     $dom = Mojo::DOM->new( $f->choice->($c) );
     is $dom->at('*')->tag, 'select', 'right tag';
 
-    # select multiple
+    # select (multiple)
     $f->multiple(1);
     $f->expanded(0);
     $dom = Mojo::DOM->new( $f->choice->($c) );
@@ -256,13 +256,13 @@ subtest 'choice' => sub {
     $input = $dom->find('input');
     is_deeply $input->[3]->attr, { checked => undef, name => 'country', type => 'radio', value => 'jp' }, 'right attr';
 
-    # checkbox list
+    # checkbox list (multiple)
     $f->multiple(1);
     $f->expanded(1);
     $dom   = Mojo::DOM->new( $f->choice->($c) );
     $input = $dom->find('input');
-    is_deeply $input->[0]->attr, { name => 'country', type => 'checkbox', value => 'de' }, 'right type is checkbox';
-    is_deeply $input->[3]->attr, { checked => undef, name => 'country', type => 'checkbox', value => 'jp' },
+    is_deeply $input->[0]->attr, { name => 'country[]', type => 'checkbox', value => 'de' }, 'right type is checkbox';
+    is_deeply $input->[3]->attr, { checked => undef, name => 'country[]', type => 'checkbox', value => 'jp' },
       'right checked';
 };
 
@@ -284,6 +284,8 @@ subtest 'field-with-error' => sub {
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
     $f->multiple(1);
     $f->expanded(1);
+
+    $c->validation->error( 'country.0.id[]' => ['custom_check'] );
     $dom = Mojo::DOM->new( $f->choice->($c) );
     ok $dom->find('ul.field-with-error')->size, 'right class';
 };

@@ -9,16 +9,23 @@ use_ok 'Markets::Form::FieldSet';
 my $t = Test::Mojo->new('App');
 my $c = $t->app->build_controller;
 
-use Markets::Form::Type::Test;
+use_ok 'Markets::Form::Type::Test';
 my $fs = Markets::Form::Type::Test->new( controller => $c );
 
 subtest 'attributes' => sub {
-    ok( $fs->can($_), "right $_" ) for qw(controller field_list);
+    ok( $fs->can($_), "right $_" ) for qw(controller schema);
 };
 
 subtest 'c' => sub {
     ok $fs->can('c');
     isa_ok $fs->c( 1, 2, 3 ), 'Mojo::Collection';
+};
+
+subtest 'schema' => sub {
+    my $schema = $fs->schema;
+    is ref $schema, 'HASH';
+    my $field_schema = $fs->schema('email');
+    is ref $field_schema, 'HASH';
 };
 
 subtest 'field' => sub {
@@ -28,7 +35,8 @@ subtest 'field' => sub {
 
 subtest 'field_keys' => sub {
     my @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/email name address item.[].id item.[].name/], 'right field_keys';
+    is_deeply \@field_keys, [qw/email name address favorite_color luky_number item.[].id item.[].name/],
+      'right field_keys';
     my $field_keys = $fs->field_keys;
     is ref $field_keys, 'ARRAY', 'right scalar';
 };
@@ -46,6 +54,8 @@ subtest 'checks' => sub {
         email          => [ { size => ignore() }, { like => ignore() } ],
         name           => [],
         address        => [],
+        favorite_color => [],
+        luky_number    => [],
         'item.[].id'   => [],
         'item.[].name' => [],
       },
@@ -60,6 +70,8 @@ subtest 'filters' => sub {
         email          => [],
         name           => [],
         address        => [],
+        favorite_color => [],
+        luky_number    => [],
         'item.[].id'   => [],
         'item.[].name' => [qw/trim/],
       },
@@ -71,15 +83,18 @@ subtest 'validate' => sub {
     # Set form parameters
     $c->req->params->pairs(
         [
-            email         => 'a@b33',
-            name          => '',
-            address       => 'ny',
-            'item.0.id'   => 11,
-            'item.1.id'   => '',
-            'item.2.id'   => 33,
-            'item.0.name' => '',
-            'item.1.name' => '',
-            'item.2.name' => '',
+            email              => 'a@b33',
+            name               => '',
+            address            => 'ny',
+            'favorite_color[]' => 'red',
+            'luky_number[]'    => 2,
+            'luky_number[]'    => 3,
+            'item.0.id'        => 11,
+            'item.1.id'        => '',
+            'item.2.id'        => 33,
+            'item.0.name'      => '',
+            'item.1.name'      => '',
+            'item.2.name'      => '',
         ]
     );
     my $result = $fs->validate;
@@ -96,15 +111,18 @@ subtest 'validate' => sub {
     $fs = Markets::Form::Type::Test->new( controller => $c );
     $c->req->params->pairs(
         [
-            email         => 'a@b.c',
-            name          => 'frank',
-            address       => 'ny',
-            'item.0.id'   => 11,
-            'item.1.id'   => 22,
-            'item.2.id'   => 33,
-            'item.0.name' => '',
-            'item.1.name' => '',
-            'item.2.name' => '',
+            email              => 'a@b.c',
+            name               => 'frank',
+            address            => 'ny',
+            'favorite_color[]' => 'red',
+            'luky_number[]'    => 2,
+            'luky_number[]'    => 3,
+            'item.0.id'        => 11,
+            'item.1.id'        => 22,
+            'item.2.id'        => 33,
+            'item.0.name'      => '',
+            'item.1.name'      => '',
+            'item.2.name'      => '',
         ]
     );
     $result = $fs->validate;
@@ -134,11 +152,13 @@ subtest 'validate with filter' => sub {
 subtest 'append/remove' => sub {
     $fs->append( aaa => ( type => 'text' ) );
     my @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/email name address item.[].id item.[].name aaa/], 'right field_keys';
+    is_deeply \@field_keys, [qw/email name address favorite_color luky_number item.[].id item.[].name aaa/],
+      'right field_keys';
 
     $fs->remove('name');
     @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/email address item.[].id item.[].name aaa/], 'right field_keys';
+    is_deeply \@field_keys, [qw/email address favorite_color luky_number item.[].id item.[].name aaa/],
+      'right field_keys';
 };
 
 done_testing();
