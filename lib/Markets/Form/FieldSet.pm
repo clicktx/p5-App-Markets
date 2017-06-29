@@ -35,10 +35,14 @@ sub field {
     my $class = ref $self || $self;
 
     my $field_key = _replace_key($name);
+    return $self->{_field}->{$field_key} if $self->{_field}->{$field_key};
 
     no strict 'refs';
     my $attrs = $field_key ? ${"${class}::field_list"}{$field_key} : {};
-    return Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
+    my $field = Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
+    $self->{_field}->{$field_key} = $field;
+
+    return $field;
 }
 
 sub filters { shift->_get_data_from_field( shift, 'filters' ) }
@@ -224,6 +228,7 @@ Construct a new array-based L<Mojo::Collection> object.
     my $field = $fieldset->field('field_name');
 
 Return L<Markets::Form::Field> object.
+Object once created are cached in "$fieldset->{_field}->{$field_key}".
 
 =head2 C<filters>
 
