@@ -90,6 +90,9 @@ sub _choice_list_widget {
     my $expanded = delete $args{expanded} ? 1 : 0;
     my $flag     = $multiple . $expanded;
 
+    # Add suffix for multiple
+    $args{name} .= '[]' if $multiple;
+
     # radio
     if ( $flag == 1 ) {
         $args{type} = 'radio';
@@ -99,8 +102,6 @@ sub _choice_list_widget {
     # select-multiple
     elsif ( $flag == 10 ) {
         $args{multiple} = undef;
-
-        # my $name = (delete $args{name}) . '[]';
         my $name = delete $args{name};
         return sub {
             my $c = shift;
@@ -110,8 +111,6 @@ sub _choice_list_widget {
 
     # checkbox
     elsif ( $flag == 11 ) {
-
-        # $args{name} = $args{name}. '[]';
         $args{type} = 'checkbox';
         return _list_field( $choices, %args );
     }
