@@ -20,7 +20,7 @@ my $f = Markets::Form::Field->new(
 );
 
 subtest 'label' => sub {
-    my $dom = Mojo::DOM->new( $f->label_for->($c) );
+    my $dom = Mojo::DOM->new( $f->label_for($c) );
     is_deeply $dom->at('*')->attr, { for => 'item_0_name' }, 'right attr';
     is $dom->at('*')->text, 'label text', 'right text';
 };
@@ -277,7 +277,7 @@ subtest 'field-with-error' => sub {
     $c->validation->error( 'country.0.id' => ['custom_check'] );
 
     # label
-    my $dom = Mojo::DOM->new( $f->label_for->($c) );
+    my $dom = Mojo::DOM->new( $f->label_for($c) );
     ok $dom->find('.field-with-error')->size, 'right class';
 
     # choice

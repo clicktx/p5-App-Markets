@@ -103,7 +103,7 @@ sub render_label {
     my $self = shift;
     my $name = shift;
 
-    $self->field($name)->label_for;
+    $self->field($name)->label_for( $self->controller );
 }
 
 sub render {

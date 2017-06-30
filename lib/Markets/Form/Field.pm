@@ -13,6 +13,7 @@ has [qw(name type value placeholder checked)];
 
 sub AUTOLOAD {
     my $self = shift;
+    my $c    = shift;
     my ( $package, $method ) = our $AUTOLOAD =~ /^(.+)::(.+)$/;
 
     my %attrs = %{$self};
@@ -21,7 +22,7 @@ sub AUTOLOAD {
     $attrs{required} ? $attrs{required} = undef : delete $attrs{required};
 
     # label
-    return _label(%attrs) if $method eq 'label_for';
+    return _label( $c, %attrs ) if $method eq 'label_for';
 
     # hidden
     delete $attrs{$_} for qw(field_key type label);
@@ -185,18 +186,15 @@ sub _input {
 }
 
 sub _label {
+    my $c     = shift;
     my %attrs = @_;
 
-    return sub {
-        my $c = shift;
-
-        my $required_html =
-          exists $attrs{required}
-          ? '<span class="' . $required_class . '">' . $required_icon . '</span>'
-          : '';
-        my $content = $c->__( $attrs{label} ) . $required_html;
-        _validation( $c, $attrs{name}, 'label', for => $attrs{id}, sub { $content } );
-    };
+    my $required_html =
+      exists $attrs{required}
+      ? '<span class="' . $required_class . '">' . $required_icon . '</span>'
+      : '';
+    my $content = $c->__( $attrs{label} ) . $required_html;
+    _validation( $c, $attrs{name}, 'label', for => $attrs{id}, sub { $content } );
 }
 
 # checkbox list or radio button list

@@ -14,7 +14,7 @@
 
     <h4>longer version(example)</h4>
     <div class="">
-        <%= form_set('example')->render_label("email")->(app) %>
+        <%= form_set('example')->render_label("email") %>
         <%= form_set('example')->render("email")->(app) %>
     </div>
 
