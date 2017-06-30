@@ -148,6 +148,54 @@ subtest 'validate with filter' => sub {
     is $v->param('item.2.name'), 'ccc';
 };
 
+subtest 'parameters' => sub {
+
+    # Create new request
+    $c = $t->app->build_controller;
+    $fs = Markets::Form::Type::Test->new( controller => $c );
+    $c->req->params->pairs(
+        [
+            email              => 'a@b.c',
+            name               => 'frank',
+            address            => 'ny',
+            'favorite_color[]' => 'red',
+            'luky_number[]'    => 2,
+            'luky_number[]'    => 3,
+            'item.0.id'        => 11,
+            'item.1.id'        => 22,
+            'item.2.id'        => 33,
+            'item.0.name'      => 'aa',
+            'item.1.name'      => 'bb',
+            'item.2.name'      => 'cc',
+            iligal_param       => 'attack',
+        ]
+    );
+
+    eval { my $name = $fs->param('name') };
+    ok $@, 'right before validate';
+
+    $fs->validate;
+    is $fs->param('email'), 'a@b.c', 'right param';
+    is_deeply $fs->param('favorite_color[]'), ['red'], 'right every param';
+    is_deeply $fs->scope_param('item'),
+      [
+        {
+            id   => 11,
+            name => 'aa',
+        },
+        {
+            id   => 22,
+            name => 'bb',
+        },
+        {
+            id   => 33,
+            name => 'cc',
+        },
+      ],
+      'right scope param';
+    is $fs->param('iligal_param'), undef, 'right iligal param';
+};
+
 # This test should be done at the end!
 subtest 'append/remove' => sub {
     $fs->append( aaa => ( type => 'text' ) );

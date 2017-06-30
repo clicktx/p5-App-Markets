@@ -3,6 +3,8 @@ use Mojo::Base -base;
 use Mojo::Util qw/monkey_patch/;
 use Tie::IxHash;
 use Scalar::Util qw/weaken/;
+use Carp qw/croak/;
+use CGI::Expand qw/expand_hash/;
 use Mojolicious::Controller;
 use Mojo::Collection;
 use Markets::Form::Field;
@@ -67,6 +69,28 @@ sub import {
     monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
 }
 
+sub param {
+    my ( $self, $key ) = @_;
+    $key =~ m/[a-zA-Z0-9]\[\]$/ ? $self->params->every_param($key) : $self->params->param($key);
+}
+
+sub params {
+    my $self = shift;
+    croak 'do not call "validate" method' unless $self->is_validated;
+    return $self->{_validated_parameters} if $self->{_validated_parameters};
+
+    my $v      = $self->controller->validation;
+    my %output = %{ $v->output };
+
+    # NOTE: scope parameterは別に保存していないので
+    # 'user.name' フィールドを使う場合は 'user'フィールドを使うことが出来ない
+    my $expand_hash = expand_hash( \%output );
+    %output = ( %output, %{$expand_hash} );
+
+    $self->{_validated_parameters} = Mojo::Parameters->new(%output);
+    return $self->{_validated_parameters};
+}
+
 sub remove {
     my ( $self, $field_key ) = ( shift, shift );
     return unless ( my $class = ref $self || $self ) && $field_key;
@@ -103,6 +127,8 @@ sub schema {
     my %schema = %{"${class}::schema"};
     return $field_key ? $schema{$field_key} : \%schema;
 }
+
+sub scope_param { shift->params->every_param(shift) }
 
 sub validate {
     my $self  = shift;
@@ -254,6 +280,25 @@ Object once created are cached in "$fieldset->{_field}->{$field_key}".
     # { field_key => [ 'filter1', 'filter2', ... ], field_key2 => [ 'filter1', 'filter2', ... ] }
     my $filters = $fieldset->filters;
 
+=head2 C<param>
+
+    # Return scalar
+    my $param = $fieldset->param('name');
+
+    # Return array refference
+    my $param = $fieldset->param('favorite[]')
+
+The parameter is a validated values.
+This method should be called after the "validate" method.
+
+=head2 C<params>
+
+    my $validated_params = $fieldset->params;
+
+Return L<Mojo::Parameters> object.
+All parameters are validated values.
+This method should be called after the "validate" method.
+
 =head2 C<remove>
 
     $fieldset->remove('field_name');
@@ -277,6 +322,16 @@ Return code refference.
     my $field_schema = $fieldset->schema('field_key');
 
 Return hash refference. Get a field definition.
+
+=head2 C<scope_param>
+
+    my $scope = $fieldset->scope_param('user');
+
+Return hash refference or array refference.
+The parameter is a validated values.
+This method should be called after the "validate" method.
+
+Get expanded parameter. SEE L<CGI::Expand/expand_hash>
 
 =head2 C<validate>
 
