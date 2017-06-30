@@ -26,7 +26,7 @@ sub AUTOLOAD {
 
     # hidden
     delete $attrs{$_} for qw(field_key type label);
-    return _hidden( %attrs, @_ ) if $method eq 'hidden';
+    return _hidden( $c, %attrs, @_ ) if $method eq 'hidden';
 
     # textarea
     return _textarea( %attrs, @_ ) if $method eq 'textarea';
@@ -156,8 +156,9 @@ sub _choices_for_select {
 }
 
 sub _hidden {
+    my $c     = shift;
     my %attrs = @_;
-    return sub { shift->hidden_field( $attrs{name} => $attrs{value} ) };
+    return $c->hidden_field( $attrs{name} => $attrs{value} );
 }
 
 sub _input {
