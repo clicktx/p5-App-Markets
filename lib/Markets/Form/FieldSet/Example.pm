@@ -8,7 +8,7 @@ has_field email => (
     label         => 'E-mail',
     default_value => 'a@b',
     required      => 1,
-    filters       => [],
+    filters       => [qw(trim)],
     validations   => [],
 );
 
@@ -17,7 +17,7 @@ has_field password => (
     placeholder   => 'your password',
     label         => 'Password',
     default_value => '1111',            # bad!
-    required      => 1,
+    # required      => 1,
     filters       => [],
     validations   => [],
 );
@@ -42,7 +42,7 @@ has_field 'item.[].name' => (
     type        => 'text',
     label       => 'Item Name',
     placeholder => 'The Item Name',
-    filters     => [],
+    filters     => [qw(trim)],
     validations => [],
 );
 
