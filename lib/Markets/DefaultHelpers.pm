@@ -6,7 +6,7 @@ use Scalar::Util ();
 use Mojo::Util   ();
 use Markets::Domain::Factory;
 
-my $FORM_CLASS = 'Markets::Form::Type';
+my $FORM_CLASS = 'Markets::Form::FieldSet';
 my $FORM_STASH = 'markets.form';
 
 sub register {
