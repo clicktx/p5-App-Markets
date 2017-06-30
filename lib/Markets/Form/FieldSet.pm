@@ -8,6 +8,7 @@ use Mojo::Collection;
 use Markets::Form::Field;
 
 has controller => sub { Mojolicious::Controller->new };
+has 'is_validated';
 
 sub append {
     my ( $self, $field_key ) = ( shift, shift );
@@ -129,6 +130,7 @@ sub validate {
             _do_check( $v, $_ ) for @$checks;
         }
     }
+    $self->is_validated(1);
     return $v->has_error ? undef : 1;
 }
 
@@ -193,6 +195,12 @@ Markets::Form::Field
     $fieldset->controller( Mojolicious::Controller->new );
 
 Return L<Mojolicious::Controller> object.
+
+=head2 C<is_validated>
+
+    my $bool = $fieldset->is_validated;
+
+Return boolean value.
 
 =head1 FUNCTIONS
 
