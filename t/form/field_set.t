@@ -43,8 +43,8 @@ subtest 'field_keys' => sub {
 };
 
 subtest 'render tags' => sub {
-    is ref $fs->render('email'),       'CODE', 'right render method';
-    is ref $fs->render_label('email'), 'CODE', 'right render_label method';
+    is ref $fs->render('email'),       'Mojo::ByteStream', 'right render method';
+    is ref $fs->render_label('email'), 'Mojo::ByteStream', 'right render_label method';
 };
 
 subtest 'checks' => sub {
@@ -151,7 +151,7 @@ subtest 'validate with filter' => sub {
     is $v->param('item.2.name'), 'ccc';
 
     # field value after render
-    my $dom = Mojo::DOM->new( $fs->render('item.0.name')->($c) );
+    my $dom = Mojo::DOM->new( $fs->render('item.0.name') );
     is_deeply $dom->at('*')->attr->{value}, 'aaa', 'right filtering value';
 };
 
