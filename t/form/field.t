@@ -230,23 +230,23 @@ subtest 'choice' => sub {
     $f->multiple(0);
     $f->expanded(1);
     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 0 ], 'cn' ] );
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     is_deeply $dom->at('ul')->attr, { class => 'form-choices' },     'right class';
     is_deeply $dom->at('li')->attr, { class => 'form-choice-item' }, 'right class';
     $input = $dom->find('input');
     is_deeply $input->[1]->attr, { name => 'country', type => 'radio', value => 'de' }, 'right type is radio';
 
     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 1 ], 'cn' ] );
-    $dom   = Mojo::DOM->new( $f->choice->($c) );
+    $dom   = Mojo::DOM->new( $f->choice($c) );
     $input = $dom->find('input');
     is_deeply $input->[1]->attr, { checked => undef, name => 'country', type => 'radio', value => 'de' }, 'right attr';
 
     $f->choices( [ c( EU => [ 'de', 'en' ], class => 'test-class' ) ] );
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     is_deeply $dom->at('li')->attr, { class => 'test-class' }, 'right class';
 
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     is_deeply $dom->at('ul')->attr, { class => 'form-choice-groups' }, 'right class';
     is_deeply $dom->at('li')->attr, { class => 'form-choice-group' },  'right class';
     my $child;
@@ -259,7 +259,7 @@ subtest 'choice' => sub {
     # checkbox list (multiple)
     $f->multiple(1);
     $f->expanded(1);
-    $dom   = Mojo::DOM->new( $f->choice->($c) );
+    $dom   = Mojo::DOM->new( $f->choice($c) );
     $input = $dom->find('input');
     is_deeply $input->[0]->attr, { name => 'country[]', type => 'checkbox', value => 'de' }, 'right type is checkbox';
     is_deeply $input->[3]->attr, { checked => undef, name => 'country[]', type => 'checkbox', value => 'jp' },
@@ -286,7 +286,7 @@ subtest 'field-with-error' => sub {
     $f->expanded(1);
 
     $c->validation->error( 'country.0.id[]' => ['custom_check'] );
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     ok $dom->find('ul.field-with-error')->size, 'right class';
 };
 

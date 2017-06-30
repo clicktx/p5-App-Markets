@@ -94,7 +94,7 @@ sub _choice_list_widget {
     # radio
     if ( $flag == 1 ) {
         $args{type} = 'radio';
-        return _list_field( $choices, %args );
+        return _list_field( $c, $choices, %args );
     }
 
     # select-multiple
@@ -107,7 +107,7 @@ sub _choice_list_widget {
     # checkbox
     elsif ( $flag == 11 ) {
         $args{type} = 'checkbox';
-        return _list_field( $choices, %args );
+        return _list_field( $c, $choices, %args );
     }
 
     # select
@@ -186,37 +186,33 @@ sub _label {
 
 # checkbox list or radio button list
 sub _list_field {
+    my $c       = shift;
     my $choices = shift;
     my %args    = @_;
 
     delete $args{$_} for qw(id value);
-    return sub {
-        my $c = shift;
+    my %values = map { $_ => 1 } @{ $c->every_param( $args{name} ) };
 
-        my %values = map { $_ => 1 } @{ $c->every_param( $args{name} ) };
+    my $root_class;
+    my $groups = '';
+    for my $group ( @{$choices} ) {
+        if ( blessed $group && $group->isa('Mojo::Collection') ) {
+            my ( $label, $values, %attrs ) = @$group;
+            $root_class = 'form-choice-groups' unless $root_class;
 
-        my $root_class;
-        my $groups = '';
-        for my $group ( @{$choices} ) {
-            if ( blessed $group && $group->isa('Mojo::Collection') ) {
-                my ( $label, $values, %attrs ) = @$group;
-                $root_class = 'form-choice-groups' unless $root_class;
-
-                $label = $c->__($label);
-                my $content = join '',
-                  map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %args ) ) }
-                  @$values;
-                $content = $c->tag( 'ul', class => 'form-choices', sub { $content } );
-                $groups .= $c->tag( 'li', class => 'form-choice-group', %attrs, sub { $label . $content } );
-            }
-            else {
-                $root_class = 'form-choices' unless $root_class;
-                my $row = _choice_field( $c, \%values, $group, %args );
-                $groups .= $c->tag( 'li', class => 'form-choice-item', sub { $row } );
-            }
+            $label = $c->__($label);
+            my $content = join '',
+              map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %args ) ) } @$values;
+            $content = $c->tag( 'ul', class => 'form-choices', sub { $content } );
+            $groups .= $c->tag( 'li', class => 'form-choice-group', %attrs, sub { $label . $content } );
         }
-        _validation( $c, $args{name}, 'ul', class => $root_class, sub { $groups } );
-    };
+        else {
+            $root_class = 'form-choices' unless $root_class;
+            my $row = _choice_field( $c, \%values, $group, %args );
+            $groups .= $c->tag( 'li', class => 'form-choice-item', sub { $row } );
+        }
+    }
+    return _validation( $c, $args{name}, 'ul', class => $root_class, sub { $groups } );
 }
 
 sub _select {
