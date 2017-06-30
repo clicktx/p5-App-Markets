@@ -53,7 +53,7 @@ sub AUTOLOAD {
     return _select( $c, %attrs, @_ ) if $method eq 'select';
 
     # choice
-    return _choice_list_widget( %attrs, @_ ) if $method eq 'choice';
+    return _choice_list_widget( $c, %attrs, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
@@ -80,6 +80,7 @@ sub _choice_field {
 
 # NOTE: multipleの場合はname属性を xxx[] に変更する？
 sub _choice_list_widget {
+    my $c    = shift;
     my %args = @_;
 
     my $choices = delete $args{choices} || [];
@@ -100,10 +101,7 @@ sub _choice_list_widget {
     elsif ( $flag == 10 ) {
         $args{multiple} = undef;
         my $name = delete $args{name};
-        return sub {
-            my $c = shift;
-            $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
-        };
+        return $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
     }
 
     # checkbox
@@ -115,10 +113,7 @@ sub _choice_list_widget {
     # select
     else {
         my $name = delete $args{name};
-        return sub {
-            my $c = shift;
-            $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
-        };
+        return $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
     }
 }
 

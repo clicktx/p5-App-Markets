@@ -216,13 +216,13 @@ subtest 'choice' => sub {
     # select
     $f->multiple(0);
     $f->expanded(0);
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     is $dom->at('*')->tag, 'select', 'right tag';
 
     # select (multiple)
     $f->multiple(1);
     $f->expanded(0);
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     is $dom->at('*')->attr->{multiple}, undef, 'right multiple';
 
     # radio list
