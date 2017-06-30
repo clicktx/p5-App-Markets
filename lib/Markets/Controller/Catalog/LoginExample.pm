@@ -16,13 +16,21 @@ sub index {
     $self->stash( item => $item );
     return $self->render unless $validation->has_data;
 
+    use DDP;
     my $form = $self->form_set('example');
     if ( $form->validate ) {
-        say 'validation success.';
+
+        # NOTE :
+        # filter後の値は$validation->outputに格納されるため、
+        # DBに保存する値は$validation->param('name')を使う必要がある
+
+        # $form->param('name') で取得出来るようにする？
+        # expand_hashの扱いはどうするか？
+        # every_paramの扱いはどうするか？ name[] [name] 必ずarray_ref？（checkbox,select multiple）
+        p $validation;
     }
     else {
         say 'validation failure!';
-        use DDP;
         p $validation;
     }
 
