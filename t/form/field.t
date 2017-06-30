@@ -123,7 +123,7 @@ subtest 'radio checkbox' => sub {
     );
 
     for my $type (qw/radio checkbox/) {
-        my $dom = Mojo::DOM->new( $f->$type->($c) );
+        my $dom = Mojo::DOM->new( $f->$type($c) );
         is $dom->at('*')->tag, 'label', "right $type parent";
         is $dom->at('*')->text, '私は同意した', "right $type label text";
         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type";
@@ -131,14 +131,14 @@ subtest 'radio checkbox' => sub {
 
     $f->checked(0);
     for my $type (qw/radio checkbox/) {
-        my $dom = Mojo::DOM->new( $f->$type->($c) );
+        my $dom = Mojo::DOM->new( $f->$type($c) );
         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
     }
 
     # bool "checked"
     $f->checked(1);
     for my $type (qw/radio checkbox/) {
-        my $dom = Mojo::DOM->new( $f->$type->($c) );
+        my $dom = Mojo::DOM->new( $f->$type($c) );
         is_deeply $dom->at('input')->attr, { checked => undef, type => $type, name => 'agreed', value => 'yes' },
           "right $type checked";
     }

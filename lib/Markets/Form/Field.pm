@@ -45,12 +45,8 @@ sub AUTOLOAD {
         delete $attrs{id};
         $attrs{type} = $method;
 
-        my @args = @_;
-        return sub {
-            my $c = shift;
-            my %values = map { $_ => 1 } @{ $c->every_param( $attrs{name} ) };
-            _choice_field( $c, \%values, $self->label, %attrs, @args );
-        };
+        my %values = map { $_ => 1 } @{ $c->every_param( $attrs{name} ) };
+        return _choice_field( $c, \%values, $self->label, %attrs, @_ );
     }
 
     # select
