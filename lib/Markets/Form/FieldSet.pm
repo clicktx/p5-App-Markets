@@ -116,7 +116,7 @@ sub render {
 
     my $field = $self->field( $name, %attrs );
     my $method = $field->type || 'text';
-    $field->$method;
+    $field->$method( $self->controller );
 }
 
 sub schema {

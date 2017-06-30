@@ -33,11 +33,11 @@ sub AUTOLOAD {
 
     # input
     for my $name (qw(email number search tel text url password)) {
-        return _input( "${name}_field", %attrs, @_ ) if $method eq $name;
+        return _input( $c, "${name}_field", %attrs, @_ ) if $method eq $name;
     }
     for my $name (qw(color range date month time week file datetime)) {
         delete $attrs{$_} for qw(placeholder);
-        return _input( "${name}_field", %attrs, @_ ) if $method eq $name;
+        return _input( $c, "${name}_field", %attrs, @_ ) if $method eq $name;
     }
 
     # checkbox/radio
@@ -161,6 +161,7 @@ sub _hidden {
 }
 
 sub _input {
+    my $c      = shift;
     my $method = shift;
     my %attrs  = @_;
 
@@ -168,20 +169,14 @@ sub _input {
     my $default_value = delete $attrs{default_value};
 
     if ( $method eq 'password_field' || $method eq 'file_field' ) {
-        return sub {
-            my $c = shift;
-            $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
-            $c->$method( $name, %attrs );
-        };
+        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+        return $c->$method( $name, %attrs );
     }
     else {
-        return sub {
-            my $c = shift;
-            $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
 
-            delete $attrs{value} unless defined $attrs{value};
-            $c->$method( $name => $c->__($default_value), %attrs );
-        };
+        delete $attrs{value} unless defined $attrs{value};
+        return $c->$method( $name => $c->__($default_value), %attrs );
     }
 }
 

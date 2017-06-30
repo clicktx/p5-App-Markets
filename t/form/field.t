@@ -28,7 +28,7 @@ subtest 'label' => sub {
 subtest 'input basic' => sub {
     my @types = qw(email number search tel text url);
     for my $type (@types) {
-        my $dom = Mojo::DOM->new( $f->$type->($c) );
+        my $dom = Mojo::DOM->new( $f->$type($c) );
         is_deeply $dom->at('*')->attr,
           {
             type        => $type,
@@ -42,7 +42,7 @@ subtest 'input basic' => sub {
     }
 
     # password_field
-    my $dom = Mojo::DOM->new( $f->password->($c) );
+    my $dom = Mojo::DOM->new( $f->password($c) );
     is_deeply $dom->at('*')->attr,
       {
         type        => 'password',
@@ -58,7 +58,7 @@ subtest 'input other' => sub {
     my @types = qw(color range date month time week);
     my $dom;
     for my $type (@types) {
-        $dom = Mojo::DOM->new( $f->$type->($c) );
+        $dom = Mojo::DOM->new( $f->$type($c) );
         is_deeply $dom->at('*')->attr,
           {
             type     => $type,
@@ -71,7 +71,7 @@ subtest 'input other' => sub {
     }
 
     # datetime-local
-    $dom = Mojo::DOM->new( $f->datetime->($c) );
+    $dom = Mojo::DOM->new( $f->datetime($c) );
     is_deeply $dom->at('*')->attr,
       {
         type     => 'datetime-local',
@@ -83,7 +83,7 @@ subtest 'input other' => sub {
       "right datetime";
 
     # file_field
-    $dom = Mojo::DOM->new( $f->file->($c) );
+    $dom = Mojo::DOM->new( $f->file($c) );
     is_deeply $dom->at('*')->attr,
       {
         type     => 'file',
