@@ -109,7 +109,7 @@ subtest 'textarea' => sub {
         cols          => 40,
         default_value => 'default text',
     );
-    my $dom = Mojo::DOM->new( $f->textarea->($c) );
+    my $dom = Mojo::DOM->new( $f->textarea($c) );
     is $dom->at('*')->tag, 'textarea', 'right tag';
     is_deeply $dom->at('*')->attr, { id => 'order_note', name => 'order.note', cols => 40 }, 'right textarea';
     is $dom->at('*')->text, 'default text', 'right text';

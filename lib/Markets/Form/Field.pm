@@ -29,7 +29,7 @@ sub AUTOLOAD {
     return _hidden( $c, %attrs, @_ ) if $method eq 'hidden';
 
     # textarea
-    return _textarea( %attrs, @_ ) if $method eq 'textarea';
+    return _textarea( $c, %attrs, @_ ) if $method eq 'textarea';
 
     # input
     for my $name (qw(email number search tel text url password)) {
@@ -240,16 +240,14 @@ sub _select {
 }
 
 sub _textarea {
+    my $c     = shift;
     my %attrs = @_;
 
     my $name          = delete $attrs{name};
     my $default_value = delete $attrs{default_value};
+    $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
 
-    return sub {
-        my $c = shift;
-        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
-        $c->text_area( $name => $c->__($default_value), %attrs );
-    };
+    return $c->text_area( $name => $c->__($default_value), %attrs );
 }
 
 # This code from Mojolicious::Plugin::TagHelpers
