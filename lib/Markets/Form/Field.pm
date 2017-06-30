@@ -50,7 +50,7 @@ sub AUTOLOAD {
     }
 
     # select
-    return _select( %attrs, @_ ) if $method eq 'select';
+    return _select( $c, %attrs, @_ ) if $method eq 'select';
 
     # choice
     return _choice_list_widget( %attrs, @_ ) if $method eq 'choice';
@@ -225,14 +225,12 @@ sub _list_field {
 }
 
 sub _select {
+    my $c     = shift;
     my %attrs = @_;
 
     my $choices = delete $attrs{choices} || [];
     my $name = delete $attrs{name};
-    return sub {
-        my $c = shift;
-        $c->select_field( $name => _choices_for_select( $c, $choices ), %attrs );
-    };
+    return $c->select_field( $name => _choices_for_select( $c, $choices ), %attrs );
 }
 
 sub _textarea {
