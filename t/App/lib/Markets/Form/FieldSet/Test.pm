@@ -1,4 +1,4 @@
-package Markets::Form::Type::Test;
+package Markets::Form::FieldSet::Test;
 use Mojo::Base -strict;
 use Markets::Form::FieldSet;
 

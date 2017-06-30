@@ -9,8 +9,8 @@ use_ok 'Markets::Form::FieldSet';
 my $t = Test::Mojo->new('App');
 my $c = $t->app->build_controller;
 
-use_ok 'Markets::Form::Type::Test';
-my $fs = Markets::Form::Type::Test->new( controller => $c );
+use_ok 'Markets::Form::FieldSet::Test';
+my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
 
 subtest 'attributes' => sub {
     ok( $fs->can($_), "right $_" ) for qw(controller schema);
@@ -108,7 +108,7 @@ subtest 'validate' => sub {
 
     # Create new request
     $c = $t->app->build_controller;
-    $fs = Markets::Form::Type::Test->new( controller => $c );
+    $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
         [
             email              => 'a@b.c',
@@ -133,7 +133,7 @@ subtest 'validate with filter' => sub {
 
     # Create new request
     $c = $t->app->build_controller;
-    $fs = Markets::Form::Type::Test->new( controller => $c );
+    $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
         [
             'item.0.name' => ' aaa ',
@@ -152,7 +152,7 @@ subtest 'parameters' => sub {
 
     # Create new request
     $c = $t->app->build_controller;
-    $fs = Markets::Form::Type::Test->new( controller => $c );
+    $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
         [
             email              => 'a@b.c',
