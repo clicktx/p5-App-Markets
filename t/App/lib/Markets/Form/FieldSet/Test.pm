@@ -4,10 +4,10 @@ use Markets::Form::FieldSet;
 
 has_field email => (
     type        => 'text',
-    placeholder => '',
+    placeholder => 'name@domain',
     label       => 'E-mail',
     required    => 1,
-    filters     => [],
+    filters     => [qw(trim)],
     validations => [ { size => [ 2, 5 ] }, { like => qr/.+@.+\..+/ } ],
 );
 

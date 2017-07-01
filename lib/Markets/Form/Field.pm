@@ -13,6 +13,7 @@ has [qw(name type value placeholder checked)];
 
 sub AUTOLOAD {
     my $self = shift;
+    my $c    = shift;
     my ( $package, $method ) = our $AUTOLOAD =~ /^(.+)::(.+)$/;
 
     my %attrs = %{$self};
@@ -21,22 +22,22 @@ sub AUTOLOAD {
     $attrs{required} ? $attrs{required} = undef : delete $attrs{required};
 
     # label
-    return _label(%attrs) if $method eq 'label_for';
+    return _label( $c, %attrs ) if $method eq 'label_for';
 
     # hidden
     delete $attrs{$_} for qw(field_key type label);
-    return _hidden( %attrs, @_ ) if $method eq 'hidden';
+    return _hidden( $c, %attrs, @_ ) if $method eq 'hidden';
 
     # textarea
-    return _textarea( %attrs, @_ ) if $method eq 'textarea';
+    return _textarea( $c, %attrs, @_ ) if $method eq 'textarea';
 
     # input
     for my $name (qw(email number search tel text url password)) {
-        return _input( "${name}_field", %attrs, @_ ) if $method eq $name;
+        return _input( $c, "${name}_field", %attrs, @_ ) if $method eq $name;
     }
     for my $name (qw(color range date month time week file datetime)) {
         delete $attrs{$_} for qw(placeholder);
-        return _input( "${name}_field", %attrs, @_ ) if $method eq $name;
+        return _input( $c, "${name}_field", %attrs, @_ ) if $method eq $name;
     }
 
     # checkbox/radio
@@ -44,19 +45,15 @@ sub AUTOLOAD {
         delete $attrs{id};
         $attrs{type} = $method;
 
-        my @args = @_;
-        return sub {
-            my $c = shift;
-            my %values = map { $_ => 1 } @{ $c->every_param( $attrs{name} ) };
-            _choice_field( $c, \%values, $self->label, %attrs, @args );
-        };
+        my %values = map { $_ => 1 } @{ $c->every_param( $attrs{name} ) };
+        return _choice_field( $c, \%values, $self->label, %attrs, @_ );
     }
 
     # select
-    return _select( %attrs, @_ ) if $method eq 'select';
+    return _select( $c, %attrs, @_ ) if $method eq 'select';
 
     # choice
-    return _choice_list_widget( %attrs, @_ ) if $method eq 'choice';
+    return _choice_list_widget( $c, %attrs, @_ ) if $method eq 'choice';
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
@@ -83,6 +80,7 @@ sub _choice_field {
 
 # NOTE: multipleの場合はname属性を xxx[] に変更する？
 sub _choice_list_widget {
+    my $c    = shift;
     my %args = @_;
 
     my $choices = delete $args{choices} || [];
@@ -96,32 +94,26 @@ sub _choice_list_widget {
     # radio
     if ( $flag == 1 ) {
         $args{type} = 'radio';
-        return _list_field( $choices, %args );
+        return _list_field( $c, $choices, %args );
     }
 
     # select-multiple
     elsif ( $flag == 10 ) {
         $args{multiple} = undef;
         my $name = delete $args{name};
-        return sub {
-            my $c = shift;
-            $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
-        };
+        return $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
     }
 
     # checkbox
     elsif ( $flag == 11 ) {
         $args{type} = 'checkbox';
-        return _list_field( $choices, %args );
+        return _list_field( $c, $choices, %args );
     }
 
     # select
     else {
         my $name = delete $args{name};
-        return sub {
-            my $c = shift;
-            $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
-        };
+        return $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
     }
 }
 
@@ -155,11 +147,13 @@ sub _choices_for_select {
 }
 
 sub _hidden {
+    my $c     = shift;
     my %attrs = @_;
-    return sub { shift->hidden_field( $attrs{name} => $attrs{value} ) };
+    return $c->hidden_field( $attrs{name} => $attrs{value} );
 }
 
 sub _input {
+    my $c      = shift;
     my $method = shift;
     my %attrs  = @_;
 
@@ -167,95 +161,78 @@ sub _input {
     my $default_value = delete $attrs{default_value};
 
     if ( $method eq 'password_field' || $method eq 'file_field' ) {
-        return sub {
-            my $c = shift;
-            $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
-            $c->$method( $name, %attrs );
-        };
+        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
+        return $c->$method( $name, %attrs );
     }
     else {
-        return sub {
-            my $c = shift;
-            $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
 
-            delete $attrs{value} unless defined $attrs{value};
-            $c->$method( $name => $c->__($default_value), %attrs );
-        };
+        $attrs{value} = $c->__($default_value) if $default_value;
+        return $c->$method( $name, %attrs );
     }
 }
 
 sub _label {
+    my $c     = shift;
     my %attrs = @_;
 
-    return sub {
-        my $c = shift;
-
-        my $required_html =
-          exists $attrs{required}
-          ? '<span class="' . $required_class . '">' . $required_icon . '</span>'
-          : '';
-        my $content = $c->__( $attrs{label} ) . $required_html;
-        _validation( $c, $attrs{name}, 'label', for => $attrs{id}, sub { $content } );
-    };
+    my $required_html =
+      exists $attrs{required}
+      ? '<span class="' . $required_class . '">' . $required_icon . '</span>'
+      : '';
+    my $content = $c->__( $attrs{label} ) . $required_html;
+    _validation( $c, $attrs{name}, 'label', for => $attrs{id}, sub { $content } );
 }
 
 # checkbox list or radio button list
 sub _list_field {
+    my $c       = shift;
     my $choices = shift;
     my %args    = @_;
 
     delete $args{$_} for qw(id value);
-    return sub {
-        my $c = shift;
+    my %values = map { $_ => 1 } @{ $c->every_param( $args{name} ) };
 
-        my %values = map { $_ => 1 } @{ $c->every_param( $args{name} ) };
+    my $root_class;
+    my $groups = '';
+    for my $group ( @{$choices} ) {
+        if ( blessed $group && $group->isa('Mojo::Collection') ) {
+            my ( $label, $values, %attrs ) = @$group;
+            $root_class = 'form-choice-groups' unless $root_class;
 
-        my $root_class;
-        my $groups = '';
-        for my $group ( @{$choices} ) {
-            if ( blessed $group && $group->isa('Mojo::Collection') ) {
-                my ( $label, $values, %attrs ) = @$group;
-                $root_class = 'form-choice-groups' unless $root_class;
-
-                $label = $c->__($label);
-                my $content = join '',
-                  map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %args ) ) }
-                  @$values;
-                $content = $c->tag( 'ul', class => 'form-choices', sub { $content } );
-                $groups .= $c->tag( 'li', class => 'form-choice-group', %attrs, sub { $label . $content } );
-            }
-            else {
-                $root_class = 'form-choices' unless $root_class;
-                my $row = _choice_field( $c, \%values, $group, %args );
-                $groups .= $c->tag( 'li', class => 'form-choice-item', sub { $row } );
-            }
+            $label = $c->__($label);
+            my $content = join '',
+              map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %args ) ) } @$values;
+            $content = $c->tag( 'ul', class => 'form-choices', sub { $content } );
+            $groups .= $c->tag( 'li', class => 'form-choice-group', %attrs, sub { $label . $content } );
         }
-        _validation( $c, $args{name}, 'ul', class => $root_class, sub { $groups } );
-    };
+        else {
+            $root_class = 'form-choices' unless $root_class;
+            my $row = _choice_field( $c, \%values, $group, %args );
+            $groups .= $c->tag( 'li', class => 'form-choice-item', sub { $row } );
+        }
+    }
+    return _validation( $c, $args{name}, 'ul', class => $root_class, sub { $groups } );
 }
 
 sub _select {
+    my $c     = shift;
     my %attrs = @_;
 
     my $choices = delete $attrs{choices} || [];
     my $name = delete $attrs{name};
-    return sub {
-        my $c = shift;
-        $c->select_field( $name => _choices_for_select( $c, $choices ), %attrs );
-    };
+    return $c->select_field( $name => _choices_for_select( $c, $choices ), %attrs );
 }
 
 sub _textarea {
+    my $c     = shift;
     my %attrs = @_;
 
     my $name          = delete $attrs{name};
     my $default_value = delete $attrs{default_value};
+    $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
 
-    return sub {
-        my $c = shift;
-        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
-        $c->text_area( $name => $c->__($default_value), %attrs );
-    };
+    return $c->text_area( $name => $c->__($default_value), %attrs );
 }
 
 # This code from Mojolicious::Plugin::TagHelpers

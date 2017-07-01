@@ -20,7 +20,7 @@ my $f = Markets::Form::Field->new(
 );
 
 subtest 'label' => sub {
-    my $dom = Mojo::DOM->new( $f->label_for->($c) );
+    my $dom = Mojo::DOM->new( $f->label_for($c) );
     is_deeply $dom->at('*')->attr, { for => 'item_0_name' }, 'right attr';
     is $dom->at('*')->text, 'label text', 'right text';
 };
@@ -28,7 +28,7 @@ subtest 'label' => sub {
 subtest 'input basic' => sub {
     my @types = qw(email number search tel text url);
     for my $type (@types) {
-        my $dom = Mojo::DOM->new( $f->$type->($c) );
+        my $dom = Mojo::DOM->new( $f->$type($c) );
         is_deeply $dom->at('*')->attr,
           {
             type        => $type,
@@ -42,7 +42,7 @@ subtest 'input basic' => sub {
     }
 
     # password_field
-    my $dom = Mojo::DOM->new( $f->password->($c) );
+    my $dom = Mojo::DOM->new( $f->password($c) );
     is_deeply $dom->at('*')->attr,
       {
         type        => 'password',
@@ -58,7 +58,7 @@ subtest 'input other' => sub {
     my @types = qw(color range date month time week);
     my $dom;
     for my $type (@types) {
-        $dom = Mojo::DOM->new( $f->$type->($c) );
+        $dom = Mojo::DOM->new( $f->$type($c) );
         is_deeply $dom->at('*')->attr,
           {
             type     => $type,
@@ -71,7 +71,7 @@ subtest 'input other' => sub {
     }
 
     # datetime-local
-    $dom = Mojo::DOM->new( $f->datetime->($c) );
+    $dom = Mojo::DOM->new( $f->datetime($c) );
     is_deeply $dom->at('*')->attr,
       {
         type     => 'datetime-local',
@@ -83,7 +83,7 @@ subtest 'input other' => sub {
       "right datetime";
 
     # file_field
-    $dom = Mojo::DOM->new( $f->file->($c) );
+    $dom = Mojo::DOM->new( $f->file($c) );
     is_deeply $dom->at('*')->attr,
       {
         type     => 'file',
@@ -96,7 +96,7 @@ subtest 'input other' => sub {
 
 subtest 'hidden' => sub {
     $f->value('abc');
-    my $dom = Mojo::DOM->new( $f->hidden->($c) );
+    my $dom = Mojo::DOM->new( $f->hidden($c) );
     is_deeply $dom->at('*')->attr, { type => 'hidden', name => 'item.0.name', value => 'abc' }, 'right hidden';
 };
 
@@ -109,7 +109,7 @@ subtest 'textarea' => sub {
         cols          => 40,
         default_value => 'default text',
     );
-    my $dom = Mojo::DOM->new( $f->textarea->($c) );
+    my $dom = Mojo::DOM->new( $f->textarea($c) );
     is $dom->at('*')->tag, 'textarea', 'right tag';
     is_deeply $dom->at('*')->attr, { id => 'order_note', name => 'order.note', cols => 40 }, 'right textarea';
     is $dom->at('*')->text, 'default text', 'right text';
@@ -123,7 +123,7 @@ subtest 'radio checkbox' => sub {
     );
 
     for my $type (qw/radio checkbox/) {
-        my $dom = Mojo::DOM->new( $f->$type->($c) );
+        my $dom = Mojo::DOM->new( $f->$type($c) );
         is $dom->at('*')->tag, 'label', "right $type parent";
         is $dom->at('*')->text, '私は同意した', "right $type label text";
         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type";
@@ -131,14 +131,14 @@ subtest 'radio checkbox' => sub {
 
     $f->checked(0);
     for my $type (qw/radio checkbox/) {
-        my $dom = Mojo::DOM->new( $f->$type->($c) );
+        my $dom = Mojo::DOM->new( $f->$type($c) );
         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
     }
 
     # bool "checked"
     $f->checked(1);
     for my $type (qw/radio checkbox/) {
-        my $dom = Mojo::DOM->new( $f->$type->($c) );
+        my $dom = Mojo::DOM->new( $f->$type($c) );
         is_deeply $dom->at('input')->attr, { checked => undef, type => $type, name => 'agreed', value => 'yes' },
           "right $type checked";
     }
@@ -151,13 +151,13 @@ subtest 'select' => sub {
     );
 
     my $dom;
-    $dom = Mojo::DOM->new( $f->select->($c) );
+    $dom = Mojo::DOM->new( $f->select($c) );
     is $dom->at('*')->tag, 'select', 'right tag';
     is_deeply $dom->at('*')->attr, { id => 'country', name => 'country' }, 'right attr';
 
     my $child;
     $f->choices( [ 'de', 'en' ] );
-    $dom = Mojo::DOM->new( $f->select->($c) );
+    $dom = Mojo::DOM->new( $f->select($c) );
     is_deeply $dom->at('select')->attr, { id => 'country', name => 'country' }, 'right attr';
     $child = $dom->at('select')->child_nodes;
     is @{$child}[0]->text, 'de', 'right text';
@@ -167,7 +167,7 @@ subtest 'select' => sub {
 
     # using I18N t/share/locale/en.po
     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', class => 'test-class', selected => 0 ], 'cn' ] );
-    $dom   = Mojo::DOM->new( $f->select->($c) );
+    $dom   = Mojo::DOM->new( $f->select($c) );
     $child = $dom->at('select')->child_nodes;
     is @{$child}[0]->text, '日本', 'right text';
     is_deeply @{$child}[0]->attr, { value => 'jp' }, 'right attr';
@@ -177,13 +177,13 @@ subtest 'select' => sub {
     is_deeply @{$child}[2]->attr, { value => 'cn' }, 'right attr';
 
     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', class => 'test-class', selected => 1 ], 'cn' ] );
-    $dom   = Mojo::DOM->new( $f->select->($c) );
+    $dom   = Mojo::DOM->new( $f->select($c) );
     $child = $dom->at('select')->child_nodes;
     is_deeply @{$child}[1]->attr, { value => 'de', class => 'test-class', selected => 'selected' }, 'right selected';
 
     my $child_child;
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ 'cn', 'jp' ], class => 'test-class' ) ] );
-    $dom   = Mojo::DOM->new( $f->select->($c) );
+    $dom   = Mojo::DOM->new( $f->select($c) );
     $child = $dom->at('select')->child_nodes;
     is_deeply @{$child}[0]->attr, { label => 'ヨーロッパ' }, 'right optgroup attr';
     $child_child = @{$child}[0]->child_nodes;
@@ -195,7 +195,7 @@ subtest 'select' => sub {
     is_deeply @{$child_child}[1]->attr, { value => 'jp' }, 'right option attr';
 
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
-    $dom         = Mojo::DOM->new( $f->select->($c) );
+    $dom         = Mojo::DOM->new( $f->select($c) );
     $child       = $dom->at('select')->child_nodes;
     $child_child = @{$child}[1]->child_nodes;
     is @{$child_child}[0]->text, '中国', 'right option text';
@@ -216,13 +216,13 @@ subtest 'choice' => sub {
     # select
     $f->multiple(0);
     $f->expanded(0);
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     is $dom->at('*')->tag, 'select', 'right tag';
 
     # select (multiple)
     $f->multiple(1);
     $f->expanded(0);
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     is $dom->at('*')->attr->{multiple}, undef, 'right multiple';
 
     # radio list
@@ -230,23 +230,23 @@ subtest 'choice' => sub {
     $f->multiple(0);
     $f->expanded(1);
     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 0 ], 'cn' ] );
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     is_deeply $dom->at('ul')->attr, { class => 'form-choices' },     'right class';
     is_deeply $dom->at('li')->attr, { class => 'form-choice-item' }, 'right class';
     $input = $dom->find('input');
     is_deeply $input->[1]->attr, { name => 'country', type => 'radio', value => 'de' }, 'right type is radio';
 
     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 1 ], 'cn' ] );
-    $dom   = Mojo::DOM->new( $f->choice->($c) );
+    $dom   = Mojo::DOM->new( $f->choice($c) );
     $input = $dom->find('input');
     is_deeply $input->[1]->attr, { checked => undef, name => 'country', type => 'radio', value => 'de' }, 'right attr';
 
     $f->choices( [ c( EU => [ 'de', 'en' ], class => 'test-class' ) ] );
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     is_deeply $dom->at('li')->attr, { class => 'test-class' }, 'right class';
 
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     is_deeply $dom->at('ul')->attr, { class => 'form-choice-groups' }, 'right class';
     is_deeply $dom->at('li')->attr, { class => 'form-choice-group' },  'right class';
     my $child;
@@ -259,7 +259,7 @@ subtest 'choice' => sub {
     # checkbox list (multiple)
     $f->multiple(1);
     $f->expanded(1);
-    $dom   = Mojo::DOM->new( $f->choice->($c) );
+    $dom   = Mojo::DOM->new( $f->choice($c) );
     $input = $dom->find('input');
     is_deeply $input->[0]->attr, { name => 'country[]', type => 'checkbox', value => 'de' }, 'right type is checkbox';
     is_deeply $input->[3]->attr, { checked => undef, name => 'country[]', type => 'checkbox', value => 'jp' },
@@ -277,7 +277,7 @@ subtest 'field-with-error' => sub {
     $c->validation->error( 'country.0.id' => ['custom_check'] );
 
     # label
-    my $dom = Mojo::DOM->new( $f->label_for->($c) );
+    my $dom = Mojo::DOM->new( $f->label_for($c) );
     ok $dom->find('.field-with-error')->size, 'right class';
 
     # choice
@@ -286,7 +286,7 @@ subtest 'field-with-error' => sub {
     $f->expanded(1);
 
     $c->validation->error( 'country.0.id[]' => ['custom_check'] );
-    $dom = Mojo::DOM->new( $f->choice->($c) );
+    $dom = Mojo::DOM->new( $f->choice($c) );
     ok $dom->find('ul.field-with-error')->size, 'right class';
 };
 

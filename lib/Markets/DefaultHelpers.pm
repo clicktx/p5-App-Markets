@@ -50,7 +50,7 @@ sub _form_render {
     my $self = shift;
     my ( $form, $field_key ) = shift =~ /(.+?)\.(.+)/;
     my $method = shift;
-    return _form_set( $self, $form )->$method($field_key)->($self);
+    return _form_set( $self, $form )->$method($field_key);
 }
 
 sub _pref {
