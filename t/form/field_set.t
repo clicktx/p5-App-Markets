@@ -68,7 +68,7 @@ subtest 'filters' => sub {
     is ref $fs->filters('name'), 'ARRAY', 'right filters';
     cmp_deeply $fs->filters,
       {
-        email          => [],
+        email          => [qw/trim/],
         name           => [],
         address        => [],
         favorite_color => [],
@@ -139,6 +139,7 @@ subtest 'validate with filter' => sub {
     my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
         [
+            'email'       => '   a@b.c   ',
             'item.0.name' => ' aaa ',
             'item.1.name' => ' bbb ',
             'item.2.name' => ' ccc ',
@@ -146,12 +147,16 @@ subtest 'validate with filter' => sub {
     );
     $fs->validate;
     my $v = $c->validation;
+    is $v->param('email'),       'a@b.c';
     is $v->param('item.0.name'), 'aaa';
     is $v->param('item.1.name'), 'bbb';
     is $v->param('item.2.name'), 'ccc';
 
     # field value after render
-    my $dom = Mojo::DOM->new( $fs->render('item.0.name') );
+    my $dom = Mojo::DOM->new( $fs->render('email') );
+    is_deeply $dom->at('*')->attr->{value}, 'a@b.c', 'right filtering value';
+
+    $dom = Mojo::DOM->new( $fs->render('item.0.name') );
     is_deeply $dom->at('*')->attr->{value}, 'aaa', 'right filtering value';
 };
 
