@@ -4,7 +4,7 @@ use Markets::Form::FieldSet;
 
 has_field email => (
     type        => 'text',
-    placeholder => '',
+    placeholder => 'name@domain',
     label       => 'E-mail',
     required    => 1,
     filters     => [],
