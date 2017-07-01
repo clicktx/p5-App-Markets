@@ -161,14 +161,14 @@ sub _input {
     my $default_value = delete $attrs{default_value};
 
     if ( $method eq 'password_field' || $method eq 'file_field' ) {
-        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
         return $c->$method( $name, %attrs );
     }
     else {
-        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
 
-        delete $attrs{value} unless defined $attrs{value};
-        return $c->$method( $name => $c->__($default_value), %attrs );
+        $attrs{value} = $c->__($default_value) if $default_value;
+        return $c->$method( $name, %attrs );
     }
 }
 
@@ -230,7 +230,7 @@ sub _textarea {
 
     my $name          = delete $attrs{name};
     my $default_value = delete $attrs{default_value};
-    $attrs{placeholder} = $c->__( $attrs{placeholder} ) if $attrs{placeholder};
+    $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
 
     return $c->text_area( $name => $c->__($default_value), %attrs );
 }
