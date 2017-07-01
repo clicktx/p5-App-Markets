@@ -3,6 +3,7 @@ use Test::More;
 use Test::Deep;
 use Test::Mojo;
 use t::Util;
+use Mojo::DOM;
 
 use_ok 'Markets::Form::FieldSet';
 
@@ -146,6 +147,10 @@ subtest 'validate with filter' => sub {
     is $v->param('item.0.name'), 'aaa';
     is $v->param('item.1.name'), 'bbb';
     is $v->param('item.2.name'), 'ccc';
+
+    # field value after render
+    my $dom = Mojo::DOM->new( $fs->render('item.0.name')->($c) );
+    is_deeply $dom->at('*')->attr->{value}, 'aaa', 'right filtering value';
 };
 
 subtest 'parameters' => sub {
