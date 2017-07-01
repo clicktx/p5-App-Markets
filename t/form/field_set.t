@@ -81,7 +81,9 @@ subtest 'filters' => sub {
 
 subtest 'validate' => sub {
 
-    # Set form parameters
+    # Create new request
+    my $c = $t->app->build_controller;
+    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
         [
             email              => 'a@b33',
@@ -133,8 +135,8 @@ subtest 'validate' => sub {
 subtest 'validate with filter' => sub {
 
     # Create new request
-    $c = $t->app->build_controller;
-    $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    my $c = $t->app->build_controller;
+    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
         [
             'item.0.name' => ' aaa ',
@@ -156,8 +158,8 @@ subtest 'validate with filter' => sub {
 subtest 'parameters' => sub {
 
     # Create new request
-    $c = $t->app->build_controller;
-    $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    my $c = $t->app->build_controller;
+    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
         [
             email              => 'a@b.c',
