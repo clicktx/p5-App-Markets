@@ -149,11 +149,13 @@ sub validate {
             foreach my $key (@match) {
                 $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
                 _do_check( $v, $_ ) for @$checks;
+                _replace_req_param( $self->controller, $v, $key );
             }
         }
         else {
             $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
             _do_check( $v, $_ ) for @$checks;
+            _replace_req_param( $self->controller, $v, $field_key );
         }
     }
     $self->is_validated(1);
@@ -179,6 +181,13 @@ sub _get_data {
         my %data = map { $_ => $self->schema->{$_}->{$attr_name} || [] } @{ $self->field_keys };
         return \%data || {};
     }
+}
+
+# NOTE: filter適用後の値をfill-in formで使われるようにする
+sub _replace_req_param {
+    my ( $c, $v, $key ) = @_;
+    my $validated_value = $v->param($key);
+    $c->param( $key => $validated_value ) if $validated_value;
 }
 
 sub _replace_key { my $arg = shift; $arg =~ s/\.\d/.[]/g; $arg; }
