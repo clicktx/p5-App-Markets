@@ -1,4 +1,19 @@
-package Markets::Form::CustomVaridation;
+package Markets::Form::CustomValidator;
+use Mojo::Base 'Mojolicious::Plugin';
+
+sub register {
+    my ( $self, $app ) = @_;
+    $app->validator->add_check( $_ => \&{ '_' . $_ } ) for qw(hoge);
+}
+
+sub _hoge {
+
+    # my ( $validation, $name, $value, @args ) = @_;
+    # return undef;
+}
+
+1;
+__END__
 use Mojo::Base -base;
 
 has c          => sub { shift->{c} };

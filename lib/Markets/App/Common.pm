@@ -97,6 +97,7 @@ sub initialize_app {
     # Form Frameworks
     # $self->plugin( 'Markets::Form', methods => { valid => 'form_valid', errors => 'form_errors' } );
     # $self->plugin('Markets::FormExpand');
+    $self->plugin('Markets::Form');
 
     # Add before/after action hook
     # MEMO: Mojoliciou::Controllerの挙動を変更
