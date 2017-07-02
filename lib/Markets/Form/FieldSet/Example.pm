@@ -1,35 +1,43 @@
 package Markets::Form::FieldSet::Example;
 use Mojo::Base -strict;
-use Markets::Form::FieldSet;
+use Markets::Form::FieldSet::Basic;
 
-has_field email => (
-    type          => 'email',
-    placeholder   => 'use@mail.com',
-    label         => 'E-mail',
-    default_value => 'a@b',
-    required      => 1,
-    filters       => [qw(trim)],
-    validations   => [],
-);
+my $basic = Markets::Form::FieldSet::Basic->schema;
 
-has_field password => (
-    type          => 'password',
-    placeholder   => 'your password',
-    label         => 'Password',
-    default_value => '1111',            # bad!
-    # required      => 1,
-    filters       => [],
-    validations   => [],
-);
+# [WIP]
+# NOTE: もうちょっとcoolにしたい...
+has_field email          => %{ $basic->{email} };
+has_field password       => %{ $basic->{password} };
+has_field password_again => %{ $basic->{password_again} };
 
-has_field password_again => (
-    type        => 'password',
-    placeholder => 'password again',
-    label       => 'Password Again',
-    required    => 1,
-    filters     => [],
-    validations => [ { equal_to => 'password' } ],
-);
+# has_field email => (
+#     type          => 'email',
+#     placeholder   => 'use@mail.com',
+#     label         => 'E-mail',
+#     default_value => 'a@b',
+#     required      => 1,
+#     filters       => [qw(trim)],
+#     validations   => [],
+# );
+#
+# has_field password => (
+#     type          => 'password',
+#     placeholder   => 'your password',
+#     label         => 'Password',
+#     default_value => '1111',            # bad!
+#     # required      => 1,
+#     filters       => [],
+#     validations   => [],
+# );
+#
+# has_field password_again => (
+#     type        => 'password',
+#     placeholder => 'password again',
+#     label       => 'Password Again',
+#     required    => 1,
+#     filters     => [],
+#     validations => [ { equal_to => 'password' } ],
+# );
 
 has_field 'item.[].id' => (
     type        => 'hidden',
