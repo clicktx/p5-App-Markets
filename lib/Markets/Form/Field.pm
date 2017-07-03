@@ -157,7 +157,7 @@ sub _choices_for_select {
 sub _help {
     my ( $c, $help ) = @_;
 
-    my $text = ref $help ? $help->($c) : $c->__x($help);
+    my $text = ref $help ? $help->($c) : $c->__($help);
     return $c->tag( 'span', class => $help_class, sub { $text } );
 }
 
