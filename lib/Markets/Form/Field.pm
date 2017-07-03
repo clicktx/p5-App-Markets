@@ -212,9 +212,7 @@ sub _label {
     my %attrs = @_;
 
     my $required_html =
-      exists $attrs{required}
-      ? '<span class="' . $required_class . '">' . $required_icon . '</span>'
-      : '';
+      exists $attrs{required} ? $c->tag( 'span', class => $required_class, sub { $required_icon } ) : '';
     my $content = $c->__( $attrs{label} ) . $required_html;
     _validation( $c, $attrs{name}, 'label', for => $attrs{id}, sub { $content } );
 }
