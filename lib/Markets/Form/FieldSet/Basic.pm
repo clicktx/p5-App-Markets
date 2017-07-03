@@ -34,9 +34,12 @@ has_field password_again => (
     label       => 'Password Again',
 
     # required    => 1,
-    filters     => [],
-    validations => [ { equal_to => 'password' } ],
-    help        => 'Type Password Again.',
+    filters        => [],
+    validations    => [ { equal_to => 'password' } ],
+    help           => 'Type Password Again.',
+    error_messages => {
+        equal_to => 'The passwords you entered do not much.',
+    },
 );
 
 1;
