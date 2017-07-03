@@ -4,6 +4,7 @@ use Carp qw/croak/;
 use Scalar::Util qw/blessed/;
 use Mojo::Collection 'c';
 
+our $help_class     = 'form-help-block';
 our $required_class = 'form-required-field-icon';
 our $required_icon  = '*';
 
@@ -20,6 +21,10 @@ sub AUTOLOAD {
     delete $attrs{$_} for qw(filters validations);
     $attrs{id} = $self->id;
     $attrs{required} ? $attrs{required} = undef : delete $attrs{required};
+
+    # help
+    my $help = delete $attrs{help};
+    return _help( $c, $help ) if $method eq 'help_block';
 
     # label
     return _label( $c, %attrs ) if $method eq 'label_for';
@@ -147,6 +152,13 @@ sub _choices_for_select {
         }
     }
     return $choices;
+}
+
+sub _help {
+    my ( $c, $help ) = @_;
+
+    my $text = ref $help ? $help->($c) : $c->__x($help);
+    return $c->tag( 'span', class => $help_class, sub { $text } );
 }
 
 sub _hidden {
@@ -431,6 +443,40 @@ This field always has multiple values.
 =head2 C<email>
 
 =head2 C<file>
+
+=head2 C<help>
+
+    # plain text
+    my $f = Markets::Form::Field->new(
+        name    => 'name',
+        help   => 'Your name.',
+    );
+    say $f->help->($c);
+
+    # HTML
+    <span class="">Your name.</span>
+
+    # code refference
+    my $f = Markets::Form::Field->new(
+        name    => 'password',
+        help   => sub {
+            shift->__x(
+                'Must be {low}-{high} characters long.',
+                { low => 4, high => 8 },
+            )
+        },
+    );
+    say $f->help->($c);
+
+    # HTML
+    <span class="">Must be 4-8 characters long.</span>
+
+Render help block.
+
+C<I18N>
+
+Default $c->__($text) or code refference $code->($c)
+See L<Mojolicious::Plugin::LocaleTextDomainOO>
 
 =head2 C<label_for>
 

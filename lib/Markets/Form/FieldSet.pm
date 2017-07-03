@@ -99,6 +99,11 @@ sub remove {
     delete ${"${class}::schema"}{$field_key};
 }
 
+sub render_help {
+    my ( $self, $name ) = @_;
+    $self->field($name)->help_block( $self->controller );
+}
+
 sub render_label {
     my ( $self, $name ) = @_;
     $self->field($name)->label_for( $self->controller );
@@ -308,6 +313,12 @@ This method should be called after the "validate" method.
 =head2 C<remove>
 
     $fieldset->remove('field_name');
+
+=head2 C<render_help>
+
+    $fieldset->render_help('email');
+
+Return code refference.
 
 =head2 C<render_label>
 
