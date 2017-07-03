@@ -44,6 +44,7 @@ subtest 'field_keys' => sub {
 
 subtest 'render tags' => sub {
     is ref $fs->render('email'),       'Mojo::ByteStream', 'right render method';
+    is ref $fs->render_help('email'),  'Mojo::ByteStream', 'right render_help method';
     is ref $fs->render_label('email'), 'Mojo::ByteStream', 'right render_label method';
 };
 
