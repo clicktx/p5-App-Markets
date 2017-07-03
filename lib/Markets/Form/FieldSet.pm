@@ -100,15 +100,12 @@ sub remove {
 }
 
 sub render_label {
-    my $self = shift;
-    my $name = shift;
-
+    my ( $self, $name ) = @_;
     $self->field($name)->label_for( $self->controller );
 }
 
 sub render {
-    my $self = shift;
-    my $name = shift;
+    my ( $self, $name ) = @_;
 
     my %attrs;
     my $value = $self->controller->req->params->param($name);
