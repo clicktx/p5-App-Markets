@@ -318,19 +318,19 @@ This method should be called after the "validate" method.
 
     $fieldset->render_help('email');
 
-Return code refference.
+Rendering HTML help block.
 
 =head2 C<render_label>
 
     $fieldset->render_label('email');
 
-Return code refference.
+Rendering HTML label tag.
 
 =head2 C<render>
 
     $fieldset->render('email');
 
-Return code refference.
+Rendering HTML form widget(field or fields).
 
 =head2 C<schema>
 

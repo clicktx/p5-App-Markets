@@ -444,14 +444,14 @@ This field always has multiple values.
 
 =head2 C<file>
 
-=head2 C<help>
+=head2 C<help_block>
 
     # plain text
     my $f = Markets::Form::Field->new(
         name    => 'name',
         help   => 'Your name.',
     );
-    say $f->help->($c);
+    say $f->help_block->($c);
 
     # HTML
     <span class="">Your name.</span>
@@ -466,7 +466,7 @@ This field always has multiple values.
             )
         },
     );
-    say $f->help->($c);
+    say $f->help_block->($c);
 
     # HTML
     <span class="">Must be 4-8 characters long.</span>
