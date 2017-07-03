@@ -169,8 +169,8 @@ sub _error {
     my ( $check, $result, @args ) = @{$error};
 
     # NOTE: [WIP] globalなエラーメッセージを用意する？
-    my $message = $error_messages->{$check};
-    my $text = ref $message ? $message->($c) : $c->__($message);
+    my $message = ref $error_messages ? $error_messages->{$check} : 'This field invalid.';
+    my $text    = ref $message        ? $message->($c)            : $c->__($message);
     return $c->tag( 'span', class => $error_class, sub { $text } );
 }
 
