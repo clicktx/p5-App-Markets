@@ -19,6 +19,7 @@ sub register {
     $app->helper( cart           => sub { _cart(@_) } );
     $app->helper( factory        => sub { _factory(@_) } );
     $app->helper( form_set       => sub { _form_set(@_) } );
+    $app->helper( form_error     => sub { _form_render( @_, 'render_error' ) } );
     $app->helper( form_help      => sub { _form_render( @_, 'render_help' ) } );
     $app->helper( form_label     => sub { _form_render( @_, 'render_label' ) } );
     $app->helper( form_widget    => sub { _form_render( @_, 'render' ) } );

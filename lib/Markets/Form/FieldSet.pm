@@ -99,6 +99,11 @@ sub remove {
     delete ${"${class}::schema"}{$field_key};
 }
 
+sub render_error {
+    my ( $self, $name ) = @_;
+    $self->field($name)->error_block( $self->controller );
+}
+
 sub render_help {
     my ( $self, $name ) = @_;
     $self->field($name)->help_block( $self->controller );
@@ -313,6 +318,12 @@ This method should be called after the "validate" method.
 =head2 C<remove>
 
     $fieldset->remove('field_name');
+
+=head2 C<render_error>
+
+    $fieldset->render_error('email');
+
+If `$c->validation` has an error message it rendering HTML error message block.
 
 =head2 C<render_help>
 

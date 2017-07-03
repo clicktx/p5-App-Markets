@@ -4,6 +4,7 @@ use Carp qw/croak/;
 use Scalar::Util qw/blessed/;
 use Mojo::Collection 'c';
 
+our $error_class    = 'form-error-block';
 our $help_class     = 'form-help-block';
 our $required_class = 'form-required-field-icon';
 our $required_icon  = '*';
@@ -22,9 +23,14 @@ sub AUTOLOAD {
     $attrs{id} = $self->id;
     $attrs{required} ? $attrs{required} = undef : delete $attrs{required};
 
+    my $help           = delete $attrs{help};
+    my $error_messages = delete $attrs{error_messages};
+
     # help
-    my $help = delete $attrs{help};
     return _help( $c, $help ) if $method eq 'help_block';
+
+    # error message
+    return _error( $c, $attrs{name}, $error_messages ) if $method eq 'error_block';
 
     # label
     return _label( $c, %attrs ) if $method eq 'label_for';
@@ -152,6 +158,20 @@ sub _choices_for_select {
         }
     }
     return $choices;
+}
+
+sub _error {
+    my ( $c, $name, $error_messages ) = @_;
+
+    my $error = $c->validation->error($name);
+    return unless $error;
+
+    my ( $check, $result, @args ) = @{$error};
+
+    # NOTE: [WIP] globalなエラーメッセージを用意する？
+    my $message = $error_messages->{$check};
+    my $text = ref $message ? $message->($c) : $c->__($message);
+    return $c->tag( 'span', class => $error_class, sub { $text } );
 }
 
 sub _help {
