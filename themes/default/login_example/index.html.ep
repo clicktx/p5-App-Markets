@@ -27,10 +27,12 @@
     <div class="">
         <%= form_label('example.password') %>
         <%= form_widget('example.password') %>
+        <%= form_help('example.password') %>
     </div>
     <div class="">
         <%= form_label('example.password_again') %>
         <%= form_widget('example.password_again') %>
+        <%= form_help('example.password_again') %>
     </div>
 
     <div class="">
