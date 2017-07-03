@@ -10,7 +10,7 @@ our $required_class = 'form-required-field-icon';
 our $required_icon  = '*';
 
 has id => sub { $_ = shift->name; s/\./_/g; $_ };
-has [qw(field_key default_value choices help label error_message multiple expanded)];
+has [qw(field_key default_value choices help label error_messages multiple expanded)];
 has [qw(name type value placeholder checked)];
 
 sub AUTOLOAD {
