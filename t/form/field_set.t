@@ -22,33 +22,6 @@ subtest 'c' => sub {
     isa_ok $fs->c( 1, 2, 3 ), 'Mojo::Collection';
 };
 
-subtest 'schema' => sub {
-    my $schema = $fs->schema;
-    is ref $schema, 'HASH';
-    my $field_schema = $fs->schema('email');
-    is ref $field_schema, 'HASH';
-};
-
-subtest 'field' => sub {
-    my $f = $fs->field('email');
-    isa_ok $f, 'Markets::Form::Field';
-};
-
-subtest 'field_keys' => sub {
-    my @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/email name address favorite_color luky_number item.[].id item.[].name/],
-      'right field_keys';
-    my $field_keys = $fs->field_keys;
-    is ref $field_keys, 'ARRAY', 'right scalar';
-};
-
-subtest 'render tags' => sub {
-    ok !$fs->render_error('email');
-    is ref $fs->render_help('email'),  'Mojo::ByteStream', 'right render_help method';
-    is ref $fs->render_label('email'), 'Mojo::ByteStream', 'right render_label method';
-    is ref $fs->render('email'),       'Mojo::ByteStream', 'right render method';
-};
-
 subtest 'checks' => sub {
     is $fs->checks('hoge'), undef, 'right not exist field_key';
     cmp_deeply $fs->checks('email'), [ { size => ignore() }, { like => ignore() } ], 'right get validations';
@@ -65,6 +38,19 @@ subtest 'checks' => sub {
       'right all field_key validations';
 };
 
+subtest 'field' => sub {
+    my $f = $fs->field('email');
+    isa_ok $f, 'Markets::Form::Field';
+};
+
+subtest 'field_keys' => sub {
+    my @field_keys = $fs->field_keys;
+    is_deeply \@field_keys, [qw/email name address favorite_color luky_number item.[].id item.[].name/],
+      'right field_keys';
+    my $field_keys = $fs->field_keys;
+    is ref $field_keys, 'ARRAY', 'right scalar';
+};
+
 subtest 'filters' => sub {
     is $fs->filters('hoge'), undef, 'right not exist field_key';
     is ref $fs->filters('name'), 'ARRAY', 'right filters';
@@ -79,6 +65,68 @@ subtest 'filters' => sub {
         'item.[].name' => [qw/trim/],
       },
       'right all filters';
+};
+
+subtest 'parameters' => sub {
+
+    # Create new request
+    my $c = $t->app->build_controller;
+    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    $c->req->params->pairs(
+        [
+            email              => 'a@b.c',
+            name               => 'frank',
+            address            => 'ny',
+            'favorite_color[]' => 'red',
+            'luky_number[]'    => 2,
+            'luky_number[]'    => 3,
+            'item.0.id'        => 11,
+            'item.1.id'        => 22,
+            'item.2.id'        => 33,
+            'item.0.name'      => 'aa',
+            'item.1.name'      => 'bb',
+            'item.2.name'      => 'cc',
+            iligal_param       => 'attack',
+        ]
+    );
+
+    eval { my $name = $fs->param('name') };
+    ok $@, 'right before validate';
+
+    $fs->validate;
+    is $fs->param('email'), 'a@b.c', 'right param';
+    is_deeply $fs->param('favorite_color[]'), ['red'], 'right every param';
+    is_deeply $fs->scope_param('item'),
+      [
+        {
+            id   => 11,
+            name => 'aa',
+        },
+        {
+            id   => 22,
+            name => 'bb',
+        },
+        {
+            id   => 33,
+            name => 'cc',
+        },
+      ],
+      'right scope param';
+    is $fs->param('iligal_param'), undef, 'right iligal param';
+};
+
+subtest 'render tags' => sub {
+    ok !$fs->render_error('email');
+    is ref $fs->render_help('email'),  'Mojo::ByteStream', 'right render_help method';
+    is ref $fs->render_label('email'), 'Mojo::ByteStream', 'right render_label method';
+    is ref $fs->render('email'),       'Mojo::ByteStream', 'right render method';
+};
+
+subtest 'schema' => sub {
+    my $schema = $fs->schema;
+    is ref $schema, 'HASH';
+    my $field_schema = $fs->schema('email');
+    is ref $field_schema, 'HASH';
 };
 
 subtest 'validate' => sub {
@@ -160,54 +208,6 @@ subtest 'validate with filter' => sub {
 
     $dom = Mojo::DOM->new( $fs->render('item.0.name') );
     is_deeply $dom->at('*')->attr->{value}, 'aaa', 'right filtering value';
-};
-
-subtest 'parameters' => sub {
-
-    # Create new request
-    my $c = $t->app->build_controller;
-    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
-    $c->req->params->pairs(
-        [
-            email              => 'a@b.c',
-            name               => 'frank',
-            address            => 'ny',
-            'favorite_color[]' => 'red',
-            'luky_number[]'    => 2,
-            'luky_number[]'    => 3,
-            'item.0.id'        => 11,
-            'item.1.id'        => 22,
-            'item.2.id'        => 33,
-            'item.0.name'      => 'aa',
-            'item.1.name'      => 'bb',
-            'item.2.name'      => 'cc',
-            iligal_param       => 'attack',
-        ]
-    );
-
-    eval { my $name = $fs->param('name') };
-    ok $@, 'right before validate';
-
-    $fs->validate;
-    is $fs->param('email'), 'a@b.c', 'right param';
-    is_deeply $fs->param('favorite_color[]'), ['red'], 'right every param';
-    is_deeply $fs->scope_param('item'),
-      [
-        {
-            id   => 11,
-            name => 'aa',
-        },
-        {
-            id   => 22,
-            name => 'bb',
-        },
-        {
-            id   => 33,
-            name => 'cc',
-        },
-      ],
-      'right scope param';
-    is $fs->param('iligal_param'), undef, 'right iligal param';
 };
 
 # This test should be done at the end!
