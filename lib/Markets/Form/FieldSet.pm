@@ -22,6 +22,11 @@ sub append {
 
 sub checks { shift->_get_data( shift, 'validations' ) }
 
+sub export_field {
+    my ( $self, $field_key ) = @_;
+    return ( $field_key, %{ $self->schema($field_key) } );
+}
+
 sub field_keys {
     my $self = shift;
     my $class = ref $self || $self;
@@ -271,6 +276,12 @@ Construct a new array-based L<Mojo::Collection> object.
     # Return hash refference
     # { field_key => [ 'validation1', 'validation2', ... ], field_key2 => [ 'validation1', 'validation2', ... ] }
     my $checks = $fieldset->checks;
+
+=head2 C<export_field>
+
+    use Markets::Form::FieldSet::Basic;
+    my $obj = Markets::Form::FieldSet::Basic->new;
+    my ($field_key, %field_attrs) = $obj->export_field('email');
 
 =head2 C<field_keys>
 
