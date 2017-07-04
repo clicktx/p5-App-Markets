@@ -2,9 +2,6 @@ package Markets::Form::FieldSet::Basic;
 use Mojo::Base -strict;
 use Markets::Form::FieldSet;
 
-our $password_low  = 4;
-our $password_high = 8;
-
 has_field email => (
     type          => 'email',
     placeholder   => 'use@mail.com',
@@ -22,9 +19,13 @@ has_field password => (
 
     # required      => 1,
     filters     => [],
-    validations => [],
+    validations => [ { size => [ \'customer_password_min', \'customer_password_max' ] }, ],
     help        => sub {
-        shift->__x( 'Must be {low}-{high} characters long.', { low => $password_low, high => $password_high }, );
+        my $c = shift;
+        $c->__x(
+            'Must be {min}-{max} characters long.',
+            { min => $c->pref('customer_password_min'), max => $c->pref('customer_password_max') },
+        );
     },
 );
 

@@ -160,13 +160,13 @@ sub validate {
             my @match = grep { my $name = _replace_key($_); $field_key eq $name } @{$names};
             foreach my $key (@match) {
                 $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
-                _do_check( $v, $_ ) for @$checks;
+                $self->_do_check( $v, $_ ) for @$checks;
                 _replace_req_param( $self->controller, $v, $key );
             }
         }
         else {
             $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
-            _do_check( $v, $_ ) for @$checks;
+            $self->_do_check( $v, $_ ) for @$checks;
             _replace_req_param( $self->controller, $v, $field_key );
         }
     }
@@ -175,12 +175,17 @@ sub validate {
 }
 
 sub _do_check {
-    my $v = shift;
+    my $self = shift;
+    my $v    = shift;
 
     my ( $check, $args ) = ref $_[0] ? %{ $_[0] } : ( $_[0], undef );
     return $v->$check unless $args;
 
-    return ref $args eq 'ARRAY' ? $v->$check( @{$args} ) : $v->$check($args);
+    my @args = ref $args eq 'ARRAY' ? @{$args} : ($args);
+
+    # scalar refference to preference value
+    @args = map { ref $_ eq 'SCALAR' ? $self->controller->pref( ${$_} ) : $_ } @args;
+    return $v->$check(@args);
 }
 
 sub _get_data {
