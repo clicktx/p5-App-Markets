@@ -2,42 +2,10 @@ package Markets::Form::FieldSet::Example;
 use Mojo::Base -strict;
 use Markets::Form::FieldSet::Basic;
 
-my $basic = Markets::Form::FieldSet::Basic->schema;
-
-# [WIP]
-# NOTE: もうちょっとcoolにしたい...
-has_field email          => %{ $basic->{email} };
-has_field password       => %{ $basic->{password} };
-has_field password_again => %{ $basic->{password_again} };
-
-# has_field email => (
-#     type          => 'email',
-#     placeholder   => 'use@mail.com',
-#     label         => 'E-mail',
-#     default_value => 'a@b',
-#     required      => 1,
-#     filters       => [qw(trim)],
-#     validations   => [],
-# );
-#
-# has_field password => (
-#     type          => 'password',
-#     placeholder   => 'your password',
-#     label         => 'Password',
-#     default_value => '1111',            # bad!
-#     # required      => 1,
-#     filters       => [],
-#     validations   => [],
-# );
-#
-# has_field password_again => (
-#     type        => 'password',
-#     placeholder => 'password again',
-#     label       => 'Password Again',
-#     required    => 1,
-#     filters     => [],
-#     validations => [ { equal_to => 'password' } ],
-# );
+my $basic = Markets::Form::FieldSet::Basic->new;
+has_field $basic->export_field('email');
+has_field $basic->export_field('password');
+has_field $basic->export_field('password_again');
 
 has_field 'item.[].id' => (
     type        => 'hidden',
