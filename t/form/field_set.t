@@ -38,6 +38,20 @@ subtest 'checks' => sub {
       'right all field_key validations';
 };
 
+subtest 'export_field' => sub {
+    my ( $field_key, %field_attrs ) = $fs->export_field('item.[].id');
+    is $field_key, 'item.[].id', 'right field name';
+    is_deeply \%field_attrs,
+      {
+        type        => 'text',
+        label       => 'Item ',
+        required    => 1,
+        filters     => [],
+        validations => [],
+      },
+      'right field attrs';
+};
+
 subtest 'field' => sub {
     my $f = $fs->field('email');
     isa_ok $f, 'Markets::Form::Field';
