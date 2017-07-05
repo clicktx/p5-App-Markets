@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use Carp         ();
 use Scalar::Util ();
 use Mojo::Util   ();
+use Markets::Util qw(load_class);
 use Markets::Domain::Factory;
 
 my $FORM_CLASS = 'Markets::Form::FieldSet';
@@ -39,7 +40,7 @@ sub _form_set {
     return $formset if $formset;
 
     my $class = $FORM_CLASS . "::" . $ns;
-    _load_class($class);
+    load_class($class);
 
     $formset = $class->new( controller => $self );
     $self->stash($FORM_STASH)->{$ns} = $formset;
@@ -71,19 +72,11 @@ sub _service {
     }
     else {
         my $class = "Markets::Service::" . $ns;
-        _load_class($class);
+        load_class($class);
         $service = $class->new($self);
         $self->app->{services}{$ns} = $service;
     }
     return $service;
-}
-
-sub _load_class {
-    my $class = shift;
-
-    if ( my $e = Mojo::Loader::load_class($class) ) {
-        die ref $e ? "Exception: $e" : "$class not found!";
-    }
 }
 
 1;

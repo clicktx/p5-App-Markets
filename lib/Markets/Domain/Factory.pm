@@ -4,6 +4,7 @@ use Carp 'croak';
 use DateTime::Format::Strptime;
 use Mojo::Util;
 use Mojo::Loader;
+use Markets::Util qw(load_class);
 use Markets::Schema;
 use Markets::Domain::Collection qw/collection/;
 use Markets::Domain::IxHash qw/ix_hash/;
@@ -69,7 +70,7 @@ sub create_entity {
     delete $params->{entity_class};
 
     # Create entity
-    _load_class( $self->entity_class );
+    load_class( $self->entity_class );
     my $entity = $self->entity_class->new( %{$params} );
 
     # NOTE: attributesは Markets::Domain::Entity::XXX で明示する方が良い?
@@ -124,14 +125,6 @@ sub params {
     # Setter
     my %args = @_ > 1 ? @_ : %{ $_[0] };
     $self->{$_} = $args{$_} for keys %args;
-}
-
-sub _load_class {
-    my $class = shift;
-
-    if ( my $e = Mojo::Loader::load_class($class) ) {
-        die ref $e ? "Exception: $e" : "$class not found!";
-    }
 }
 
 1;
