@@ -167,10 +167,15 @@ sub _error {
     return unless $error;
 
     my ( $check, $result, @args ) = @{$error};
+    my $message = ref $error_messages eq 'HASH' ? $error_messages->{$check} : '';
 
-    # NOTE: [WIP] globalなエラーメッセージを用意する？
-    my $message = ref $error_messages ? $error_messages->{$check} : 'This field invalid.';
-    my $text    = ref $message        ? $message->($c)            : $c->__($message);
+    # Default error message
+    if ( !$message ) { $message = $c->form_error_message($check) || 'This field is invalid.' }
+
+    my %args;
+    while ( my ( $i, $v ) = each @args ) { $args{$i} = $v }
+
+    my $text = ref $message ? $message->($c) : $c->__x( $message, \%args );
     return $c->tag( 'span', class => $error_class, sub { $text } );
 }
 
