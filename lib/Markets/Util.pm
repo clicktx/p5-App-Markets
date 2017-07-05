@@ -2,10 +2,12 @@ package Markets::Util;
 use Mojo::Base -strict;
 
 use Exporter 'import';
+use Carp qw(croak);
 use File::Find::Rule;
 use Session::Token;
+use Mojo::Loader;
 
-our @EXPORT_OK = ( qw(directories generate_token), );
+our @EXPORT_OK = ( qw(directories generate_token load_class), );
 
 =head1 FUNCTIONS
 
@@ -69,5 +71,30 @@ SEE ALSO L<Session::Token>
 =cut
 
 sub generate_token { Session::Token->new(@_)->get }
+
+=over
+
+=item C<load_class>
+
+Load a class.
+
+    use Markets::Util qw(load_class);
+
+    load_class 'Foo::Bar';
+
+SEE ALSO L<Mojo::Loader/load_class>
+
+=back
+
+=cut
+
+sub load_class {
+    my $class = shift;
+
+    if ( my $e = Mojo::Loader::load_class($class) ) {
+        croak ref $e ? "Exception: $e" : "$class not found!";
+    }
+    1;
+}
 
 1;
