@@ -28,6 +28,7 @@
         <%= form_label('example.password') %>
         <%= form_widget('example.password') %>
         <%= form_help('example.password') %>
+        <%= form_error('example.password') %>
     </div>
     <div class="">
         <%= form_label('example.password_again') %>
