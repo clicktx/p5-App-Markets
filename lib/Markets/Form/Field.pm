@@ -286,34 +286,25 @@ Markets::Form::Field
 
 =head1 SYNOPSIS
 
-    package Markets::Form::Type::User;
-    use Mojo::Base -strict;
-    use Markets::Form::Field;
-
-    has_field email => (
-        type        => 'email',
-        placeholder => 'use@mail.com',
-        label       => 'E-mail',
-        required    => 1,
-        class       => 'hoge-class',
-        filters     => [],
-        validations => [],
+    my $field = Markets::Form::Field->new(
+        field_key     => 'email',
+        name          => 'email',
+        label         => 'EMAIL',
     );
 
-    has_field 'item.[].id' => (
-        type  => 'hidden',
-    );
+    say $field->label($c);
+    say $field->text($c);
 
-    has_field 'country[]' => (
-        type     => 'choice',
-        expanded => 0,
-        multiple => 1,
-        choices  => [
-            c( EU => [ [ Germany => 'de' ], [ England => 'en' ] ] ),
-            c( Asia => [ [ Chaina => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ),
-        ],
-    );
+    # Rendering HTML
+    # <label for="email">EMAIL</label>
+    # <input id="email" type="text" name="email">
 
+
+    # In templetes using helpers
+    %= form_label('example.password_again')
+    %= form_widget('example.password_again')
+    %= form_help('example.password_again')
+    %= form_error('example.password_again')
 
 =head1 DESCRIPTION
 
@@ -331,7 +322,7 @@ All methods is L<Mojolicious::Plugin::TagHelpers> wrapper method.
         label   => 'I agreed',
         checked => 1,
     );
-    say $f->checkbox->($c);
+    say $f->checkbox($c);
 
     # HTML
     <label><input checked name="agreed" type="checkbox" value="yes">I agreed</label>
@@ -380,7 +371,7 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     # Radio button
     $f->multiple(0);
     $f->expanded(1);
-    say $f->choice->($c);
+    say $f->choice($c);
 
     # HTML
     <ul class="form-choices">
@@ -400,7 +391,7 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
     $f->multiple(1);
     $f->expanded(1);
-    say $f->choice->($c);
+    say $f->choice($c);
 
     # HTML
     <ul class="form-choices">
@@ -417,7 +408,7 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
 
     # Group choices
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
-    say $f->choice->($c);
+    say $f->choice($c);
 
     # HTML
     <ul class="form-choice-groups">
@@ -469,7 +460,7 @@ This field always has multiple values.
         name    => 'name',
         help   => 'Your name.',
     );
-    say $f->help_block->($c);
+    say $f->help_block($c);
 
     # HTML
     <span class="">Your name.</span>
@@ -484,7 +475,7 @@ This field always has multiple values.
             )
         },
     );
-    say $f->help_block->($c);
+    say $f->help_block($c);
 
     # HTML
     <span class="">Must be 4-8 characters long.</span>
@@ -493,7 +484,7 @@ Render help block.
 
 C<I18N>
 
-Default $c->__($text) or code refference $code->($c)
+Default $c->__($text) or code refference $code($c)
 See L<Mojolicious::Plugin::LocaleTextDomainOO>
 
 =head2 C<label_for>
@@ -514,7 +505,7 @@ See L<Mojolicious::Plugin::LocaleTextDomainOO>
         label   => 'I agreed',
         checked => 1,
     );
-    say $f->radio->($c);
+    say $f->radio($c);
 
     # HTML
     <label><input checked name="agreed" type="radio" value="yes">I agreed</label>
