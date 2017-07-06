@@ -54,7 +54,35 @@ __END__
 
 Markets::Form - Form for Markets
 
+=head1 SYNOPSIS
+
+    # Mojolicious
+    $app->plugin('Markets::Form');
+
+    # Mojolicious::Lite
+    plugin 'Markets::Form';
+
 =head1 DESCRIPTION
+
+=head1 HELPERS
+
+L<Markets::Form> implements the following helpers.
+
+=head2 C<form_error_message>
+
+    my ($check, $result, @args) = @{$c->validation->error('field_name')};
+    $c->form_error_message($check);
+
+=head1 METHODS
+
+L<Markets::Form> inherits all methods from
+L<Mojolicious::Plugin> and implements the following new ones.
+
+=head2 register
+
+  $plugin->register(Mojolicious->new);
+
+Register helpers in L<Mojolicious> application.
 
 =head1 SEE ALSO
 
