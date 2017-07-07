@@ -13,8 +13,8 @@ sub register {
     my $init = delete $args->{init};
 
     # Helpers
-    $app->helper( server_session => sub { shift->stash($stash_key) } );
     $app->helper( cart_session   => sub { shift->stash($stash_key)->{cart_session} } );
+    $app->helper( server_session => sub { shift->stash($stash_key) } );
 
     # Hooks
     $app->hook(
@@ -134,6 +134,23 @@ Markets::Session - forked from Mojolicious::Plugin::Session
 =head2 C<stash_key>
 
     Markets::Session::ServerSession instance will be saved in stash using this key.
+
+=head1 HELPERS
+
+=head2 C<cart_session>
+
+    my $cart_session = $c->cart_session;
+
+    # Longer version
+    my $cart_session = $c->server_session->cart_session;
+
+Return L<Markets::Session::CartSession> object.
+
+=head2 C<server_session>
+
+    my $server_session = $c->server_session;
+
+Return L<Markets::Session::ServerSession> object.
 
 =head1 SEE ALSO
 
