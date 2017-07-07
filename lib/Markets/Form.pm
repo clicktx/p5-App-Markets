@@ -9,7 +9,7 @@ sub register {
     my ( $self, $app ) = @_;
 
     # Load filters and validators
-    $app->plugin($_) for qw(Markets::Form::CustomFilter Markets::Form::CustomValidator);
+    $app->plugin($_) for qw(Markets::Form::Filter Markets::Form::Validator);
 
     # Helpers
     $app->helper( form_error => sub { _form_render( @_, 'render_error' ) } );

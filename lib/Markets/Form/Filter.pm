@@ -1,4 +1,4 @@
-package Markets::Form::CustomFilter;
+package Markets::Form::Filter;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {

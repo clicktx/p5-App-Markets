@@ -1,4 +1,4 @@
-package Markets::Form::CustomValidator;
+package Markets::Form::Validator;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
