@@ -178,10 +178,8 @@ sub _do_check {
     my $self = shift;
     my $v    = shift;
 
-    my ( $check, $args ) = ref $_[0] ? %{ $_[0] } : ( $_[0], undef );
-    return $v->$check unless $args;
-
-    my @args = ref $args eq 'ARRAY' ? @{$args} : ($args);
+    my ( $check, @args ) = ref $_[0] eq 'ARRAY' ? @{ $_[0] } : $_[0];
+    return $v->$check unless @args;
 
     # scalar refference to preference value
     @args = map { ref $_ eq 'SCALAR' ? $self->controller->pref( ${$_} ) : $_ } @args;

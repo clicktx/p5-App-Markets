@@ -31,7 +31,7 @@ subtest 'required' => sub {
 
 subtest 'length' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append( 'foo' => ( validations => [ { length => [ 3, 5 ] } ] ) );
+    $f->append( 'foo' => ( validations => [ [ 'length' => 3, 5 ] ] ) );
     $v->input( { foo => 'a' } );
     $f->validate;
     is $v->error('foo')->[0], 'length', 'right invalid';

@@ -24,11 +24,11 @@ subtest 'c' => sub {
 
 subtest 'checks' => sub {
     is $fs->checks('hoge'), undef, 'right not exist field_key';
-    cmp_deeply $fs->checks('email'), [ { size => ignore() }, { like => ignore() } ], 'right get validations';
+    cmp_deeply $fs->checks('email'), [ [ size => 2, 5 ], [ like => ignore() ] ], 'right get validations';
     cmp_deeply $fs->checks,
       {
-        email          => [ { size => ignore() }, { like => ignore() } ],
-        name           => [],
+        email => [ [ size => 2, 5 ], [ like => ignore() ] ],
+        name => [],
         address        => [],
         favorite_color => [],
         luky_number    => [],

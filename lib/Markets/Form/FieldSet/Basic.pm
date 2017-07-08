@@ -19,7 +19,7 @@ has_field password => (
 
     # required      => 1,
     filters     => [],
-    validations => [ { size => [ \'customer_password_min', \'customer_password_max' ] }, ],
+    validations => [ [ size => \'customer_password_min', \'customer_password_max' ], ],
     help        => sub {
         my $c = shift;
         $c->__x(
@@ -36,7 +36,7 @@ has_field password_again => (
 
     # required    => 1,
     filters        => [],
-    validations    => [ { equal_to => 'password' } ],
+    validations    => [ [ equal_to => 'password' ] ],
     help           => 'Type Password Again.',
     error_messages => {
         equal_to => 'The passwords you entered do not much.',
