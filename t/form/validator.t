@@ -20,11 +20,29 @@ subtest 'required' => sub {
     $f->append( 'foo' => ( required => 1 ) );
     $v->input( { foo => undef } );
     $f->validate;
-    is $v->error('foo')->[0], 'required', 'right required invalid';
+    is $v->error('foo')->[0], 'required', 'right invalid';
 
     ( $c, $f, $v ) = new_req();
     $f->append( 'foo' => () );
     $v->input( { foo => undef } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+};
+
+subtest 'length' => sub {
+    my ( $c, $f, $v ) = new_req();
+    $f->append( 'foo' => ( validations => [ { length => [ 3, 5 ] } ] ) );
+    $v->input( { foo => 'a' } );
+    $f->validate;
+    is $v->error('foo')->[0], 'length', 'right invalid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 'abcdef' } );
+    $f->validate;
+    is $v->error('foo')->[0], 'length', 'right invalid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 'abcd' } );
     $f->validate;
     is $v->error('foo'), undef, 'right valid';
 };

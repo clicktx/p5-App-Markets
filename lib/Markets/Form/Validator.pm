@@ -1,9 +1,10 @@
 package Markets::Form::Validator;
 use Mojo::Base 'Mojolicious::Plugin';
+use Mojolicious::Validator;
 
 sub register {
     my ( $self, $app ) = @_;
-    $app->validator->add_check( $_ => \&{ '_' . $_ } ) for qw(hoge);
+    $app->validator->add_check( $_ => \&{ '_' . $_ } ) for qw(length);
 }
 
 sub _hoge {
@@ -11,6 +12,8 @@ sub _hoge {
     # my ( $validation, $name, $value, @args ) = @_;
     # return undef;
 }
+
+sub _length { Mojolicious::Validator::_size(@_) }
 
 1;
 __END__
@@ -177,3 +180,31 @@ sub is_digits {
 }
 
 1;
+=encoding utf8
+
+=head1 NAME
+
+Markets::Form::Validator - Validate values
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+L<Markets::Form::Validator> validates values for L<Markets>.
+
+=head1 CHECKS
+
+These validation checks are available.
+
+=head2 length
+
+  $validation = $validation->length(2, 5);
+
+String value length in bytes needs to be between these two values.
+Alias C<size> by L<Mojolicious::Validator>.
+
+=head1 SEE ALSO
+
+L<Mojolicious::Validator>, L<Markets::Form::FieldSet>
+
+=cut
