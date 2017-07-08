@@ -24,21 +24,19 @@ sub AUTOLOAD {
     # label
     return _label( $c, %attrs ) if $method eq 'label_for';
 
-    # hidden
     delete $attrs{$_} for qw(field_key type label);
+
+    # hidden
     return _hidden( $c, %attrs, @_ ) if $method eq 'hidden';
 
     # textarea
     return _textarea( $c, %attrs, @_ ) if $method eq 'textarea';
 
-    # input
-    for my $name (qw(email number search tel text url password)) {
-        return _input( $c, "${name}_field", %attrs, @_ ) if $method eq $name;
-    }
-    for my $name (qw(color range date month time week file datetime)) {
-        delete $attrs{$_} for qw(placeholder);
-        return _input( $c, "${name}_field", %attrs, @_ ) if $method eq $name;
-    }
+    # select
+    return _select( $c, %attrs, @_ ) if $method eq 'select';
+
+    # choice
+    return _choice_list_widget( $c, %attrs, @_ ) if $method eq 'choice';
 
     # checkbox/radio
     if ( $method eq 'checkbox' || $method eq 'radio' ) {
@@ -49,11 +47,16 @@ sub AUTOLOAD {
         return _choice_field( $c, \%values, $self->label, %attrs, @_ );
     }
 
-    # select
-    return _select( $c, %attrs, @_ ) if $method eq 'select';
-
-    # choice
-    return _choice_list_widget( $c, %attrs, @_ ) if $method eq 'choice';
+    # input
+    for my $name (qw(email number search tel text url password)) {
+        return _input( $c, "${name}_field", %attrs, @_ ) if $method eq $name;
+    }
+    for my $name (qw(color range date month time week file datetime)) {
+        if ( $method eq $name ) {
+            delete $attrs{$_} for qw(placeholder);
+            return _input( $c, "${name}_field", %attrs, @_ );
+        }
+    }
 
     Carp::croak "Undefined subroutine &${package}::$method called";
 }

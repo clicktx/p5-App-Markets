@@ -2,9 +2,12 @@ use strict;
 use warnings;
 
 use Test::Perl::Metrics::Lite (
-    -mccabe_complexity => 30,
-    -loc               => 100,
-    -except_file       => [ 'lib/Markets/View/DOM/EP.pm' ]
+    -mccabe_complexity => 15,    # default 10
+    -loc               => 60,    # default 60
+    -except_file       => [
+        qw(lib/Markets/View/DOM/EP.pm lib/Markets/Domain/Base.pm lib/Markets/Domain/Entity.pm),
+        qw(lib/Markets/Form/Field.pm)
+    ],
 );
 
 all_metrics_ok();

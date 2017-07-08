@@ -53,11 +53,8 @@ sub initialize_app {
     my $config_path = $home->rel_file("config/$mode.conf");
     $self->plugin( Config => { file => $config_path } );
 
-    # Models
-    $self->plugin( Model => { namespaces => ['Markets::Model'] } );
-
-    # Default Helpers
-    $self->plugin('Markets::DefaultHelpers');
+    # Load plugin
+    _load_plugin($self);
 
     # Preferences
     $self->service('preference')->load;
@@ -69,12 +66,6 @@ sub initialize_app {
     # default cookie
     $self->sessions->cookie_name('session');
     $self->secrets( ['aaabbbccc'] );    #           change this!
-
-    # password
-    $self->plugin('Scrypt');
-
-    # session
-    $self->plugin( 'Markets::Session' => { expires_delta => 3600 } );
 
     # locale
     $ENV{MOJO_I18N_DEBUG} = $mode eq 'development' ? 1 : 0;
@@ -149,6 +140,22 @@ sub _dsn {
           . "user=$conf->{user};password=$conf->{password};";
     }
     return $dsn;
+}
+
+sub _load_plugin {
+    my $app = shift;
+
+    # Models
+    $app->plugin( Model => { namespaces => ['Markets::Model'] } );
+
+    # Default Helpers
+    $app->plugin('Markets::DefaultHelpers');
+
+    # password
+    $app->plugin('Scrypt');
+
+    # session
+    $app->plugin( 'Markets::Session' => { expires_delta => 3600 } );
 }
 
 sub _log {
