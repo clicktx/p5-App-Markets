@@ -23,6 +23,7 @@ requires 'Server::Starter',                         '0.32';
 requires 'Gazelle',                                 '0.46';
 requires 'Tie::IxHash',                             '1.23';
 requires 'Struct::Diff',                            '0.86';
+requires 'FormValidator::Simple',                   '0.29';
 
 # XS modules. it's a high performance!
 # See http://qiita.com/karupanerura/items/e765b23bd3bff806cc27
