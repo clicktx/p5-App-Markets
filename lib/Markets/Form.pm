@@ -51,8 +51,8 @@ my $messages = {
 };
 
 sub _form_error_message {
-    my ( $c, $check ) = @_;
-    return $messages->{$check};
+    my ( $c, $check, @args ) = @_;
+    return ref $messages->{$check} eq 'CODE' ? $messages->{$check}->(@args) : $messages->{$check};
 }
 
 sub _form_set {
