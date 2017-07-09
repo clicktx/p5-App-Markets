@@ -6,7 +6,10 @@ use t::Util;
 my $t = Test::Mojo->new('App');
 my $c = $t->app->build_controller;
 
-is $c->form_error_message(''), undef, 'right not found message';
-ok $c->form_error_message('required'), 'right message';
+can_ok $c->helpers, 'form_error';
+can_ok $c->helpers, 'form_help';
+can_ok $c->helpers, 'form_label';
+can_ok $c->helpers, 'form_set';
+can_ok $c->helpers, 'form_widget';
 
 done_testing();

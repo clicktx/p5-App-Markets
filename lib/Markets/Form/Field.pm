@@ -170,7 +170,7 @@ sub _error {
     my $message = ref $error_messages eq 'HASH' ? $error_messages->{$check} : '';
 
     # Default error message
-    if ( !$message ) { $message = $c->form_error_message( $check, @args ) || 'This field is invalid.' }
+    if ( !$message ) { $message = $c->validation->error_message( $name ) || 'This field is invalid.' }
 
     my %args;
     while ( my ( $i, $v ) = each @args ) { $args{$i} = $v }

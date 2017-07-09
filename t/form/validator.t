@@ -21,6 +21,7 @@ subtest 'required' => sub {
     $v->input( { foo => undef } );
     $f->validate;
     is $v->error('foo')->[0], 'required', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
 
     ( $c, $f, $v ) = new_req();
     $f->append( 'foo' => () );
@@ -35,6 +36,7 @@ subtest 'length' => sub {
     $v->input( { foo => 'a' } );
     $f->validate;
     is $v->error('foo')->[0], 'length', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
 
     ( $c, $f, $v ) = new_req();
     $v->input( { foo => 'abcdef' } );
