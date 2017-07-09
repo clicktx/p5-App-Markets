@@ -1,6 +1,6 @@
 package Markets::Form::Validator;
 use Mojo::Base 'Mojolicious::Plugin';
-use Mojolicious::Validator;
+use FormValidator::Simple::Validator;
 
 sub register {
     my ( $self, $app ) = @_;
@@ -13,7 +13,10 @@ sub _hoge {
     # return undef;
 }
 
-sub _length { Mojolicious::Validator::_size(@_) }
+sub _length {
+    my ( $validation, $name, $value, @args ) = @_;
+    return FormValidator::Simple::Validator->LENGTH( [$value], \@args ) ? undef : 1;
+}
 
 1;
 __END__
@@ -196,15 +199,15 @@ L<Markets::Form::Validator> validates values for L<Markets>.
 
 These validation checks are available.
 
-=head2 length
+=head2 C<length>
 
   $validation = $validation->length(2, 5);
+  $validation = $validation->length(3);
 
 String value length in bytes needs to be between these two values.
-Alias C<size> by L<Mojolicious::Validator>.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Validator>, L<Markets::Form::FieldSet>
+L<FormValidator::Simple::Validator>, L<Mojolicious::Validator>, L<Markets::Form::FieldSet>
 
 =cut
