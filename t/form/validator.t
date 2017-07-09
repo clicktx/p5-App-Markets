@@ -45,6 +45,22 @@ subtest 'length' => sub {
     $v->input( { foo => 'abcd' } );
     $f->validate;
     is $v->error('foo'), undef, 'right valid';
+
+    $f->append( 'foo' => ( validations => [ [ 'length' => 4 ] ] ) );
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 'a' } );
+    $f->validate;
+    is $v->error('foo')->[0], 'length', 'right invalid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 'abcdef' } );
+    $f->validate;
+    is $v->error('foo')->[0], 'length', 'right invalid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 'abcd' } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
 };
 
 done_testing();

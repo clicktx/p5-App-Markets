@@ -48,11 +48,16 @@ my $messages = {
     like     => 'This field is invelid.',
     size     => 'Please enter a value between {0} and {1} characters long.',
     upload   => 'This field is invelid.',
+    length   => sub {
+        return @_ > 1
+          ? 'Please enter a value between {0} and {1} characters long.'
+          : 'Please enter a value {0} characters long.';
+    },
 };
 
 sub _form_error_message {
-    my ( $c, $check ) = @_;
-    return $messages->{$check};
+    my ( $c, $check, @args ) = @_;
+    return ref $messages->{$check} eq 'CODE' ? $messages->{$check}->(@args) : $messages->{$check};
 }
 
 sub _form_set {
