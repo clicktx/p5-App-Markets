@@ -25,6 +25,7 @@ use FormValidator::Simple::Validator;
 
 # Message for Mojolicious::Validator default validators
 my $MESSAGES = {
+    between  => 'Please enter a value between {0} and {1}.',
     required => 'This field is required.',
     equal_to => 'Please enter the same value again.',
     in       => 'Vaule is not a choice.',
@@ -37,6 +38,7 @@ my $MESSAGES = {
           : 'Please enter a value {0} characters long.';
     },
 };
+$MESSAGES->{range} = $MESSAGES->{between};
 
 sub register {
     my ( $self, $app ) = @_;
@@ -54,19 +56,20 @@ sub register {
         return ref $message eq 'CODE' ? $message->(@args) : $message;
     };
 
-    $app->validator->add_check( $_ => \&{ '_' . $_ } ) for qw(length);
+    $app->validator->add_check( $_ => \&{ '_' . $_ } ) for qw(between length range);
 }
 
-sub _hoge {
-
-    # my ( $validation, $name, $value, @args ) = @_;
-    # return undef;
+sub _between {
+    my ( $validation, $name, $value, @args ) = @_;
+    return FormValidator::Simple::Validator->BETWEEN( [$value], \@args ) ? undef : 1;
 }
 
 sub _length {
     my ( $validation, $name, $value, @args ) = @_;
     return FormValidator::Simple::Validator->LENGTH( [$value], \@args ) ? undef : 1;
 }
+
+*_range = \&_between;
 
 1;
 __END__
@@ -249,12 +252,25 @@ L<Markets::Form::Validator> validates values for L<Markets>.
 
 These validation checks are available.
 
+=head2 C<between>
+
+  # Valid 2 or 3 or 4 or 5
+  $validation = $validation->between(2, 5);
+
+Value needs to be between these two values.
+
 =head2 C<length>
 
   $validation = $validation->length(2, 5);
   $validation = $validation->length(3);
 
 String value length in bytes needs to be between these two values.
+
+=head2 C<range>
+
+  $validation = $validation->range(2, 5);
+
+Alias L</between> method.
 
 =head1 SEE ALSO
 

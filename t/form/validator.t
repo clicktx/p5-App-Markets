@@ -65,4 +65,23 @@ subtest 'length' => sub {
     is $v->error('foo'), undef, 'right valid';
 };
 
+subtest 'range' => sub {
+    my ( $c, $f, $v ) = new_req();
+    $f->append( 'foo' => ( validations => [ [ 'range' => 3, 5 ] ] ) );
+    $v->input( { foo => 2 } );
+    $f->validate;
+    is $v->error('foo')->[0], 'range', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 6 } );
+    $f->validate;
+    is $v->error('foo')->[0], 'range', 'right invalid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 3 } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+};
+
 done_testing();
