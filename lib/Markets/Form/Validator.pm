@@ -26,17 +26,17 @@ use FormValidator::Simple::Validator;
 # Message for Mojolicious::Validator default validators
 my $MESSAGES = {
     between  => 'Please enter a value between {0} and {1}.',
-    required => 'This field is required.',
     equal_to => 'Please enter the same value again.',
     in       => 'Vaule is not a choice.',
-    like     => 'This field is invelid.',
-    size     => 'Please enter a value between {0} and {1} characters long.',
-    upload   => 'This field is invelid.',
     length   => sub {
         return @_ > 1
           ? 'Please enter a value between {0} and {1} characters long.'
           : 'Please enter a value {0} characters long.';
     },
+    like     => 'This field is invelid.',
+    size     => 'Please enter a value between {0} and {1} characters long.',
+    upload   => 'This field is invelid.',
+    required => 'This field is required.',
 };
 $MESSAGES->{range} = $MESSAGES->{between};
 
