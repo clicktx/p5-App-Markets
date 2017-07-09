@@ -25,17 +25,26 @@ use FormValidator::Simple::Validator;
 
 # Message for Mojolicious::Validator default validators
 my $MESSAGES = {
+    ascii    => '',
     between  => 'Please enter a value between {0} and {1}.',
+    date     => '',
+    datetime => '',
+    decimal  => '',
+    email    => '',
     equal_to => 'Please enter the same value again.',
     in       => 'Vaule is not a choice.',
+    int      => '',
     length   => sub {
         return @_ > 1
           ? 'Please enter a value between {0} and {1} characters long.'
           : 'Please enter a value {0} characters long.';
     },
     like     => 'This field is invelid.',
+    time     => '',
     size     => 'Please enter a value between {0} and {1} characters long.',
+    uint     => '',
     upload   => 'This field is invelid.',
+    url      => '',
     required => 'This field is required.',
 };
 $MESSAGES->{range} = $MESSAGES->{between};
@@ -56,13 +65,26 @@ sub register {
         return ref $message eq 'CODE' ? $message->(@args) : $message;
     };
 
-    $app->validator->add_check( $_ => \&{ '_' . $_ } ) for qw(between length range);
+    $app->validator->add_check( $_ => \&{ '_' . $_ } )
+      for ( qw(ascii between date datetime decimal email int), qw(length range time uint url) );
 }
+
+sub _ascii { }
 
 sub _between {
     my ( $validation, $name, $value, @args ) = @_;
     return FormValidator::Simple::Validator->BETWEEN( [$value], \@args ) ? undef : 1;
 }
+
+sub _date { }
+
+sub _datetime { }
+
+sub _decimal { }
+
+sub _email { }
+
+sub _int { }
 
 sub _length {
     my ( $validation, $name, $value, @args ) = @_;
@@ -70,6 +92,12 @@ sub _length {
 }
 
 *_range = \&_between;
+
+sub _time { }
+
+sub _uint { }
+
+sub _url { }
 
 1;
 __END__
@@ -252,12 +280,24 @@ L<Markets::Form::Validator> validates values for L<Markets>.
 
 These validation checks are available.
 
+=head2 C<ascii>
+
 =head2 C<between>
 
   # Valid 2 or 3 or 4 or 5
   $validation = $validation->between(2, 5);
 
 Value needs to be between these two values.
+
+=head2 C<date>
+
+=head2 C<datetime>
+
+=head2 C<decimal>
+
+=head2 C<email>
+
+=head2 C<int>
 
 =head2 C<length>
 
@@ -271,6 +311,12 @@ String value length in bytes needs to be between these two values.
   $validation = $validation->range(2, 5);
 
 Alias L</between> method.
+
+=head2 C<time>
+
+=head2 C<uint>
+
+=head2 C<url>
 
 =head1 SEE ALSO
 
