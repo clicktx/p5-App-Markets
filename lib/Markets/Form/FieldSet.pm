@@ -23,8 +23,14 @@ sub append {
 sub checks { shift->_get_data( shift, 'validations' ) }
 
 sub export_field {
-    my ( $self, $field_key ) = @_;
-    return ( $field_key, %{ $self->schema($field_key) } );
+    my $self = shift;
+    my $class = ref $self || $self;
+
+    my $caller = $_[0] ? $_[0] =~ /::/ ? shift : caller : caller;
+    my @field_keys = @_ ? @_ : @{ $self->field_keys };
+
+    no strict 'refs';
+    ${"${caller}::schema"}{$_} = $class->schema($_) for @field_keys;
 }
 
 sub field_keys {
@@ -72,6 +78,14 @@ sub import {
     tie %{"${caller}::schema"}, 'Tie::IxHash';
     monkey_patch $caller, 'has_field', sub { append( $caller, @_ ) };
     monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
+
+    return unless my $flag = shift;
+
+    # export_field
+    if ( $flag eq '-export_field' ) {
+        my $args = shift;
+        ref $args eq 'ARRAY' ? $class->export_field( $caller, @$args ) : $class->export_field($caller);
+    }
 }
 
 sub param {
@@ -293,6 +307,19 @@ Passing a scalar reffernce as an arguments to the validator method expands from 
 
 =head1 DESCRIPTION
 
+=head1 IMPORT OPTIONS
+
+=head2 C<-export_field>
+
+    package Markets::Form::FieldSet::Hoge;
+    use Markets::Form::FieldSet::Base -export_field => [
+        'email', 'password'
+    ];
+
+    # Export all fields.
+    package Markets::Form::FieldSet::Hoge;
+    use Markets::Form::FieldSet::Base -export_field => 'all';
+
 =head1 ATTRIBUTES
 
 =head2 C<controller>
@@ -339,8 +366,12 @@ Construct a new array-based L<Mojo::Collection> object.
 =head2 C<export_field>
 
     use Markets::Form::FieldSet::Basic;
-    my $obj = Markets::Form::FieldSet::Basic->new;
-    my ($field_key, %field_attrs) = $obj->export_field('email');
+
+    # 'email', 'password' exported.
+    Markets::Form::FieldSet::Basic->export_field(qw/email password/);
+
+    # All field exported.
+    Markets::Form::FieldSet::Basic->export_field();
 
 =head2 C<field_keys>
 

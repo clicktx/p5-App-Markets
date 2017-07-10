@@ -1,11 +1,12 @@
 package Markets::Form::FieldSet::Example;
 use Mojo::Base -strict;
-use Markets::Form::FieldSet::Basic;
+use Markets::Form::FieldSet::Basic -export_field => 'all';
 
-my $basic = Markets::Form::FieldSet::Basic->new;
-has_field $basic->export_field('email');
-has_field $basic->export_field('password');
-has_field $basic->export_field('password_again');
+# use Markets::Form::FieldSet::Basic -export_field;
+# use Markets::Form::FieldSet::Basic -export_field => [qw(email password password_again)];
+
+# Markets::Form::FieldSet::Basic->aaa(qw/email password password_again/);
+# Markets::Form::FieldSet::Basic->aaa(); #export all field
 
 has_field 'item.[].id' => (
     type        => 'hidden',
