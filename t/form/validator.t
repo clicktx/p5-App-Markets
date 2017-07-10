@@ -65,6 +65,43 @@ subtest 'length' => sub {
     is $v->error('foo'), undef, 'right valid';
 };
 
+subtest 'number' => sub {
+    my ( $c, $f, $v ) = new_req();
+    $f->append( 'foo' => ( validations => ['number'] ) );
+    $f->append( 'bar' => ( validations => ['number'] ) );
+    $v->input( { foo => '1 000 000,00', bar => '5,5' } );
+    $f->validate;
+    is $v->error('foo')->[0], 'number', 'right invalid';
+    is $v->error('bar')->[0], 'number', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => '1,000,000.00', bar => '5.5' } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+    is $v->error('bar'), undef, 'right valid';
+
+    # Locale: RU (Russian; русский язык) / FR (French; français)
+    $t->app->pref( locale_country => 'RU' );
+    $t->app->plugin('Markets::Form');
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => '1 000 000,00', bar => '5,5' } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+    is $v->error('bar'), undef, 'right valid';
+
+    # Locale: DE (German, Deutsch)
+    $t->app->pref( locale_country => 'DE' );
+    $t->app->plugin('Markets::Form');
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => '1.000.000,00', bar => '5,5' } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+    is $v->error('bar'), undef, 'right valid';
+};
+
 subtest 'range' => sub {
     my ( $c, $f, $v ) = new_req();
     $f->append( 'foo' => ( validations => [ [ 'range' => 3, 5 ] ] ) );

@@ -3,6 +3,17 @@ use Mojo::Base 'Mojolicious::Plugin';
 use Mojo::Util qw(monkey_patch);
 use FormValidator::Simple::Validator;
 
+# 数字（正負、桁区切り、小数点含む）
+# [世界各国での数字の区切り方](http://coliss.com/articles/build-websites/operation/writing/53.html)
+# [WIP] 言語で切り替えるのではなく地域で切り替えるべき
+our $NUMBER_RE = {
+    US => '^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$',
+    JP => '^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$',
+    DE => '^-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d+)?$',
+    RU => '^-?(?:\d+|\d{1,3}(?:\ \d{3})+)(?:,\d+)?$',
+    FR => '^-?(?:\d+|\d{1,3}(?:\ \d{3})+)(?:,\d+)?$',
+};
+
 # messages from [jQuery Validation Plugin](https://github.com/jquery-validation/jquery-validation/blob/master/src/core.js#L344)
 # messages: {
 #     required: "This field is required.",
@@ -40,6 +51,7 @@ my $MESSAGES = {
           : 'Please enter a value {0} characters long.';
     },
     like     => 'This field is invelid.',
+    number   => 'Invalid way to divide numbers.',
     time     => '',
     size     => 'Please enter a value between {0} and {1} characters long.',
     uint     => '',
@@ -66,7 +78,10 @@ sub register {
     };
 
     $app->validator->add_check( $_ => \&{ '_' . $_ } )
-      for ( qw(ascii between date datetime decimal email int), qw(length range time uint url) );
+      for qw(ascii between date datetime decimal email int length range time uint url);
+
+    my $country = $app->pref('locale_country') || 'US';
+    $app->validator->add_check( number => sub { _number( $country, @_ ) } );
 }
 
 sub _ascii { }
@@ -89,6 +104,12 @@ sub _int { }
 sub _length {
     my ( $validation, $name, $value, @args ) = @_;
     return FormValidator::Simple::Validator->LENGTH( [$value], \@args ) ? undef : 1;
+}
+
+sub _number {
+    my ( $country, $validation, $name, $value ) = @_;
+    my $regex = $NUMBER_RE->{$country};
+    return FormValidator::Simple::Validator->REGEX( [$value], [$regex] ) ? undef : 1;
 }
 
 *_range = \&_between;
