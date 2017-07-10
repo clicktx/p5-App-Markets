@@ -39,9 +39,10 @@ subtest 'checks' => sub {
 };
 
 subtest 'export_field' => sub {
-    my ( $field_key, %field_attrs ) = $fs->export_field('item.[].id');
-    is $field_key, 'item.[].id', 'right field name';
-    is_deeply \%field_attrs,
+    is_deeply __PACKAGE__->schema, {}, 'right not exported';
+
+    $fs->export_field('item.[].id');
+    is_deeply __PACKAGE__->schema('item.[].id'),
       {
         type        => 'text',
         label       => 'Item ',
@@ -49,7 +50,12 @@ subtest 'export_field' => sub {
         filters     => [],
         validations => [],
       },
-      'right field attrs';
+      'right export field';
+
+    # Export all fields
+    $fs->export_field();
+    is_deeply \@{ __PACKAGE__->field_keys },
+      [qw(item.[].id email name address favorite_color luky_number item.[].name)], 'right exported all';
 };
 
 subtest 'field' => sub {
