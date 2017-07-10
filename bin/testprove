@@ -1,9 +1,12 @@
 #!/bin/sh
 
 if [[ $1 == 'all' ]]
-    then carton exec -- perl -MExtUtils::Manifest -e "ExtUtils::Manifest::mkmanifest"; prove -lvcr t addons/*/t xt
+    then carton exec -- perl -MExtUtils::Manifest -e "ExtUtils::Manifest::mkmanifest";
+    TEST_DIR='t addons/*/t xt'
 elif [[ $1 == '' ]]
-    then carton exec -- prove -lvcr t addons/*/t
+    then TEST_DIR='t addons/*/t'
 else
-    carton exec -- prove -lvc $@
+    TEST_DIR=$@
 fi
+
+carton exec -- prove -lvcr $TEST_DIR
