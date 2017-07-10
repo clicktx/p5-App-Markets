@@ -290,4 +290,41 @@ subtest 'field-with-error' => sub {
     ok $dom->find('ul.field-with-error')->size, 'right class';
 };
 
+subtest 'help_block' => sub {
+    my $f = Markets::Form::Field->new(
+        field_key => 'name',
+        name      => 'name',
+        help      => 'my name',
+    );
+    my $dom = Mojo::DOM->new( $f->help_block($c) );
+    is_deeply $dom->at('span')->attr, { class => 'form-help-block' }, 'right attrs';
+    is $dom->at('span')->text, 'my name', 'right text';
+
+    $f = Markets::Form::Field->new(
+        field_key => 'name',
+        name      => 'name',
+        help      => sub { shift->__x( '{hoge} name', hoge => 'my' ) },
+    );
+    $dom = Mojo::DOM->new( $f->help_block($c) );
+    is_deeply $dom->at('span')->attr, { class => 'form-help-block' }, 'right attrs';
+    is $dom->at('span')->text, 'my name', 'right text';
+};
+
+subtest 'error_block' => sub {
+    my $f = Markets::Form::Field->new(
+        field_key      => 'name',
+        name           => 'name',
+        required       => 1,
+        error_messages => { required => 'Name is required.' },
+    );
+    my $dom = Mojo::DOM->new( $f->error_block($c) );
+    is $dom, '', 'right empty';
+
+    # invalid field
+    $c->validation->error( name => [ 'required', 1 ] );
+    $dom = Mojo::DOM->new( $f->error_block($c) );
+    is_deeply $dom->at('span')->attr, { class => 'form-error-block' }, 'right attrs';
+    is $dom->at('span')->text, 'Name is required.', 'right message';
+};
+
 done_testing();

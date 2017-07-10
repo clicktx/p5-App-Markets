@@ -1,123 +1,129 @@
 package Markets::Form;
+use Mojo::Base 'Mojolicious::Plugin';
+use Markets::Util qw(load_class);
 
-# TODO: pull requestがmergeされた場合はオリジナル(Mojolicious::Plugin::FormFields v0.06)を使う
-# https://github.com/sshaw/Mojolicious-Plugin-FormFields/pull/3
-
-use Mojo::Base 'Mojolicious::Plugin::FormFields';
-use Mojo::Util qw(monkey_patch);
-use Markets::Form::Struct;
-use Markets::Form::CustomFilter;
-use Markets::Form::CustomVaridation;
-
-# Override method
-#   Filters is not applied, and use the "STRUCTURED REQUEST PARAMETERS". by clicktx · Pull Request #3
-#   https://github.com/sshaw/Mojolicious-Plugin-FormFields/pull/3
-monkey_patch 'Mojolicious::Plugin::FormFields::Field', valid => sub {
-    my $self = shift;
-    return $self->{result}->{success} if defined $self->{result};
-
-    my $result;
-    my $name  = $self->{name};
-    my $value = $self->{c}->param($name);
-    my $field = { $name => $value };
-    my $rules = {
-        fields  => [$name],
-        checks  => $self->{checks},
-        filters => $self->{filters}
-    };
-
-    # A bit of massaging For the is_equal() validation
-    my $eq = $self->{eq_to_field};
-    if ($eq) {
-        $field->{$eq} = $self->{c}->param($eq);
-        push @{ $rules->{fields} }, $eq;
-    }
-
-    $result = Validate::Tiny::validate( $field, $rules );
-    $self->{c}->req->params->param( $name, $result->{data}->{$name} )
-      if @{ $self->{filters} };
-    $self->{result} = $result;
-
-    $result->{success};
-};
-
-monkey_patch 'Mojolicious::Plugin::FormFields::Field', label => sub {
-    my $self = shift;
-
-    my $text;
-    $text = pop   if ref $_[-1] eq 'CODE';
-    $text = shift if @_ % 2;                 # step on CODE
-
-    my $SEPARATOR = $self->separator;
-    my @result = ( split /\Q$SEPARATOR/, $self->{name} );
-    $text //= $self->{c}->__( $self->{name} );
-
-    # $text //= $self->{c}->stash( $result[0] )->{".labels"}->{ $result[-1] };
-    $text //=
-      Mojolicious::Plugin::FormFields::Field::_default_label( $self->{name} );
-
-    my %options = @_;
-    $options{for} //=
-      Mojolicious::Plugin::FormFields::Field::_dom_id( $self->{name} );
-
-    $self->{c}->tag( 'label', %options, $text );
-};
+my $FORM_CLASS = 'Markets::Form::FieldSet';
+my $FORM_STASH = 'markets.form';
 
 sub register {
-    my ( $self, $app, $config ) = @_;
-    my $ns = 'formfields.fields';
-    $self->SUPER::register( $app, $config );
+    my ( $self, $app ) = @_;
 
-    # Override helper
-    my $methods = $config->{methods};
-    my $helper = $methods->{valid} // 'valid';
-    $app->helper(
-        $helper => sub {
-            my $c      = shift;
-            my $valid  = 1;
-            my $errors = {};
+    # Load filters and validators
+    $app->plugin($_) for qw(Markets::Form::Filter Markets::Form::Validator);
 
-            # TODO: skip keys used by fields()
-            while ( my ( $name, $field ) = each %{ $c->stash->{$ns} } ) {
-                if ( !$field->valid ) {
-                    $valid = 0;
-                    $errors->{$name} = $field->error;
-                }
-            }
+    # Helpers
+    $app->helper( form_error  => sub { _form_render( @_, 'render_error' ) } );
+    $app->helper( form_help   => sub { _form_render( @_, 'render_help' ) } );
+    $app->helper( form_label  => sub { _form_render( @_, 'render_label' ) } );
+    $app->helper( form_set    => sub { _form_set(@_) } );
+    $app->helper( form_widget => sub { _form_render( @_, 'render' ) } );
+}
 
-            my $hash = Mojolicious::Plugin::ParamExpand::expander->expand_hash(
-                $c->req->params->to_hash );
-            $c->param( $_ => $hash->{$_} ) for keys %$hash;
+sub _form_set {
+    my ( $self, $ns ) = @_;
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+    Carp::croak 'Arguments empty' unless $ns;
 
-            $c->stash->{"$ns.errors"} = $errors;
-            $valid;
-        }
-    );
-    $app->helper(
-        form => sub {
-            Markets::Form::Struct->new(
-                'controller'        => shift,
-                'fields'            => shift,
-                'formfields_valid' => $helper,
-            );
-        }
-    );
+    $self->stash( $FORM_STASH => {} ) unless $self->stash($FORM_STASH);
+    my $formset = $self->stash($FORM_STASH)->{$ns};
+    return $formset if $formset;
+
+    my $class = $FORM_CLASS . "::" . $ns;
+    load_class($class);
+
+    $formset = $class->new( controller => $self );
+    $self->stash($FORM_STASH)->{$ns} = $formset;
+    return $formset;
+}
+
+sub _form_render {
+    my $self = shift;
+    my ( $form, $field_key ) = shift =~ /(.+?)\.(.+)/;
+    my $method = shift;
+    return _form_set( $self, $form )->$method($field_key);
 }
 
 1;
-
+__END__
 =encoding utf8
 
 =head1 NAME
 
 Markets::Form - Form for Markets
 
+=head1 SYNOPSIS
+
+    # Mojolicious
+    $app->plugin('Markets::Form');
+
+    # Mojolicious::Lite
+    plugin 'Markets::Form';
+
 =head1 DESCRIPTION
 
-This module is a wrapper of L<Mojolicious::Plugin::FormFields>.
+=head1 HELPERS
+
+L<Markets::Form> implements the following helpers.
+
+=head2 C<form_set>
+
+    my $form_set = $c->form_set('example');
+
+=head1 TAG HELPERS
+
+All helpers are L<Mojolicious::Plugin::TagHelpers> wrapper.
+
+=head2 C<form_error>
+
+    # In template
+    %= form_error('example.email')
+
+    # Longer Version
+    %= form_set('example')->render_error('email')
+
+=head2 C<form_help>
+
+    # In template
+    %= form_help('example.email')
+
+    # Longer Version
+    %= form_set('example')->render_help('email')
+
+=head2 C<form_label>
+
+    # In template
+    %= form_label('example.email')
+
+    # Longer Version
+    %= form_set('example')->render_label('email')
+
+Rendering tag from Markets::Form::Type::xxx.
+L<Mojolicious::Plugin::TagHelpers> wrapper method.
+
+=head2 C<form_widget>
+
+    # In template
+    %= form_widget('example.email')
+
+    # Longer Version
+    %= form_set('example')->render_widget('email')
+
+Rendering tag from Markets::Form::Type::xxx.
+L<Mojolicious::Plugin::TagHelpers> wrapper method.
+
+=head1 METHODS
+
+L<Markets::Form> inherits all methods from
+L<Mojolicious::Plugin> and implements the following new ones.
+
+=head2 register
+
+  $plugin->register(Mojolicious->new);
+
+Register helpers in L<Mojolicious> application.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin::FormFields>
+L<Mojolicious::Plugin>
 
 =cut

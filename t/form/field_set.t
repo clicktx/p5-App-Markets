@@ -22,11 +22,40 @@ subtest 'c' => sub {
     isa_ok $fs->c( 1, 2, 3 ), 'Mojo::Collection';
 };
 
-subtest 'schema' => sub {
-    my $schema = $fs->schema;
-    is ref $schema, 'HASH';
-    my $field_schema = $fs->schema('email');
-    is ref $field_schema, 'HASH';
+subtest 'checks' => sub {
+    is $fs->checks('hoge'), undef, 'right not exist field_key';
+    cmp_deeply $fs->checks('email'), [ [ size => 2, 5 ], [ like => ignore() ] ], 'right get validations';
+    cmp_deeply $fs->checks,
+      {
+        email => [ [ size => 2, 5 ], [ like => ignore() ] ],
+        name => [],
+        address        => [],
+        favorite_color => [],
+        luky_number    => [],
+        'item.[].id'   => [],
+        'item.[].name' => [],
+      },
+      'right all field_key validations';
+};
+
+subtest 'export_field' => sub {
+    is_deeply __PACKAGE__->schema, {}, 'right not exported';
+
+    $fs->export_field('item.[].id');
+    is_deeply __PACKAGE__->schema('item.[].id'),
+      {
+        type        => 'text',
+        label       => 'Item ',
+        required    => 1,
+        filters     => [],
+        validations => [],
+      },
+      'right export field';
+
+    # Export all fields
+    $fs->export_field();
+    is_deeply \@{ __PACKAGE__->field_keys },
+      [qw(item.[].id email name address favorite_color luky_number item.[].name)], 'right exported all';
 };
 
 subtest 'field' => sub {
@@ -40,27 +69,6 @@ subtest 'field_keys' => sub {
       'right field_keys';
     my $field_keys = $fs->field_keys;
     is ref $field_keys, 'ARRAY', 'right scalar';
-};
-
-subtest 'render tags' => sub {
-    is ref $fs->render('email'),       'Mojo::ByteStream', 'right render method';
-    is ref $fs->render_label('email'), 'Mojo::ByteStream', 'right render_label method';
-};
-
-subtest 'checks' => sub {
-    is $fs->checks('hoge'), undef, 'right not exist field_key';
-    cmp_deeply $fs->checks('email'), [ { size => ignore() }, { like => ignore() } ], 'right get validations';
-    cmp_deeply $fs->checks,
-      {
-        email          => [ { size => ignore() }, { like => ignore() } ],
-        name           => [],
-        address        => [],
-        favorite_color => [],
-        luky_number    => [],
-        'item.[].id'   => [],
-        'item.[].name' => [],
-      },
-      'right all field_key validations';
 };
 
 subtest 'filters' => sub {
@@ -77,6 +85,68 @@ subtest 'filters' => sub {
         'item.[].name' => [qw/trim/],
       },
       'right all filters';
+};
+
+subtest 'parameters' => sub {
+
+    # Create new request
+    my $c = $t->app->build_controller;
+    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    $c->req->params->pairs(
+        [
+            email              => 'a@b.c',
+            name               => 'frank',
+            address            => 'ny',
+            'favorite_color[]' => 'red',
+            'luky_number[]'    => 2,
+            'luky_number[]'    => 3,
+            'item.0.id'        => 11,
+            'item.1.id'        => 22,
+            'item.2.id'        => 33,
+            'item.0.name'      => 'aa',
+            'item.1.name'      => 'bb',
+            'item.2.name'      => 'cc',
+            iligal_param       => 'attack',
+        ]
+    );
+
+    eval { my $name = $fs->param('name') };
+    ok $@, 'right before validate';
+
+    $fs->validate;
+    is $fs->param('email'), 'a@b.c', 'right param';
+    is_deeply $fs->param('favorite_color[]'), ['red'], 'right every param';
+    is_deeply $fs->scope_param('item'),
+      [
+        {
+            id   => 11,
+            name => 'aa',
+        },
+        {
+            id   => 22,
+            name => 'bb',
+        },
+        {
+            id   => 33,
+            name => 'cc',
+        },
+      ],
+      'right scope param';
+    is $fs->param('iligal_param'), undef, 'right iligal param';
+};
+
+subtest 'render tags' => sub {
+    ok !$fs->render_error('email');
+    is ref $fs->render_help('email'),  'Mojo::ByteStream', 'right render_help method';
+    is ref $fs->render_label('email'), 'Mojo::ByteStream', 'right render_label method';
+    is ref $fs->render('email'),       'Mojo::ByteStream', 'right render method';
+};
+
+subtest 'schema' => sub {
+    my $schema = $fs->schema;
+    is ref $schema, 'HASH';
+    my $field_schema = $fs->schema('email');
+    is ref $field_schema, 'HASH';
 };
 
 subtest 'validate' => sub {
@@ -158,54 +228,6 @@ subtest 'validate with filter' => sub {
 
     $dom = Mojo::DOM->new( $fs->render('item.0.name') );
     is_deeply $dom->at('*')->attr->{value}, 'aaa', 'right filtering value';
-};
-
-subtest 'parameters' => sub {
-
-    # Create new request
-    my $c = $t->app->build_controller;
-    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
-    $c->req->params->pairs(
-        [
-            email              => 'a@b.c',
-            name               => 'frank',
-            address            => 'ny',
-            'favorite_color[]' => 'red',
-            'luky_number[]'    => 2,
-            'luky_number[]'    => 3,
-            'item.0.id'        => 11,
-            'item.1.id'        => 22,
-            'item.2.id'        => 33,
-            'item.0.name'      => 'aa',
-            'item.1.name'      => 'bb',
-            'item.2.name'      => 'cc',
-            iligal_param       => 'attack',
-        ]
-    );
-
-    eval { my $name = $fs->param('name') };
-    ok $@, 'right before validate';
-
-    $fs->validate;
-    is $fs->param('email'), 'a@b.c', 'right param';
-    is_deeply $fs->param('favorite_color[]'), ['red'], 'right every param';
-    is_deeply $fs->scope_param('item'),
-      [
-        {
-            id   => 11,
-            name => 'aa',
-        },
-        {
-            id   => 22,
-            name => 'bb',
-        },
-        {
-            id   => 33,
-            name => 'cc',
-        },
-      ],
-      'right scope param';
-    is $fs->param('iligal_param'), undef, 'right iligal param';
 };
 
 # This test should be done at the end!

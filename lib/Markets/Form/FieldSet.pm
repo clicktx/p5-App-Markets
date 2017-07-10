@@ -22,6 +22,17 @@ sub append {
 
 sub checks { shift->_get_data( shift, 'validations' ) }
 
+sub export_field {
+    my $self = shift;
+    my $class = ref $self || $self;
+
+    my $caller = $_[0] ? $_[0] =~ /::/ ? shift : caller : caller;
+    my @field_keys = @_ ? @_ : @{ $self->field_keys };
+
+    no strict 'refs';
+    ${"${caller}::schema"}{$_} = $class->schema($_) for @field_keys;
+}
+
 sub field_keys {
     my $self = shift;
     my $class = ref $self || $self;
@@ -67,6 +78,14 @@ sub import {
     tie %{"${caller}::schema"}, 'Tie::IxHash';
     monkey_patch $caller, 'has_field', sub { append( $caller, @_ ) };
     monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
+
+    return unless my $flag = shift;
+
+    # export_field
+    if ( $flag eq '-export_field' ) {
+        my $args = shift;
+        ref $args eq 'ARRAY' ? $class->export_field( $caller, @$args ) : $class->export_field($caller);
+    }
 }
 
 sub param {
@@ -99,16 +118,23 @@ sub remove {
     delete ${"${class}::schema"}{$field_key};
 }
 
-sub render_label {
-    my $self = shift;
-    my $name = shift;
+sub render_error {
+    my ( $self, $name ) = @_;
+    $self->field($name)->error_block( $self->controller );
+}
 
+sub render_help {
+    my ( $self, $name ) = @_;
+    $self->field($name)->help_block( $self->controller );
+}
+
+sub render_label {
+    my ( $self, $name ) = @_;
     $self->field($name)->label_for( $self->controller );
 }
 
 sub render {
-    my $self = shift;
-    my $name = shift;
+    my ( $self, $name ) = @_;
 
     my %attrs;
     my $value = $self->controller->req->params->param($name);
@@ -148,13 +174,13 @@ sub validate {
             my @match = grep { my $name = _replace_key($_); $field_key eq $name } @{$names};
             foreach my $key (@match) {
                 $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
-                _do_check( $v, $_ ) for @$checks;
+                $self->_do_check( $v, $_ ) for @$checks;
                 _replace_req_param( $self->controller, $v, $key );
             }
         }
         else {
             $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
-            _do_check( $v, $_ ) for @$checks;
+            $self->_do_check( $v, $_ ) for @$checks;
             _replace_req_param( $self->controller, $v, $field_key );
         }
     }
@@ -163,12 +189,15 @@ sub validate {
 }
 
 sub _do_check {
-    my $v = shift;
+    my $self = shift;
+    my $v    = shift;
 
-    my ( $check, $args ) = ref $_[0] ? %{ $_[0] } : ( $_[0], undef );
-    return $v->$check unless $args;
+    my ( $check, @args ) = ref $_[0] eq 'ARRAY' ? @{ $_[0] } : $_[0];
+    return $v->$check unless @args;
 
-    return ref $args eq 'ARRAY' ? $v->$check( @{$args} ) : $v->$check($args);
+    # scalar refference to preference value
+    @args = map { ref $_ eq 'SCALAR' ? $self->controller->pref( ${$_} ) : $_ } @args;
+    return $v->$check(@args);
 }
 
 sub _get_data {
@@ -219,8 +248,77 @@ Markets::Form::Field
         $c->render( text => 'validation failure');
     }
 
+=head1 SCHEMA
+
+    package Markets::Form::Type::Example;
+    use Mojo::Base -strict;
+    use Markets::Form::FieldSet;
+
+    has_field email => (
+        type          => 'email',
+        placeholder   => 'name@domain',
+        label         => 'E-mail',
+        default_value => 'a@b.com',
+        required      => 1,
+        filters       => [qw(trim)],
+        validations   => [],
+    );
+
+    has_field password => (
+        type        => 'password',
+        placeholder => 'your password',
+        label       => 'Password',
+        required      => 1,
+        filters     => [],
+        validations => [ { size => [ \'customer_password_min', \'customer_password_max' ] }, ],
+        help        => sub {
+            my $c = shift;
+            $c->__x(
+                'Must be {min}-{max} characters long.',
+                { min => $c->pref('customer_password_min'), max => $c->pref('customer_password_max') },
+            );
+        },
+    );
+
+    has_field password_again => (
+        type        => 'password',
+        placeholder => 'password again',
+        label       => 'Password Again',
+        required    => 1,
+        filters        => [],
+        validations    => [ { equal_to => 'password' } ],
+        help           => 'Type Password Again.',
+        error_messages => {
+            equal_to => 'The passwords you entered do not much.',
+        },
+    );
+
+=head2 C<validations>
+
+    validations => [ int, { size => [ 4, 8 ] }, ... ],
+
+Set array refference.
+If the method has arguments, it returns hash refference.
+
+    # Value from Preferences
+    validations => [ int, { size => [ \'password_min', \'password_max' ] }, ... ],
+
+Passing a scalar reffernce as an arguments to the validator method expands from preferences.
 
 =head1 DESCRIPTION
+
+=head1 IMPORT OPTIONS
+
+=head2 C<-export_field>
+
+    package Markets::Form::FieldSet::Hoge;
+    use Markets::Form::FieldSet::Base -export_field => [
+        'email', 'password'
+    ];
+
+    # Export all fields.
+    package Markets::Form::FieldSet::Hoge;
+    use Markets::Form::FieldSet::Base -export_field => 'all';
 
 =head1 ATTRIBUTES
 
@@ -264,6 +362,16 @@ Construct a new array-based L<Mojo::Collection> object.
     # Return hash refference
     # { field_key => [ 'validation1', 'validation2', ... ], field_key2 => [ 'validation1', 'validation2', ... ] }
     my $checks = $fieldset->checks;
+
+=head2 C<export_field>
+
+    use Markets::Form::FieldSet::Basic;
+
+    # 'email', 'password' exported.
+    Markets::Form::FieldSet::Basic->export_field(qw/email password/);
+
+    # All field exported.
+    Markets::Form::FieldSet::Basic->export_field();
 
 =head2 C<field_keys>
 
@@ -312,17 +420,29 @@ This method should be called after the "validate" method.
 
     $fieldset->remove('field_name');
 
+=head2 C<render_error>
+
+    $fieldset->render_error('email');
+
+If `$c->validation` has an error message it rendering HTML error message block.
+
+=head2 C<render_help>
+
+    $fieldset->render_help('email');
+
+Rendering HTML help block.
+
 =head2 C<render_label>
 
     $fieldset->render_label('email');
 
-Return code refference.
+Rendering HTML label tag.
 
 =head2 C<render>
 
     $fieldset->render('email');
 
-Return code refference.
+Rendering HTML form widget(field or fields).
 
 =head2 C<schema>
 

@@ -1,6 +1,22 @@
-package Markets::Form::CustomFilter;
-use Mojo::Base -base;
+package Markets::Form::Filter;
+use Mojo::Base 'Mojolicious::Plugin';
 
+sub register {
+    my ( $self, $app ) = @_;
+
+    $app->validator->add_filter( $_ => \&{ '_' . $_ } ) for qw(hoge);
+}
+
+sub _hoge {
+
+    # my ( $validation, $name, $value ) = @_;
+    # return $value;
+    'hoge';
+}
+
+1;
+__END__
+use Mojo::Base -base;
 # $Validate::Tiny::FILTERS{only_digits} = sub { _only_digits(@_) };
 # sub _only_digits {
 #     my $val = shift // return;

@@ -8,7 +8,8 @@ has_field email => (
     label       => 'E-mail',
     required    => 1,
     filters     => [qw(trim)],
-    validations => [ { size => [ 2, 5 ] }, { like => qr/.+@.+\..+/ } ],
+    validations => [ [ size => 2, 5 ], [ like => qr/.+@.+\..+/ ] ],
+    help        => 'Your email',
 );
 
 has_field name => (

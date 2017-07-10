@@ -39,6 +39,9 @@ sub initialize_app {
     my $home = $self->home;
     my $mode = $self->mode;
 
+    # Documentation browser under "/perldoc"
+    $self->plugin('PODRenderer') if $mode eq 'development';
+
     # SQL debug log
     # DBIx::QueryLog->threshold(0.1); # sec
     $DBIx::QueryLog::OUTPUT = sub {
@@ -68,7 +71,7 @@ sub initialize_app {
     $self->secrets( ['aaabbbccc'] );    #           change this!
 
     # locale
-    $ENV{MOJO_I18N_DEBUG} = $mode eq 'development' ? 1 : 0;
+    $ENV{MOJO_I18N_DEBUG} = 1 if $mode eq 'development';
     $self->plugin(
         'Markets::I18N',
         {
@@ -97,6 +100,7 @@ sub initialize_app {
     # Form Frameworks
     # $self->plugin( 'Markets::Form', methods => { valid => 'form_valid', errors => 'form_errors' } );
     # $self->plugin('Markets::FormExpand');
+    $self->plugin('Markets::Form');
 
     # Add before/after action hook
     # MEMO: Mojoliciou::Controllerの挙動を変更
