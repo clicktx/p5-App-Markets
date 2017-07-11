@@ -232,7 +232,7 @@ subtest 'validate with filter' => sub {
 
 # This test should be done at the end!
 subtest 'append/remove' => sub {
-    $fs->append( aaa => ( type => 'text' ) );
+    $fs->append_field( aaa => ( type => 'text' ) );
     my @field_keys = $fs->field_keys;
     is_deeply \@field_keys, [qw/email name address favorite_color luky_number item.[].id item.[].name aaa/],
       'right field_keys';

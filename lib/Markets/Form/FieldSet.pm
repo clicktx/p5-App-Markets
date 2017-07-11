@@ -12,7 +12,7 @@ use Markets::Form::Field;
 has controller => sub { Mojolicious::Controller->new };
 has 'is_validated';
 
-sub append {
+sub append_field {
     my ( $self, $field_key ) = ( shift, shift );
     return unless ( my $class = ref $self || $self ) && $field_key;
 
@@ -76,7 +76,7 @@ sub import {
     no warnings 'once';
     push @{"${caller}::ISA"}, $class;
     tie %{"${caller}::schema"}, 'Tie::IxHash';
-    monkey_patch $caller, 'has_field', sub { append( $caller, @_ ) };
+    monkey_patch $caller, 'has_field', sub { append_field( $caller, @_ ) };
     monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
 
     return unless my $flag = shift;
@@ -349,9 +349,9 @@ Construct a new array-based L<Mojo::Collection> object.
 
 =head1 METHODS
 
-=head2 C<append>
+=head2 C<append_field>
 
-    $fieldset->append( 'field_name' => ( %args ) );
+    $fieldset->append_field( 'field_name' => ( %args ) );
 
 =head2 C<checks>
 

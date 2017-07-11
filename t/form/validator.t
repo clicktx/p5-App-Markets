@@ -17,14 +17,14 @@ sub new_req {
 
 subtest 'required' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append( 'foo' => ( required => 1 ) );
+    $f->append_field( 'foo' => ( required => 1 ) );
     $v->input( { foo => undef } );
     $f->validate;
     is $v->error('foo')->[0], 'required', 'right invalid';
     ok $v->error_message('foo'), 'right error message';
 
     ( $c, $f, $v ) = new_req();
-    $f->append( 'foo' => () );
+    $f->append_field( 'foo' => () );
     $v->input( { foo => undef } );
     $f->validate;
     is $v->error('foo'), undef, 'right valid';
@@ -32,7 +32,7 @@ subtest 'required' => sub {
 
 subtest 'length' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append( 'foo' => ( validations => [ [ 'length' => 3, 5 ] ] ) );
+    $f->append_field( 'foo' => ( validations => [ [ 'length' => 3, 5 ] ] ) );
     $v->input( { foo => 'a' } );
     $f->validate;
     is $v->error('foo')->[0], 'length', 'right invalid';
@@ -48,7 +48,7 @@ subtest 'length' => sub {
     $f->validate;
     is $v->error('foo'), undef, 'right valid';
 
-    $f->append( 'foo' => ( validations => [ [ 'length' => 4 ] ] ) );
+    $f->append_field( 'foo' => ( validations => [ [ 'length' => 4 ] ] ) );
     ( $c, $f, $v ) = new_req();
     $v->input( { foo => 'a' } );
     $f->validate;
@@ -67,8 +67,8 @@ subtest 'length' => sub {
 
 subtest 'number' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append( 'foo' => ( validations => ['number'] ) );
-    $f->append( 'bar' => ( validations => ['number'] ) );
+    $f->append_field( 'foo' => ( validations => ['number'] ) );
+    $f->append_field( 'bar' => ( validations => ['number'] ) );
     $v->input( { foo => '1 000 000,00', bar => '5,5' } );
     $f->validate;
     is $v->error('foo')->[0], 'number', 'right invalid';
@@ -104,7 +104,7 @@ subtest 'number' => sub {
 
 subtest 'range' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append( 'foo' => ( validations => [ [ 'range' => 3, 5 ] ] ) );
+    $f->append_field( 'foo' => ( validations => [ [ 'range' => 3, 5 ] ] ) );
     $v->input( { foo => 2 } );
     $f->validate;
     is $v->error('foo')->[0], 'range', 'right invalid';
