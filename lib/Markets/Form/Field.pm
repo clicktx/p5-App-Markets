@@ -170,7 +170,7 @@ sub _error {
     my $message = ref $error_messages eq 'HASH' ? $error_messages->{$check} : '';
 
     # Default error message
-    if ( !$message ) { $message = $c->validation->error_message( $name ) || 'This field is invalid.' }
+    if ( !$message ) { $message = $c->validation->error_message($name) || 'This field is invalid.' }
 
     my %args;
     while ( my ( $i, $v ) = each @args ) { $args{$i} = $v }
@@ -228,7 +228,7 @@ sub _list_field {
     my $choices = shift;
     my %args    = @_;
 
-    delete $args{$_} for qw(id value);
+    delete $args{$_} for qw(value id);
     my %values = map { $_ => 1 } @{ $c->every_param( $args{name} ) };
 
     my $root_class;
@@ -239,18 +239,18 @@ sub _list_field {
             $root_class = 'form-choice-groups' unless $root_class;
 
             $label = $c->__($label);
-            my $content = join '',
-              map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %args ) ) } @$values;
-            $content = $c->tag( 'ul', class => 'form-choices', sub { $content } );
-            $groups .= $c->tag( 'li', class => 'form-choice-group', %attrs, sub { $label . $content } );
+            my $legend = $c->tag( 'legend', $label );
+            my $items = join '',
+              map { $c->tag( 'div', class => 'form-choice-item', _choice_field( $c, \%values, $_, %args ) ) } @$values;
+            $groups .= $c->tag( 'fieldset', class => 'form-choice-group', %attrs, sub { $legend . $items } );
         }
         else {
-            $root_class = 'form-choices' unless $root_class;
+            $root_class = 'form-choice-group' unless $root_class;
             my $row = _choice_field( $c, \%values, $group, %args );
-            $groups .= $c->tag( 'li', class => 'form-choice-item', sub { $row } );
+            $groups .= $c->tag( 'div', class => 'form-choice-item', sub { $row } );
         }
     }
-    return _validation( $c, $args{name}, 'ul', class => $root_class, sub { $groups } );
+    return _validation( $c, $args{name}, 'fieldset', class => $root_class, sub { $groups } );
 }
 
 sub _select {
