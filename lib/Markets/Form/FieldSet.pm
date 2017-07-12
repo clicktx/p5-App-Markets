@@ -53,7 +53,7 @@ sub field {
 
     no strict 'refs';
     my $attrs = $field_key ? ${"${class}::schema"}{$field_key} : {};
-    my $field = Markets::Form::Field->new( field_key => $field_key, name => $name, %{$args}, %{$attrs} );
+    my $field = Markets::Form::Field->new( field_key => $field_key, name => $name, %{$attrs}, %{$args} );
     $self->{_field}->{$cache_key} = $field;
     return $field;
 }
@@ -134,9 +134,8 @@ sub render_label {
 }
 
 sub render {
-    my ( $self, $name ) = @_;
+    my ( $self, $name, %attrs ) = @_;
 
-    my %attrs;
     my $value = $self->controller->req->params->param($name);
     $attrs{value} = $value if defined $value;
 
@@ -441,6 +440,7 @@ Rendering HTML label tag.
 =head2 C<render>
 
     $fieldset->render('email');
+    $fieldset->render('email', value => 'foo', placeholder => 'bar' );
 
 Rendering HTML form widget(field or fields).
 

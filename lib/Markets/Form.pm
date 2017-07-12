@@ -41,7 +41,7 @@ sub _form_render {
     my $self   = shift;
     my ( $form, $field_key ) = shift =~ /(.+?)\.(.+)/;
 
-    return _form_set( $self, $form )->$method($field_key, @_);
+    return _form_set( $self, $form )->$method( $field_key, @_ );
 }
 
 1;
@@ -108,6 +108,9 @@ L<Mojolicious::Plugin::TagHelpers> wrapper method.
 
     # Longer Version
     %= form_set('example')->render_widget('email')
+
+    # With attributes
+    %= form_widget('example.email', value => 'name@domain.com')
 
 Rendering tag from Markets::Form::Type::xxx.
 L<Mojolicious::Plugin::TagHelpers> wrapper method.

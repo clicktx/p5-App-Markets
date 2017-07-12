@@ -140,6 +140,20 @@ subtest 'render tags' => sub {
     is ref $fs->render_help('email'),  'Mojo::ByteStream', 'right render_help method';
     is ref $fs->render_label('email'), 'Mojo::ByteStream', 'right render_label method';
     is ref $fs->render('email'),       'Mojo::ByteStream', 'right render method';
+
+    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+};
+
+subtest 'render tags with attrs' => sub {
+    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    my $dom = Mojo::DOM->new( $fs->render('email') );
+    is_deeply $dom->at('*')->attr->{value},       undef,         'right value';
+    is_deeply $dom->at('*')->attr->{placeholder}, 'name@domain', 'right placeholder';
+
+    $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    $dom = Mojo::DOM->new( $fs->render( 'email', value => 'foo', placeholder => 'bar' ) );
+    is_deeply $dom->at('*')->attr->{value},       'foo', 'right value';
+    is_deeply $dom->at('*')->attr->{placeholder}, 'bar', 'right placeholder';
 };
 
 subtest 'schema' => sub {
