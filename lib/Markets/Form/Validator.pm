@@ -44,7 +44,7 @@ my $MESSAGES = {
     email    => '',
     equal_to => 'Please enter the same value again.',
     in       => 'Vaule is not a choice.',
-    int      => '',
+    int      => 'Please enter only integer.',
     length   => sub {
         return @_ > 1
           ? 'Please enter a value between {0} and {1} characters long.'
@@ -99,7 +99,10 @@ sub _decimal { }
 
 sub _email { }
 
-sub _int { }
+sub _int {
+    my ( $validation, $name, $value, @args ) = @_;
+    return FormValidator::Simple::Validator->INT( [$value], \@args ) ? undef : 1;
+}
 
 sub _length {
     my ( $validation, $name, $value, @args ) = @_;
@@ -319,6 +322,11 @@ Value needs to be between these two values.
 =head2 C<email>
 
 =head2 C<int>
+
+    $validation = $validation->int();
+
+Valid 1, -5
+Invalid 3.3, a
 
 =head2 C<length>
 

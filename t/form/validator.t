@@ -30,6 +30,25 @@ subtest 'required' => sub {
     is $v->error('foo'), undef, 'right valid';
 };
 
+subtest 'int' => sub {
+    my ( $c, $f, $v ) = new_req();
+    $f->append_field( 'foo' => ( validations => ['int'] ) );
+    $v->input( { foo => 'a' } );
+    $f->validate;
+    is $v->error('foo')->[0], 'int', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 3.2 } );
+    $f->validate;
+    is $v->error('foo')->[0], 'int', 'right invalid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 5 } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+};
+
 subtest 'length' => sub {
     my ( $c, $f, $v ) = new_req();
     $f->append_field( 'foo' => ( validations => [ [ 'length' => 3, 5 ] ] ) );
