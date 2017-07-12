@@ -140,4 +140,28 @@ subtest 'range' => sub {
     is $v->error('foo'), undef, 'right valid';
 };
 
+subtest 'uint' => sub {
+    my ( $c, $f, $v ) = new_req();
+    $f->append_field( 'foo' => ( validations => ['uint'] ) );
+    $v->input( { foo => 'a' } );
+    $f->validate;
+    is $v->error('foo')->[0], 'uint', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 3.2 } );
+    $f->validate;
+    is $v->error('foo')->[0], 'uint', 'right invalid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => -5 } );
+    $f->validate;
+    is $v->error('foo')->[0], 'uint', 'right invalid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 5 } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+};
+
 done_testing();

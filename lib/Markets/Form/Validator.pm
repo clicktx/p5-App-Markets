@@ -54,7 +54,7 @@ my $MESSAGES = {
     number   => 'Invalid way to divide numbers.',
     time     => '',
     size     => 'Please enter a value between {0} and {1} characters long.',
-    uint     => '',
+    uint     => 'Please enter only unsigined integer.',
     upload   => 'This field is invelid.',
     url      => '',
     required => 'This field is required.',
@@ -119,7 +119,10 @@ sub _number {
 
 sub _time { }
 
-sub _uint { }
+sub _uint {
+    my ( $validation, $name, $value, @args ) = @_;
+    return FormValidator::Simple::Validator->UINT( [$value], \@args ) ? undef : 1;
+}
 
 sub _url { }
 
@@ -344,6 +347,11 @@ Alias L</between> method.
 =head2 C<time>
 
 =head2 C<uint>
+
+    $validation = $validation->uint();
+
+Valid 1, 123
+Invalid 3.3, a, -5
 
 =head2 C<url>
 
