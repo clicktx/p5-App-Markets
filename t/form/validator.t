@@ -30,6 +30,34 @@ subtest 'required' => sub {
     is $v->error('foo'), undef, 'right valid';
 };
 
+subtest 'ascii' => sub {
+    my ( $c, $f, $v ) = new_req();
+    $f->append_field( 'foo' => ( validations => ['ascii'] ) );
+    $v->input( { foo => 'あ' } );
+    $f->validate;
+    is $v->error('foo')->[0], 'ascii', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
+};
+
+subtest 'int' => sub {
+    my ( $c, $f, $v ) = new_req();
+    $f->append_field( 'foo' => ( validations => ['int'] ) );
+    $v->input( { foo => 'a' } );
+    $f->validate;
+    is $v->error('foo')->[0], 'int', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 3.2 } );
+    $f->validate;
+    is $v->error('foo')->[0], 'int', 'right invalid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 5 } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+};
+
 subtest 'length' => sub {
     my ( $c, $f, $v ) = new_req();
     $f->append_field( 'foo' => ( validations => [ [ 'length' => 3, 5 ] ] ) );
@@ -117,6 +145,30 @@ subtest 'range' => sub {
 
     ( $c, $f, $v ) = new_req();
     $v->input( { foo => 3 } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+};
+
+subtest 'uint' => sub {
+    my ( $c, $f, $v ) = new_req();
+    $f->append_field( 'foo' => ( validations => ['uint'] ) );
+    $v->input( { foo => 'a' } );
+    $f->validate;
+    is $v->error('foo')->[0], 'uint', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 3.2 } );
+    $f->validate;
+    is $v->error('foo')->[0], 'uint', 'right invalid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => -5 } );
+    $f->validate;
+    is $v->error('foo')->[0], 'uint', 'right invalid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 5 } );
     $f->validate;
     is $v->error('foo'), undef, 'right valid';
 };
