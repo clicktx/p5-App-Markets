@@ -3,11 +3,16 @@
 
 <h1><%= title %></h1>
 
-<%= form_for 'RN_admin_preferences_update' => begin %>
+<%= form_for 'RN_admin_preferences' => ( method => 'POST' ) => begin %>
     <% $preferences->each( sub { %>
         <div class="">
-            <%= $a %>
-            <%= text_field "pref.$a", value => $b->value, placeholder => $b->default_value %>
+            % my $name = 'admin-preference.' . $a;
+            <%= label_for $a => __($b->title) %>
+            <%= form_widget($name, value => $b->value, placeholder => $b->default_value ) %>
+            <%= form_error($name) %>
+        </div>
+        <div class="">
+            <%= __($b->summary) %>
         </div>
     <% }); %>
     <%= csrf_field %>

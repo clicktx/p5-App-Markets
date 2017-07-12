@@ -4,7 +4,31 @@ use CGI::Expand qw/expand_hash/;
 
 sub index {
     my $self = shift;
-    $self->render( preferences => $self->pref->items );
+
+    $self->stash( preferences => $self->pref->items );
+
+    my $validation = $self->validation;
+    $self->render() unless $validation->has_data;
+
+    use DDP;
+    my $form = $self->form_set('admin-preference');
+    if ( $form->validate ) {
+
+        # NOTE :
+        # filter後の値は$validation->outputに格納されるため、
+        # DBに保存する値は$validation->param('name')を使う必要がある
+
+        # $form->param('name') で取得出来るようにする？
+        # expand_hashの扱いはどうするか？
+        # every_paramの扱いはどうするか？ name[] [name] 必ずarray_ref？（checkbox,select multiple）
+        p $validation;
+    }
+    else {
+        say 'validation failure!';
+        p $validation;
+    }
+
+    $self->render();
 }
 
 sub update {
