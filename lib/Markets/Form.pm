@@ -12,11 +12,11 @@ sub register {
     $app->plugin($_) for qw(Markets::Form::Filter Markets::Form::Validator);
 
     # Helpers
-    $app->helper( form_error  => sub { _form_render( @_, 'render_error' ) } );
-    $app->helper( form_help   => sub { _form_render( @_, 'render_help' ) } );
-    $app->helper( form_label  => sub { _form_render( @_, 'render_label' ) } );
+    $app->helper( form_error  => sub { _form_render( 'render_error', @_ ) } );
+    $app->helper( form_help   => sub { _form_render( 'render_help',  @_ ) } );
+    $app->helper( form_label  => sub { _form_render( 'render_label', @_ ) } );
     $app->helper( form_set    => sub { _form_set(@_) } );
-    $app->helper( form_widget => sub { _form_render( @_, 'render' ) } );
+    $app->helper( form_widget => sub { _form_render( 'render',       @_ ) } );
 }
 
 sub _form_set {
@@ -37,10 +37,11 @@ sub _form_set {
 }
 
 sub _form_render {
-    my $self = shift;
-    my ( $form, $field_key ) = shift =~ /(.+?)\.(.+)/;
     my $method = shift;
-    return _form_set( $self, $form )->$method($field_key);
+    my $self   = shift;
+    my ( $form, $field_key ) = shift =~ /(.+?)\.(.+)/;
+
+    return _form_set( $self, $form )->$method($field_key, @_);
 }
 
 1;
