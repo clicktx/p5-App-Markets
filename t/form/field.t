@@ -231,8 +231,8 @@ subtest 'choice' => sub {
     $f->expanded(1);
     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 0 ], 'cn' ] );
     $dom = Mojo::DOM->new( $f->choice($c) );
-    is_deeply $dom->at('ul')->attr, { class => 'form-choices' },     'right class';
-    is_deeply $dom->at('li')->attr, { class => 'form-choice-item' }, 'right class';
+    is_deeply $dom->at('fieldset')->attr, { class => 'form-choice-group' }, 'right class';
+    is_deeply $dom->at('div')->attr,      { class => 'form-choice-item' },  'right class';
     $input = $dom->find('input');
     is_deeply $input->[1]->attr, { name => 'country', type => 'radio', value => 'de' }, 'right type is radio';
 
@@ -243,16 +243,16 @@ subtest 'choice' => sub {
 
     $f->choices( [ c( EU => [ 'de', 'en' ], class => 'test-class' ) ] );
     $dom = Mojo::DOM->new( $f->choice($c) );
-    is_deeply $dom->at('li')->attr, { class => 'test-class' }, 'right class';
+    is_deeply $dom->at('fieldset fieldset')->attr, { class => 'test-class' }, 'right class';
 
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
     $dom = Mojo::DOM->new( $f->choice($c) );
-    is_deeply $dom->at('ul')->attr, { class => 'form-choice-groups' }, 'right class';
-    is_deeply $dom->at('li')->attr, { class => 'form-choice-group' },  'right class';
+    is_deeply $dom->at('fieldset')->attr,          { class => 'form-choice-groups' }, 'right class';
+    is_deeply $dom->at('fieldset fieldset')->attr, { class => 'form-choice-group' },  'right class';
     my $child;
-    $child = $dom->at('ul')->child_nodes;
-    is $child->[0]->text, 'ヨーロッパ', 'right group label';
-    is $child->[1]->text, 'アジア',       'right group label';
+    $child = $dom->at('fieldset')->child_nodes;
+    is $child->[0]->at('legend')->text, 'ヨーロッパ', 'right group legend';
+    is $child->[1]->at('legend')->text, 'アジア',       'right group legend';
     $input = $dom->find('input');
     is_deeply $input->[3]->attr, { checked => undef, name => 'country', type => 'radio', value => 'jp' }, 'right attr';
 
@@ -287,7 +287,7 @@ subtest 'field-with-error' => sub {
 
     $c->validation->error( 'country.0.id[]' => ['custom_check'] );
     $dom = Mojo::DOM->new( $f->choice($c) );
-    ok $dom->find('ul.field-with-error')->size, 'right class';
+    ok $dom->find('fieldset.field-with-error')->size, 'right class';
 };
 
 subtest 'help_block' => sub {

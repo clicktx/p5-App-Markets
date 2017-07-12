@@ -170,7 +170,7 @@ sub _error {
     my $message = ref $error_messages eq 'HASH' ? $error_messages->{$check} : '';
 
     # Default error message
-    if ( !$message ) { $message = $c->validation->error_message( $name ) || 'This field is invalid.' }
+    if ( !$message ) { $message = $c->validation->error_message($name) || 'This field is invalid.' }
 
     my %args;
     while ( my ( $i, $v ) = each @args ) { $args{$i} = $v }
@@ -228,7 +228,7 @@ sub _list_field {
     my $choices = shift;
     my %args    = @_;
 
-    delete $args{$_} for qw(id value);
+    delete $args{$_} for qw(value id);
     my %values = map { $_ => 1 } @{ $c->every_param( $args{name} ) };
 
     my $root_class;
@@ -239,18 +239,18 @@ sub _list_field {
             $root_class = 'form-choice-groups' unless $root_class;
 
             $label = $c->__($label);
-            my $content = join '',
-              map { $c->tag( 'li', class => 'form-choice-item', _choice_field( $c, \%values, $_, %args ) ) } @$values;
-            $content = $c->tag( 'ul', class => 'form-choices', sub { $content } );
-            $groups .= $c->tag( 'li', class => 'form-choice-group', %attrs, sub { $label . $content } );
+            my $legend = $c->tag( 'legend', $label );
+            my $items = join '',
+              map { $c->tag( 'div', class => 'form-choice-item', _choice_field( $c, \%values, $_, %args ) ) } @$values;
+            $groups .= $c->tag( 'fieldset', class => 'form-choice-group', %attrs, sub { $legend . $items } );
         }
         else {
-            $root_class = 'form-choices' unless $root_class;
+            $root_class = 'form-choice-group' unless $root_class;
             my $row = _choice_field( $c, \%values, $group, %args );
-            $groups .= $c->tag( 'li', class => 'form-choice-item', sub { $row } );
+            $groups .= $c->tag( 'div', class => 'form-choice-item', sub { $row } );
         }
     }
-    return _validation( $c, $args{name}, 'ul', class => $root_class, sub { $groups } );
+    return _validation( $c, $args{name}, 'fieldset', class => $root_class, sub { $groups } );
 }
 
 sub _select {
@@ -379,17 +379,17 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     say $f->choice($c);
 
     # HTML
-    <ul class="form-choices">
-        <li class="form-choice-item">
+    <fieldset class="form-choice-group">
+        <div class="form-choice-item">
             <label><input name="country" type="radio" value="jp">Japan</label>
-        </li>
-        <li class="form-choice-item">
-            <label><input checked name="country" type="radio" value="de">Germany</label>
-        </li>
-        <li class="form-choice-item">
+        </div>
+        <div class="form-choice-item">
+            <label><input name="country" type="radio" value="de">Germany</label>
+        </div>
+        <div class="form-choice-item">
             <label><input name="country" type="radio" value="cn">cn</label>
-        </li>
-    </ul>
+        </div>
+    </fieldset>
 
     # Check box
     my $f = Markets::Form::Field->new( name => 'country[]' );
@@ -399,45 +399,43 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     say $f->choice($c);
 
     # HTML
-    <ul class="form-choices">
-        <li class="form-choice-item">
+    <fieldset class="form-choice-group">
+        <div class="form-choice-item">
             <label><input name="country[]" type="checkbox" value="jp">Japan</label>
-        </li>
-        <li class="form-choice-item">
-            <label><input checked name="country[]" type="checkbox" value="de">Germany</label>
-        </li>
-        <li class="form-choice-item">
+        </div>
+        <div class="form-choice-item">
+            <label><input name="country[]" type="checkbox" value="de">Germany</label>
+        </div>
+        <div class="form-choice-item">
             <label><input name="country[]" type="checkbox" value="cn">cn</label>
-        </li>
-    </ul>
+        </div>
+    </fieldset>
 
     # Group choices
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
     say $f->choice($c);
 
     # HTML
-    <ul class="form-choice-groups">
-        <li class="form-choice-group">EU
-            <ul class="form-choices">
-                <li class="form-choice-item">
-                    <label><input name="country[]" type="checkbox" value="de">de</label>
-                </li>
-                <li class="form-choice-item">
-                    <label><input name="country[]" type="checkbox" value="en">en</label>
-                </li>
-            </ul>
-        </li>
-        <li class="form-choice-group">Asia
-            <ul class="form-choices">
-                <li class="form-choice-item">
-                    <label><input name="country[]" type="checkbox" value="cn">China</label>
-                </li>
-                <li class="form-choice-item">
-                    <label><input checked name="country[]" type="checkbox" value="jp">Japan</label>
-                </li>
-            </ul>
-        </li>
-    </ul>
+    <fieldset class="form-choice-groups">
+        <fieldset class="form-choice-group">
+            <legend>EU</legend>
+            <div class="form-choice-item">
+                <label><input name="country[]" type="checkbox" value="de">de</label>
+            </div>
+            <div class="form-choice-item">
+                <label><input name="country[]" type="checkbox" value="en">en</label>
+            </div>
+        </fieldset>
+        <fieldset class="form-choice-group">
+            <legend>Asia</legend>
+            <div class="form-choice-item">
+                <label><input name="country[]" type="checkbox" value="cn">China</label>
+            </div>
+            <div class="form-choice-item">
+                <label><input checked name="country[]" type="checkbox" value="jp">Japan</label>
+            </div>
+        </fieldset>
+    </fieldset>
 
 In case of C<multiple>, it is necessary to add "[]" after the field name.
 This field always has multiple values.
