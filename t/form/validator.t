@@ -30,6 +30,15 @@ subtest 'required' => sub {
     is $v->error('foo'), undef, 'right valid';
 };
 
+subtest 'ascii' => sub {
+    my ( $c, $f, $v ) = new_req();
+    $f->append_field( 'foo' => ( validations => ['ascii'] ) );
+    $v->input( { foo => 'あ' } );
+    $f->validate;
+    is $v->error('foo')->[0], 'ascii', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
+};
+
 subtest 'int' => sub {
     my ( $c, $f, $v ) = new_req();
     $f->append_field( 'foo' => ( validations => ['int'] ) );

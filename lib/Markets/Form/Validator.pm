@@ -36,7 +36,7 @@ our $NUMBER_RE = {
 
 # Message for Mojolicious::Validator default validators
 my $MESSAGES = {
-    ascii    => '',
+    ascii    => 'Please enter only as ASCII.',
     between  => 'Please enter a value between {0} and {1}.',
     date     => '',
     datetime => '',
@@ -84,7 +84,10 @@ sub register {
     $app->validator->add_check( number => sub { _number( $country, @_ ) } );
 }
 
-sub _ascii { }
+sub _ascii {
+    my ( $validation, $name, $value, @args ) = @_;
+    return FormValidator::Simple::Validator->ASCII( [$value], \@args ) ? undef : 1;
+}
 
 sub _between {
     my ( $validation, $name, $value, @args ) = @_;
@@ -309,10 +312,13 @@ These validation checks are available.
 
 =head2 C<ascii>
 
+    $validation = $validation->ascii();
+
 =head2 C<between>
 
-  # Valid 2 or 3 or 4 or 5
-  $validation = $validation->between(2, 5);
+    $validation = $validation->between(2, 5);
+
+    # valid 2 or 3 or 4 or 5
 
 Value needs to be between these two values.
 
@@ -328,19 +334,34 @@ Value needs to be between these two values.
 
     $validation = $validation->int();
 
-Valid 1, -5
-Invalid 3.3, a
+    # valid   1, -5
+    # invalid 3.3, a
 
 =head2 C<length>
 
-  $validation = $validation->length(2, 5);
-  $validation = $validation->length(3);
+    $validation = $validation->length(2, 5);
+    $validation = $validation->length(3);
 
 String value length in bytes needs to be between these two values.
 
+=head2 C<number>
+
+    $validation = $validation->number();
+
+It will be affected by application preferences C<locale-country>.
+
+    # e.g. locale-country: US
+
+    # valid
+    # 1,000,000.50
+
+    # invalid
+    # 1.000.000,50
+    # 1 000 000,50
+
 =head2 C<range>
 
-  $validation = $validation->range(2, 5);
+    $validation = $validation->range(2, 5);
 
 Alias L</between> method.
 
@@ -350,8 +371,8 @@ Alias L</between> method.
 
     $validation = $validation->uint();
 
-Valid 1, 123
-Invalid 3.3, a, -5
+    # valid     1, 123
+    # invalid   3.3, a, -5
 
 =head2 C<url>
 
