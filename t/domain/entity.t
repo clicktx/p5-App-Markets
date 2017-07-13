@@ -121,34 +121,52 @@ subtest 'is_modified' => sub {
     $e = $make_entity->();
     is $e->is_modified, 0;
 
-    $e->{b} = 2;
+    $e->{b} = 2;    # bad setter
     is $e->is_modified, 0;
 
     $e->a(2);
     is $e->is_modified, 1;
 
     # Entity
-    $e = $make_entity->();
-    $e->e->x(2);
-    is $e->is_modified, 1;
+    subtest 'has entity' => sub {
+        $e = $make_entity->();
+        $e->e->x(2);
+        is $e->is_modified, 1;
+
+        # reset modified
+        $e->reset_modified;
+        is $e->is_modified, 0;
+    };
 
     # Collection
-    $e = $make_entity->();
-    $e->c->[0]->y(2);
-    is $e->is_modified, 1;
+    subtest 'has collection' => sub {
+        $e = $make_entity->();
+        $e->c->[0]->y(2);
+        is $e->is_modified, 1;
 
-    $e = $make_entity->();
-    $e->c->[1]->e->z(2);
-    is $e->is_modified, 1;
+        $e = $make_entity->();
+        $e->c->[1]->e->z(2);
+        is $e->is_modified, 1;
+
+        # reset modified
+        $e->reset_modified;
+        is $e->is_modified, 0;
+    };
 
     # IxHash
-    $e = $make_entity->();
-    $e->d->aa->f(2);
-    is $e->is_modified, 1;
+    subtest 'has IxHash' => sub {
+        $e = $make_entity->();
+        $e->d->aa->f(2);
+        is $e->is_modified, 1;
 
-    $e = $make_entity->();
-    $e->d->aa->g(2);
-    is $e->is_modified, 1;
+        $e = $make_entity->();
+        $e->d->aa->g(2);
+        is $e->is_modified, 1;
+
+        # reset modified
+        $e->reset_modified;
+        is $e->is_modified, 0;
+    };
 };
 
 done_testing();
