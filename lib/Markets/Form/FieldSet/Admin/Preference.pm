@@ -23,12 +23,12 @@ has_field 'shop_name' => (
 );
 
 has_field 'customer_password_min' => (
-    type        => 'text',
+    type        => 'number',
     validations => ['int'],
 );
 
 has_field 'customer_password_max' => (
-    type        => 'text',
+    type        => 'number',
     validations => ['int'],
 );
 
