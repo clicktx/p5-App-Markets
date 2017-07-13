@@ -239,9 +239,13 @@ Markets::Form::Field
     ...
 
     # In controller
-    my $fieldset = $c->form_set('user');
+    my $form = $c->form_set('user');
 
-    if ( $fieldset->validate ){
+    if ( $form->validate ){
+
+        # Get validated parameters
+        my $params = $form->params;
+
         $c->render( text => 'thanks');
     } else {
         $c->render( text => 'validation failure');
@@ -470,5 +474,7 @@ Get expanded parameter. SEE L<CGI::Expand/expand_hash>
 Return boolean. success return true.
 
 =head1 SEE ALSO
+
+L<Markets::Form>, L<Markets::Form::Field>
 
 =cut

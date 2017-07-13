@@ -68,7 +68,15 @@ L<Markets::Form> implements the following helpers.
 
 =head2 C<form_set>
 
+    # Markets::Form::FieldSet::Example
     my $form_set = $c->form_set('example');
+
+    # Markets::Form::FieldSet::Admin::Example
+    my $form_set = $c->form_set('admin-example');
+
+Return L<Markets::Form::FieldSet> object.
+
+Namespace C<Markets::Form::FieldSet::*>
 
 =head1 TAG HELPERS
 
@@ -128,6 +136,6 @@ Register helpers in L<Mojolicious> application.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin>
+L<Markets::Form::FieldSet>, L<Markets::Form::Field>, L<Mojolicious::Plugin>
 
 =cut
