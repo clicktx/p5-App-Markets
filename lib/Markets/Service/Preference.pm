@@ -42,6 +42,8 @@ sub store {
 
     try { $self->app->schema->txn_do($cb) }
     catch { $self->app->error_log->error("Don't update preference. "); return };
+
+    $pref->reset_modified;
     return 1;
 }
 
