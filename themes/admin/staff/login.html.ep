@@ -6,7 +6,7 @@
 
 <p>
     <%= form_for 'RN_admin_login_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
-        Admin ID <%= text_field customer_id => 'defaulte' %>
+        Admin ID <%= text_field staff_id => 'defaulte' %>
         Password <%= password_field 'password' %>
         <%= csrf_field %>
         <%= submit_button 'ok' %>
