@@ -14,6 +14,17 @@ has server_session => sub {
     return $server_session;
 };
 
+sub admin_loged_in {
+    my $self = shift;
+
+    my $post_data = {
+        staff_id   => 'xxx',
+        password   => 'xxx',
+        csrf_token => $self->csrf_token,
+    };
+    $self->t->ua->post( '/admin/login', form => $post_data );
+}
+
 sub startup : Test(startup) {
     my $self = shift;
 
