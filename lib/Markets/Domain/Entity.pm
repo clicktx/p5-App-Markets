@@ -31,28 +31,26 @@ sub is_modified {
     my $self = shift;
 
     # Setter
-    return $self->_is_modified( $_[0] ? 1 : 0 ) if @_;
+    if (@_) {
+        return $_[0] ? $self->_is_modified(1) : $self->reset_modified;
+    }
 
     # Getter
     return 1 if $self->_is_modified;
 
     # Recursive call for attributes
     my $is_modified = 0;
-    foreach my $attr ( keys %{$self} ) {
-        next if !$self->can($attr);
-        next if !Scalar::Util::blessed( $self->$attr );
-
-        if ( $self->$attr->isa('Markets::Domain::Entity') ) {
-            $is_modified = 1 if $self->$attr->is_modified;
-        }
-        elsif ( $self->$attr->isa('Markets::Domain::Collection') ) {
-            $self->$attr->each( sub { $is_modified = 1 if $_->is_modified } );
-        }
-        elsif ( $self->$attr->isa('Markets::Domain::IxHash') ) {
-            $self->$attr->each( sub { $is_modified = 1 if $_[1]->is_modified } );
-        }
-    }
+    $self->_recursive_call( sub { $is_modified = 1 if shift->is_modified } );
     return $is_modified;
+}
+
+sub reset_modified {
+    my $self = shift;
+    $self->_is_modified(0);
+
+    # Recursive call for attributes
+    $self->_recursive_call( sub { shift->reset_modified } );
+    return 0;
 }
 
 sub to_array {
@@ -81,6 +79,24 @@ sub to_hash {
 
     delete $hash{$_} for @needless_attrs;
     return \%hash;
+}
+
+sub _recursive_call {
+    my ( $self, $cb ) = @_;
+    foreach my $attr ( keys %{$self} ) {
+        next if !$self->can($attr);
+        next if !Scalar::Util::blessed( $self->$attr );
+
+        if ( $self->$attr->isa('Markets::Domain::Entity') ) {
+            $cb->( $self->$attr );
+        }
+        elsif ( $self->$attr->isa('Markets::Domain::Collection') ) {
+            $self->$attr->each( sub { $cb->($_) } );
+        }
+        elsif ( $self->$attr->isa('Markets::Domain::IxHash') ) {
+            $self->$attr->each( sub { $cb->($b) } );
+        }
+    }
 }
 
 1;
@@ -131,10 +147,21 @@ Return boolean value.
 
 =head2 C<is_modified>
 
+    # Getter
     my $bool = $entity->is_modified;
+    say 'Entity is modified!' if $bool;
+
+    # Setter
     $entity->is_modified($bool);
 
 Return boolean value.
+
+=head2 C<reset_modified>
+
+    $entity->reset_modified;
+
+Reset modified flag.
+Recursively reset all entities to keep.
 
 =head2 C<to_array>
 
