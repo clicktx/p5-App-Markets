@@ -21,7 +21,7 @@ my $f = Markets::Form::Field->new(
 
 subtest 'label' => sub {
     my $dom = Mojo::DOM->new( $f->label_for($c) );
-    is_deeply $dom->at('*')->attr, { for => 'item_0_name' }, 'right attr';
+    is_deeply $dom->at('*')->attr, { for => 'form_widget_item_0_name' }, 'right attr';
     is $dom->at('*')->text, 'label text', 'right text';
 };
 
@@ -32,7 +32,7 @@ subtest 'input basic' => sub {
         is_deeply $dom->at('*')->attr,
           {
             type        => $type,
-            id          => 'item_0_name',
+            id          => 'form_widget_item_0_name',
             name        => 'item.0.name',
             placeholder => 'example',
             required    => undef,
@@ -46,7 +46,7 @@ subtest 'input basic' => sub {
     is_deeply $dom->at('*')->attr,
       {
         type        => 'password',
-        id          => 'item_0_name',
+        id          => 'form_widget_item_0_name',
         name        => 'item.0.name',
         placeholder => 'example',
         required    => undef,
@@ -62,7 +62,7 @@ subtest 'input other' => sub {
         is_deeply $dom->at('*')->attr,
           {
             type     => $type,
-            id       => 'item_0_name',
+            id       => 'form_widget_item_0_name',
             name     => 'item.0.name',
             required => undef,
             value    => 'sss',
@@ -75,7 +75,7 @@ subtest 'input other' => sub {
     is_deeply $dom->at('*')->attr,
       {
         type     => 'datetime-local',
-        id       => 'item_0_name',
+        id       => 'form_widget_item_0_name',
         name     => 'item.0.name',
         required => undef,
         value    => 'sss',
@@ -87,7 +87,7 @@ subtest 'input other' => sub {
     is_deeply $dom->at('*')->attr,
       {
         type     => 'file',
-        id       => 'item_0_name',
+        id       => 'form_widget_item_0_name',
         name     => 'item.0.name',
         required => undef,
       },
@@ -111,7 +111,7 @@ subtest 'textarea' => sub {
     );
     my $dom = Mojo::DOM->new( $f->textarea($c) );
     is $dom->at('*')->tag, 'textarea', 'right tag';
-    is_deeply $dom->at('*')->attr, { id => 'order_note', name => 'order.note', cols => 40 }, 'right textarea';
+    is_deeply $dom->at('*')->attr, { id => 'form_widget_order_note', name => 'order.note', cols => 40 }, 'right textarea';
     is $dom->at('*')->text, 'default text', 'right text';
 };
 
@@ -153,12 +153,12 @@ subtest 'select' => sub {
     my $dom;
     $dom = Mojo::DOM->new( $f->select($c) );
     is $dom->at('*')->tag, 'select', 'right tag';
-    is_deeply $dom->at('*')->attr, { id => 'country', name => 'country' }, 'right attr';
+    is_deeply $dom->at('*')->attr, { id => 'form_widget_country', name => 'country' }, 'right attr';
 
     my $child;
     $f->choices( [ 'de', 'en' ] );
     $dom = Mojo::DOM->new( $f->select($c) );
-    is_deeply $dom->at('select')->attr, { id => 'country', name => 'country' }, 'right attr';
+    is_deeply $dom->at('select')->attr, { id => 'form_widget_country', name => 'country' }, 'right attr';
     $child = $dom->at('select')->child_nodes;
     is @{$child}[0]->text, 'de', 'right text';
     is_deeply @{$child}[0]->attr, { value => 'de' }, 'right attr';
