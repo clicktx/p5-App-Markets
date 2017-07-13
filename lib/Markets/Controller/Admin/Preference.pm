@@ -22,6 +22,13 @@ sub index {
         # expand_hashの扱いはどうするか？
         # every_paramの扱いはどうするか？ name[] [name] 必ずarray_ref？（checkbox,select multiple）
         p $validation;
+
+        for my $name ( @{ $form->params->names } ) {
+            say $name, $form->param($name);
+            $self->pref( $name => $form->param($name) );
+        }
+        p $self->pref('customer_password_max');
+        say $self->pref->is_modified;
     }
     else {
         say 'validation failure!';
