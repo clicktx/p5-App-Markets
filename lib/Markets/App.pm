@@ -45,7 +45,7 @@ sub startup {
       for qw(Markets::View::EPRenderer Markets::View::EPLRenderer Markets::View::DOM);
 
     # Initialize all addons
-    my $installed_addons = $self->model('addon')->configure;
+    my $installed_addons = $self->schema->resultset('addon')->configure;
     $self->addons->init($installed_addons) unless $ENV{MOJO_ADDON_TEST_MODE};
 
     # Routes
