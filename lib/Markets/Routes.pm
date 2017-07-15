@@ -15,31 +15,31 @@ sub register {
 sub add_admin_routes {
     my ( $self, $app ) = @_;
 
-    my $r = $app->routes->any( $app->pref('admin_uri_prefix') )->to( namespace => 'Markets::Controller::Admin' );
+    my $r = $app->routes->any( $app->pref('admin_uri_prefix') )->to( namespace => 'Markets::Controller' );
 
     # Not required authorization Routes
     {
-        my $login = $r->any('login')->to( controller => 'staff' );
+        my $login = $r->any('login')->to( controller => 'admin-staff' );
         $login->get('/')->to('#login')->name('RN_admin_login');
         $login->post('/')->to('#login_authen')->name('RN_admin_login_authen');
     }
 
     # Required authorization Routes
-    $r = $r->under->to('staff#authorize')->name('RN_admin_bridge');
+    $r = $r->under->to('admin-staff#authorize')->name('RN_admin_bridge');
     {
         # Dashboard
         $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
-        $r->get('/dashboard')->to('dashboard#index')->name('RN_admin_dashboard');
+        $r->get('/dashboard')->to('admin-dashboard#index')->name('RN_admin_dashboard');
 
         # Logout
-        $r->get('/logout')->to('staff#logout')->name('RN_admin_logout');
+        $r->get('/logout')->to('admin-staff#logout')->name('RN_admin_logout');
 
         # Settings
         {
-            my $settings = $r->any('/settings')->to( controller => 'setting' );
+            my $settings = $r->any('/settings')->to( controller => 'admin-setting' );
             $settings->get('/')->to('#index')->name('RN_admin_settings');
             {
-                my $addons = $settings->any('/addon')->to( controller => 'addon' );
+                my $addons = $settings->any('/addon')->to( controller => 'admin-addon' );
                 $addons->get('/:action')->to('addon#')->name('RN_admin_settings_addon_action');
                 $addons->get('/')->to('#index')->name('RN_admin_settings_addon');
             }
@@ -47,9 +47,8 @@ sub add_admin_routes {
 
         # Preferences
         {
-            my $pref = $r->any('/preferences')->to( controller => 'preference' );
+            my $pref = $r->any('/preferences')->to( controller => 'admin-preference' );
             $pref->any('/')->to('#index')->name('RN_admin_preferences');
-            $pref->post('/')->to('#update')->name('RN_admin_preferences_update');
         }
 
         # Products
@@ -57,7 +56,7 @@ sub add_admin_routes {
 
         # Orders
         {
-            my $orders = $r->any('/orders')->to( controller => 'order' );
+            my $orders = $r->any('/orders')->to( controller => 'admin-order' );
             $orders->get('/')->to('#index')->name('RN_admin_orders');
             $orders->get('/detail/:id')->to('#detail')->name('RN_admin_orders_detail');
             $orders->get('/edit/:id')->to('#edit')->name('RN_admin_orders_edit');
@@ -75,7 +74,6 @@ sub add_catalog_routes {
     $r->get('/')->to('example#welcome')->name('RN_top');
     $r->get('/regenerate_sid')->to('example#regenerate_sid');
     $r->any('/login_example')->to('login_example#index');
-    # $r->post('/login_example/attempt')->to('login_example#attempt');
 
     # Cart
     $r->get('/cart')->to('cart#index')->name('RN_cart');
