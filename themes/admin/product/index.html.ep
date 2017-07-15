@@ -6,6 +6,11 @@
 <h2><%= __('Products') %></h2>
 
 <ul>
-    <li><%= link_to __('Product') => 'RN_admin_products_product' %></li>
+    <li><%= link_to __('Add New Product') => 'RN_admin_products_product' %></li>
     <li><%= link_to __('Category') => 'RN_admin_products_category' %></li>
 </ul>
+
+<%= form_for 'RN_admin_products' => ( method => 'GET' ) => begin %>
+    <%= form_widget 'admin-product.keywords' %>
+    <%= submit_button __('Search') %>
+<% end %>
