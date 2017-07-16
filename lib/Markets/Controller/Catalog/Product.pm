@@ -3,7 +3,11 @@ use Mojo::Base 'Markets::Controller::Catalog';
 
 sub index {
     my $self = shift;
-    $self->render();
+
+    my $product_id = $self->stash('product_id');
+    my $product    = $self->app->schema->resultset('product')->find($product_id);
+
+    $self->render( product => $product );
 }
 
 sub add_to_cart {
