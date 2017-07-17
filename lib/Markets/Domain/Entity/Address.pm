@@ -30,6 +30,9 @@ the following new ones.
 
 =head1 METHODS
 
+L<Markets::Domain::Entity::Address> inherits all methods from L<Markets::Domain::Entity> and implements
+the following new ones.
+
 =head1 AUTHOR
 
 Markets authors.

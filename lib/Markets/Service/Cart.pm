@@ -38,6 +38,9 @@ the following new ones.
 
 =head1 METHODS
 
+L<Markets::Service::Cart> inherits all methods from L<Markets::Service> and implements
+the following new ones.
+
 =head2 C<add_item>
 
     my $cart = $c->service('cart')->add_item();
@@ -55,3 +58,5 @@ Return L<Markets::Domain::Entity::Cart> object.
 Markets authors.
 
 =head1 SEE ALSO
+
+L<Markets::Service>

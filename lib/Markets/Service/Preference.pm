@@ -65,6 +65,9 @@ the following new ones.
 
 =head1 METHODS
 
+L<Markets::Service::Preference> inherits all methods from L<Markets::Service> and implements
+the following new ones.
+
 =head2 C<create_entity>
 
     my $preferences = $app->service('preference')->create_entity();
@@ -93,3 +96,5 @@ Updates are modified data only.
 Markets authors.
 
 =head1 SEE ALSO
+
+L<Markets::Service>

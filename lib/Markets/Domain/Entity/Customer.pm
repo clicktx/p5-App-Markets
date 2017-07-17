@@ -41,6 +41,9 @@ Return L<Markets::Domain::Entity::Password> object.
 
 =head1 METHODS
 
+L<Markets::Domain::Entity::Customer> inherits all methods from L<Markets::Domain::Entity> and implements
+the following new ones.
+
 =head2 C<clone>
 
 =head2 C<is_modified>

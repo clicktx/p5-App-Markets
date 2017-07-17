@@ -112,7 +112,7 @@ Markets::Domain::Entity - Entity Object Base Class
 
 =head1 ATTRIBUTES
 
-L<Markets::Domain::Entity> inherits all attributes from L<Mojo::Base> and implements
+L<Markets::Domain::Entity> inherits all attributes from L<Markets::Domain::Base> and implements
 the following new ones.
 
 =head2 C<entity_id>
@@ -121,6 +121,9 @@ the following new ones.
     has entity_id => sub { shift->more_id };
 
 =head1 METHODS
+
+L<Markets::Domain::Entity> inherits all methods from L<Markets::Domain::Base> and implements
+the following new ones.
 
 =head2 C<clone>
 
@@ -200,4 +203,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
- L<Mojo::Base>
+L<Markets::Domain::Base>, L<Mojo::Base>

@@ -109,6 +109,9 @@ the following new ones.
 
 =head1 METHODS
 
+L<Markets::Service::Customer> inherits all methods from L<Markets::Service> and implements
+the following new ones.
+
 =head2 C<add_history>
 
     # $app->config('history_disable_route_names') is unsave list.
@@ -116,6 +119,12 @@ the following new ones.
 
     Add history current URL for server session.
     Unsave list setting in L<Markets::Routes>.
+
+=head2 C<create_entity>
+
+    my $customer = $c->service('customre')->create_entity($customer_id);
+
+    my $customer = $c->service('customre')->create_entity($customer_email);
 
 =head2 C<load_history>
 
