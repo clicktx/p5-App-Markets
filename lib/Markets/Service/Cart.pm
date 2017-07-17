@@ -8,7 +8,7 @@ sub add_item {
     delete $params->{csrf_token};
 
     my $item = $self->controller->factory('entity-cart-item')->create($params);
-    return $self->controller->cart->add_item($item);
+    return $self->controller->helpers->cart->add_item($item);
 }
 
 sub create_entity {
