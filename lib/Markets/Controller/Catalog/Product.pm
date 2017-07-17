@@ -5,7 +5,7 @@ sub index {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    my $product    = $self->app->schema->resultset('product')->find($product_id);
+    my $product    = $self->service('product')->create_entity($product_id);
 
     $self->render( product => $product );
 }
