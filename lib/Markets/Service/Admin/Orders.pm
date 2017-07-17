@@ -34,6 +34,9 @@ the following new ones.
 
 =head1 METHODS
 
+L<Markets::Service::Admin::Orders> inherits all methods from L<Markets::Service> and implements
+the following new ones.
+
 =head2 C<list>
 
 =head1 AUTHOR

@@ -3,12 +3,10 @@ use Mojo::Base 'Markets::Service';
 
 sub add_item {
     my $self = shift;
+    my $args = shift;
 
-    my $params = $self->controller->req->params->to_hash;
-    delete $params->{csrf_token};
-
-    my $item = $self->controller->factory('entity-cart-item')->create($params);
-    return $self->controller->cart->add_item($item);
+    my $item = $self->controller->factory('entity-cart-item')->create($args);
+    return $self->controller->helpers->cart->add_item($item);
 }
 
 sub create_entity {
@@ -38,6 +36,9 @@ the following new ones.
 
 =head1 METHODS
 
+L<Markets::Service::Cart> inherits all methods from L<Markets::Service> and implements
+the following new ones.
+
 =head2 C<add_item>
 
     my $cart = $c->service('cart')->add_item();
@@ -55,3 +56,5 @@ Return L<Markets::Domain::Entity::Cart> object.
 Markets authors.
 
 =head1 SEE ALSO
+
+L<Markets::Service>

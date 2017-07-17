@@ -164,6 +164,9 @@ Elements is L<Markets::Domain::Entity::Shipment> object.
 
 =head1 METHODS
 
+L<Markets::Domain::Entity::Cart> inherits all methods from L<Markets::Domain::Entity> and implements
+the following new ones.
+
 =head2 C<add_item>
 
     $cart->add_item( $item_entity_object );

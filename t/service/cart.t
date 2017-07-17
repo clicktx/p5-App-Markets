@@ -47,9 +47,8 @@ done_testing();
         my $c = shift;
 
         subtest 'items' => sub {
-            my $result = $c->service('cart')->add_item;
-            is_deeply $result->items->last->to_data, { product_id => 1, quantity => 1 },
-              'right add cart';
+            my $result = $c->service('cart')->add_item( { product_id => 1, quantity => 1 } );
+            is_deeply $result->items->last->to_data, { product_id => 1, quantity => 1 }, 'right add cart';
 
             # my $items = $c->service('cart')->items;
             # isa_ok $items->first, 'Markets::Domain::Entity::Item', 'right add item';

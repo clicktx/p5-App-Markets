@@ -55,6 +55,9 @@ a L<Mojolicious::Controller> object.
 
 =head1 METHODS
 
+L<Markets::Service> inherits all methods from L<Mojo::Base> and implements
+the following new ones.
+
 =head2 C<model>
 
     $service->model('hoge')->mehod;

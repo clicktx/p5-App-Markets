@@ -101,4 +101,12 @@
         [ 2, 2, 2 ],
         [ 3, 4, 4 ],
     ],
+
+    # Product
+    'Product' => [
+        [qw/id title description price/],
+        [ 1, 'test product1', 'product description1', 100 ],
+        [ 2, 'test product2', 'product description2', 200 ],
+        [ 3, 'test product3', 'product description3', 300 ],
+    ],
 )

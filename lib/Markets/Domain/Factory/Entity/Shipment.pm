@@ -40,6 +40,9 @@ the following new ones.
 
 =head1 METHODS
 
+L<Markets::Domain::Factory::Entity::Shipment> inherits all methods from L<Markets::Domain::Factory> and implements
+the following new ones.
+
 =head1 AUTHOR
 
 Markets authors.

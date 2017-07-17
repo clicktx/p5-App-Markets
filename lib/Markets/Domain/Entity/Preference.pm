@@ -65,6 +65,9 @@ the following new ones.
 
 =head1 METHODS
 
+L<Markets::Domain::Entity::Preference> inherits all methods from L<Markets::Domain::Entity> and implements
+the following new ones.
+
 =head2 C<value>
 
     my $value = $pref->value('preference_xxx');
