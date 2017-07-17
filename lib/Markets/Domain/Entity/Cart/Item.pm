@@ -1,4 +1,4 @@
-package Markets::Domain::Entity::Item;
+package Markets::Domain::Entity::Cart::Item;
 use Markets::Domain::Entity;
 
 has id => sub { shift->hash_code };

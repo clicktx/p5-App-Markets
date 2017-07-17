@@ -158,7 +158,7 @@ Get namespace as a construct entity class.
 
     my @data = (qw/a b c d e f/);
     my $entity = $factory->aggregate( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate( 'items', 'entity-item', \@data );
+    my $entity = $factory->aggregate( 'items', 'entity-cart-item', \@data );
 
 Create C<Markets::Domain::Collection> type aggregate.
 
@@ -166,7 +166,7 @@ Create C<Markets::Domain::Collection> type aggregate.
 
     my @data = ( key => 'value', key2 => 'value2', ... );
     my $entity = $factory->aggregate_kv( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate_kv( 'items', 'entity-item', \@data );
+    my $entity = $factory->aggregate_kv( 'items', 'entity-cart-item', \@data );
 
 Create C<Markets::Domain::IxHash> type aggregate.
 

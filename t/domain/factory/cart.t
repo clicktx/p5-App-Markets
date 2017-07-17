@@ -60,7 +60,7 @@ subtest 'argument items data only' => sub {
       bless {
         foo       => 'bar',
         fizz      => 'buzz',
-        items     => ( bless [ ( bless {}, 'Markets::Domain::Entity::Item' ) ], 'Markets::Domain::Collection' ),
+        items     => ( bless [ ( bless {}, 'Markets::Domain::Entity::Cart::Item' ) ], 'Markets::Domain::Collection' ),
         shipments => ignore(),
         billing_address => ignore(),
       },
@@ -70,7 +70,7 @@ subtest 'argument items data only' => sub {
 subtest 'argument shipments data only' => sub {
     my $e = $pkg->new( { shipments => [ { shipping_items => [ {}, {} ] } ] } )->create_entity;
     $shipments->[0]->{shipping_items} =
-      bless [ ( bless {}, 'Markets::Domain::Entity::Item' ), ( bless {}, 'Markets::Domain::Entity::Item' ) ],
+      bless [ ( bless {}, 'Markets::Domain::Entity::Cart::Item' ), ( bless {}, 'Markets::Domain::Entity::Cart::Item' ) ],
       'Markets::Domain::Collection';
     cmp_deeply $e,
       bless {

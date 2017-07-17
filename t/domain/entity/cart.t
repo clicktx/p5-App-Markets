@@ -28,7 +28,7 @@ sub _create_entity {
     );
 }
 
-use_ok 'Markets::Domain::Entity::Item';
+use_ok 'Markets::Domain::Entity::Cart::Item';
 
 subtest 'basic' => sub {
     my $cart = Markets::Domain::Factory->factory('entity-cart')->create();
@@ -44,7 +44,7 @@ subtest 'attributes' => sub {
     is $cart->cart_id, '12345', 'right cart_id';
 
     isa_ok $cart->items, 'Markets::Domain::Collection', 'right items';
-    isa_ok $cart->items->first, 'Markets::Domain::Entity::Item', 'right items';
+    isa_ok $cart->items->first, 'Markets::Domain::Entity::Cart::Item', 'right items';
 
     isa_ok $cart->shipments, 'Markets::Domain::Collection', 'right shipments';
     isa_ok $cart->shipments->first, 'Markets::Domain::Entity::Shipment', 'right shipments';
@@ -70,10 +70,10 @@ subtest 'methods' => sub {
 
 subtest 'method add_item' => sub {
     my $cart = _create_entity;
-    $cart->add_item( Markets::Domain::Entity::Item->new( product_id => 11 ) );
+    $cart->add_item( Markets::Domain::Entity::Cart::Item->new( product_id => 11 ) );
     cmp_deeply $cart->items->last->to_data, { product_id => 11 }, 'right item';
 
-    $cart->add_item( Markets::Domain::Entity::Item->new( product_id => 1, quantity => 1 ) );
+    $cart->add_item( Markets::Domain::Entity::Cart::Item->new( product_id => 1, quantity => 1 ) );
     cmp_deeply $cart->items->first->to_data, { product_id => 1, quantity => 2 }, 'right item';
 
     is $cart->is_modified, 1, 'right modified';
@@ -81,10 +81,10 @@ subtest 'method add_item' => sub {
 
 subtest 'method add_shipping_item' => sub {
     my $cart = _create_entity;
-    $cart->add_shipping_item( Markets::Domain::Entity::Item->new( product_id => 11 ) );
+    $cart->add_shipping_item( Markets::Domain::Entity::Cart::Item->new( product_id => 11 ) );
     cmp_deeply $cart->shipments->first->shipping_items->last->to_data, { product_id => 11 }, 'right shipping_item';
 
-    $cart->add_shipping_item( Markets::Domain::Entity::Item->new( product_id => 4, quantity => 4 ) );
+    $cart->add_shipping_item( Markets::Domain::Entity::Cart::Item->new( product_id => 4, quantity => 4 ) );
     cmp_deeply $cart->shipments->first->shipping_items->first->to_data,
       { product_id => 4, quantity => 8 }, 'right sum quantity';
 
@@ -116,7 +116,7 @@ subtest 'method clone' => sub {
 
 subtest 'method remove_item' => sub {
     my $cart = _create_entity;
-    my $item = Markets::Domain::Entity::Item->new( product_id => 2, quantity => 1 );
+    my $item = Markets::Domain::Entity::Cart::Item->new( product_id => 2, quantity => 1 );
 
     my $id           = $item->id;
     my $removed_item = $cart->remove_item($id);
@@ -128,7 +128,7 @@ subtest 'method remove_item' => sub {
 
     # Unremove. not found item.
     $cart         = _create_entity;
-    $item         = Markets::Domain::Entity::Item->new( product_id => 123, quantity => 1 );
+    $item         = Markets::Domain::Entity::Cart::Item->new( product_id => 123, quantity => 1 );
     $id           = $item->id;
     $removed_item = $cart->remove_item($id);
     cmp_deeply $cart->to_data->{items},
