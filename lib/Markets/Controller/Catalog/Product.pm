@@ -2,11 +2,13 @@ package Markets::Controller::Catalog::Product;
 use Mojo::Base 'Markets::Controller::Catalog';
 
 sub index {
-    my $self = shift;
-
+    my $self       = shift;
     my $product_id = $self->stash('product_id');
-    my $product    = $self->service('product')->create_entity($product_id);
 
+    my $form = $self->form_set('product');
+    $form->field('product_id')->value($product_id);
+
+    my $product = $self->service('product')->create_entity($product_id);
     $self->render( product => $product );
 }
 
