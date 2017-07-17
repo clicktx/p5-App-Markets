@@ -9,19 +9,21 @@ sub index {
     $form->field('product_id')->value($product_id);
 
     my $product = $self->service('product')->create_entity($product_id);
-    $self->render( product => $product );
-}
+    $self->stash( product => $product );
 
-sub add_to_cart {
-    my $self = shift;
+    my $validation = $self->validation;
+    return $self->render() unless $validation->has_data;
 
-    die unless $self->service('cart')->add_item;
+    # Add to cart
+    if ( $form->validate ) {
+        $self->service('cart')->add_item( $form->params->to_hash );
 
-    use DDP;
-    p $self->cart->to_data;    # debug
+        $self->flash( ref => $self->req->url->to_string );
+        $self->redirect_to('RN_cart');
+    }
 
-    $self->flash( ref => $self->req->url->to_string );
-    $self->redirect_to('RN_cart');
+    # Invalid
+    $self->render();
 }
 
 1;

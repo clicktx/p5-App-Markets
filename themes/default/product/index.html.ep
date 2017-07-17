@@ -16,7 +16,7 @@
     <%= $product->price %>
 </div>
 
-<%= form_for 'RN_add_to_cart' => ( method => 'POST' ) => begin %>
+<%= form_for 'RN_product' => ( method => 'POST' ) => begin %>
     % my $field;
     <%= csrf_field %>
     <%= form_widget('product.product_id') %>

@@ -3,11 +3,9 @@ use Mojo::Base 'Markets::Service';
 
 sub add_item {
     my $self = shift;
+    my $args = shift;
 
-    my $params = $self->controller->req->params->to_hash;
-    delete $params->{csrf_token};
-
-    my $item = $self->controller->factory('entity-cart-item')->create($params);
+    my $item = $self->controller->factory('entity-cart-item')->create($args);
     return $self->controller->helpers->cart->add_item($item);
 }
 
