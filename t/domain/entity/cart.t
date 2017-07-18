@@ -121,7 +121,7 @@ subtest 'method clone' => sub {
 
 subtest 'method grand_total' => sub {
     my $cart = _create_entity;
-    is $cart->grand_total, 1, 'right grand total';
+    is $cart->grand_total, 2100, 'right grand total';
 };
 
 subtest 'method remove_item' => sub {

@@ -53,6 +53,16 @@ sub count {
     return $self->$attr->size;
 }
 
+sub grand_total {
+    my $self        = shift;
+    my $grand_total = 0;
+
+    $grand_total += $self->items->reduce( sub { $a + $b->subtotal }, 0 );
+    $grand_total += $self->shipments->reduce( sub { $a + $b->subtotal }, 0 );
+
+    return $grand_total;
+}
+
 sub merge {
     my ( $self, $stored ) = ( shift->clone, shift->clone );
 
