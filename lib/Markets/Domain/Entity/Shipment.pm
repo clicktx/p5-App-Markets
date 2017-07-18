@@ -21,6 +21,10 @@ sub subtotal_quantity {
     shift->shipping_items->reduce( sub { $a + $b->quantity }, 0 );
 }
 
+sub subtotal {
+    shift->shipping_items->reduce( sub { $a + $b->subtotal }, 0 );
+}
+
 1;
 __END__
 
@@ -53,6 +57,8 @@ the following new ones.
 =head2 C<item_count>
 
 =head2 C<subtotal_quantity>
+
+=head2 C<subtotal>
 
 =head1 AUTHOR
 

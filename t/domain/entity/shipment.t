@@ -1,5 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
+use Markets::Domain::Collection;
+use Markets::Domain::Entity::Cart::Item;
 
 use_ok 'Markets::Domain::Entity::Shipment';
 
@@ -24,6 +26,27 @@ subtest 'is_equal' => sub {
 
     is $shipment->is_equal($shipment),  1, 'right equal item';
     is $shipment->is_equal($shipment2), 0, 'right not equal item';
+};
+
+# subtest 'clone' => sub {};
+
+subtest 'item_count' => sub {
+    my $shipment = Markets::Domain::Entity::Shipment->new( { id => 1 } );
+    is $shipment->item_count, 0, 'right item_count';
+    $shipment->{shipping_items} = Markets::Domain::Collection->new( 1, 2, 3 );
+    is $shipment->item_count, 3, 'right item_count';
+};
+
+# subtest 'subtotal_quantity' => sub {};
+
+subtest 'subtotal' => sub {
+    my $shipment = Markets::Domain::Entity::Shipment->new( { id => 1 } );
+    $shipment->{shipping_items} = Markets::Domain::Collection->new(
+        Markets::Domain::Entity::Cart::Item->new( quantity => 1, price => 100 ),
+        Markets::Domain::Entity::Cart::Item->new( quantity => 2, price => 100 ),
+        Markets::Domain::Entity::Cart::Item->new( quantity => 3, price => 100 ),
+    );
+    is $shipment->subtotal, 600, 'right subtotal';
 };
 
 done_testing();
