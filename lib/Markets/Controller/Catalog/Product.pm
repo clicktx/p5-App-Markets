@@ -22,7 +22,7 @@ sub index {
         $self->service('cart')->add_item( $form->params->to_hash );
 
         $self->flash( ref => $self->req->url->to_string );
-        $self->redirect_to('RN_cart');
+        return $self->redirect_to('RN_cart');
     }
 
     # Invalid
