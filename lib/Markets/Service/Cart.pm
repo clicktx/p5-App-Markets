@@ -2,8 +2,9 @@ package Markets::Service::Cart;
 use Mojo::Base 'Markets::Service';
 
 sub add_item {
-    my $self = shift;
-    my $args = shift;
+    my ( $self, $product, $args ) = @_;
+
+    $args->{price} = $product->price;
 
     my $item = $self->controller->factory('entity-cart-item')->create($args);
     return $self->controller->helpers->cart->add_item($item);
@@ -41,7 +42,7 @@ the following new ones.
 
 =head2 C<add_item>
 
-    my $cart = $c->service('cart')->add_item();
+    my $cart = $c->service('cart')->add_item( $product, \%params);
 
 Return L<Markets::Domain::Entity::Cart> object.
 
