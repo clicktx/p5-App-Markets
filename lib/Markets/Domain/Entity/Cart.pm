@@ -44,20 +44,6 @@ sub add_shipping_item {
     return $self;
 }
 
-sub _add_item {
-    my $collection = shift;
-    my $item       = shift;
-
-    my $exsist_item = $collection->find( $item->id );
-    if ($exsist_item) {
-        my $qty = $exsist_item->quantity + $item->quantity;
-        $exsist_item->quantity($qty);
-    }
-    else {
-        push @{$collection}, $item;
-    }
-}
-
 sub all_shipping_items {
     shift->shipments->map( sub { $_->shipping_items->each } );
 }
@@ -124,6 +110,20 @@ sub total_item_count {
 sub total_quantity {
     $_[0]->items->reduce( sub { $a + $b->quantity }, 0 ) +
       $_[0]->shipments->reduce( sub { $a + $b->subtotal_quantity }, 0 );
+}
+
+sub _add_item {
+    my $collection = shift;
+    my $item       = shift;
+
+    my $exsist_item = $collection->find( $item->id );
+    if ($exsist_item) {
+        my $qty = $exsist_item->quantity + $item->quantity;
+        $exsist_item->quantity($qty);
+    }
+    else {
+        push @{$collection}, $item;
+    }
 }
 
 1;
