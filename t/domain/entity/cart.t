@@ -72,7 +72,7 @@ subtest 'methods' => sub {
     is $cart->is_equal($cart2), 0, 'right not equal entity';
 };
 
-subtest 'method add_item' => sub {
+subtest 'add_item' => sub {
     my $cart = _create_entity;
     $cart->add_item( Markets::Domain::Entity::Cart::Item->new( product_id => 11 ) );
     cmp_deeply $cart->items->last->to_data, { product_id => 11 }, 'right item';
@@ -83,7 +83,7 @@ subtest 'method add_item' => sub {
     is $cart->is_modified, 1, 'right modified';
 };
 
-subtest 'method add_shipping_item' => sub {
+subtest 'add_shipping_item' => sub {
     my $cart = _create_entity;
     $cart->add_shipping_item( Markets::Domain::Entity::Cart::Item->new( product_id => 11 ) );
     cmp_deeply $cart->shipments->first->shipping_items->last->to_data, { product_id => 11 }, 'right shipping_item';
@@ -96,7 +96,7 @@ subtest 'method add_shipping_item' => sub {
     is $cart->is_modified, 1, 'right modified';
 };
 
-subtest 'method clone' => sub {
+subtest 'clone' => sub {
     my $cart = _create_entity;
 
     $cart->is_modified(1);
@@ -119,12 +119,12 @@ subtest 'method clone' => sub {
       'right shipment item data';
 };
 
-subtest 'method grand_total' => sub {
+subtest 'grand_total' => sub {
     my $cart = _create_entity;
     is $cart->grand_total, 2100, 'right grand total';
 };
 
-subtest 'method remove_item' => sub {
+subtest 'remove_item' => sub {
     my $cart = _create_entity;
     my $item = Markets::Domain::Entity::Cart::Item->new( product_id => 2, quantity => 1 );
 
@@ -152,7 +152,7 @@ subtest 'method remove_item' => sub {
     is $cart->is_modified, 0, 'right not modified';
 };
 
-subtest 'method merge' => sub {
+subtest 'merge' => sub {
     my $cart        = _create_entity;
     my $stored_data = {
         items => [
