@@ -37,10 +37,22 @@ Markets::Domain::Entity::Shipment
 L<Markets::Domain::Entity::Shipment> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<id>
+
+=head2 C<shipping_address>
+
+=head2 C<shipping_items>
+
 =head1 METHODS
 
 L<Markets::Domain::Entity::Shipment> inherits all methods from L<Markets::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<clone>
+
+=head2 C<item_count>
+
+=head2 C<subtotal_quantity>
 
 =head1 AUTHOR
 
