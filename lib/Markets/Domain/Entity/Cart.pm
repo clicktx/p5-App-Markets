@@ -55,10 +55,9 @@ sub count {
 
 sub grand_total {
     my $self        = shift;
-    my $grand_total = 0;
+    my $grand_total = $self->subtotal;
 
-    $grand_total += $self->items->reduce( sub { $a + $b->subtotal }, 0 );
-    $grand_total += $self->shipments->reduce( sub { $a + $b->subtotal }, 0 );
+    # 送料計算等
 
     return $grand_total;
 }
@@ -100,6 +99,16 @@ sub remove_item {
     $self->items($array);
     $removed ? $self->_is_modified(1) : $self->_is_modified(0);
     return $removed;
+}
+
+sub subtotal {
+    my $self     = shift;
+    my $subtotal = 0;
+
+    $subtotal += $self->items->reduce( sub { $a + $b->subtotal }, 0 );
+    $subtotal += $self->shipments->reduce( sub { $a + $b->subtotal }, 0 );
+
+    return $subtotal;
 }
 
 sub to_order_data {

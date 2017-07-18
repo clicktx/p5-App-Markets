@@ -119,11 +119,6 @@ subtest 'clone' => sub {
       'right shipment item data';
 };
 
-subtest 'grand_total' => sub {
-    my $cart = _create_entity;
-    is $cart->grand_total, 2100, 'right grand total';
-};
-
 subtest 'remove_item' => sub {
     my $cart = _create_entity;
     my $item = Markets::Domain::Entity::Cart::Item->new( product_id => 2, quantity => 1 );
@@ -150,6 +145,13 @@ subtest 'remove_item' => sub {
       'right not removed';
     is $removed_item, undef, 'right return value';
     is $cart->is_modified, 0, 'right not modified';
+};
+
+# subtest 'grand_total' => sub {};
+
+subtest 'subtotal' => sub {
+    my $cart = _create_entity;
+    is $cart->subtotal, 2100, 'right grand total';
 };
 
 subtest 'merge' => sub {
