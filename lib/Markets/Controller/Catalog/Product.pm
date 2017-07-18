@@ -11,12 +11,15 @@ sub index {
     my $product = $self->service('product')->create_entity($product_id);
     $self->stash( product => $product );
 
+    # 404
+    return $self->reply->not_found unless $product->title;
+
     my $validation = $self->validation;
     return $self->render() unless $validation->has_data;
 
     # Add to cart
     if ( $form->validate ) {
-        $self->service('cart')->add_item( $form->params->to_hash );
+        $self->service('cart')->add_item( $product, $form->params->to_hash );
 
         $self->flash( ref => $self->req->url->to_string );
         $self->redirect_to('RN_cart');
