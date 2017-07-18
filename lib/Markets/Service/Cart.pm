@@ -2,8 +2,10 @@ package Markets::Service::Cart;
 use Mojo::Base 'Markets::Service';
 
 sub add_item {
-    my ( $self, $product, $args ) = @_;
+    my ( $self, $args ) = @_;
 
+    # NOTE: APIで利用する場合にproductがstashに無い場合は生成する？
+    my $product = $self->controller->stash('product');
     $args->{price} = $product->price;
 
     my $item = $self->controller->factory('entity-cart-item')->create($args);
