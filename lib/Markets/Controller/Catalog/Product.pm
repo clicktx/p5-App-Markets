@@ -11,6 +11,9 @@ sub index {
     my $product = $self->service('product')->create_entity($product_id);
     $self->stash( product => $product );
 
+    # 404
+    return $self->reply->not_found unless $product->title;
+
     my $validation = $self->validation;
     return $self->render() unless $validation->has_data;
 
