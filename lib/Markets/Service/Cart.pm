@@ -6,6 +6,7 @@ sub add_item {
 
     # NOTE: APIで利用する場合にproductがstashに無い場合は生成する？
     my $product = $self->controller->stash('product');
+    $args->{product_title} = $product->title;
     $args->{price} = $product->price;
 
     my $item = $self->controller->factory('entity-cart-item')->create($args);
