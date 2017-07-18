@@ -4,16 +4,20 @@ use Test::Deep;
 use Markets::Domain::Factory;
 
 my $test_data = {
-    items =>
-      [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 }, { product_id => 3, quantity => 3 }, ],
+    items => [
+        { product_id => 1, quantity => 1, price => 100 },
+        { product_id => 2, quantity => 2, price => 100 },
+        { product_id => 3, quantity => 3, price => 100 },
+    ],
     shipments => [
         {
             shipping_address => { line1 => 'Tokyo' },
-            shipping_items => [ { product_id => 4, quantity => 4 } ]
+            shipping_items => [ { product_id => 4, quantity => 4, price => 100 } ]
         },
         {
             shipping_address => { line1 => 'Osaka' },
-            shipping_items => [ { product_id => 5, quantity => 5 }, { product_id => 6, quantity => 6 } ]
+            shipping_items =>
+              [ { product_id => 5, quantity => 5, price => 100 }, { product_id => 6, quantity => 6, price => 100 }, ]
         },
     ],
     billing_address => { line1 => 'Gunma' },
@@ -74,7 +78,7 @@ subtest 'method add_item' => sub {
     cmp_deeply $cart->items->last->to_data, { product_id => 11 }, 'right item';
 
     $cart->add_item( Markets::Domain::Entity::Cart::Item->new( product_id => 1, quantity => 1 ) );
-    cmp_deeply $cart->items->first->to_data, { product_id => 1, quantity => 2 }, 'right item';
+    cmp_deeply $cart->items->first->to_data, { product_id => 1, quantity => 2, price => 100 }, 'right item';
 
     is $cart->is_modified, 1, 'right modified';
 };
@@ -84,9 +88,10 @@ subtest 'method add_shipping_item' => sub {
     $cart->add_shipping_item( Markets::Domain::Entity::Cart::Item->new( product_id => 11 ) );
     cmp_deeply $cart->shipments->first->shipping_items->last->to_data, { product_id => 11 }, 'right shipping_item';
 
-    $cart->add_shipping_item( Markets::Domain::Entity::Cart::Item->new( product_id => 4, quantity => 4 ) );
+    $cart->add_shipping_item(
+        Markets::Domain::Entity::Cart::Item->new( product_id => 4, quantity => 4, price => 100 ) );
     cmp_deeply $cart->shipments->first->shipping_items->first->to_data,
-      { product_id => 4, quantity => 8 }, 'right sum quantity';
+      { product_id => 4, quantity => 8, price => 100 }, 'right sum quantity';
 
     is $cart->is_modified, 1, 'right modified';
 };
@@ -114,6 +119,11 @@ subtest 'method clone' => sub {
       'right shipment item data';
 };
 
+subtest 'method grand_total' => sub {
+    my $cart = _create_entity;
+    is $cart->grand_total, 1, 'right grand total';
+};
+
 subtest 'method remove_item' => sub {
     my $cart = _create_entity;
     my $item = Markets::Domain::Entity::Cart::Item->new( product_id => 2, quantity => 1 );
@@ -121,7 +131,7 @@ subtest 'method remove_item' => sub {
     my $id           = $item->id;
     my $removed_item = $cart->remove_item($id);
     cmp_deeply $cart->to_data->{items},
-      [ { product_id => 1, quantity => 1 }, { product_id => 3, quantity => 3 }, ],
+      [ { product_id => 1, quantity => 1, price => 100 }, { product_id => 3, quantity => 3, price => 100 }, ],
       'right remove item';
     is $removed_item->is_equal($item), 1, 'right return value';
     is $cart->is_modified, 1, 'right modified';
@@ -132,7 +142,11 @@ subtest 'method remove_item' => sub {
     $id           = $item->id;
     $removed_item = $cart->remove_item($id);
     cmp_deeply $cart->to_data->{items},
-      [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 }, { product_id => 3, quantity => 3 }, ],
+      [
+        { product_id => 1, quantity => 1, price => 100 },
+        { product_id => 2, quantity => 2, price => 100 },
+        { product_id => 3, quantity => 3, price => 100 },
+      ],
       'right not removed';
     is $removed_item, undef, 'right return value';
     is $cart->is_modified, 0, 'right not modified';
@@ -142,9 +156,9 @@ subtest 'method merge' => sub {
     my $cart        = _create_entity;
     my $stored_data = {
         items => [
-            { product_id => 4, quantity => 4 },
-            { product_id => 1, quantity => 1 },
-            { product_id => 5, quantity => 5 },
+            { product_id => 4, quantity => 4, price => 100 },
+            { product_id => 1, quantity => 1, price => 100 },
+            { product_id => 5, quantity => 5, price => 100 },
         ],
         shipments => [ { shipping_address => {}, shipping_items => [] } ],
     };
@@ -174,11 +188,11 @@ subtest 'method merge' => sub {
         cart_id         => ignore(),
         billing_address => ignore(),
         items           => [
-            { product_id => 4, quantity => 4 },
-            { product_id => 1, quantity => 2 },
-            { product_id => 5, quantity => 5 },
-            { product_id => 2, quantity => 2 },
-            { product_id => 3, quantity => 3 },
+            { product_id => 4, quantity => 4, price => 100 },
+            { product_id => 1, quantity => 2, price => 100 },
+            { product_id => 5, quantity => 5, price => 100 },
+            { product_id => 2, quantity => 2, price => 100 },
+            { product_id => 3, quantity => 3, price => 100 },
         ],
         shipments => [ { shipping_address => {}, shipping_items => [] } ],
       },
