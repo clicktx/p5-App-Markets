@@ -6,21 +6,28 @@
 <%= __nx('{cnt :num} item', '{cnt :num} items', $cart->total_item_count, cnt => $cart->total_item_count) %>
 (Total QTY: <%= $cart->total_quantity %>) in your cart.
 
-<ul>
-    <li>
-        Product Name | Unit Price | QTY | Subtotal
-    </li>
-    % $cart->items->each( sub {
+<%= form_for 'RN_cart' => ( method => 'POST' ) => begin %>
+    <ul>
         <li>
-            <a href="<%= url_for 'RN_product' => { product_id => $_->product_id } %>">
-                <%= $_->product_title %>
-            </a>
-             | <%= $_->price %>
-             | <%= $_->quantity %>
-             | <%= $_->subtotal %>
+            Product Name | Unit Price | QTY | Subtotal
         </li>
-    % } );
-</ul>
+
+        % $cart->items->each( sub {
+            % my ($item, $i) = @_;
+            <li>
+                <a href="<%= url_for 'RN_product' => { product_id => $item->product_id } %>">
+                    <%= $item->product_title %>
+                </a>
+                 | <%= $item->price %>
+                 | QTY:<%= $item->quantity %><%= form_widget("cart.item.$i.quantity") %><%= form_error("cart.item.$i.quantity") %>
+                 | <%= $item->subtotal %>
+            </li>
+        % } );
+    </ul>
+
+    <%= csrf_field %>
+    <%= submit_button 'Update Cart' %>
+<% end %>
 
 <hr>
 <div class="">
