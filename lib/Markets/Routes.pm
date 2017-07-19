@@ -76,7 +76,7 @@ sub add_catalog_routes {
     $r->any('/login_example')->to('login_example#index');
 
     # Cart
-    $r->get('/cart')->to('cart#index')->name('RN_cart');
+    $r->any('/cart')->to('cart#index')->name('RN_cart');
 
     # Checkout
     {
