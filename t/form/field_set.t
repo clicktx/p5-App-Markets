@@ -251,9 +251,16 @@ subtest 'append/remove' => sub {
     is_deeply \@field_keys, [qw/email name address favorite_color luky_number item.[].id item.[].name aaa/],
       'right field_keys';
 
+    # Hash refference
+    $fs->append_field( bbb => { type => 'choice' } );
+    @field_keys = $fs->field_keys;
+    is_deeply \@field_keys, [qw/email name address favorite_color luky_number item.[].id item.[].name aaa bbb/],
+      'right field_keys';
+    is_deeply $fs->schema('bbb'), { type => 'choice' }, 'right schema';
+
     $fs->remove('name');
     @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/email address favorite_color luky_number item.[].id item.[].name aaa/],
+    is_deeply \@field_keys, [qw/email address favorite_color luky_number item.[].id item.[].name aaa bbb/],
       'right field_keys';
 };
 

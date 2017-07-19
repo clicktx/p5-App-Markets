@@ -17,7 +17,7 @@ sub append_field {
     return unless ( my $class = ref $self || $self ) && $field_key;
 
     no strict 'refs';
-    ${"${class}::schema"}{$field_key} = +{@_};
+    ${"${class}::schema"}{$field_key} = ref $_[0] eq 'HASH' ? $_[0] : +{@_};
 }
 
 sub checks { shift->_get_data( shift, 'validations' ) }
@@ -350,11 +350,15 @@ Construct a new array-based L<Mojo::Collection> object.
 
     has_field 'field_name' => ( type => 'text', ... );
 
+    has_field 'field_name' => { type => 'text', ...  };
+
 =head1 METHODS
 
 =head2 C<append_field>
 
     $fieldset->append_field( 'field_name' => ( %args ) );
+
+    $fieldset->append_field( 'field_name' => \%args );
 
 =head2 C<checks>
 
