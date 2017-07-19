@@ -45,6 +45,9 @@ Construct a new array-based L<Markets::Domain::Collection> object.
 
 =head1 METHODS
 
+L<Markets::Domain::Collection> inherits all methods from L<Mojo::Collection> and implements
+the following new ones.
+
 =head2 C<find>
 
     my $entity = $collection->find($entity_id);
