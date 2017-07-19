@@ -60,14 +60,6 @@ sub field {
 
 sub filters { shift->_get_data( shift, 'filters' ) }
 
-sub new {
-    my $class = shift;
-    my $self  = $class->SUPER::new(@_);
-
-    weaken $self->{controller};
-    return $self;
-}
-
 sub import {
     my $class  = shift;
     my $caller = caller;
@@ -86,6 +78,14 @@ sub import {
         my $args = shift;
         ref $args eq 'ARRAY' ? $class->export_field( $caller, @$args ) : $class->export_field($caller);
     }
+}
+
+sub new {
+    my $class = shift;
+    my $self  = $class->SUPER::new(@_);
+
+    weaken $self->{controller};
+    return $self;
 }
 
 sub param {
