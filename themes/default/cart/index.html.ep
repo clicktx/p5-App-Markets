@@ -24,10 +24,10 @@
 
 <hr>
 <div class="">
-    Subtotal: 
+    Subtotal: <%= $cart->subtotal %>
 </div>
 <div class="">
-    Grand Total: 
+    Grand Total: <%= $cart->grand_total %>
 </div>
 <hr>
 
