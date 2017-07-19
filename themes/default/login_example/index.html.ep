@@ -73,5 +73,5 @@
         </div>
     % $i++ }
 
-    <input type="submit" value="<%= __ 'login' %>">
+    <%= submit_button __('login') %>
 <% end %>
