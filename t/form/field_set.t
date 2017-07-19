@@ -87,9 +87,19 @@ subtest 'filters' => sub {
       'right all filters';
 };
 
-subtest 'parameters' => sub {
+subtest 'has_data' => sub {
+    my $c = $t->app->build_controller;
+    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    is $fs->has_data, '', 'right has not data';
 
     # Create new request
+    $c = $t->app->build_controller;
+    $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    $c->req->params->pairs( [ email => 'a@b.c', ] );
+    is $fs->has_data, 1, 'right has data';
+};
+
+subtest 'parameters' => sub {
     my $c = $t->app->build_controller;
     my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
@@ -164,8 +174,6 @@ subtest 'schema' => sub {
 };
 
 subtest 'validate' => sub {
-
-    # Create new request
     my $c = $t->app->build_controller;
     my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
@@ -217,8 +225,6 @@ subtest 'validate' => sub {
 };
 
 subtest 'validate with filter' => sub {
-
-    # Create new request
     my $c = $t->app->build_controller;
     my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(

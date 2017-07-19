@@ -12,12 +12,13 @@ my $item = [ { id => 0, name => 'aa' }, { id => 1, name => 'bb' }, { id => 2, na
 sub index {
     my $self = shift;
 
-    my $validation = $self->validation;
     $self->stash( item => $item );
-    return $self->render unless $validation->has_data;
+
+    my $form = $self->form_set('example');
+    return $self->render() unless $form->has_data;
 
     use DDP;
-    my $form = $self->form_set('example');
+    my $validation = $self->validation;
     if ( $form->validate ) {
 
         # NOTE :

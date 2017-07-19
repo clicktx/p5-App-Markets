@@ -60,6 +60,8 @@ sub field {
 
 sub filters { shift->_get_data( shift, 'filters' ) }
 
+sub has_data { shift->controller->validation->has_data }
+
 sub import {
     my $class  = shift;
     my $caller = caller;
@@ -403,6 +405,12 @@ Object once created are cached in "$fieldset->{_field}->{$field_key}".
     # Return hash refference
     # { field_key => [ 'filter1', 'filter2', ... ], field_key2 => [ 'filter1', 'filter2', ... ] }
     my $filters = $fieldset->filters;
+
+=head2 C<has_data>
+
+    $bool = $fieldset->has_data;
+
+L<Mojolicious::Validator::Validation/has_data>
 
 =head2 C<param>
 
