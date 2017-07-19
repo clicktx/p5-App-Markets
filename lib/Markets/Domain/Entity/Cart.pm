@@ -161,6 +161,8 @@ Markets::Domain::Entity::Cart
 L<Markets::Domain::Entity::Cart> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<billing_address>
+
 =head2 C<cart_id>
 
 =head2 C<id>
@@ -212,6 +214,8 @@ All items in shipments.
 
 =head2 C<count>
 
+=head2 C<grand_total>
+
 =head2 C<is_modified>
 
     my $bool = $cart->is_modified;
@@ -230,6 +234,10 @@ Return Entity Cart Object.
 
 Return Entity Item Object or undef.
 
+=head2 C<subtotal>
+
+    my $subtotal = $cart->subtotal;
+
 =head2 C<to_order_data>
 
     my $order = $self->to_order_data;
@@ -237,6 +245,12 @@ Return Entity Item Object or undef.
 =head2 C<total_item_count>
 
     my $item_count = $cart->total_item_count;
+
+Return number of items types.
+
+=head2 C<total_quantity>
+
+    my $total_qty = $cart->total_quantity;
 
 Return all items quantity.
 
