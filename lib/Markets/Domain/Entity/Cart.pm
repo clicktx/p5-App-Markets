@@ -72,7 +72,7 @@ sub merge {
                 my ( $e, $i ) = @_;
                 if ( $e->is_equal($item) ) {
                     $item->quantity( $e->quantity + $item->quantity );
-                    splice @{ $self->items }, $i - 1, 1;
+                    splice @{ $self->items }, $i, 1;
                 }
             }
         );
