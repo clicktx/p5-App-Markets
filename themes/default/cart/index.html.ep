@@ -28,6 +28,7 @@
     <%= csrf_field %>
     <%= submit_button 'Update Cart' %>
 <% end %>
+<%= csrf_button_to 'Remove All Items' => 'RN_cart_clear' => ( id => 'form-cart-clear') %>
 
 <hr>
 <div class="">

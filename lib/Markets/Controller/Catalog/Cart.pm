@@ -30,4 +30,10 @@ sub index {
     $self->render();
 }
 
+sub clear {
+    my $self = shift;
+    $self->cart->clear;
+    return $self->redirect_to('RN_cart');
+}
+
 1;
