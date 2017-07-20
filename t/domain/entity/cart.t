@@ -96,6 +96,15 @@ subtest 'add_shipping_item' => sub {
     is $cart->is_modified, 1, 'right modified';
 };
 
+subtest 'clear' => sub {
+    my $cart = _create_entity;
+    $cart->clear;
+    is $cart->items->size, 0;
+
+    # NOTE: shipping_itemsは削除するべきか？
+    # is $cart->total_item_count, 0;
+};
+
 subtest 'clone' => sub {
     my $cart = _create_entity;
 

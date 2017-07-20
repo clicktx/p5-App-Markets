@@ -48,6 +48,12 @@ sub all_shipping_items {
     shift->shipments->map( sub { $_->shipping_items->each } );
 }
 
+# NOTE: shipping_itemsにあるitemsも削除するべきか？
+sub clear {
+    my $self = shift;
+    $self->items->each( sub { $self->remove_item( $_->id ) } );
+}
+
 sub count {
     my ( $self, $attr ) = @_;
     return $self->$attr->size;
@@ -209,6 +215,12 @@ default $shipments->first
     my $all_shipping_items = $cart->all_shipping_items;
 
 All items in shipments.
+
+=head2 C<clear>
+
+    $cart->clear;
+
+Remove all items.
 
 =head2 C<clone>
 
