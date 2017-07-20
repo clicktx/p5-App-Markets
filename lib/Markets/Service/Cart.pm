@@ -4,10 +4,15 @@ use Mojo::Base 'Markets::Service';
 sub add_item {
     my ( $self, $args ) = @_;
 
-    # NOTE: APIで利用する場合にproductがstashに無い場合は生成する？
+    # NOTE: APIで利用する場合にproductがstashに無い場合は生成する。
+    # productをMojo::Cache等でキャッシュするか？
+    # キャッシュする場合はservice('product')->load_entity()等としてキャッシュを使うようにする
+    # fileキャッシュで全てのproductのキャッシュを生成するのもありか？
     my $product = $self->controller->stash('product');
+    $product = $self->controller->service('product')->create_entity( $args->{product_id} ) unless $product;
+
     $args->{product_title} = $product->title;
-    $args->{price} = $product->price;
+    $args->{price}         = $product->price;
 
     my $item = $self->controller->factory('entity-cart-item')->create($args);
     return $self->controller->helpers->cart->add_item($item);

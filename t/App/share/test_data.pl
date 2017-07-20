@@ -20,6 +20,13 @@
         emails => [ { email => { address => 'c@x.org' } } ],
         password => { hash => 'SCRYPT:16384:8:1:lDuUwcU0iGJJt42hmZw/QSF1Zjuoucot8KL/YGyZCmY=:9gLPkZQbRqeFIJxmccG8m9AT/v/6ro0hRYlFLt0Td0M=' },
     },
+    # Product
+    'Product' => [
+        [qw/id title description price/],
+        [ 1, 'test product1', 'product description1', 100 ],
+        [ 2, 'test product2', 'product description2', 200 ],
+        [ 3, 'test product3', 'product description3', 300 ],
+    ],
 )
 
 # INSERT  INTO `markets`.`addons` (`id`, `name`, `is_enabled`)
