@@ -82,8 +82,7 @@ sub add_catalog_routes {
     # Checkout
     {
         my $checkout = $r->any('/checkout')->to( controller => 'checkout' );
-        $checkout->get('/')->to('#index')->name('RN_checkout');
-        $checkout->post('/')->to('#index_post')->name('RN_checkout_post');
+        $checkout->any('/')->to('#index')->name('RN_checkout');
         $checkout->get('/address')->to('#address')->name('RN_checkout_address');
         $checkout->post('/address')->to('#address_validate')->name('RN_checkout_address_validate');
         $checkout->get('/shipping')->to('#shipping')->name('RN_checkout_shipping');

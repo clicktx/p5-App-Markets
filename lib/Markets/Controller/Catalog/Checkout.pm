@@ -3,13 +3,10 @@ use Mojo::Base 'Markets::Controller::Catalog';
 
 sub index {
     my $self = shift;
-    $self->render();
-}
 
-sub index_post {
-    my $self = shift;
+    my $form = $self->form_set('checkout');
+    return $self->render() unless $form->has_data;
 
-    # $self->render( template => 'checkout/index' );
     $self->redirect_to('RN_checkout_address');
 }
 
