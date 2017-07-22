@@ -12,23 +12,30 @@ sub index {
 
 sub address {
     my $self = shift;
+
+    my $form = $self->form_set('checkout');
+
+    # e.g.
+    $form->field('billing_address.line1')->default_value('ogikubo');
+    $form->field('shipping_address.line1')->default_value('kamiizumi');
+
+    return $self->render() unless $form->has_data;
+
+    if ( $form->validate ) {
+
+        # billing address
+        my $billing_address = $form->param('billing_address.line1');
+        $self->cart->billing_address->line1($billing_address);
+
+        # shipping address
+        my $shipping_address = $form->param('shipping_address.line1');
+        my $shipments        = $self->cart->shipments;
+        $shipments->[0]->shipping_address->line1($shipping_address);
+
+        return $self->redirect_to('RN_checkout_shipping');
+    }
+
     $self->render();
-}
-
-sub address_validate {
-    my $self = shift;
-
-    my $billing_address  = $self->param('billing_address.line1');
-    my $shipping_address = $self->param('shipping_address.line1');
-
-    $self->cart->billing_address->line1($billing_address);
-    my $shipments = $self->cart->shipments;
-
-    # $shipments->first->shipping_address->line1($shipping_address);
-    $shipments->[0]->shipping_address->line1($shipping_address);
-
-    # return $self->render( template => 'checkout/address' ) if $error;
-    $self->redirect_to('RN_checkout_shipping');
 }
 
 sub shipping {
