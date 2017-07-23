@@ -20,7 +20,7 @@
     <li><strong>Order Confirmation</strong></li>
 </ol>
 
-<%= form_for 'RN_checkout_complete' => ( method => 'post' ) => begin %>
+<%= form_for 'RN_checkout_confirm' => ( method => 'post' ) => begin %>
     <%= csrf_field %>
     <%= submit_button 'BUY NOW' %>
 <% end %>
