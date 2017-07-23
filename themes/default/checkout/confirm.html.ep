@@ -25,6 +25,4 @@
     <%= submit_button 'BUY NOW' %>
 <% end %>
 
-<%= form_for 'RN_checkout_shipping' => begin %>
-    <%= submit_button 'Back to page' %>
-<% end %>
+<%= link_to 'Back to page' => 'RN_checkout_shipping' %>

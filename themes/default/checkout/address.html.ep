@@ -29,6 +29,4 @@
     <%= submit_button 'Next' %>
 <% end %>
 
-<%= form_for 'RN_checkout' => begin %>
-    <%= submit_button 'Back to page' %>
-<% end %>
+<%= link_to 'Back to page' => 'RN_checkout' %>
