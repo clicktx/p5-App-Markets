@@ -41,13 +41,17 @@ sub address {
 sub shipping {
     my $self = shift;
 
-    my $cart = $self->cart;
+    my $form = $self->form_set('checkout');
+    return $self->render() unless $form->has_data;
+
+    return $self->render() unless $form->validate;
 
     # shipping address
     # 商品をshipmentに移動
     # cart.itemsからitemを減らす。shipment.shipping_itemsを増やす
     # 本来は数量を考慮しなくてはならない
     # $item.quantityが0になった場合の動作はどうする？
+    my $cart = $self->cart;
     $cart->items->each(
         sub {
             # カートitemsから削除
@@ -63,21 +67,14 @@ sub shipping {
     # $cart->is_modified(1)? しか使わなければ実行時間は早く出来る。
     # Entity::Cart::is_modifiedも考慮して実装しよう
 
-    $self->render();
-}
-
-sub shipping_validate {
-    my $self = shift;
-
-    # return $self->render( template => 'checkout/address' ) if $error;
-    $self->redirect_to('RN_checkout_confirm');
+    return $self->redirect_to('RN_checkout_confirm');
 }
 
 #sub payment { }
-sub billing {
-    my $self = shift;
-    $self->render();
-}
+# sub billing {
+#     my $self = shift;
+#     $self->render();
+# }
 
 sub confirm {
     my $self = shift;
