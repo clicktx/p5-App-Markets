@@ -30,7 +30,7 @@ sub add_item : Tests() {
         product_id    => 1,
         product_title => 'test product1',
         quantity      => 2,
-        price         => 100,
+        price         => '100.00',
       },
       'right add item';
 }

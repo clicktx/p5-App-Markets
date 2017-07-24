@@ -19,9 +19,9 @@ column description => {
 };
 
 column price => {
-    data_type     => 'INT',
-    default_value => 0,
-    is_nullable   => 0,
+    data_type   => 'DECIMAL',
+    is_nullable => 0,
+    size        => [ 12, 2 ],
 };
 
 1;

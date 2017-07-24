@@ -49,7 +49,7 @@ done_testing();
         subtest 'items' => sub {
             my $result = $c->service('cart')->add_item( { product_id => 1, quantity => 1 } );
             is_deeply $result->items->last->to_data,
-              { product_id => 1, product_title => 'test product1', quantity => 1, price => 100 },
+              { product_id => 1, product_title => 'test product1', quantity => 1, price => '100.00' },
               'right add cart';
 
             # my $items = $c->service('cart')->items;
