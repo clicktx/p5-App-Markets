@@ -16,7 +16,8 @@
     <li>Order Confirmation</li>
 </ol>
 
-<%= form_for 'RN_checkout_post' => begin %>
-    <%= csrf_field %>
-    <%= submit_button 'Next' %>
-<% end %>
+<h3>Returning Customers</h3>
+sign in
+
+<h3>Guest Checkout</h3>
+<%= csrf_button_to 'Continue as Guest' => 'RN_checkout' => ( method => 'POST') %>

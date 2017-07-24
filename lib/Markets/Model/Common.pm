@@ -15,7 +15,7 @@ sub dbic_txn_failed {
         # 何らかのエラーによりロールバックした
         $self->app->db_log->warn($err);
         $self->app->error_log->warn($err);
-        warn $err;
+        die $err;
     }
 }
 

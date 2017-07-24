@@ -27,7 +27,7 @@ subtest 'dbic_txn_failed' => sub {
     $history = $app->error_log->history->[1];
     is $history->[1], 'warn', 'right log level';
     is $history->[2], $err, 'right log message';
-    is $@, '', 'right not died';
+    like $@, qr/$err/, 'right died';
 };
 
 done_testing();
