@@ -13,7 +13,7 @@ sub index {
 sub address {
     my $self = shift;
 
-    my $form = $self->form_set('checkout');
+    my $form = $self->form_set('checkout-address');
 
     # e.g.
     $form->field('billing_address.line1')->default_value('ogikubo');
@@ -41,7 +41,7 @@ sub address {
 sub shipping {
     my $self = shift;
 
-    my $form = $self->form_set('checkout');
+    my $form = $self->form_set('checkout-shipping');
     return $self->render() unless $form->has_data;
 
     return $self->render() unless $form->validate;
@@ -78,7 +78,14 @@ sub shipping {
 
 sub confirm {
     my $self = shift;
-    $self->render();
+
+    my $form = $self->form_set('checkout-confirm');
+    return $self->render() unless $form->has_data;
+
+    return $self->render() unless $form->validate;
+
+    # checkout complete
+    $self->complete_validate;
 }
 
 sub complete_validate {

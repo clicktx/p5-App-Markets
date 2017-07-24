@@ -86,7 +86,6 @@ sub add_catalog_routes {
         $checkout->any('/address')->to('#address')->name('RN_checkout_address');
         $checkout->any('/shipping')->to('#shipping')->name('RN_checkout_shipping');
         $checkout->any('/confirm')->to('#confirm')->name('RN_checkout_confirm');
-        $checkout->post('/complete')->to('#complete_validate')->name('RN_checkout_complete_validate');
         $checkout->get('/complete')->to('#complete')->name('RN_checkout_complete');
     }
 
