@@ -53,7 +53,7 @@ sub test_03_address : Tests() {
     $t->get_ok('/checkout/address')->status_is(200);
 }
 
-sub test_04_address_validate : Tests() {
+sub test_04_address_post : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -78,7 +78,7 @@ sub test_05_shipping : Tests() {
     $t->get_ok('/checkout/shipping')->status_is(200);
 }
 
-sub test_06_shipping_validate : Tests() {
+sub test_06_shipping_post : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -98,7 +98,7 @@ sub test_10_confirm : Tests() {
     $t->get_ok('/checkout/confirm')->status_is(200);
 }
 
-sub test_11_confirm_validate : Tests() {
+sub test_20_complete : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
