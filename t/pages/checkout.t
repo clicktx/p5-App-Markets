@@ -66,6 +66,9 @@ sub test_04_address_post : Tests() {
     my ($url) = map { $_->req->url->path } @{ $t->tx->redirects };
     is $url, '/checkout/address', 'right post to get';
 
+    # Reload session
+    $self->server_session->load($self->sid);
+
     my $cart = $self->server_session->cart;
     is $cart->data('billing_address')->{line1}, 'Silicon Valley', '';
     is $cart->data('shipments')->[0]->{shipping_address}->{line1}, 'San Francisco', '';
@@ -86,6 +89,9 @@ sub test_06_shipping_post : Tests() {
     $t->post_ok( '/checkout/shipping', form => $post_data )->status_is(200);
     my ($url) = map { $_->req->url->path } @{ $t->tx->redirects };
     is $url, '/checkout/shipping', 'right post to get';
+
+    # Reload session
+    $self->server_session->load($self->sid);
 
     my $cart = $self->server_session->cart;
     is_deeply $cart->data('shipments')->[0]->{shipping_items}, $CART_DATA->{items}, 'right moved items';
