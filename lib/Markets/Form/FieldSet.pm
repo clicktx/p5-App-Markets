@@ -17,7 +17,7 @@ sub append_field {
     return unless ( my $class = ref $self || $self ) && $field_key;
 
     no strict 'refs';
-    ${"${class}::schema"}{$field_key} = +{@_};
+    ${"${class}::schema"}{$field_key} = ref $_[0] eq 'HASH' ? $_[0] : +{@_};
 }
 
 sub checks { shift->_get_data( shift, 'validations' ) }
@@ -31,6 +31,13 @@ sub export_field {
 
     no strict 'refs';
     ${"${caller}::schema"}{$_} = $class->schema($_) for @field_keys;
+}
+
+sub field_info {
+    my $self = shift;
+    my $class = ref $self || $self;
+
+    return $class->schema(shift);
 }
 
 sub field_keys {
@@ -60,13 +67,7 @@ sub field {
 
 sub filters { shift->_get_data( shift, 'filters' ) }
 
-sub new {
-    my $class = shift;
-    my $self  = $class->SUPER::new(@_);
-
-    weaken $self->{controller};
-    return $self;
-}
+sub has_data { shift->controller->validation->has_data }
 
 sub import {
     my $class  = shift;
@@ -86,6 +87,14 @@ sub import {
         my $args = shift;
         ref $args eq 'ARRAY' ? $class->export_field( $caller, @$args ) : $class->export_field($caller);
     }
+}
+
+sub new {
+    my $class = shift;
+    my $self  = $class->SUPER::new(@_);
+
+    weaken $self->{controller};
+    return $self;
 }
 
 sub param {
@@ -350,11 +359,15 @@ Construct a new array-based L<Mojo::Collection> object.
 
     has_field 'field_name' => ( type => 'text', ... );
 
+    has_field 'field_name' => { type => 'text', ...  };
+
 =head1 METHODS
 
 =head2 C<append_field>
 
     $fieldset->append_field( 'field_name' => ( %args ) );
+
+    $fieldset->append_field( 'field_name' => \%args );
 
 =head2 C<checks>
 
@@ -375,6 +388,15 @@ Construct a new array-based L<Mojo::Collection> object.
 
     # All field exported.
     Markets::Form::FieldSet::Basic->export_field();
+
+=head2 C<field_info>
+
+    my $field_info = $fieldset->field_info($field_name);
+
+This method is an alias for L<schema>.
+
+Returns the field metadata hashref for a field, as originally passed to "has_field".
+See L</has_field> above for infomation on the contens of the hashref.
 
 =head2 C<field_keys>
 
@@ -399,6 +421,12 @@ Object once created are cached in "$fieldset->{_field}->{$field_key}".
     # Return hash refference
     # { field_key => [ 'filter1', 'filter2', ... ], field_key2 => [ 'filter1', 'filter2', ... ] }
     my $filters = $fieldset->filters;
+
+=head2 C<has_data>
+
+    $bool = $fieldset->has_data;
+
+L<Mojolicious::Validator::Validation/has_data>
 
 =head2 C<param>
 

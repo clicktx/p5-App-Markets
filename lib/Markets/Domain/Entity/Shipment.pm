@@ -21,6 +21,10 @@ sub subtotal_quantity {
     shift->shipping_items->reduce( sub { $a + $b->quantity }, 0 );
 }
 
+sub subtotal {
+    shift->shipping_items->reduce( sub { $a + $b->subtotal }, 0 );
+}
+
 1;
 __END__
 
@@ -37,10 +41,24 @@ Markets::Domain::Entity::Shipment
 L<Markets::Domain::Entity::Shipment> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<id>
+
+=head2 C<shipping_address>
+
+=head2 C<shipping_items>
+
 =head1 METHODS
 
 L<Markets::Domain::Entity::Shipment> inherits all methods from L<Markets::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<clone>
+
+=head2 C<item_count>
+
+=head2 C<subtotal_quantity>
+
+=head2 C<subtotal>
 
 =head1 AUTHOR
 

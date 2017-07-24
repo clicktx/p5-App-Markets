@@ -1,21 +1,48 @@
 % layout 'default';
-% title 'Cart';
+% title 'Shopping Cart';
 
 <h1><%= title %></h1>
 
-<%= __nx('{cnt :num} item', '{cnt :num} items', $self->cart->total_item_count, cnt => $self->cart->total_item_count) %>
-(Total QTY: <%= $self->cart->total_quantity %>) in your cart.
+<%= __nx('{cnt :num} item', '{cnt :num} items', $cart->total_item_count, cnt => $cart->total_item_count) %>
+(Total QTY: <%= $cart->total_quantity %>) in your cart.
 
-<ul>
-    % $self->cart->items->each( sub {
-        <li><%= dumper $_ %></li>
-    % });
-</ul>
+<%= form_for 'RN_cart' => ( method => 'POST' ) => begin %>
+    <ul>
+        <li>
+            Product Name | Unit Price | QTY | Subtotal
+        </li>
+
+        % $cart->items->each( sub {
+            % my ($item, $i) = @_;
+            <li>
+                <a href="<%= url_for 'RN_product' => { product_id => $item->product_id } %>">
+                    <%= $item->product_title %>
+                </a>
+                 | <%= $item->price %>
+                 | QTY:<%= $item->quantity %><%= form_widget("cart.quantity.$i") %><%= form_error("cart.item.$i.quantity") %>
+                 | <%= $item->subtotal %>
+            </li>
+        % } );
+    </ul>
+
+    <%= csrf_field %>
+    <%= submit_button 'Update Cart' %>
+<% end %>
+<%= csrf_button_to 'Remove All Items' => 'RN_cart_clear' => ( id => 'form-cart-clear') %>
+
+<hr>
+<div class="">
+    Subtotal: <%= $cart->subtotal %>
+</div>
+<div class="">
+    Grand Total: <%= $cart->grand_total %>
+</div>
+<hr>
 
 <ul>
     % my $ref = $self->flash('ref') || '/';
     <li><%= link_to 'Continue Shopping' => $ref %></li>
     <li>Clear Cart</li>
     <li><%= link_to 'Edit Cart' => 'RN_cart' %></li>
-    <li><%= link_to 'Proceed to Checkout' => 'RN_checkout' %></li>
+    <li><%= link_to 'Check Out' => 'RN_checkout' %></li>
 </ul>

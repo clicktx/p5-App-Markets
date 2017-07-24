@@ -26,9 +26,19 @@ subtest 'label' => sub {
 };
 
 subtest 'input basic' => sub {
+    my $f2 = Markets::Form::Field->new(
+        field_key     => 'foo',
+        name          => 'foo',
+        default_value => 'bar',
+    );
+    $f2->value('baz');
+    my $dom;
+    $dom = Mojo::DOM->new( $f2->text($c) );
+    is $dom->at('*')->attr->{value}, 'baz';
+
     my @types = qw(email number search tel text url);
     for my $type (@types) {
-        my $dom = Mojo::DOM->new( $f->$type($c) );
+        $dom = Mojo::DOM->new( $f->$type($c) );
         is_deeply $dom->at('*')->attr,
           {
             type        => $type,
@@ -111,8 +121,13 @@ subtest 'textarea' => sub {
     );
     my $dom = Mojo::DOM->new( $f->textarea($c) );
     is $dom->at('*')->tag, 'textarea', 'right tag';
-    is_deeply $dom->at('*')->attr, { id => 'form_widget_order_note', name => 'order.note', cols => 40 }, 'right textarea';
+    is_deeply $dom->at('*')->attr, { id => 'form_widget_order_note', name => 'order.note', cols => 40 },
+      'right textarea';
     is $dom->at('*')->text, 'default text', 'right text';
+
+    $f->value('baz');
+    $dom = Mojo::DOM->new( $f->textarea($c) );
+    is $dom->at('*')->attr->{value}, 'baz';
 };
 
 subtest 'radio checkbox' => sub {

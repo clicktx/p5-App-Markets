@@ -3,47 +3,63 @@ use Mojo::Base 'Markets::Controller::Catalog';
 
 sub index {
     my $self = shift;
-    $self->render();
-}
 
-sub index_post {
-    my $self = shift;
+    my $form = $self->form_set('checkout');
+    return $self->render() unless $form->has_data;
 
-    # $self->render( template => 'checkout/index' );
     $self->redirect_to('RN_checkout_address');
 }
 
 sub address {
     my $self = shift;
+
+    my $form = $self->form_set('checkout-address');
+
+    # e.g.
+    $form->field('billing_address.line1')->default_value('ogikubo');
+    $form->field('shipping_address.line1')->default_value('kamiizumi');
+
+    return $self->render() unless $form->has_data;
+
+    if ( $form->validate ) {
+
+        # billing address
+        my $billing_address = $form->param('billing_address.line1');
+        $self->cart->billing_address->line1($billing_address);
+
+        # shipping address
+        my $shipping_address = $form->param('shipping_address.line1');
+        my $shipments        = $self->cart->shipments;
+        $shipments->[0]->shipping_address->line1($shipping_address);
+
+        return $self->redirect_to('RN_checkout_shipping');
+    }
+
     $self->render();
-}
-
-sub address_validate {
-    my $self = shift;
-
-    my $billing_address  = $self->param('billing_address.line1');
-    my $shipping_address = $self->param('shipping_address.line1');
-
-    $self->cart->billing_address->line1($billing_address);
-    my $shipments = $self->cart->shipments;
-
-    # $shipments->first->shipping_address->line1($shipping_address);
-    $shipments->[0]->shipping_address->line1($shipping_address);
-
-    # return $self->render( template => 'checkout/address' ) if $error;
-    $self->redirect_to('RN_checkout_shipping');
 }
 
 sub shipping {
     my $self = shift;
 
-    my $cart = $self->cart;
+    my $form = $self->form_set('checkout-shipping');
+    return $self->render() unless $form->has_data;
+
+    return $self->render() unless $form->validate;
+
+    # 複数配送を使うか
+    if ( $self->pref('can_multiple_shipments') ) {
+        say 'multiple shipment is true';
+    }
+    else {
+        say 'multiple shipment is false';
+    }
 
     # shipping address
     # 商品をshipmentに移動
     # cart.itemsからitemを減らす。shipment.shipping_itemsを増やす
     # 本来は数量を考慮しなくてはならない
     # $item.quantityが0になった場合の動作はどうする？
+    my $cart = $self->cart;
     $cart->items->each(
         sub {
             # カートitemsから削除
@@ -59,25 +75,25 @@ sub shipping {
     # $cart->is_modified(1)? しか使わなければ実行時間は早く出来る。
     # Entity::Cart::is_modifiedも考慮して実装しよう
 
-    $self->render();
-}
-
-sub shipping_validate {
-    my $self = shift;
-
-    # return $self->render( template => 'checkout/address' ) if $error;
-    $self->redirect_to('RN_checkout_confirm');
+    return $self->redirect_to('RN_checkout_confirm');
 }
 
 #sub payment { }
-sub billing {
-    my $self = shift;
-    $self->render();
-}
+# sub billing {
+#     my $self = shift;
+#     $self->render();
+# }
 
 sub confirm {
     my $self = shift;
-    $self->render();
+
+    my $form = $self->form_set('checkout-confirm');
+    return $self->render() unless $form->has_data;
+
+    return $self->render() unless $form->validate;
+
+    # checkout complete
+    $self->complete_validate;
 }
 
 sub complete_validate {

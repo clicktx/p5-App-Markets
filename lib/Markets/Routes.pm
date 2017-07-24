@@ -76,22 +76,16 @@ sub add_catalog_routes {
     $r->any('/login_example')->to('login_example#index');
 
     # Cart
-    $r->get('/cart')->to('cart#index')->name('RN_cart');
+    $r->any('/cart')->to('cart#index')->name('RN_cart');
+    $r->post('/cart/clear')->to('cart#clear')->name('RN_cart_clear');
 
     # Checkout
     {
         my $checkout = $r->any('/checkout')->to( controller => 'checkout' );
-        $checkout->get('/')->to('#index')->name('RN_checkout');
-        $checkout->post('/')->to('#index_post')->name('RN_checkout_post');
-        $checkout->get('/address')->to('#address')->name('RN_checkout_address');
-        $checkout->post('/address')->to('#address_validate')->name('RN_checkout_address_validate');
-        $checkout->get('/shipping')->to('#shipping')->name('RN_checkout_shipping');
-        $checkout->post('/shipping')->to('#shipping_validate')->name('RN_checkout_shipping_validate');
-        $checkout->post('/payment')->to('#payment')->name('RN_checkout_payment');
-        $checkout->post('/billing')->to('#billing')->name('RN_checkout_billing');
-
+        $checkout->any('/')->to('#index')->name('RN_checkout');
+        $checkout->any('/address')->to('#address')->name('RN_checkout_address');
+        $checkout->any('/shipping')->to('#shipping')->name('RN_checkout_shipping');
         $checkout->any('/confirm')->to('#confirm')->name('RN_checkout_confirm');
-        $checkout->post('/complete')->to('#complete_validate')->name('RN_checkout_complete_validate');
         $checkout->get('/complete')->to('#complete')->name('RN_checkout_complete');
     }
 

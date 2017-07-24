@@ -44,27 +44,28 @@ sub add_shipping_item {
     return $self;
 }
 
-sub _add_item {
-    my $collection = shift;
-    my $item       = shift;
-
-    my $exsist_item = $collection->find( $item->id );
-    if ($exsist_item) {
-        my $qty = $exsist_item->quantity + $item->quantity;
-        $exsist_item->quantity($qty);
-    }
-    else {
-        push @{$collection}, $item;
-    }
-}
-
 sub all_shipping_items {
     shift->shipments->map( sub { $_->shipping_items->each } );
+}
+
+# NOTE: shipping_itemsにあるitemsも削除するべきか？
+sub clear {
+    my $self = shift;
+    $self->items->each( sub { $self->remove_item( $_->id ) } );
 }
 
 sub count {
     my ( $self, $attr ) = @_;
     return $self->$attr->size;
+}
+
+sub grand_total {
+    my $self        = shift;
+    my $grand_total = $self->subtotal;
+
+    # 送料計算等
+
+    return $grand_total;
 }
 
 sub merge {
@@ -77,7 +78,7 @@ sub merge {
                 my ( $e, $i ) = @_;
                 if ( $e->is_equal($item) ) {
                     $item->quantity( $e->quantity + $item->quantity );
-                    splice @{ $self->items }, $i - 1, 1;
+                    splice @{ $self->items }, $i, 1;
                 }
             }
         );
@@ -106,6 +107,16 @@ sub remove_item {
     return $removed;
 }
 
+sub subtotal {
+    my $self     = shift;
+    my $subtotal = 0;
+
+    $subtotal += $self->items->reduce( sub { $a + $b->subtotal }, 0 );
+    $subtotal += $self->shipments->reduce( sub { $a + $b->subtotal }, 0 );
+
+    return $subtotal;
+}
+
 sub to_order_data {
     my $self = shift;
     my $data = $self->to_data;
@@ -126,6 +137,20 @@ sub total_quantity {
       $_[0]->shipments->reduce( sub { $a + $b->subtotal_quantity }, 0 );
 }
 
+sub _add_item {
+    my $collection = shift;
+    my $item       = shift;
+
+    my $exsist_item = $collection->find( $item->id );
+    if ($exsist_item) {
+        my $qty = $exsist_item->quantity + $item->quantity;
+        $exsist_item->quantity($qty);
+    }
+    else {
+        push @{$collection}, $item;
+    }
+}
+
 1;
 __END__
 
@@ -141,6 +166,8 @@ Markets::Domain::Entity::Cart
 
 L<Markets::Domain::Entity::Cart> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<billing_address>
 
 =head2 C<cart_id>
 
@@ -189,9 +216,17 @@ default $shipments->first
 
 All items in shipments.
 
+=head2 C<clear>
+
+    $cart->clear;
+
+Remove all items.
+
 =head2 C<clone>
 
 =head2 C<count>
+
+=head2 C<grand_total>
 
 =head2 C<is_modified>
 
@@ -211,6 +246,10 @@ Return Entity Cart Object.
 
 Return Entity Item Object or undef.
 
+=head2 C<subtotal>
+
+    my $subtotal = $cart->subtotal;
+
 =head2 C<to_order_data>
 
     my $order = $self->to_order_data;
@@ -218,6 +257,12 @@ Return Entity Item Object or undef.
 =head2 C<total_item_count>
 
     my $item_count = $cart->total_item_count;
+
+Return number of items types.
+
+=head2 C<total_quantity>
+
+    my $total_qty = $cart->total_quantity;
 
 Return all items quantity.
 

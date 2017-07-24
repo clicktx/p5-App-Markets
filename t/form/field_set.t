@@ -63,6 +63,16 @@ subtest 'field' => sub {
     isa_ok $f, 'Markets::Form::Field';
 };
 
+subtest 'field_info' => sub {
+    my $info = Markets::Form::FieldSet::Test->field_info('name');
+    is_deeply $info,
+      {
+        type     => 'text',
+        required => 1
+      },
+      'right field info';
+};
+
 subtest 'field_keys' => sub {
     my @field_keys = $fs->field_keys;
     is_deeply \@field_keys, [qw/email name address favorite_color luky_number item.[].id item.[].name/],
@@ -87,9 +97,19 @@ subtest 'filters' => sub {
       'right all filters';
 };
 
-subtest 'parameters' => sub {
+subtest 'has_data' => sub {
+    my $c = $t->app->build_controller;
+    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    is $fs->has_data, '', 'right has not data';
 
     # Create new request
+    $c = $t->app->build_controller;
+    $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    $c->req->params->pairs( [ email => 'a@b.c', ] );
+    is $fs->has_data, 1, 'right has data';
+};
+
+subtest 'parameters' => sub {
     my $c = $t->app->build_controller;
     my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
@@ -164,8 +184,6 @@ subtest 'schema' => sub {
 };
 
 subtest 'validate' => sub {
-
-    # Create new request
     my $c = $t->app->build_controller;
     my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
@@ -217,8 +235,6 @@ subtest 'validate' => sub {
 };
 
 subtest 'validate with filter' => sub {
-
-    # Create new request
     my $c = $t->app->build_controller;
     my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
@@ -251,9 +267,16 @@ subtest 'append/remove' => sub {
     is_deeply \@field_keys, [qw/email name address favorite_color luky_number item.[].id item.[].name aaa/],
       'right field_keys';
 
+    # Hash refference
+    $fs->append_field( bbb => { type => 'choice' } );
+    @field_keys = $fs->field_keys;
+    is_deeply \@field_keys, [qw/email name address favorite_color luky_number item.[].id item.[].name aaa bbb/],
+      'right field_keys';
+    is_deeply $fs->schema('bbb'), { type => 'choice' }, 'right schema';
+
     $fs->remove('name');
     @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/email address favorite_color luky_number item.[].id item.[].name aaa/],
+    is_deeply \@field_keys, [qw/email address favorite_color luky_number item.[].id item.[].name aaa bbb/],
       'right field_keys';
 };
 

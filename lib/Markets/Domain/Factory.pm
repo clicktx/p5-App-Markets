@@ -143,9 +143,6 @@ Markets::Domain::Factory
 
 =head1 ATTRIBUTES
 
-L<Markets::Domain::Factory> inherits all attributes from L<Mojo::Base> and implements
-the following new ones.
-
 =head2 C<entity_class>
 
     my $entity_class = $factory->entity_class;
@@ -153,6 +150,9 @@ the following new ones.
 Get namespace as a construct entity class.
 
 =head1 METHODS
+
+L<Markets::Domain::Factory> inherits all methods from L<Mojo::Base> and implements
+the following new ones.
 
 =head2 C<aggregate>
 

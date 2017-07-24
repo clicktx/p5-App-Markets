@@ -139,6 +139,9 @@ Construct a new index-hash-based L<Markets::Domain::IxHash> object.
 
 =head1 METHODS
 
+L<Markets::Domain::IxHash> inherits all methods from L<Mojo::Base> and implements
+the following new ones.
+
 =head2 C<each>
 
     my %key_value = $ix_hash->each;

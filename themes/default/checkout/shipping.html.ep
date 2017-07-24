@@ -16,11 +16,10 @@
     <li>Order Confirmation</li>
 </ol>
 
-<%= form_for 'RN_checkout_shipping_validate' => begin %>
+<%= form_for 'RN_checkout_shipping' => ( method => 'POST' ) => begin %>
     <%= csrf_field %>
+    <%= form_widget 'checkout-shipping.is_multiple_shipments' %>
     <%= submit_button 'Next' %>
 <% end %>
 
-<%= form_for 'RN_checkout_address' => begin %>
-    <%= submit_button 'Back to page' %>
-<% end %>
+<%= link_to 'Back to page' => 'RN_checkout_address' %>

@@ -6,6 +6,15 @@ our @EXPORT_OK = ('collection');
 
 sub collection { __PACKAGE__->new(@_) }
 
+# NOTE: This code from Mojo::Collection. But start numner is "0".
+sub each {
+    my ( $self, $cb ) = @_;
+    return @$self unless $cb;
+    my $i = 0;
+    $_->$cb( $i++ ) for @$self;
+    return $self;
+}
+
 # NOTE: 同じcollectionに同一のidを持つ要素は存在しないはずなのでsearchメソッドは不要？
 sub find {
     my ( $self, $str ) = @_;
@@ -44,6 +53,20 @@ the following new ones.
 Construct a new array-based L<Markets::Domain::Collection> object.
 
 =head1 METHODS
+
+L<Markets::Domain::Collection> inherits all methods from L<Mojo::Collection> and implements
+the following new ones.
+
+=head2 C<each>
+
+    # $i starting from 0!
+    $collection->each( sub {
+        my ( $e, $i ) = @_;
+        say $i; # 0
+    });
+
+This method is similar to Mojo::Collection::each.
+The difference is that the second argument received will start at 0.
 
 =head2 C<find>
 

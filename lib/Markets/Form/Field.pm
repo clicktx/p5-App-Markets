@@ -9,7 +9,7 @@ our $help_class     = 'form-help-block';
 our $required_class = 'form-required-field-icon';
 our $required_icon  = '*';
 
-has id => sub { $_ = shift->name; s/\./_/g; return "form_widget_$_" };
+has id => sub { my $id = shift->name; $id =~ s/\./_/g; return "form_widget_$id" };
 has [qw(field_key default_value choices help label error_messages multiple expanded)];
 has [qw(name type value placeholder checked)];
 
@@ -207,7 +207,7 @@ sub _input {
     else {
         $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
 
-        $attrs{value} = $c->__($default_value) if $default_value;
+        $attrs{value} = $default_value if $default_value && !exists $attrs{value};
         return $c->$method( $name, %attrs );
     }
 }
@@ -270,7 +270,7 @@ sub _textarea {
     my $default_value = delete $attrs{default_value};
     $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
 
-    return $c->text_area( $name => $c->__($default_value), %attrs );
+    return $c->text_area( $name => $default_value, %attrs );
 }
 
 # This code from Mojolicious::Plugin::TagHelpers

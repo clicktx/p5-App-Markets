@@ -31,9 +31,6 @@ Markets::Service - Application Service Layer
 
 =head1 ATTRIBUTES
 
-L<Markets::Service> inherits all attributes from L<Mojo::Base> and implements
-the following new ones.
-
 =head2 C<app>
 
     my $app  = $service->app;

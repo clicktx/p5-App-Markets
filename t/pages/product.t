@@ -25,7 +25,14 @@ sub add_item : Tests() {
 
     my $server_session = $self->server_session;
     delete $post_data->{csrf_token};
-    is_deeply $server_session->cart->data->{items}->[0], $post_data, 'right add item';
+    is_deeply $server_session->cart->data->{items}->[0],
+      {
+        product_id    => 1,
+        product_title => 'test product1',
+        quantity      => 2,
+        price         => '100.00',
+      },
+      'right add item';
 }
 
 __PACKAGE__->runtests;
