@@ -46,6 +46,14 @@ sub shipping {
 
     return $self->render() unless $form->validate;
 
+    # 複数配送を使うか
+    if ( $self->pref('can_multiple_shipments') ) {
+        say 'multiple shipment is true';
+    }
+    else {
+        say 'multiple shipment is false';
+    }
+
     # shipping address
     # 商品をshipmentに移動
     # cart.itemsからitemを減らす。shipment.shipping_itemsを増やす
