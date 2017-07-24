@@ -33,6 +33,13 @@ sub export_field {
     ${"${caller}::schema"}{$_} = $class->schema($_) for @field_keys;
 }
 
+sub field_info {
+    my $self = shift;
+    my $class = ref $self || $self;
+
+    return $class->schema(shift);
+}
+
 sub field_keys {
     my $self = shift;
     my $class = ref $self || $self;
@@ -381,6 +388,15 @@ Construct a new array-based L<Mojo::Collection> object.
 
     # All field exported.
     Markets::Form::FieldSet::Basic->export_field();
+
+=head2 C<field_info>
+
+    my $field_info = $fieldset->field_info($field_name);
+
+This method is an alias for L<schema>.
+
+Returns the field metadata hashref for a field, as originally passed to "has_field".
+See L</has_field> above for infomation on the contens of the hashref.
 
 =head2 C<field_keys>
 
