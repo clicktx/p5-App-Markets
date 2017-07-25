@@ -236,7 +236,7 @@ __END__
 
 =head1 NAME
 
-Markets::Form::Field
+Markets::Form::FieldSet
 
 =head1 SYNOPSIS
 
@@ -349,6 +349,9 @@ Return boolean value.
 
 =head1 FUNCTIONS
 
+L<Markets::Form::FieldSet> inherits all functions from L<Mojo::Base> and implements
+the following new ones.
+
 =head2 C<c>
 
     my $collection = c(1, 2, 3);
@@ -362,6 +365,9 @@ Construct a new array-based L<Mojo::Collection> object.
     has_field 'field_name' => { type => 'text', ...  };
 
 =head1 METHODS
+
+L<Markets::Form::FieldSet> inherits all methods from L<Mojo::Base> and implements
+the following new ones.
 
 =head2 C<append_field>
 

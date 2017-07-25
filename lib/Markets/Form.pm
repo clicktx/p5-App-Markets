@@ -2,8 +2,8 @@ package Markets::Form;
 use Mojo::Base 'Mojolicious::Plugin';
 use Markets::Util qw(load_class);
 
-my $FORM_CLASS = 'Markets::Form::FieldSet';
-my $FORM_STASH = 'markets.form';
+my $NAME_SPACE = 'Markets::Form::FieldSet';
+my $STASH_NAME = 'markets.form';
 
 sub register {
     my ( $self, $app ) = @_;
@@ -13,35 +13,46 @@ sub register {
 
     # Helpers
     $app->helper( form_error  => sub { _form_render( 'render_error', @_ ) } );
+    $app->helper( form_field  => sub { _form_field(@_) } );
     $app->helper( form_help   => sub { _form_render( 'render_help',  @_ ) } );
     $app->helper( form_label  => sub { _form_render( 'render_label', @_ ) } );
     $app->helper( form_set    => sub { _form_set(@_) } );
     $app->helper( form_widget => sub { _form_render( 'render',       @_ ) } );
 }
 
-sub _form_set {
-    my ( $self, $ns ) = @_;
-    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
-    Carp::croak 'Arguments empty' unless $ns;
+sub _form_field {
+    my ( $c, $topic ) = @_;
+    die 'Arguments empty.' unless $topic;
 
-    $self->stash( $FORM_STASH => {} ) unless $self->stash($FORM_STASH);
-    my $formset = $self->stash($FORM_STASH)->{$ns};
+    $c->stash( $STASH_NAME . '.topic_field' => $topic );
+    return;
+}
+
+sub _form_set {
+    my $c = shift;
+
+    my $ns = shift || $c->stash('controller') . '-' . $c->stash('action');
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+
+    $c->stash( $STASH_NAME => {} ) unless $c->stash($STASH_NAME);
+    my $formset = $c->stash($STASH_NAME)->{$ns};
     return $formset if $formset;
 
-    my $class = $FORM_CLASS . "::" . $ns;
+    my $class = $NAME_SPACE . "::" . $ns;
     load_class($class);
 
-    $formset = $class->new( controller => $self );
-    $self->stash($FORM_STASH)->{$ns} = $formset;
+    $formset = $class->new( controller => $c );
+    $c->stash($STASH_NAME)->{$ns} = $formset;
     return $formset;
 }
 
 sub _form_render {
-    my $method = shift;
-    my $self   = shift;
-    my ( $form, $field_key ) = shift =~ /(.+?)\.(.+)/;
+    my ( $method, $c, $topic_field ) = @_;
 
-    return _form_set( $self, $form )->$method( $field_key, @_ );
+    $topic_field = $c->stash( $STASH_NAME . '.topic_field' ) unless $topic_field;
+    my ( $fieldset, $field_key ) = $topic_field =~ /(.*)#(.+)/;
+
+    return _form_set( $c, $fieldset )->$method( $field_key, @_ );
 }
 
 1;
@@ -66,6 +77,17 @@ Markets::Form - Form for Markets
 
 L<Markets::Form> implements the following helpers.
 
+=head2 C<form_field>
+
+    # In templates
+    <%= form_field 'foo-bar#field1' %>
+    <%= form_label %>
+    <%= form_widget %>
+    <%= form_error %>
+
+Return none.
+Cache the currently used form-field in "$c->stash".
+
 =head2 C<form_set>
 
     # Markets::Form::FieldSet::Example
@@ -73,6 +95,10 @@ L<Markets::Form> implements the following helpers.
 
     # Markets::Form::FieldSet::Admin::Example
     my $form_set = $c->form_set('admin-example');
+
+    # Controller is "Hoge" and Action is "index"
+    # require class is Markets::Form::FieldSet::Hoge::Index
+    my $form_set = $c->form_set();
 
 Return L<Markets::Form::FieldSet> object.
 
@@ -85,7 +111,7 @@ All helpers are L<Mojolicious::Plugin::TagHelpers> wrapper.
 =head2 C<form_error>
 
     # In template
-    %= form_error('example.email')
+    %= form_error('example#email')
 
     # Longer Version
     %= form_set('example')->render_error('email')
@@ -93,7 +119,7 @@ All helpers are L<Mojolicious::Plugin::TagHelpers> wrapper.
 =head2 C<form_help>
 
     # In template
-    %= form_help('example.email')
+    %= form_help('example#email')
 
     # Longer Version
     %= form_set('example')->render_help('email')
@@ -101,7 +127,7 @@ All helpers are L<Mojolicious::Plugin::TagHelpers> wrapper.
 =head2 C<form_label>
 
     # In template
-    %= form_label('example.email')
+    %= form_label('example#email')
 
     # Longer Version
     %= form_set('example')->render_label('email')
@@ -112,13 +138,13 @@ L<Mojolicious::Plugin::TagHelpers> wrapper method.
 =head2 C<form_widget>
 
     # In template
-    %= form_widget('example.email')
+    %= form_widget('example#email')
 
     # Longer Version
     %= form_set('example')->render_widget('email')
 
     # With attributes
-    %= form_widget('example.email', value => 'name@domain.com')
+    %= form_widget('example#email', value => 'name@domain.com')
 
 Rendering tag from Markets::Form::Type::xxx.
 L<Mojolicious::Plugin::TagHelpers> wrapper method.

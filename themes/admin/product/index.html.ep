@@ -11,6 +11,6 @@
 </ul>
 
 <%= form_for 'RN_admin_products' => ( method => 'GET' ) => begin %>
-    <%= form_widget 'admin-product.keywords' %>
+    <%= form_widget 'admin-product#keywords' %>
     <%= submit_button __('Search') %>
 <% end %>

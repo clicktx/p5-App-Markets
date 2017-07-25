@@ -294,27 +294,38 @@ Markets::Form::Field
     my $field = Markets::Form::Field->new(
         field_key     => 'email',
         name          => 'email',
-        label         => 'EMAIL',
+        label         => 'E-mail',
     );
 
     say $field->label($c);
     say $field->text($c);
 
     # Rendering HTML
-    # <label for="email">EMAIL</label>
+    # <label for="email">E-mail</label>
     # <input id="email" type="text" name="email">
 
 
     # In templetes using helpers
-    %= form_label('example.password_again')
-    %= form_widget('example.password_again')
-    %= form_help('example.password_again')
-    %= form_error('example.password_again')
+    %= form_label('example#password_again')
+    %= form_widget('example#password_again')
+    %= form_help('example#password_again')
+    %= form_error('example#password_again')
+
+    # Or more smart!
+    %= form_field('example#password_again')
+    %= form_label
+    %= form_widget
+    %= form_help
+    %= form_error
+
 
 =head1 DESCRIPTION
 
 
 =head1 METHODS
+
+L<Markets::Form::Field> inherits all methods from L<Mojo::Base> and implements
+the following new ones.
 
 Return code refference.
 All methods is L<Mojolicious::Plugin::TagHelpers> wrapper method.
@@ -533,6 +544,6 @@ See L<Mojolicious::Plugin::LocaleTextDomainOO>
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin::TagHelpers>
+L<Mojolicious::Plugin::TagHelpers>, L<Markets::Form>, L<Markets::Form::FieldSet>
 
 =cut
