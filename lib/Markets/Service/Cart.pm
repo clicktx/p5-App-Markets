@@ -21,8 +21,9 @@ sub add_item {
 sub create_entity {
     my $self = shift;
 
-    my $cart_data = $self->controller->cart_session->data;
-    $cart_data->{cart_id} = $self->controller->cart_session->cart_id;
+    my $cart      = $self->controller->server_session->cart;
+    my $cart_data = $cart->data;
+    $cart_data->{cart_id} = $cart->cart_id;
 
     return $self->app->factory('entity-cart')->create($cart_data);
 }
