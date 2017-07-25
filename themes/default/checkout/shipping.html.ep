@@ -18,7 +18,7 @@
 
 <%= form_for 'RN_checkout_shipping' => ( method => 'POST' ) => begin %>
     <%= csrf_field %>
-    <%= form_widget 'checkout-shipping#is_multiple_shipments' %>
+    <%= form_widget '#is_multiple_shipments' %>
     <%= submit_button 'Next' %>
 <% end %>
 

@@ -13,10 +13,19 @@ sub register {
 
     # Helpers
     $app->helper( form_error  => sub { _form_render( 'render_error', @_ ) } );
+    $app->helper( form_field  => sub { _form_field(@_) } );
     $app->helper( form_help   => sub { _form_render( 'render_help',  @_ ) } );
     $app->helper( form_label  => sub { _form_render( 'render_label', @_ ) } );
     $app->helper( form_set    => sub { _form_set(@_) } );
     $app->helper( form_widget => sub { _form_render( 'render',       @_ ) } );
+}
+
+sub _form_field {
+    my ( $c, $topic ) = @_;
+    die 'Arguments empty.' unless $topic;
+
+    $c->stash( $STASH_NAME . '.topic_field' => $topic );
+    return;
 }
 
 sub _form_set {
@@ -38,9 +47,10 @@ sub _form_set {
 }
 
 sub _form_render {
-    my $method = shift;
-    my $c      = shift;
-    my ( $fieldset, $field_key ) = shift =~ /(.*)#(.+)/;
+    my ( $method, $c, $topic_field ) = @_;
+
+    $topic_field = $c->stash( $STASH_NAME . '.topic_field' ) unless $topic_field;
+    my ( $fieldset, $field_key ) = $topic_field =~ /(.*)#(.+)/;
 
     return _form_set( $c, $fieldset )->$method( $field_key, @_ );
 }
@@ -66,6 +76,17 @@ Markets::Form - Form for Markets
 =head1 HELPERS
 
 L<Markets::Form> implements the following helpers.
+
+=head2 C<form_field>
+
+    # In templates
+    <%= form_field 'foo-bar#field1' %>
+    <%= form_label %>
+    <%= form_widget %>
+    <%= form_error %>
+
+Return none.
+Cache the currently used form-field in "$c->stash".
 
 =head2 C<form_set>
 

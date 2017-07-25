@@ -24,11 +24,11 @@
         <%= form_label('example#email') %>
         <%= form_widget('example#email') %>
     </div>
-    <div class="">
-        <%= form_label('example#password') %>
-        <%= form_widget('example#password') %>
-        <%= form_help('example#password') %>
-        <%= form_error('example#password') %>
+    <div class=""><%= form_field('example#password') %>
+        <%= form_label %>
+        <%= form_widget %>
+        <%= form_help %>
+        <%= form_error %>
     </div>
     <div class="">
         <%= form_label('example#password_again') %>
