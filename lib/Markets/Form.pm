@@ -22,7 +22,7 @@ sub register {
 sub _form_set {
     my $c = shift;
 
-    my $ns = @_ ? shift : $c->stash('controller') . '-' . $c->stash('action');
+    my $ns = shift || $c->stash('controller') . '-' . $c->stash('action');
     $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
 
     $c->stash( $STASH_NAME => {} ) unless $c->stash($STASH_NAME);
