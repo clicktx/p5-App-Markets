@@ -51,36 +51,8 @@ sub register {
             else {
                 _create_session( $c, $session );
             }
-            say "   ... sid: ";                                      # debug
-            p $session->sid;
-
-            # Cart
-            say "   ... CartSession data: ";                         # debug
-            p $session->cart_session->data;
         }
     );
-
-    # $app->hook(
-    #     after_dispatch => sub {
-    #         my $c = shift;
-    #         say "hook! after_dispatch from plugin session";          # debug
-    #         return if $c->stash('mojo.static');
-    #
-    #         # Dynamic route only
-    #         say "   ... This route is dynamic";                      # debug
-    #         say "   ... session flush";                              # debug
-    #         $c->stash($stash_key)->flush;
-    #     }
-    # );
-
-    # $app->hook(
-    #     after_action => sub {
-    #         my $c = shift;
-    #         say "hook! after_action from plugin session";    # debug
-    #         say "   ... session flush";                      # debug
-    #         $c->stash($stash_key)->flush;
-    #     }
-    # );
 }
 
 sub _create_session {
