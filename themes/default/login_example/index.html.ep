@@ -21,50 +21,50 @@
 
     <h4>smart version</h4>
     <div class="">
-        <%= form_label('example.email') %>
-        <%= form_widget('example.email') %>
+        <%= form_label('example#email') %>
+        <%= form_widget('example#email') %>
     </div>
     <div class="">
-        <%= form_label('example.password') %>
-        <%= form_widget('example.password') %>
-        <%= form_help('example.password') %>
-        <%= form_error('example.password') %>
+        <%= form_label('example#password') %>
+        <%= form_widget('example#password') %>
+        <%= form_help('example#password') %>
+        <%= form_error('example#password') %>
     </div>
     <div class="">
-        <%= form_label('example.password_again') %>
-        <%= form_widget('example.password_again') %>
-        <%= form_help('example.password_again') %>
-        <%= form_error('example.password_again') %>
+        <%= form_label('example#password_again') %>
+        <%= form_widget('example#password_again') %>
+        <%= form_help('example#password_again') %>
+        <%= form_error('example#password_again') %>
     </div>
 
     <div class="">
-        <%= form_label('example.address') %>
-        <%= form_widget('example.address') %>
+        <%= form_label('example#address') %>
+        <%= form_widget('example#address') %>
     </div>
     <div class="">
-        <%= form_label('example.agreed') %>
-        <%= form_widget('example.agreed') %>
+        <%= form_label('example#agreed') %>
+        <%= form_widget('example#agreed') %>
     </div>
     <div class="">
-        <%= form_label('example.note') %>
-        <%= form_widget('example.note') %>
+        <%= form_label('example#note') %>
+        <%= form_widget('example#note') %>
     </div>
     <div class="">
-        <%= form_label('example.country') %>
-        <%= form_widget('example.country') %>
+        <%= form_label('example#country') %>
+        <%= form_widget('example#country') %>
     </div>
     <div class="">
-        <%= form_label('example.country2') %>
-        <%= form_widget('example.country2') %>
+        <%= form_label('example#country2') %>
+        <%= form_widget('example#country2') %>
     </div>
     <div class="">
-        <%= form_label('example.country3') %>
-        <%= form_widget('example.country3') %>
+        <%= form_label('example#country3') %>
+        <%= form_widget('example#country3') %>
     </div>
 
     <h4>in loop</h4>
     % my $i = 0; foreach my $data (@{$item}) {
-        % my $name = 'example.item.' . $i . '.name';
+        % my $name = 'example#item.' . $i . '.name';
         <div class="">
             <%= $data->{id} %>
             <%= $data->{name} %>

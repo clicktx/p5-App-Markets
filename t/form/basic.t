@@ -13,6 +13,7 @@ subtest 'helpers' => sub {
     can_ok $c->helpers, 'form_label';
     can_ok $c->helpers, 'form_set';
     can_ok $c->helpers, 'form_widget';
+    ok $c->form_widget('test#name'), 'right form widget';
 };
 
 subtest 'form_set' => sub {

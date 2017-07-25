@@ -40,9 +40,9 @@ sub _form_set {
 sub _form_render {
     my $method = shift;
     my $c      = shift;
-    my ( $form, $field_key ) = shift =~ /(.+?)\.(.+)/;
+    my ( $fieldset, $field_key ) = shift =~ /(.*)#(.+)/;
 
-    return _form_set( $c, $form )->$method( $field_key, @_ );
+    return _form_set( $c, $fieldset )->$method( $field_key, @_ );
 }
 
 1;
@@ -90,7 +90,7 @@ All helpers are L<Mojolicious::Plugin::TagHelpers> wrapper.
 =head2 C<form_error>
 
     # In template
-    %= form_error('example.email')
+    %= form_error('example#email')
 
     # Longer Version
     %= form_set('example')->render_error('email')
@@ -98,7 +98,7 @@ All helpers are L<Mojolicious::Plugin::TagHelpers> wrapper.
 =head2 C<form_help>
 
     # In template
-    %= form_help('example.email')
+    %= form_help('example#email')
 
     # Longer Version
     %= form_set('example')->render_help('email')
@@ -106,7 +106,7 @@ All helpers are L<Mojolicious::Plugin::TagHelpers> wrapper.
 =head2 C<form_label>
 
     # In template
-    %= form_label('example.email')
+    %= form_label('example#email')
 
     # Longer Version
     %= form_set('example')->render_label('email')
@@ -117,13 +117,13 @@ L<Mojolicious::Plugin::TagHelpers> wrapper method.
 =head2 C<form_widget>
 
     # In template
-    %= form_widget('example.email')
+    %= form_widget('example#email')
 
     # Longer Version
     %= form_set('example')->render_widget('email')
 
     # With attributes
-    %= form_widget('example.email', value => 'name@domain.com')
+    %= form_widget('example#email', value => 'name@domain.com')
 
 Rendering tag from Markets::Form::Type::xxx.
 L<Mojolicious::Plugin::TagHelpers> wrapper method.
