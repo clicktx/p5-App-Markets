@@ -2,8 +2,8 @@ package Markets::Form;
 use Mojo::Base 'Mojolicious::Plugin';
 use Markets::Util qw(load_class);
 
-my $FORM_CLASS = 'Markets::Form::FieldSet';
-my $FORM_STASH = 'markets.form';
+my $NAME_SPACE = 'Markets::Form::FieldSet';
+my $STASH_NAME = 'markets.form';
 
 sub register {
     my ( $self, $app ) = @_;
@@ -25,15 +25,15 @@ sub _form_set {
     my $ns = @_ ? shift : $c->stash('controller') . '-' . $c->stash('action');
     $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
 
-    $c->stash( $FORM_STASH => {} ) unless $c->stash($FORM_STASH);
-    my $formset = $c->stash($FORM_STASH)->{$ns};
+    $c->stash( $STASH_NAME => {} ) unless $c->stash($STASH_NAME);
+    my $formset = $c->stash($STASH_NAME)->{$ns};
     return $formset if $formset;
 
-    my $class = $FORM_CLASS . "::" . $ns;
+    my $class = $NAME_SPACE . "::" . $ns;
     load_class($class);
 
     $formset = $class->new( controller => $c );
-    $c->stash($FORM_STASH)->{$ns} = $formset;
+    $c->stash($STASH_NAME)->{$ns} = $formset;
     return $formset;
 }
 
