@@ -47,7 +47,7 @@ sub _form_set {
 }
 
 sub _form_render {
-    my ( $method, $c, $topic_field ) = @_;
+    my ( $method, $c, $topic_field ) = ( shift, shift, shift );
 
     $topic_field = $c->stash( $STASH_NAME . '.topic_field' ) unless $topic_field;
     my ( $fieldset, $field_key ) = $topic_field =~ /(.*)#(.+)/;
