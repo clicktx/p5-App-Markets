@@ -20,28 +20,29 @@ sub register {
 }
 
 sub _form_set {
-    my ( $self, $ns ) = @_;
-    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
-    Carp::croak 'Arguments empty' unless $ns;
+    my $c = shift;
 
-    $self->stash( $FORM_STASH => {} ) unless $self->stash($FORM_STASH);
-    my $formset = $self->stash($FORM_STASH)->{$ns};
+    my $ns = @_ ? shift : $c->stash('controller') . '-' . $c->stash('action');
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+
+    $c->stash( $FORM_STASH => {} ) unless $c->stash($FORM_STASH);
+    my $formset = $c->stash($FORM_STASH)->{$ns};
     return $formset if $formset;
 
     my $class = $FORM_CLASS . "::" . $ns;
     load_class($class);
 
-    $formset = $class->new( controller => $self );
-    $self->stash($FORM_STASH)->{$ns} = $formset;
+    $formset = $class->new( controller => $c );
+    $c->stash($FORM_STASH)->{$ns} = $formset;
     return $formset;
 }
 
 sub _form_render {
     my $method = shift;
-    my $self   = shift;
+    my $c      = shift;
     my ( $form, $field_key ) = shift =~ /(.+?)\.(.+)/;
 
-    return _form_set( $self, $form )->$method( $field_key, @_ );
+    return _form_set( $c, $form )->$method( $field_key, @_ );
 }
 
 1;
@@ -73,6 +74,10 @@ L<Markets::Form> implements the following helpers.
 
     # Markets::Form::FieldSet::Admin::Example
     my $form_set = $c->form_set('admin-example');
+
+    # Controller is "Hoge" and Action is "index"
+    # require class is Markets::Form::FieldSet::Hoge::Index
+    my $form_set = $c->form_set();
 
 Return L<Markets::Form::FieldSet> object.
 
