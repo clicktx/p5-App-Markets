@@ -104,11 +104,8 @@ sub remove_item {
     my ( $self, $item_id ) = @_;
     croak 'Argument was not a Scalar' if ref \$item_id ne 'SCALAR';
 
-    my $removed;
-    my $collection = $self->items->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
+    my ( $removed, $collection ) = _remove_item( $self->items, $item_id );
     $self->items($collection) if $removed;
-
-    $removed ? $self->_is_modified(1) : $self->_is_modified(0);
     return $removed;
 }
 
@@ -118,8 +115,10 @@ sub remove_shipping_item {
     croak 'First argument was not a Digit'   if $index =~ /\D/;
     croak 'Second argument was not a Scalar' if ref \$item_id ne 'SCALAR';
 
-    my $removed = $self->shipments->[$index]->remove_shipping_item($item_id);
-    $removed ? $self->_is_modified(1) : $self->_is_modified(0);
+    my $shipment = $self->shipments->[$index];
+    my ( $removed, $collection ) = _remove_item( $shipment->shipping_items, $item_id );
+
+    $shipment->shipping_items($collection) if $removed;
     return $removed;
 }
 
@@ -165,6 +164,14 @@ sub _add_item {
     else {
         push @{$collection}, $item;
     }
+}
+
+sub _remove_item {
+    my ( $collection, $item_id ) = @_;
+
+    my $removed;
+    my $new_collection = $collection->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
+    return ( $removed, $new_collection );
 }
 
 1;
@@ -258,13 +265,13 @@ Return Entity Cart Object.
 
 =head2 C<remove_item>
 
-    my $removed = $cart->remove_item($item_id);
+    my $removed_item = $cart->remove_item($item_id);
 
 Return L<Markets::Domain::Entity::Cart::Item> object or undef.
 
 =head2 C<remove_shipping_item>
 
-    my $removed = $cart->remove_shipping_item($index, $item_id);
+    my $removed_item = $cart->remove_shipping_item($index, $item_id);
 
 Return L<Markets::Domain::Entity::Cart::Item> object or undef.
 
