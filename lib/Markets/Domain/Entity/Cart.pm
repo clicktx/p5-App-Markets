@@ -96,13 +96,30 @@ sub merge {
     return $stored;
 }
 
+# NOTE: 数量は未考慮
 sub remove_item {
     my ( $self, $item_id ) = @_;
-    croak 'Not a Scalar argument' if ref \$item_id ne 'SCALAR';
+    croak 'Argument was not a Scalar' if ref \$item_id ne 'SCALAR';
 
     my $removed;
-    my $array = $self->items->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
-    $self->items($array);
+    my $collection = $self->items->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
+    $self->items($collection) if $removed;
+
+    $removed ? $self->_is_modified(1) : $self->_is_modified(0);
+    return $removed;
+}
+
+# NOTE: 数量は未考慮
+sub remove_shipping_item {
+    my ( $self, $index, $item_id ) = @_;
+    croak 'First argument was not a Digit'   if $index =~ /\D/;
+    croak 'Second argument was not a Scalar' if ref \$item_id ne 'SCALAR';
+
+    my $shipment = $self->shipments->[$index];
+    my $removed;
+    my $collection = $shipment->shipping_items->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
+    $shipment->shipping_items($collection) if $removed;
+
     $removed ? $self->_is_modified(1) : $self->_is_modified(0);
     return $removed;
 }
@@ -242,7 +259,13 @@ Return Entity Cart Object.
 
 =head2 C<remove_item>
 
-    my $removed = $cart->remove_item($item);
+    my $removed = $cart->remove_item($item_id);
+
+Return Entity Item Object or undef.
+
+=head2 C<remove_shipping_item>
+
+    my $removed = $cart->remove_shipping_item($index, $item_id);
 
 Return Entity Item Object or undef.
 
