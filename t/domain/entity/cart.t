@@ -16,8 +16,11 @@ my $test_data = {
         },
         {
             shipping_address => { line1 => 'Osaka' },
-            shipping_items =>
-              [ { product_id => 5, quantity => 5, price => 100 }, { product_id => 6, quantity => 6, price => 100 }, ]
+            shipping_items   => [
+                { product_id => 4, quantity => 4, price => 100 },
+                { product_id => 5, quantity => 5, price => 100 },
+                { product_id => 6, quantity => 6, price => 100 },
+            ]
         },
     ],
     billing_address => { line1 => 'Gunma' },
@@ -58,8 +61,8 @@ subtest 'methods' => sub {
     my $cart = _create_entity;
     cmp_deeply $cart->to_data, { cart_id => ignore(), %{$test_data} }, 'right data structure';
     is $cart->id,               '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
-    is $cart->total_item_count, 6,                                          'right total item count';
-    is $cart->total_quantity,   21,                                         'right total quantity count';
+    is $cart->total_item_count, 7,                                          'right total item count';
+    is $cart->total_quantity,   25,                                         'right total quantity count';
 
     my $cart2 = Markets::Domain::Factory->factory('entity-cart')->create(
         {
@@ -160,7 +163,7 @@ subtest 'remove_item' => sub {
 
 subtest 'subtotal' => sub {
     my $cart = _create_entity;
-    is $cart->subtotal, 2100, 'right grand total';
+    is $cart->subtotal, 2500, 'right grand total';
 };
 
 subtest 'merge' => sub {
