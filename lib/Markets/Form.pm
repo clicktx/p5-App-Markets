@@ -128,12 +128,15 @@ All helpers are L<Mojolicious::Plugin::TagHelpers> wrapper.
 
     # In template
     %= form_label('example#email')
+    %= form_label('example#email', class => 'hoge')
 
     # Longer Version
     %= form_set('example')->render_label('email')
 
 Rendering tag from Markets::Form::Type::xxx.
 L<Mojolicious::Plugin::TagHelpers> wrapper method.
+
+Only "class" attribute can be added.
 
 =head2 C<form_widget>
 
