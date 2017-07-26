@@ -27,6 +27,7 @@ my @needless_attrs = (qw/cart_id items/);
 
 sub add_item {
     my ( $self, $item ) = @_;
+    croak 'Argument was not a Object' if ref $item =~ /::/;
 
     _add_item( $self->items, $item );
 
@@ -35,9 +36,11 @@ sub add_item {
 }
 
 sub add_shipping_item {
-    my ( $self, $item, $shipment ) = @_;
-    $shipment = $self->shipments->first unless $shipment;
+    my ( $self, $index, $item ) = @_;
+    croak 'First argument was not a Digit'   if $index =~ /\D/;
+    croak 'Second argument was not a Object' if ref $item =~ /::/;
 
+    my $shipment = $self->shipments->[$index];
     _add_item( $shipment->shipping_items, $item );
 
     $self->_is_modified(1);
@@ -209,14 +212,14 @@ the following new ones.
 
 =head2 C<add_item>
 
-    $cart->add_item( $item_entity_object );
+    $cart->add_item( $entity_item_object );
 
 Return L<Markets::Domain::Entity::Cart> Object.
 
 =head2 C<add_shipping_item>
 
-    $cart->add_shipping_item( $item_entity_object );
-    $cart->add_shipping_item( $item_entity_object, $shipment_object );
+    $cart->add_shipping_item( $entity_item_object );
+    $cart->add_shipping_item( $index, $entity_item_object );
 
 Return L<Markets::Domain::Entity::Cart> Object.
 

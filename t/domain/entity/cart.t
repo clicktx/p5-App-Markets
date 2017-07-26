@@ -88,10 +88,10 @@ subtest 'add_item' => sub {
 
 subtest 'add_shipping_item' => sub {
     my $cart = _create_entity;
-    $cart->add_shipping_item( Markets::Domain::Entity::Cart::Item->new( product_id => 11 ) );
+    $cart->add_shipping_item( 0, Markets::Domain::Entity::Cart::Item->new( product_id => 11 ) );
     cmp_deeply $cart->shipments->first->shipping_items->last->to_data, { product_id => 11 }, 'right shipping_item';
 
-    $cart->add_shipping_item(
+    $cart->add_shipping_item( 0,
         Markets::Domain::Entity::Cart::Item->new( product_id => 4, quantity => 4, price => 100 ) );
     cmp_deeply $cart->shipments->first->shipping_items->first->to_data,
       { product_id => 4, quantity => 8, price => 100 }, 'right sum quantity';

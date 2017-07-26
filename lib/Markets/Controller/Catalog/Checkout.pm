@@ -66,8 +66,7 @@ sub shipping {
             my $item = $cart->remove_item( $_->id );
 
             # 配送itemsに追加
-            # $cart->add_shipping_item($item => $shipment);
-            $cart->add_shipping_item($item);
+            $cart->add_shipping_item( 0, $item );
         }
     );
 
