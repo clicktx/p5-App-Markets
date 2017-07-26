@@ -200,7 +200,7 @@ Elements is L<Markets::Domain::Entity::Item> object.
     $shipments->each( sub { ... } );
 
 Return L<Markets::Domain::Collection> object.
-Elements is L<Markets::Domain::Entity::Shipment> object.
+Elements is L<Markets::Domain::Entity::Cart::Shipment> object.
 
 =head1 METHODS
 
@@ -291,4 +291,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
-L<Markets::Domain::Entity>, L<Markets::Domain::Entity::Shipment>, L<Markets::Domain::Entity::Cart::Item>
+L<Markets::Domain::Entity>, L<Markets::Domain::Entity::Cart::Shipment>, L<Markets::Domain::Entity::Cart::Item>

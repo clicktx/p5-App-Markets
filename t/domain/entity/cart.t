@@ -54,7 +54,7 @@ subtest 'attributes' => sub {
     isa_ok $cart->items->first, 'Markets::Domain::Entity::Cart::Item', 'right items';
 
     isa_ok $cart->shipments, 'Markets::Domain::Collection', 'right shipments';
-    isa_ok $cart->shipments->first, 'Markets::Domain::Entity::Shipment', 'right shipments';
+    isa_ok $cart->shipments->first, 'Markets::Domain::Entity::Cart::Shipment', 'right shipments';
 };
 
 subtest 'methods' => sub {
