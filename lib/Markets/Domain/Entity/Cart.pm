@@ -115,11 +115,7 @@ sub remove_shipping_item {
     croak 'First argument was not a Digit'   if $index =~ /\D/;
     croak 'Second argument was not a Scalar' if ref \$item_id ne 'SCALAR';
 
-    my $shipment = $self->shipments->[$index];
-    my $removed;
-    my $collection = $shipment->shipping_items->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
-    $shipment->shipping_items($collection) if $removed;
-
+    my $removed = $self->shipments->[$index]->remove_shipping_item($item_id);
     $removed ? $self->_is_modified(1) : $self->_is_modified(0);
     return $removed;
 }
@@ -261,13 +257,13 @@ Return Entity Cart Object.
 
     my $removed = $cart->remove_item($item_id);
 
-Return Entity Item Object or undef.
+Return L<Markets::Domain::Entity::Cart::Item> object or undef.
 
 =head2 C<remove_shipping_item>
 
     my $removed = $cart->remove_shipping_item($index, $item_id);
 
-Return Entity Item Object or undef.
+Return L<Markets::Domain::Entity::Cart::Item> object or undef.
 
 =head2 C<subtotal>
 
@@ -295,4 +291,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
- L<Markets::Domain::Entity>
+L<Markets::Domain::Entity>, L<Markets::Domain::Entity::Shipment>, L<Markets::Domain::Entity::Cart::Item>

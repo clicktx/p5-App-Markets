@@ -2,6 +2,7 @@ package Markets::Domain::Entity::Shipment;
 use Markets::Domain::Entity;
 use Markets::Domain::Collection;
 use Data::Clone qw/data_clone/;
+use Carp qw/croak/;
 
 has shipping_items => sub { Markets::Domain::Collection->new };
 has [qw/id shipping_address/];
@@ -16,6 +17,19 @@ sub clone {
 }
 
 sub item_count { shift->shipping_items->size }
+
+# NOTE: 数量は未考慮
+sub remove_shipping_item {
+    my ( $self, $item_id ) = @_;
+    croak 'Argument was not a Scalar' if ref \$item_id ne 'SCALAR';
+
+    my $removed;
+    my $collection = $self->shipping_items->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
+    $self->shipping_items($collection) if $removed;
+
+    $removed ? $self->_is_modified(1) : $self->_is_modified(0);
+    return $removed;
+}
 
 sub subtotal_quantity {
     shift->shipping_items->reduce( sub { $a + $b->quantity }, 0 );
@@ -55,6 +69,12 @@ the following new ones.
 =head2 C<clone>
 
 =head2 C<item_count>
+
+=head2 C<remove_shipping_item>
+
+    my $remove_item = $shipment->remove_shipping_item($item_id);
+
+Return L<Markets::Domain::Entity::Cart::Item> object or undef.
 
 =head2 C<subtotal_quantity>
 
