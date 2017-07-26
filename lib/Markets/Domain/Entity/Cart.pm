@@ -95,7 +95,7 @@ sub merge {
     # - ログアウト後に未ログイン状態でshipments設定まで進んだ後にログインする
     # 通常はその前にログインを促すのでありえない状態ではあるが...
 
-    $stored->_is_modified(1);
+    # $stored->_is_modified(1); #不要？
     return $stored;
 }
 
