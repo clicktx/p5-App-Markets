@@ -138,8 +138,8 @@ sub render_help {
 }
 
 sub render_label {
-    my ( $self, $name ) = @_;
-    $self->field($name)->label_for( $self->controller );
+    my ( $self, $name, %attrs ) = @_;
+    $self->field($name)->label_for( $self->controller, %attrs );
 }
 
 sub render {
@@ -148,9 +148,9 @@ sub render {
     my $value = $self->controller->req->params->param($name);
     $attrs{value} = $value if defined $value;
 
-    my $field = $self->field( $name, %attrs );
+    my $field = $self->field($name);
     my $method = $field->type || 'text';
-    $field->$method( $self->controller );
+    $field->$method( $self->controller, %attrs );
 }
 
 sub schema {

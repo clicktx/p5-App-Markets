@@ -33,7 +33,7 @@ sub AUTOLOAD {
     return _error( $c, $attrs{name}, $error_messages ) if $method eq 'error_block';
 
     # label
-    return _label( $c, %attrs ) if $method eq 'label_for';
+    return _label( $c, %attrs, @_ ) if $method eq 'label_for';
 
     delete $attrs{$_} for qw(field_key type label);
 
@@ -216,10 +216,13 @@ sub _label {
     my $c     = shift;
     my %attrs = @_;
 
+    my %label_attrs;
+    $label_attrs{class} = $attrs{class} if exists $attrs{class};
+
     my $required_html =
       exists $attrs{required} ? $c->tag( 'span', class => $required_class, sub { $required_icon } ) : '';
     my $content = $c->__( $attrs{label} ) . $required_html;
-    _validation( $c, $attrs{name}, 'label', for => $attrs{id}, sub { $content } );
+    _validation( $c, $attrs{name}, 'label', for => $attrs{id}, %label_attrs, sub { $content } );
 }
 
 # checkbox list or radio button list
