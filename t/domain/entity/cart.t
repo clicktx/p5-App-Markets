@@ -79,10 +79,11 @@ subtest 'add_item' => sub {
     my $cart = _create_entity;
     $cart->add_item( Markets::Domain::Entity::Cart::Item->new( product_id => 11 ) );
     cmp_deeply $cart->items->last->to_data, { product_id => 11 }, 'right item';
+    is $cart->is_modified, 1, 'right modified';
 
+    $cart = _create_entity;
     $cart->add_item( Markets::Domain::Entity::Cart::Item->new( product_id => 1, quantity => 1 ) );
     cmp_deeply $cart->items->first->to_data, { product_id => 1, quantity => 2, price => 100 }, 'right item';
-
     is $cart->is_modified, 1, 'right modified';
 };
 
@@ -90,12 +91,13 @@ subtest 'add_shipping_item' => sub {
     my $cart = _create_entity;
     $cart->add_shipping_item( 0, Markets::Domain::Entity::Cart::Item->new( product_id => 11 ) );
     cmp_deeply $cart->shipments->first->shipping_items->last->to_data, { product_id => 11 }, 'right shipping_item';
+    is $cart->is_modified, 1, 'right modified';
 
+    $cart = _create_entity;
     $cart->add_shipping_item( 0,
         Markets::Domain::Entity::Cart::Item->new( product_id => 4, quantity => 4, price => 100 ) );
     cmp_deeply $cart->shipments->first->shipping_items->first->to_data,
       { product_id => 4, quantity => 8, price => 100 }, 'right sum quantity';
-
     is $cart->is_modified, 1, 'right modified';
 };
 
