@@ -88,7 +88,7 @@ sub login {
 
         $txn->commit;
     }
-    catch { $c->model('common')->dbic_txn_failed($_) };
+    catch { $c->app->schema->txn_failed($_) };
 }
 
 1;

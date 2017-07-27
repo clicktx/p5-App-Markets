@@ -160,7 +160,7 @@ sub complete_validate {
         $schema->txn_do($cb);
     }
     catch {
-        $self->model('common')->dbic_txn_failed($_);
+        $schema->txn_failed($_);
     };
 
     # cart sessionクリア
