@@ -28,4 +28,22 @@ subtest 'sequence' => sub {
     is $schema->sequence('order'), $cnt + 2, 'right sequence';
 };
 
+subtest 'txn_failed' => sub {
+    my ( $err, $history );
+
+    $err = 'error Rollback failed error';
+    eval { $schema->txn_failed($err) };
+    $history = $app->error_log->history->[0];
+    is $history->[1], 'fatal', 'right log level';
+    is $history->[2], $err, 'right log message';
+    like $@, qr/$err/, 'right died';
+
+    $err = 'error message';
+    eval { $schema->txn_failed($err) };
+    $history = $app->error_log->history->[1];
+    is $history->[1], 'fatal', 'right log level';
+    is $history->[2], $err, 'right log message';
+    like $@, qr/$err/, 'right died';
+};
+
 done_testing();

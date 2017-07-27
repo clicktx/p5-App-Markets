@@ -1,10 +1,13 @@
 package Markets::Schema;
 use Mojo::Base 'DBIx::Class::Schema';
+use Carp qw/croak/;
 use DateTime;
 use Mojo::Util 'camelize';
 
 our $VERSION   = 0.001;
 our $TIME_ZONE = 'UTC';
+
+has 'app';
 
 __PACKAGE__->load_namespaces( default_resultset_class => 'Base::ResultSet' );
 
@@ -30,6 +33,24 @@ sub sequence {
     my $rs = $self->resultset( $name . '::Sequence' );
     $rs->search->update( { id => \'LAST_INSERT_ID(id + 1)' } );
     $self->storage->last_insert_id;
+}
+
+sub txn_failed {
+    my ( $self, $err ) = @_;
+
+    if ( $err =~ /Rollback failed/ ) {
+
+        # ロールバックに失敗した場合
+        $self->app->db_log->fatal($err);
+        $self->app->error_log->fatal($err);
+        croak $err;
+    }
+    else {
+        # 何らかのエラーによりロールバックした
+        $self->app->db_log->fatal($err);
+        $self->app->error_log->fatal($err);
+        croak $err;
+    }
 }
 
 1;
@@ -63,6 +84,19 @@ L<Markets::Schema> inherits all methods from L<DBIx::Class::Schema>.
 
 This method is alias for L<DBIx::Class::Schema/resultset>.
 But you can use the snake case for C<$source_name>.
+
+=head2 C<txn_failed>
+
+    use Try::Tiny;
+    ...
+    try {
+        $schema->txn_do($cb);
+    } catch {
+        $schema->txn_failed($_);
+    };
+    ...
+
+Logging transaction error.
 
 =head1 AUTHOR
 
