@@ -7,7 +7,7 @@ sub init {
     my $cart = $self->service('cart')->create_entity();
     $self->stash( 'markets.entity.cart' => $cart );
 
-    $self->SUPER::init(@_);
+    $self->SUPER::init();
     return $self;
 }
 
@@ -17,7 +17,7 @@ sub finalize {
     # cartが変更されていた場合はセッションカートのデータを変更
     $self->cart_session->data( $self->cart->to_data ) if $self->cart->is_modified;
 
-    $self->SUPER::finalize(@_);
+    $self->SUPER::finalize();
     return $self;
 }
 

@@ -30,14 +30,12 @@ sub process {
     return unless $self->csrf_protect();
 
     # Controller process
+    $self->app->plugins->emit_hook( before_init => $self );
     $self->init();
     $self->app->plugins->emit_hook( after_init => $self );
 
-    $self->init_form();
-    $self->app->plugins->emit_hook( after_init_form => $self );
-
-    $self->action_before();
     $self->app->plugins->emit_hook( before_action => $self );
+    $self->action_before();
 
     $self->$action();
 
@@ -49,7 +47,11 @@ sub process {
 
 sub init { }
 
-sub init_form { }
+sub init_form {
+    my $self = shift;
+    $self->app->plugins->emit_hook( after_init_form => $self );
+    return $self;
+}
 
 sub action_before {
     my $self = shift;
@@ -88,6 +90,41 @@ __END__
 Markets::Controller - Controller base class
 
 =head1 SYNOPSIS
+
+    package Markets::Controller::Product;
+    use Mojo::Base 'Markets::Controller';
+
+    # Auto call method
+    sub init {
+        my $self = shift;
+
+        ...
+
+        $self->SUPER::init();
+        return $self;
+    }
+
+    # User call method in the action
+    sub init_form {
+        my ( $self, $form, $product_id ) = @_;
+
+        $form->field('product_id')->value($product_id);
+
+        $self->SUPER::init_form();
+        return $self;
+    }
+
+    sub index {
+        my $self = shift;
+
+        my $form       = $self->form_set('product');
+        my $product_id = $self->stash('product_id');
+        $self->init_form( $form, $product_id );
+
+        ...
+
+        $self->render();
+    }
 
 =head1 DESCRIPTION
 

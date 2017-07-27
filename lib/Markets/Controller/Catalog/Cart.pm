@@ -1,19 +1,28 @@
 package Markets::Controller::Catalog::Cart;
 use Mojo::Base 'Markets::Controller::Catalog';
 
-sub index {
-    my $self = shift;
+sub init_form {
+    my ( $self, $form, $cart ) = @_;
 
-    my $cart = $self->cart;
-    $self->stash( cart => $cart );
-
-    my $form = $self->form_set('cart');
     $cart->items->each(
         sub {
             my ( $item, $i ) = @_;
             $form->field("quantity.$i")->value( $item->quantity );
         }
     );
+
+    return $self->SUPER::init_form();
+}
+
+sub index {
+    my $self = shift;
+
+    my $cart = $self->cart;
+    $self->stash( cart => $cart );    # for templates
+
+    # Initialize form
+    my $form = $self->form_set('cart');
+    $self->init_form( $form, $cart );
 
     return $self->render() unless $form->has_data;
 
