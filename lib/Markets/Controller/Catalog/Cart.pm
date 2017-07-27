@@ -20,6 +20,9 @@ sub index {
     my $cart = $self->cart;
     $self->stash( cart => $cart );    # for templates
 
+    # 配送先が1箇所の場合は配送商品をカートに戻す
+    $self->service('cart')->revert_shipping_item() if $cart->shipments->size == 1;
+
     # Initialize form
     my $form = $self->form_set('cart');
     $self->init_form( $form, $cart );

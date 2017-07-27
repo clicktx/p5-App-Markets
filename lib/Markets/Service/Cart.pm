@@ -28,6 +28,28 @@ sub create_entity {
     return $self->app->factory('entity-cart')->create($cart_data);
 }
 
+# NOTE: とりあえず全てのshipping_itemsを戻すlogicのみ実装
+sub revert_shipping_item {
+    my $self = shift;
+
+    # 全てのshipping_itemsをカートに戻す
+    my $cart = $self->controller->cart;
+    $cart->shipments->each(
+        sub {
+            my ( $shipment, $index ) = @_;
+            $_->shipping_items->each(
+                sub {
+                    # 配送itemsから削除
+                    my $item = $cart->remove_shipping_item( $index, $_->id );
+
+                    # カートitemsに追加
+                    $cart->add_item($item);
+                }
+            );
+        }
+    );
+}
+
 1;
 __END__
 
