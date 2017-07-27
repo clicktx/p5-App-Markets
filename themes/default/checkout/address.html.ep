@@ -19,12 +19,16 @@
 <%= form_for 'RN_checkout_address' => ( method => 'POST') => begin %>
     <%= csrf_field %>
     <div class="">
-        billing address:
-        <%= form_widget 'checkout-address.billing_address.line1' %>
+        billing address: <%= form_field '#billing_address.line1' %>
+        <%= form_label %>
+        <%= form_widget %>
+        <%= form_error %>
     </div>
     <div class="">
-        shipping address:
-        <%= form_widget 'checkout-address.shipping_address.line1' %>
+        shipping address: <%= form_field '#shipping_address.line1' %>
+        <%= form_label %>
+        <%= form_widget %>
+        <%= form_error %>
     </div>
     <%= submit_button 'Next' %>
 <% end %>

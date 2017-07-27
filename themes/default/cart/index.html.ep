@@ -19,7 +19,7 @@
                     <%= $item->product_title %>
                 </a>
                  | <%= $item->price %>
-                 | QTY:<%= $item->quantity %><%= form_widget("cart.quantity.$i") %><%= form_error("cart.item.$i.quantity") %>
+                 | QTY:<%= $item->quantity %><%= form_widget("cart#quantity.$i") %><%= form_error("cart#item.$i.quantity") %>
                  | <%= $item->subtotal %>
             </li>
         % } );

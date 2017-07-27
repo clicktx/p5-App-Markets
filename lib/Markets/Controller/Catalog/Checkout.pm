@@ -66,8 +66,7 @@ sub shipping {
             my $item = $cart->remove_item( $_->id );
 
             # 配送itemsに追加
-            # $cart->add_shipping_item($item => $shipment);
-            $cart->add_shipping_item($item);
+            $cart->add_shipping_item( 0, $item );
         }
     );
 
@@ -161,7 +160,7 @@ sub complete_validate {
         $schema->txn_do($cb);
     }
     catch {
-        $self->model('common')->dbic_txn_failed($_);
+        $schema->txn_failed($_);
     };
 
     # cart sessionクリア

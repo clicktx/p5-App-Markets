@@ -17,10 +17,6 @@ sub welcome {
     $session->data( counter => $counter );
 
     say "counter: " . $counter;      # debug
-    say "ServerSession: ";
-    say Dumper $session->data;
-    say "CookieSession: ";
-    say Dumper $self->cookie_session;
 
     # Render template "example/welcome.html.ep" with message
     $self->render( msg => 'Welcome to the Mojolicious real-time web framework!' );

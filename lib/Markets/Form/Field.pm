@@ -33,7 +33,7 @@ sub AUTOLOAD {
     return _error( $c, $attrs{name}, $error_messages ) if $method eq 'error_block';
 
     # label
-    return _label( $c, %attrs ) if $method eq 'label_for';
+    return _label( $c, %attrs, @_ ) if $method eq 'label_for';
 
     delete $attrs{$_} for qw(field_key type label);
 
@@ -216,10 +216,13 @@ sub _label {
     my $c     = shift;
     my %attrs = @_;
 
+    my %label_attrs;
+    $label_attrs{class} = $attrs{class} if exists $attrs{class};
+
     my $required_html =
       exists $attrs{required} ? $c->tag( 'span', class => $required_class, sub { $required_icon } ) : '';
     my $content = $c->__( $attrs{label} ) . $required_html;
-    _validation( $c, $attrs{name}, 'label', for => $attrs{id}, sub { $content } );
+    _validation( $c, $attrs{name}, 'label', for => $attrs{id}, %label_attrs, sub { $content } );
 }
 
 # checkbox list or radio button list
@@ -294,27 +297,38 @@ Markets::Form::Field
     my $field = Markets::Form::Field->new(
         field_key     => 'email',
         name          => 'email',
-        label         => 'EMAIL',
+        label         => 'E-mail',
     );
 
     say $field->label($c);
     say $field->text($c);
 
     # Rendering HTML
-    # <label for="email">EMAIL</label>
+    # <label for="email">E-mail</label>
     # <input id="email" type="text" name="email">
 
 
     # In templetes using helpers
-    %= form_label('example.password_again')
-    %= form_widget('example.password_again')
-    %= form_help('example.password_again')
-    %= form_error('example.password_again')
+    %= form_label('example#password_again')
+    %= form_widget('example#password_again')
+    %= form_help('example#password_again')
+    %= form_error('example#password_again')
+
+    # Or more smart!
+    %= form_field('example#password_again')
+    %= form_label
+    %= form_widget
+    %= form_help
+    %= form_error
+
 
 =head1 DESCRIPTION
 
 
 =head1 METHODS
+
+L<Markets::Form::Field> inherits all methods from L<Mojo::Base> and implements
+the following new ones.
 
 Return code refference.
 All methods is L<Mojolicious::Plugin::TagHelpers> wrapper method.
@@ -533,6 +547,6 @@ See L<Mojolicious::Plugin::LocaleTextDomainOO>
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin::TagHelpers>
+L<Mojolicious::Plugin::TagHelpers>, L<Markets::Form>, L<Markets::Form::FieldSet>
 
 =cut

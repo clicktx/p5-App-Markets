@@ -17,7 +17,7 @@ sub is_logged_in {
 
     my $target_id;
     $target_id = 'customer_id' if $self->isa('Markets::Controller::Catalog');
-    $target_id = 'staff_id' if $self->isa('Markets::Controller::Admin');
+    $target_id = 'staff_id'    if $self->isa('Markets::Controller::Admin');
 
     return $target_id ? $self->server_session->data($target_id) ? 1 : 0 : undef;
 }
@@ -30,41 +30,42 @@ sub process {
     return unless $self->csrf_protect();
 
     # Controller process
+    $self->app->plugins->emit_hook( before_init => $self );
     $self->init();
+    $self->app->plugins->emit_hook( after_init => $self );
+
+    $self->app->plugins->emit_hook( before_action => $self );
     $self->action_before();
+
     $self->$action();
+
     $self->action_after();
+    $self->app->plugins->emit_hook( after_action => $self );
+
     $self->finalize();
 }
 
-sub init {
+sub init { }
+
+sub init_form {
     my $self = shift;
-    say "C::init()";
+    $self->app->plugins->emit_hook( after_init_form => $self );
     return $self;
 }
 
 sub action_before {
     my $self = shift;
-    say "C::action_before()";
     $self->service('customer')->add_history;
-    $self->app->plugins->emit_hook( before_action => $self );
     return $self;
 }
 
-sub action_after {
-    my $self = shift;
-    say "C::action_after()";
-    $self->app->plugins->emit_hook( after_action => $self );
-    return $self;
-}
+sub action_after { }
 
 sub finalize {
     my $self = shift;
-    say "C::finalize()";
-
     return if $self->flash('_is_redirect');
+
     $self->server_session->flush;
-    say "   ... session flush";    # debug
     return $self;
 }
 
@@ -89,6 +90,41 @@ __END__
 Markets::Controller - Controller base class
 
 =head1 SYNOPSIS
+
+    package Markets::Controller::Product;
+    use Mojo::Base 'Markets::Controller';
+
+    # Auto call method
+    sub init {
+        my $self = shift;
+
+        ...
+
+        $self->SUPER::init();
+        return $self;
+    }
+
+    # User call method in the action
+    sub init_form {
+        my ( $self, $form, $product_id ) = @_;
+
+        $form->field('product_id')->value($product_id);
+
+        $self->SUPER::init_form();
+        return $self;
+    }
+
+    sub index {
+        my $self = shift;
+
+        my $form       = $self->form_set('product');
+        my $product_id = $self->stash('product_id');
+        $self->init_form( $form, $product_id );
+
+        ...
+
+        $self->render();
+    }
 
 =head1 DESCRIPTION
 

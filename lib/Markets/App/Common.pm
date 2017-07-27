@@ -2,6 +2,7 @@ package Markets::App::Common;
 use Mojo::Base 'Mojolicious';
 use Mojo::Log;
 use Markets::Addons;
+use Scalar::Util qw/weaken/;
 use DBIx::QueryLog;
 
 $ENV{DBIC_TRACE}            = 1;
@@ -21,6 +22,10 @@ has schema => sub {
     my $dsn    = _dsn($conf);
     my $schema = $schema_class->connect($dsn)
       or die "Could not connect to $schema_class using DSN ";
+
+    $schema->{app} = $self;
+    weaken $schema->{app};
+
     return $schema;
 };
 

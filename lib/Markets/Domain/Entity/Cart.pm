@@ -27,6 +27,7 @@ my @needless_attrs = (qw/cart_id items/);
 
 sub add_item {
     my ( $self, $item ) = @_;
+    croak 'Argument was not a Object' if ref $item =~ /::/;
 
     _add_item( $self->items, $item );
 
@@ -35,9 +36,11 @@ sub add_item {
 }
 
 sub add_shipping_item {
-    my ( $self, $item, $shipment ) = @_;
-    $shipment = $self->shipments->first unless $shipment;
+    my ( $self, $index, $item ) = @_;
+    croak 'First argument was not a Digit'   if $index =~ /\D/;
+    croak 'Second argument was not a Object' if ref $item =~ /::/;
 
+    my $shipment = $self->shipments->[$index];
     _add_item( $shipment->shipping_items, $item );
 
     $self->_is_modified(1);
@@ -92,18 +95,30 @@ sub merge {
     # - ログアウト後に未ログイン状態でshipments設定まで進んだ後にログインする
     # 通常はその前にログインを促すのでありえない状態ではあるが...
 
-    $stored->_is_modified(1);
+    # $stored->_is_modified(1); #不要？
     return $stored;
 }
 
+# NOTE: 数量は未考慮
 sub remove_item {
     my ( $self, $item_id ) = @_;
-    croak 'Not a Scalar argument' if ref \$item_id ne 'SCALAR';
+    croak 'Argument was not a Scalar' if ref \$item_id ne 'SCALAR';
 
-    my $removed;
-    my $array = $self->items->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
-    $self->items($array);
-    $removed ? $self->_is_modified(1) : $self->_is_modified(0);
+    my ( $removed, $collection ) = _remove_item( $self->items, $item_id );
+    $self->items($collection) if $removed;
+    return $removed;
+}
+
+# NOTE: 数量は未考慮
+sub remove_shipping_item {
+    my ( $self, $index, $item_id ) = @_;
+    croak 'First argument was not a Digit'   if $index =~ /\D/;
+    croak 'Second argument was not a Scalar' if ref \$item_id ne 'SCALAR';
+
+    my $shipment = $self->shipments->[$index];
+    my ( $removed, $collection ) = _remove_item( $shipment->shipping_items, $item_id );
+
+    $shipment->shipping_items($collection) if $removed;
     return $removed;
 }
 
@@ -151,6 +166,14 @@ sub _add_item {
     }
 }
 
+sub _remove_item {
+    my ( $collection, $item_id ) = @_;
+
+    my $removed;
+    my $new_collection = $collection->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
+    return ( $removed, $new_collection );
+}
+
 1;
 __END__
 
@@ -187,7 +210,7 @@ Elements is L<Markets::Domain::Entity::Item> object.
     $shipments->each( sub { ... } );
 
 Return L<Markets::Domain::Collection> object.
-Elements is L<Markets::Domain::Entity::Shipment> object.
+Elements is L<Markets::Domain::Entity::Cart::Shipment> object.
 
 =head1 METHODS
 
@@ -196,14 +219,14 @@ the following new ones.
 
 =head2 C<add_item>
 
-    $cart->add_item( $item_entity_object );
+    $cart->add_item( $entity_item_object );
 
 Return L<Markets::Domain::Entity::Cart> Object.
 
 =head2 C<add_shipping_item>
 
-    $cart->add_shipping_item( $item_entity_object );
-    $cart->add_shipping_item( $item_entity_object, $shipment_object );
+    $cart->add_shipping_item( $entity_item_object );
+    $cart->add_shipping_item( $index, $entity_item_object );
 
 Return L<Markets::Domain::Entity::Cart> Object.
 
@@ -242,9 +265,15 @@ Return Entity Cart Object.
 
 =head2 C<remove_item>
 
-    my $removed = $cart->remove_item($item);
+    my $removed_item = $cart->remove_item($item_id);
 
-Return Entity Item Object or undef.
+Return L<Markets::Domain::Entity::Cart::Item> object or undef.
+
+=head2 C<remove_shipping_item>
+
+    my $removed_item = $cart->remove_shipping_item($index, $item_id);
+
+Return L<Markets::Domain::Entity::Cart::Item> object or undef.
 
 =head2 C<subtotal>
 
@@ -272,4 +301,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
- L<Markets::Domain::Entity>
+L<Markets::Domain::Entity>, L<Markets::Domain::Entity::Cart::Shipment>, L<Markets::Domain::Entity::Cart::Item>
