@@ -29,6 +29,7 @@ sub resultset {
 
 sub sequence {
     my ( $self, $name ) = ( shift, camelize(shift) );
+    warn '!!DEPRECATED method';
 
     my $rs = $self->resultset( $name . '::Sequence' );
     $rs->search->update( { id => \'LAST_INSERT_ID(id + 1)' } );
