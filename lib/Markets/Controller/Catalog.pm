@@ -7,6 +7,7 @@ sub init {
     my $cart = $self->service('cart')->create_entity();
     $self->stash( 'markets.entity.cart' => $cart );
 
+    $self->SUPER::init(@_);
     return $self;
 }
 
