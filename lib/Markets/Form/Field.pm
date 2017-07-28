@@ -72,6 +72,13 @@ sub AUTOLOAD {
     Carp::croak "Undefined subroutine &${package}::$method called";
 }
 
+sub append_class {
+    my ( $self, $class ) = @_;
+    $self->{class} .= $self->{class} ? " $class" : $class;
+}
+
+sub append_error_class { shift->append_class('field-with-error') }
+
 # check_box or radio_button into the label
 sub _choice_field {
     my ( $c, $values, $pair ) = ( shift, shift, shift );
@@ -329,6 +336,23 @@ Markets::Form::Field
 
 L<Markets::Form::Field> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
+
+=head2 C<append_class>
+
+    $field->append_class('foo');
+
+Append class to field.
+
+=head2 C<append_error_class>
+
+    $field->append_error_class;
+
+    # Longer version
+    $field->append_class('field-with-error');
+
+Append class "field-with-error" to field.
+
+=head1 TAG HELPER METHODS
 
 Return code refference.
 All methods is L<Mojolicious::Plugin::TagHelpers> wrapper method.

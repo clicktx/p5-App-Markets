@@ -10,22 +10,41 @@ use_ok 'Markets::Form::Field';
 my $t = Test::Mojo->new('App');
 my $c = $t->app->build_controller;
 
-my $f = Markets::Form::Field->new(
-    field_key     => 'item.[].name',
-    name          => 'item.0.name',
-    label         => 'label text',
-    placeholder   => 'example',
-    default_value => 'sss',
-    required      => 1,
-);
+sub f {
+    return Markets::Form::Field->new(
+        field_key     => 'item.[].name',
+        name          => 'item.0.name',
+        label         => 'label text',
+        placeholder   => 'example',
+        default_value => 'sss',
+        required      => 1,
+    );
+}
+
+subtest 'append_class' => sub {
+    my $f = f();
+    $f->append_class('foo');
+    is $f->{class}, 'foo', 'right append class';
+
+    $f->append_class('bar');
+    is $f->{class}, 'foo bar', 'right append class';
+};
+
+subtest 'append_error_class' => sub {
+    my $f = f();
+    $f->append_error_class;
+    is $f->{class}, 'field-with-error', 'right append error class';
+};
 
 subtest 'label' => sub {
+    my $f   = f();
     my $dom = Mojo::DOM->new( $f->label_for($c) );
     is_deeply $dom->at('*')->attr, { for => 'form_widget_item_0_name' }, 'right attr';
     is $dom->at('*')->text, 'label text', 'right text';
 };
 
 subtest 'input basic' => sub {
+    my $f  = f();
     my $f2 = Markets::Form::Field->new(
         field_key     => 'foo',
         name          => 'foo',
@@ -65,6 +84,7 @@ subtest 'input basic' => sub {
 };
 
 subtest 'input other' => sub {
+    my $f     = f();
     my @types = qw(color range date month time week);
     my $dom;
     for my $type (@types) {
@@ -105,6 +125,7 @@ subtest 'input other' => sub {
 };
 
 subtest 'hidden' => sub {
+    my $f = f();
     $f->value('abc');
     my $dom = Mojo::DOM->new( $f->hidden($c) );
     is_deeply $dom->at('*')->attr, { type => 'hidden', name => 'item.0.name', value => 'abc' }, 'right hidden';
