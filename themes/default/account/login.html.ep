@@ -5,10 +5,12 @@
 <h2><%= __('login') %></h2>
 
 <p>
-    <%= form_for 'RN_customer_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+    <%= form_for 'RN_customer_login' => (method => 'POST', style => 'border:1px solid gray') => begin %>
         <%= csrf_field %>
-        Email <%= email_field email => 'c@x.org' %>
-        Password <%= password_field 'password' %>
+        <%= form_label '#email' %><%= form_widget '#email', default_value => 'c@x.org' %>
+        <%= form_error '#email' %>
+        <%= form_label '#password' %><%= form_widget '#password' %>
+        <%= form_error '#password' %>
         <%= submit_button 'ok' %>
     <% end %>
 </p>
