@@ -93,8 +93,7 @@ sub add_catalog_routes {
     $r->get('/register')->to('register#index')->name('RN_customer_create_account');
     $r->post('/register')->to('register#index')->name('RN_customer_create_account');
 
-    $r->get('/login')->to('account#login')->name('RN_customer_login');
-    $r->post('/login')->to('account#login_authen')->name('RN_customer_authen');
+    $r->any('/login')->to('account#login')->name('RN_customer_login');
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
     {
         # Required authorization Routes

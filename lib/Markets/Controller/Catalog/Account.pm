@@ -10,11 +10,22 @@ sub authorize {
     return 0;
 }
 
-sub login_authen {
+sub login {
     my $self = shift;
 
-    my $email    = $self->param('email');
-    my $password = $self->param('password');
+    $self->flash( ref => $self->flash('ref') );
+
+    # Initialize form
+    my $form = $self->form_set('account-login');
+
+    # $self->init_form( $form, $cart );
+
+    return $self->render() unless $form->has_data;
+
+    return $self->render() unless $form->validate;
+
+    my $email    = $form->param('email');
+    my $password = $form->param('password');
     my $customer = $self->service('customer')->create_entity( email => $email );
 
     if ( $customer->id ) {
@@ -32,21 +43,13 @@ sub login_authen {
             return $self->redirect_to($route);
         }
         else {
-            $self->app->log->warn('Customer login fail: password mismatch');
+            $self->app->log->warn( 'Customer login failed: password mismatch at email: ' . $email );
         }
     }
     else {
-        $self->app->log->warn('Customer login fail: email not found');
+        $self->app->log->warn( 'Customer login failed: not found email: ' . $email );
     }
 
-    $self->flash( ref => $self->flash('ref') );
-    $self->render( template => 'account/login' );
-}
-
-sub login {
-    my $self = shift;
-
-    $self->flash( ref => $self->flash('ref') );
     $self->render();
 }
 
