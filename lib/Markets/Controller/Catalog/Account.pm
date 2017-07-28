@@ -18,7 +18,7 @@ sub login {
     # Initialize form
     my $form = $self->form_set('account-login');
 
-    # $self->init_form( $form, $cart );
+    # $self->init_form( $form );
 
     return $self->render() unless $form->has_data;
 
@@ -50,7 +50,11 @@ sub login {
         $self->app->log->warn( 'Customer login failed: not found email: ' . $email );
     }
 
-    $self->render();
+    # Login failed
+    $form->field('email')->append_error_class;
+    $form->field('password')->append_error_class;
+
+    $self->render( has_error => 1 );
 }
 
 sub logout {
