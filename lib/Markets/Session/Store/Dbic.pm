@@ -54,7 +54,7 @@ sub create {
         return 1;
     }
     catch {
-        $self->error($_);
+        $schema->txn_failed($_);
         return;
     };
 }
@@ -101,7 +101,7 @@ sub update {
         return 1;
     }
     catch {
-        $self->error($_);
+        $schema->txn_failed($_);
         return;
     };
 }
@@ -189,7 +189,7 @@ sub delete {
         return 1;
     }
     catch {
-        $self->error($_);
+        $schema->txn_failed($_);
         return;
     };
 }
