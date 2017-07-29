@@ -26,6 +26,10 @@ subtest 'basic' => sub {
 
     $e->id(111);
     is $e->is_modified, 1, 'right modified of update attribute';
+
+    $e = $pkg->new( id => undef );
+    is $e->hash_code, undef, 'right undefined id entity';
+    is $e->hash_code(undef), undef, 'right undefined arg entity';
 };
 
 subtest 'clone' => sub {

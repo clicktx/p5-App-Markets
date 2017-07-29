@@ -23,7 +23,11 @@ sub clone {
     return $clone;
 }
 
-sub hash_code { @_ > 1 ? sha1_sum( $_[1] ) : sha1_sum( $_[0]->id ) }
+sub hash_code {
+    my ( $self, $arg ) = @_;
+    if   ( @_ > 1 ) { return defined $arg      ? sha1_sum($arg)        : undef }
+    else            { return defined $self->id ? sha1_sum( $self->id ) : undef }
+}
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
