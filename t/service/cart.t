@@ -17,7 +17,6 @@ $t->get_ok('/test/items')->status_is(200);
 my $csrf_token = $t->tx->res->content->get_body_chunk;
 my $params = { product_id => 1, quantity => 1, csrf_token => $csrf_token };
 $t->post_ok( '/test/add_item', form => $params )->status_is(200);
-$t->get_ok('/test/merge_cart')->status_is(200);
 $t->get_ok('/test/clear_cart')->status_is(200);
 
 done_testing();
