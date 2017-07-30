@@ -183,10 +183,10 @@ subtest 'cart is_modified' => sub {
     $session->create;
 
     my $cart = $session->cart_session;
-    is $cart->_is_modified, 0, 'right cat not modify';
+    is $cart->is_modified, 0, 'right cat not modify';
 
-    $cart->_is_modified(1);
-    is $cart->_is_modified, 1, 'right cart modified';
+    $cart->is_modified(1);
+    is $cart->is_modified, 1, 'right cart modified';
 };
 
 done_testing();
