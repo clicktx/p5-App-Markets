@@ -243,7 +243,7 @@ subtest 'merge' => sub {
         shipments => [ { shipping_address => {}, shipping_items => [] } ],
       },
       'right merge data';
-    is $merged_cart->is_modified, 1, 'right modified';
+    is $merged_cart->_is_modified, 1, 'right modified';
 };
 
 subtest 'order data' => sub {

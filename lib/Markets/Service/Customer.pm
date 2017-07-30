@@ -65,26 +65,32 @@ sub login {
     my $c       = $self->controller;
     my $session = $c->server_session;
 
-    # Merge cart data
-    my $cart_data = $session->store->load_cart_data($customer_id);
-    $cart_data->{cart_id} = $customer_id;
-    my $stored_cart = $c->factory('entity-cart')->create($cart_data);
+    # 2重ログイン
+    return if $session->customer_id;
 
-    my $merged_cart = $c->cart->merge($stored_cart);
-    $c->cart($merged_cart);
-
-    # Set customer id
+    # Set customer id (logedin flag)
     $session->customer_id($customer_id);
+
+    # Before data
+    my $session_data    = $session->data;
+    my $visitor_cart_id = $session->cart_id;
+
+    # Merge cart data
+    my $cart_data   = $session->store->load_cart_data($customer_id) || {};
+    my $stored_cart = $c->factory('entity-cart')->create($cart_data);
+    my $merged_cart = $c->cart->merge($stored_cart);
 
     try {
         my $txn = $self->app->schema->txn_scope_guard;
 
-        # Change cart_id
-        $session->remove_cart($customer_id);
-        $session->cart_id($customer_id);
+        # Remove before cart(and session) from DB
+        $session->remove_cart($visitor_cart_id);
 
-        # Regenerate sid
-        $session->regenerate_sid;
+        # Regenerate sid and set cart id
+        $session->create( { cart_id => $customer_id } );
+        $session->data($session_data);
+        $session->cart->data( $merged_cart->to_data );
+        $session->flush;
 
         $txn->commit;
     }

@@ -25,6 +25,12 @@ subtest 'create session' => sub {
     ok $cart_id, 'right session->cart_id';
     is $cart_id, $session->cart_session->cart_id, 'right cart_id';
     is $session->cart_session->cart_id, $session->cart_id, 'right cart_id';
+
+    subtest 'argument cart_id' => sub {
+        my $session = t::Util::server_session($app);
+        my $sid = $session->create( { cart_id => 111 } );
+        is $session->cart_id, 111, 'right cart_id';
+    };
 };
 
 subtest 'store for cart' => sub {
@@ -107,18 +113,6 @@ subtest 'remove cart data' => sub {
     is_deeply $cart->data, {}, 'flash all cart data after reload session';
 };
 
-subtest 'change cart_id' => sub {
-    my $new_cartid = 'aaabbbcccddd';
-    is $session->cart_id($new_cartid), $new_cartid, 'right cart_id with updated';
-    is $session->cart_id, $new_cartid, 'right cart_id';
-    is $cart->cart_id,    $new_cartid, 'right cart_id';
-
-    $session->flush;
-    $session->load;
-    is $session->cart_id, $new_cartid, 'right changed cart_id after reload';
-    is $cart->cart_id,    $new_cartid, 'right changed cart_id after reload';
-};
-
 subtest 'customer_id' => sub {
     my $customer_id = $session->data('customer_id');
     is $session->customer_id, $customer_id, 'right load customer_id';
@@ -170,6 +164,17 @@ subtest 'regenerate sid' => sub {
         ok $session->remove_cart('not_found_cart') == 0, 'do not removed cart';
         is $session->remove_cart($cart_id), 1, 'removed cart';
     };
+};
+
+subtest 'cart is_modified' => sub {
+    my $session = t::Util::server_session($app);
+    $session->create;
+
+    my $cart = $session->cart_session;
+    is $cart->is_modified, 0, 'right cat not modify';
+
+    $cart->is_modified(1);
+    is $cart->is_modified, 1, 'right cart modified';
 };
 
 done_testing();

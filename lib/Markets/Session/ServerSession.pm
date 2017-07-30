@@ -7,19 +7,19 @@ use Markets::Util qw/generate_token/;
 has cart_session => sub { Markets::Session::CartSession->new(shift) };
 has cart         => sub { shift->cart_session };
 
-sub cart_id {
-    my ( $self, $id ) = @_;
-    my $cart_id = $self->data('cart_id');
-    return $cart_id if !$id;
-
-    $self->store->update_cart_id( $cart_id, $id )
-      ? ( $self->data( cart_id => $id ) and $id )
-      : undef;
-}
+sub cart_id { shift->data('cart_id') }
 
 sub customer_id {
     my ( $self, $id ) = @_;
     return $id ? $self->data( customer_id => $id ) : $self->data('customer_id');
+}
+
+sub flush {
+    my $self = shift;
+
+    my $result = $self->SUPER::flush(@_);
+    $self->cart->is_modified(0);
+    return $result;
 }
 
 sub regenerate_sid {
@@ -48,14 +48,15 @@ sub staff_id {
     return $id ? $self->data( staff_id => $id ) : $self->data('staff_id');
 }
 
-# Overwride methods MojoX::Session
+# Overwride method MojoX::Session
 ##################################
 sub create {
-    my $self = shift;
-    my $sid  = $self->SUPER::create(@_);
+    my ( $self, $args ) = ( shift, shift || {} );
 
     # New cart
-    my $id = generate_token( length => 40, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
+    my $sid = $self->SUPER::create(@_);
+    my $id =
+      $args->{cart_id} ? $args->{cart_id} : generate_token( length => 40, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
     my $cart = {
         data         => {},
         _is_modified => 0,
@@ -103,19 +104,20 @@ Alias for L</cart_session>
 L<Markets::Session::ServerSession> inherits all methods from L<MojoX::Session> and implements
 the following new ones.
 
-=head2 C<cart_data>
-
-    my $cart_data = $session->cart_data;
-    $session->cart_data(\%cart_data);
-
-Get/Set cart data.
-
 =head2 C<cart_id>
 
     my $cart_id = $session->cart_id;
-    $cart->cart_id('xxxxxxxxxx');
 
-Get/Set cart id.
+Get cart id.
+
+=head2 C<create>
+
+    my $sid = $session->create;
+
+    # Specify cart id
+    my $sid = $session->create( { cart_id => 111 } );
+
+This method overrided L<MojoX::Session/create>.
 
 =head2 C<customer_id>
 
@@ -123,6 +125,13 @@ Get/Set cart id.
     $cart->customer_id('xxxxxxxxxx');
 
 Get/Set customer id.
+
+=head2 C<flush>
+
+    $session->flush;
+
+This method overrided L<MojoX::Session/flush>.
+Stored session data.
 
 =head2 C<regenerate_sid>
 

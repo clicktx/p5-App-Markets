@@ -59,10 +59,6 @@ done_testing();
 
         # is $c->service('cart')->has_items, 1, 'right true';
 
-        # for merge_cart test
-        my $cart_id = $c->server_session->cart_id('123456');
-        is $cart_id, '123456';
-
         $c->render( text => 1 );
     }
 
