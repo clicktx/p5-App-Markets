@@ -48,14 +48,15 @@ sub staff_id {
     return $id ? $self->data( staff_id => $id ) : $self->data('staff_id');
 }
 
-# Overwride methods MojoX::Session
+# Overwride method MojoX::Session
 ##################################
 sub create {
-    my $self = shift;
-    my $sid  = $self->SUPER::create(@_);
+    my ( $self, $args ) = ( shift, shift || {} );
 
     # New cart
-    my $id = generate_token( length => 40, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
+    my $sid = $self->SUPER::create(@_);
+    my $id =
+      $args->{cart_id} ? $args->{cart_id} : generate_token( length => 40, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
     my $cart = {
         data         => {},
         _is_modified => 0,
@@ -116,6 +117,15 @@ Get/Set cart data.
     $cart->cart_id('xxxxxxxxxx');
 
 Get/Set cart id.
+
+=head2 C<create>
+
+    my $sid = $session->create;
+
+    # Specify cart id
+    my $sid = $session->create( { cart_id => 111 } );
+
+This method overrided L<MojoX::Session/create>.
 
 =head2 C<customer_id>
 

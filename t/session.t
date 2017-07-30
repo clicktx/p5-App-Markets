@@ -25,6 +25,12 @@ subtest 'create session' => sub {
     ok $cart_id, 'right session->cart_id';
     is $cart_id, $session->cart_session->cart_id, 'right cart_id';
     is $session->cart_session->cart_id, $session->cart_id, 'right cart_id';
+
+    subtest 'argument cart_id' => sub {
+        my $session = t::Util::server_session($app);
+        my $sid     = $session->create( { cart_id => 111 } );
+        is $session->cart_id, 111, 'right cart_id';
+    };
 };
 
 subtest 'store for cart' => sub {
