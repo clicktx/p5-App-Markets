@@ -7,19 +7,19 @@ use Markets::Util qw/generate_token/;
 has cart_session => sub { Markets::Session::CartSession->new(shift) };
 has cart         => sub { shift->cart_session };
 
-sub cart_id {
-    my ( $self, $id ) = @_;
-    my $cart_id = $self->data('cart_id');
-    return $cart_id if !$id;
-
-    $self->store->update_cart_id( $cart_id, $id )
-      ? ( $self->data( cart_id => $id ) and $id )
-      : undef;
-}
+sub cart_id { shift->data('cart_id') }
 
 sub customer_id {
     my ( $self, $id ) = @_;
     return $id ? $self->data( customer_id => $id ) : $self->data('customer_id');
+}
+
+sub flush {
+    my $self = shift;
+
+    my $result = $self->SUPER::flush(@_);
+    $self->cart->is_modified(0);
+    return $result;
 }
 
 sub regenerate_sid {
@@ -107,9 +107,8 @@ the following new ones.
 =head2 C<cart_id>
 
     my $cart_id = $session->cart_id;
-    $cart->cart_id('xxxxxxxxxx');
 
-Get/Set cart id.
+Get cart id.
 
 =head2 C<create>
 
@@ -126,6 +125,13 @@ This method overrided L<MojoX::Session/create>.
     $cart->customer_id('xxxxxxxxxx');
 
 Get/Set customer id.
+
+=head2 C<flush>
+
+    $session->flush;
+
+This method overrided L<MojoX::Session/flush>.
+Stored session data.
 
 =head2 C<regenerate_sid>
 

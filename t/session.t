@@ -113,18 +113,6 @@ subtest 'remove cart data' => sub {
     is_deeply $cart->data, {}, 'flash all cart data after reload session';
 };
 
-subtest 'change cart_id' => sub {
-    my $new_cartid = 'aaabbbcccddd';
-    is $session->cart_id($new_cartid), $new_cartid, 'right cart_id with updated';
-    is $session->cart_id, $new_cartid, 'right cart_id';
-    is $cart->cart_id,    $new_cartid, 'right cart_id';
-
-    $session->flush;
-    $session->load;
-    is $session->cart_id, $new_cartid, 'right changed cart_id after reload';
-    is $cart->cart_id,    $new_cartid, 'right changed cart_id after reload';
-};
-
 subtest 'customer_id' => sub {
     my $customer_id = $session->data('customer_id');
     is $session->customer_id, $customer_id, 'right load customer_id';
