@@ -50,13 +50,20 @@ sub _data {
 }
 
 sub _is_modified {
-    my ( $self, $val ) = @_;
+    my $self = shift;
 
-    if ( defined $val ) {
+    # Getter
+    return $self->session->data('cart')->{_is_modified} ? 1 : 0 unless @_;
+
+    # Setter
+    my $val = shift;
+    if ($val) {
         $self->session->data('cart')->{_is_modified} = 1;
         $self->session->_is_flushed(0);
     }
-    return $self->data('_is_modified');
+    else {
+        $self->session->data('cart')->{_is_modified} = 0;
+    }
 }
 
 1;

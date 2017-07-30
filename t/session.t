@@ -28,7 +28,7 @@ subtest 'create session' => sub {
 
     subtest 'argument cart_id' => sub {
         my $session = t::Util::server_session($app);
-        my $sid     = $session->create( { cart_id => 111 } );
+        my $sid = $session->create( { cart_id => 111 } );
         is $session->cart_id, 111, 'right cart_id';
     };
 };
@@ -176,6 +176,17 @@ subtest 'regenerate sid' => sub {
         ok $session->remove_cart('not_found_cart') == 0, 'do not removed cart';
         is $session->remove_cart($cart_id), 1, 'removed cart';
     };
+};
+
+subtest 'cart is_modified' => sub {
+    my $session = t::Util::server_session($app);
+    $session->create;
+
+    my $cart = $session->cart_session;
+    is $cart->_is_modified, 0, 'right cat not modify';
+
+    $cart->_is_modified(1);
+    is $cart->_is_modified, 1, 'right cart modified';
 };
 
 done_testing();
