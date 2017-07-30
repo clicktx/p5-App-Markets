@@ -104,13 +104,6 @@ Alias for L</cart_session>
 L<Markets::Session::ServerSession> inherits all methods from L<MojoX::Session> and implements
 the following new ones.
 
-=head2 C<cart_data>
-
-    my $cart_data = $session->cart_data;
-    $session->cart_data(\%cart_data);
-
-Get/Set cart data.
-
 =head2 C<cart_id>
 
     my $cart_id = $session->cart_id;
