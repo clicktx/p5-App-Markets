@@ -62,16 +62,6 @@ done_testing();
         $c->render( text => 1 );
     }
 
-    sub merge_cart {
-        my $c = shift;
-
-        # subtest 'merge_cart' => sub {
-        #     ok 1;
-        # };
-
-        $c->render( text => 1 );
-    }
-
     sub clear_cart {
         my $c = shift;
 
