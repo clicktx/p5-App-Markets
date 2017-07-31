@@ -8,19 +8,21 @@ primary_column id => {
 };
 
 column password_id => {
-    data_type   => 'INT',
+    data_type => 'INT',
+
+    # 登録者以外の購入者（ビジター購入）もcustomre登録される？
     is_nullable => 1,
 };
 
 column created_at => {
     data_type   => 'DATETIME',
-    is_nullable => 1,
+    is_nullable => 0,
     timezone    => Markets::Schema->TZ,
 };
 
 column updated_at => {
     data_type   => 'DATETIME',
-    is_nullable => 1,
+    is_nullable => 0,
     timezone    => Markets::Schema->TZ,
 };
 
