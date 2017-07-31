@@ -30,4 +30,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
- L<Markets::Domain::Entity>
+L<Markets::Domain::Entity>

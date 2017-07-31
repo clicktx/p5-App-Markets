@@ -102,7 +102,7 @@ __END__
 
 =head1 NAME
 
-Markets::Model::Service::Customer - Application Service Layer
+Markets::Service::Customer
 
 =head1 SYNOPSIS
 
@@ -128,9 +128,13 @@ the following new ones.
 
 =head2 C<create_entity>
 
-    my $customer = $c->service('customre')->create_entity($customer_id);
+    my $customer = $c->service('customer')->create_entity( customer_id => $customer_id );
 
-    my $customer = $c->service('customre')->create_entity($customer_email);
+    my $customer = $c->service('customer')->create_entity( email => $customer_email );
+
+Return L<Markets::Domain::Entity::Customer> object.
+
+Required argument: C<customer_id> or C<email>
 
 =head2 C<load_history>
 
