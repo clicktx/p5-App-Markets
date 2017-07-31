@@ -55,7 +55,7 @@ sub login {
     $form->field('email')->append_error_class;
     $form->field('password')->append_error_class;
 
-    $self->render( has_error => 1 );
+    $self->render( login_failure => 1 );
 }
 
 sub logout {
