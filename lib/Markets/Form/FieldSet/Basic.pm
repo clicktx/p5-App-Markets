@@ -21,6 +21,15 @@ has_field email => (
     validations   => [],
 );
 
+has_field login_id => (
+    type          => 'text',
+    placeholder   => 'myid',
+    label         => 'Login ID',
+    required      => 1,
+    filters       => [qw(trim)],
+    validations   => [],
+);
+
 has_field password => (
     type        => 'password',
     placeholder => 'your password',
