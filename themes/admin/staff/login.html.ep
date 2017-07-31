@@ -4,11 +4,17 @@
 
 <h2><%= __(title) %></h2>
 
+% if ( $self->stash('login_failure') ){
+    <div class="field-with-error">
+        Sorry, your login id or password cannot be recognized.
+    </div>
+% }
 <p>
-    <%= form_for 'RN_admin_login_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
-        Admin ID <%= text_field staff_id => 'defaulte' %>
-        Password <%= password_field 'password' %>
+    <%= form_for 'RN_admin_login' => ( method => 'POST' ) => begin %>
+        <%= form_label '#login_id' %><%= form_widget '#login_id', default_value => 'default' %>
+        <%= form_label '#password' %><%= form_widget '#password' %>
+
         <%= csrf_field %>
-        <%= submit_button 'ok' %>
+        <%= submit_button 'Login' %>
     <% end %>
 </p>
