@@ -61,8 +61,8 @@ the following new ones.
 
     # $i starting from 0!
     $collection->each( sub {
-        my ( $e, $i ) = @_;
-        say $i; # 0
+        my ( $element, $index ) = @_;
+        say $index; # 0
     });
 
 This method is similar to Mojo::Collection::each.

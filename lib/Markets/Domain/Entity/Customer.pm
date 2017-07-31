@@ -33,6 +33,8 @@ Elements is L<Markets::Domain::Entity::Email> object.
 
 =head2 C<id>
 
+    my $id = $customer->id;
+
 =head2 C<password>
 
     my $password = $customer->password;
@@ -46,6 +48,8 @@ the following new ones.
 
 =head2 C<clone>
 
+    my $clone_entity = $customer->clone;
+
 =head2 C<is_modified>
 
     my $bool = $customer->is_modified;
@@ -58,4 +62,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
-L<Markets::Domain::Entity>
+L<Markets::Domain::Entity>, L<Markets::Domain::Collection>, L<Markets::Domain::Entity::Password>
