@@ -46,10 +46,14 @@
     ],
     'Password' => [
         [qw/id hash/],
-        [ 1, 'SCRYPT:16384:8:1:lDuUwcU0iGJJt42hmZw/QSF1Zjuoucot8KL/YGyZCmY=:9gLPkZQbRqeFIJxmccG8m9AT/v/6ro0hRYlFLt0Td0M='],
-        [ 2, 'bbb'],
-        [ 3, 'ccc'],
-        [ 4, 'SCRYPT:16384:8:1:lDuUwcU0iGJJt42hmZw/QSF1Zjuoucot8KL/YGyZCmY=:9gLPkZQbRqeFIJxmccG8m9AT/v/6ro0hRYlFLt0Td0M='],
+        # 12345678
+        [ 1, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='],
+        # 22334455
+        [ 2, 'SCRYPT:16384:8:1:VGcabum1/mW1UQ207AZL4Abdj96TtHYtFWJRjBIuYv8=:5lLK4OF1oG9mdI9G89hgh4kvcXJ8jVnCqIAy8QXwluE='],
+        # 44556677
+        [ 3, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY='],
+        # 12345678
+        [ 4, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='],
     ],
     'Staff' => [
         [qw/id login_id password_id created_at updated_at/],
