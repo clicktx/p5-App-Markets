@@ -3,12 +3,12 @@ use Mojo::Base -strict;
 use Markets::Form::FieldSet;
 
 has_field 'address.line1' => (
-    type          => 'text',
-    placeholder   => 'Street Address',
-    label         => 'Line1',
-    required      => 1,
-    filters       => [qw(trim)],
-    validations   => [],
+    type        => 'text',
+    placeholder => 'Street Address',
+    label       => 'Line1',
+    required    => 1,
+    filters     => [qw(trim)],
+    validations => [],
 );
 
 has_field email => (
@@ -18,16 +18,16 @@ has_field email => (
     default_value => 'a@b',
     required      => 1,
     filters       => [qw(trim)],
-    validations   => [],
+    validations   => [],               # max 64
 );
 
 has_field login_id => (
-    type          => 'text',
-    placeholder   => 'myid',
-    label         => 'Login ID',
-    required      => 1,
-    filters       => [qw(trim)],
-    validations   => [],
+    type        => 'text',
+    placeholder => 'myid',
+    label       => 'Login ID',
+    required    => 1,
+    filters     => [qw(trim)],
+    validations => [ [ size => 4, 64 ] ],
 );
 
 has_field password => (
