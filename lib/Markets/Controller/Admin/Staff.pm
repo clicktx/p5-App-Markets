@@ -10,42 +10,44 @@ sub authorize {
     return 0;
 }
 
-sub login_authen {
-    my $self = shift;
-
-    # validation
-    my $params   = $self->req->params;
-    my $is_valid = $params->param('password');
-
-    if ($is_valid) {
-
-        # logging etc.
-
-        my $session  = $self->server_session;
-        my $staff_id = 456;                     # debug staff_id example
-
-        # Set staff id
-        $session->staff_id($staff_id);
-
-        # Regenerate sid
-        $session->regenerate_sid;
-
-        my $route = $self->flash('ref') || 'RN_admin_dashboard';
-        $self->redirect_to($route);
-    }
-    else {
-        # logging etc.
-
-        $self->flash( ref => $self->flash('ref') );
-        $self->render( template => 'staff/login' );
-    }
-}
-
 sub login {
     my $self = shift;
 
     $self->flash( ref => $self->flash('ref') );
-    $self->render();
+
+    # Initialize form
+    my $form = $self->form_set();    #'admin-staff-login'
+
+    # $self->init_form( $form );
+
+    return $self->render() unless $form->has_data;
+
+    return $self->render() unless $form->validate;
+
+    my $login_id = $form->param('login_id');
+    my $password = $form->param('password');
+    my $staff    = $self->service('admin-staff')->create_entity( login_id => $login_id );
+
+    if ( $staff->id ) {
+        if ( $self->scrypt_verify( $password, $staff->password->hash ) ) {
+
+            # Login success
+            # logging etc.
+
+            $self->service('admin-staff')->login( $staff->id );
+
+            my $route = $self->flash('ref') || 'RN_admin_dashboard';
+            return $self->redirect_to($route);
+        }
+        else { $self->app->log->warn( 'Staff login failed: password mismatch at login id: ' . $login_id ) }
+    }
+    else { $self->app->log->warn( 'Staff login failed: not found login id: ' . $login_id ) }
+
+    # Login failure
+    $form->field('login_id')->append_error_class;
+    $form->field('password')->append_error_class;
+
+    $self->render( login_failure => 1 );
 }
 
 sub logout {

@@ -20,8 +20,7 @@ sub add_admin_routes {
     # Not required authorization Routes
     {
         my $login = $r->any('login')->to( controller => 'admin-staff' );
-        $login->get('/')->to('#login')->name('RN_admin_login');
-        $login->post('/')->to('#login_authen')->name('RN_admin_login_authen');
+        $login->any('/')->to('#login')->name('RN_admin_login');
     }
 
     # Required authorization Routes

@@ -4,7 +4,7 @@
 
 <h2><%= __('login') %></h2>
 
-% if ( $self->stash('has_error') ){
+% if ( $self->stash('login_failure') ){
     <div class="field-with-error">
         Sorry, your username(ID) or password cannot be recognized.
     </div>

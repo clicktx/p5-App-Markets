@@ -18,8 +18,8 @@ sub admin_loged_in {
     my $self = shift;
 
     my $post_data = {
-        staff_id   => 'xxx',
-        password   => 'xxx',
+        login_id   => 'staff',
+        password   => '12345678',
         csrf_token => $self->csrf_token,
     };
     $self->t->ua->post( '/admin/login', form => $post_data );

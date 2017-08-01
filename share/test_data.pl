@@ -46,24 +46,24 @@
     ],
     'Password' => [
         [qw/id hash/],
-        [ 1, 'SCRYPT:16384:8:1:lDuUwcU0iGJJt42hmZw/QSF1Zjuoucot8KL/YGyZCmY=:9gLPkZQbRqeFIJxmccG8m9AT/v/6ro0hRYlFLt0Td0M='],
-        [ 2, 'bbb'],
-        [ 3, 'ccc'],
+        # 12345678
+        [ 1, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='],
+        # 22334455
+        [ 2, 'SCRYPT:16384:8:1:VGcabum1/mW1UQ207AZL4Abdj96TtHYtFWJRjBIuYv8=:5lLK4OF1oG9mdI9G89hgh4kvcXJ8jVnCqIAy8QXwluE='],
+        # 44556677
+        [ 3, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY='],
+        # 12345678
+        [ 4, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='],
+    ],
+    'Staff' => [
+        [qw/id login_id password_id created_at updated_at/],
+        [ 222, 'default', 1, '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
     ],
     'Customer' => [
-        [qw/id created_at password_id/],
-        [ 111, '2017-06-06 19:50:05', 1 ],
-        [ 112, '2017-07-07 07:02:15' ],
-        [ 113, '2017-07-07 07:02:15' ],
-        [ 114, '2017-07-07 07:02:15' ],
-        [ 115, '2017-07-07 07:02:15' ],
-        [ 116, '2017-07-07 07:02:15' ],
-        [ 117, '2017-07-07 07:02:15' ],
-        [ 118, '2017-07-07 07:02:15' ],
-        [ 119, '2017-07-07 07:02:15' ],
-        [ 120, '2017-07-07 07:02:15' ],
-        [ 121, '2017-07-07 07:02:15' ],
-        [ 122, '2017-07-07 07:02:15' ],
+        [qw/id password_id created_at updated_at/],
+        [ 111, 1, '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
+        [ 112, 2, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
+        [ 113, 3, '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
     ],
     'Customer::Email' => [
         [qw/customer_id email_id is_primary/],

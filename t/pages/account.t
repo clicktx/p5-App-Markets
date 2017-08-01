@@ -1,39 +1,46 @@
-use Mojo::Base -strict;
+package t::pages::account;
 
+use Mojo::Base 't::pages::common';
 use t::Util;
 use Test::More;
 use Test::Mojo;
 
-my $t   = Test::Mojo->new('App');
-my $app = $t->app;
+our @paths;
 
-my @paths;
-subtest 'requred authrization pages' => sub {
-    foreach my $r ( @{ $app->routes->find('RN_customer_bridge')->children } ) {
+sub t00_startup : Test(startup) {
+    my $self = shift;
+    foreach my $r ( @{ $self->t->app->routes->find('RN_customer_bridge')->children } ) {
         push @paths, $r->render() if $r->is_endpoint;
     }
-    $t->get_ok($_)->status_is( 302, 'right redirect' ) for @paths;
-};
 
-subtest 'Login process' => sub {
-    $t->get_ok('/account/wishlist')->status_is(302);
-    $t->get_ok('/login');
+    $self->t->ua->max_redirects(0);
+}
+
+sub t01_required_authrization : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $t->get_ok($_)->status_is( 302, 'right redirect' ) for @paths;
+}
+
+sub t02_login_process : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
     my $sid = t::Util::get_sid($t);
     ok $sid, 'right sid';
 
     # login
     my $tx         = $t->tx;
-    my $csrf_token = $tx->res->dom->at('input[name="csrf_token"]')->{value};
-
-    # access to wishlist
-    $t->get_ok('/account/wishlist');
+    my $csrf_token = $self->csrf_token;
 
     # password failure
-    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'c@x.org', password => '2' } )
+    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'name@domain.com', password => '11223344' } )
       ->status_is( 200, 'password failure' );
 
     # accept and redirect to wishlist?
-    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'c@x.org', password => '1' } )
+    $t->get_ok('/account/wishlist');
+    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'name@domain.com', password => '12345678' } )
       ->status_is( 302, 'right accepr to redirect' )
       ->header_like( location => qr/wishlist/, 'right location after redirect' );
 
@@ -48,6 +55,6 @@ subtest 'Login process' => sub {
     $t->get_ok('/account/home')->status_is(302);
     my $sid_new_session = t::Util::get_sid($t);
     isnt $sid_loged_in, $sid_new_session, 'right new sid';
-};
+}
 
-done_testing();
+__PACKAGE__->runtests;

@@ -31,6 +31,7 @@ sub login {
     if ( $customer->id ) {
         if ( $self->scrypt_verify( $password, $customer->password->hash ) ) {
 
+            # Login success
             # logging etc.
 
             $self->service('customer')->login( $customer->id );
@@ -50,11 +51,11 @@ sub login {
         $self->app->log->warn( 'Customer login failed: not found email: ' . $email );
     }
 
-    # Login failed
+    # Login failure
     $form->field('email')->append_error_class;
     $form->field('password')->append_error_class;
 
-    $self->render( has_error => 1 );
+    $self->render( login_failure => 1 );
 }
 
 sub logout {

@@ -23,11 +23,12 @@
 </p>
 
 <p>
-    <%= form_for 'RN_customer_authen' => (method => 'POST', style => 'border:1px solid gray') => begin %>
-        <%= __('login') %>
+    <%= form_for 'RN_customer_login' => ( method => 'POST', style => 'border:1px solid gray' ) => begin %>
+        <h5><%= __('login') %> Form</h5>
+        <%= form_widget 'account-login#email', default_value => 'c@x.org' %>
+        <%= form_widget 'account-login#password' %>
         <%= csrf_field %>
-        <%= text_field name => 'defaule' %>
-        <%= submit_button 'ok' %>
+        <%= submit_button __('Login') %>
     <% end %>
 </p>
 <p>
@@ -39,7 +40,12 @@
 </p>
 
 <h1>For Admin</h1>
-<%= link_to 'admin page' => 'RN_admin_dashboard' %>
+<ul>
+    <li><%= link_to 'Dashboard' => 'RN_admin_dashboard' %></li>
+    <li><%= link_to 'Preferences' => 'RN_admin_preferences' %></li>
+    <li><%= link_to 'Products' => 'RN_admin_products' %></li>
+    <li><%= link_to 'Orders' => 'RN_admin_orders' %></li>
+</ul>
 
 <p>
     <%= __ 'hello' %><%= __ 'hello2' %>
