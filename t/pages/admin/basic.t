@@ -33,12 +33,12 @@ subtest 'admin login process' => sub {
     ok $sid, 'right sid';
 
     $t->get_ok('/admin/orders')->status_is( 302, 'right redirect' );
-    $t->post_ok( '/admin/login', form => { csrf_token => $csrf_token, customer_id => 'default' } )
+    $t->post_ok( '/admin/login', form => { csrf_token => $csrf_token, login_id => 'staff' } )
       ->status_is(200)->text_like( 'title' => qr/login/i, 'failure login' );
 
     $t->ua->max_redirects(1);
     $t->post_ok( '/admin/login',
-        form => { csrf_token => $csrf_token, customer_id => 'default', password => 'pass' } )
+        form => { csrf_token => $csrf_token, login_id => 'staff', password => '12345678' } )
       ->status_is(200)->text_like( 'title' => qr/orders/i, 'right redirect after login' );
 
     my $sid_loged_in = t::Util::get_sid($t);

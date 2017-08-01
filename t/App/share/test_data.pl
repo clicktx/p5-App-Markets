@@ -15,6 +15,12 @@
         [qw/1 test_addon 1/],
         [qw/2 disable_addon 0/],
     ],
+    'Staff' => {
+        id => 2,
+        login_id => 'staff',
+        # password: 12345678
+        password => { hash => 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=' },
+    },
     'Customer' => {
         id => 3,
         emails => [ { email => { address => 'c@x.org' } } ],
