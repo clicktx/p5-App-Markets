@@ -29,7 +29,7 @@ done_testing();
         eval { $customer = $c->service('customer')->create_entity() };
         ok $@;
 
-        $customer = $c->service('customer')->create_entity( email => 'c@x.org' );
+        $customer = $c->service('customer')->create_entity( email => 'name@domain.com' );
         is $customer->id, 3;
 
         $customer = $c->service('customer')->create_entity( customer_id => 3 );
