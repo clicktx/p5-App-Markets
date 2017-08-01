@@ -49,6 +49,11 @@
         [ 1, 'SCRYPT:16384:8:1:lDuUwcU0iGJJt42hmZw/QSF1Zjuoucot8KL/YGyZCmY=:9gLPkZQbRqeFIJxmccG8m9AT/v/6ro0hRYlFLt0Td0M='],
         [ 2, 'bbb'],
         [ 3, 'ccc'],
+        [ 4, 'SCRYPT:16384:8:1:lDuUwcU0iGJJt42hmZw/QSF1Zjuoucot8KL/YGyZCmY=:9gLPkZQbRqeFIJxmccG8m9AT/v/6ro0hRYlFLt0Td0M='],
+    ],
+    'Staff' => [
+        [qw/id login_id password_id created_at updated_at/],
+        [ 222, 'default', 1, '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
     ],
     'Customer' => [
         [qw/id password_id created_at updated_at/],
