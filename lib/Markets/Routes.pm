@@ -50,6 +50,9 @@ sub add_admin_routes {
             $pref->any('/')->to('#index')->name('RN_admin_preferences');
         }
 
+        # Categories
+        $r->any('/categories')->to('admin-category#index')->name('RN_admin_categories');
+
         # Products
         $r->get('/products')->to('admin-product#index')->name('RN_admin_products');
 

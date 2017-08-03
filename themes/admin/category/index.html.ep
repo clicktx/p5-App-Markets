@@ -1,0 +1,6 @@
+% layout 'admin-default';
+% title __('Categories');
+
+<h1><%= title %></h1>
+
+<h2><%= __('Categories') %></h2>
