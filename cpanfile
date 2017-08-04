@@ -47,6 +47,7 @@ on configure => sub {
 on test => sub {
     requires 'Test::Harness', '3.39';
     requires 'Test::More';
+    requires 'Test::Exception';
     requires 'Test::Deep';
     requires 'Test::Class';
     requires 'Test::mysqld';
