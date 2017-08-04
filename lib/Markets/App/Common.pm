@@ -61,6 +61,9 @@ sub initialize_app {
     my $config_path = $home->rel_file("config/$mode.conf");
     $self->plugin( Config => { file => $config_path } );
 
+    # Initialize DBIx::Class::Tree
+    _init_dbic_tree();    # NOTE: This must happen before the schema is loaded
+
     # Load plugin
     _load_plugin($self);
 
@@ -149,6 +152,12 @@ sub _dsn {
           . "user=$conf->{user};password=$conf->{password};";
     }
     return $dsn;
+}
+
+sub _init_dbic_tree {    # This must happen before the schema is loaded
+    require Markets::Schema::Result::Category;
+    Markets::Schema::Result::Category->position_column('position');
+    Markets::Schema::Result::Category->parent_column('parent_id');
 }
 
 sub _load_plugin {
