@@ -8,6 +8,10 @@
     <li><%= link_to 'preferences' => 'RN_admin_preferences' %></li>
     <li><%= link_to 'addon settings' => 'RN_admin_settings_addon' %></li>
 </ul>
+<h2><%= __('Categories') %></h2>
+<ul>
+    <li><%= link_to 'Categories index' => 'RN_admin_categories' %></li>
+</ul>
 
 <h2><%= __('Products') %></h2>
 <ul>
