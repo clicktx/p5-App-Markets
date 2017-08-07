@@ -17,3 +17,15 @@
         </div>
     % }
 % }
+
+<h1>Create Category</h1>
+<%= form_for 'RN_admin_categories' => ( method => 'POST' ) => begin %>
+    <div class="">
+        <%= form_label '#parent_id' %> <%= form_widget '#parent_id' %>
+    </div>
+    <div class="">
+        <%= form_label '#name' %> <%= form_widget '#name' %>
+    </div>
+    <%= csrf_field %>
+    <%= submit_button 'Create' %>
+<% end %>

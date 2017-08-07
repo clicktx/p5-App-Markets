@@ -1,0 +1,20 @@
+package Markets::Form::FieldSet::Admin::Category::Index;
+use Mojo::Base -strict;
+use Markets::Form::FieldSet;
+
+has_field 'name' => (
+    type        => 'text',
+    label       => 'Category Name',
+    required    => 1,
+    validations => [],
+);
+
+has_field 'parent_id' => (
+    type     => 'choice',
+    label => 'Parent Category',
+    expanded => 0,
+    multiple => 0,
+    choices  => [],
+);
+
+1;
