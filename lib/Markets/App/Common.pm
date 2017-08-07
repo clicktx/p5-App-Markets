@@ -112,15 +112,17 @@ sub initialize_app {
 
     # Add before/after action hook
     # MEMO: Mojoliciou::Controllerの挙動を変更
-    $self->hook(
+    _add_hooks($self);
+}
+
+sub _add_hooks {
+    my $app = shift;
+    $app->hook(
         around_action => sub {
             my ( $next, $c, $action, $last ) = @_;
             return $next->() unless $last;
 
-            say "hook! around_action from Markets::App::Common";    # debug
-            if ( $c->can('process') ) {
-                $c->process($action);
-            }
+            if ( $c->can('process') ) { $c->process($action) }
             else {
                 $c->app->log->warn('Controller class shoud inheritance of "Markets::Controller".');
                 $c->$action;
@@ -128,7 +130,7 @@ sub initialize_app {
         }
     );
 
-    $self->hook(
+    $app->hook(
         before_routes => sub {
             my $c = shift;
 
@@ -183,13 +185,13 @@ sub _load_plugin {
 }
 
 sub _log {
-    my $self     = shift;
+    my $app      = shift;
     my $log_name = shift . ".log";
 
     # Check if we have a log directory that is writable
     my $log  = Mojo::Log->new;
-    my $home = $self->home;
-    my $mode = $self->mode;
+    my $home = $app->home;
+    my $mode = $app->mode;
     $log->path( $home->child( 'var', 'log', $log_name ) )
       if -d $home->child( 'var', 'log' ) && -w _;
 

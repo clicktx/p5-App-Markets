@@ -13,7 +13,8 @@ sub index {
     my $category;
     $category = $rs->find($category_id) if $category_id;
 
-    $self->stash( title => $category->title ) if $category;
+    my $title = $category ? $category->title : $category_name;
+    $self->stash( title => $title );
     $self->render();
 }
 
