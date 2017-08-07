@@ -22,3 +22,17 @@
     <li><%= link_to 'Orders index' => 'RN_admin_orders' %></li>
     <li><%= link_to 'Orders index' => 'RN_admin_orders' %></li>
 </ul>
+
+<h2><%= __('Customre') %></h2>
+<ul>
+    <li><%= link_to 'Customre index' => 'RN_admin_customers' %></li>
+    <li><%= link_to 'Customre index' => 'RN_admin_customers' %></li>
+    <li><%= link_to 'Customre index' => 'RN_admin_customers' %></li>
+</ul>
+
+<h2><%= __('Staff') %></h2>
+<ul>
+    <li><%= link_to 'Staff index' => 'RN_admin_staffs' %></li>
+    <li><%= link_to 'Staff index' => 'RN_admin_staffs' %></li>
+    <li><%= link_to 'Staff index' => 'RN_admin_staffs' %></li>
+</ul>
