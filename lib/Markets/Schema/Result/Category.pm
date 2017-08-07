@@ -29,19 +29,29 @@ column level => {
     is_nullable => 0,
 };
 
-column name => {
+column title => {
     data_type   => 'VARCHAR',
     size        => 64,
     is_nullable => 0,
 };
 
-__PACKAGE__->tree_columns(
-    {
-        root_column  => 'root_id',
-        left_column  => 'lft',
-        right_column => 'rgt',
-        level_column => 'level',
-    }
-);
+# NOTE: 下記に書いた場合deploy_schema時にテーブル作成に失敗する（relation設定によるもの？）
+#       tree_columnsを呼ばないとapplicationで動かないため、App::Commonで読み込む。
+# __PACKAGE__->tree_columns(
+#     {
+#         root_column  => 'root_id',
+#         left_column  => 'lft',
+#         right_column => 'rgt',
+#         level_column => 'level',
+#     }
+# );
+
+# Add Index
+sub sqlt_deploy_hook {
+    my ( $self, $sqlt_table ) = @_;
+
+    $sqlt_table->add_index( name => 'idx_root_id', fields => ['root_id'] );
+    $sqlt_table->add_index( name => 'idx_level',   fields => ['level'] );
+}
 
 1;
