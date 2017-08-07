@@ -1,0 +1,31 @@
+% layout 'admin-default';
+% title __('Categories');
+
+<h1><%= title %></h1>
+
+<h2><%= __('Categories') %></h2>
+
+% my @root_nodes = $rs->search( { level => 0 } );
+% foreach my $node (@root_nodes) {
+    <div class="">
+        id=<%= $node->id %> field1=<%= $node->title %>
+    </div>
+    % my $desc_rs = $node->descendants;
+    % while ( my $desc = $desc_rs->next ) {
+        <div class="">
+            <%= '**' x $desc->level %> id=<%= $desc->id %> field1=<%= $desc->title %>
+        </div>
+    % }
+% }
+
+<h1>Create Category</h1>
+<%= form_for 'RN_admin_categories' => ( method => 'POST' ) => begin %>
+    <div class="">
+        <%= form_label '#parent_id' %> <%= form_widget '#parent_id' %>
+    </div>
+    <div class="">
+        <%= form_label '#title' %> <%= form_widget '#title' %>
+    </div>
+    <%= csrf_field %>
+    <%= submit_button 'Create' %>
+<% end %>
