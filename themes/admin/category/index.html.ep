@@ -8,12 +8,12 @@
 % my @root_nodes = $rs->search( { level => 0 } );
 % foreach my $node (@root_nodes) {
     <div class="">
-        id=<%= $node->id %> field1=<%= $node->name %>
+        id=<%= $node->id %> field1=<%= $node->title %>
     </div>
     % my $desc_rs = $node->descendants;
     % while ( my $desc = $desc_rs->next ) {
         <div class="">
-            <%= '**' x $desc->level %> id=<%= $desc->id %> field1=<%= $desc->name %>
+            <%= '**' x $desc->level %> id=<%= $desc->id %> field1=<%= $desc->title %>
         </div>
     % }
 % }
@@ -24,7 +24,7 @@
         <%= form_label '#parent_id' %> <%= form_widget '#parent_id' %>
     </div>
     <div class="">
-        <%= form_label '#name' %> <%= form_widget '#name' %>
+        <%= form_label '#title' %> <%= form_widget '#title' %>
     </div>
     <%= csrf_field %>
     <%= submit_button 'Create' %>

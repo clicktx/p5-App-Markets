@@ -2,7 +2,7 @@ package Markets::Form::FieldSet::Admin::Category::Index;
 use Mojo::Base -strict;
 use Markets::Form::FieldSet;
 
-has_field 'name' => (
+has_field 'title' => (
     type        => 'text',
     label       => 'Category Name',
     required    => 1,
