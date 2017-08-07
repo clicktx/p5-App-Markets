@@ -61,6 +61,9 @@ sub initialize_app {
     my $config_path = $home->rel_file("config/$mode.conf");
     $self->plugin( Config => { file => $config_path } );
 
+    # DBIC NestedSet
+    _dbic_nestedset();
+
     # Load plugin
     _load_plugin($self);
 
@@ -134,6 +137,18 @@ sub initialize_app {
             say "... This route is dynamic" unless ( $c->stash('mojo.static') );
             $c->app->addons->emit_trigger( filter_form => $c )
               unless $c->stash('mojo.static');
+        }
+    );
+}
+
+sub _dbic_nestedset {
+    require Markets::Schema::Result::Category;
+    Markets::Schema::Result::Category->tree_columns(
+        {
+            root_column  => 'root_id',
+            left_column  => 'lft',
+            right_column => 'rgt',
+            level_column => 'level',
         }
     );
 }

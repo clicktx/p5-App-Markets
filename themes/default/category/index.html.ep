@@ -1,12 +1,34 @@
 % layout 'default';
-% title 'Category';
+% # title stash('category')->title;
 
-<h1><%= stash 'title' %> <%= stash 'category_id' %><%= stash 'category_name' %></h1>
+<h1><%= stash 'title' %></h1>
+category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name' %>
+
 <ul>
     <li><%= link_to 'category2' => 'RN_category' => { category_id => 2} %></li>
     <li><%= link_to 'category3' => 'RN_category' => { category_id => 3} %></li>
     <li><%= link_to 'category sports-soccer' => 'RN_category_name_base' => { category_name => 'sports-soccer'} %></li>
 </ul>
+
+<ul>
+% my @root_nodes = $rs->search( { level => 0 } );
+% foreach my $node (@root_nodes) {
+    <li>
+        <%= link_to 'RN_category' => { category_id => $node->id } => begin %>
+        id=<%= $node->id %> title=<%= $node->title %>
+        <% end %>
+    </li>
+    % my $desc_rs = $node->descendants;
+    % while ( my $desc = $desc_rs->next ) {
+        <li>
+            <%= link_to 'RN_category' => { category_id => $desc->id } => begin %>
+            <%= '**' x $desc->level %> id=<%= $desc->id %> title=<%= $desc->title %>
+            <% end %>
+        </li>
+    % }
+% }
+</ul>
+
 
 <h2>Products</h2>
 <ul>
