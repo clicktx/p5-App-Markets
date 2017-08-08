@@ -13,4 +13,9 @@ sub index {
     $self->render( itr => $itr );
 }
 
+sub product {
+    my $self = shift;
+    return $self->render();
+}
+
 1;
