@@ -4,7 +4,7 @@
 <h1><%= title %></h1>
 
 <ul>
-    <li><%= link_to __('Add New Product') => 'RN_admin_products_product' => { id => 'new' } %></li>
+    <li><%= link_to __('Add New Product') => 'RN_admin_products_product' => { product_id => 'new' } %></li>
 </ul>
 
 <%= form_for 'RN_admin_products' => ( method => 'GET' ) => begin %>
@@ -17,7 +17,7 @@
 <ul>
 % while ( my $product = $itr->next ) {
     <li>
-        <%= link_to 'RN_admin_products_product' => { id => $product->id } => begin %>
+        <%= link_to 'RN_admin_products_product' => { product_id => $product->id } => begin %>
             <%= $product->title %>
         <% end %>
          - <%= $product->description %> <%= $product->price %>
