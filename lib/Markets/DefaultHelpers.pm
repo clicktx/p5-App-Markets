@@ -10,7 +10,7 @@ use Markets::Domain::Factory;
 sub register {
     my ( $self, $app ) = @_;
 
-    # $app->helper( schema         => sub { shift->app->schema } ); # controllerから呼ばない
+    $app->helper( schema         => sub { shift->app->schema } );
     $app->helper( addons         => sub { shift->app->addons(@_) } );
     $app->helper( cookie_session => sub { shift->session(@_) } );
     $app->helper( cart           => sub { _cart(@_) } );
