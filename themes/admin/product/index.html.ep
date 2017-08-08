@@ -3,14 +3,24 @@
 
 <h1><%= title %></h1>
 
-<h2><%= __('Products') %></h2>
-
 <ul>
-    <li><%= link_to __('Add New Product') => 'RN_admin_products_product' %></li>
-    <li><%= link_to __('Category') => 'RN_admin_products_category' %></li>
+    <li><%= link_to __('Add New Product') => 'RN_admin_products_product' => { id => 'new' } %></li>
 </ul>
 
 <%= form_for 'RN_admin_products' => ( method => 'GET' ) => begin %>
-    <%= form_widget 'admin-product#keywords' %>
+    <%= form_widget '#keywords' %>
     <%= submit_button __('Search') %>
 <% end %>
+
+<h2><%= __('Products') %></h2>
+
+<ul>
+% while ( my $product = $itr->next ) {
+    <li>
+        <%= link_to 'RN_admin_products_product' => { id => $product->id } => begin %>
+            <%= $product->title %>
+        <% end %>
+         - <%= $product->description %> <%= $product->price %>
+    </li>
+% }
+</ul>
