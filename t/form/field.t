@@ -36,6 +36,15 @@ subtest 'append_error_class' => sub {
     is $f->{class}, 'field-with-error', 'right append error class';
 };
 
+subtest 'data' => sub {
+    my $f = f();
+    $f->data( foo => 'bar', baz => 'foo' );
+    is $f->{'data-foo'}, 'bar', 'right set';
+    is $f->{'data-baz'}, 'foo', 'right set';
+    is $f->data('foo'), 'bar', 'right get';
+    is $f->data('baz'), 'foo', 'right get';
+};
+
 subtest 'label' => sub {
     my $f   = f();
     my $dom = Mojo::DOM->new( $f->label_for($c) );

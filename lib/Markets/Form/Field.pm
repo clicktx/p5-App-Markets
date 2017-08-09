@@ -79,6 +79,12 @@ sub append_class {
 
 sub append_error_class { shift->append_class('field-with-error') }
 
+sub data {
+    my $self = shift;
+    @_ > 1 ? my %pair = @_ : return $self->{ 'data-' . $_[0] };
+    $self->{ 'data-' . $_ } = $pair{$_} for keys %pair;
+}
+
 # check_box or radio_button into the label
 sub _choice_field {
     my ( $c, $values, $pair ) = ( shift, shift, shift );
@@ -355,6 +361,14 @@ Append class to field.
     $field->append_class('field-with-error');
 
 Append class "field-with-error" to field.
+
+=head2 C<data>
+
+    # Get value from "data-foo" attribute
+    my $data_foo = $field->data('foo');
+
+    # Set attributes data-*
+    $field->data( foo => 'bar', baz => 'bar', ... );
 
 =head1 TAG HELPER METHODS
 
