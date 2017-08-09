@@ -79,6 +79,12 @@ sub append_class {
 
 sub append_error_class { shift->append_class('field-with-error') }
 
+sub data {
+    my $self = shift;
+    @_ > 1 ? my %pair = @_ : return $self->{ 'data-' . $_[0] };
+    $self->{ 'data-' . $_ } = $pair{$_} for keys %pair;
+}
+
 # check_box or radio_button into the label
 sub _choice_field {
     my ( $c, $values, $pair ) = ( shift, shift, shift );
@@ -196,7 +202,10 @@ sub _help {
 sub _hidden {
     my $c     = shift;
     my %attrs = @_;
-    return $c->hidden_field( $attrs{name} => $attrs{value} );
+
+    my $default_value = delete $attrs{default_value};
+    my $value = delete $attrs{value} || $default_value;
+    return $c->hidden_field( $attrs{name} => $value, %attrs );
 }
 
 sub _input {
@@ -278,9 +287,10 @@ sub _textarea {
 
     my $name          = delete $attrs{name};
     my $default_value = delete $attrs{default_value};
+    my $value         = delete $attrs{value} || $default_value;
     $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
 
-    return $c->text_area( $name => $default_value, %attrs );
+    return $c->text_area( $name => $value, %attrs );
 }
 
 # This code from Mojolicious::Plugin::TagHelpers
@@ -351,6 +361,14 @@ Append class to field.
     $field->append_class('field-with-error');
 
 Append class "field-with-error" to field.
+
+=head2 C<data>
+
+    # Get value from "data-foo" attribute
+    my $data_foo = $field->data('foo');
+
+    # Set attributes data-*
+    $field->data( foo => 'bar', baz => 'bar', ... );
 
 =head1 TAG HELPER METHODS
 
@@ -562,6 +580,26 @@ See L<Mojolicious::Plugin::LocaleTextDomainOO>
 =head2 C<text>
 
 =head2 C<textarea>
+
+    my $f = Markets::Form::Field->new(
+        name          => 'description',
+        label         => 'Description',
+        cols          => 40,
+        default_value => 'default text',
+    );
+
+    say $f->textarea($c);
+
+    # HTML
+    <textarea name="description" cols="40">default text</textarea>
+
+    $f->value('text text text');
+    say $f->textarea($c);
+
+    # HTML
+    <textarea name="description" cols="40">text text text</textarea>
+
+In textarea, "default_value" and "value" is treated as content text.
 
 =head2 C<time>
 

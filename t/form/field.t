@@ -36,6 +36,15 @@ subtest 'append_error_class' => sub {
     is $f->{class}, 'field-with-error', 'right append error class';
 };
 
+subtest 'data' => sub {
+    my $f = f();
+    $f->data( foo => 'bar', baz => 'foo' );
+    is $f->{'data-foo'}, 'bar', 'right set';
+    is $f->{'data-baz'}, 'foo', 'right set';
+    is $f->data('foo'), 'bar', 'right get';
+    is $f->data('baz'), 'foo', 'right get';
+};
+
 subtest 'label' => sub {
     my $f   = f();
     my $dom = Mojo::DOM->new( $f->label_for($c) );
@@ -125,10 +134,19 @@ subtest 'input other' => sub {
 };
 
 subtest 'hidden' => sub {
-    my $f = f();
-    $f->value('abc');
+    my $f = Markets::Form::Field->new( name => 'item.0.name', class => 'foo' );
+
+    $f->default_value('default');
     my $dom = Mojo::DOM->new( $f->hidden($c) );
-    is_deeply $dom->at('*')->attr, { type => 'hidden', name => 'item.0.name', value => 'abc' }, 'right hidden';
+    is_deeply $dom->at('*')->attr,
+      { type => 'hidden', id => 'form_widget_item_0_name', name => 'item.0.name', value => 'default', class => 'foo' },
+      'right hidden default_value';
+
+    $f->value('abc');
+    $dom = Mojo::DOM->new( $f->hidden($c) );
+    is_deeply $dom->at('*')->attr,
+      { type => 'hidden', id => 'form_widget_item_0_name', name => 'item.0.name', value => 'abc', class => 'foo' },
+      'right hidden value';
 };
 
 subtest 'textarea' => sub {
@@ -148,7 +166,8 @@ subtest 'textarea' => sub {
 
     $f->value('baz');
     $dom = Mojo::DOM->new( $f->textarea($c) );
-    is $dom->at('*')->attr->{value}, 'baz';
+    is $dom->at('*')->text, 'baz';
+    is $dom->at('*')->attr->{value}, undef;
 };
 
 subtest 'radio checkbox' => sub {
