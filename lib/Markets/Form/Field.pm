@@ -278,9 +278,10 @@ sub _textarea {
 
     my $name          = delete $attrs{name};
     my $default_value = delete $attrs{default_value};
+    my $value         = delete $attrs{value} || $default_value;
     $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
 
-    return $c->text_area( $name => $default_value, %attrs );
+    return $c->text_area( $name => $value, %attrs );
 }
 
 # This code from Mojolicious::Plugin::TagHelpers
@@ -562,6 +563,26 @@ See L<Mojolicious::Plugin::LocaleTextDomainOO>
 =head2 C<text>
 
 =head2 C<textarea>
+
+    my $f = Markets::Form::Field->new(
+        name          => 'description',
+        label         => 'Description',
+        cols          => 40,
+        default_value => 'default text',
+    );
+
+    say $f->textarea($c);
+
+    # HTML
+    <textarea name="description" cols="40">default text</textarea>
+
+    $f->value('text text text');
+    say $f->textarea($c);
+
+    # HTML
+    <textarea name="description" cols="40">text text text</textarea>
+
+In textarea, "default_value" and "value" is treated as content text.
 
 =head2 C<time>
 

@@ -148,7 +148,8 @@ subtest 'textarea' => sub {
 
     $f->value('baz');
     $dom = Mojo::DOM->new( $f->textarea($c) );
-    is $dom->at('*')->attr->{value}, 'baz';
+    is $dom->at('*')->text, 'baz';
+    is $dom->at('*')->attr->{value}, undef;
 };
 
 subtest 'radio checkbox' => sub {
