@@ -1,26 +1,32 @@
 % layout 'admin-default';
-% title __('Products');
+% title __('Product');
 
 <h1><%= title %></h1>
 
+<h2><%= __('Product') %></h2>
+
 <ul>
-    <li><%= link_to __('Add New Product') => 'RN_admin_products_product' => { product_id => 'new' } %></li>
+    <li><%= link_to __('Products') => 'RN_admin_products' %></li>
 </ul>
 
-<%= form_for 'RN_admin_products' => ( method => 'GET' ) => begin %>
-    <%= form_widget '#keywords' %>
-    <%= submit_button __('Search') %>
+<%= form_for current_route() => ( method => 'POST' ) => begin %>
+    % my $field;
+    <div class="">
+        % $field = 'admin-product#product_id';
+        <%= form_widget $field %>
+    </div>
+    <div class="">
+        % $field = 'admin-product#title';
+        <%= form_label $field %> <%= form_widget $field %>
+    </div>
+    <div class="">
+        % $field = 'admin-product#description';
+        <%= form_label $field %> <%= form_widget $field %>
+    </div>
+    <div class="">
+        % $field = 'admin-product#price';
+        <%= form_label $field %> <%= form_widget $field %>
+    </div>
+    <%= csrf_field %>
+    <%= submit_button 'Submit' %>
 <% end %>
-
-<h2><%= __('Products') %></h2>
-
-<ul>
-% while ( my $product = $itr->next ) {
-    <li>
-        <%= link_to 'RN_admin_products_product' => { product_id => $product->id } => begin %>
-            <%= $product->title %>
-        <% end %>
-         - <%= $product->description %> <%= $product->price %>
-    </li>
-% }
-</ul>

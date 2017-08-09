@@ -59,8 +59,8 @@ sub add_admin_routes {
         # Product
         {
             my $product =
-              $r->any('/product')->to( controller => 'admin-product', template => '/admin/product/product' );
-            $product->any('/new')->to('#new')->name('RN_admin_product_new');
+              $r->any('/product')->to( controller => 'admin-product', template => '/admin/product/index' );
+            $product->any('/create')->to('#create')->name('RN_admin_product_create');
             $product->any('/edit/:product_id')->to('#edit')->name('RN_admin_product_edit');
         }
 

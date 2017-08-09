@@ -4,7 +4,7 @@
 <h1><%= title %></h1>
 
 <ul>
-    <li><%= link_to __('Add New Product') => 'RN_admin_product_new' %></li>
+    <li><%= link_to __('Add New Product') => 'RN_admin_product_create' %></li>
 </ul>
 
 <%= form_for 'RN_admin_products' => ( method => 'GET' ) => begin %>
