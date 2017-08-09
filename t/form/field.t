@@ -126,8 +126,13 @@ subtest 'input other' => sub {
 
 subtest 'hidden' => sub {
     my $f = f();
-    $f->value('abc');
+
+    $f->default_value('default');
     my $dom = Mojo::DOM->new( $f->hidden($c) );
+    is_deeply $dom->at('*')->attr, { type => 'hidden', name => 'item.0.name', value => 'default' }, 'right hidden';
+
+    $f->value('abc');
+    $dom = Mojo::DOM->new( $f->hidden($c) );
     is_deeply $dom->at('*')->attr, { type => 'hidden', name => 'item.0.name', value => 'abc' }, 'right hidden';
 };
 
