@@ -199,7 +199,7 @@ sub _hidden {
 
     my $default_value = delete $attrs{default_value};
     my $value = delete $attrs{value} || $default_value;
-    return $c->hidden_field( $attrs{name} => $value, id => $attrs{id} );
+    return $c->hidden_field( $attrs{name} => $value, %attrs );
 }
 
 sub _input {

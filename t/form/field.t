@@ -125,17 +125,19 @@ subtest 'input other' => sub {
 };
 
 subtest 'hidden' => sub {
-    my $f = f();
+    my $f = Markets::Form::Field->new( name => 'item.0.name', class => 'foo' );
 
     $f->default_value('default');
     my $dom = Mojo::DOM->new( $f->hidden($c) );
     is_deeply $dom->at('*')->attr,
-      { type => 'hidden', id => 'form_widget_item_0_name', name => 'item.0.name', value => 'default' }, 'right hidden';
+      { type => 'hidden', id => 'form_widget_item_0_name', name => 'item.0.name', value => 'default', class => 'foo' },
+      'right hidden default_value';
 
     $f->value('abc');
     $dom = Mojo::DOM->new( $f->hidden($c) );
     is_deeply $dom->at('*')->attr,
-      { type => 'hidden', id => 'form_widget_item_0_name', name => 'item.0.name', value => 'abc' }, 'right hidden';
+      { type => 'hidden', id => 'form_widget_item_0_name', name => 'item.0.name', value => 'abc', class => 'foo' },
+      'right hidden value';
 };
 
 subtest 'textarea' => sub {
