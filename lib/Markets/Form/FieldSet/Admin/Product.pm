@@ -1,6 +1,6 @@
 package Markets::Form::FieldSet::Admin::Product;
 use Mojo::Base -strict;
-use Markets::Form::FieldSet::Product -export_field => [qw(product_id)];
+use Markets::Form::FieldSet;
 
 has_field 'title' => (
     type        => 'text',

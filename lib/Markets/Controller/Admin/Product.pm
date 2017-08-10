@@ -30,7 +30,6 @@ sub edit {
 
     # init form
     my $form = $self->form_set('admin-product');
-    $form->field('product_id')->required(1)->default_value($product_id);
     $form->field($_)->default_value( $product->$_ ) for $product->columns;
     $self->init_form();
 
