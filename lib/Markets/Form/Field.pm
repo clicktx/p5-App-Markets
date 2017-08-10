@@ -203,6 +203,7 @@ sub _hidden {
     my $c     = shift;
     my %attrs = @_;
 
+    delete $attrs{required};
     my $default_value = delete $attrs{default_value};
     my $value = delete $attrs{value} || $default_value;
     return $c->hidden_field( $attrs{name} => $value, %attrs );
