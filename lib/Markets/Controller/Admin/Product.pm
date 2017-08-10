@@ -1,6 +1,8 @@
 package Markets::Controller::Admin::Product;
 use Mojo::Base 'Markets::Controller::Admin';
 
+has resultset => sub { shift->schema->resultset('Product') };
+
 # sub init_form {
 #     my ( $self, $form, $rs ) = @_;
 #
@@ -16,7 +18,9 @@ sub create {
 
     return $self->render() if !$form->has_data or !$form->validate;
 
-    my $rs = $self->schema->resultset('Product');
+    # Create new product
+    my $data = $form->params->to_hash;
+    $self->resultset->create($data);
 
     return $self->render();
 }
@@ -25,15 +29,18 @@ sub edit {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    my $rs         = $self->schema->resultset('Product');
-    my $product    = $rs->find($product_id);
+    my $product    = $self->resultset->find($product_id);
 
-    # init form
+    # Init form
     my $form = $self->form_set('admin-product');
     $form->field($_)->default_value( $product->$_ ) for $product->columns;
     $self->init_form();
 
     return $self->render() if !$form->has_data or !$form->validate;
+
+    # Update product
+    my $data = $form->params->to_hash;
+    $product->update($data);
 
     return $self->render();
 }

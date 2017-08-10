@@ -5,6 +5,7 @@ use Markets::Form::FieldSet;
 has_field 'title' => (
     type        => 'text',
     label       => 'Title',
+    required    => 1,
     validations => [],
 );
 
@@ -17,7 +18,7 @@ has_field 'description' => (
 has_field 'price' => (
     type        => 'text',
     label       => 'Price',
-    validations => [],
+    validations => ['number'],
 );
 
 1;
