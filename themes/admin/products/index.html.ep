@@ -21,6 +21,7 @@
             <%= $product->title %>
         <% end %>
          - <%= $product->description %> <%= $product->price %>
+        [<%= link_to 'Duplicate' => url_for('RN_admin_product_create')->query( duplicate_from => $product->id ) %>]
     </li>
 % }
 </ul>

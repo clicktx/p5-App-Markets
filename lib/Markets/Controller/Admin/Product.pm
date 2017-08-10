@@ -16,6 +16,16 @@ sub create {
     my $form = $self->form_set('admin-product');
     $self->init_form();
 
+    my $form = $self->form_set('admin-product');
+    my $target_id = $self->req->param('duplicate_from');
+    if ($target_id) {
+        my $product = $self->resultset->find($target_id);
+        $form->field($_)->default_value( $product->$_ ) for $product->columns;
+    }
+    $self->init_form();
+
+    return $self->render() if $self->req->method eq 'GET';
+
     return $self->render() if !$form->has_data or !$form->validate;
 
     # Create new product
