@@ -12,9 +12,6 @@ sub form_default_value {
 sub create {
     my $self = shift;
 
-    my $form = $self->form_set('admin-product');
-    $self->init_form();
-
     my $form      = $self->form_set('admin-product');
     my $target_id = $self->req->param('duplicate_from');
     if ($target_id) {
