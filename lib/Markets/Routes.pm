@@ -54,8 +54,16 @@ sub add_admin_routes {
         $r->any('/categories')->to('admin-category#index')->name('RN_admin_categories');
 
         # Products
-        $r->get('/products')->to('admin-product#index')->name('RN_admin_products');
-        $r->get('/products/product/:product_id')->to('admin-product#product')->name('RN_admin_products_product');
+        $r->any('/products')->to('admin-products#index')->name('RN_admin_products');
+
+        # Product
+        {
+            my $product =
+              $r->any('/product')->to( controller => 'admin-product', template => '/admin/product/index' );
+            $product->any('/create')->to('#create')->name('RN_admin_product_create');
+            $product->any('/edit/:product_id')->to('#edit')->name('RN_admin_product_edit');
+            $product->any('/delete/:product_id')->to('#delete')->name('RN_admin_product_delete');
+        }
 
         # Orders
         {

@@ -1,0 +1,31 @@
+% layout 'admin-default';
+% title __('Products');
+
+<h1><%= title %></h1>
+
+<ul>
+    <li><%= link_to __('Add New Product') => 'RN_admin_product_create' %></li>
+</ul>
+
+<%= form_for 'RN_admin_products' => ( method => 'GET' ) => begin %>
+    <%= form_widget '#keywords' %>
+    <%= submit_button __('Search') %>
+<% end %>
+
+<h2><%= __('Products') %></h2>
+
+<ul>
+% while ( my $product = $itr->next ) {
+    <li>
+        <%= link_to 'RN_admin_product_edit' => { product_id => $product->id } => begin %>
+            <%= $product->title %>
+        <% end %>
+         - <%= $product->description %> <%= $product->price %>
+        [<%= link_to __('Edit') => 'RN_admin_product_edit' => { product_id => $product->id } %>]
+        [<%= link_to __('Duplicate') => url_for('RN_admin_product_create')->query( duplicate_from => $product->id ) %>]
+        [<%= link_to __('Delete') => 'RN_admin_product_delete' => { product_id => $product->id } %>]
+    </li>
+% }
+</ul>
+
+<%= include 'admin/common/pagination' %>

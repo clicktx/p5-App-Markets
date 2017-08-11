@@ -3,6 +3,7 @@ use Mojo::Base 'DBIx::Class::Schema';
 use Carp qw/croak/;
 use DateTime;
 use Mojo::Util 'camelize';
+use Data::Page::Navigation;
 
 our $VERSION   = 0.001;
 our $TIME_ZONE = 'UTC';

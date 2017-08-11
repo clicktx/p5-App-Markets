@@ -26,6 +26,17 @@ msgstr "{name} こんにちは"
 msgid "hello, [_1]"
 msgstr "こんにちは [_1]"
 
+# Basic
+msgid "Edit"
+msgstr "編集"
+
+msgid "Duplicate"
+msgstr "複製"
+
+msgid "Delete"
+msgstr "削除"
+
+
 # Login
 msgid "login"
 msgstr "サインイン"

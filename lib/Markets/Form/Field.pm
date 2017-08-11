@@ -10,8 +10,8 @@ our $required_class = 'form-required-field-icon';
 our $required_icon  = '*';
 
 has id => sub { my $id = shift->name; $id =~ s/\./_/g; return "form_widget_$id" };
-has [qw(field_key default_value choices help label error_messages multiple expanded)];
-has [qw(name type value placeholder checked)];
+has [qw(field_key default_value choices help label error_messages multiple expanded required)];
+has [qw(name type value placeholder checked selected)];
 
 sub AUTOLOAD {
     my $self = shift;
@@ -203,6 +203,7 @@ sub _hidden {
     my $c     = shift;
     my %attrs = @_;
 
+    delete $attrs{required};
     my $default_value = delete $attrs{default_value};
     my $value = delete $attrs{value} || $default_value;
     return $c->hidden_field( $attrs{name} => $value, %attrs );
@@ -341,6 +342,24 @@ Markets::Form::Field
 
 =head1 DESCRIPTION
 
+=head1 ATTRIBUTES
+
+=head2 C<id>
+=head2 C<field_key>
+=head2 C<default_value>
+=head2 C<choices>
+=head2 C<help>
+=head2 C<label>
+=head2 C<error_messages>
+=head2 C<multiple>
+=head2 C<expanded>
+=head2 C<required>
+=head2 C<name>
+=head2 C<type>
+=head2 C<value>
+=head2 C<placeholder>
+=head2 C<checked>
+=head2 C<selected>
 
 =head1 METHODS
 
