@@ -3,12 +3,11 @@ use Mojo::Base 'Markets::Controller::Admin';
 
 has resultset => sub { shift->schema->resultset('Product') };
 
-# sub init_form {
-#     my ( $self, $form, $rs ) = @_;
-#
-#     $form->field('product_id')->value('111');
-#     return $self->SUPER::init_form();
-# }
+sub form_default_value {
+    my ( $self, $form, $product_rs ) = @_;
+
+    $form->field($_)->default_value( $product_rs->$_ ) for $product_rs->columns;
+}
 
 sub create {
     my $self = shift;
@@ -20,7 +19,7 @@ sub create {
     my $target_id = $self->req->param('duplicate_from');
     if ($target_id) {
         my $product = $self->resultset->find($target_id);
-        $form->field($_)->default_value( $product->$_ ) for $product->columns;
+        $self->form_default_value( $form, $product );
     }
     $self->init_form();
 
@@ -52,7 +51,7 @@ sub edit {
 
     # Init form
     my $form = $self->form_set('admin-product');
-    $form->field($_)->default_value( $product->$_ ) for $product->columns;
+    $self->form_default_value( $form, $product );
     $self->init_form();
 
     return $self->render() if !$form->has_data or !$form->validate;
