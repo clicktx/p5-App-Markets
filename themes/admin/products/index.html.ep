@@ -27,3 +27,5 @@
     </li>
 % }
 </ul>
+
+<%= include 'admin/common/pagination' %>

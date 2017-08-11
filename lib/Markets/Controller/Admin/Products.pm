@@ -11,13 +11,29 @@ use Mojo::Base 'Markets::Controller::Admin';
 sub index {
     my $self = shift;
 
-    # my $form = $self->form_set();
+    my $form = $self->form_set();
+    $self->init_form();
+
     # return $self->render() unless $form->has_data;
+    $form->validate;
 
-    my $rs = $self->app->schema->resultset('Product');
-    my $itr = $rs->search( {} );
+    my $page = $form->param('page') || 1;
 
-    $self->render( itr => $itr );
+    # 1page当たりの表示件数
+    # cookieに保存する
+    #limit -dmm
+    #items_per_page cs
+    #page_count
+
+    my $rs    = $self->app->schema->resultset('Product');
+    my $itr   = $rs->search( {}, { page => $page, rows => 5 } );
+    my $pager = $itr->pager;
+
+    # page以外のquery
+    my $params = $form->params->to_hash;
+    delete $params->{page};
+
+    $self->render( itr => $itr, pager => $pager, params => $params );
 }
 
 1;
