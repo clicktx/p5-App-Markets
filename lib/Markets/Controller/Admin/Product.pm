@@ -16,7 +16,7 @@ sub create {
     my $form = $self->form_set('admin-product');
     $self->init_form();
 
-    my $form = $self->form_set('admin-product');
+    my $form      = $self->form_set('admin-product');
     my $target_id = $self->req->param('duplicate_from');
     if ($target_id) {
         my $product = $self->resultset->find($target_id);
@@ -33,6 +33,15 @@ sub create {
     $self->resultset->create($data);
 
     return $self->render();
+}
+
+sub delete {
+    my $self = shift;
+
+    my $product_id = $self->stash('product_id');
+    $self->resultset->find($product_id)->delete;
+
+    return $self->redirect_to('RN_admin_products');
 }
 
 sub edit {
