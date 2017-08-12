@@ -9,7 +9,7 @@ sub index {
     $self->stash( rs => $rs );
 
     # Init form
-    my $tree = $rs->get_tree;
+    my $tree = $rs->get_tree_for_form;
     unshift @{$tree}, [ None => 0 ];
     $form->field('parent_id')->choices($tree);
     $self->init_form();
