@@ -1,6 +1,21 @@
 package Markets::Schema::ResultSet::Category;
 use Mojo::Base 'Markets::Schema::Base::ResultSet';
 
+sub get_tree {
+    my $self = shift;
+
+    my @tree;
+    my @root_nodes = $self->search( { level => 0 } );
+    foreach my $node (@root_nodes) {
+        push @tree, [ $node->title => $node->id ];
+        my $itr = $node->descendants;
+        while ( my $desc = $itr->next ) {
+            push @tree, [ '¦   ' x $desc->level . $desc->title => $desc->id ];
+        }
+    }
+    return \@tree;
+}
+
 1;
 __END__
 =encoding utf8
