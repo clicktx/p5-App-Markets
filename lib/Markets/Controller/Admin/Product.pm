@@ -17,6 +17,10 @@ sub create {
     if ($target_id) {
         my $product = $self->resultset->find($target_id);
         $self->form_default_value( $form, $product );
+
+        my $field = $form->field('title');
+        my $title = $field->default_value . ' copy';
+        $field->default_value($title);
     }
     $self->init_form();
 
