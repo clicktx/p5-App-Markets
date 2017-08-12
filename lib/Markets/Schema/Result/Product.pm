@@ -8,8 +8,8 @@ primary_column id => {
 };
 
 column title => {
-    data_type => 'VARCHAR',
-    size      => 128,
+    data_type   => 'VARCHAR',
+    size        => 128,
     is_nullable => 0,
 };
 
@@ -23,5 +23,9 @@ column price => {
     is_nullable => 0,
     size        => [ 12, 2 ],
 };
+
+has_many
+  categories => 'Markets::Schema::Result::Product::Category',
+  { 'foreign.product_id' => 'self.id' };
 
 1;

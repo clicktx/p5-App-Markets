@@ -35,6 +35,10 @@ column title => {
     is_nullable => 0,
 };
 
+has_many
+  products => 'Markets::Schema::Result::Product::Category',
+  { 'foreign.category_id' => 'self.id' };
+
 # NOTE: 下記に書いた場合deploy_schema時にテーブル作成に失敗する（relation設定によるもの？）
 #       tree_columnsを呼ばないとapplicationで動かないため、App::Commonで読み込む。
 # __PACKAGE__->tree_columns(
