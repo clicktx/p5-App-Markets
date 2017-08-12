@@ -1,7 +1,7 @@
 package Markets::Controller::Admin::Category;
 use Mojo::Base 'Markets::Controller::Admin';
 
-sub init_form {
+sub form_choices {
     my ( $self, $form, $rs ) = @_;
 
     my @tree = ( [ None => 0 ] );
@@ -16,8 +16,6 @@ sub init_form {
 
     # Parent category
     $form->field('parent_id')->choices( \@tree );
-
-    return $self->SUPER::init_form();
 }
 
 sub index {
@@ -27,7 +25,8 @@ sub index {
     $self->stash( rs => $rs );
 
     my $form = $self->form_set();
-    $self->init_form( $form, $rs );
+    $self->form_choices( $form, $rs );
+    $self->init_form();
 
     return $self->render() unless $form->has_data;
 
