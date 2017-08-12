@@ -7,6 +7,7 @@ use Carp qw/croak/;
 use CGI::Expand qw/expand_hash/;
 use Mojolicious::Controller;
 use Mojo::Collection;
+use Markets::Parameters;
 use Markets::Form::Field;
 
 has controller => sub { Mojolicious::Controller->new };
@@ -115,7 +116,7 @@ sub params {
     my $expand_hash = expand_hash( \%output );
     %output = ( %output, %{$expand_hash} );
 
-    $self->{_validated_parameters} = Mojo::Parameters->new(%output);
+    $self->{_validated_parameters} = Markets::Parameters->new(%output);
     return $self->{_validated_parameters};
 }
 
