@@ -128,4 +128,11 @@
         [ 2, 'test product2', 'product description2', 200 ],
         [ 3, 'test product3', 'product description3', 300 ],
     ],
+
+    # Product Category
+    'Product::Category' => [
+        [qw/product_id category_id is_primary/],
+        [ 1, 3, 1 ],
+        [ 1, 5, 0 ],
+    ],
 )
