@@ -100,7 +100,7 @@ sub new {
 
 sub param {
     my ( $self, $key ) = @_;
-    $key =~ m/[a-zA-Z0-9]\[\]$/ ? $self->params->every_param($key) : $self->params->param($key);
+    $key =~ m/\[\]$/ ? $self->params->every_param($key) : $self->params->param($key);
 }
 
 sub params {
