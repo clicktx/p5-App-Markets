@@ -153,6 +153,10 @@ subtest 'parameters' => sub {
       ],
       'right scope param';
     is $fs->param('iligal_param'), undef, 'right iligal param';
+
+    # to_hash
+    my $params = $fs->params->to_hash;
+    is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
 };
 
 subtest 'render tags' => sub {
