@@ -2,20 +2,8 @@ package Markets::Schema::Result::Product::Category;
 use Mojo::Base 'Markets::Schema::Base::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-primary_column id => {
-    data_type         => 'INT',
-    is_auto_increment => 1,
-};
-
-column product_id => {
-    data_type   => 'INT',
-    is_nullable => 0,
-};
-
-column category_id => {
-    data_type   => 'INT',
-    is_nullable => 0,
-};
+primary_column product_id  => { data_type => 'INT', };
+primary_column category_id => { data_type => 'INT', };
 
 column is_primary => {
     data_type     => 'BOOLEAN',
