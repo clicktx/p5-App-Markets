@@ -180,7 +180,7 @@ subtest 'radio checkbox' => sub {
     for my $type (qw/radio checkbox/) {
         my $dom = Mojo::DOM->new( $f->$type($c) );
         is $dom->at('*')->tag, 'label', "right $type parent";
-        is $dom->at('*')->text, '私は同意した', "right $type label text";
+        is $dom->at('span')->text, '私は同意した', "right $type label text";
         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type";
     }
 

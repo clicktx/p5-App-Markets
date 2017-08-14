@@ -102,8 +102,8 @@ sub _choice_field {
     my $name = delete $attrs{name};
 
     my $tag = _validation( $c, $name, 'input', name => $name, %attrs );
-    my $label = $c->__( $pair->[0] );
-    return $c->tag( 'label', sub { $tag . $label } );
+    my $label_text = $c->tag( 'span', class => 'label-text', $c->__( $pair->[0] ) );
+    return $c->tag( 'label', sub { $tag . $label_text } );
 }
 
 # NOTE: multipleの場合はname属性を xxx[] に変更する？
@@ -238,7 +238,9 @@ sub _label {
     $label_attrs{class} = $attrs{class} if exists $attrs{class};
 
     my $required_html =
-      exists $attrs{required} ? $c->tag( 'span', class => $required_class, sub { $required_icon } ) : '';
+      exists $attrs{required}
+      ? $c->tag( 'span', class => $required_class, sub { $required_icon } )
+      : '';
     my $content = $c->__( $attrs{label} ) . $required_html;
     _validation( $c, $attrs{name}, 'label', for => $attrs{id}, %label_attrs, sub { $content } );
 }
@@ -261,9 +263,15 @@ sub _list_field {
 
             $label = $c->__($label);
             my $legend = $c->tag( 'legend', $label );
-            my $items = join '',
-              map { $c->tag( 'div', class => 'form-choice-item', _choice_field( $c, \@values, $_, %args ) ) } @$v;
-            $groups .= $c->tag( 'fieldset', class => 'form-choice-group', %attrs, sub { $legend . $items } );
+            my $items = join '', map {
+                $c->tag(
+                    'div',
+                    class => 'form-choice-item',
+                    _choice_field( $c, \@values, $_, %args )
+                  )
+            } @$v;
+            $groups .=
+              $c->tag( 'fieldset', class => 'form-choice-group', %attrs, sub { $legend . $items } );
         }
         else {
             $root_class = 'form-choice-group' unless $root_class;
