@@ -54,8 +54,8 @@ sub AUTOLOAD {
         delete $attrs{id};
         $attrs{type} = $method;
 
-        my %values = map { $_ => 1 } @{ $c->every_param( $attrs{name} ) };
-        return _choice_field( $c, \%values, $self->label, %attrs, @_ );
+        my @values = @{ $c->req->every_param( $attrs{name} ) };
+        return _choice_field( $c, \@values, $self->label, %attrs, @_ );
     }
 
     # input
@@ -92,17 +92,18 @@ sub _choice_field {
     $pair = [ $pair, $pair ] unless ref $pair eq 'ARRAY';
     my %attrs = ( value => $pair->[1], @$pair[ 2 .. $#$pair ], @_ );
 
-    if ( keys %$values ) { delete $attrs{checked} }
+    if ( @{$values} ) { delete $attrs{checked} }
     else {    # default checked(bool)
         $attrs{checked} ? $attrs{checked} = undef : delete $attrs{checked};
     }
-    $attrs{checked} = undef if $values->{ $pair->[1] };
 
-    my $method = delete $attrs{type} eq 'checkbox' ? 'check_box' : 'radio_button';
-    my $checkbox = $c->$method( $attrs{name} => %attrs );
+    my $value = $attrs{value} // 'on';
+    $attrs{checked} = undef if grep { $_ eq $value } @{$values};
+    my $name = delete $attrs{name};
 
+    my $tag = _validation( $c, $name, 'input', name => $name, %attrs );
     my $label = $c->__( $pair->[0] );
-    return $c->tag( 'label', sub { $checkbox . $label } );
+    return $c->tag( 'label', sub { $tag . $label } );
 }
 
 # NOTE: multipleの場合はname属性を xxx[] に変更する？
@@ -249,24 +250,24 @@ sub _list_field {
     my %args    = @_;
 
     delete $args{$_} for qw(value id);
-    my %values = map { $_ => 1 } @{ $c->every_param( $args{name} ) };
+    my @values = @{ $c->req->every_param( $args{name} ) };
 
     my $root_class;
     my $groups = '';
     for my $group ( @{$choices} ) {
         if ( blessed $group && $group->isa('Mojo::Collection') ) {
-            my ( $label, $values, %attrs ) = @$group;
+            my ( $label, $v, %attrs ) = @$group;
             $root_class = 'form-choice-groups' unless $root_class;
 
             $label = $c->__($label);
             my $legend = $c->tag( 'legend', $label );
             my $items = join '',
-              map { $c->tag( 'div', class => 'form-choice-item', _choice_field( $c, \%values, $_, %args ) ) } @$values;
+              map { $c->tag( 'div', class => 'form-choice-item', _choice_field( $c, \@values, $_, %args ) ) } @$v;
             $groups .= $c->tag( 'fieldset', class => 'form-choice-group', %attrs, sub { $legend . $items } );
         }
         else {
             $root_class = 'form-choice-group' unless $root_class;
-            my $row = _choice_field( $c, \%values, $group, %args );
+            my $row = _choice_field( $c, \@values, $group, %args );
             $groups .= $c->tag( 'div', class => 'form-choice-item', sub { $row } );
         }
     }
