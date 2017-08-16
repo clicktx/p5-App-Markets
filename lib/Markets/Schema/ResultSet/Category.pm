@@ -2,7 +2,7 @@ package Markets::Schema::ResultSet::Category;
 use Mojo::Base 'Markets::Schema::Base::ResultSet';
 
 sub get_tree_for_form {
-    my ( $self, $opt, $values ) = @_;
+    my ( $self, $opt, $values ) = ( shift, shift, shift || [] );
     $values = [$values] unless ref $values;
 
     my @tree;
