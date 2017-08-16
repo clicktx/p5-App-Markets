@@ -1,5 +1,6 @@
 package Markets::Controller::Admin::Product;
 use Mojo::Base 'Markets::Controller::Admin';
+use Try::Tiny;
 
 has resultset => sub { shift->schema->resultset('Product') };
 
@@ -29,8 +30,8 @@ sub create {
     return $self->render() if !$form->has_data or !$form->validate;
 
     # Create new product
-    my $data = $form->params->to_hash;
-    $self->resultset->create($data);
+    my $params = $form->params->to_hash;
+    $self->resultset->create($params);
 
     return $self->render();
 }
@@ -48,18 +49,41 @@ sub edit {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    my $product    = $self->resultset->find($product_id);
+    my $product = $self->resultset->find( $product_id, { prefetch => { categories => 'category' } } );
 
     # Init form
     my $form = $self->form_set('admin-product');
     $self->form_default_value( $form, $product );
+
+    my @categories;
+    my $itr = $self->schema->resultset('Product::Category')
+      ->search( { product_id => $product_id }, { prefetch => 'category' } );
+    while ( my $row = $itr->next ) {
+        push @categories, [ $row->category->title, $row->category_id, checked => $row->is_primary ];
+    }
+    $form->field('primary_category')->choices( \@categories );
     $self->init_form();
 
     return $self->render() if !$form->has_data or !$form->validate;
 
-    # Update product
-    my $data = $form->params->to_hash;
-    $product->update($data);
+    # Update data
+    my $params = $form->params->to_hash;
+    my $cb   = sub {
+
+        # Primary category
+        my $primary_category = delete $params->{primary_category};
+        $product->categories->update( { is_primary => 0 } );
+        $product->categories->search( { category_id => $primary_category } )->update( { is_primary => 1 } );
+
+        # Product detail
+        $product->update($params);
+    };
+
+    try { $self->schema->txn_do($cb) }
+    catch {
+        $self->schema->txn_failed($_);
+        return;
+    };
 
     return $self->render();
 }
