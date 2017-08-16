@@ -68,7 +68,7 @@ sub edit {
 
     # Update data
     my $params = $form->params->to_hash;
-    my $cb   = sub {
+    my $cb     = sub {
 
         # Primary category
         my $primary_category = delete $params->{primary_category};
@@ -85,6 +85,72 @@ sub edit {
         return;
     };
 
+    return $self->render();
+}
+
+sub category {
+    my $self = shift;
+    $self->stash( template => 'admin/product/category' );
+
+    my $product_id = $self->stash('product_id');
+
+    # Init form
+    my $form = $self->form_set();
+    my $itr =
+      $self->schema->resultset('Product::Category')->search( { product_id => $product_id } );
+
+    my $category_ids = [];
+    while ( my $row = $itr->next ) {
+        push @{$category_ids}, $row->category_id;
+    }
+
+    my $tree = $self->schema->resultset('Category')->get_tree_for_form( checked => $category_ids );
+    $form->field('categories')->choices($tree);
+    $self->init_form();
+
+    return $self->render() if !$form->has_data or !$form->validate;
+
+    # Update data
+    my $rs = $self->schema->resultset('Product::Category');
+
+    # primary category_id
+    my $primary = $rs->find( { product_id => $product_id, is_primary => 1 } );
+    my $primary_id = $primary ? $primary->category_id : 0;
+    $primary_id;
+
+    my $params           = $form->params->to_hash;
+    my $param_categories = $params->{'categories[]'};
+
+    # NOTE: 通常は設定しているプライマリを引き継ぐ
+    # 例外: パラメーターの最初のカテゴリをプライマリに設定
+    # - 選択項目が1つの場合
+    # - 複数指定でも取得したprimary_idが選択項目にない場合
+    my $product_categories = [];
+    my $has_primary;
+    foreach my $cid ( @{$param_categories} ) {
+        my $is_primary = 0;
+        if ( $cid == $primary_id ) {
+            $is_primary  = 1;
+            $has_primary = 1;
+        }
+        push @{$product_categories},
+          {
+            product_id  => $product_id,
+            category_id => $cid,
+            is_primary  => $is_primary
+          };
+    }
+    $product_categories->[0]->{is_primary} = 1 unless $has_primary;
+
+    my $cb = sub {
+        $rs->search( { product_id => $product_id } )->delete;
+        $rs->populate($product_categories);
+    };
+    try { $self->schema->txn_do($cb) }
+    catch {
+        $self->schema->txn_failed($_);
+        return;
+    };
     return $self->render();
 }
 
