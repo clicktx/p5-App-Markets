@@ -26,6 +26,15 @@
         <%= form_label $field %> <%= form_widget $field %>
         <%= form_error $field %>
     </div>
+
+    <h3>Primary Category</h3>
+    <div class="">
+        <%= link_to 'Add Category' => 'RN_admin_product_category' => { product_id => $product_id } %>
+    </div>
+    <div class="">
+        % $field = 'admin-product#primary_category';
+        <%= form_widget $field %>
+    </div>
     <%= csrf_field %>
     <%= submit_button 'Submit' %>
 <% end %>
