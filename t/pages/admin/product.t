@@ -32,7 +32,7 @@ sub t03_edit : Tests() {
     # Login
     $self->admin_loged_in;
 
-    $t->get_ok('/admin/product/edit/1')->status_is(200);
+    $t->get_ok('/admin/product/1/edit')->status_is(200);
 }
 
 sub t04_delete : Tests() {
