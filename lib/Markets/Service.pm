@@ -7,6 +7,8 @@ has [qw/app controller/];
 
 sub model { shift->app->model(@_) }
 
+sub schema { shift->app->schema(@_) }
+
 sub new {
     my ( $self, $c ) = @_;
     my $app = $c->app;
@@ -60,6 +62,13 @@ the following new ones.
     $service->model('hoge')->mehod;
 
 Alias $app->model().
+
+=head2 C<schema>
+
+    my $schema = $service->schema;
+    $schema->resultset('Foo::Bar')->search(...);
+
+Alias $app->schema().
 
 =head1 AUTHOR
 
