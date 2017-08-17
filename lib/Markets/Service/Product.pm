@@ -1,6 +1,5 @@
 package Markets::Service::Product;
 use Mojo::Base 'Markets::Service';
-use Try::Tiny;
 
 has resultset => sub { shift->app->schema->resultset('product') };
 
