@@ -12,9 +12,7 @@ sub create_entity {
     my $primary_category = $data->{categories}->[0];
     my $ancestors        = [];
     if ($primary_category) {
-        $ancestors =
-          $self->schema->resultset('Category')->find( $primary_category->{category_id} )->ancestors->hashref_array;
-        @{$ancestors} = reverse @{$ancestors};
+        $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );
         push @{$ancestors}, $primary_category->{detail};
     }
     $data->{ancestors} = $ancestors;

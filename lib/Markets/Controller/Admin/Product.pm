@@ -57,7 +57,11 @@ sub edit {
     my @categories;
     $entity->categories->each(
         sub {
-            push @categories, [ $_->title, $_->id, checked => $_->is_primary ];
+            my $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $_->id );
+            my $title;
+            foreach my $ancestor ( @{$ancestors} ) { $title .= $ancestor->{title} . ' > ' }
+            $title .= $_->title;
+            push @categories, [ $title, $_->id, checked => $_->is_primary ];
         }
     );
     $form->field('primary_category')->choices( \@categories );

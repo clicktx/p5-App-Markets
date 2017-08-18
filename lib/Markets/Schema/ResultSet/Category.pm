@@ -1,6 +1,14 @@
 package Markets::Schema::ResultSet::Category;
 use Mojo::Base 'Markets::Schema::Base::ResultSet';
 
+sub get_ancestors_arrayref {
+    my ( $self, $category_id ) = @_;
+
+    my @ancestors = $self->find($category_id)->ancestors->hashref_array;
+    @ancestors = reverse @ancestors;
+    return \@ancestors;
+}
+
 sub get_tree_for_form {
     my ( $self, $opt, $values ) = ( shift, shift, shift || [] );
     $values = [$values] unless ref $values;
@@ -45,6 +53,12 @@ Markets::Schema::ResultSet::Category
 =head1 DESCRIPTION
 
 =head1 METHODS
+
+=head2 C<get_ancestors_arrayref>
+
+    my $array_ref = $rs->get_ancestors_arrayref($category_id);
+
+Return Array refference.
 
 =head2 C<get_tree_for_form>
 
