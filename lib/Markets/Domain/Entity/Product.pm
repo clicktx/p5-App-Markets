@@ -1,6 +1,5 @@
 package Markets::Domain::Entity::Product;
 use Markets::Domain::Entity;
-use Carp qw/croak/;
 
 has title       => '';
 has description => '';

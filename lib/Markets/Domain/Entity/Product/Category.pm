@@ -1,6 +1,5 @@
 package Markets::Domain::Entity::Product::Category;
 use Markets::Domain::Entity;
-use Carp qw/croak/;
 
 has id => sub { shift->category_id };
 has product_id  => 0;
