@@ -49,17 +49,17 @@ sub edit {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    my $product = $self->resultset->find( $product_id, { prefetch => { categories => 'category' } } );
+    my $product = $self->resultset->find( $product_id, { prefetch => { categories => 'detail' } } );
 
     # Init form
     my $form = $self->form_set('admin-product');
     $self->form_default_value( $form, $product );
 
     my @categories;
-    my $itr = $self->schema->resultset('Product::Category')
-      ->search( { product_id => $product_id }, { prefetch => 'category' } );
+    my $itr =
+      $self->schema->resultset('Product::Category')->search( { product_id => $product_id }, { prefetch => 'detail' } );
     while ( my $row = $itr->next ) {
-        push @categories, [ $row->category->title, $row->category_id, checked => $row->is_primary ];
+        push @categories, [ $row->detail->title, $row->category_id, checked => $row->is_primary ];
     }
     $form->field('primary_category')->choices( \@categories );
     $self->init_form();

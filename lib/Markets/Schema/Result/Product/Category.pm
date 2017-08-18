@@ -16,7 +16,7 @@ belongs_to
   { 'foreign.id' => 'self.product_id' };
 
 belongs_to
-  category => 'Markets::Schema::Result::Category',
+  detail => 'Markets::Schema::Result::Category',
   { 'foreign.id' => 'self.category_id' };
 
 1;
