@@ -1,13 +1,24 @@
 package Markets::Service::Product;
 use Mojo::Base 'Markets::Service';
 
-has resultset => sub { shift->app->schema->resultset('product') };
-
 sub create_entity {
     my ( $self, $product_id ) = @_;
 
-    my $result = $self->resultset->search( { id => $product_id } );
-    my $data = $result->hashref_first || {};
+    # Sort primary category is first
+    my $data = $self->schema->resultset('Product')->search( { 'me.id' => $product_id },
+        { order_by => { -desc => 'is_primary' }, prefetch => { categories => 'detail' } } )->hashref_first;
+
+    # Ancestors(Primary category path)
+    my $primary_category = $data->{categories}->[0];
+    my $ancestors        = [];
+    if ($primary_category) {
+        $ancestors =
+          $self->schema->resultset('Category')->find( $primary_category->{category_id} )->ancestors->hashref_array;
+        @{$ancestors} = reverse @{$ancestors};
+        push @{$ancestors}, $primary_category->{detail};
+    }
+    $data->{ancestors} = $ancestors;
+
     return $self->app->factory('entity-product')->create($data);
 }
 
