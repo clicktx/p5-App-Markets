@@ -5,9 +5,8 @@ use Try::Tiny;
 has resultset => sub { shift->schema->resultset('Product') };
 
 sub form_default_value {
-    my ( $self, $form, $product_rs ) = @_;
-
-    $form->field($_)->default_value( $product_rs->$_ ) for $product_rs->columns;
+    my ( $self, $form, $entity ) = @_;
+    $form->field($_)->default_value( $entity->$_ ) for qw(id price title description);
 }
 
 sub create {
@@ -49,26 +48,27 @@ sub edit {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    my $product = $self->resultset->find( $product_id, { prefetch => { categories => 'detail' } } );
+    my $entity     = $self->service('product')->create_entity($product_id);
 
     # Init form
     my $form = $self->form_set('admin-product');
-    $self->form_default_value( $form, $product );
+    $self->form_default_value( $form, $entity );
 
     my @categories;
-    my $itr =
-      $self->schema->resultset('Product::Category')->search( { product_id => $product_id }, { prefetch => 'detail' } );
-    while ( my $row = $itr->next ) {
-        push @categories, [ $row->detail->title, $row->category_id, checked => $row->is_primary ];
-    }
+    $entity->categories->each(
+        sub {
+            push @categories, [ $_->title, $_->id, checked => $_->is_primary ];
+        }
+    );
     $form->field('primary_category')->choices( \@categories );
     $self->init_form();
 
     return $self->render() if !$form->has_data or !$form->validate;
 
     # Update data
-    my $params = $form->params->to_hash;
-    my $cb     = sub {
+    my $product = $self->resultset->find( $product_id, { prefetch => { categories => 'detail' } } );
+    my $params  = $form->params->to_hash;
+    my $cb      = sub {
 
         # Primary category
         my $primary_category = delete $params->{primary_category};
