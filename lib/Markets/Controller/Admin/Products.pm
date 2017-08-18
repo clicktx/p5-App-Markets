@@ -26,7 +26,7 @@ sub index {
     #page_count
 
     my $rs    = $self->app->schema->resultset('Product');
-    my $itr   = $rs->search( {}, { page => $page, rows => 5 } );
+    my $itr   = $rs->search( {}, { order_by => { -desc => ['updated_at', 'created_at'] }, page => $page, rows => 5 } );
     my $pager = $itr->pager;
 
     # page以外のquery
