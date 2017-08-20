@@ -12,27 +12,15 @@ sub form_default_value {
 sub create {
     my $self = shift;
 
-    my $form      = $self->form_set('admin-product');
-    my $target_id = $self->req->param('duplicate_from');
-    if ($target_id) {
-        my $product = $self->resultset->find($target_id);
-        $self->form_default_value( $form, $product );
+    my $title = 'New Product';
+    my $int = $self->resultset->search( { title => { like => $title . '%' } } )->count;
+    $title .= $int + 1;
 
-        my $field = $form->field('title');
-        my $title = $field->default_value . ' copy';
-        $field->default_value($title);
-    }
-    $self->init_form();
+    my $new_product = $self->resultset->create( { title => $title } );
+    $self->stash( product_id => $new_product->id );
 
-    return $self->render() if $self->req->method eq 'GET';
-
-    return $self->render() if !$form->has_data or !$form->validate;
-
-    # Create new product
-    my $params = $form->params->to_hash;
-    $self->resultset->create($params);
-
-    return $self->render();
+    $self->template('admin/product/edit');
+    return $self->edit();
 }
 
 sub delete {
@@ -43,6 +31,8 @@ sub delete {
 
     return $self->redirect_to('RN_admin_products');
 }
+
+sub duplicate { }
 
 sub edit {
     my $self = shift;
@@ -94,7 +84,6 @@ sub edit {
 
 sub category {
     my $self = shift;
-    $self->stash( template => 'admin/product/category' );
 
     my $product_id = $self->stash('product_id');
 
