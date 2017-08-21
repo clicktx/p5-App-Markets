@@ -32,8 +32,6 @@ sub delete {
     return $self->redirect_to('RN_admin_products');
 }
 
-sub duplicate { }
-
 sub edit {
     my $self = shift;
 
@@ -45,7 +43,7 @@ sub edit {
     $self->form_default_value( $form, $entity );
 
     my @categories;
-    $entity->categories->each(
+    $entity->product_categories->each(
         sub {
             my $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $_->id );
             my $title;
@@ -60,14 +58,14 @@ sub edit {
     return $self->render() if !$form->has_data or !$form->validate;
 
     # Update data
-    my $product = $self->resultset->find( $product_id, { prefetch => { categories => 'detail' } } );
+    my $product = $self->resultset->find( $product_id, { prefetch => { product_categories => 'detail' } } );
     my $params  = $form->params->to_hash;
     my $cb      = sub {
 
         # Primary category
         my $primary_category = delete $params->{primary_category};
-        $product->categories->update( { is_primary => 0 } );
-        $product->categories->search( { category_id => $primary_category } )->update( { is_primary => 1 } );
+        $product->product_categories->update( { is_primary => 0 } );
+        $product->product_categories->search( { category_id => $primary_category } )->update( { is_primary => 1 } );
 
         # Product detail
         $product->update($params);

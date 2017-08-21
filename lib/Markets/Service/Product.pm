@@ -6,10 +6,10 @@ sub create_entity {
 
     # Sort primary category is first
     my $data = $self->schema->resultset('Product')->search( { 'me.id' => $product_id },
-        { order_by => { -desc => 'is_primary' }, prefetch => { categories => 'detail' } } )->hashref_first;
+        { order_by => { -desc => 'is_primary' }, prefetch => { product_categories => 'detail' } } )->hashref_first;
 
     # Ancestors(Primary category path)
-    my $primary_category = $data->{categories}->[0];
+    my $primary_category = $data->{product_categories}->[0];
     my $ancestors        = [];
     if ($primary_category) {
         $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );

@@ -1,11 +1,11 @@
 package Markets::Domain::Entity::Product;
 use Markets::Domain::Entity;
 
-has title       => '';
-has description => '';
-has price       => 0;
-has categories  => sub { Markets::Domain::Collection->new };
-has ancestors   => sub { Markets::Domain::Collection->new };
+has title              => '';
+has description        => '';
+has price              => 0;
+has product_categories => sub { Markets::Domain::Collection->new };
+has ancestors          => sub { Markets::Domain::Collection->new };
 
 1;
 __END__
@@ -29,7 +29,7 @@ the following new ones.
 
 =head2 C<price>
 
-=head2 C<categories>
+=head2 C<product_categories>
 
 =head2 C<ancestors>
 

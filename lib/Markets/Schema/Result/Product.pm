@@ -37,7 +37,7 @@ column updated_at => {
 };
 
 has_many
-  categories => 'Markets::Schema::Result::Product::Category',
+  product_categories => 'Markets::Schema::Result::Product::Category',
   { 'foreign.product_id' => 'self.id' };
 
 1;
