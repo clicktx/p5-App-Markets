@@ -8,7 +8,7 @@ use Data::Clone qw/data_clone/;
 
 has id => sub { Carp::croak 'Attribute "id" not implemented by subclass' };
 
-my @needless_attrs = (qw/id/);
+my @needless_attrs = (qw/id created_at updated_at/);
 
 sub clone {
     my $self  = shift;
@@ -186,7 +186,8 @@ Recursively reset all entities to keep.
     ];
 
 Return Array reference.
-Note: Key 'id' and '_xxxx' is remove.
+
+Note: All private attributes (e.g. "_xxx") and "id", "created_at", "updated_at" are removed.
 
 =head2 C<to_data>
 
@@ -194,12 +195,15 @@ Note: Key 'id' and '_xxxx' is remove.
 
 Return hash reference. This method recursive call L</to_hash>.
 
+Note: All private attributes (e.g. "_xxx") and "id", "created_at", "updated_at" are removed.
+
 =head2 C<to_hash>
 
     my $data = $entity->to_hash;
 
 Return Hash reference.
-Note: Key 'id' and '_xxxx' is remove.
+
+Note: All private attributes (e.g. "_xxx") and "id", "created_at", "updated_at" are removed.
 
 =head1 AUTHOR
 
