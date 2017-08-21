@@ -16,6 +16,7 @@ sub clone {
 
     my @attributes = keys %{$self};
     foreach my $attr (@attributes) {
+        next unless $self->can($attr);
         next unless blessed( $self->$attr );
         $clone->$attr( $self->$attr->map( sub { $_->clone } ) ) if $self->$attr->can('map');
     }
