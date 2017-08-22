@@ -13,8 +13,8 @@ sub create {
     my $self = shift;
 
     my $title = 'New Product';
-    my $int = $self->resultset->search( { title => { like => $title . '%' } } )->count;
-    $title .= $int + 1;
+    my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count;
+    $title .= $i + 1;
 
     my $new_product = $self->resultset->create( { title => $title } );
     $self->stash( product_id => $new_product->id );
@@ -28,6 +28,28 @@ sub delete {
 
     my $product_id = $self->stash('product_id');
     $self->resultset->find($product_id)->delete;
+
+    return $self->redirect_to('RN_admin_products');
+}
+
+sub duplicate {
+    my $self = shift;
+
+    my $product_id = $self->stash('product_id');
+    my $entity     = $self->service('product')->create_entity($product_id);
+
+    # modified data
+    my $title = $entity->title . ' ' . $self->__('copy');
+    my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count;
+    $title .= $i + 1;
+    $entity->title($title);
+
+    my $params = $entity->to_data;
+
+    # No need data
+    delete $params->{ancestors};
+
+    $self->resultset->create($params);
 
     return $self->redirect_to('RN_admin_products');
 }
@@ -72,10 +94,7 @@ sub edit {
     };
 
     try { $self->schema->txn_do($cb) }
-    catch {
-        $self->schema->txn_failed($_);
-        return;
-    };
+    catch { $self->schema->txn_failed($_) };
 
     return $self->render();
 }
@@ -138,10 +157,8 @@ sub category {
         $rs->populate($product_categories);
     };
     try { $self->schema->txn_do($cb) }
-    catch {
-        $self->schema->txn_failed($_);
-        return;
-    };
+    catch { $self->schema->txn_failed($_) };
+
     return $self->render();
 }
 

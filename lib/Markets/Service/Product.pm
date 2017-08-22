@@ -5,8 +5,24 @@ sub create_entity {
     my ( $self, $product_id ) = @_;
 
     # Sort primary category is first
-    my $data = $self->schema->resultset('Product')->search( { 'me.id' => $product_id },
-        { order_by => { -desc => 'is_primary' }, prefetch => { product_categories => 'detail' } } )->hashref_first;
+    # my $columns = [
+    #     qw(me.id me.title me.description me.price me.created_at me.updated_at),
+    #     qw(product_categories.product_id product_categories.category_id product_categories.is_primary),
+    #     qw(detail.id detail.root_id detail.lft detail.rgt detail.level detail.title),
+    # ];
+    my $columns = [
+        qw(me.id me.title me.description me.price me.created_at me.updated_at),
+        qw(product_categories.category_id product_categories.is_primary),
+        qw(detail.root_id detail.level detail.title),
+    ];
+    my $data = $self->schema->resultset('Product')->search(
+        { 'me.id' => $product_id },
+        {
+            colmuns  => $columns,
+            order_by => { -desc => 'is_primary' },
+            prefetch => { product_categories => 'detail' },
+        }
+    )->hashref_first;
 
     # Ancestors(Primary category path)
     my $primary_category = $data->{product_categories}->[0];

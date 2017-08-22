@@ -8,6 +8,15 @@ has is_primary  => 0;
 has detail      => sub { {} };
 has title       => sub { shift->detail->{title} };
 
+sub to_hash {
+    my $self = shift;
+
+    my $hash = $self->SUPER::to_hash;
+    delete $hash->{detail};
+    delete $hash->{product_id};
+    return $hash;
+}
+
 1;
 __END__
 
