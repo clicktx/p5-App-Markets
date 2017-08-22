@@ -60,6 +60,7 @@ sub sqlt_deploy_hook {
 
 # search_related with special handling for relationships
 # NOTE: 取得するcolumnsを限定できるかとおもいきやancestorsが複数あると2つ目以降は全てのカラムを取得してしまう
+#       ↑勘違い。currentのカテゴリの処理を忘れていただけ。
 # sub search_related {
 #     my ( $self, $rel, $cond, @rest ) = @_;
 #
