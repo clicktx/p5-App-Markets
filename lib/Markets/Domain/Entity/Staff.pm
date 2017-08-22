@@ -2,8 +2,10 @@ package Markets::Domain::Entity::Staff;
 use Markets::Domain::Entity;
 use Markets::Domain::Entity::Password;
 
-has [qw/id created_at updated_at/];
-has password => sub { Markets::Domain::Entity::Password->new };
+has login_id   => '';
+has created_at => undef;
+has updated_at => undef;
+has password   => sub { Markets::Domain::Entity::Password->new };
 
 1;
 __END__
@@ -30,6 +32,10 @@ the following new ones.
     my $password = $staff->password;
 
 Return L<Markets::Domain::Entity::Password> object.
+
+=head2 C<created_at>
+
+=head2 C<updated_at>
 
 =head1 METHODS
 

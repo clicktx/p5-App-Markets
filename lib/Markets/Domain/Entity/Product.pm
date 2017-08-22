@@ -7,6 +7,9 @@ has price              => 0;
 has product_categories => sub { Markets::Domain::Collection->new };
 has ancestors          => sub { Markets::Domain::Collection->new };
 
+has created_at => undef;
+has updated_at => undef;
+
 1;
 __END__
 

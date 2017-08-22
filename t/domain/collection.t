@@ -12,6 +12,7 @@ subtest 'basic' => sub {
 };
 
 my @entities;
+Markets::Domain::Entity->attr( [qw(hoge)] );
 push @entities, Markets::Domain::Entity->new($_) for @data;
 
 subtest 'each' => sub {

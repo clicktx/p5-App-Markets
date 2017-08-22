@@ -9,6 +9,8 @@ my $pkg = 'Markets::Domain::Entity';
 use_ok $pkg;
 
 subtest 'basic' => sub {
+    $pkg->attr( [qw(hoge fuga)] );
+
     my $e = $pkg->new( id => 1, hoge => 1, fuga => 2 );
     cmp_deeply $e->to_hash, { hoge => 1, fuga => 2 }, 'right to_hash';
 
@@ -77,6 +79,8 @@ subtest 'Entity object base' => sub {
 };
 
 subtest 'to_data method' => sub {
+    $pkg->attr( [qw(a b h h1 h2)] );
+
     my $e = $pkg->new(
         a  => 1,
         b  => 2,
@@ -105,6 +109,8 @@ subtest 'to_data method' => sub {
 
 subtest 'is_modified' => sub {
     my $make_entity = sub {
+        $pkg->attr( [qw(c d e f g x y z)] );
+
         my $e = $pkg->new(
             a => 1,
             b => 1,
@@ -112,12 +118,6 @@ subtest 'is_modified' => sub {
             c => collection( $pkg->new( y => 1 ), $pkg->new( e => $pkg->new( z => 1 ) ) ),
             d => ix_hash( aa => $pkg->new( f => 1, g => 1 ) ),
         );
-        $e->attr( [qw/a b c d e/] );
-        $e->e->attr('x');
-        $e->c->[0]->attr('y');
-        $e->c->[1]->attr('e');
-        $e->c->[1]->e->attr('z');
-        $e->d->aa->attr( [qw/f g/] );
         return $e;
     };
     my $e;

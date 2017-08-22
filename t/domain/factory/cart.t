@@ -20,7 +20,7 @@ subtest 'argument empty' => sub {
     cmp_deeply $e,
       bless {
         items => ( bless [], 'Markets::Domain::Collection' ),
-        shipments => $shipments,
+        shipments       => $shipments,
         billing_address => ( bless {}, 'Markets::Domain::Entity::Address' ),
       },
       'Markets::Domain::Entity::Cart';
@@ -30,8 +30,8 @@ subtest 'shipments empty hash ref' => sub {
     my $e = $pkg->new( { shipments => [] } )->create_entity;
     cmp_deeply $e,
       bless {
-        items     => ignore(),
-        shipments => $shipments,
+        items           => ignore(),
+        shipments       => $shipments,
         billing_address => ignore(),
       },
       'Markets::Domain::Entity::Cart';
@@ -42,7 +42,7 @@ subtest 'cart data empty' => sub {
     cmp_deeply $e,
       bless {
         items => ( bless [], 'Markets::Domain::Collection' ),
-        shipments => ignore(),
+        shipments       => ignore(),
         billing_address => ignore(),
       },
       'Markets::Domain::Entity::Cart';
@@ -51,17 +51,13 @@ subtest 'cart data empty' => sub {
 subtest 'argument items data only' => sub {
     my $e = $pkg->new(
         {
-            foo   => 'bar',
-            fizz  => 'buzz',
             items => [ {} ],
         }
     )->create_entity;
     cmp_deeply $e,
       bless {
-        foo       => 'bar',
-        fizz      => 'buzz',
-        items     => ( bless [ ( bless {}, 'Markets::Domain::Entity::Cart::Item' ) ], 'Markets::Domain::Collection' ),
-        shipments => ignore(),
+        items => ( bless [ ( bless {}, 'Markets::Domain::Entity::Cart::Item' ) ], 'Markets::Domain::Collection' ),
+        shipments       => ignore(),
         billing_address => ignore(),
       },
       'Markets::Domain::Entity::Cart';
@@ -70,12 +66,13 @@ subtest 'argument items data only' => sub {
 subtest 'argument shipments data only' => sub {
     my $e = $pkg->new( { shipments => [ { shipping_items => [ {}, {} ] } ] } )->create_entity;
     $shipments->[0]->{shipping_items} =
-      bless [ ( bless {}, 'Markets::Domain::Entity::Cart::Item' ), ( bless {}, 'Markets::Domain::Entity::Cart::Item' ) ],
+      bless [ ( bless {}, 'Markets::Domain::Entity::Cart::Item' ),
+        ( bless {}, 'Markets::Domain::Entity::Cart::Item' ) ],
       'Markets::Domain::Collection';
     cmp_deeply $e,
       bless {
-        items     => ignore(),
-        shipments => $shipments,
+        items           => ignore(),
+        shipments       => $shipments,
         billing_address => ignore(),
       },
       'Markets::Domain::Entity::Cart';
