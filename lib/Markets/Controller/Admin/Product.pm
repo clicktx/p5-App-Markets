@@ -27,8 +27,9 @@ sub delete {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    $self->resultset->find($product_id)->delete;
+    my $product    = $self->resultset->find($product_id);
 
+    $product->delete if $product;
     return $self->redirect_to('RN_admin_products');
 }
 
