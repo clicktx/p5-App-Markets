@@ -65,17 +65,8 @@ sub edit {
     my $form = $self->form_set('admin-product');
     $self->form_default_value( $form, $entity );
 
-    my @categories;
-    $entity->product_categories->each(
-        sub {
-            my $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $_->id );
-            my $title;
-            foreach my $ancestor ( @{$ancestors} ) { $title .= $ancestor->{title} . ' > ' }
-            $title .= $_->title;
-            push @categories, [ $title, $_->id, checked => $_->is_primary ];
-        }
-    );
-    $form->field('primary_category')->choices( \@categories );
+    my $categories = $self->service('product')->get_primary_category_choices($entity);
+    $form->field('primary_category')->choices($categories);
     $self->init_form();
 
     return $self->render() if !$form->has_data or !$form->validate;

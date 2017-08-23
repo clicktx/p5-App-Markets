@@ -29,6 +29,22 @@ sub create_entity {
     return $self->app->factory('entity-product')->create($data);
 }
 
+sub get_primary_category_choices {
+    my ( $self, $entity ) = @_;
+
+    my @categories;
+    $entity->product_categories->each(
+        sub {
+            my $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $_->id );
+            my $title;
+            foreach my $ancestor ( @{$ancestors} ) { $title .= $ancestor->{title} . ' > ' }
+            $title .= $_->title;
+            push @categories, [ $title, $_->category_id, checked => $_->is_primary ];
+        }
+    );
+    return wantarray ? @categories : \@categories;
+}
+
 1;
 __END__
 
@@ -55,6 +71,15 @@ the following new ones.
     my $product = $app->service('product')->create_entity($product_id);
 
 Return L<Markets::Domain::Entity::Product> object.
+
+=head2 C<get_primary_category_choices>
+
+    my $product_categories = $service->get_primary_category_choices($entity);
+    my @product_categories = $service->get_primary_category_choices($entity);
+
+Argument: L<Markets::Domain::Entity::Product> object.
+
+Return: Array ou Array refference.
 
 =head1 AUTHOR
 
