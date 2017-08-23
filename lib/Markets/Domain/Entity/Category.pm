@@ -5,9 +5,6 @@ has title   => '';
 has level   => 0;
 has root_id => 0;
 
-has lft => 0;
-has rgt => 0;
-
 1;
 __END__
 
