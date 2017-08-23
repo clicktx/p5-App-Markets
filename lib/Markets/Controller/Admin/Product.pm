@@ -12,7 +12,7 @@ sub form_default_value {
 sub create {
     my $self = shift;
 
-    my $title = 'New Product';
+    my $title = $self->__x_default_lang('New Product');
     my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count;
     $title .= $i + 1;
 
@@ -40,17 +40,17 @@ sub duplicate {
     my $entity     = $self->service('product')->create_entity($product_id);
 
     # modified data
-    my $title = $entity->title . ' ' . $self->__('copy');
+    my $title = $entity->title . ' ' . $self->__x_default_lang('copy');
     my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count;
     $title .= $i + 1;
     $entity->title($title);
 
-    my $params = $entity->to_data;
+    my $data = $entity->to_data;
 
     # No need data
-    delete $params->{ancestors};
+    delete $data->{ancestors};
 
-    $self->resultset->create($params);
+    $self->resultset->create($data);
 
     return $self->redirect_to('RN_admin_products');
 }
