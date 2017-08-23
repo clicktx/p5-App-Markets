@@ -84,7 +84,7 @@ sub initialize_app {
         'Markets::I18N',
         {
             # file_type => 'po',    # or 'mo'. default: po
-            default   => 'en',               # default en
+            default   => $self->pref('default_language'),
             languages => [qw( en ja de )],
 
             # Mojolicious::Plugin::I18N like options

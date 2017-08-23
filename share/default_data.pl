@@ -8,8 +8,9 @@
 
         # application
         [ 'admin_uri_prefix', undef, '/admin', 'pref.title.admin_uri_prefix', 'pref.summary.admin_uri_prefix', 100, 1 ],
-        [ 'addons_dir',       undef, 'addons', 'pref.title.addons_dir', 'pref.summary.addons_dir',       200, 1 ],
-        [ 'can_multiple_shipments', undef, 0, 'pref.title.can_multiple_shipments', 'pref.summary.can_multiple_shipments',       200, 1 ],
+        [ 'addons_dir', undef, 'addons', 'pref.title.addons_dir', 'pref.summary.addons_dir', 200, 1 ],
+        [ 'can_multiple_shipments', undef, 0, 'pref.title.can_multiple_shipments', 'pref.summary.can_multiple_shipments', 200, 1 ],
+        [ 'default_language', undef, 'en', 'pref.title.defalut_language', 'pref.summary.defalut_language', 200, 1 ],
 
         # shop master
         [ 'locale_country', undef, 'US', 'pref.title.locale_country', 'pref.summary.locale_country', 100, 2 ],
