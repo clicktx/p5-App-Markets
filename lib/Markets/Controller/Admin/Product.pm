@@ -33,21 +33,8 @@ sub delete {
 sub duplicate {
     my $self = shift;
 
-    my $product_id = $self->stash('product_id');
-    my $entity     = $self->service('product')->create_entity($product_id);
-
-    # modified data
-    my $title = $entity->title . ' ' . $self->__x_default_lang('copy');
-    my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count;
-    $title .= $i + 1;
-    $entity->title($title);
-
-    my $data = $entity->to_data;
-
-    # No need data
-    delete $data->{ancestors};
-
-    $self->resultset->create($data);
+    my $product_id        = $self->stash('product_id');
+    my $duplicate_product = $self->service('product')->duplicate_product($product_id);
 
     return $self->redirect_to('RN_admin_products');
 }

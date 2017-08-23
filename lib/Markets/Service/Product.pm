@@ -32,6 +32,25 @@ sub create_entity {
     return $self->app->factory('entity-product')->create($data);
 }
 
+sub duplicate_product {
+    my ( $self, $product_id ) = @_;
+
+    my $entity = $self->create_entity($product_id);
+    my $title  = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
+    my $i      = $self->resultset->search( { title => { like => $title . '%' } } )->count + 1;
+    $entity->title( $title . $i );
+
+    my $data = $entity->to_data;
+    delete $data->{ancestors};
+
+    my $result = $self->resultset->create($data);
+
+    # Logging
+    $self->app->admin_log->info( 'Duplicate product from ID:' . $product_id ) if $result;
+
+    return $result;
+}
+
 sub get_primary_category_choices {
     my ( $self, $entity ) = @_;
 
@@ -119,6 +138,14 @@ the following new ones.
     my $product = $app->service('product')->create_entity($product_id);
 
 Return L<Markets::Domain::Entity::Product> object.
+
+=head2 C<duplicate_product>
+
+    my $result = $service->duplicate_product($product_id);
+
+Duplicate from C<$product_id>.
+
+Return L<Markets::Schema::Result::Product> object.
 
 =head2 C<get_primary_category_choices>
 
