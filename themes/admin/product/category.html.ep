@@ -1,0 +1,24 @@
+% layout 'admin-default';
+% title __('Add Category to Product');
+
+<h1><%= title %></h1>
+
+<h2><%= __('Products') %></h2>
+<ul>
+    <li><%= link_to __('Products') => 'RN_admin_products' %></li>
+</ul>
+
+<h2><%= __('Edit Product') %></h2>
+<ul>
+    <li><%= link_to __('Edit Product') => 'RN_admin_product_edit' => { product_id => $product_id } %></li>
+</ul>
+
+<%= form_for current_route() => ( method => 'POST' ) => begin %>
+    % my $field;
+    <div class="">
+        % $field = '#categories';
+        <%= form_widget $field %>
+    </div>
+    <%= csrf_field %>
+    <%= submit_button 'Submit' %>
+<% end %>

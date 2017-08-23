@@ -60,6 +60,7 @@ subtest 'has not cook' => sub {
     is ref $entity, 'Markets::Domain::Entity::Hoge', 'right namespace';
     cmp_deeply { %{$entity} }, {}, 'right argument empty';
 
+    Markets::Domain::Entity::Hoge->attr( [qw(hoge fuga)] );
     $f = Markets::Domain::Factory::Entity::Hoge->new( hoge => 1 );
     $entity = $f->create_entity( fuga => 2 );
     cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash';
@@ -70,6 +71,7 @@ subtest 'has not cook' => sub {
 };
 
 subtest 'has cook' => sub {
+    Markets::Domain::Entity::Foo->attr( [qw(a b f h)] );
     my $f = Markets::Domain::Factory::Entity::Foo->new();
     is ref $f, 'Markets::Domain::Factory::Entity::Foo', 'right namespace';
 
@@ -86,6 +88,7 @@ subtest 'no factory' => sub {
 };
 
 subtest 'factory method using' => sub {
+    Markets::Domain::Entity::Bar->attr('hoge');
     my $f      = Markets::Domain::Factory::Entity::Bar->new();
     my $entity = $f->create_entity();
     is ref $entity, 'Markets::Domain::Entity::Bar', 'right namespace';
@@ -100,18 +103,20 @@ subtest 'factory method using' => sub {
 # };
 
 subtest 'aggregate method' => sub {
+    Markets::Domain::Entity::Agg->attr( [qw(hoges bars)] );
+
     my $f = Markets::Domain::Factory->new->factory('entity-agg');
     eval { $f->aggregate( 'hoges', 'entity-hoge', 'abc' ) };
     ok $@, 'bad data type';
 
     my $entity = $f->create;
-    $entity->attr('hoges');
-    $entity->attr('bars');
     isa_ok $entity->hoges, 'Markets::Domain::Collection', 'right aggregate array';
     isa_ok $entity->bars,  'Markets::Domain::IxHash',     'right aggregate hash';
 };
 
 subtest 'inflate datetime for *_at' => sub {
+    Markets::Domain::Entity::Bar->attr( [qw(created_at)] );
+
     my $f = Markets::Domain::Factory->new->factory('entity-bar')->create( { created_at => '2017-5-26 19:17:06' } );
     isa_ok $f->{created_at}, 'DateTime';
     is $f->{created_at}->ymd, '2017-05-26';

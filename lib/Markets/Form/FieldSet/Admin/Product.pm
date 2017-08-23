@@ -21,4 +21,11 @@ has_field 'price' => (
     validations => ['number'],
 );
 
+has_field 'primary_category' => (
+    type     => 'choice',
+    expanded => 1,
+    multiple => 0,
+    validations => ['uint'],
+);
+
 1;

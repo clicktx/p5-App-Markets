@@ -14,6 +14,7 @@ $r->find('RN_category_name_base')->remove;    # Hack for name base category
 $r->get('/good')->to('test#good');
 $r->get('/not_found')->to('test#not_found');
 $r->get('/buged')->to('test#buged');
+$r->get('/methods')->to('test#methods');
 
 subtest 'Service Layer basic' => sub {
     $t->get_ok('/good')->json_is(
@@ -36,12 +37,14 @@ subtest 'Service Layer basic' => sub {
     );
     $t->get_ok('/not_found')->status_is(500);
     $t->get_ok('/buged')->status_is(500);
+    $t->get_ok('/methods')->status_is(200);
 };
 
 done_testing();
 
 package Markets::Controller::Test;
 use Mojo::Base 'Markets::Controller::Catalog';
+use Test::More;
 
 sub good {
     my $c         = shift;
@@ -68,4 +71,12 @@ sub not_found {
 sub buged {
     my $c       = shift;
     my $service = $c->service('buged');
+}
+
+sub methods {
+    my $c       = shift;
+    my $service = $c->service('test');
+
+    isa_ok $service->schema, 'Markets::Schema';
+    return $c->render( json => {} );
 }

@@ -3,9 +3,11 @@ use Markets::Domain::Entity;
 use Markets::Domain::Collection;
 use Markets::Domain::Entity::Password;
 
-has [qw/id created_at updated_at/];
-has password => sub { Markets::Domain::Entity::Password->new };
-has emails   => sub { Markets::Domain::Collection->new };
+has password_id => 0;
+has created_at  => undef;
+has updated_at  => undef;
+has password    => sub { Markets::Domain::Entity::Password->new };
+has emails      => sub { Markets::Domain::Collection->new };
 
 1;
 __END__
@@ -23,6 +25,8 @@ Markets::Domain::Entity::Customer
 L<Markets::Domain::Entity::Customer> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<created_at>
+
 =head2 C<emails>
 
     my $emails = $customer->emails;
@@ -35,11 +39,15 @@ Elements is L<Markets::Domain::Entity::Email> object.
 
     my $id = $customer->id;
 
+=head2 C<password_id>
+
 =head2 C<password>
 
     my $password = $customer->password;
 
 Return L<Markets::Domain::Entity::Password> object.
+
+=head2 C<updated_at>
 
 =head1 METHODS
 

@@ -1,33 +1,18 @@
 package Markets::Controller::Admin::Category;
 use Mojo::Base 'Markets::Controller::Admin';
 
-sub init_form {
-    my ( $self, $form, $rs ) = @_;
-
-    my @tree = ( [ None => 0 ] );
-    my @root_nodes = $rs->search( { level => 0 } );
-    foreach my $node (@root_nodes) {
-        push @tree, [ $node->title => $node->id ];
-        my $itr = $node->descendants;
-        while ( my $desc = $itr->next ) {
-            push @tree, [ '¦   ' x $desc->level . $desc->title => $desc->id ];
-        }
-    }
-
-    # Parent category
-    $form->field('parent_id')->choices( \@tree );
-
-    return $self->SUPER::init_form();
-}
-
 sub index {
     my $self = shift;
 
-    my $rs = $self->app->schema->resultset('Category');
+    my $form = $self->form_set();
+    my $rs   = $self->app->schema->resultset('Category');
     $self->stash( rs => $rs );
 
-    my $form = $self->form_set();
-    $self->init_form( $form, $rs );
+    # Init form
+    my $tree = $rs->get_tree_for_form;
+    unshift @{$tree}, [ None => 0 ];
+    $form->field('parent_id')->choices($tree);
+    $self->init_form();
 
     return $self->render() unless $form->has_data;
 

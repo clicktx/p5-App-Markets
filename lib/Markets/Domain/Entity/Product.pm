@@ -1,8 +1,14 @@
 package Markets::Domain::Entity::Product;
 use Markets::Domain::Entity;
-use Carp qw/croak/;
 
-has [qw(title description price)];
+has title              => '';
+has description        => '';
+has price              => 0;
+has product_categories => sub { Markets::Domain::Collection->new };
+has ancestors          => sub { Markets::Domain::Collection->new };
+
+has created_at => undef;
+has updated_at => undef;
 
 1;
 __END__
@@ -25,6 +31,10 @@ the following new ones.
 =head2 C<description>
 
 =head2 C<price>
+
+=head2 C<product_categories>
+
+=head2 C<ancestors>
 
 =head1 METHODS
 

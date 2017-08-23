@@ -25,14 +25,11 @@ sub index {
     #items_per_page cs
     #page_count
 
-    my $rs    = $self->app->schema->resultset('Product');
-    my $itr   = $rs->search( {}, { page => $page, rows => 5 } );
+    my $rs = $self->app->schema->resultset('Product');
+    my $itr = $rs->search( {}, { order_by => { -desc => [ 'updated_at', 'created_at' ] }, page => $page, rows => 5 } );
     my $pager = $itr->pager;
 
-    # page以外のquery
     my $params = $form->params->to_hash;
-    delete $params->{page};
-
     $self->render( itr => $itr, pager => $pager, params => $params );
 }
 
