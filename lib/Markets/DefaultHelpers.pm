@@ -11,12 +11,12 @@ sub register {
     my ( $self, $app ) = @_;
 
     $app->helper( __x_default_lang => sub { __x_default_lang(@_) } );
-    $app->helper( schema           => sub { shift->app->schema } );
     $app->helper( addons           => sub { shift->app->addons(@_) } );
     $app->helper( cookie_session   => sub { shift->session(@_) } );
     $app->helper( cart             => sub { _cart(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
+    $app->helper( schema           => sub { shift->app->schema } );
     $app->helper( service          => sub { _service(@_) } );
     $app->helper( template         => sub { shift->stash( template => shift ) } );
 }
@@ -117,6 +117,12 @@ Return L<Markets::Domain::Factory> Object.
     $c->pref( hoge => 'fizz', fuga => 'bazz' );
 
 Get/Set preference.
+
+=head2 C<schema>
+
+    my $schema = $c->schema;
+
+Return L<Markets::Schema> object.
 
 =head2 C<service>
 
