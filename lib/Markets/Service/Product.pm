@@ -68,6 +68,16 @@ sub modify {
     return 1;
 }
 
+sub new_product {
+    my $self = shift;
+
+    my $title = $self->controller->__x_default_lang('New Product');
+    my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count;
+    $title .= $i + 1;
+
+    return $self->resultset->create( { title => $title } );
+}
+
 1;
 __END__
 
@@ -107,6 +117,12 @@ Return: Array ou Array refference.
 =head2 C<modify>
 
     $service->modify( $product_id, $form_params );
+
+=head2 C<new_product>
+
+    my $result = $service->new_product();
+
+Return L<Markets::Schema::Result::Product> object.
 
 =head1 AUTHOR
 

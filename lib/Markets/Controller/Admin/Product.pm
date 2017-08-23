@@ -12,11 +12,7 @@ sub form_default_value {
 sub create {
     my $self = shift;
 
-    my $title = $self->__x_default_lang('New Product');
-    my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count;
-    $title .= $i + 1;
-
-    my $new_product = $self->resultset->create( { title => $title } );
+    my $new_product = $self->service('product')->new_product();
     $self->stash( product_id => $new_product->id );
 
     $self->template('admin/product/edit');
