@@ -1,11 +1,14 @@
 package Markets::Service::Product;
 use Mojo::Base 'Markets::Service';
+use Try::Tiny;
+
+has resultset => sub { shift->schema->resultset('Product') };
 
 sub create_entity {
     my ( $self, $product_id ) = @_;
 
     # Sort primary category is first
-    my $data = $self->schema->resultset('Product')->search(
+    my $data = $self->resultset->search(
         { 'me.id' => $product_id },
         {
             order_by => { -desc              => 'is_primary' },
@@ -45,6 +48,26 @@ sub get_primary_category_choices {
     return wantarray ? @categories : \@categories;
 }
 
+sub modify {
+    my ( $self, $product_id, $params ) = @_;
+
+    my $product = $self->resultset->find( $product_id, { prefetch => { product_categories => 'detail' } } );
+    my $cb = sub {
+
+        # Primary category
+        my $primary_category = delete $params->{primary_category};
+        $product->product_categories->update( { is_primary => 0 } );
+        $product->product_categories->search( { category_id => $primary_category } )->update( { is_primary => 1 } );
+
+        # Product detail
+        $product->update($params);
+    };
+
+    try { $self->schema->txn_do($cb) }
+    catch { $self->schema->txn_failed($_) };
+    return 1;
+}
+
 1;
 __END__
 
@@ -80,6 +103,10 @@ Return L<Markets::Domain::Entity::Product> object.
 Argument: L<Markets::Domain::Entity::Product> object.
 
 Return: Array ou Array refference.
+
+=head2 C<modify>
+
+    $service->modify( $product_id, $form_params );
 
 =head1 AUTHOR
 

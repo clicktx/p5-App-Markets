@@ -72,22 +72,7 @@ sub edit {
     return $self->render() if !$form->has_data or !$form->validate;
 
     # Update data
-    my $product = $self->resultset->find( $product_id, { prefetch => { product_categories => 'detail' } } );
-    my $params  = $form->params->to_hash;
-    my $cb      = sub {
-
-        # Primary category
-        my $primary_category = delete $params->{primary_category};
-        $product->product_categories->update( { is_primary => 0 } );
-        $product->product_categories->search( { category_id => $primary_category } )->update( { is_primary => 1 } );
-
-        # Product detail
-        $product->update($params);
-    };
-
-    try { $self->schema->txn_do($cb) }
-    catch { $self->schema->txn_failed($_) };
-
+    $self->service('product')->modify($product_id, $form->params->to_hash);
     return $self->render();
 }
 
