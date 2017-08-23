@@ -19,7 +19,7 @@ sub t01_get_request : Tests() {
 
     # delete
     $t->get_ok('/admin/product/1/delete')->status_is(200);
-    $t->get_ok('/admin/product/999999/delete')->status_is(200);
+    $t->get_ok('/admin/product/999999/delete')->status_is(500);
 }
 
 sub t02_post_request : Tests() {

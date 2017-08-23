@@ -19,14 +19,14 @@ sub create {
     return $self->edit();
 }
 
+# NOTE: POST requestのみにするべきか？
 sub delete {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    my $product    = $self->resultset->find($product_id);
-
-    $product->delete if $product;
-    return $self->redirect_to('RN_admin_products');
+    return $self->service('product')->remove_product($product_id)
+      ? $self->redirect_to('RN_admin_products')
+      : $self->reply->exception( $self->__('Failed to delete product.') );
 }
 
 sub duplicate {
@@ -68,7 +68,7 @@ sub edit {
     return $self->render() if !$form->has_data or !$form->validate;
 
     # Update data
-    $self->service('product')->modify($product_id, $form->params->to_hash);
+    $self->service('product')->modify( $product_id, $form->params->to_hash );
     return $self->render();
 }
 

@@ -78,6 +78,21 @@ sub new_product {
     return $self->resultset->create( { title => $title } );
 }
 
+sub remove_product {
+    my ( $self, $product_id ) = @_;
+
+    my $product = $self->resultset->find($product_id);
+    if ($product) {
+        my $result = $product->delete;
+
+        # Logging
+        $self->app->admin_log->info( 'Removed product ID:' . $product_id ) if $result;
+
+        return $result ? 1 : 0;
+    }
+    return 0;
+}
+
 1;
 __END__
 
@@ -123,6 +138,13 @@ Return: Array ou Array refference.
     my $result = $service->new_product();
 
 Return L<Markets::Schema::Result::Product> object.
+
+=head2 C<remove_product>
+
+    my $bool = $service->remove_product($product_id);
+
+Return boolean value.
+Returns true on success.
 
 =head1 AUTHOR
 
