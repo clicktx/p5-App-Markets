@@ -9,7 +9,7 @@
     <li><%= link_to __('Products') => 'RN_admin_products' %></li>
 </ul>
 
-<%= form_for current_route() => ( method => 'POST' ) => begin %>
+<%= form_for url_for( 'RN_admin_product_edit' => { product_id => stash('product_id') } ) => ( method => 'POST' ) => begin %>
     % my $field;
     <div class="">
         % $field = 'admin-product#title';

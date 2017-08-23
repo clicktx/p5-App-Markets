@@ -24,8 +24,20 @@ column price => {
     size        => [ 12, 2 ],
 };
 
+column created_at => {
+    data_type   => 'DATETIME',
+    is_nullable => 0,
+    timezone    => Markets::Schema->TZ,
+};
+
+column updated_at => {
+    data_type   => 'DATETIME',
+    is_nullable => 0,
+    timezone    => Markets::Schema->TZ,
+};
+
 has_many
-  categories => 'Markets::Schema::Result::Product::Category',
+  product_categories => 'Markets::Schema::Result::Product::Category',
   { 'foreign.product_id' => 'self.id' };
 
 1;

@@ -5,9 +5,9 @@ use Markets::Domain::Collection qw/collection/;
 sub cook {
     my $self = shift;
 
-    # Aggregate categories
-    my $categories = $self->param('categories');
-    $self->aggregate( categories => 'entity-product-category', $categories || [] );
+    # Aggregate product_categories
+    my $product_categories = $self->param('product_categories');
+    $self->aggregate( product_categories => 'entity-product-category', $product_categories || [] );
 
     # Aggregate ancestors
     my $ancestors = $self->param('ancestors');

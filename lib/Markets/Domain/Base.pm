@@ -1,4 +1,5 @@
 package Markets::Domain::Base;
+use Carp qw(croak);
 use Mojo::Base -base;
 use Mojo::Util ();
 
@@ -73,6 +74,20 @@ sub import {
     feature->import(':5.10');
 }
 
+# sub new {
+#     my $class = shift;
+#     $class = ref $class || $class;
+#
+#     my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+#
+#     my $params = {};
+#     foreach my $key ( keys %{$args} ) {
+#         if ( $class->can($key) ) { $params->{$key} = $args->{$key} }
+#         else                     { croak "$class has not '$key' attribute" }
+#     }
+#     bless $params, $class;
+# }
+
 sub _is_changed {
     my ( $attr, $obj, $value ) = @_;
     $obj->{$attr} = '' unless defined $obj->{$attr};    # undef to ''
@@ -85,7 +100,7 @@ sub _is_changed {
 
 =head1 NAME
 
-Markets::Domain::Entity::Base
+Markets::Domain::Base
 
 =head1 SYNOPSIS
 
@@ -94,17 +109,23 @@ Markets::Domain::Entity::Base
 Override "attr" method and "has" function of L<Mojo::Base>.
 Using setter will automatically update "_is_modified" to true.
 
-=head1 ATTRIBUTES
-
-=head2 C<_is_modified>
-
 =head1 FUNCTIONS
 
 =head2 C<has>
 
+=head1 ATTRIBUTES
+
+L<Markets::Domain::Base> inherits all attributes from L<Mojo::Base> and implements
+the following new ones.
+
 =head1 METHODS
 
+L<Markets::Domain::Base> inherits all methods from L<Mojo::Base> and implements
+the following new ones.
+
 =head2 C<attr>
+
+=head2 C<new>
 
 =head1 AUTHOR
 

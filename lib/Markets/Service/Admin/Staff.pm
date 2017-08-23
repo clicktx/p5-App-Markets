@@ -13,8 +13,12 @@ sub create_entity {
     $where = { 'me.id'       => $args->{staff_id} } if $args->{staff_id};
     $where = { 'me.login_id' => $args->{login_id} } if $args->{login_id};
 
+    my $columns = [
+        qw(me.id me.login_id me.created_at me.updated_at),
+        qw(password.id password.hash password.created_at password.updated_at),
+    ];
     my $rs = $self->app->schema->resultset('staff');
-    my $data = $rs->search( $where, { prefetch => 'password' }, )->hashref_first;
+    my $data = $rs->search( $where, { columns => $columns, prefetch => 'password' } )->hashref_first;
 
     $self->app->factory('entity-staff')->create( $data || {} );
 }
