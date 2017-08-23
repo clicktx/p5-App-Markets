@@ -5,7 +5,7 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-sub t01_request : Tests() {
+sub t01_get_request : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -16,7 +16,22 @@ sub t01_request : Tests() {
     $t->get_ok('/admin/product/1/duplicate')->status_is(200);
     $t->get_ok('/admin/product/1/edit')->status_is(200);
     $t->get_ok('/admin/product/1/edit/category')->status_is(200);
+
+    # delete
     $t->get_ok('/admin/product/1/delete')->status_is(200);
+    $t->get_ok('/admin/product/999999/delete')->status_is(200);
+}
+
+sub t02_post_request : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    # Login
+    $self->admin_loged_in;
+
+    my $post_data = { csrf_token => $self->csrf_token };
+
+    $t->post_ok( '/admin/product/100/edit/category', form => $post_data )->status_is(200);
 }
 
 __PACKAGE__->runtests;

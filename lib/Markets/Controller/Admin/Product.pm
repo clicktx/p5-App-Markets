@@ -121,6 +121,7 @@ sub category {
     return $self->render() if !$form->has_data or !$form->validate;
 
     my $param_categories = $form->param('categories[]');
+    return $self->render() unless @{$param_categories};
 
     # primary category_id
     my $primary_category = $entity->product_categories->first;
