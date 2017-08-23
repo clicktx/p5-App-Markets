@@ -103,16 +103,15 @@ sub category {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
+    my $entity     = $self->service('product')->create_entity($product_id);
+
+    # NOTE: 存在しないproduct_idの場合はエラーにする
 
     # Init form
     my $form = $self->form_set();
-    my $itr =
-      $self->schema->resultset('Product::Category')->search( { product_id => $product_id } );
 
     my $category_ids = [];
-    while ( my $row = $itr->next ) {
-        push @{$category_ids}, $row->category_id;
-    }
+    $entity->product_categories->each( sub { push @{$category_ids}, $_->category_id } );
 
     my $tree = $self->schema->resultset('Category')->get_tree_for_form( checked => $category_ids );
     $form->field('categories')->choices($tree);
@@ -120,16 +119,11 @@ sub category {
 
     return $self->render() if !$form->has_data or !$form->validate;
 
-    # Update data
-    my $rs = $self->schema->resultset('Product::Category');
+    my $param_categories = $form->param('categories[]');
 
     # primary category_id
-    my $primary = $rs->find( { product_id => $product_id, is_primary => 1 } );
-    my $primary_id = $primary ? $primary->category_id : 0;
-    $primary_id;
-
-    my $params           = $form->params->to_hash;
-    my $param_categories = $params->{'categories[]'};
+    my $primary_category = $entity->product_categories->first;
+    my $primary_category_id = $primary_category ? $primary_category->category_id : '';
 
     # NOTE: 通常は設定しているプライマリを引き継ぐ
     # 例外: パラメーターの最初のカテゴリをプライマリに設定
@@ -139,7 +133,7 @@ sub category {
     my $has_primary;
     foreach my $cid ( @{$param_categories} ) {
         my $is_primary = 0;
-        if ( $cid == $primary_id ) {
+        if ( $cid == $primary_category_id ) {
             $is_primary  = 1;
             $has_primary = 1;
         }
@@ -152,6 +146,7 @@ sub category {
     }
     $product_categories->[0]->{is_primary} = 1 unless $has_primary;
 
+    my $rs = $self->schema->resultset('Product::Category');
     my $cb = sub {
         $rs->search( { product_id => $product_id } )->delete;
         $rs->populate($product_categories);
