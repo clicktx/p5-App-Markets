@@ -88,9 +88,9 @@ sub remove_product {
         # Logging
         $self->app->admin_log->info( 'Removed product ID:' . $product_id ) if $result;
 
-        return $result ? 1 : 0;
+        return $result;
     }
-    return 0;
+    return;
 }
 
 1;
@@ -141,10 +141,9 @@ Return L<Markets::Schema::Result::Product> object.
 
 =head2 C<remove_product>
 
-    my $bool = $service->remove_product($product_id);
+    my $result = $service->remove_product($product_id);
 
-Return boolean value.
-Returns true on success.
+Return L<Markets::Schema::Result::Product> object or undefined.
 
 =head1 AUTHOR
 

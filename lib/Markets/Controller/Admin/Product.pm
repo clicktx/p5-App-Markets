@@ -19,12 +19,13 @@ sub create {
     return $self->edit();
 }
 
-# NOTE: POST requestのみにするべきか？
 sub delete {
     my $self = shift;
 
-    my $product_id = $self->stash('product_id');
-    return $self->service('product')->remove_product($product_id)
+    my $product_id     = $self->stash('product_id');
+    my $delete_product = $self->service('product')->remove_product($product_id);
+
+    return $delete_product
       ? $self->redirect_to('RN_admin_products')
       : $self->reply->exception( $self->__('Failed to delete product.') );
 }
