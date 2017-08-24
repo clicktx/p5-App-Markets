@@ -26,3 +26,43 @@ sub update {
 }
 
 1;
+__END__
+=encoding utf8
+
+=head1 NAME
+
+Markets::Schema::Base::Result
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 ATTRIBUTES
+
+L<Markets::Schema::Base::Result> inherits all attributes from L<DBIx::Class::Core> and implements
+the following new ones.
+
+=head1 METHODS
+
+L<Markets::Schema::Base::Result> inherits all methods from L<DBIx::Class::Core> and implements
+the following new ones.
+
+=head2 C<insert>
+
+Override method.
+
+The difference, insert C<created_at> and C<updated_at> on insert(create).
+
+=head2 C<update>
+
+Override method.
+
+The difference, updating C<updated_at> on update.
+
+=head1 AUTHOR
+
+Markets authors.
+
+=head1 SEE ALSO
+
+L<DBIx::Class::ResultSource>, L<DBIx::Class::Core>, L<Markets::Schema>

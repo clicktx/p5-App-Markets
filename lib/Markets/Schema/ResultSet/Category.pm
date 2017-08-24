@@ -52,7 +52,15 @@ Markets::Schema::ResultSet::Category
 
 =head1 DESCRIPTION
 
+=head1 ATTRIBUTES
+
+L<Markets::Schema::ResultSet::Category> inherits all attributes from L<Markets::Schema::Base::ResultSet> and implements
+the following new ones.
+
 =head1 METHODS
+
+L<Markets::Schema::ResultSet::Category> inherits all methods from L<Markets::Schema::Base::ResultSet> and implements
+the following new ones.
 
 =head2 C<get_ancestors_arrayref>
 
