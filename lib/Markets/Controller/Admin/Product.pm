@@ -34,7 +34,7 @@ sub duplicate {
     my $self = shift;
 
     my $product_id        = $self->stash('product_id');
-    my $duplicate_product = $self->service('product')->duplicate_product($product_id);
+    $self->service('product')->duplicate_product($product_id);
 
     return $self->redirect_to('RN_admin_products');
 }
