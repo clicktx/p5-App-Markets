@@ -25,14 +25,16 @@ sub update_product_categories {
     }
     $product_categories->[0]->{is_primary} = 1 unless $has_primary;
 
-    my $cb = sub {
-        my $product = $self->find($product_id);
+    my $product = $self->find($product_id);
+    my $cb      = sub {
         $product->product_categories->delete;
         $product->product_categories->populate($product_categories);
     };
 
     try { $self->result_source->schema->txn_do($cb) }
     catch { $self->result_source->schema->txn_failed($_) };
+
+    return $product;
 }
 
 1;
@@ -62,6 +64,8 @@ the following new ones.
 =head2 C<update_product_categories>
 
     $schema->update_product_categories($product_id, \@category_ids, $primary_category_id);
+
+Return L<Markets::Schema::Result::Product> object.
 
 =head1 AUTHOR
 
