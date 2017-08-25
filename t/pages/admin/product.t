@@ -18,7 +18,7 @@ sub t01_get_request : Tests() {
     $t->get_ok('/admin/product/1/edit/category')->status_is(200);
 
     # delete
-    $t->get_ok('/admin/product/1/delete')->status_is(200);
+    $t->get_ok('/admin/product/3/delete')->status_is(200);
     $t->get_ok('/admin/product/999999/delete')->status_is(500);
 }
 

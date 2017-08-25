@@ -126,7 +126,7 @@
         [qw/id title description price/],
         [ 1, 'test product1', 'product description1', 100 ],
         [ 2, 'test product2', 'product description2', 200 ],
-        [ 3, 'test product3', 'product description3', 300 ],
+        [ 3, 'test product3', 'product description3', 300 ], # deleted product from t/page/admin/product.t
     ],
 
     # Product Category
