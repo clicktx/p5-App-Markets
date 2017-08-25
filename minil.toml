@@ -13,3 +13,4 @@ badges=['travis', 'coveralls']
 
 [tap_harness_args]
     verbosity = 1
+    color = true
