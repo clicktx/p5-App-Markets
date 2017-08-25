@@ -18,7 +18,7 @@ sub register {
     $app->helper( pref             => sub { _pref(@_) } );
     $app->helper( schema           => sub { shift->app->schema } );
     $app->helper( service          => sub { _service(@_) } );
-    $app->helper( template         => sub { shift->stash( template => shift ) } );
+    $app->helper( template         => sub { _template(@_) } );
 }
 
 sub _cart { @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->stash('markets.entity.cart') }
@@ -58,6 +58,11 @@ sub _service {
         $self->app->{services}{$ns} = $service;
     }
     return $service;
+}
+
+sub _template {
+    my $c = shift;
+    return @_ ? $c->stash( template => shift ) : $c->stash('template');
 }
 
 1;
@@ -144,7 +149,10 @@ Service Layer accessor.
 
 =head2 C<template>
 
+    my $template = $c->template;
     $c->template('hoge/index');
+
+Get/Set template.
 
 Alias for $c->stash(template => 'hoge/index');
 
