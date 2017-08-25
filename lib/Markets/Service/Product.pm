@@ -1,6 +1,5 @@
 package Markets::Service::Product;
 use Mojo::Base 'Markets::Service';
-use Try::Tiny;
 
 has resultset => sub { shift->schema->resultset('Product') };
 
@@ -135,10 +134,6 @@ Return L<Markets::Schema::Result::Product> object.
 Argument: L<Markets::Domain::Entity::Product> object.
 
 Return: Array ou Array refference.
-
-=head2 C<modify>
-
-    $service->modify( $product_id, $form_params );
 
 =head2 C<new_product>
 
