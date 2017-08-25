@@ -17,7 +17,7 @@ sub create_entity {
         qw(me.id me.login_id me.created_at me.updated_at),
         qw(password.id password.hash password.created_at password.updated_at),
     ];
-    my $rs = $self->app->schema->resultset('staff');
+    my $rs = $self->schema->resultset('staff');
     my $data = $rs->search( $where, { columns => $columns, prefetch => 'password' } )->hashref_first;
 
     $self->app->factory('entity-staff')->create( $data || {} );
