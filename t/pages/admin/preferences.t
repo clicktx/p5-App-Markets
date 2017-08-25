@@ -24,10 +24,10 @@ sub t02_update_value : Tests() {
 
     my $post_data = {
         csrf_token            => $self->csrf_token,
-        customer_password_min => 16
+        customer_password_min => 4
     };
     $t->post_ok( '/admin/preferences', form => $post_data )->status_is(200);
-    is $t->app->pref('customer_password_min'), 16;
+    is $t->app->pref('customer_password_min'), 4;
 }
 
 __PACKAGE__->runtests;
