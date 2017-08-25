@@ -1,6 +1,5 @@
 package Markets::Controller::Admin::Product;
 use Mojo::Base 'Markets::Controller::Admin';
-use Try::Tiny;
 
 has resultset => sub { shift->schema->resultset('Product') };
 
@@ -56,7 +55,7 @@ sub edit {
     return $self->render() if !$form->has_data or !$form->validate;
 
     # Update data
-    $self->service('product')->modify( $product_id, $form->params->to_hash );
+    $self->resultset->update_product( $product_id, $form->params->to_hash );
     return $self->render();
 }
 

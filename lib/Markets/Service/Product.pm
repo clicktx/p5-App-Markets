@@ -67,26 +67,6 @@ sub get_primary_category_choices {
     return wantarray ? @categories : \@categories;
 }
 
-sub modify {
-    my ( $self, $product_id, $params ) = @_;
-
-    my $product = $self->resultset->find( $product_id, { prefetch => { product_categories => 'detail' } } );
-    my $cb = sub {
-
-        # Primary category
-        my $primary_category = delete $params->{primary_category};
-        $product->product_categories->update( { is_primary => 0 } );
-        $product->product_categories->search( { category_id => $primary_category } )->update( { is_primary => 1 } );
-
-        # Product detail
-        $product->update($params);
-    };
-
-    try { $self->schema->txn_do($cb) }
-    catch { $self->schema->txn_failed($_) };
-    return 1;
-}
-
 sub new_product {
     my $self = shift;
 

@@ -37,6 +37,26 @@ sub update_product_categories {
     return $product;
 }
 
+sub update_product {
+    my ( $self, $product_id, $params ) = @_;
+
+    my $product = $self->find( $product_id, { prefetch => { product_categories => 'detail' } } );
+    my $cb = sub {
+
+        # Primary category
+        my $primary_category = delete $params->{primary_category};
+        $product->product_categories->update( { is_primary => 0 } );
+        $product->product_categories->search( { category_id => $primary_category } )->update( { is_primary => 1 } );
+
+        # Product detail
+        $product->update($params);
+    };
+
+    try { $self->result_source->schema->txn_do($cb) }
+    catch { $self->result_source->schema->txn_failed($_) };
+    return $product;
+}
+
 1;
 __END__
 =encoding utf8
