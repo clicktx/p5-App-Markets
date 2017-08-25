@@ -22,7 +22,9 @@ sub admin_loged_in {
         password   => '12345678',
         csrf_token => $self->csrf_token,
     };
-    $self->t->ua->post( '/admin/login', form => $post_data );
+
+    $self->t->post_ok( '/admin/login', form => $post_data );
+    ok $self->server_session->staff_id, 'right staff loged in';
 }
 
 sub startup : Test(startup) {
@@ -44,7 +46,7 @@ sub startup : Test(startup) {
     $self->ua->max_redirects(1);
 }
 
-sub basic : Tests() {
+sub _common_basic_test : Tests() {
     my $self = shift;
     isa_ok $self->t, 'Test::Mojo', 'right isa Test::Mojo';
     ok $self->csrf_token, 'right csrf token';
