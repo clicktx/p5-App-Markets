@@ -73,8 +73,8 @@ sub category {
     my $category_ids = [];
     $entity->product_categories->each( sub { push @{$category_ids}, $_->category_id } );
 
-    my $trees = $self->schema->resultset('Category')->get_tree_for_form($category_ids);
-    $form->field('categories')->choices($trees);
+    my $category_choices = $self->service('category')->get_category_choices($category_ids);
+    $form->field('categories')->choices($category_choices);
     $self->init_form();
 
     return $self->render() if !$form->has_data or !$form->validate;

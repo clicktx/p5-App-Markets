@@ -9,7 +9,7 @@ sub get_ancestors_arrayref {
     return \@ancestors;
 }
 
-sub get_tree_for_form {
+sub get_category_choices {
     my ( $self, $ids ) = ( shift, shift || [] );
     $ids = [$ids] unless ref $ids;
 
@@ -72,14 +72,13 @@ the following new ones.
 
 Return Array refference.
 
-=head2 C<get_tree_for_form>
+=head2 C<get_category_choices>
 
-    my $tree = $rs->get_tree_for_form();
+    my $tree = $rs->get_category_choices();
 
-    my $tree = $rs->get_tree_for_form( checked  => 3 );
-    my $tree = $rs->get_tree_for_form( selected => 7 );
-
-    my $tree = $rs->get_tree_for_form( checked  => [ 1, 3, 5 ] );
+    # Arguments choiced category ids
+    my $tree = $rs->get_category_choices(3);
+    my $tree = $rs->get_category_choices( [ 1, 3, 5 ] );
 
 Return Array refference.
 

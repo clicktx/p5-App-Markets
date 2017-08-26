@@ -3,6 +3,8 @@ use Mojo::Base 'Markets::Service';
 
 has resultset => sub { shift->schema->resultset('Category') };
 
+sub get_category_choices { shift->resultset->get_category_choices(shift) }
+
 1;
 __END__
 
@@ -23,6 +25,12 @@ the following new ones.
 
 L<Markets::Service::Category> inherits all methods from L<Markets::Service> and implements
 the following new ones.
+
+=head2 C<get_category_choices>
+
+    $trees = $service->get_category_choices(\@category_ids);
+
+See L<Markets::Schema::ResultSet::Category/get_category_choices>
 
 =head1 AUTHOR
 
