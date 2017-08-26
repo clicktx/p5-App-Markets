@@ -30,10 +30,13 @@ my %args = (
         'DBIx::Class' => '0.082840',
         'DBIx::Class::Candy' => '0.005002',
         'DBIx::Class::ResultSet::HashRef' => '1.002',
+        'DBIx::Class::Tree::NestedSet' => '0.10',
         'Data::Clone' => '0.004',
+        'Data::Page::Navigation' => '0.06',
         'DateTime' => '1.42',
         'DateTime::Format::Strptime' => '1.73',
         'File::Find::Rule' => '0.34',
+        'FormValidator::Simple' => '0.29',
         'Gazelle' => '0.46',
         'HTTP::Parser::XS' => '0.17',
         'JSON::XS' => '3.02',
@@ -71,6 +74,7 @@ my %args = (
         'Harriet' => '0',
         'Test::Class' => '0',
         'Test::Deep' => '0',
+        'Test::Exception' => '0',
         'Test::Harness' => '3.39',
         'Test::More' => '0',
         'Test::Perl::Critic' => '0',
@@ -88,7 +92,7 @@ my %args = (
     test_files           => ((-d '.git' || $ENV{RELEASE_TESTING}) && -d 'xt') ? 't/ xt/' : 't/',
     recursive_test_files => 1,
 
-    tap_harness_args => {"verbosity" => 1},
+    tap_harness_args => {"verbosity" => 1,"color" => "true"},
 
 );
 if (-d 'share') {

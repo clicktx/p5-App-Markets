@@ -9,33 +9,37 @@ sub get_ancestors_arrayref {
     return \@ancestors;
 }
 
-sub get_tree_for_form {
-    my ( $self, $opt, $values ) = ( shift, shift, shift || [] );
-    $values = [$values] unless ref $values;
+sub get_category_choices {
+    my ( $self, $ids ) = ( shift, shift || [] );
+    $ids = [$ids] unless ref $ids;
+
+    my @trees;
+    my @root_nodes = $self->search( { level => 0 } );
+    foreach my $root (@root_nodes) {
+        push @trees, @{ _tree( $root, $ids ) };
+    }
+    return \@trees;
+}
+
+sub _tree {
+    my ( $root, $ids ) = @_;
 
     my @tree;
-    my @root_nodes = $self->search( { level => 0 } );
-    foreach my $node (@root_nodes) {
-        my $data = [ $node->title => $node->id ];
-        push @{$data}, _opt( $node->id, $opt => $values );
-        push @tree, $data;
-        my $itr = $node->descendants;
-        while ( my $desc = $itr->next ) {
-            my $data = [ '¦   ' x $desc->level . $desc->title => $desc->id ];
-            push @{$data}, _opt( $desc->id, $opt => $values );
-            push @tree, $data;
-        }
+    my $itr = $root->nodes;
+    while ( my $node = $itr->next ) {
+        my $title = '¦   ' x $node->level . $node->title;
+        push @tree, [ $title, $node->id, _choiced( $node->id, $ids ) ];
     }
     return \@tree;
 }
 
-sub _opt {
-    my ( $id, $opt, $values ) = @_;
+sub _choiced {
+    my ( $id, $ids ) = @_;
 
-    foreach my $v ( @{$values} ) {
-        return ( $opt => 1 ) if $v == $id;
+    foreach my $v ( @{$ids} ) {
+        return ( choiced => 1 ) if $v == $id;
     }
-    return ();
+    return;
 }
 
 1;
@@ -52,7 +56,15 @@ Markets::Schema::ResultSet::Category
 
 =head1 DESCRIPTION
 
+=head1 ATTRIBUTES
+
+L<Markets::Schema::ResultSet::Category> inherits all attributes from L<Markets::Schema::Base::ResultSet> and implements
+the following new ones.
+
 =head1 METHODS
+
+L<Markets::Schema::ResultSet::Category> inherits all methods from L<Markets::Schema::Base::ResultSet> and implements
+the following new ones.
 
 =head2 C<get_ancestors_arrayref>
 
@@ -60,14 +72,13 @@ Markets::Schema::ResultSet::Category
 
 Return Array refference.
 
-=head2 C<get_tree_for_form>
+=head2 C<get_category_choices>
 
-    my $tree = $rs->get_tree_for_form();
+    my $tree = $rs->get_category_choices();
 
-    my $tree = $rs->get_tree_for_form( checked  => 3 );
-    my $tree = $rs->get_tree_for_form( selected => 7 );
-
-    my $tree = $rs->get_tree_for_form( checked  => [ 1, 3, 5 ] );
+    # Arguments choiced category ids
+    my $tree = $rs->get_category_choices(3);
+    my $tree = $rs->get_category_choices( [ 1, 3, 5 ] );
 
 Return Array refference.
 

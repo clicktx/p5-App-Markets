@@ -6,11 +6,14 @@ use Test::Mojo;
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
-
 use_ok 'Markets::Service::Product';
-my $pref = $app->service('product');
 
-can_ok $pref, 'create_entity';
+subtest 'basic' => sub {
+    my $c = $app->build_controller;
+    my $service = $c->service('product');
+
+    can_ok $service, 'create_entity';
+};
 
 done_testing();
 

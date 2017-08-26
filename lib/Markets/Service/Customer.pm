@@ -46,7 +46,7 @@ sub create_entity {
     $where = { 'me.id'         => $args->{customer_id} } if $args->{customer_id};
     $where = { 'email.address' => $args->{email} }       if $args->{email};
 
-    my $data = $self->app->schema->resultset('Customer')
+    my $data = $self->schema->resultset('Customer')
       ->search( $where, { prefetch => [ 'password', { emails => 'email' } ] }, )->hashref_first;
 
     $self->app->factory('entity-customer')->create( $data || {} );
@@ -81,7 +81,7 @@ sub login {
     my $merged_cart = $c->cart->merge($stored_cart);
 
     try {
-        my $txn = $self->app->schema->txn_scope_guard;
+        my $txn = $self->schema->txn_scope_guard;
 
         # Remove before cart(and session) from DB
         $session->remove_cart($visitor_cart_id);
@@ -94,7 +94,7 @@ sub login {
 
         $txn->commit;
     }
-    catch { $c->app->schema->txn_failed($_) };
+    catch { $c->schema->txn_failed($_) };
 }
 
 1;

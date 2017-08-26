@@ -40,4 +40,11 @@ has_many
   product_categories => 'Markets::Schema::Result::Product::Category',
   { 'foreign.product_id' => 'self.id' };
 
+# Add Index
+sub sqlt_deploy_hook {
+    my ( $self, $sqlt_table ) = @_;
+
+    $sqlt_table->add_index( name => 'idx_title', fields => ['title'] );
+}
+
 1;

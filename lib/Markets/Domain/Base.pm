@@ -74,19 +74,19 @@ sub import {
     feature->import(':5.10');
 }
 
-# sub new {
-#     my $class = shift;
-#     $class = ref $class || $class;
-#
-#     my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
-#
-#     my $params = {};
-#     foreach my $key ( keys %{$args} ) {
-#         if ( $class->can($key) ) { $params->{$key} = $args->{$key} }
-#         else                     { croak "$class has not '$key' attribute" }
-#     }
-#     bless $params, $class;
-# }
+sub new {
+    my $class = shift;
+    $class = ref $class || $class;
+
+    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+
+    my $params = {};
+    foreach my $key ( keys %{$args} ) {
+        if ( $class->can($key) ) { $params->{$key} = $args->{$key} }
+        else                     { croak "$class has not '$key' attribute" }
+    }
+    bless $params, $class;
+}
 
 sub _is_changed {
     my ( $attr, $obj, $value ) = @_;

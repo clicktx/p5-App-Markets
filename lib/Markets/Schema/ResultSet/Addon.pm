@@ -34,7 +34,15 @@ Markets::Schema::ResultSet::Addon
 
 =head1 DESCRIPTION
 
+=head1 ATTRIBUTES
+
+L<Markets::Schema::ResultSet::Addon> inherits all attributes from L<Markets::Schema::Base::ResultSet> and implements
+the following new ones.
+
 =head1 METHODS
+
+L<Markets::Schema::ResultSet::Addon> inherits all methods from L<Markets::Schema::Base::ResultSet> and implements
+the following new ones.
 
 =head2 C<configure>
 

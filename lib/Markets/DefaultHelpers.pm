@@ -10,17 +10,28 @@ use Markets::Domain::Factory;
 sub register {
     my ( $self, $app ) = @_;
 
-    $app->helper( schema         => sub { shift->app->schema } );
-    $app->helper( addons         => sub { shift->app->addons(@_) } );
-    $app->helper( cookie_session => sub { shift->session(@_) } );
-    $app->helper( cart           => sub { _cart(@_) } );
-    $app->helper( factory        => sub { _factory(@_) } );
-    $app->helper( pref           => sub { _pref(@_) } );
-    $app->helper( service        => sub { _service(@_) } );
-    $app->helper( template       => sub { shift->stash( template => shift ) } );
+    $app->helper( __x_default_lang => sub { __x_default_lang(@_) } );
+    $app->helper( addons           => sub { shift->app->addons(@_) } );
+    $app->helper( cookie_session   => sub { shift->session(@_) } );
+    $app->helper( cart             => sub { _cart(@_) } );
+    $app->helper( factory          => sub { _factory(@_) } );
+    $app->helper( pref             => sub { _pref(@_) } );
+    $app->helper( schema           => sub { shift->app->schema } );
+    $app->helper( service          => sub { _service(@_) } );
+    $app->helper( template         => sub { _template(@_) } );
 }
 
 sub _cart { @_ > 1 ? $_[0]->stash( 'markets.entity.cart' => $_[1] ) : $_[0]->stash('markets.entity.cart') }
+
+sub __x_default_lang {
+    my $c = shift;
+
+    my $language = $c->language;
+    $c->language( $c->pref('default_language') );
+    my $word = $c->__x(@_);
+    $c->language($language);
+    return $word;
+}
 
 sub _factory { shift; Markets::Domain::Factory->new->factory(@_) }
 
@@ -49,6 +60,11 @@ sub _service {
     return $service;
 }
 
+sub _template {
+    my $c = shift;
+    return @_ ? $c->stash( template => shift ) : $c->stash('template');
+}
+
 1;
 __END__
 
@@ -61,6 +77,14 @@ Markets::DefaultHelpers - Default helpers plugin for Markets
 =head1 HELPERS
 
 L<Markets::DefaultHelpers> implements the following helpers.
+
+=head2 C<__x_default_lang>
+
+    my $translation = $c->__x_default_lang($word);
+
+Word translation using L<Mojolicious::Plugin::LocaleTextDomainOO/__x> in the default language.
+
+The default language uses C<default_language> preference.
 
 =head2 C<addons>
 
@@ -99,6 +123,12 @@ Return L<Markets::Domain::Factory> Object.
 
 Get/Set preference.
 
+=head2 C<schema>
+
+    my $schema = $c->schema;
+
+Return L<Markets::Schema> object.
+
 =head2 C<service>
 
     # Your service
@@ -119,7 +149,10 @@ Service Layer accessor.
 
 =head2 C<template>
 
+    my $template = $c->template;
     $c->template('hoge/index');
+
+Get/Set template.
 
 Alias for $c->stash(template => 'hoge/index');
 

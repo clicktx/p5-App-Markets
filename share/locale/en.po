@@ -19,6 +19,12 @@ msgstr "hello?"
 msgid "hello2"
 msgstr "hello2?"
 
+msgid "New Product"
+msgstr "New Product"
+
+msgid "copy"
+msgstr "copy"
+
 # Login
 msgid "login"
 msgstr "Sign in"
