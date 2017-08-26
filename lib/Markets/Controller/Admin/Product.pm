@@ -32,7 +32,7 @@ sub delete {
 sub duplicate {
     my $self = shift;
 
-    my $product_id        = $self->stash('product_id');
+    my $product_id = $self->stash('product_id');
     $self->service('product')->duplicate_product($product_id);
 
     return $self->redirect_to('RN_admin_products');
@@ -73,8 +73,8 @@ sub category {
     my $category_ids = [];
     $entity->product_categories->each( sub { push @{$category_ids}, $_->category_id } );
 
-    my $tree = $self->schema->resultset('Category')->get_tree_for_form( checked => $category_ids );
-    $form->field('categories')->choices($tree);
+    my $trees = $self->schema->resultset('Category')->get_tree_for_form($category_ids);
+    $form->field('categories')->choices($trees);
     $self->init_form();
 
     return $self->render() if !$form->has_data or !$form->validate;

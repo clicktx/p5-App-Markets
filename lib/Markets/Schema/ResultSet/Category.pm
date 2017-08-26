@@ -10,32 +10,36 @@ sub get_ancestors_arrayref {
 }
 
 sub get_tree_for_form {
-    my ( $self, $opt, $values ) = ( shift, shift, shift || [] );
-    $values = [$values] unless ref $values;
+    my ( $self, $ids ) = ( shift, shift || [] );
+    $ids = [$ids] unless ref $ids;
+
+    my @trees;
+    my @root_nodes = $self->search( { level => 0 } );
+    foreach my $root (@root_nodes) {
+        push @trees, @{ _tree( $root, $ids ) };
+    }
+    return \@trees;
+}
+
+sub _tree {
+    my ( $root, $ids ) = @_;
 
     my @tree;
-    my @root_nodes = $self->search( { level => 0 } );
-    foreach my $node (@root_nodes) {
-        my $data = [ $node->title => $node->id ];
-        push @{$data}, _opt( $node->id, $opt => $values );
-        push @tree, $data;
-        my $itr = $node->descendants;
-        while ( my $desc = $itr->next ) {
-            my $data = [ '¦   ' x $desc->level . $desc->title => $desc->id ];
-            push @{$data}, _opt( $desc->id, $opt => $values );
-            push @tree, $data;
-        }
+    my $itr = $root->nodes;
+    while ( my $node = $itr->next ) {
+        my $title = '¦   ' x $node->level . $node->title;
+        push @tree, [ $title, $node->id, _choiced( $node->id, $ids ) ];
     }
     return \@tree;
 }
 
-sub _opt {
-    my ( $id, $opt, $values ) = @_;
+sub _choiced {
+    my ( $id, $ids ) = @_;
 
-    foreach my $v ( @{$values} ) {
-        return ( $opt => 1 ) if $v == $id;
+    foreach my $v ( @{$ids} ) {
+        return ( choiced => 1 ) if $v == $id;
     }
-    return ();
+    return;
 }
 
 1;
