@@ -91,6 +91,10 @@ sub remove_product {
     return;
 }
 
+sub update_product_categories { shift->resultset->update_product_categories(@_) }
+
+sub update_product { shift->resultset->update_product(@_) }
+
 1;
 __END__
 
@@ -146,6 +150,18 @@ Return L<Markets::Schema::Result::Product> object.
     my $result = $service->remove_product($product_id);
 
 Return L<Markets::Schema::Result::Product> object or undefined.
+
+=head2 C<update_product_categories>
+
+    $servece->update_product_categories( $product_id, \@category_ids, $primary_category_id );
+
+See L<Markets::Schema::ResultSet::Product/update_product_categories>
+
+=head2 C<update_product>
+
+    $servece->update_product( $product_id, \%from_parameters );
+
+See L<Markets::Schema::ResultSet::Product/update_product>
 
 =head1 AUTHOR
 

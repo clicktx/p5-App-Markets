@@ -83,9 +83,13 @@ the following new ones.
 
 =head2 C<update_product_categories>
 
-    $schema->update_product_categories($product_id, \@category_ids, $primary_category_id);
+    $resultset->update_product_categories($product_id, \@category_ids, $primary_category_id);
 
 Return L<Markets::Schema::Result::Product> object.
+
+=head2 C<update_product>
+
+    $resultset->update_product( $product_id, \%from_parameters );
 
 =head1 AUTHOR
 

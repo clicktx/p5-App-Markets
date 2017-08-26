@@ -1,8 +1,6 @@
 package Markets::Controller::Admin::Product;
 use Mojo::Base 'Markets::Controller::Admin';
 
-has resultset => sub { shift->schema->resultset('Product') };
-
 sub form_default_value {
     my ( $self, $form, $entity ) = @_;
     $form->field($_)->default_value( $entity->$_ ) for qw(id price title description);
@@ -55,7 +53,7 @@ sub edit {
     return $self->render() if !$form->has_data or !$form->validate;
 
     # Update data
-    $self->resultset->update_product( $product_id, $form->params->to_hash );
+    $self->service('product')->update_product( $product_id, $form->params->to_hash );
     return $self->render();
 }
 
@@ -84,7 +82,7 @@ sub category {
     return $self->render() unless @{$category_ids};
 
     my $primary_category_id = @{ $entity->product_categories } ? $entity->product_categories->first->category_id : '';
-    $self->resultset->update_product_categories( $product_id, $category_ids, $primary_category_id );
+    $self->service('product')->update_product_categories( $product_id, $category_ids, $primary_category_id );
     return $self->render();
 }
 

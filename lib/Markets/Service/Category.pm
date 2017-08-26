@@ -3,7 +3,7 @@ use Mojo::Base 'Markets::Service';
 
 has resultset => sub { shift->schema->resultset('Category') };
 
-sub get_category_choices { shift->resultset->get_category_choices(shift) }
+sub get_category_choices { shift->resultset->get_category_choices(@_) }
 
 1;
 __END__
@@ -28,7 +28,7 @@ the following new ones.
 
 =head2 C<get_category_choices>
 
-    $trees = $service->get_category_choices(\@category_ids);
+    $choices = $service->get_category_choices(\@category_ids);
 
 See L<Markets::Schema::ResultSet::Category/get_category_choices>
 
