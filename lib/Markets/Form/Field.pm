@@ -11,7 +11,7 @@ our $required_icon  = '*';
 
 has id => sub { my $id = shift->name; $id =~ s/\./_/g; return "form_widget_$id" };
 has [qw(field_key default_value choices help label error_messages multiple expanded required)];
-has [qw(name type value placeholder checked selected)];
+has [qw(name type value placeholder checked selected choiced)];
 
 sub AUTOLOAD {
     my $self = shift;
@@ -92,6 +92,10 @@ sub _choice_field {
     $pair = [ $pair, $pair ] unless ref $pair eq 'ARRAY';
     my %attrs = ( value => $pair->[1], @$pair[ 2 .. $#$pair ], @_ );
 
+    # choiced
+    my $choiced = delete $attrs{choiced};
+    if ($choiced) { $attrs{checked} = $choiced }
+
     if ( @{$values} ) { delete $attrs{checked} }
     else {    # default checked(bool)
         $attrs{checked} ? $attrs{checked} = undef : delete $attrs{checked};
@@ -167,6 +171,11 @@ sub _choices_for_select {
 
             # true to "selected"
             my %attrs = ( @{$group}[ 2 .. $#$group ] );
+
+            # choiced
+            my $choiced = delete $attrs{choiced};
+            if ($choiced) { $attrs{selected} = $choiced }
+
             $attrs{selected} ? $attrs{selected} = 'selected' : delete $attrs{selected};
             $group = [ $label, $value, %attrs ];
         }
@@ -263,15 +272,9 @@ sub _list_field {
 
             $label = $c->__($label);
             my $legend = $c->tag( 'legend', $label );
-            my $items = join '', map {
-                $c->tag(
-                    'div',
-                    class => 'form-choice-item',
-                    _choice_field( $c, \@values, $_, %args )
-                  )
-            } @$v;
-            $groups .=
-              $c->tag( 'fieldset', class => 'form-choice-group', %attrs, sub { $legend . $items } );
+            my $items = join '',
+              map { $c->tag( 'div', class => 'form-choice-item', _choice_field( $c, \@values, $_, %args ) ) } @$v;
+            $groups .= $c->tag( 'fieldset', class => 'form-choice-group', %attrs, sub { $legend . $items } );
         }
         else {
             $root_class = 'form-choice-group' unless $root_class;
@@ -369,6 +372,12 @@ Markets::Form::Field
 =head2 C<placeholder>
 =head2 C<checked>
 =head2 C<selected>
+
+=head2 C<choiced>
+
+Alias C<checked> and C<selected>.
+
+If set C<checked> or C<selected> together, this parameter takes precedence.
 
 =head1 METHODS
 
