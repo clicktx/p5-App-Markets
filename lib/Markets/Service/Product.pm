@@ -3,6 +3,22 @@ use Mojo::Base 'Markets::Service';
 
 has resultset => sub { shift->schema->resultset('Product') };
 
+sub choices_primary_category {
+    my ( $self, $entity ) = @_;
+
+    my @categories;
+    $entity->product_categories->each(
+        sub {
+            my $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $_->id );
+            my $title;
+            foreach my $ancestor ( @{$ancestors} ) { $title .= $ancestor->{title} . ' > ' }
+            $title .= $_->title;
+            push @categories, [ $title, $_->category_id, choiced => $_->is_primary ];
+        }
+    );
+    return wantarray ? @categories : \@categories;
+}
+
 sub create_entity {
     my ( $self, $product_id ) = @_;
 
@@ -48,22 +64,6 @@ sub duplicate_product {
     $self->app->admin_log->info( 'Duplicate product from ID:' . $product_id ) if $result;
 
     return $result;
-}
-
-sub get_primary_category_choices {
-    my ( $self, $entity ) = @_;
-
-    my @categories;
-    $entity->product_categories->each(
-        sub {
-            my $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $_->id );
-            my $title;
-            foreach my $ancestor ( @{$ancestors} ) { $title .= $ancestor->{title} . ' > ' }
-            $title .= $_->title;
-            push @categories, [ $title, $_->category_id, checked => $_->is_primary ];
-        }
-    );
-    return wantarray ? @categories : \@categories;
 }
 
 sub new_product {
@@ -116,6 +116,15 @@ the following new ones.
 L<Markets::Service::Product> inherits all methods from L<Markets::Service> and implements
 the following new ones.
 
+=head2 C<choices_primary_category>
+
+    my $product_categories = $service->choices_primary_category($entity);
+    my @product_categories = $service->choices_primary_category($entity);
+
+Argument: L<Markets::Domain::Entity::Product> object.
+
+Return: Array ou Array refference.
+
 =head2 C<create_entity>
 
     my $product = $app->service('product')->create_entity($product_id);
@@ -129,15 +138,6 @@ Return L<Markets::Domain::Entity::Product> object.
 Duplicate from C<$product_id>.
 
 Return L<Markets::Schema::Result::Product> object.
-
-=head2 C<get_primary_category_choices>
-
-    my $product_categories = $service->get_primary_category_choices($entity);
-    my @product_categories = $service->get_primary_category_choices($entity);
-
-Argument: L<Markets::Domain::Entity::Product> object.
-
-Return: Array ou Array refference.
 
 =head2 C<new_product>
 

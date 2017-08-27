@@ -46,7 +46,7 @@ sub edit {
     my $form = $self->form_set('admin-product');
     $self->form_default_value( $form, $entity );
 
-    my $categories = $self->service('product')->get_primary_category_choices($entity);
+    my $categories = $self->service('product')->choices_primary_category($entity);
     $form->field('primary_category')->choices($categories);
     $self->init_form();
 
