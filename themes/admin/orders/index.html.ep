@@ -1,0 +1,30 @@
+% layout 'admin-default';
+% title __('Orders');
+
+<h1><%= title %></h1>
+
+<ul>
+% while (my $shipment = $itr->next) {
+    <li>
+        [
+        <%= link_to url_for( 'RN_admin_order_edit', id => $shipment->id ) => begin %>
+            edit
+        <% end %>
+        ]
+        [ <%= link_to 'duplicate' => url_for( 'RN_admin_order_duplicate', id => $shipment->id ) %> ]
+        <% my $order = $shipment->order_header; %>
+        <%= link_to url_for( 'RN_admin_order', id => $shipment->id ) => begin %>
+            order id: <%= $order->id %>  ship id: <%= $shipment->id %>
+            <%= $order->created_at %>
+            <%= $order->billing_address->line1 %> to <%= $shipment->shipping_address->line1 %>
+        <% end %>
+    </li>
+% }
+</ul>
+
+<h2><%= __('Orders') %></h2>
+
+<ul>
+    <li><%= link_to __('Create New Order') => 'RN_admin_order_create' %></li>
+    <li><%= link_to __('Reports') => 'RN_admin_order_report' %></li>
+</ul>

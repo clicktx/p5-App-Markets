@@ -1,31 +1,35 @@
 % layout 'admin-default';
-% title __('Orders');
+% title __('Order Details');
 
 <h1><%= title %></h1>
 
-<ul>
-% while (my $shipment = $itr->next) {
-    <li>
-        [
-        <%= link_to url_for( 'RN_admin_orders_edit', id => $shipment->id ) => begin %>
-            edit
-        <% end %>
-        ]
-        <% my $order = $shipment->order_header; %>
-        <%= link_to url_for( 'RN_admin_orders_detail', id => $shipment->id ) => begin %>
-            order id: <%= $order->id %>  ship id: <%= $shipment->id %>
-            <%= $order->created_at %>
-            <%= $order->billing_address->line1 %> to <%= $shipment->shipping_address->line1 %>
-        <% end %>
-    </li>
-% }
-</ul>
+<h2><%= __('Order ID') . ':' . $id %></h2>
 
 <h2><%= __('Orders') %></h2>
-
 <ul>
-    <li><%= link_to __('Add order') => 'RN_admin_orders_add_order' %></li>
-    <li><%= link_to __('New order') => 'RN_admin_orders_new_order' %></li>
-    <li><%= link_to __('Insert order') => 'RN_admin_orders_insert_order' %></li>
-    <li><%= link_to __('Reports') => 'RN_admin_orders_category' %></li>
+    <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
+</ul>
+
+<ol>
+% foreach my $shipment ( @{$shipments} ){
+    <li> shipment id: <%= $shipment->id %>
+    % my $shipment_items = $shipment->shipping_items;
+        <ol>
+    % while (my $item = $shipment_items->next) {
+        <li>
+            ID: <%= $item->id %> | DESCRIPTION: <%= $item->description %> | PRODUCT ID: <%= $item->product_id %> | QTY: <%= $item->quantity %>
+        </li>
+    % }
+</ol>
+    </li>
+% }
+</ol>
+
+<%= form_for 'RN_admin_orders_delete' => begin %>
+    <%= csrf_field %>
+    <%= hidden_field id => $id %>
+    <%= submit_button 'Delete this Order' %>
+<% end %>
+<ul>
+    <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
 </ul>

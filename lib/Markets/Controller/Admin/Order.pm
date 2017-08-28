@@ -4,23 +4,16 @@ use Mojo::Base 'Markets::Controller::Admin';
 sub index {
     my $self = shift;
 
+    my $order_id = $self->stash('id');
+
     # eg.
     # my $order = $self->factory('entity-order')->create({});
 
     # bad!
-    my $schema = $self->app->schema;
-    my $itr = $schema->resultset('Sales::Order::Shipment')->search(
-        {},
-        {
-            page     => 1,
-            row      => 10,
-            # order_by => { -desc => 'order_header_id' },
-            prefetch => { order_header => 'billing_address' },
-            # prefetch => [{ order_header => 'postal_address' }, 'shipping_address' ],
-        }
-    );
+    my $rs = $self->app->schema->resultset('Order::Shipment');
+    my @shipments = $rs->search( { order_id => $order_id } )->all;
 
-    $self->stash( itr => $itr );
+    $self->stash( shipments => \@shipments );
     $self->render();
 }
 
@@ -32,18 +25,6 @@ sub delete {
     $self->app->schema->resultset('Order')->find($id)->delete;
 
     $self->redirect_to('RN_admin_orders');
-}
-
-sub detail {
-    my $self     = shift;
-    my $order_id = $self->stash('id');
-
-    # bad!
-    my $rs = $self->app->schema->resultset('Order::Shipment');
-    my @shipments = $rs->search( { order_id => $order_id } )->all;
-
-    $self->stash( shipments => \@shipments );
-    $self->render();
 }
 
 sub edit {
