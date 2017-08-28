@@ -8,7 +8,6 @@ my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
 my $r = $app->routes;
-$r->find('RN_category_name_base')->remove;    # Hack for name base category
 $r->any('/:controller/:action')->to();
 
 # Requests

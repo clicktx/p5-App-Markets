@@ -9,7 +9,6 @@ my $app = $t->app;
 
 # routes
 my $r = $app->routes->namespaces( ['Markets::Controller'] );
-$r->find('RN_category_name_base')->remove;    # Hack for name base category
 $r->get('/customer')->to('customer#login');
 $r->get('/staff')->to('staff#login');
 $r->get('/buged')->to('buged#login');

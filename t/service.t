@@ -10,7 +10,6 @@ my $app = $t->app;
 
 # routes
 my $r = $app->routes->namespaces( ['Markets::Controller'] );
-$r->find('RN_category_name_base')->remove;    # Hack for name base category
 $r->get('/good')->to('test#good');
 $r->get('/not_found')->to('test#not_found');
 $r->get('/buged')->to('test#buged');

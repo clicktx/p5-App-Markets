@@ -8,7 +8,6 @@ use Data::Dumper;
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 my $r   = $app->routes->namespaces( ['Markets::Controller'] );
-$r->find('RN_category_name_base')->remove;    # Hack for name base category
 
 subtest 'addons basic' => sub {
     my $addons = $app->addons;
