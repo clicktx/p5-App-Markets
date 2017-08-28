@@ -5,7 +5,21 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-sub t01_get_request : Tests() {
+sub t01_not_logedin_request : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    my $routes = $self->app->routes->find('RN_admin_product')->children;
+    my $paths = $self->make_path( $routes, { product_id => 1 } );
+
+    $t->ua->max_redirects(0);
+    foreach my $path ( @{$paths} ) {
+        $t->get_ok($path)->status_is( 302, 'right redirect' );
+    }
+    $t->ua->max_redirects(1);
+}
+
+sub t02_get_request : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -22,7 +36,7 @@ sub t01_get_request : Tests() {
     $t->get_ok('/admin/product/999999/delete')->status_is(500);
 }
 
-sub t02_post_request : Tests() {
+sub t03_post_request : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
