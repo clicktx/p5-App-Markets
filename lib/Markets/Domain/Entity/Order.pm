@@ -8,8 +8,8 @@ use Markets::Domain::Entity;
 # };
 has 'id';
 has [qw/order_number customer_id billing_address created_at/];
-has [qw/line_items/];
-has 'shipments';
+has line_items => sub { };
+has shipments  => sub { };
 
 1;
 __END__

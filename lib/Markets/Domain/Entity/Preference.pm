@@ -1,8 +1,9 @@
 package Markets::Domain::Entity::Preference;
 use Markets::Domain::Entity;
+use Markets::Domain::IxHash;
 use Carp qw/croak/;
 
-has 'items';
+has items => sub { Markets::Domain::IxHash->new };
 
 sub value {
     my $self = shift;
