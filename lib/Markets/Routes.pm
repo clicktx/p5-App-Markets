@@ -122,7 +122,7 @@ sub add_catalog_routes {
 
     # Category
     $r->get('/category/:category_id')->to('category#index')->name('RN_category');
-    $r->get('/:category_name')->to('category#index')->name('RN_category_name_base');
+    $r->get('/:category_name/c/:category_id')->to('category#index')->name('RN_category_name_base');
 }
 
 1;
