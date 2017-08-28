@@ -27,6 +27,17 @@ sub admin_loged_in {
     ok $self->server_session->staff_id, 'right staff loged in';
 }
 
+sub make_path {
+    my ( $self, $routes, $args ) = @_;
+
+    my @paths;
+    foreach my $r ( @{$routes} ) {
+        if ( $r->is_endpoint ) { push @paths, $r->render($args) }
+        else                   { $self->make_path( $r->children ) }
+    }
+    return \@paths;
+}
+
 sub startup : Test(startup) {
     my $self = shift;
 
