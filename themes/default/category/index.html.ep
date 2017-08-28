@@ -5,9 +5,7 @@
 category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name' %>
 
 <ul>
-    <li><%= link_to 'category2' => 'RN_category' => { category_id => 2} %></li>
-    <li><%= link_to 'category3' => 'RN_category' => { category_id => 3} %></li>
-    <li><%= link_to 'category sports-soccer' => 'RN_category_name_base' => { category_name => 'sports-soccer'} %></li>
+    <li><%= link_to 'category sports-soccer' => 'RN_category_name_base' => { category_name => 'sports-soccer', category_id => 4 } %></li>
 </ul>
 
 <ul>
@@ -31,6 +29,17 @@ category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name'
 
 
 <h2>Products</h2>
+
+% if ( !$products->count ){
+    Not Product.
+% }
+
 <ul>
-    <li><%= link_to 'product 1' => 'RN_product' => { product_id => 1} %></li>
+    % while ( my $product = $products->next ) {
+        <li>
+            <%= link_to $product->title => 'RN_product' => { product_id => $product->id } %>
+        </li>
+    % }
 </ul>
+
+<%= include 'common/pagination' %>
