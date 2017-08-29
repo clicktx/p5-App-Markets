@@ -1,5 +1,4 @@
-use strict;
-use warnings;
+use Mojo::Base -strict;
 
 use File::Spec;
 use File::Basename qw(dirname);
@@ -11,7 +10,7 @@ use Mojo::File qw/path/;
 
 $ENV{TEST_MYSQL} ||= do {
     require Test::mysqld;
-    print "Starting mysqld...\n";
+    say 'Starting mysqld...';
 
     my $conf   = Markets::Install::Util::load_config();
     my $mysqld = Test::mysqld->new(
@@ -27,13 +26,16 @@ $ENV{TEST_MYSQL} ||= do {
     my $dsn = $mysqld->dsn( %{ $conf->{db} } );
 
     # create db
+    say 'Create db...';
     system 'mysqladmin -uroot -S ' . $conf->{db}->{socket} . ' create t_markets_db';
 
     # create table
-    my $schema = Markets::Schema->connect($dsn);
+    say 'Create tables...';
+    my $schema = Markets::Schema->connect( $dsn, $conf->{user}, $conf->{password} );
     $schema->deploy;
 
     # insert data
+    say 'Insert data...';
     my @paths;
     my $base_dir = dirname(__FILE__);
     push @paths,
