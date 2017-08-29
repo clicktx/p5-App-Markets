@@ -12,20 +12,20 @@ $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
 # $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
 
 has schema => sub {
+    my $self = shift;
+
     say "+++++ DBIC +++++";    # debug
-    my $self         = shift;
     my $schema_class = "Markets::Schema";
     eval "require $schema_class" or die "Could not load Schema Class ($schema_class). $@\n";
 
     say "      connecting db.";    # debug
     my $conf   = $self->config('db') or die "Missing configuration for db";
     my $dsn    = _dsn($conf);
-    my $schema = $schema_class->connect($dsn)
+    my $schema = $schema_class->connect( $dsn, $conf->{user}, $conf->{password} )
       or die "Could not connect to $schema_class using DSN ";
 
     $schema->{app} = $self;
     weaken $schema->{app};
-
     return $schema;
 };
 
@@ -157,15 +157,10 @@ sub _dbic_nestedset {
 
 sub _dsn {
     my $conf = shift;
-    my $dsn;
-    if ( $ENV{TEST_MYSQL} ) { $dsn = $ENV{TEST_MYSQL} }
-    else {
-        $dsn =
-            "DBI:$conf->{dbtype}:dbname=$conf->{dbname};"
-          . "host=$conf->{host};port=$conf->{port};"
-          . "user=$conf->{user};password=$conf->{password};";
-    }
-    return $dsn;
+
+    return $ENV{TEST_MYSQL}
+      ? $ENV{TEST_MYSQL}
+      : "DBI:$conf->{dbtype}:dbname=$conf->{dbname};host=$conf->{host};port=$conf->{port};";
 }
 
 sub _load_plugin {

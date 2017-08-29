@@ -12,6 +12,16 @@ has 'app';
 
 __PACKAGE__->load_namespaces( default_resultset_class => 'Base::ResultSet' );
 
+sub connect {
+    my ( $self, $dsn, $user, $password ) = @_;
+
+    my $dbi_attributes   = { mysql_enable_utf8mb4 => 1 };
+    my $extra_attributes = {};
+    my @connect_info     = ( $dsn, $user, $password, $dbi_attributes, $extra_attributes );
+
+    return $self->SUPER::connect(@connect_info);
+}
+
 sub time_zone { shift; return @_ ? $TIME_ZONE = shift : $TIME_ZONE }
 sub TZ { DateTime::TimeZone->new( name => $TIME_ZONE ) }
 sub now { DateTime->now( time_zone => shift->TZ ) }
@@ -76,6 +86,12 @@ Markets::Schema
 
 L<Markets::Schema> inherits all methods from L<DBIx::Class::Schema>.
 
+=head2 C<connect>
+
+    my $schema = Markets::Schema->connect( $dsn, $user, $password );
+
+Set true L<DBI:mysql> option C<mysql_enable_utf8mb4>
+
 =head2 C<resultset>
 
     $schema->resultset($source_name);
@@ -106,4 +122,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
-L<Markets::Schema::Base::ResultSet>, L<Markets::Schema>
+L<Markets::Schema::Base::Result>, L<Markets::Schema::Base::ResultSet>, L<DBIx::Class::Schema>
