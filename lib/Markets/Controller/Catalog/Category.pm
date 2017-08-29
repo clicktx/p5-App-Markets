@@ -5,7 +5,7 @@ sub index {
     my $self = shift;
 
     my $category_id   = $self->stash('category_id');
-    my $category_name = $self->stash('category_name');
+    # my $category_name = $self->stash('category_name');
 
     my $rs = $self->app->schema->resultset('Category');
     $self->stash( rs => $rs );
@@ -27,7 +27,7 @@ sub index {
         { 'product_categories.category_id' => $category_id },
         {
             prefetch => { product_categories => 'detail' },
-            page     => 1,
+            page     => $page,
             rows     => 3,
         },
     );
