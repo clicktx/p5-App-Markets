@@ -22,10 +22,7 @@ sub connect {
     return $self->SUPER::connect(@connect_info);
 }
 
-sub time_zone { shift; return @_ ? $TIME_ZONE = shift : $TIME_ZONE }
-sub TZ { DateTime::TimeZone->new( name => $TIME_ZONE ) }
 sub now { DateTime->now( time_zone => shift->TZ ) }
-sub today { shift->now->truncate( to => 'day' ) }
 
 # This code is DBIx::Class::Schema::resultset
 sub resultset {
@@ -47,6 +44,10 @@ sub sequence {
     $self->storage->last_insert_id;
 }
 
+sub time_zone { shift; return @_ ? $TIME_ZONE = shift : $TIME_ZONE }
+
+sub today { shift->now->truncate( to => 'day' ) }
+
 sub txn_failed {
     my ( $self, $err ) = @_;
 
@@ -65,6 +66,8 @@ sub txn_failed {
     }
 }
 
+sub TZ { DateTime::TimeZone->new( name => shift->time_zone ) }
+
 1;
 __END__
 =encoding utf8
@@ -75,10 +78,9 @@ Markets::Schema
 
 =head1 SYNOPSIS
 
-    $schema->resultset('Addon')->any_method();
-
-    # Snake case can also be used!
-    $schema->resultset('addon')->any_method();
+    # Change time zone
+    use Markets::Schema;
+    $Markets::Schema::TIME_ZONE = 'Asia/Tokyo';
 
 =head1 DESCRIPTION
 
@@ -92,6 +94,10 @@ L<Markets::Schema> inherits all methods from L<DBIx::Class::Schema>.
 
 Set true L<DBI:mysql> option C<mysql_enable_utf8mb4>
 
+=head2 C<now>
+
+Return L<DateTime> object.
+
 =head2 C<resultset>
 
     $schema->resultset($source_name);
@@ -102,6 +108,21 @@ Set true L<DBI:mysql> option C<mysql_enable_utf8mb4>
 
 This method is alias for L<DBIx::Class::Schema/resultset>.
 But you can use the snake case for C<$source_name>.
+
+=head2 C<time_zone>
+
+    # Getter
+    my $time_zone = $schema->time_zone;
+
+    # Setter
+    $schema->time_zone($time_zone);
+
+Get/Set time zone.
+Default time zone C<UTC>
+
+=head2 C<today>
+
+Return L<DateTime> object.
 
 =head2 C<txn_failed>
 
@@ -115,6 +136,13 @@ But you can use the snake case for C<$source_name>.
     ...
 
 Logging transaction error.
+
+=head2 C<TZ>
+
+    my $tz = $schema->TZ;
+
+Return L<DateTime::TimeZone> object.
+Using time zone L</time_zone>.
 
 =head1 AUTHOR
 
