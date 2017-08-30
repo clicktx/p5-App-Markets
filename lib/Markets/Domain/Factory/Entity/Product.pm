@@ -25,7 +25,7 @@ Markets::Domain::Factory::Entity::Product
     my $entity = Markets::Domain::Factory::Entity::Product->new( %args )->create;
 
     # In controller
-    my $entity = $c->factory('entity-cart')->create(%args);
+    my $entity = $c->factory('entity-product')->create(%args);
 
 =head1 DESCRIPTION
 
