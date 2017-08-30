@@ -69,12 +69,16 @@ sub add_admin_routes {
         }
 
         # Orders
+        $r->any('/orders')->to('admin-orders#index')->name('RN_admin_orders');
+
+        # Order
         {
-            my $orders = $r->any('/orders')->to( controller => 'admin-order' );
-            $orders->get('/')->to('#index')->name('RN_admin_orders');
-            $orders->get('/detail/:id')->to('#detail')->name('RN_admin_orders_detail');
-            $orders->get('/edit/:id')->to('#edit')->name('RN_admin_orders_edit');
-            $orders->post('/delete')->to('#delete')->name('RN_admin_orders_delete');
+            my $orders = $r->any('/order')->to( controller => 'admin-order' );
+            $orders->get('/:id')->to('#index')->name('RN_admin_order');
+            $orders->any('/create')->to('#create')->name('RN_admin_order_create');
+            $orders->any('/:id/delete')->to('#delete')->name('RN_admin_order_delete');
+            $orders->any('/:id/duplicate')->to('#duplicate')->name('RN_admin_order_duplicate');
+            $orders->any('/:id/edit')->to('#edit')->name('RN_admin_order_edit');
         }
     }
 }

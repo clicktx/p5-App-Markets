@@ -2,8 +2,11 @@
 % title 'Product';
 
 <h1>Breadcrumb list</h1>
+% my $size = $product->ancestors->size;
 % $product->ancestors->each( sub {
-    <%= $_->title %> &gt;
+    % my ( $e, $i ) = @_;
+    <%= link_to $e->title => 'RN_category_name_base' => { category_name => $e->title, category_id => $e->id } %>
+    <% if ( $i != $size -1 ){ %>&gt;<% } %>
 % });
 
 <h1><%= stash 'title' %><%= stash 'product_id' %></h1>
