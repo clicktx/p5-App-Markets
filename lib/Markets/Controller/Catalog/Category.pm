@@ -10,8 +10,7 @@ sub index {
     my $rs = $self->app->schema->resultset('Category');
     $self->stash( rs => $rs );
 
-    my $category;
-    $category = $rs->find($category_id);
+    my $category = $rs->find( $category_id, { prefetch => { products => 'product' } } );
     return $self->reply->not_found() unless $category;
 
     my $form = $self->form_set();
@@ -22,12 +21,16 @@ sub index {
 
     my $page = $form->param('page') || 1;
 
+    # 下位カテゴリ取得
+    my @category_ids = $category->descendant_ids;
 
+    # 下位カテゴリに所属するproductsも全て取得
+    # NOTE: SQLが非効率な可能性高い
     my $products = $self->schema->resultset('Product')->search(
-        { 'product_categories.category_id' => $category_id },
+        { 'product_categories.category_id' => { IN => \@category_ids } },
         {
-            prefetch => { product_categories => 'detail' },
-            page     => 1,
+            prefetch => 'product_categories',
+            page     => $page,
             rows     => 3,
         },
     );
