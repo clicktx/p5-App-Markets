@@ -1,6 +1,5 @@
 package Markets::Domain::Factory::Entity::Product;
 use Mojo::Base 'Markets::Domain::Factory';
-use Markets::Domain::Collection qw/collection/;
 
 sub cook {
     my $self = shift;
