@@ -37,7 +37,13 @@ sub index {
     my $pager = $products->pager;
 
     my $params = $form->params->to_hash;
-    $self->stash( title => $category->title, products => $products, pager => $pager, params => $params );
+    $self->stash(
+        title    => $category->title,
+        category => $category,
+        products => $products,
+        pager    => $pager,
+        params   => $params
+    );
     $self->render();
 }
 

@@ -2,7 +2,13 @@
 % # title stash('category')->title;
 
 <h1>Breadcrumb list</h1>
+% my @anc = $category->ancestors;
+% @anc = reverse @anc;
+% foreach (@anc) {
+    <%= link_to $_->title => 'RN_category' => { category_id => $_->id } %> &gt;
+% }
 
+<%= $category->title %>
 
 <h1><%= stash 'title' %></h1>
 category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name' %>
