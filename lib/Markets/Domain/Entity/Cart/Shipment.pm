@@ -1,6 +1,5 @@
 package Markets::Domain::Entity::Cart::Shipment;
 use Markets::Domain::Entity;
-use Markets::Domain::Collection;
 use Data::Clone qw/data_clone/;
 use Carp qw/croak/;
 

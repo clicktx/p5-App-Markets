@@ -1,6 +1,5 @@
 package Markets::Domain::Entity::Cart;
 use Markets::Domain::Entity;
-use Markets::Domain::Collection;
 use Carp qw/croak/;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };

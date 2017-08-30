@@ -1,5 +1,7 @@
 package Markets::Domain::Entity;
 use Markets::Domain::Base;
+use Markets::Domain::Collection;
+use Markets::Domain::IxHash;
 
 use Carp qw/croak/;
 use Mojo::Util qw/sha1_sum/;

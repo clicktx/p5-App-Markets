@@ -1,6 +1,5 @@
 package Markets::Domain::Entity::Customer;
 use Markets::Domain::Entity;
-use Markets::Domain::Collection;
 use Markets::Domain::Entity::Password;
 
 has password_id => 0;
