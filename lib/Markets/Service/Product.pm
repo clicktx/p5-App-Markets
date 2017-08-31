@@ -22,14 +22,12 @@ sub choices_primary_category {
 sub create_entity {
     my ( $self, $product_id ) = @_;
 
-    # Sort primary category is first
-    my $data = $self->resultset->search(
-        { 'me.id' => $product_id },
-        {
-            order_by => { -desc              => 'is_primary' },
-            prefetch => { product_categories => 'detail' },
-        }
-    )->hashref_first;
+    my $data = $self->resultset->search( { 'me.id' => $product_id } )->hashref_first;
+
+    # Categories
+    my $product_categories =
+      $self->schema->resultset('Product::Category')->get_product_categories_arrayref($product_id);
+    $data->{product_categories} = $product_categories;
 
     # Ancestors(Primary category path)
     my $primary_category = $data->{product_categories}->[0];
