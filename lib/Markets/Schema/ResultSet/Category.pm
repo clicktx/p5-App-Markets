@@ -5,7 +5,6 @@ sub get_ancestors_arrayref {
     my ( $self, $category_id ) = @_;
 
     my @ancestors = $self->find($category_id)->ancestors->hashref_array;
-    @ancestors = reverse @ancestors;
     return \@ancestors;
 }
 

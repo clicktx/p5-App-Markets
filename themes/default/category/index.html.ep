@@ -3,7 +3,6 @@
 
 <h1>Breadcrumb list</h1>
 % my @anc = $category->ancestors;
-% @anc = reverse @anc;
 % foreach (@anc) {
     <%= link_to $_->title => 'RN_category' => { category_id => $_->id } %> &gt;
 % }
