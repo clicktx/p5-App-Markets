@@ -1,5 +1,6 @@
 package Markets::Domain::Entity::Content;
 use Markets::Domain::Entity;
+use Data::Page;
 
 has title       => '';
 has description => '';
@@ -7,7 +8,7 @@ has keywords    => '';
 has robots      => '';
 
 has breadcrumb => sub { Markets::Domain::Collection->new };
-
+has pager => sub { Data::Page->new };
 
 1;
 __END__
@@ -24,6 +25,16 @@ Markets::Domain::Entity::Content
 
 L<Markets::Domain::Entity::Content> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<breadcrumb>
+
+    $content->breadcrumb->each( sub { ... } );
+
+has L<Markets::Domain::Entity::Breadcrumb> object in L<Markets::Domain::Collection> object.
+
+=head2 C<pager>
+
+has L<Data::Page> object.
 
 =head1 METHODS
 
