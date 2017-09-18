@@ -36,9 +36,9 @@ sub create_entity {
         $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );
 
         # Delete needless data
-        my $detail = $primary_category->{detail};
-        delete $detail->{$_} for qw(lft rgt);
-        push @{$ancestors}, $detail;
+        $primary_category->{id} = delete $primary_category->{category_id};
+        delete $primary_category->{is_primary};
+        push @{$ancestors}, $primary_category;
     }
     $data->{ancestors} = $ancestors;
 
