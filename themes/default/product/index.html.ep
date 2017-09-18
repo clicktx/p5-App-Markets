@@ -10,6 +10,8 @@
 % });
 </div>
 
+<%= include 'common/breadcrumb' %>
+
 <h1><%= stash 'title' %><%= stash 'product_id' %></h1>
 <ul>
     <li><%= link_to 'product1' => 'RN_product' => { product_id => 1} %></li>
