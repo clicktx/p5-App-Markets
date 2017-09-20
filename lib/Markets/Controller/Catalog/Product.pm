@@ -19,7 +19,7 @@ sub index {
     $self->stash( product => $product );
 
     my @breadcrumb;
-    $product->ancestors->each(
+    $product->primary_category->each(
         sub {
             my ( $e, $i ) = @_;
             push @breadcrumb,

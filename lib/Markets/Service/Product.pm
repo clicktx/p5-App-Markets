@@ -30,17 +30,18 @@ sub create_entity {
     $data->{product_categories} = $product_categories;
 
     # Ancestors(Primary category path)
+    my @primary_category;
     my $primary_category = $data->{product_categories}->[0];
-    my $ancestors        = [];
     if ($primary_category) {
-        $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );
+        my $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );
+        push @primary_category, @{$ancestors};
 
-        # Delete needless data
+        # Current category
         $primary_category->{id} = delete $primary_category->{category_id};
         delete $primary_category->{is_primary};
-        push @{$ancestors}, $primary_category;
+        push @primary_category, $primary_category;
     }
-    $data->{ancestors} = $ancestors;
+    $data->{primary_category} = \@primary_category;
 
     return $self->app->factory('entity-product')->create($data);
 }
@@ -54,7 +55,7 @@ sub duplicate_product {
     $entity->title( $title . $i );
 
     my $data = $entity->to_data;
-    delete $data->{ancestors};
+    delete $data->{primary_category};
 
     my $result = $self->resultset->create($data);
 

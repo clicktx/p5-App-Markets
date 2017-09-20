@@ -5,7 +5,7 @@ has title              => '';
 has description        => '';
 has price              => 0;
 has product_categories => sub { Markets::Domain::Collection->new };
-has ancestors          => sub { Markets::Domain::Collection->new };
+has primary_category   => sub { Markets::Domain::Collection->new };
 
 has created_at => undef;
 has updated_at => undef;
@@ -34,7 +34,7 @@ the following new ones.
 
 =head2 C<product_categories>
 
-=head2 C<ancestors>
+=head2 C<primary_category>
 
 =head1 METHODS
 
