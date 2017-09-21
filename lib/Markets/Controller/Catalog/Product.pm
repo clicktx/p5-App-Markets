@@ -21,7 +21,7 @@ sub index {
     my @breadcrumb;
     $product->primary_category->each(
         sub {
-            my ( $e, $i ) = @_;
+            my $e = shift;
             push @breadcrumb,
               {
                 title => $e->title,
