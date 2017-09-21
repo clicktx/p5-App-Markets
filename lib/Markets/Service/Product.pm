@@ -33,13 +33,15 @@ sub create_entity {
     my @primary_category;
     my $primary_category = $data->{product_categories}->[0];
     if ($primary_category) {
-        my $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );
+        my $ancestors =
+          $self->schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );
         push @primary_category, @{$ancestors};
 
         # Current category
-        $primary_category->{id} = delete $primary_category->{category_id};
-        delete $primary_category->{is_primary};
-        push @primary_category, $primary_category;
+        my %primary;
+        $primary{id}    = $primary_category->{category_id};
+        $primary{title} = $primary_category->{title};
+        push @primary_category, \%primary;
     }
     $data->{primary_category} = \@primary_category;
 
