@@ -34,11 +34,19 @@ the following new ones.
 
 =head2 C<primary_category>
 
-Return L<Markets::Domain::Collection>
+Return L<Markets::Domain::Collection> object.
 
 =head2 C<product_categories>
 
-Return L<Markets::Domain::Collection>
+Return L<Markets::Domain::Collection> object.
+
+=head2 C<created_at>
+
+Return L<DateTime> object or C<undef>.
+
+=head2 C<updated_at>
+
+Return L<DateTime> object or C<undef>.
 
 =head1 METHODS
 
