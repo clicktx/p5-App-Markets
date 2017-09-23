@@ -4,8 +4,8 @@ use Markets::Domain::Entity;
 has title              => '';
 has description        => '';
 has price              => 0;
-has product_categories => sub { Markets::Domain::Collection->new };
 has primary_category   => sub { Markets::Domain::Collection->new };
+has product_categories => sub { Markets::Domain::Collection->new };
 
 has created_at => undef;
 has updated_at => undef;
@@ -32,9 +32,13 @@ the following new ones.
 
 =head2 C<price>
 
+=head2 C<primary_category>
+
+Return L<Markets::Domain::Collection>
+
 =head2 C<product_categories>
 
-=head2 C<primary_category>
+Return L<Markets::Domain::Collection>
 
 =head1 METHODS
 
