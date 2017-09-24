@@ -23,14 +23,16 @@ sub create_entity {
     my ( $self, $product_id ) = @_;
 
     my $result = $self->resultset->find( { 'me.id' => $product_id } );
-    my $data = {
+    my $data = $result
+      ? {
         id          => $result->id,
         title       => $result->title,
         description => $result->description,
         price       => $result->price,
         created_at  => $result->created_at,
         updated_at  => $result->updated_at,
-    };
+      }
+      : {};
 
     # Categories
     my $product_categories =
