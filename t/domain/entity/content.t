@@ -25,6 +25,8 @@ subtest 'basic' => sub {
     can_ok $e, 'robots';
     can_ok $e, 'breadcrumb';
     can_ok $e, 'pager';
+    can_ok $e, 'params';
+    is ref $e->params, 'HASH', 'right hash_ref';
 };
 
 subtest 'breadcrumb' => sub {
