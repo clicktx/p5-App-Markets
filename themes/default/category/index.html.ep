@@ -7,7 +7,8 @@
     <%= link_to $_->title => 'RN_category' => { category_id => $_->id } %> &gt;
 % }
 
-<%= $category->title %>
+<%= $content->title %>
+<%= include 'common/breadcrumb' %>
 
 <h1><%= stash 'title' %></h1>
 category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name' %>
@@ -38,10 +39,10 @@ category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name'
 
 <h2>Products</h2>
 
-% if ( !$pager->total_entries ){
+% if ( !$content->pager->total_entries ){
     Not Product.
 % } else {
-    Total: <%= $pager->total_entries %>
+    Total: <%= $content->pager->total_entries %>
 % }
 
 <ul>
