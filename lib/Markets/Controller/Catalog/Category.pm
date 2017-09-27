@@ -4,8 +4,7 @@ use Mojo::Base 'Markets::Controller::Catalog';
 sub index {
     my $self = shift;
 
-    my $category_id   = $self->stash('category_id');
-    # my $category_name = $self->stash('category_name');
+    my $category_id = $self->stash('category_id');
 
     my $rs = $self->app->schema->resultset('Category');
     $self->stash( rs => $rs );
@@ -19,7 +18,7 @@ sub index {
     # return $self->render() unless $form->has_data;
     $form->validate;
 
-    my $page = $form->param('page') || 1;
+    my $page = $form->param('p') || 1;
 
     # 下位カテゴリ取得
     my @category_ids = $category->descendant_ids;
@@ -34,17 +33,43 @@ sub index {
             rows     => 3,
         },
     );
-    my $pager = $products->pager;
 
-    my $params = $form->params->to_hash;
+    my @breadcrumb;
+    my $itr = $category->ancestors;
+    while ( my $ancestor = $itr->next ) {
+        push @breadcrumb,
+          {
+            title => $ancestor->title,
+            uri   => $self->url_for(
+                'RN_category_name_base' => { category_name => $ancestor->title, category_id => $ancestor->id }
+            )
+          };
+    }
+    push @breadcrumb,
+      {
+        title => $category->title,
+        uri   => $self->url_for(
+            'RN_category_name_base' => { category_name => $category->title, category_id => $category_id }
+        )
+      };
+
+    # content entity
+    my $content = $self->app->factory('entity-content')->create(
+        {
+            title      => $category->title,
+            breadcrumb => \@breadcrumb,
+            pager      => $products->pager,
+            params     => $form->params->to_hash,
+        }
+    );
+
     $self->stash(
-        title    => $category->title,
+        content  => $content,
         category => $category,
         products => $products,
-        pager    => $pager,
-        params   => $params
     );
-    $self->render();
+
+    return $self->render();
 }
 
 1;
