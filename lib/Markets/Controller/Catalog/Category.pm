@@ -1,16 +1,37 @@
 package Markets::Controller::Catalog::Category;
 use Mojo::Base 'Markets::Controller::Catalog';
 
+sub create_branch_tree {
+    my $self  = shift;
+    my $nodes = shift;
+
+    my @tree;
+    foreach my $node ( @{$nodes} ) {
+        my $data = { id => $node->id, title => $node->title };
+        if ( my @children = $node->children ) {
+            $data->{children} = $self->create_branch_tree( \@children );
+        }
+        my $entity = $self->factory('entity-category')->create_entity($data);
+        push @tree, $entity;
+    }
+    return \@tree;
+}
+
 sub index {
     my $self = shift;
 
     my $category_id = $self->stash('category_id');
 
     my $rs = $self->app->schema->resultset('Category');
-    $self->stash( rs => $rs );
-
     my $category = $rs->find( $category_id, { prefetch => { products => 'product' } } );
     return $self->reply->not_found() unless $category;
+
+    # Category tree
+    # NOTE: 階層やカテゴリ数でSQLが実行されるためキャッシュした方が良い
+    my @root_nodes = $rs->search( { level => 0 } );
+    my $branch_trees = $self->create_branch_tree( \@root_nodes ) || [];
+    my $category_tree = $self->factory('entity-category_tree')->create_entity( children => $branch_trees );
+    $self->stash( category_tree => $category_tree );
 
     my $form = $self->form_set();
     $self->init_form();
