@@ -4,6 +4,7 @@ use Markets::Domain::Entity;
 has title   => '';
 has level   => 0;
 has root_id => 0;
+has 'children';
 
 1;
 __END__
@@ -26,6 +27,10 @@ the following new ones.
 =head2 C<level>
 
 =head2 C<root_id>
+
+=head2 C<children>
+
+Return L<Markets::Domain::Collection> object or C<undefined>.
 
 =head1 METHODS
 
