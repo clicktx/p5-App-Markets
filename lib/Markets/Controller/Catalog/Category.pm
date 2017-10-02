@@ -5,23 +5,20 @@ sub index {
     my $self = shift;
 
     my $category_id = $self->stash('category_id');
+    my $form        = $self->form_set();
+    $self->init_form();
 
-    my $rs = $self->app->schema->resultset('Category');
-    my $category = $rs->find( $category_id, { prefetch => { products => 'product' } } );
+    # return $self->render() unless $form->has_data;
+    $form->validate;
+
+    my $rs       = $self->app->schema->resultset('Category');
+    my $category = $rs->find($category_id);
     return $self->reply->not_found() unless $category;
 
     # Category tree
     # NOTE: 階層やカテゴリ数によってSQLが多く実行されるためキャッシュした方が良い
     my $category_tree = $self->service('category_tree')->create_entity();
     $self->stash( category_tree => $category_tree );
-
-    my $form = $self->form_set();
-    $self->init_form();
-
-    # return $self->render() unless $form->has_data;
-    $form->validate;
-
-    my $page = $form->param('p') || 1;
 
     # 下位カテゴリ取得
     my @category_ids = $category->descendant_ids;
@@ -32,7 +29,7 @@ sub index {
         { 'product_categories.category_id' => { IN => \@category_ids } },
         {
             prefetch => 'product_categories',
-            page     => $page,
+            page     => $form->param('p') || 1,
             rows     => 3,
         },
     );
@@ -68,7 +65,6 @@ sub index {
 
     $self->stash(
         content  => $content,
-        category => $category,
         products => $products,
     );
 

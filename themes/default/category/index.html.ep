@@ -1,13 +1,7 @@
 % layout 'default';
-% # title stash('category')->title;
+% title $content->title;
 
 <h1>Breadcrumb list</h1>
-% my @anc = $category->ancestors;
-% foreach (@anc) {
-    <%= link_to $_->title => 'RN_category' => { category_id => $_->id } %> &gt;
-% }
-
-<%= $content->title %>
 <%= include 'common/breadcrumb' %>
 
 <h1><%= stash 'title' %></h1>
