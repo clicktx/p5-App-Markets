@@ -28,7 +28,7 @@ the following new ones.
 
 =head2 C<get_category_choices>
 
-    $choices = $service->get_category_choices(\@category_ids);
+    my $choices = $service->get_category_choices(\@category_ids);
 
 See L<Markets::Schema::ResultSet::Category/get_category_choices>
 
