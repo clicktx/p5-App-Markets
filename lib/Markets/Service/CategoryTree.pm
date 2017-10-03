@@ -50,7 +50,7 @@ the following new ones.
 
 =head2 C<create_entity>
 
-    my $category_tree = $service->create_entity;
+    my $category_tree = $c->service('category_tree')->create_entity();
 
 Return L<Markets::Domain::Enity::CategoryTree> object.
 
