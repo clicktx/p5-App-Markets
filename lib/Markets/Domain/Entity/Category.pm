@@ -1,12 +1,9 @@
 package Markets::Domain::Entity::Category;
 use Markets::Domain::Entity;
 
-has title   => '';
-has level   => 0;
-has root_id => 0;
-has 'children';
 has breadcrumb => sub { [] };
 has 'products';
+has title   => '';
 
 1;
 __END__
@@ -24,16 +21,6 @@ Markets::Domain::Entity::Category
 L<Markets::Domain::Entity::Category> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<title>
-
-=head2 C<level>
-
-=head2 C<root_id>
-
-=head2 C<children>
-
-Return L<Markets::Domain::Collection> object or C<undefined>.
-
 =head2 C<breadcrumb>
 
 Return Array reference.
@@ -41,6 +28,8 @@ Return Array reference.
 =head2 C<products>
 
 Return L<Markets::Schema::ResultSet::Product> object or C<undefined>.
+
+=head2 C<title>
 
 =head1 METHODS
 

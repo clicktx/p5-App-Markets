@@ -21,7 +21,7 @@ sub _create_branch_tree {
         if ( my @children = $node->children ) {
             $data->{children} = $self->_create_branch_tree( \@children );
         }
-        my $entity = $self->app->factory('entity-category')->create_entity($data);
+        my $entity = $self->app->factory('entity-category_tree-node')->create_entity($data);
         push @tree, $entity;
     }
     return \@tree;

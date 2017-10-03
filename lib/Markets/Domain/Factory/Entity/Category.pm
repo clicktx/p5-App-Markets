@@ -1,16 +1,6 @@
 package Markets::Domain::Factory::Entity::Category;
 use Mojo::Base 'Markets::Domain::Factory';
 
-sub cook {
-    my $self = shift;
-
-    # Aggregate children
-    my $children = $self->param('children');
-    if ( ref $children eq 'ARRAY' ) {
-        $self->aggregate( children => 'entity-category', $children );
-    }
-}
-
 1;
 __END__
 
