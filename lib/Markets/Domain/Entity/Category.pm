@@ -5,6 +5,8 @@ has title   => '';
 has level   => 0;
 has root_id => 0;
 has 'children';
+has breadcrumb => sub { [] };
+has 'products';
 
 1;
 __END__
@@ -31,6 +33,14 @@ the following new ones.
 =head2 C<children>
 
 Return L<Markets::Domain::Collection> object or C<undefined>.
+
+=head2 C<breadcrumb>
+
+Return Array reference.
+
+=head2 C<products>
+
+Return L<Markets::Schema::ResultSet::Product> object or C<undefined>.
 
 =head1 METHODS
 
