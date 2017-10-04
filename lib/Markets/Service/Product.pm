@@ -22,27 +22,38 @@ sub choices_primary_category {
 sub create_entity {
     my ( $self, $product_id ) = @_;
 
-    # Sort primary category is first
-    my $data = $self->resultset->search(
-        { 'me.id' => $product_id },
-        {
-            order_by => { -desc              => 'is_primary' },
-            prefetch => { product_categories => 'detail' },
-        }
-    )->hashref_first;
+    my $result = $self->resultset->find( { 'me.id' => $product_id } );
+    my $data = $result
+      ? {
+        id          => $result->id,
+        title       => $result->title,
+        description => $result->description,
+        price       => $result->price,
+        created_at  => $result->created_at,
+        updated_at  => $result->updated_at,
+      }
+      : {};
+
+    # Categories
+    my $product_categories =
+      $self->schema->resultset('Product::Category')->get_product_categories_arrayref($product_id);
+    $data->{product_categories} = $product_categories;
 
     # Ancestors(Primary category path)
+    my @primary_category;
     my $primary_category = $data->{product_categories}->[0];
-    my $ancestors        = [];
     if ($primary_category) {
-        $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );
+        my $ancestors =
+          $self->schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );
+        push @primary_category, @{$ancestors};
 
-        # Delete needless data
-        my $detail = $primary_category->{detail};
-        delete $detail->{$_} for qw(lft rgt);
-        push @{$ancestors}, $detail;
+        # Current category
+        my %primary;
+        $primary{id}    = $primary_category->{category_id};
+        $primary{title} = $primary_category->{title};
+        push @primary_category, \%primary;
     }
-    $data->{ancestors} = $ancestors;
+    $data->{primary_category} = \@primary_category;
 
     return $self->app->factory('entity-product')->create($data);
 }
@@ -56,7 +67,7 @@ sub duplicate_product {
     $entity->title( $title . $i );
 
     my $data = $entity->to_data;
-    delete $data->{ancestors};
+    delete $data->{primary_category};
 
     my $result = $self->resultset->create($data);
 

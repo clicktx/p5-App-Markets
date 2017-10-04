@@ -2,18 +2,15 @@ package Markets::Domain::Entity::Product::Category;
 use Markets::Domain::Entity;
 
 has id => sub { shift->category_id };
-has product_id  => 0;
 has category_id => 0;
 has is_primary  => 0;
-has detail      => sub { {} };
-has title       => sub { shift->detail->{title} };
+has title       => '';
 
 sub to_hash {
     my $self = shift;
 
     my $hash = $self->SUPER::to_hash;
-    delete $hash->{detail};
-    delete $hash->{product_id};
+    delete $hash->{title};
     return $hash;
 }
 
@@ -35,13 +32,9 @@ the following new ones.
 
 =head2 C<id>
 
-=head2 C<product_id>
-
 =head2 C<category_id>
 
 =head2 C<is_primary>
-
-=head2 C<detail>
 
 =head2 C<title>
 

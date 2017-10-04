@@ -1,14 +1,8 @@
 % layout 'default';
-% # title stash('category')->title;
+% title $content->title;
 
 <h1>Breadcrumb list</h1>
-% my @anc = $category->ancestors;
-% @anc = reverse @anc;
-% foreach (@anc) {
-    <%= link_to $_->title => 'RN_category' => { category_id => $_->id } %> &gt;
-% }
-
-<%= $category->title %>
+<%= include 'common/breadcrumb' %>
 
 <h1><%= stash 'title' %></h1>
 category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name' %>
@@ -17,32 +11,14 @@ category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name'
     <li><%= link_to 'category sports-soccer' => 'RN_category_name_base' => { category_name => 'sports-soccer', category_id => 4 } %></li>
 </ul>
 
-<ul>
-% my @root_nodes = $rs->search( { level => 0 } );
-% foreach my $node (@root_nodes) {
-    <li>
-        <%= link_to 'RN_category' => { category_id => $node->id } => begin %>
-        id=<%= $node->id %> title=<%= $node->title %>
-        <% end %>
-    </li>
-    % my $desc_rs = $node->descendants;
-    % while ( my $desc = $desc_rs->next ) {
-        <li>
-            <%= link_to 'RN_category' => { category_id => $desc->id } => begin %>
-            <%= '**' x $desc->level %> id=<%= $desc->id %> title=<%= $desc->title %>
-            <% end %>
-        </li>
-    % }
-% }
-</ul>
-
+<%= include 'widget/category_tree', tree => $category_tree %>
 
 <h2>Products</h2>
 
-% if ( !$pager->total_entries ){
+% if ( !$content->pager->total_entries ){
     Not Product.
 % } else {
-    Total: <%= $pager->total_entries %>
+    Total: <%= $content->pager->total_entries %>
 % }
 
 <ul>

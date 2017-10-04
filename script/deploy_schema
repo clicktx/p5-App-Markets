@@ -13,8 +13,8 @@ use Markets::Install::Util;
 my $conf = Markets::Install::Util::load_config();
 
 # Deploy schema
-my $dsn    = Markets::App::Common::_dsn( $conf->{db} );
-my $schema = Markets::Schema->connect($dsn);
+my $dsn = Markets::App::Common::_dsn( $conf->{db} );
+my $schema = Markets::Schema->connect( $dsn, $conf->{db}->{user}, $conf->{db}->{password} );
 $schema->deploy( { add_drop_table => 1 } );
 
 # Insert data

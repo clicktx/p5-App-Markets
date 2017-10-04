@@ -20,7 +20,7 @@ Markets::Domain::Factory::Entity::Preference
     my $entity = Markets::Domain::Factory::Entity::Preference->new( %args )->create;
 
     # In controller
-    my $entity = $c->factory('entity-cart')->create(%args);
+    my $entity = $c->factory('entity-prefence')->create(%args);
 
 =head1 DESCRIPTION
 

@@ -3,7 +3,52 @@ use Mojo::Base 'Markets::Service';
 
 has resultset => sub { shift->schema->resultset('Category') };
 
+sub create_entity {
+    my ( $self, $category_id, $page, $row ) = ( shift, shift, shift // 1, shift // 10 );
+
+    my $data     = {};
+    my $category = $self->resultset->find($category_id);
+    return unless $category;
+
+    $data->{title} = $category->title;
+
+    # breadcrumb
+    my @breadcrumb;
+    my $itr = $category->ancestors;
+    while ( my $ancestor = $itr->next ) {
+        push @breadcrumb, $self->_create_link( $ancestor->id, $ancestor->title );
+    }
+    push @breadcrumb, $self->_create_link( $category_id, $category->title );
+    $data->{breadcrumb} = \@breadcrumb;
+
+    # products
+    # 下位カテゴリに所属するproductsも全て取得
+    # NOTE: SQLが非効率な可能性高い
+    my @category_ids = $category->descendant_ids;
+    my $products     = $self->schema->resultset('Product')->search(
+        { 'product_categories.category_id' => { IN => \@category_ids } },
+        {
+            prefetch => 'product_categories',
+            page     => $page,
+            rows     => $row,
+        },
+    );
+    $data->{products} = $products;
+
+    return $self->app->factory('entity-category')->create($data);
+}
+
 sub get_category_choices { shift->resultset->get_category_choices(@_) }
+
+sub _create_link {
+    my ( $self, $category_id, $title ) = @_;
+    return {
+        title => $title,
+        uri   => $self->app->url_for(
+            'RN_category_name_base' => { category_name => $title, category_id => $category_id }
+        )
+    };
+}
 
 1;
 __END__
@@ -26,9 +71,15 @@ the following new ones.
 L<Markets::Service::Category> inherits all methods from L<Markets::Service> and implements
 the following new ones.
 
+=head2 C<create_entity>
+
+    my $category = $c->service('category')->create_entity( $category_id, $page, $row );
+
+Return L<Markets::Domain::Entity::Category> object or C<undefined>.
+
 =head2 C<get_category_choices>
 
-    $choices = $service->get_category_choices(\@category_ids);
+    my $choices = $service->get_category_choices(\@category_ids);
 
 See L<Markets::Schema::ResultSet::Category/get_category_choices>
 

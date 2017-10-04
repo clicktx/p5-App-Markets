@@ -8,9 +8,9 @@ sub cook {
     my $product_categories = $self->param('product_categories');
     $self->aggregate( product_categories => 'entity-product-category', $product_categories || [] );
 
-    # Aggregate ancestors
-    my $ancestors = $self->param('ancestors');
-    $self->aggregate( ancestors => 'entity-category', $ancestors || [] );
+    # Aggregate primary_category
+    my $primary_category = $self->param('primary_category');
+    $self->aggregate( primary_category => 'entity-category_tree-node', $primary_category || [] );
 }
 
 1;
@@ -25,7 +25,7 @@ Markets::Domain::Factory::Entity::Product
     my $entity = Markets::Domain::Factory::Entity::Product->new( %args )->create;
 
     # In controller
-    my $entity = $c->factory('entity-cart')->create(%args);
+    my $entity = $c->factory('entity-product')->create(%args);
 
 =head1 DESCRIPTION
 

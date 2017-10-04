@@ -4,47 +4,39 @@ use Mojo::Base 'Markets::Controller::Catalog';
 sub index {
     my $self = shift;
 
-    my $category_id   = $self->stash('category_id');
-    # my $category_name = $self->stash('category_name');
-
-    my $rs = $self->app->schema->resultset('Category');
-    $self->stash( rs => $rs );
-
-    my $category = $rs->find( $category_id, { prefetch => { products => 'product' } } );
-    return $self->reply->not_found() unless $category;
-
     my $form = $self->form_set();
     $self->init_form();
 
     # return $self->render() unless $form->has_data;
     $form->validate;
 
-    my $page = $form->param('page') || 1;
+    my $category_id = $self->stash('category_id');
+    my $page_no     = $form->param('p') || 1;
+    my $row         = 3;
+    my $category    = $self->service('category')->create_entity( $category_id, $page_no, $row );
+    return $self->reply->not_found() unless $category;
 
-    # 下位カテゴリ取得
-    my @category_ids = $category->descendant_ids;
+    # Category tree
+    # NOTE: 階層やカテゴリ数によってSQLが多く実行されるためキャッシュした方が良い
+    my $category_tree = $self->service('category_tree')->create_entity();
+    $self->stash( category_tree => $category_tree );
 
-    # 下位カテゴリに所属するproductsも全て取得
-    # NOTE: SQLが非効率な可能性高い
-    my $products = $self->schema->resultset('Product')->search(
-        { 'product_categories.category_id' => { IN => \@category_ids } },
+    # content entity
+    my $content = $self->app->factory('entity-content')->create(
         {
-            prefetch => 'product_categories',
-            page     => $page,
-            rows     => 3,
-        },
+            title      => $category->title,
+            breadcrumb => $category->breadcrumb,
+            pager      => $category->products->pager,
+            params     => $form->params->to_hash,
+        }
     );
-    my $pager = $products->pager;
 
-    my $params = $form->params->to_hash;
     $self->stash(
-        title    => $category->title,
-        category => $category,
-        products => $products,
-        pager    => $pager,
-        params   => $params
+        content  => $content,
+        products => $category->products,
     );
-    $self->render();
+
+    return $self->render();
 }
 
 1;

@@ -2,12 +2,12 @@ package Markets::Form::FieldSet::Category::Index;
 use Mojo::Base -strict;
 use Markets::Form::FieldSet;
 
-has_field 'page' => (
+has_field 'p' => (
     type        => 'text',
     validations => ['uint'],
 );
 
-has_field 'keywords' => (
+has_field 'q' => (
     type        => 'text',
     validations => [],
 );

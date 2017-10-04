@@ -17,7 +17,7 @@ sub index {
     # return $self->render() unless $form->has_data;
     $form->validate;
 
-    my $page = $form->param('page') || 1;
+    my $page = $form->param('p') || 1;
 
     # 1page当たりの表示件数
     # cookieに保存する

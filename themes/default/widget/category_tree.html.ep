@@ -1,0 +1,13 @@
+<%= tag 'ul' => begin =%>
+    % $tree->children->each( sub {
+        % my ( $node, $i ) = @_;
+        <%= tag 'li' => begin =%>
+            <%= link_to 'RN_category' => { category_id => $node->id } => begin =%>
+            <%= $node->title =%>
+            <% end =%>
+        <%= end =%>
+        % if ($node->children){
+            <%= include 'widget/category_tree', tree => $node =%>
+        % }
+    % });
+<% end =%>

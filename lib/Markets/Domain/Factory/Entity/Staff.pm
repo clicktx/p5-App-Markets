@@ -22,7 +22,7 @@ Markets::Domain::Factory::Entity::Staff
     my $entity = Markets::Domain::Factory::Entity::Staff->new( %args )->create;
 
     # In controller
-    my $entity = $c->factory('entity-customer')->create(%args);
+    my $entity = $c->factory('entity-staff')->create(%args);
 
 =head1 DESCRIPTION
 
