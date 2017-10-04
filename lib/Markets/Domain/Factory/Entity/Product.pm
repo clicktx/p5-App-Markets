@@ -10,7 +10,7 @@ sub cook {
 
     # Aggregate primary_category
     my $primary_category = $self->param('primary_category');
-    $self->aggregate( primary_category => 'entity-category', $primary_category || [] );
+    $self->aggregate( primary_category => 'entity-category_tree-node', $primary_category || [] );
 }
 
 1;

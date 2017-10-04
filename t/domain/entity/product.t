@@ -48,7 +48,7 @@ subtest 'primary_category' => sub {
     my $attr = $e->primary_category;
     isa_ok $attr, 'Markets::Domain::Collection';
     is @{$attr}, 5, 'right elements';
-    isa_ok $attr->[0], 'Markets::Domain::Entity::Category';
+    isa_ok $attr->[0], 'Markets::Domain::Entity::CategoryTree::Node';
 };
 
 subtest 'product_categories' => sub {
