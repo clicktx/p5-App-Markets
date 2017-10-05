@@ -159,6 +159,18 @@ subtest 'hidden' => sub {
         class => 'foo'
       },
       'right hidden value';
+
+    $f->value(0);
+    $dom = Mojo::DOM->new( $f->hidden($c) );
+    is_deeply $dom->at('*')->attr,
+      {
+        type  => 'hidden',
+        id    => 'form_widget_item_0_name',
+        name  => 'item.0.name',
+        value => '0',
+        class => 'foo'
+      },
+      'right hidden value';
 };
 
 subtest 'textarea' => sub {
@@ -180,6 +192,11 @@ subtest 'textarea' => sub {
     $f->value('baz');
     $dom = Mojo::DOM->new( $f->textarea($c) );
     is $dom->at('*')->text, 'baz';
+    is $dom->at('*')->attr->{value}, undef;
+
+    $f->value(0);
+    $dom = Mojo::DOM->new( $f->textarea($c) );
+    is $dom->at('*')->text, '0';
     is $dom->at('*')->attr->{value}, undef;
 };
 

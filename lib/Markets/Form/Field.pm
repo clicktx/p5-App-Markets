@@ -215,7 +215,7 @@ sub _hidden {
 
     delete $attrs{required};
     my $default_value = delete $attrs{default_value};
-    my $value = delete $attrs{value} || $default_value;
+    my $value = delete $attrs{value} // $default_value;
     return $c->hidden_field( $attrs{name} => $value, %attrs );
 }
 
@@ -300,7 +300,7 @@ sub _textarea {
 
     my $name          = delete $attrs{name};
     my $default_value = delete $attrs{default_value};
-    my $value         = delete $attrs{value} || $default_value;
+    my $value         = delete $attrs{value} // $default_value;
     $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
 
     return $c->text_area( $name => $value, %attrs );
