@@ -10,9 +10,9 @@ use Mojo::File qw/path/;
 
 $ENV{TEST_MYSQL} ||= do {
     require Test::mysqld;
-    say 'Starting mysqld...';
+    my $conf = Markets::Install::Util::load_config();
 
-    my $conf   = Markets::Install::Util::load_config();
+    say 'Starting mysqld...';
     my $mysqld = Test::mysqld->new(
         my_cnf => {
             'skip-networking'        => '',

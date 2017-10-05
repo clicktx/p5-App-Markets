@@ -5,6 +5,7 @@ perl:
     - "5.20"
     - "5.22"
     - "5.24"
+dist: trusty
 cache:
     directories:
         - local
@@ -14,6 +15,9 @@ before_install:
 install:
     - carton install
     - perl -MExtUtils::Manifest -e 'ExtUtils::Manifest::mkmanifest()'
+before_script:
+    # bugfix for trusty(Ubuntu 14.04)
+    - sudo cp /etc/mysql/my.cnf /usr/share/mysql/my-default.cnf
 script:
     - HARNESS_PERL_SWITCHES="-MDevel::Cover=+ignore,^local/|^t|^xt/" carton exec -- prove -lvr t xt addons/*/t
 after_success:
