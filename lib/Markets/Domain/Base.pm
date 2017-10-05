@@ -46,8 +46,7 @@ sub attr {
 }
 
 sub import {
-    my $class = shift;
-    my $flag = shift || '';
+    my ( $class, $flag ) = ( shift, shift // '' );
 
     # Base
     if ( $flag eq '-base' or !$flag ) { $flag = $class }
