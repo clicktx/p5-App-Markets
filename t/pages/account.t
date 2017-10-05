@@ -7,8 +7,10 @@ use Test::Mojo;
 
 our @paths;
 
-sub t00_startup : Test(startup) {
+sub startup : Test(startup) {
     my $self = shift;
+    $self->SUPER::startup;
+
     foreach my $r ( @{ $self->t->app->routes->find('RN_customer_bridge')->children } ) {
         push @paths, $r->render() if $r->is_endpoint;
     }
