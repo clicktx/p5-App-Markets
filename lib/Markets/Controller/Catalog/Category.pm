@@ -18,7 +18,7 @@ sub index {
 
     # widget category tree
     my $category_tree = $self->service('category_tree')->get_entity();
-    $self->stash( 'category_tree' => $category_tree );
+    $self->stash( 'markets.widget.category_tree' => $category_tree );
 
     # content entity
     my $content = $self->app->factory('entity-content')->create(
