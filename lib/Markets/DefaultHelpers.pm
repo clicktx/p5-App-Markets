@@ -14,6 +14,7 @@ sub register {
     $app->helper( addons           => sub { shift->app->addons(@_) } );
     $app->helper( cookie_session   => sub { shift->session(@_) } );
     $app->helper( cart             => sub { _cart(@_) } );
+    $app->helper( entity_cache     => sub { _entity_cache(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
     $app->helper( schema           => sub { shift->app->schema } );
@@ -31,6 +32,12 @@ sub __x_default_lang {
     my $word = $c->__x(@_);
     $c->language($language);
     return $word;
+}
+
+sub _entity_cache {
+    my $self = shift;
+    my $caches = $self->stash('markets.entity.cache') || $self->app->defaults( 'markets.entity.cache' => {} );
+    return @_ > 1 ? $caches->{ $_[0] } = $_[1] : $caches->{ $_[0] };
 }
 
 sub _factory { shift; Markets::Domain::Factory->new->factory(@_) }
@@ -103,6 +110,16 @@ Alias for $c->session;
 
     my $cart = $c->cart;
     $c->cart($cart);
+
+=head2 C<entity_cache>
+
+    # Getter
+    my $entity = $c->entity_cache('foo_entity');
+
+    # Setter
+    $c->entity_cache( foo_entity => $entity );
+
+Get/Set entity cache.
 
 =head2 C<factory>
 
