@@ -8,7 +8,17 @@ sub create_entity {
 
     my @root_nodes = $self->resultset->search( { level => 0 } );
     my $branch_trees = $self->_create_branch_tree( \@root_nodes ) || [];
-    return $self->app->factory('entity-category_tree')->create_entity( children => $branch_trees );
+    my $category_tree = $self->app->factory('entity-category_tree')->create_entity( children => $branch_trees );
+
+    # Store in cache
+    $self->app->entity_cache( category_tree => $category_tree );
+    return $category_tree;
+}
+
+sub get_entity {
+    my $self  = shift;
+    my $cache = $self->app->entity_cache('category_tree');
+    return $cache ? $cache : $self->create_entity();
 }
 
 sub _create_branch_tree {
@@ -53,6 +63,17 @@ the following new ones.
     my $category_tree = $c->service('category_tree')->create_entity();
 
 Return L<Markets::Domain::Enity::CategoryTree> object.
+
+Creat and cache entity.getting method is L</get_entity>.
+
+=head2 C<get_entity>
+
+    my $category_tree = $c->service('category_tree')->get_entity();
+
+Return L<Markets::Domain::Enity::CategoryTree> object.
+
+If there is a cache it returns it.
+If it is not cached, it creates an entity.
 
 =head1 AUTHOR
 
