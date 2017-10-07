@@ -16,10 +16,9 @@ sub index {
     my $category    = $self->service('category')->create_entity( $category_id, $page_no, $row );
     return $self->reply->not_found() unless $category;
 
-    # Category tree
-    # NOTE: 階層やカテゴリ数によってSQLが多く実行されるためキャッシュした方が良い
-    my $category_tree = $self->service('category_tree')->create_entity();
-    $self->stash( category_tree => $category_tree );
+    # widget category tree
+    my $category_tree = $self->service('category_tree')->get_entity();
+    $self->stash( 'markets.widget.category_tree' => $category_tree );
 
     # content entity
     my $content = $self->app->factory('entity-content')->create(
