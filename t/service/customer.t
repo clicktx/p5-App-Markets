@@ -28,10 +28,10 @@ done_testing();
         eval { $customer = $c->service('customer')->create_entity() };
         ok $@;
 
-        $customer = $c->service('customer')->create_entity( email => 'name@domain.com' );
-        is $customer->id, 3;
+        $customer = $c->service('customer')->create_entity( email => 'c@x.org' );
+        is $customer->id, 111;
 
-        $customer = $c->service('customer')->create_entity( customer_id => 3 );
+        $customer = $c->service('customer')->create_entity( customer_id => 111 );
         isa_ok $customer, 'Markets::Domain::Entity::Customer';
 
         # is $customer->....

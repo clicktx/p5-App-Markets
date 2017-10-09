@@ -37,12 +37,12 @@ sub t02_login_process : Tests() {
     my $csrf_token = $self->csrf_token;
 
     # password failure
-    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'name@domain.com', password => '11223344' } )
+    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'c@x.org', password => '11223344' } )
       ->status_is( 200, 'password failure' );
 
     # accept and redirect to wishlist?
     $t->get_ok('/account/wishlist');
-    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'name@domain.com', password => '12345678' } )
+    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'c@x.org', password => '12345678' } )
       ->status_is( 302, 'right accepr to redirect' )
       ->header_like( location => qr/wishlist/, 'right location after redirect' );
 

@@ -13,18 +13,7 @@
         [qw/101 102 filter_form 555/],
     ],
 
-    # 'Sales::OrderHeader' => {
-    #     customer => {
-    #         emails => [
-    #             { email => { address => 'a@e.com' } }
-    #         ],
-    #     },
-    #     billing_address => {},
-    #     # payment => { billing_address => {} },?
-    #     shipments => [
-    #         { shipping_address => {} }
-    #     ],
-    # },
+    # For Accounts
     'Email' => [
         [qw/id address is_verified/],
         [ 1, 'a@x.org', 1 ],
@@ -42,7 +31,7 @@
         [ 1, 'Silicon Valley' ],
         [ 2, 'San Jose' ],
         [ 3, 'Las Vegas' ],
-        [ 4, 'San Francisco ']
+        [ 4, 'San Francisco'],
     ],
     'Password' => [
         [qw/id hash/],
@@ -55,10 +44,15 @@
         # 12345678
         [ 4, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='],
     ],
+
+    # Staffs
     'Staff' => [
         [qw/id login_id password_id created_at updated_at/],
         [ 222, 'default', 1, '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
+        [ 223, 'staff', 1, '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
     ],
+
+    # Customers
     'Customer' => [
         [qw/id password_id created_at updated_at/],
         [ 111, 1, '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
@@ -83,6 +77,8 @@
         [qw/ship 111 1/],
         [qw/ship 111 2/],
     ],
+
+    # Orders
     'Sales::OrderHeader' => [
         [qw/id created_at customer_id address_id/],
         [ 1, '2017-06-06 20:01:35', 111, 1 ],
