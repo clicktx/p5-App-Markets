@@ -72,22 +72,11 @@ sub add_admin_routes {
         {
             my $orders = $r->any('/orders')->to( controller => 'admin-orders' );
             $orders->any('/')->to('#index')->name('RN_admin_orders');
-<<<<<<< HEAD
-<<<<<<< HEAD
-            $orders->any('/detail/:id')->to('#detail')->name('RN_admin_orders_detail');
-=======
             {
                 my $detail = $orders->any('/detail/:id');
                 $detail->get('')->to('#detail')->name('RN_admin_orders_detail');
                 $detail->any('/edit')->to('#edit')->name('RN_admin_orders_detail_edit');
             }
->>>>>>> 1e00e81... fix
-=======
-            {
-                my $detail = $orders->any('/detail/:id')->to('#detail')->name('RN_admin_orders_detail');
-                $detail->any('/edit')->to('#edit')->name('RN_admin_orders_detail_edit');
-            }
->>>>>>> 47700b0... improve admin order edit page
         }
 
         # Order
