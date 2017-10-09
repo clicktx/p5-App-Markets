@@ -15,4 +15,15 @@ sub t01_index : Tests() {
     $t->get_ok('/admin/orders')->status_is(200)->content_like(qr/Orders/);
 }
 
+sub t02_detail : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    # Login
+    $self->admin_loged_in;
+
+    $t->get_ok('/admin/orders/detail/1')->status_is(200)->content_like(qr/Order Details/);
+    $t->get_ok('/admin/orders/detail/99999')->status_is(404);
+}
+
 __PACKAGE__->runtests;
