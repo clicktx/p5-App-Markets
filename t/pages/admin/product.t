@@ -19,12 +19,11 @@ sub t01_not_logedin_request : Tests() {
     $t->ua->max_redirects(1);
 }
 
-sub t02_get_request : Tests() {
+sub t02_login : Tests() { shift->admin_loged_in }
+
+sub t03_get_request : Tests() {
     my $self = shift;
     my $t    = $self->t;
-
-    # Login
-    $self->admin_loged_in;
 
     $t->get_ok('/admin/product/create')->status_is(200);
     $t->get_ok('/admin/product/1/duplicate')->status_is(200);
@@ -36,15 +35,11 @@ sub t02_get_request : Tests() {
     $t->get_ok('/admin/product/999999/delete')->status_is(500);
 }
 
-sub t03_post_request : Tests() {
+sub t04_post_request : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    # Login
-    $self->admin_loged_in;
-
     my $post_data = { csrf_token => $self->csrf_token };
-
     $t->post_ok( '/admin/product/100/edit/category', form => $post_data )->status_is(200);
 }
 

@@ -5,12 +5,11 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
+sub t00_login : Tests() { shift->admin_loged_in }
+
 sub t01_index : Tests() {
     my $self = shift;
     my $t    = $self->t;
-
-    # Login
-    $self->admin_loged_in;
 
     $t->get_ok('/admin/preferences')->status_is(200);
 }
@@ -18,9 +17,6 @@ sub t01_index : Tests() {
 sub t02_update_value : Tests() {
     my $self = shift;
     my $t    = $self->t;
-
-    # Login
-    $self->admin_loged_in;
 
     my $post_data = {
         csrf_token            => $self->csrf_token,
