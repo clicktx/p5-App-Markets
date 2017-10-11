@@ -48,8 +48,57 @@ sub detail {
     $self->render();
 }
 
+# NOTE: Catalog::Checkoutに関連する実装がある。
+# また、管理者注文も考慮する必要がある。
 sub edit {
-    my $self = shift;
+    my $self     = shift;
+    my $shipment_id = $self->stash('id');
+
+    use DDP;
+    my $rs = $self->app->schema->resultset('Sales::Order::Shipment');
+
+
+    # my $schema = $self->app->schema;
+
+    # my $order_rs          = $schema->resultset('Order')->search( { id => $shipment_id } );
+    # my $order_rs = $schema->resultset('Order')->find($shipment_id);
+    # p $order_rs;
+    # my $shipments_rs = $order_rs->related_resultset('shipments');
+    # p $shipments_rs;
+    # my $shipping_items_rs = $shipments_rs->related_resultset('shipping_items');
+    # p $shipping_items_rs;
+
+    # my $order = $order_rs->hashref_array;
+    # p $order;
+    # my $shipments = $shipments_rs->hashref_array;
+    # p $shipments;
+    # my $shipping_items = $shipping_items_rs->hashref_array;
+    # p $shipping_items;
+
+    # my $rs = $self->app->schema->resultset('Order::Shipment');
+    # my @shipments = $rs->search( { order_id => $shipment_id } )->all;
+
+    #####
+    # foreach my $shipment (@shipments) {
+    #     p $shipment->result_source->resultset->hashref_rs;
+    # p $shipment->hashref_rs;
+    # my $items = $shipment->shipping_items;
+    # p $items;
+    # }
+
+    # while (my $shipment = $array->next) {
+    #
+    #     p $shipment;
+    #
+    #     # my $shipping_items = $shipment->shipping_items;
+    #     # p $shipping_items;
+    #
+    #     my $items = $shipment->shipping_items->hashref_array;
+    #     p $items;
+    # }
+
+    #####
+
     return $self->render();
 }
 
