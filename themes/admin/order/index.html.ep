@@ -3,29 +3,24 @@
 
 <h1><%= title %></h1>
 
-<h2><%= __('Order ID') . ':' . $id %></h2>
-
-<h2><%= __('Orders') %></h2>
 <ul>
     <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
 </ul>
 
+
+order_header_id: <%= $shipment->order_header_id %><br>
+shipment id: <%= $shipment->id %>
+
 <ol>
-% foreach my $shipment ( @{$shipments} ){
-    <li> shipment id: <%= $shipment->id %>
-    % my $shipment_items = $shipment->shipping_items;
-        <ol>
-    % while (my $item = $shipment_items->next) {
+    % my $shipping_items = $shipment->shipping_items;
+    % while (my $item = $shipping_items->next) {
         <li>
-            ID: <%= $item->id %> | DESCRIPTION: <%= $item->description %> | PRODUCT ID: <%= $item->product_id %> | QTY: <%= $item->quantity %>
+            ID: <%= $item->id %> | PRODUCT ID: <%= $item->product_id %> | QTY: <%= $item->quantity %>
         </li>
     % }
 </ol>
-    </li>
-% }
-</ol>
 
-<%= form_for 'RN_admin_orders_delete' => begin %>
+<%= form_for 'RN_admin_order_delete' => begin %>
     <%= csrf_field %>
     <%= hidden_field id => $id %>
     <%= submit_button 'Delete this Order' %>
