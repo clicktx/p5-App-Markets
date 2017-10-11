@@ -1,6 +1,5 @@
 (
-    # Preferences test
-    # preferences
+    # Preferences
     'Preference' => [
         [ 'name', 'value', 'default_value', 'title', 'summary', 'position', 'group_id' ],
         [ 'pref_test1', undef, 'test1', '', '', 100, 1 ],
@@ -15,18 +14,114 @@
         [qw/1 test_addon 1/],
         [qw/2 disable_addon 0/],
     ],
-    'Staff' => {
-        id => 2,
-        login_id => 'staff',
-        # password: 12345678
-        password => { hash => 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=' },
-    },
-    'Customer' => {
-        id => 3,
-        emails => [ { email => { address => 'name@domain.com' } } ],
-        # password: 12345678
-        password => { hash => 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=' },
-    },
+    # 'Addon::Trigger' => [
+    #     [qw/id addon_id trigger_name priority/],
+    #     [qw/100 2 replace_template 333/],
+    #     [qw/101 2 filter_form 555/],
+    # ],
+
+    #  ▽ -----  From share/test_data.pl  ----- ▽
+    # For Accounts
+    'Email' => [
+        [qw/id address is_verified/],
+        [ 1, 'a@x.org', 1 ],
+        [ 2, 'b@x.org', 1 ],
+        [ 3, 'c@x.org', 1 ],
+        [ 4, 'd@x.org', 0 ],
+        [ 5, 'e@x.org', 0 ],
+        [ 6, 'f@x.org', 0 ],
+        [ 7, 'g@x.org', 0 ],
+        [ 8, 'h@x.org', 0 ],
+        [ 9, 'i@x.org', 0 ],
+    ],
+    'Address' => [
+        [qw/id line1/],
+        [ 1, 'Silicon Valley' ],
+        [ 2, 'San Jose' ],
+        [ 3, 'Las Vegas' ],
+        [ 4, 'San Francisco'],
+    ],
+    'Password' => [
+        [qw/id hash/],
+        # 12345678
+        [ 1, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='],
+        # 22334455
+        [ 2, 'SCRYPT:16384:8:1:VGcabum1/mW1UQ207AZL4Abdj96TtHYtFWJRjBIuYv8=:5lLK4OF1oG9mdI9G89hgh4kvcXJ8jVnCqIAy8QXwluE='],
+        # 44556677
+        [ 3, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY='],
+        # 12345678
+        [ 4, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='],
+    ],
+
+    # Staffs
+    'Staff' => [
+        [qw/id login_id password_id created_at updated_at/],
+        [ 222, 'default', 1, '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
+        [ 223, 'staff', 1, '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
+    ],
+
+    # Customers
+    'Customer' => [
+        [qw/id password_id created_at updated_at/],
+        [ 111, 1, '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
+        [ 112, 2, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
+        [ 113, 3, '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
+    ],
+    'Customer::Email' => [
+        [qw/customer_id email_id is_primary/],
+        [ 111, 3, 1 ],
+        [ 111, 1, 0 ],
+        [ 112, 2, 1 ],
+        [ 112, 4, 0 ],
+        [ 112, 5, 0 ],
+        [ 112, 6, 0 ],
+        [ 112, 7, 0 ],
+        [ 112, 8, 0 ],
+        [ 113, 9, 1 ],
+    ],
+    'Customer::Address' => [
+        [qw/type customer_id address_id/],
+        [qw/post 111 1/],
+        [qw/bill 111 1/],
+        [qw/ship 111 1/],
+        [qw/ship 112 2/],
+        [qw/ship 113 3/],
+        [qw/ship 113 4/],
+    ],
+
+    # Orders
+    'Sales::OrderHeader' => [
+        [qw/id created_at customer_id address_id/],
+        [ 1, '2017-06-06 20:01:35', 111, 1 ],
+        [ 2, '2017-07-07 07:02:15', 112, 2 ],
+        [ 3, '2017-07-07 07:08:05', 113, 4 ],
+        [ 4, '2017-07-07 07:10:03', 113, 4 ],
+        [ 5, '2017-07-07 07:12:15', 113, 4 ],
+        [ 6, '2017-07-07 07:14:45', 113, 4 ],
+        [ 7, '2017-07-07 07:15:01', 113, 4 ],
+    ],
+    'Sales::Order::Shipment' => [
+        [qw/id order_header_id address_id/],
+        [ 1, 1, 1 ],
+        [ 2, 1, 3 ],
+        [ 3, 2, 2 ],
+        [ 4, 3, 3 ],
+        [ 5, 3, 4 ],
+        [ 6, 4, 3 ],
+        [ 7, 4, 4 ],
+        [ 8, 5, 3 ],
+        [ 9, 5, 4 ],
+        [ 10, 6, 3 ],
+        [ 11, 6, 4 ],
+        [ 12, 7, 4 ],
+    ],
+    'Sales::Order::Shipment::Item' => [
+        [qw/shipment_id product_id quantity/],
+        [ 1, 3, 3 ],
+        [ 1, 1, 1 ],
+        [ 2, 2, 2 ],
+        [ 3, 4, 4 ],
+    ],
 
     # Category
     'Category' => [
@@ -52,7 +147,15 @@
         [qw/id title description price created_at updated_at/],
         [ 1, 'test product1', 'product description1', 100, '2017-08-23 23:47:04', '2017-08-23 23:47:04' ],
         [ 2, 'test product2', 'product description2', 200, '2017-08-23 23:55:12', '2017-08-23 23:55:12' ],
-        [ 3, 'test product3', 'product description3', 300, '2017-08-23 23:59:35', '2017-08-23 23:59:35' ],
+        # deleted product from t/page/admin/product.t
+        [ 3, 'test product3', 'product description', 300, '2017-08-23 23:59:35', '2017-08-23 23:59:35' ],
+        [ 4, 'test product4', 'product description', 333, '2017-08-24 01:01:11', '2017-08-24 01:01:11' ],
+        [ 5, 'test product5', 'product description', 333, '2017-08-24 01:01:35', '2017-08-24 01:01:35' ],
+        [ 6, 'test product6', 'product description', 333, '2017-08-24 01:02:02', '2017-08-24 01:02:02' ],
+        [ 7, 'test product7', 'product description', 333, '2017-08-24 01:02:21', '2017-08-24 01:02:21' ],
+        [ 8, 'test product8', 'product description', 333, '2017-08-24 01:02:34', '2017-08-24 01:02:34' ],
+        [ 9, 'test product9', 'product description', 333, '2017-08-24 01:02:45', '2017-08-24 01:02:45' ],
+        [ 10, 'test product10', 'product description', 333, '2017-08-24 01:02:56', '2017-08-24 01:02:56' ],
     ],
 
     # Product Category
@@ -60,16 +163,7 @@
         [qw/product_id category_id is_primary/],
         [ 1, 3, 1 ],
         [ 1, 5, 0 ],
+        [ 2, 3, 1 ],
+        [ 3, 3, 1 ],
     ],
 )
-
-# INSERT  INTO `markets`.`addons` (`id`, `name`, `is_enabled`)
-# VALUES  (1, 'test_addon','1'),
-#         (2, 'disable_addon', '0');
-
-# -- Addon triggers
-# -- -----------------------------------------------------
-# 
-# -- INSERT  INTO `markets`.`addon_triggers` (`id`, `addon_id`, `trigger_name`, `priority`)
-# -- VALUES  (NULL, '1', 'before_compile_template', '300'),
-# --         (NULL, '1', 'before_xxx_action', '500');

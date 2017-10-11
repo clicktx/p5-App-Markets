@@ -6,7 +6,7 @@ sub csrf_protect {
     return 1 if $self->req->method ne 'POST';
     return 1 unless $self->validation->csrf_protect->has_error('csrf_token');
     $self->render(
-        text   => 'Bad CSRF token!',
+        text   => 'Forbidden' . ' Invalid CSRF Token.',
         status => 403,
     );
     return;

@@ -1,4 +1,4 @@
-package t::pages::admin::products;
+package t::pages::admin::orders;
 
 use Mojo::Base 't::pages::common';
 use t::Util;
@@ -11,7 +11,7 @@ sub t01_index : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $t->get_ok('/admin/products')->status_is(200);
+    $t->get_ok('/admin/orders')->status_is(200)->content_like(qr/Orders/);
 }
 
 __PACKAGE__->runtests;

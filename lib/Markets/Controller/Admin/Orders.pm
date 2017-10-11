@@ -10,7 +10,7 @@ sub index {
         {},
         {
             page => 1,
-            row  => 10,
+            row  => 3,
 
             # order_by => { -desc => 'order_header_id' },
             prefetch => { order_header => 'billing_address' },
