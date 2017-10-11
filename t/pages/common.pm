@@ -57,10 +57,10 @@ sub startup : Test(startup) {
     $self->ua->max_redirects(1);
 }
 
-sub _common_basic_test : Tests() {
-    my $self = shift;
-    isa_ok $self->t, 'Test::Mojo', 'right isa Test::Mojo';
-    ok $self->csrf_token, 'right csrf token';
-}
+# sub _common_basic_test : Tests() {
+#     my $self = shift;
+#     isa_ok $self->t, 'Test::Mojo', 'right isa Test::Mojo';
+#     ok $self->csrf_token, 'right csrf token';
+# }
 
 1;
