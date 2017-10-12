@@ -1,7 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Markets::Domain::Collection;
-use Markets::Domain::Entity::Cart::Item;
+use Markets::Domain::Entity::SellingItem;
 
 use_ok 'Markets::Domain::Entity::Cart::Shipment';
 
@@ -42,9 +42,9 @@ subtest 'item_count' => sub {
 subtest 'subtotal' => sub {
     my $shipment = Markets::Domain::Entity::Cart::Shipment->new( { id => 1 } );
     $shipment->{shipping_items} = Markets::Domain::Collection->new(
-        Markets::Domain::Entity::Cart::Item->new( quantity => 1, price => 100 ),
-        Markets::Domain::Entity::Cart::Item->new( quantity => 2, price => 100 ),
-        Markets::Domain::Entity::Cart::Item->new( quantity => 3, price => 100 ),
+        Markets::Domain::Entity::SellingItem->new( quantity => 1, price => 100 ),
+        Markets::Domain::Entity::SellingItem->new( quantity => 2, price => 100 ),
+        Markets::Domain::Entity::SellingItem->new( quantity => 3, price => 100 ),
     );
     is $shipment->subtotal, 600, 'right subtotal';
 };

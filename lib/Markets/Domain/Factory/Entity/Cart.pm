@@ -9,7 +9,7 @@ sub cook {
     $self->param( billing_address => $billing_address );
 
     # Aggregate items
-    $self->aggregate( 'items', 'entity-cart-item', $self->param('items') || [] );
+    $self->aggregate( 'items', 'entity-selling_item', $self->param('items') || [] );
 
     # Aggregate shipments
     my $param = $self->param('shipments') || [ {} ];

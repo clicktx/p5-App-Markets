@@ -14,7 +14,7 @@ sub add_item {
     $args->{product_title} = $product->title;
     $args->{price}         = $product->price;
 
-    my $item = $self->controller->factory('entity-cart-item')->create($args);
+    my $item = $self->controller->factory('entity-selling_item')->create($args);
     return $self->controller->helpers->cart->add_item($item);
 }
 

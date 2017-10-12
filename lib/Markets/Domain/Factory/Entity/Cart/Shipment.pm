@@ -8,7 +8,7 @@ sub cook {
     # shipping_items
     my @shipping_items;
     foreach my $item ( @{ $self->{shipping_items} } ) {
-        push @shipping_items, $self->factory('entity-cart-item')->create($item);
+        push @shipping_items, $self->factory('entity-selling_item')->create($item);
     }
     $self->param( shipping_items => collection(@shipping_items) );
 
