@@ -1,14 +1,10 @@
 package Markets::Domain::Entity::SalesOrder;
 use Markets::Domain::Entity;
 
-# has id => sub {
-#     my $self  = shift;
-#     my $bytes = $self->order_id;
-#     $self->hash_code($bytes);
-# };
-# has 'id';
 has [qw/order_number customer_id billing_address created_at updated_at/];
 has shipments => sub { Markets::Domain::Collection->new };
+
+sub is_multiple_shipment { return @{ shift->shipments } > 1 ? 1 : 0 }
 
 1;
 __END__
@@ -30,6 +26,12 @@ the following new ones.
 
 L<Markets::Domain::Entity::SalesOrder> inherits all methods from L<Markets::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<is_multiple_shipment>
+
+    my $bool = $entity->is_multiple_shipment;
+
+Return boolean value.
 
 =head1 AUTHOR
 
