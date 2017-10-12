@@ -1,6 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
+use DateTime;
 
 subtest 'basic' => sub {
     use_ok 'Markets::Domain::Factory';
@@ -119,7 +120,20 @@ subtest 'inflate datetime for *_at' => sub {
 
     my $f = Markets::Domain::Factory->new->factory('entity-bar')->create( { created_at => '2017-5-26 19:17:06' } );
     isa_ok $f->{created_at}, 'DateTime';
-    is $f->{created_at}->ymd, '2017-05-26';
+    is $f->{created_at}->ymd, '2017-05-26', 'right date';
+
+    my $datetime = DateTime->new(
+        year      => 1964,
+        month     => 10,
+        day       => 16,
+        hour      => 16,
+        minute    => 12,
+        second    => 47,
+        time_zone => 'UTC',
+    );
+    $f = Markets::Domain::Factory->new->factory('entity-bar')->create( { created_at => $datetime } );
+    isa_ok $f->{created_at}, 'DateTime';
+    is $f->{created_at}->ymd, '1964-10-16', 'right date';
 };
 
 done_testing();

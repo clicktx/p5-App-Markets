@@ -50,7 +50,7 @@ sub create_entity {
     # inflate datetime
     my @keys = grep { $_ =~ qr/^.+_at$/ } keys %{$args};
     foreach my $key (@keys) {
-        next unless $args->{$key};
+        next if !$args->{$key} or ref $args->{$key} eq 'DateTime';
 
         my $strp = DateTime::Format::Strptime->new(
             pattern   => '%Y-%m-%d %H:%M:%S',
