@@ -11,7 +11,7 @@ my $shipments = bless [
         shipping_address => ( bless {}, 'Markets::Domain::Entity::Address' ),
         shipping_items => ( bless [], 'Markets::Domain::Collection' ),
     },
-    'Markets::Domain::Entity::Cart::Shipment'
+    'Markets::Domain::Entity::Shipment'
   ],
   'Markets::Domain::Collection';
 
@@ -56,7 +56,7 @@ subtest 'argument items data only' => sub {
     )->create_entity;
     cmp_deeply $e,
       bless {
-        items => ( bless [ ( bless {}, 'Markets::Domain::Entity::Cart::Item' ) ], 'Markets::Domain::Collection' ),
+        items => ( bless [ ( bless {}, 'Markets::Domain::Entity::SellingItem' ) ], 'Markets::Domain::Collection' ),
         shipments       => ignore(),
         billing_address => ignore(),
       },
@@ -66,8 +66,8 @@ subtest 'argument items data only' => sub {
 subtest 'argument shipments data only' => sub {
     my $e = $pkg->new( { shipments => [ { shipping_items => [ {}, {} ] } ] } )->create_entity;
     $shipments->[0]->{shipping_items} =
-      bless [ ( bless {}, 'Markets::Domain::Entity::Cart::Item' ),
-        ( bless {}, 'Markets::Domain::Entity::Cart::Item' ) ],
+      bless [ ( bless {}, 'Markets::Domain::Entity::SellingItem' ),
+        ( bless {}, 'Markets::Domain::Entity::SellingItem' ) ],
       'Markets::Domain::Collection';
     cmp_deeply $e,
       bless {
