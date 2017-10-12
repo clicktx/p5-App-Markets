@@ -11,7 +11,7 @@ my $shipments = bless [
         shipping_address => ( bless {}, 'Markets::Domain::Entity::Address' ),
         shipping_items => ( bless [], 'Markets::Domain::Collection' ),
     },
-    'Markets::Domain::Entity::Cart::Shipment'
+    'Markets::Domain::Entity::Shipment'
   ],
   'Markets::Domain::Collection';
 

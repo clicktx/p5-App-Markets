@@ -1,4 +1,4 @@
-package Markets::Domain::Factory::Entity::Cart::Shipment;
+package Markets::Domain::Factory::Entity::Shipment;
 use Mojo::Base 'Markets::Domain::Factory';
 use Markets::Domain::Collection qw/collection/;
 
@@ -22,25 +22,25 @@ __END__
 
 =head1 NAME
 
-Markets::Domain::Factory::Entity::Cart::Shipment
+Markets::Domain::Factory::Entity::Shipment
 
 =head1 SYNOPSIS
 
-    my $entity = Markets::Domain::Factory::Entity::Cart::Shipment->new( %args )->create;
+    my $entity = Markets::Domain::Factory::Entity::Shipment->new( %args )->create;
 
     # In controller
-    my $entity = $c->factory('entity-cart-shipment')->create(%args);
+    my $entity = $c->factory('entity-shipment')->create(%args);
 
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
-L<Markets::Domain::Factory::Entity::Cart::Shipment> inherits all attributes from L<Markets::Domain::Factory> and implements
+L<Markets::Domain::Factory::Entity::Shipment> inherits all attributes from L<Markets::Domain::Factory> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Markets::Domain::Factory::Entity::Cart::Shipment> inherits all methods from L<Markets::Domain::Factory> and implements
+L<Markets::Domain::Factory::Entity::Shipment> inherits all methods from L<Markets::Domain::Factory> and implements
 the following new ones.
 
 =head1 AUTHOR

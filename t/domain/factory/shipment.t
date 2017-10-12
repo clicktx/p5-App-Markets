@@ -3,7 +3,7 @@ use Test::More;
 use Test::Deep;
 use Test::Mojo;
 
-my $pkg = 'Markets::Domain::Factory::Entity::Cart::Shipment';
+my $pkg = 'Markets::Domain::Factory::Entity::Shipment';
 use_ok $pkg;
 
 subtest 'argument empty' => sub {
@@ -14,7 +14,7 @@ subtest 'argument empty' => sub {
         shipping_address => ( bless {}, 'Markets::Domain::Entity::Address' ),
         shipping_items => ( bless [], 'Markets::Domain::Collection' ),
       },
-      'Markets::Domain::Entity::Cart::Shipment';
+      'Markets::Domain::Entity::Shipment';
 };
 
 subtest 'data' => sub {
@@ -30,7 +30,7 @@ subtest 'data' => sub {
         shipping_address => ( bless { line1 => 'Silicon Valley' }, 'Markets::Domain::Entity::Address' ),
         shipping_items => ( bless [ bless {}, 'Markets::Domain::Entity::SellingItem', ], 'Markets::Domain::Collection' ),
       },
-      'Markets::Domain::Entity::Cart::Shipment';
+      'Markets::Domain::Entity::Shipment';
 };
 
 done_testing;
