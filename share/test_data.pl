@@ -108,11 +108,11 @@
         [ 12, 7, 4 ],
     ],
     'Sales::Order::Shipment::Item' => [
-        [qw/shipment_id product_id quantity/],
-        [ 1, 3, 3 ],
-        [ 1, 1, 1 ],
-        [ 2, 2, 2 ],
-        [ 3, 4, 4 ],
+        [qw/shipment_id product_id quantity price/],
+        [ 1, 3, 3, 300 ],
+        [ 1, 1, 1, 101 ], # change price
+        [ 2, 2, 2, 200 ],
+        [ 3, 4, 4, 333 ],
     ],
 
     # Category
