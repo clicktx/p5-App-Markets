@@ -1,10 +1,11 @@
 package Markets::Domain::Entity::Shipment;
 use Markets::Domain::Entity;
 use Data::Clone qw/data_clone/;
-use Carp qw/croak/;
+use Markets::Domain::Collection;
+use Markets::Domain::Entity::Address;
 
-has shipping_items => sub { Markets::Domain::Collection->new };
-has [qw/id shipping_address/];
+has shipping_address => sub { Markets::Domain::Entity::Address->new };
+has shipping_items   => sub { Markets::Domain::Collection->new };
 
 sub clone {
     my $self  = shift;
@@ -41,11 +42,13 @@ Markets::Domain::Entity::Shipment
 L<Markets::Domain::Entity::Shipment> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<id>
-
 =head2 C<shipping_address>
 
+Return L<Markets::Domain::Entity::Address> object.
+
 =head2 C<shipping_items>
+
+Return L<Markets::Domain::Collection> object.
 
 =head1 METHODS
 

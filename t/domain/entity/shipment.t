@@ -10,12 +10,15 @@ subtest 'basic' => sub {
     isa_ok $shipment, 'Markets::Domain::Entity';
 
     ok $shipment->id;
-    isa_ok $shipment->shipping_items, 'Markets::Domain::Collection';
 
     isa_ok $shipment, 'Markets::Domain::Entity::Shipment';
     can_ok $shipment, 'shipping_items';
     can_ok $shipment, 'shipping_address';
     can_ok $shipment, 'item_count';
+
+    isa_ok $shipment->shipping_address, 'Markets::Domain::Entity::Address';
+    isa_ok $shipment->shipping_items,   'Markets::Domain::Collection';
+
     is $shipment->hash_code, '356a192b7913b04c54574d18c28d46e6395428ab', 'right hash_code';
     is $shipment->id, 1, 'right id';
 };
