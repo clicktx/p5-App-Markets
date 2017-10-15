@@ -7,17 +7,18 @@
     <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
 </ul>
 
-
-order_header_id: <%= $shipment->order_header_id %><br>
-shipment id: <%= $shipment->id %>
+<% my $shipment = $order->shipments->find( stash('id') ); %>
+order_header_id: <%= $order->id %><br>
+shipment id: <%= $shipment->id %><br>
+shipping_address line1: <%= $shipment->shipping_address->line1 %><br>
 
 <ol>
     % my $shipping_items = $shipment->shipping_items;
-    % while (my $item = $shipping_items->next) {
+    % $shipping_items->each( sub {
         <li>
-            ID: <%= $item->id %> | PRODUCT ID: <%= $item->product_id %> | QTY: <%= $item->quantity %>
+            ID: <%= $_->id %> | PRODUCT ID: <%= $_->product_id %> | QTY: <%= $_->quantity %>
         </li>
-    % }
+    % });
 </ol>
 
 <%= form_for 'RN_admin_order_delete' => begin %>

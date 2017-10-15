@@ -19,6 +19,19 @@ subtest 'basic' => sub {
     can_ok $e, 'customer';
     can_ok $e, 'shipments';
     can_ok $e, 'updated_at';
+
+    isa_ok $e->billing_address, 'Markets::Domain::Entity::Address';
+    isa_ok $e->customer,        'Markets::Domain::Entity::Customer';
+    isa_ok $e->shipments,       'Markets::Domain::Collection';
 };
+
+# subtest 'constoructed object' => sub {
+#     my $e = _create_entity();
+#     isa_ok $e, 'Markets::Domain::Entity';
+#
+#     isa_ok $e->billing_address, 'Markets::Domain::Entity::Address';
+#     isa_ok $e->customer,        'Markets::Domain::Entity::Customer';
+#     isa_ok $e->shipments,       'Markets::Domain::Collection';
+# };
 
 done_testing();

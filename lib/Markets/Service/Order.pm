@@ -16,14 +16,16 @@ sub create_entity {
     );
 
     my $customer = $self->app->service('customer')->create_entity( customer_id => $order_header->customer_id );
-    my $address = $self->app->service('address')->create_entity( $order_header->address_id );
+    my $billing_address = $self->app->service('address')->create_entity( $order_header->address_id );
 
     # shipments
     my @shipments;
     my $itr = $order_header->shipments;
     while ( my $result = $itr->next ) {
-        my %shipment = (
-            id => $result->id,
+        my $shipping_address = $self->app->service('address')->create_entity( $result->address_id );
+        my %shipment         = (
+            id               => $result->id,
+            shipping_address => $shipping_address,
         );
 
         my $items_itr = $result->shipping_items;
@@ -45,7 +47,7 @@ sub create_entity {
     my $data = {
         id              => $order_header->id,
         customer        => $customer,
-        billing_address => $address,
+        billing_address => $billing_address,
         shipments       => \@shipments,
         created_at      => $order_header->created_at,
         updated_at      => $order_header->updated_at,
