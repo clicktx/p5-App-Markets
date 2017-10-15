@@ -1,22 +1,15 @@
 package Markets::Domain::Factory::Entity::SalesOrder;
 use Mojo::Base 'Markets::Domain::Factory';
 
-# code from Factory::Entity::Cart
-# sub cook {
-#     my $self = shift;
-# 
-#     # billing_address
-#     my $billing_address = $self->factory('entity-address')->create( $self->{billing_address} || {} );
-#     $self->param( billing_address => $billing_address );
-# 
-#     # Aggregate items
-#     $self->aggregate( 'items', 'entity-selling_item', $self->param('items') || [] );
-# 
-#     # Aggregate shipments
-#     my $param = $self->param('shipments') || [ {} ];
-#     push @{$param}, {} unless @{$param};    # NOTE: At the time of "$param eq []"
-#     $self->aggregate( 'shipments', 'entity-shipment', $param );
-# }
+sub cook {
+    my $self = shift;
+
+    # Aggregate shipments
+    # NOTE: code from Factory::Entity::Cart
+    my $param = $self->param('shipments') || [ {} ];
+    push @{$param}, {} unless @{$param};    # NOTE: At the time of "$param eq []"
+    $self->aggregate( 'shipments', 'entity-shipment', $param );
+}
 
 1;
 __END__
