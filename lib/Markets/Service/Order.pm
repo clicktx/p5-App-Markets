@@ -23,25 +23,14 @@ sub create_entity {
     my $itr = $order_header->shipments;
     while ( my $result = $itr->next ) {
         my $shipping_address = $self->app->service('address')->create_entity( $result->address_id );
-        my %shipment         = (
+        my $items = $result->shipping_items->to_array( ignore_columns => ['shipment_id'] );
+
+        push @shipments,
+          {
             id               => $result->id,
             shipping_address => $shipping_address,
-        );
-
-        my $items_itr = $result->shipping_items;
-        my @items;
-        while ( my $res = $items_itr->next ) {
-            my %item = (
-                id            => $res->id,
-                product_id    => $res->product_id,
-                product_title => $res->product_title,
-                price         => $res->price,
-                quantity      => $res->quantity,
-            );
-            push @items, \%item;
-        }
-        $shipment{shipping_items} = \@items;
-        push @shipments, \%shipment;
+            shipping_items   => $items,
+          };
     }
 
     my $data = {

@@ -4,6 +4,10 @@ use Mojo::Base 'Markets::Domain::Factory';
 sub cook {
     my $self = shift;
 
+    # customer
+    # my $customer = $self->factory('entity-customer')->create( $self->param('customer') || {} );
+    # $self->param( customer => $customer );
+
     # Aggregate shipments
     # NOTE: code from Factory::Entity::Cart
     my $param = $self->param('shipments') || [ {} ];
