@@ -102,6 +102,25 @@ sub factory {
     return $factory;
 }
 
+sub new {
+    my ( $self, $ns ) = ( shift, shift );
+    Carp::croak 'Argument empty' unless $ns;
+
+    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
+    $ns = 'Entity::' . $ns          if $ns !~ /^Entity::/;
+
+    my $factory_base_class = 'Markets::Domain::Factory';
+    my $factory_class      = $factory_base_class . '::' . $ns;
+    my $entity_class       = 'Markets::Domain::' . $ns;
+
+    my $e = Mojo::Loader::load_class($factory_class);
+    die "Exception: $e" if ref $e;
+
+    my $factory = $e ? $factory_base_class->SUPER::new(@_) : $factory_class->SUPER::new(@_);
+    $factory->entity_class($entity_class);
+    return $factory;
+}
+
 sub param {
     my $self = shift;
     @_ = ( %{ $_[0] } ) if ref $_[0];

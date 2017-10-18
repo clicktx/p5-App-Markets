@@ -5,25 +5,26 @@ use DateTime;
 
 subtest 'basic' => sub {
     use_ok 'Markets::Domain::Factory';
-    my $f = Markets::Domain::Factory->new;
+    my $f   = Markets::Domain::Factory->new('entity-hoge');
+    my $e_c = 'Markets::Domain::Entity::Hoge';
 
     # params method
     my $p = $f->params;
-    is_deeply $p, {}, 'right get params empty hash ref';
+    is_deeply $p, { entity_class => $e_c }, 'right get params empty hash ref';
     my %p = $f->params;
-    is_deeply \%p, {}, 'right get params empty hash';
+    is_deeply \%p, { entity_class => $e_c }, 'right get params empty hash';
 
     $f->params( a => 1 );
     $f->params( b => 2 );
-    is_deeply $f, { a => 1, b => 2 }, 'right set params';
+    is_deeply $f, { a => 1, b => 2, entity_class => $e_c }, 'right set params';
 
     $p = $f->params;
-    is_deeply $p, { a => 1, b => 2 }, 'right get hash reference';
+    is_deeply $p, { a => 1, b => 2, entity_class => $e_c }, 'right get hash reference';
     my %params = $f->params;
-    is_deeply \%params, { a => 1, b => 2 }, 'right get hash';
+    is_deeply \%params, { a => 1, b => 2, entity_class => $e_c }, 'right get hash';
 
     $f->params( { c => 3, d => 4 } );
-    is_deeply $f, { a => 1, b => 2, c => 3, d => 4 }, 'right set params';
+    is_deeply $f, { a => 1, b => 2, c => 3, d => 4, entity_class => $e_c }, 'right set params';
 
     eval { $f->params('a') };
     ok $@, 'getter only one argument';
@@ -42,19 +43,8 @@ subtest 'basic' => sub {
     ok $@, 'too many arguments';
 };
 
-subtest 'factory method' => sub {
-    my $f = Markets::Domain::Factory->factory('entity-hoge');
-    isa_ok $f, 'Markets::Domain::Factory::Entity::Hoge';
-
-    $f = Markets::Domain::Factory->factory('hoge');
-    isa_ok $f, 'Markets::Domain::Factory::Entity::Hoge', 'not "entity-" prefix';
-
-    $f = Markets::Domain::Factory->factory('entity-nofactory');
-    isa_ok $f, 'Markets::Domain::Factory', 'right no factory';
-};
-
 subtest 'has not cook' => sub {
-    my $f = Markets::Domain::Factory::Entity::Hoge->new();
+    my $f   = Markets::Domain::Factory->new('entity-hoge');
     is ref $f, 'Markets::Domain::Factory::Entity::Hoge', 'right namespace';
 
     my $entity = $f->create_entity();
@@ -62,18 +52,18 @@ subtest 'has not cook' => sub {
     cmp_deeply { %{$entity} }, {}, 'right argument empty';
 
     Markets::Domain::Entity::Hoge->attr( [qw(hoge fuga)] );
-    $f = Markets::Domain::Factory::Entity::Hoge->new( hoge => 1 );
+    $f = Markets::Domain::Factory->new( 'entity-hoge', hoge => 1 );
     $entity = $f->create_entity( fuga => 2 );
     cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash';
 
-    $f = Markets::Domain::Factory::Entity::Hoge->new( { hoge => 1 } );
+    $f = Markets::Domain::Factory->new( 'entity-hoge', { hoge => 1 } );
     $entity = $f->create_entity( { fuga => 2 } );
     cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash reference';
 };
 
 subtest 'has cook' => sub {
     Markets::Domain::Entity::Foo->attr( [qw(a b f h)] );
-    my $f = Markets::Domain::Factory::Entity::Foo->new();
+    my $f = Markets::Domain::Factory->new('entity-foo');
     is ref $f, 'Markets::Domain::Factory::Entity::Foo', 'right namespace';
 
     my $entity = $f->create_entity();
@@ -82,7 +72,7 @@ subtest 'has cook' => sub {
 };
 
 subtest 'no factory' => sub {
-    my $entity = Markets::Domain::Factory->new->factory('entity-nofactory')->create;
+    my $entity = Markets::Domain::Factory->new('entity-nofactory')->create;
     is ref $entity, 'Markets::Domain::Entity::Nofactory', 'right namespace';
     cmp_deeply { %{$entity} }, {}, 'right parameter';
     is $entity->text, 'no factory', 'right method';
