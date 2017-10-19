@@ -16,10 +16,10 @@ use Mojo::Base 'DBIx::Class::ResultSet::HashRef';
 
 sub to_array {
     my $self = shift;
-    my $arg = @_ > 1 ? {@_} : @_ ? shift : {};
+    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
 
-    my @columns = $arg->{columns} ? @{ $arg->{columns} } : $self->result_source->columns;
-    my $ignore_columns = $arg->{ignore_columns} || [];
+    my @columns = $args->{columns} ? @{ $args->{columns} } : $self->result_source->columns;
+    my $ignore_columns = $args->{ignore_columns} || [];
 
     my %cnt;
     $cnt{$_}++ for ( @columns, @{$ignore_columns} );
