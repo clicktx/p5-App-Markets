@@ -1,10 +1,11 @@
-package Markets::Domain::Entity::Cart::Shipment;
+package Markets::Domain::Entity::Shipment;
 use Markets::Domain::Entity;
 use Data::Clone qw/data_clone/;
-use Carp qw/croak/;
+use Markets::Domain::Collection;
+use Markets::Domain::Entity::Address;
 
-has shipping_items => sub { Markets::Domain::Collection->new };
-has [qw/id shipping_address/];
+has shipping_address => sub { Markets::Domain::Entity::Address->new };
+has shipping_items   => sub { Markets::Domain::Collection->new };
 
 sub clone {
     my $self  = shift;
@@ -30,7 +31,7 @@ __END__
 
 =head1 NAME
 
-Markets::Domain::Entity::Cart::Shipment
+Markets::Domain::Entity::Shipment
 
 =head1 SYNOPSIS
 
@@ -38,18 +39,20 @@ Markets::Domain::Entity::Cart::Shipment
 
 =head1 ATTRIBUTES
 
-L<Markets::Domain::Entity::Cart::Shipment> inherits all attributes from L<Markets::Domain::Entity> and implements
+L<Markets::Domain::Entity::Shipment> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
-
-=head2 C<id>
 
 =head2 C<shipping_address>
 
+Return L<Markets::Domain::Entity::Address> object.
+
 =head2 C<shipping_items>
+
+Return L<Markets::Domain::Collection> object.
 
 =head1 METHODS
 
-L<Markets::Domain::Entity::Cart::Shipment> inherits all methods from L<Markets::Domain::Entity> and implements
+L<Markets::Domain::Entity::Shipment> inherits all methods from L<Markets::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<clone>

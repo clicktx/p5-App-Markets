@@ -15,13 +15,13 @@ column hash => {
 
 column created_at => {
     data_type   => 'DATETIME',
-    is_nullable => 1,
+    is_nullable => 0,
     timezone    => Markets::Schema->TZ,
 };
 
 column updated_at => {
     data_type   => 'DATETIME',
-    is_nullable => 1,
+    is_nullable => 0,
     timezone    => Markets::Schema->TZ,
 };
 

@@ -11,7 +11,7 @@ sub t01_index : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $t->get_ok('/admin/order/1')->status_is(200)->content_like(qr/Orders/);
+    $t->get_ok('/admin/order/1')->status_is(200)->content_like(qr/Order Details/);
     $t->get_ok('/admin/order/99999')->status_is(404);
 }
 

@@ -22,8 +22,9 @@ sub choices_primary_category {
 sub create_entity {
     my ( $self, $product_id ) = @_;
 
-    my $result = $self->resultset->find( { 'me.id' => $product_id } );
-    my $data = $result
+    my $result = $self->resultset->find($product_id);
+    my $data =
+      $result
       ? {
         id          => $result->id,
         title       => $result->title,

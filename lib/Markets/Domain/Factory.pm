@@ -2,9 +2,9 @@ package Markets::Domain::Factory;
 use Mojo::Base -base;
 use Carp 'croak';
 use DateTime::Format::Strptime;
-use Mojo::Util;
-use Mojo::Loader;
-use Markets::Util qw(load_class);
+use Mojo::Util ();
+use Mojo::Loader ();
+use Markets::Util ();
 use Markets::Schema;
 use Markets::Domain::Collection qw/collection/;
 use Markets::Domain::IxHash qw/ix_hash/;
@@ -50,7 +50,7 @@ sub create_entity {
     # inflate datetime
     my @keys = grep { $_ =~ qr/^.+_at$/ } keys %{$args};
     foreach my $key (@keys) {
-        next unless $args->{$key};
+        next if !$args->{$key} or ref $args->{$key} eq 'DateTime';
 
         my $strp = DateTime::Format::Strptime->new(
             pattern   => '%Y-%m-%d %H:%M:%S',
@@ -70,7 +70,7 @@ sub create_entity {
     delete $params->{entity_class};
 
     # Create entity
-    load_class( $self->entity_class );
+    Markets::Util::load_class( $self->entity_class );
     my $entity = $self->entity_class->new( %{$params} );
 
     # NOTE: attributesは Markets::Domain::Entity::XXX で明示する方が良い?
@@ -81,23 +81,23 @@ sub create_entity {
     return $entity;
 }
 
-sub factory {
+sub factory { shift->new(@_) }
+
+sub new {
     my ( $self, $ns ) = ( shift, shift );
     Carp::croak 'Argument empty' unless $ns;
 
     $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
     $ns = 'Entity::' . $ns          if $ns !~ /^Entity::/;
 
-    my $factory_base_class = __PACKAGE__;
+    my $factory_base_class = 'Markets::Domain::Factory';
     my $factory_class      = $factory_base_class . '::' . $ns;
-    my $entity_class       = $factory_class;
-    $entity_class =~ s/::Factory//;
+    my $entity_class       = 'Markets::Domain::' . $ns;
 
-    # factory classが無い場合はデフォルトのfactory classを使用
     my $e = Mojo::Loader::load_class($factory_class);
     die "Exception: $e" if ref $e;
 
-    my $factory = $e ? $factory_base_class->SUPER::new(@_) : $factory_class->new(@_);
+    my $factory = $e ? $factory_base_class->SUPER::new(@_) : $factory_class->SUPER::new(@_);
     $factory->entity_class($entity_class);
     return $factory;
 }
@@ -117,8 +117,6 @@ sub params {
 
     my %hash = %{$self};
 
-    # Getter params('something')
-    # return $hash{ $_[0] } if @_ == 1 and !ref $_[0];
     # Getter params()
     return wantarray ? (%hash) : {%hash} if !@_;
 
@@ -136,10 +134,22 @@ Markets::Domain::Factory
 
 =head1 SYNOPSIS
 
-    my $factory = Markets::Domain::Factory->new->factory('entity-hoge');
-    my $entity = $factory->create(%data);
+    my $factory = Markets::Domain::Factory->new( 'entity-hoge', %data1 || \%data1 );
+    my $entity = $factory->create( %data2 || \%data2 );
 
 =head1 DESCRIPTION
+
+=head1 FUNCTIONS
+
+=head2 C<factory>
+
+    my $factory = Markets::Domain::Factory->factory( 'entity-hoge', %data || \%data );
+
+Alias C<new> function.
+
+=head2 C<new>
+
+    my $factory = Markets::Domain::Factory->new( 'entity-hoge', %data || \%data );
 
 =head1 ATTRIBUTES
 
@@ -158,7 +168,7 @@ the following new ones.
 
     my @data = (qw/a b c d e f/);
     my $entity = $factory->aggregate( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate( 'items', 'entity-cart-item', \@data );
+    my $entity = $factory->aggregate( 'items', 'entity-xxx-item', \@data );
 
 Create C<Markets::Domain::Collection> type aggregate.
 
@@ -166,7 +176,7 @@ Create C<Markets::Domain::Collection> type aggregate.
 
     my @data = ( key => 'value', key2 => 'value2', ... );
     my $entity = $factory->aggregate_kv( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate_kv( 'items', 'entity-cart-item', \@data );
+    my $entity = $factory->aggregate_kv( 'items', 'entity-xxx-item', \@data );
 
 Create C<Markets::Domain::IxHash> type aggregate.
 
@@ -187,15 +197,6 @@ Alias for L</create_entity>.
     my $entity = $factory->create_entity;
     my $entity = $factory->create_entity( foo => 'bar' );
     my $entity = $factory->create_entity( { foo => 'bar' } );
-
-=head2 C<factory>
-
-    my $new_factory = $factory->factory( 'Entity::Hoge', %data );
-    my $new_factory = $factory->factory( 'Entity::Hoge', \%data );
-    my $new_factory = $factory->factory( 'entity-hoge', %data );
-    my $new_factory = $factory->factory( 'entity-hoge', \%data );
-
-Return factory object.
 
 =head2 C<param>
 
@@ -226,4 +227,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
- L<Mojo::Base>
+L<Mojo::Base>, L<Markets::Domain::Collection>, L<Markets::Domain::IxHash>
