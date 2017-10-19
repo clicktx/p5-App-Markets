@@ -3,11 +3,11 @@ use Test::More;
 use Test::Deep;
 use Test::Mojo;
 
-my $pkg = 'Markets::Domain::Factory::Entity::Shipment';
+my $pkg = 'Markets::Domain::Factory';
 use_ok $pkg;
 
 subtest 'argument empty' => sub {
-    my $factory = $pkg->new();
+    my $factory = $pkg->new('entity-shipment');
     my $entity  = $factory->create_entity();
     cmp_deeply $entity,
       bless {
@@ -19,6 +19,7 @@ subtest 'argument empty' => sub {
 
 subtest 'data' => sub {
     my $factory = $pkg->new(
+        'entity-shipment',
         {
             shipping_address => { line1 => 'Silicon Valley' },
             shipping_items   => [       {} ],
@@ -28,7 +29,8 @@ subtest 'data' => sub {
     cmp_deeply $entity,
       bless {
         shipping_address => ( bless { line1 => 'Silicon Valley' }, 'Markets::Domain::Entity::Address' ),
-        shipping_items => ( bless [ bless {}, 'Markets::Domain::Entity::SellingItem', ], 'Markets::Domain::Collection' ),
+        shipping_items =>
+          ( bless [ bless {}, 'Markets::Domain::Entity::SellingItem', ], 'Markets::Domain::Collection' ),
       },
       'Markets::Domain::Entity::Shipment';
 };

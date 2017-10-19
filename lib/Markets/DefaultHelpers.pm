@@ -4,7 +4,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use Carp         ();
 use Scalar::Util ();
 use Mojo::Util   ();
-use Markets::Util qw(load_class);
+use Markets::Util ();
 use Markets::Domain::Factory;
 
 sub register {
@@ -40,7 +40,7 @@ sub _entity_cache {
     return @_ > 1 ? $caches->{ $_[0] } = $_[1] : $caches->{ $_[0] };
 }
 
-sub _factory { shift; Markets::Domain::Factory->new->factory(@_) }
+sub _factory { shift; Markets::Domain::Factory->new(@_) }
 
 sub _pref {
     my $self = shift;
@@ -60,7 +60,7 @@ sub _service {
     }
     else {
         my $class = "Markets::Service::" . $ns;
-        load_class($class);
+        Markets::Util::load_class($class);
         $service = $class->new($self);
         $self->app->{services}{$ns} = $service;
     }
