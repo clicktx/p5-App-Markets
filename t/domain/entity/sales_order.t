@@ -5,7 +5,7 @@ use Markets::Domain::Factory;
 my $test_data = {};
 
 sub _create_entity {
-    Markets::Domain::Factory->factory('entity-sales_order')->create($test_data);
+    Markets::Domain::Factory->new('entity-sales_order')->create($test_data);
 }
 
 use_ok 'Markets::Domain::Entity::SalesOrder';

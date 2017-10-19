@@ -1,9 +1,9 @@
 package Markets::DefaultHelpers;
 use Mojo::Base 'Mojolicious::Plugin';
 
-use Carp         ();
-use Scalar::Util ();
-use Mojo::Util   ();
+use Carp          ();
+use Scalar::Util  ();
+use Mojo::Util    ();
 use Markets::Util ();
 use Markets::Domain::Factory;
 
@@ -40,7 +40,13 @@ sub _entity_cache {
     return @_ > 1 ? $caches->{ $_[0] } = $_[1] : $caches->{ $_[0] };
 }
 
-sub _factory { shift; Markets::Domain::Factory->new(@_) }
+sub _factory {
+    my $self = shift;
+
+    my $factory = Markets::Domain::Factory->new(@_);
+    $factory->app( $self->app );
+    return $factory;
+}
 
 sub _pref {
     my $self = shift;

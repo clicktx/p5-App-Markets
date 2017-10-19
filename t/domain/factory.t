@@ -43,6 +43,15 @@ subtest 'basic' => sub {
     ok $@, 'too many arguments';
 };
 
+subtest 'factory' => sub {
+    my $app = bless {}, 'Test::App';
+    my $f   = Markets::Domain::Factory->new('entity-hoge');
+    $f->app($app);
+
+    my $ff = $f->factory('entity-hoge');
+    is ref $ff->app, 'Test::App', 'right attribute "app"';
+};
+
 subtest 'has not cook' => sub {
     my $f = Markets::Domain::Factory->new('entity-hoge');
     is ref $f, 'Markets::Domain::Factory::Entity::Hoge', 'right namespace';
