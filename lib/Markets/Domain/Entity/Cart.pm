@@ -209,7 +209,7 @@ Elements is L<Markets::Domain::Entity::Item> object.
     $shipments->each( sub { ... } );
 
 Return L<Markets::Domain::Collection> object.
-Elements is L<Markets::Domain::Entity::Cart::Shipment> object.
+Elements is L<Markets::Domain::Entity::Shipment> object.
 
 =head1 METHODS
 
@@ -266,13 +266,13 @@ Return Entity Cart Object.
 
     my $removed_item = $cart->remove_item($item_id);
 
-Return L<Markets::Domain::Entity::Cart::Item> object or undef.
+Return L<Markets::Domain::Entity::SellingItem> object or undef.
 
 =head2 C<remove_shipping_item>
 
     my $removed_item = $cart->remove_shipping_item($index, $item_id);
 
-Return L<Markets::Domain::Entity::Cart::Item> object or undef.
+Return L<Markets::Domain::Entity::SellingItem> object or undef.
 
 =head2 C<subtotal>
 
@@ -300,4 +300,4 @@ Markets authors.
 
 =head1 SEE ALSO
 
-L<Markets::Domain::Entity>, L<Markets::Domain::Entity::Cart::Shipment>, L<Markets::Domain::Entity::Cart::Item>
+L<Markets::Domain::Entity>, L<Markets::Domain::Entity::Shipment>, L<Markets::Domain::Entity::SellingItem>

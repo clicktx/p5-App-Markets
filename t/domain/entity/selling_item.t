@@ -1,10 +1,10 @@
 use Mojo::Base -strict;
 use Test::More;
 
-use_ok 'Markets::Domain::Entity::Cart::Item';
+use_ok 'Markets::Domain::Entity::SellingItem';
 
 subtest 'basic' => sub {
-    my $item = Markets::Domain::Entity::Cart::Item->new(
+    my $item = Markets::Domain::Entity::SellingItem->new(
         {
             product_id    => 111,
             product_title => 'test product',
@@ -27,7 +27,7 @@ subtest 'basic' => sub {
     $item->quantity(5);
     is $item->is_modified, 1, 'right modified';
 
-    my $item2 = Markets::Domain::Entity::Cart::Item->new(
+    my $item2 = Markets::Domain::Entity::SellingItem->new(
         {
             product_id => 110,
             quantity   => 1,
@@ -39,7 +39,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'subtotal' => sub {
-    my $item = Markets::Domain::Entity::Cart::Item->new(
+    my $item = Markets::Domain::Entity::SellingItem->new(
         {
             quantity => 2,
             price    => 300,

@@ -1,5 +1,4 @@
 package Markets::Schema::Base::ResultSet;
-# use Mojo::Base 'DBIx::Class::ResultSet';
 use Mojo::Base 'DBIx::Class::ResultSet::HashRef';
 
 # Base::Result::insertで対応しているので不要
@@ -14,6 +13,27 @@ use Mojo::Base 'DBIx::Class::ResultSet::HashRef';
 #
 #     $self->next::method(@_);
 # }
+
+sub to_array {
+    my $self = shift;
+    my $arg = @_ > 1 ? {@_} : @_ ? shift : {};
+
+    my @columns = $arg->{columns} ? @{ $arg->{columns} } : $self->result_source->columns;
+    my $ignore_columns = $arg->{ignore_columns} || [];
+
+    my %cnt;
+    $cnt{$_}++ for ( @columns, @{$ignore_columns} );
+    my @uniq = grep { $cnt{$_} < 2 } keys %cnt;
+
+    my @array;
+    while ( my $row = $self->next ) {
+        my %data = map { $_ => $row->$_ } @uniq;
+        push @array, \%data;
+    }
+    $self->reset;
+
+    return wantarray ? @array : \@array;
+}
 
 sub update {
     my $self = shift;
@@ -47,6 +67,18 @@ the following new ones.
 
 L<Markets::Schema::Base::ResultSet> inherits all methods from L<DBIx::Class::ResultSet::HashRef> and implements
 the following new ones.
+
+=head2 C<to_array>
+
+    my $array_ref = $rs->seach({})->to_array(%options || \%options);
+    my @array = $rs->seach({})->to_array(%options || \%options);
+
+Return C<Array> or C<Array refference>.
+
+Dump columns data.
+
+    my @data = $rs->search({})->to_array( columns => [qw/id name title/] );
+    my @data = $rs->search({})->to_array( ignore_columns => [qw/id/] );
 
 =head2 C<update>
 

@@ -6,15 +6,10 @@ sub index {
 
     my $shipment_id = $self->stash('id');
 
-    # eg.
-    # my $order = $self->factory('entity-order')->create({});
+    my $order = $self->service('order')->create_entity($shipment_id);
+    return $self->reply->not_found unless $order;
 
-    # bad!
-    my $rs       = $self->app->schema->resultset('Sales::Order::Shipment');
-    my $shipment = $rs->find($shipment_id);
-    return $self->reply->not_found unless $shipment;
-
-    $self->stash( shipment => $shipment );
+    $self->stash( order => $order );
     $self->render();
 }
 
@@ -51,11 +46,12 @@ sub delete {
 # NOTE: Catalog::Checkoutに関連する実装がある。
 # また、管理者注文も考慮する必要がある。
 sub edit {
-    my $self        = shift;
-    my $shipment_id = $self->stash('id');
+    my $self = shift;
 
-    use DDP;
-    my $rs = $self->app->schema->resultset('Sales::Order::Shipment');
+    # my $shipment_id = $self->stash('id');
+    #
+    # use DDP;
+    # my $rs = $self->app->schema->resultset('Sales::Order::Shipment');
 
     # my $schema = $self->app->schema;
 

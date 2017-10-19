@@ -1,4 +1,4 @@
-package Markets::Domain::Entity::Cart::Item;
+package Markets::Domain::Entity::SellingItem;
 use Markets::Domain::Entity;
 
 has id => sub { shift->hash_code };
@@ -28,7 +28,7 @@ __END__
 
 =head1 NAME
 
-Markets::Domain::Entity::Item
+Markets::Domain::Entity::SellingItem
 
 =head1 SYNOPSIS
 
@@ -36,7 +36,7 @@ Markets::Domain::Entity::Item
 
 =head1 ATTRIBUTES
 
-L<Markets::Domain::Entity::Item> inherits all attributes from L<Markets::Domain::Entity> and implements
+L<Markets::Domain::Entity::SellingItem> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<id>
@@ -51,7 +51,7 @@ the following new ones.
 
 =head1 METHODS
 
-L<Markets::Domain::Entity::Item> inherits all methods from L<Markets::Domain::Entity> and implements
+L<Markets::Domain::Entity::SellingItem> inherits all methods from L<Markets::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<subtotal>
