@@ -40,7 +40,7 @@ sub _entity_cache {
     return @_ > 1 ? $caches->{ $_[0] } = $_[1] : $caches->{ $_[0] };
 }
 
-sub _factory { shift; Markets::Domain::Factory->new->factory(@_) }
+sub _factory { shift; Markets::Domain::Factory->new(@_) }
 
 sub _pref {
     my $self = shift;

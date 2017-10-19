@@ -44,7 +44,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'has not cook' => sub {
-    my $f   = Markets::Domain::Factory->new('entity-hoge');
+    my $f = Markets::Domain::Factory->new('entity-hoge');
     is ref $f, 'Markets::Domain::Factory::Entity::Hoge', 'right namespace';
 
     my $entity = $f->create_entity();
@@ -80,23 +80,16 @@ subtest 'no factory' => sub {
 
 subtest 'factory method using' => sub {
     Markets::Domain::Entity::Bar->attr('hoge');
-    my $f      = Markets::Domain::Factory::Entity::Bar->new();
+    my $f      = Markets::Domain::Factory->new('entity-bar');
     my $entity = $f->create_entity();
     is ref $entity, 'Markets::Domain::Entity::Bar', 'right namespace';
     cmp_deeply { %{$entity} }, { hoge => isa('Markets::Domain::Entity::Hoge'), }, 'right parameter';
 };
 
-# subtest 'has attributes' => sub {
-#     my $entity = Markets::Domain::Factory->new->factory('entity-nofactory')->create( { a => 1, b => 2 } );
-#     eval { is $entity->a, 1 };
-#     eval { is $entity->b, 2 };
-#     ok !$@;
-# };
-
 subtest 'aggregate method' => sub {
     Markets::Domain::Entity::Agg->attr( [qw(hoges bars)] );
 
-    my $f = Markets::Domain::Factory->new->factory('entity-agg');
+    my $f = Markets::Domain::Factory->new('entity-agg');
     eval { $f->aggregate( 'hoges', 'entity-hoge', 'abc' ) };
     ok $@, 'bad data type';
 
@@ -108,7 +101,7 @@ subtest 'aggregate method' => sub {
 subtest 'inflate datetime for *_at' => sub {
     Markets::Domain::Entity::Bar->attr( [qw(created_at)] );
 
-    my $f = Markets::Domain::Factory->new->factory('entity-bar')->create( { created_at => '2017-5-26 19:17:06' } );
+    my $f = Markets::Domain::Factory->new('entity-bar')->create( { created_at => '2017-5-26 19:17:06' } );
     isa_ok $f->{created_at}, 'DateTime';
     is $f->{created_at}->ymd, '2017-05-26', 'right date';
 
@@ -121,7 +114,7 @@ subtest 'inflate datetime for *_at' => sub {
         second    => 47,
         time_zone => 'UTC',
     );
-    $f = Markets::Domain::Factory->new->factory('entity-bar')->create( { created_at => $datetime } );
+    $f = Markets::Domain::Factory->new('entity-bar')->create( { created_at => $datetime } );
     isa_ok $f->{created_at}, 'DateTime';
     is $f->{created_at}->ymd, '1964-10-16', 'right date';
 };
