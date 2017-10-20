@@ -6,7 +6,11 @@ sub index {
 
     my $shipment_id = $self->stash('id');
 
-    my $order = $self->service('order')->create_entity($shipment_id);
+    my $shipment = $self->schema->resultset('Sales::Order::Shipment')->find($shipment_id);
+    return $self->reply->not_found unless $shipment;
+
+    my $order_header_id = $shipment->order_header_id;
+    my $order           = $self->factory('entity-sales_order')->create($order_header_id);
     return $self->reply->not_found unless $order;
 
     $self->stash( order => $order );

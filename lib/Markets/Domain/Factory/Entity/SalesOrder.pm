@@ -15,6 +15,45 @@ sub cook {
     $self->aggregate( 'shipments', 'entity-shipment', $param );
 }
 
+sub create {
+    my ( $self, $order_header_id ) = ( shift, shift // '' );
+
+    my $order_header = $self->app->schema->resultset('Sales::OrderHeader')->find(
+        { id       => $order_header_id },
+        { prefetch => [ 'customer', 'billing_address', { shipments => [ 'shipping_address', 'shipping_items' ] }, ], },
+    );
+    return unless $order_header;
+
+    my $customer = $self->app->service('customer')->create_entity( customer_id => $order_header->customer_id );
+    my $billing_address = $self->app->service('address')->create_entity( $order_header->address_id );
+
+    # shipments
+    my @shipments;
+    my $itr = $order_header->shipments;
+    while ( my $result = $itr->next ) {
+        my $shipping_address = $self->app->service('address')->create_entity( $result->address_id );
+        my $items = $result->shipping_items->to_array( ignore_columns => ['shipment_id'] );
+
+        push @shipments,
+          {
+            id               => $result->id,
+            shipping_address => $shipping_address,
+            shipping_items   => $items,
+          };
+    }
+
+    my $data = {
+        id              => $order_header_id,
+        customer        => $customer,
+        billing_address => $billing_address,
+        shipments       => \@shipments,
+        created_at      => $order_header->created_at,
+        updated_at      => $order_header->updated_at,
+    };
+
+    $self->create_entity($data);
+}
+
 1;
 __END__
 
@@ -24,10 +63,8 @@ Markets::Domain::Factory::Entity::SalesOrder
 
 =head1 SYNOPSIS
 
-    my $entity = Markets::Domain::Factory::Entity::SalesOrder->new( %args )->create;
-
     # In controller
-    my $entity = $c->factory('entity-sales_order')->create(%args);
+    my $entity = $c->factory('entity-sales_order')->create($order_header_id);
 
 =head1 DESCRIPTION
 
@@ -40,6 +77,10 @@ the following new ones.
 
 L<Markets::Domain::Factory::Entity::SalesOrder> inherits all methods from L<Markets::Domain::Factory> and implements
 the following new ones.
+
+=head2 C<create>
+
+    my $entity = $c->factory('entity-sales_order')->create($order_header_id);
 
 =head1 AUTHOR
 
