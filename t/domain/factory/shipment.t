@@ -4,7 +4,7 @@ use Test::Deep;
 use Test::Mojo;
 
 my $pkg = 'Markets::Domain::Factory';
-use_ok $pkg;
+use_ok 'Markets::Domain::Factory::Entity::Shipment';
 
 subtest 'argument empty' => sub {
     my $factory = $pkg->new('entity-shipment');
