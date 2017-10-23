@@ -5,15 +5,10 @@ sub index {
     my $self = shift;
 
     my $shipment_id = $self->stash('id');
-
-    my $shipment = $self->schema->resultset('Sales::Order::Shipment')->find($shipment_id);
+    my $shipment = $self->schema->resultset('Sales::Order::Shipment')->find_by_id($shipment_id);
     return $self->reply->not_found unless $shipment;
 
-    my $order_header_id = $shipment->order_header_id;
-    my $order           = $self->factory('entity-sales_order')->create($order_header_id);
-    return $self->reply->not_found unless $order;
-
-    $self->stash( order => $order );
+    $self->stash( shipment => $shipment );
     $self->render();
 }
 
