@@ -14,6 +14,18 @@ use Mojo::Base 'DBIx::Class::ResultSet::HashRef';
 #     $self->next::method(@_);
 # }
 
+# Mojo::Collection::each() like
+sub each {
+    my ( $self, $cb ) = @_;
+
+    my @array = $self->all;
+    return @array unless $cb;
+
+    my $i = 1;
+    $_->$cb( $i++ ) for @array;
+    return $self;
+}
+
 sub to_array {
     my $self = shift;
     my $arg = @_ > 1 ? {@_} : @_ ? shift : {};
@@ -67,6 +79,14 @@ the following new ones.
 
 L<Markets::Schema::Base::ResultSet> inherits all methods from L<DBIx::Class::ResultSet::HashRef> and implements
 the following new ones.
+
+=head2 C<each>
+
+    my @elements = $rs->each;
+    $rs->each( sub{ ... } );
+
+    $rs->each( sub { say $_->column_name } );
+    $rs->each( sub { my ( $res, $num ) = @_; ... } );
 
 =head2 C<to_array>
 
