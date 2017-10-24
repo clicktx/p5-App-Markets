@@ -1,26 +1,26 @@
-default pagenation
+default pagination
 <div class="pagination">
     % my $pager = $content->pager;
     % my $params = $content->params;
     % my $current_page = $pager->current_page;
-    <%= link_to '<<' => url_for('current')->query( [ %$params, p => $pager->first_page ] ) %>
+    <%= link_to '<<' => url_for('current')->query( [ %$params, p => $pager->first_page ] ) =%>
     % if ( $pager->previous_page ) {
-        %= link_to '<' => url_for('current')->query( [ %$params, p => $pager->previous_page ] )
+        <%= link_to '<' => url_for('current')->query( [ %$params, p => $pager->previous_page ] ) =%>
     % } else {
-        %= '<'
+        <%= '<' =%>
     % }
     % foreach my $num ( @{$pager->pages_in_navigation} ) {
         % if ( $num == $pager->current_page ){
-            %= $num
+            <%= $num =%>
         % }
         % else {
-            %= link_to $num => url_for('current')->query( [ %$params, p => $num ] )
+            <%= link_to $num => url_for('current')->query( [ %$params, p => $num ] ) =%>
         % }
     % }
     % if ( $pager->next_page ) {
-        %= link_to '>' => url_for('current')->query( [ %$params, p => $pager->next_page ] )
+        <%= link_to '>' => url_for('current')->query( [ %$params, p => $pager->next_page ] ) =%>
     % } else {
-        %= '>'
+        <%= '>' =%>
     % }
     <%= link_to '>>' => url_for('current')->query( [ %$params, p => $pager->last_page ] ) %>
 </div>
