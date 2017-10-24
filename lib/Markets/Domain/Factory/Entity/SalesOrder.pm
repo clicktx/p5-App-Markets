@@ -11,27 +11,32 @@ sub cook {
     # Aggregate shipments
     # NOTE: code from Factory::Entity::Cart
     my $param = $self->param('shipments') || [ {} ];
-    push @{$param}, {} unless @{$param};    # NOTE: At the time of "$param eq []"
     $self->aggregate( 'shipments', 'entity-shipment', $param );
 }
 
 sub create {
-    my ( $self, $order_header_id ) = ( shift, shift // '' );
+    my ( $self, $order_header_id ) = ( shift, shift );
 
-    my $order_header = $self->app->schema->resultset('Sales::OrderHeader')->find(
-        { id       => $order_header_id },
-        { prefetch => [ 'customer', 'billing_address', { shipments => [ 'shipping_address', 'shipping_items' ] }, ], },
-    );
+   # my $order_header = $self->app->schema->resultset('Sales::OrderHeader')->find(
+   #     { id       => $order_header_id },
+   #     { prefetch => [ 'customer', 'billing_address', { shipments => [ 'shipping_address', 'shipping_items' ] }, ], },
+   # );
+    my $order_header = $self->app->schema->resultset('Sales::OrderHeader')->find( { id => $order_header_id } );
     return unless $order_header;
 
-    my $customer = $self->app->service('customer')->create_entity( customer_id => $order_header->customer_id );
-    my $billing_address = $self->app->service('address')->create_entity( $order_header->address_id );
+    # my $customer = $self->app->service('customer')->create_entity( customer_id => $order_header->customer_id );
+    my $customer = $self->app->factory('entity-customer')->create( $order_header->customer_id );
+
+    # my $billing_address1 = $self->app->factory('entity-address')->create( $order_header->address_id );
+    my $billing_address = $self->app->factory('entity-address')->create( $order_header->billing_address );
 
     # shipments
     my @shipments;
     my $itr = $order_header->shipments;
     while ( my $result = $itr->next ) {
-        my $shipping_address = $self->app->service('address')->create_entity( $result->address_id );
+
+        # my $shipping_address = $self->app->factory('entity-address')->create( $result->address_id );
+        my $shipping_address = $self->app->factory('entity-address')->create( $result->shipping_address );
         my $items = $result->shipping_items->to_array( ignore_columns => ['shipment_id'] );
 
         push @shipments,
