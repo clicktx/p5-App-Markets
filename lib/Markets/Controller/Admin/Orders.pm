@@ -10,20 +10,15 @@ sub index {
     # return $self->render() unless $form->has_data;
     $form->validate;
 
-    my $page_no = $form->param('p') || 1;
-    my $rows = 5;
+    my $conditions = {
+        where    => '',
+        order_by => '',
+        page_no  => $form->param('p') || 1,
+        rows     => 5,
+    };
 
-    # bad!
-    my $schema = $self->app->schema;
-    my $orders = $schema->resultset('Sales::Order::Shipment')->search(
-        {},
-        {
-            page => $page_no,
-            rows  => $rows,
-            order_by => { -desc => 'order_header_id' },
-            prefetch => [ 'shipping_address', { order_header => 'billing_address' }, ],
-        }
-    );
+    my $rs     = $self->app->schema->resultset('Sales::Order::Shipment');
+    my $orders = $rs->search_sales_list($conditions);
 
     # content entity
     my $content = $self->app->factory('entity-content')->create(
