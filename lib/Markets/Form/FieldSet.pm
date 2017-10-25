@@ -81,13 +81,10 @@ sub import {
     monkey_patch $caller, 'has_field', sub { append_field( $caller, @_ ) };
     monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
 
-    return unless my $flag = shift;
+    return unless @_;
 
-    # export_field
-    if ( $flag eq '-export_field' ) {
-        my $args = shift;
-        ref $args eq 'ARRAY' ? $class->export_field( $caller, @$args ) : $class->export_field($caller);
-    }
+    # Export field
+    $_[0] eq '-all' ? $class->export_field($caller) : $class->export_field( $caller, @_ );
 }
 
 sub new {
@@ -241,8 +238,8 @@ Markets::Form::FieldSet
 
 =head1 SYNOPSIS
 
-    # Your form field class
-    package Markets::Form::Type::User;
+    # Your form field set class
+    package Markets::Form::FieldSet::User;
     use Markets::Form::FieldSet;
 
     has_field 'name' => ( %args );
@@ -261,9 +258,37 @@ Markets::Form::FieldSet
         $c->render( text => 'validation failure');
     }
 
+=head1 IMPORT OPTIONS
+
+    # Your form field set base class
+    package Markets::Form::FieldSet::Base;
+    use Markets::Form::FieldSet;
+
+    has_field 'email' => ( ... );
+    has_field 'password' => ( ... );
+    ...
+    1;
+
+    # Import from base class
+    package Markets::Form::FieldSet::Hoge;
+    use Markets::Form::FieldSet::Base qw(email password);
+    ...
+    1;
+
+Import fields 'email' and 'password'.
+
+=head2 C<-all>
+
+    package Markets::Form::FieldSet::Hoge;
+    use Markets::Form::FieldSet::Base -all;
+    ...
+    1;
+
+Import all fields.
+
 =head1 SCHEMA
 
-    package Markets::Form::Type::Example;
+    package Markets::Form::FieldSet::Example;
     use Mojo::Base -strict;
     use Markets::Form::FieldSet;
 
@@ -319,19 +344,6 @@ If the method has arguments, it returns hash refference.
 Passing a scalar reffernce as an arguments to the validator method expands from preferences.
 
 =head1 DESCRIPTION
-
-=head1 IMPORT OPTIONS
-
-=head2 C<-export_field>
-
-    package Markets::Form::FieldSet::Hoge;
-    use Markets::Form::FieldSet::Base -export_field => [
-        'email', 'password'
-    ];
-
-    # Export all fields.
-    package Markets::Form::FieldSet::Hoge;
-    use Markets::Form::FieldSet::Base -export_field => 'all';
 
 =head1 ATTRIBUTES
 
