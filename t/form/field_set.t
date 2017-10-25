@@ -56,6 +56,17 @@ subtest 'export_field' => sub {
     $fs->export_field();
     is_deeply \@{ __PACKAGE__->field_keys },
       [qw(item.[].id email name address favorite_color luky_number item.[].name)], 'right exported all';
+
+    # Module base import
+    is_deeply Test::Form::FieldSet::Foo->field_info,
+      {
+        a => {},
+        b => {},
+        c => {},
+      },
+      'right import all';
+    is_deeply Test::Form::FieldSet::Bar->field_info, { b => {} }, 'right import';
+    is_deeply Test::Form::FieldSet::Buzz->field_info, {}, 'right not import';
 };
 
 subtest 'field' => sub {
@@ -285,3 +296,15 @@ subtest 'append/remove' => sub {
 };
 
 done_testing();
+
+package Test::Form::FieldSet::Foo;
+use Test::Form::FieldSet::Base -all;
+1;
+
+package Test::Form::FieldSet::Bar;
+use Test::Form::FieldSet::Base qw(b);
+1;
+
+package Test::Form::FieldSet::Buzz;
+use Test::Form::FieldSet::Base;
+1;

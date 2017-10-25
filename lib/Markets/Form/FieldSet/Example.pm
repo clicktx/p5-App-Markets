@@ -1,6 +1,6 @@
 package Markets::Form::FieldSet::Example;
 use Mojo::Base -strict;
-use Markets::Form::FieldSet::Basic -export_field => 'all';
+use Markets::Form::FieldSet::Basic -all;
 
 # use Markets::Form::FieldSet::Basic -export_field;
 # use Markets::Form::FieldSet::Basic -export_field => [qw(email password password_again)];

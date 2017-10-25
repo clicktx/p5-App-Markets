@@ -1,6 +1,6 @@
 package Markets::Form::FieldSet::Product;
 use Mojo::Base -strict;
-use Markets::Form::FieldSet::Basic;
+use Markets::Form::FieldSet;
 
 has_field 'product_id' => (
     type        => 'hidden',
