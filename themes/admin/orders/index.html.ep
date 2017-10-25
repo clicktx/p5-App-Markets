@@ -4,7 +4,7 @@
 <h1><%= title %></h1>
 
 <ul>
-% while (my $shipment = $itr->next) {
+% while ( my $shipment = $orders->next ) {
     <li>
         [
         <%= link_to url_for( 'RN_admin_order_edit', id => $shipment->id ) => begin %>
@@ -21,6 +21,8 @@
     </li>
 % }
 </ul>
+
+<%= include 'admin/common/pagination' %>
 
 <h2><%= __('Orders') %></h2>
 
