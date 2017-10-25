@@ -1,4 +1,4 @@
-package Markets::Form::FieldSet::Search::Order;
+package Markets::Form::FieldSet::Search::Common;
 use Mojo::Base -strict;
 use Markets::Form::FieldSet;
 
@@ -8,6 +8,16 @@ has_field 'p' => (
 );
 
 has_field 'q' => (
+    type        => 'text',
+    validations => [],
+);
+
+has_field 'sort' => (
+    type        => 'text',
+    validations => [],
+);
+
+has_field 'direction' => (
     type        => 'text',
     validations => [],
 );
