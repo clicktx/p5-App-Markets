@@ -26,11 +26,24 @@ sub index {
     #page_count
 
     my $rs = $self->app->schema->resultset('Product');
-    my $itr = $rs->search( {}, { order_by => { -desc => [ 'updated_at', 'created_at' ] }, page => $page, rows => 5 } );
-    my $pager = $itr->pager;
+    my $products =
+      $rs->search( {}, { order_by => { -desc => [ 'updated_at', 'created_at' ] }, page => $page, rows => 5 } );
 
-    my $params = $form->params->to_hash;
-    $self->render( itr => $itr, pager => $pager, params => $params );
+    # content entity
+    my $content = $self->app->factory('entity-content')->create(
+        {
+            # title      => $xx->title,
+            # breadcrumb => $xx->breadcrumb,
+            pager  => $products->pager,
+            params => $form->params->to_hash,
+        }
+    );
+
+    $self->stash(
+        content  => $content,
+        products => $products,
+    );
+    $self->render();
 }
 
 1;
