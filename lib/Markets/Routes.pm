@@ -79,7 +79,7 @@ sub add_admin_routes {
             $order->post('/delete')->to('#delete')->name('RN_admin_order_delete');
 
             # $order->any('/create')->to('#create')->name('RN_admin_order_create');
-            # $order->any('/:id/duplicate')->to('#duplicate')->name('RN_admin_order_duplicate');
+            $order->any('/:id/duplicate')->to('#duplicate')->name('RN_admin_order_duplicate');
         }
     }
 }

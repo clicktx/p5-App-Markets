@@ -5,7 +5,7 @@ sub index {
     my $self = shift;
 
     my $shipment_id = $self->stash('id');
-    my $shipment = $self->schema->resultset('Sales::Order::Shipment')->find_by_id($shipment_id);
+    my $shipment    = $self->schema->resultset('Sales::Order::Shipment')->find_by_id($shipment_id);
     return $self->reply->not_found unless $shipment;
 
     $self->stash( shipment => $shipment );
@@ -39,6 +39,11 @@ sub delete {
         $order->delete;
     }
 
+    return $self->redirect_to('RN_admin_orders');
+}
+
+sub duplicate {
+    my $self = shift;
     return $self->redirect_to('RN_admin_orders');
 }
 
