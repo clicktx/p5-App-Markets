@@ -1,6 +1,6 @@
 package Markets::Form::FieldSet::Checkout::Shipping;
 use Mojo::Base -strict;
-use Markets::Form::FieldSet::Basic;
+use Markets::Form::FieldSet;
 
 has_field 'is_multiple_shipments' => (
     type        => 'choice',
