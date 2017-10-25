@@ -7,9 +7,10 @@ use Test::Mojo;
 my $t      = Test::Mojo->new('App');
 my $app    = $t->app;
 my $schema = $app->schema;
-my $rs     = $schema->resultset('Sales::Order::Shipment::Item');
 
-subtest 'to_array method' => sub {
+subtest 'method to_array()' => sub {
+    my $rs = $schema->resultset('Sales::Order::Shipment::Item');
+
     subtest 'basic' => sub {
         my $itr   = $rs->search( { shipment_id => 1 } );
         my @array = $itr->to_array;
@@ -32,6 +33,41 @@ subtest 'to_array method' => sub {
         @array = $itr->to_array( columns => [qw(product_title shipment_id)] );
         @keys = sort( keys %{ $array[0] } );
         is_deeply \@keys, [qw(product_title shipment_id)], 'right option "columns"';
+    };
+};
+
+subtest 'method each()' => sub {
+    my $rs = $schema->resultset('Sales::OrderHeader');
+    my $order = $rs->find( 1, { prefetch => { shipments => [ 'shipping_address', 'shipping_items' ] } }, );
+
+    subtest 'basic' => sub {
+        my @res = $order->shipments->each;
+        is @res, 2;
+    };
+
+    subtest 'default argument' => sub {
+        my ( @res, @items );
+        $order->shipments->each(
+            sub {
+                push @res, $_;
+                $_->shipping_items->each( sub { push @items, $_ } );
+            }
+        );
+        is @res,   2;
+        is @items, 3;
+    };
+
+    subtest 'number' => sub {
+        my ( @res, @num );
+        $order->shipments->each(
+            sub {
+                my ( $e, $n ) = @_;
+                push @res, $e;
+                push @num, $n;
+            }
+        );
+        is @res, 2, 'right elements';
+        is_deeply \@num, [ 1, 2 ], 'right numbers';
     };
 };
 

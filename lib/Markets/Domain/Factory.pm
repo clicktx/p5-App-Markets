@@ -2,13 +2,14 @@ package Markets::Domain::Factory;
 use Mojo::Base -base;
 use Carp 'croak';
 use DateTime::Format::Strptime;
-use Mojo::Util ();
-use Mojo::Loader ();
+use Mojo::Util    ();
+use Mojo::Loader  ();
 use Markets::Util ();
 use Markets::Schema;
 use Markets::Domain::Collection qw/collection/;
 use Markets::Domain::IxHash qw/ix_hash/;
 
+has 'app';
 has entity_class => sub {
     my $class = ref shift;
     $class =~ s/::Factory//;
@@ -67,7 +68,7 @@ sub create_entity {
     my $params = $self->params;
 
     # no need parameter
-    delete $params->{entity_class};
+    delete $params->{$_} for qw(app entity_class);
 
     # Create entity
     Markets::Util::load_class( $self->entity_class );
@@ -81,7 +82,13 @@ sub create_entity {
     return $entity;
 }
 
-sub factory { shift->new(@_) }
+sub factory {
+    my $self = shift;
+
+    my $factory = $self->new(@_);
+    $factory->app( $self->app );
+    return $factory;
+}
 
 sub new {
     my ( $self, $ns ) = ( shift, shift );
@@ -141,17 +148,13 @@ Markets::Domain::Factory
 
 =head1 FUNCTIONS
 
-=head2 C<factory>
-
-    my $factory = Markets::Domain::Factory->factory( 'entity-hoge', %data || \%data );
-
-Alias C<new> function.
-
 =head2 C<new>
 
     my $factory = Markets::Domain::Factory->new( 'entity-hoge', %data || \%data );
 
 =head1 ATTRIBUTES
+
+=head2 C<app>
 
 =head2 C<entity_class>
 
@@ -197,6 +200,13 @@ Alias for L</create_entity>.
     my $entity = $factory->create_entity;
     my $entity = $factory->create_entity( foo => 'bar' );
     my $entity = $factory->create_entity( { foo => 'bar' } );
+
+=head2 C<factory>
+
+    my $other_factory = $factory->factory('entity-hoge');
+
+Object constructor.close to L</new> function.
+Inherit the value of attribute "app".
 
 =head2 C<param>
 

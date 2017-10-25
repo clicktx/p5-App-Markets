@@ -10,7 +10,7 @@ my $test_data = {
 };
 
 sub _create_entity {
-    Markets::Domain::Factory->factory('entity-content')->create($test_data);
+    Markets::Domain::Factory->new('entity-content')->create($test_data);
 }
 
 use_ok 'Markets::Domain::Entity::Content';

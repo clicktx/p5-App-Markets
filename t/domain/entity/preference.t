@@ -38,7 +38,7 @@ my $data = {
     ],
 };
 
-my $pref = Markets::Domain::Factory->factory('entity-preference')->create($data);
+my $pref = Markets::Domain::Factory->new('entity-preference')->create($data);
 
 subtest 'basic' => sub {
     isa_ok $pref, 'Markets::Domain::Entity';

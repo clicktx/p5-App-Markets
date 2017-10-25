@@ -7,14 +7,11 @@
     <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
 </ul>
 
-<% my $shipment = $order->shipments->find( stash('id') ); %>
-order_header_id: <%= $order->id %><br>
+order_header_id: <%= $shipment->order_header->id %><br>
 shipment id: <%= $shipment->id %><br>
 shipping_address line1: <%= $shipment->shipping_address->line1 %><br>
-
 <ol>
-    % my $shipping_items = $shipment->shipping_items;
-    % $shipping_items->each( sub {
+    % $shipment->shipping_items->each( sub {
         <li>
             ID: <%= $_->id %> | PRODUCT ID: <%= $_->product_id %> | QTY: <%= $_->quantity %>
         </li>
