@@ -4,7 +4,7 @@ use Mojo::Base 'Markets::Service';
 has resultset => sub { shift->schema->resultset('Category') };
 
 sub create_entity {
-    my ( $self, $category_id, $page, $row ) = ( shift, shift, shift // 1, shift // 10 );
+    my ( $self, $category_id, $page, $rows ) = ( shift, shift, shift // 1, shift // 10 );
 
     my $data     = {};
     my $category = $self->resultset->find($category_id);
@@ -30,7 +30,7 @@ sub create_entity {
         {
             prefetch => 'product_categories',
             page     => $page,
-            rows     => $row,
+            rows     => $rows,
         },
     );
     $data->{products} = $products;
@@ -73,7 +73,7 @@ the following new ones.
 
 =head2 C<create_entity>
 
-    my $category = $c->service('category')->create_entity( $category_id, $page, $row );
+    my $category = $c->service('category')->create_entity( $category_id, $page, $rows );
 
 Return L<Markets::Domain::Entity::Category> object or C<undefined>.
 

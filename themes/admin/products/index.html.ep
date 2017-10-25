@@ -15,7 +15,8 @@
 <h2><%= __('Products') %></h2>
 
 <ul>
-% while ( my $product = $itr->next ) {
+% $products->each( sub {
+    % my $product = shift;
     <li>
         <%= link_to 'RN_admin_product_edit' => { product_id => $product->id } => begin %>
             <%= $product->title %>
@@ -25,7 +26,7 @@
         [<%= link_to __('Duplicate') => 'RN_admin_product_duplicate' => { product_id => $product->id } %>]
         [<%= link_to __('Delete') => 'RN_admin_product_delete' => { product_id => $product->id } %>]
     </li>
-% }
+% });
 </ul>
 
 <%= include 'admin/common/pagination' %>

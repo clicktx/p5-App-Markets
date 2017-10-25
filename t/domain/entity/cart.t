@@ -27,7 +27,7 @@ my $test_data = {
 };
 
 sub _create_entity {
-    Markets::Domain::Factory->factory('entity-cart')->create(
+    Markets::Domain::Factory->new('entity-cart')->create(
         {
             cart_id => '12345',
             %{$test_data},
@@ -38,7 +38,7 @@ sub _create_entity {
 use_ok 'Markets::Domain::Entity::SellingItem';
 
 subtest 'basic' => sub {
-    my $cart = Markets::Domain::Factory->factory('entity-cart')->create();
+    my $cart = Markets::Domain::Factory->new('entity-cart')->create();
     isa_ok $cart, 'Markets::Domain::Entity';
 
     ok $cart->id;
@@ -64,7 +64,7 @@ subtest 'methods' => sub {
     is $cart->total_item_count, 7,                                          'right total item count';
     is $cart->total_quantity,   25,                                         'right total quantity count';
 
-    my $cart2 = Markets::Domain::Factory->factory('entity-cart')->create(
+    my $cart2 = Markets::Domain::Factory->new('entity-cart')->create(
         {
             cart_id => '54321',
             %{$test_data},
@@ -208,7 +208,7 @@ subtest 'merge' => sub {
         ],
         shipments => [ { shipping_address => {}, shipping_items => [] } ],
     };
-    my $stored_cart = Markets::Domain::Factory->factory('entity-cart')->create(
+    my $stored_cart = Markets::Domain::Factory->new('entity-cart')->create(
         {
             cart_id => '99999',
             %{$stored_data},

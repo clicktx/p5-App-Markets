@@ -41,4 +41,21 @@ has_many
   shipments => 'Markets::Schema::Result::Sales::Order::Shipment',
   { 'foreign.order_header_id' => 'self.id' };
 
+=encoding utf8
+
+=head1 METHODS
+
+L<Markets::Schema::Result::Sales::OrderHeader> inherits all methods from L<Markets::Schema::Base::Result> and implements
+the following new ones.
+
+=head2 C<is_multiple_shipment>
+
+    my $bool = $result->is_multiple_shipment;
+
+Return boolean value.
+
+=cut
+
+sub is_multiple_shipment { shift->shipments->count > 1 ? 1 : 0 }
+
 1;

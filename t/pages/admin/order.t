@@ -24,19 +24,22 @@ sub t02_edit : Tests() {
     # $t->get_ok('/admin/order/99999/edit')->status_is(404);
 }
 
-sub t03_delete : Tests() {
-    my $self = shift;
-    my $t    = $self->t;
-
-    my $post_data = {
-        csrf_token => $self->csrf_token,
-        id         => 2,
-    };
-
-    $t->post_ok( '/admin/order/delete', form => $post_data )->status_is( 200, 'right found shipment order' );
-
-    $post_data->{id} = 99999;
-    $t->post_ok( '/admin/order/delete', form => $post_data )->status_is( 404, 'right not found shipment order' );
-}
+# sub t03_duplicate : Tests() { }
+# 
+# sub t04_delete : Tests() {
+#     my $self = shift;
+#     my $t    = $self->t;
+# 
+#     my $shipment_id = 3;    # duplicateで生成された最新のidを取得する。
+#     my $post_data   = {
+#         csrf_token => $self->csrf_token,
+#         id         => $shipment_id,
+#     };
+# 
+#     $t->post_ok( '/admin/order/delete', form => $post_data )->status_is( 200, 'right found shipment order' );
+# 
+#     $post_data->{id} = 99999;
+#     $t->post_ok( '/admin/order/delete', form => $post_data )->status_is( 404, 'right not found shipment order' );
+# }
 
 __PACKAGE__->runtests;

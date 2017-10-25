@@ -24,7 +24,7 @@ my $test_data = {
 };
 
 sub _create_entity {
-    Markets::Domain::Factory->factory('entity-product')->create($test_data);
+    Markets::Domain::Factory->new('entity-product')->create($test_data);
 }
 
 use_ok 'Markets::Domain::Entity::Product';

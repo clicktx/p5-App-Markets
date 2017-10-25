@@ -12,8 +12,8 @@ sub index {
 
     my $category_id = $self->stash('category_id');
     my $page_no     = $form->param('p') || 1;
-    my $row         = 3;
-    my $category    = $self->service('category')->create_entity( $category_id, $page_no, $row );
+    my $rows        = 3;
+    my $category    = $self->service('category')->create_entity( $category_id, $page_no, $rows );
     return $self->reply->not_found() unless $category;
 
     # widget category tree
