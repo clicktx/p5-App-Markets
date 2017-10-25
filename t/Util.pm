@@ -4,7 +4,7 @@ use strict;
 use File::Spec;
 use File::Basename qw(dirname);
 use lib File::Spec->catdir( dirname(__FILE__), '..', 'lib' );
-use lib 't/App/lib';
+use lib 't/App/lib', 't/lib';
 use Markets::Util;
 use Mojo::Util qw(b64_decode);
 use Mojo::JSON;
