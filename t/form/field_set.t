@@ -60,13 +60,19 @@ subtest 'export_field' => sub {
     # Module base import
     is_deeply Test::Form::FieldSet::Foo->field_info,
       {
-        a => {},
-        b => {},
-        c => {},
+        aa => {},
+        bb => {},
+        cc => {},
       },
       'right import all';
-    is_deeply Test::Form::FieldSet::Bar->field_info, { b => {} }, 'right import';
+    is_deeply Test::Form::FieldSet::Bar->field_info, { bb => {} }, 'right import';
     is_deeply Test::Form::FieldSet::Buzz->field_info, {}, 'right not import';
+    is_deeply Test::Form::FieldSet::Qux->field_info,
+      {
+        bb => {},
+        ff => {},
+      },
+      'right import from inherit module';
 };
 
 subtest 'field' => sub {
@@ -302,9 +308,13 @@ use Test::Form::FieldSet::Base -all;
 1;
 
 package Test::Form::FieldSet::Bar;
-use Test::Form::FieldSet::Base qw(b);
+use Test::Form::FieldSet::Base qw(bb);
 1;
 
 package Test::Form::FieldSet::Buzz;
 use Test::Form::FieldSet::Base;
+1;
+
+package Test::Form::FieldSet::Qux;
+use Test::Form::FieldSet::Common qw(bb ff);
 1;
