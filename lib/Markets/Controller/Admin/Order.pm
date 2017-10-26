@@ -44,7 +44,23 @@ sub delete {
 
 sub duplicate {
     my $self = shift;
-    return $self->redirect_to('RN_admin_orders');
+
+    my $shipment_id = $self->stash('id');
+
+    # 複数配送の場合はどうするか？
+    use DDP;
+
+    # オーダーをすべてコピー
+    # my $order    = $self->schema->resultset('Sales::OrderHeader')->find_by_shipment_id($shipment_id)->copy;
+    # p $order;
+
+    # my $shipment = $self->schema->resultset('Sales::Order::Shipment')->find_by_id($shipment_id);
+    # p $shipment->order_header->as_fdat;
+    # p $shipment->as_fdat;
+    # $shipment->shipping_items->each( sub { p $_->as_fdat } );
+
+    # return $self->redirect_to('RN_admin_orders');
+    return $self->render('admin/order/edit')
 }
 
 # NOTE: Catalog::Checkoutに関連する実装がある。
