@@ -60,7 +60,7 @@ sub add_admin_routes {
         {
             my $product = $r->any('/product')->to( controller => 'admin-product' )->name('RN_admin_product');
 
-            # NOTE: create, delete, duplicate はPOST requestのみにするべきか？
+            # NOTE: create, delete, duplicate はPOST requestのみにするべき
             $product->any('/create')->to('#create')->name('RN_admin_product_create');
             $product->any('/:product_id/delete')->to('#delete')->name('RN_admin_product_delete');
             $product->any('/:product_id/duplicate')->to('#duplicate')->name('RN_admin_product_duplicate');
@@ -73,6 +73,7 @@ sub add_admin_routes {
 
         # Order
         {
+            # NOTE: create, delete, duplicate はPOST requestのみにするべき
             my $order = $r->any('/order')->to( controller => 'admin-order' );
             $order->get('/:id')->to('#index')->name('RN_admin_order');
             $order->any('/:id/edit')->to('#edit')->name('RN_admin_order_edit');
