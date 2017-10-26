@@ -1,11 +1,18 @@
 package Markets::Schema::ResultSet::Sales::OrderHeader;
 use Mojo::Base 'Markets::Schema::Base::ResultSet';
 
+sub get_id_by_shipment_id {
+    my ( $self, $shipment_id ) = @_;
+
+    my $result = $self->result_source->schema->resultset('Sales::Order::Shipment')->find($shipment_id);
+    return $result ? $result->order_header_id : undef;
+}
+
 sub find_by_id {
-    my ( $self, $order_header_id ) = @_;
+    my ( $self, $id ) = @_;
 
     return $self->find(
-        $order_header_id,
+        $id,
         {
             prefetch => [
                 'customer',
@@ -16,6 +23,13 @@ sub find_by_id {
             ],
         },
     );
+}
+
+sub find_by_shipment_id {
+    my ( $self, $shipment_id ) = @_;
+
+    my $order_header_id = $self->get_id_by_shipment_id($shipment_id);
+    return $self->find_by_id($order_header_id);
 }
 
 1;
@@ -42,9 +56,17 @@ the following new ones.
 L<Markets::Schema::ResultSet::Sales::OrderHeader> inherits all methods from L<Markets::Schema::Base::ResultSet> and implements
 the following new ones.
 
+=head2 C<get_id_by_shipment_id>
+
+    my $order_header_id = $rs->get_id_by_shipment_id($shipment_id);
+
 =head2 C<find_by_id>
 
     my $order = $rs->find_by_id($order_header_id);
+
+=head2 C<find_by_shipment_id>
+
+    my $order = $rs->find_by_shipment_id($shipment_id);
 
 =head1 AUTHOR
 
