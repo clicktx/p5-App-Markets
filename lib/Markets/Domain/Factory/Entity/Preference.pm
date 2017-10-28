@@ -4,8 +4,8 @@ use Mojo::Base 'Markets::Domain::Factory';
 sub cook {
     my $self = shift;
 
-    # Aggregate items
-    $self->aggregate_kvlist( items => 'entity-preference-item', $self->param('items') || [] );
+    # Aggregate properties
+    $self->aggregate_kvlist( properties => 'entity-preference-property', $self->param('properties') || [] );
 }
 
 1;

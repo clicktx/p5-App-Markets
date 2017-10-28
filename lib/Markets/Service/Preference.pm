@@ -21,7 +21,7 @@ sub store {
     return unless $pref->is_modified;
 
     my $cb = sub {
-        $pref->items->each(
+        $pref->properties->each(
             sub {
                 $self->resultset->find( $b->id )->update( { value => $b->value } ) if $b->is_modified;
             }
@@ -39,15 +39,15 @@ sub _create_entity {
     my $self = shift;
     my $itr = $self->resultset->search( {} );
 
-    my @items;
+    my @properties;
     $itr->each(
         sub {
             my $row  = shift;
             my %data = $row->get_inflated_columns;
-            push @items, ( $row->name => \%data );
+            push @properties, ( $row->name => \%data );
         }
     );
-    return $self->app->factory('entity-preference')->create( { items => \@items } );
+    return $self->app->factory('entity-preference')->create( { properties => \@properties } );
 }
 
 1;

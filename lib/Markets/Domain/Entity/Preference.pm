@@ -2,7 +2,7 @@ package Markets::Domain::Entity::Preference;
 use Markets::Domain::Entity;
 use Carp qw/croak/;
 
-has items => sub { Markets::Domain::IxHash->new };
+has properties => sub { Markets::Domain::IxHash->new };
 
 sub value {
     my $self = shift;
@@ -12,17 +12,17 @@ sub value {
     if ( @_ > 1 ) {
         while (@_) {
             my ( $key, $value ) = ( shift, shift );
-            croak "Not found preference '$key'" unless $self->items->{$key};
-            $self->items->{$key}->value($value);
+            croak "Not found preference '$key'" unless $self->properties->{$key};
+            $self->properties->{$key}->value($value);
         }
     }
 
     # Getter
     else {
         my $name = shift;
-        croak "'$name' is not set preference" unless $self->items->{$name};
-        my $value = $self->items->{$name}->value;
-        return $value ? $value : $self->items->{$name}->default_value;
+        croak "'$name' is not set preference" unless $self->properties->{$name};
+        my $value = $self->properties->{$name}->value;
+        return $value ? $value : $self->properties->{$name}->default_value;
     }
 }
 
@@ -61,7 +61,7 @@ Markets::Domain::Entity::Preference
 L<Markets::Domain::Entity::Preference> inherits all attributes from L<Markets::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<items>
+=head2 C<properties>
 
 =head1 METHODS
 

@@ -2,7 +2,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
 
-use_ok 'Markets::Domain::Entity::Preference::Item';
+use_ok 'Markets::Domain::Entity::Preference::Property';
 
 my $data = {
     id            => 1,
@@ -15,7 +15,7 @@ my $data = {
     group_id      => 1,
 };
 
-my $e = Markets::Domain::Entity::Preference::Item->new($data);
+my $e = Markets::Domain::Entity::Preference::Property->new($data);
 
 subtest 'basic' => sub {
     isa_ok $e, 'Markets::Domain::Entity';

@@ -3,7 +3,7 @@ use Mojo::Base 'Markets::Controller::Admin';
 
 sub index {
     my $self = shift;
-    $self->stash( preferences => $self->pref->items );
+    $self->stash( preferences => $self->pref->properties );
 
     my $validation = $self->validation;
     $self->render() unless $validation->has_data;
