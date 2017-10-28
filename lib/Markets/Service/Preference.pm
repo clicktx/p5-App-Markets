@@ -37,13 +37,16 @@ sub store {
 
 sub _create_entity {
     my $self = shift;
-    my $result = $self->resultset->search( {} );
+    my $itr = $self->resultset->search( {} );
 
     my @items;
-    while ( my $row = $result->next ) {
-        my %data = $row->get_inflated_columns;
-        push @items, ( $row->name => \%data );
-    }
+    $itr->each(
+        sub {
+            my $row  = shift;
+            my %data = $row->get_inflated_columns;
+            push @items, ( $row->name => \%data );
+        }
+    );
     return $self->app->factory('entity-preference')->create( { items => \@items } );
 }
 
