@@ -4,8 +4,8 @@ use Mojo::Base 'Markets::Schema::Base::ResultSet';
 sub find_by_email {
     my ( $self, $email ) = @_;
 
-    my $customer = $self->find( { 'email.address' => $email }, { prefetch => { emails => 'email' } } );
-    return $customer ? $self->find_by_id( $customer->id ) : undef;
+    my $customer_id = $self->get_id_by_email($email);
+    return $self->find_by_id($customer_id);
 }
 
 sub find_by_id {
@@ -13,11 +13,18 @@ sub find_by_id {
     return $self->find( $customer_id, { prefetch => [ 'password', { emails => 'email' } ] } );
 }
 
-sub search_by_email {
+sub get_id_by_email {
     my ( $self, $email ) = @_;
 
     my $customer = $self->find( { 'email.address' => $email }, { prefetch => { emails => 'email' } } );
-    return $customer ? $self->search_by_id( $customer->id ) : $self->search_by_id();
+    return $customer ? $customer->id : undef;
+}
+
+sub search_by_email {
+    my ( $self, $email ) = @_;
+
+    my $customer_id = $self->get_id_by_email($email);
+    return $self->search_by_id($customer_id);
 }
 
 sub search_by_id {
@@ -56,6 +63,10 @@ the following new ones.
 =head2 C<find_by_id>
 
     my $customer = $resultset->find_by_id($customer_id);
+
+=head2 C<get_id_by_email>
+
+    my $customer_id = $self->get_id_by_email($email);
 
 =head2 C<search_by_email>
 
