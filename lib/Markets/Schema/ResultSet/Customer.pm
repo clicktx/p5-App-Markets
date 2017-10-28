@@ -13,6 +13,18 @@ sub find_by_id {
     return $self->find( $customer_id, { prefetch => [ 'password', { emails => 'email' } ] } );
 }
 
+sub search_by_email {
+    my ( $self, $email ) = @_;
+
+    my $customer = $self->find( { 'email.address' => $email }, { prefetch => { emails => 'email' } } );
+    return $customer ? $self->search_by_id( $customer->id ) : $self->search_by_id();
+}
+
+sub search_by_id {
+    my ( $self, $customer_id ) = @_;
+    return $self->search( { 'me.id' => $customer_id }, { prefetch => [ 'password', { emails => 'email' } ] } );
+}
+
 1;
 __END__
 =encoding utf8
@@ -39,11 +51,19 @@ the following new ones.
 
 =head2 C<find_by_email>
 
-    my $customer = $rs->find_by_email($email);
+    my $customer = $resultset->find_by_email($email);
 
 =head2 C<find_by_id>
 
-    my $customer = $rs->find_by_id($customer_id);
+    my $customer = $resultset->find_by_id($customer_id);
+
+=head2 C<search_by_email>
+
+    my $ire = $resultset->search_by_email($email);
+
+=head2 C<search_by_id>
+
+    my itr = $resultset->search_by_id($customer_id);
 
 =head1 AUTHOR
 
