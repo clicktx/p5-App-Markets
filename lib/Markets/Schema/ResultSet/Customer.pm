@@ -10,7 +10,7 @@ sub find_by_email {
 
 sub find_by_id {
     my ( $self, $customer_id ) = @_;
-    return $self->find( { 'me.id' => $customer_id }, { prefetch => [ 'password', { emails => 'email' } ] } );
+    return $self->find( $customer_id, { prefetch => [ 'password', { emails => 'email' } ] } );
 }
 
 1;
