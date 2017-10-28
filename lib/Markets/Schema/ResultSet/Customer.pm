@@ -1,6 +1,8 @@
 package Markets::Schema::ResultSet::Customer;
 use Mojo::Base 'Markets::Schema::Base::ResultSet';
 
+has prefetch => sub { [ 'password', { emails => 'email' } ] };
+
 sub find_by_email {
     my ( $self, $email ) = @_;
 
@@ -10,7 +12,7 @@ sub find_by_email {
 
 sub find_by_id {
     my ( $self, $customer_id ) = @_;
-    return $self->find( $customer_id, { prefetch => [ 'password', { emails => 'email' } ] } );
+    return $self->find( $customer_id, { prefetch => $self->prefetch } );
 }
 
 sub get_id_by_email {
@@ -29,7 +31,7 @@ sub search_by_email {
 
 sub search_by_id {
     my ( $self, $customer_id ) = @_;
-    return $self->search( { 'me.id' => $customer_id }, { prefetch => [ 'password', { emails => 'email' } ] } );
+    return $self->search( { 'me.id' => $customer_id }, { prefetch => $self->prefetch } );
 }
 
 1;
