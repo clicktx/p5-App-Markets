@@ -26,7 +26,7 @@ sub login {
 
     my $email    = $form->param('email');
     my $password = $form->param('password');
-    my $customer = $self->service('customer')->create_entity( email => $email );
+    my $customer = $self->factory('customer')->build($email);
 
     if ( $customer->id ) {
         if ( $self->scrypt_verify( $password, $customer->password->hash ) ) {

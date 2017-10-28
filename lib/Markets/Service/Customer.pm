@@ -33,25 +33,6 @@ sub add_history {
     $c->server_session->data( history => $history );
 }
 
-# SELECT me.id, me.password_id, me.created_at, me.updated_at, password.id, password.hash, password.created_at, password.updated_at, emails.id, emails.customer_id, emails.email_id, emails.is_primary, email.id, email.address, email.is_verified FROM customers me  JOIN passwords password ON password.id = me.password_id LEFT JOIN customer_emails emails ON emails.customer_id = me.id LEFT JOIN emails email ON email.id = emails.email_id WHERE ( email.address = ? ) ORDER BY me.id: 'c@x.org'
-# 単一のentityを生成
-sub create_entity {
-    my $self = shift;
-    my $args = @_ > 1 ? +{@_} : shift;
-
-    # NOTE: whereが空になるのを避けること
-    croak "requied parameter 'customer_id' or 'email'" if !$args->{customer_id} and !$args->{email};
-
-    my $where;
-    $where = { 'me.id'         => $args->{customer_id} } if $args->{customer_id};
-    $where = { 'email.address' => $args->{email} }       if $args->{email};
-
-    my $data = $self->schema->resultset('Customer')
-      ->search( $where, { prefetch => [ 'password', { emails => 'email' } ] }, )->hashref_first;
-
-    $self->app->factory('entity-customer')->create( $data || {} );
-}
-
 sub load_history {
     my $self = shift;
     my $c    = $self->controller;
