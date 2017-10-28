@@ -18,16 +18,6 @@ sub add_item {
     return $self->controller->helpers->cart->add_item($item);
 }
 
-sub create_entity {
-    my $self = shift;
-
-    my $cart      = $self->controller->server_session->cart;
-    my $cart_data = $cart->data;
-    $cart_data->{cart_id} = $cart->cart_id;
-
-    return $self->app->factory('entity-cart')->create($cart_data);
-}
-
 # NOTE: とりあえず全てのshipping_itemsを戻すlogicのみ実装
 sub revert_shipping_item {
     my $self = shift;
@@ -74,12 +64,6 @@ the following new ones.
 =head2 C<add_item>
 
     my $cart = $c->service('cart')->add_item( $product, \%params);
-
-Return L<Markets::Domain::Entity::Cart> object.
-
-=head2 C<create_entity>
-
-    my $cart = $c->service('cart')->create_entity();
 
 Return L<Markets::Domain::Entity::Cart> object.
 

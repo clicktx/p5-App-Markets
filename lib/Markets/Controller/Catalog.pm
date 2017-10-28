@@ -4,8 +4,10 @@ use Mojo::Base 'Markets::Controller';
 sub init {
     my $self = shift;
 
-    my $cart = $self->service('cart')->create_entity();
-    $self->stash( 'markets.entity.cart' => $cart );
+    my $cart   = $self->server_session->cart;
+    my $data   = $cart->data;
+    my $entity = $self->factory('entity-cart')->create( cart_id => $cart->cart_id, %{$data} );
+    $self->stash( 'markets.entity.cart' => $entity );
 
     $self->SUPER::init();
     return $self;
