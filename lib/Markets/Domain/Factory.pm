@@ -68,7 +68,7 @@ sub create_entity {
     my $params = $self->params;
 
     # no need parameter
-    delete $params->{$_} for qw(app entity_class);
+    delete $params->{$_} for qw(app entity_class resultset);
 
     # Create entity
     Markets::Util::load_class( $self->entity_class );
