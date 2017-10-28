@@ -7,7 +7,8 @@ has resultset => sub { shift->schema->resultset('Preference') };
 
 sub load {
     my $self = shift;
-    my $pref = $self->_create_entity;
+
+    my $pref = $self->app->factory('preference')->build;
     $self->app->defaults( $stash_key => $pref );
 
     $self->app->log->debug( 'Loading preferences from DB via ' . __PACKAGE__ );
@@ -33,21 +34,6 @@ sub store {
 
     $pref->reset_modified;
     return 1;
-}
-
-sub _create_entity {
-    my $self = shift;
-    my $itr = $self->resultset->search( {} );
-
-    my @properties;
-    $itr->each(
-        sub {
-            my $row  = shift;
-            my %data = $row->get_inflated_columns;
-            push @properties, ( $row->name => \%data );
-        }
-    );
-    return $self->app->factory('entity-preference')->create( { properties => \@properties } );
 }
 
 1;
