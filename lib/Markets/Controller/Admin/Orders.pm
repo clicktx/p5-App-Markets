@@ -4,7 +4,7 @@ use Mojo::Base 'Markets::Controller::Admin';
 sub index {
     my $self = shift;
 
-    my $form = $self->form_set('search-order');
+    my $form = $self->form_set();
     $self->init_form();
 
     # return $self->render() unless $form->has_data;

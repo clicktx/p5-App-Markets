@@ -10,8 +10,22 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('Sales::OrderHeader');
 
+subtest 'method get_id_by_shipment_id()' => sub {
+    is $rs->get_id_by_shipment_id(2),   1,     'right id';
+    is $rs->get_id_by_shipment_id(3),   2,     'right id';
+    is $rs->get_id_by_shipment_id(999), undef, 'right not found';
+};
+
 subtest 'method find_by_id()' => sub {
-    my $res = $rs->find_by_id(1);
+    _find_tests( $rs->find_by_id(1) );
+};
+
+subtest 'method find_by_shipment_id()' => sub {
+    _find_tests( $rs->find_by_shipment_id(2) );
+};
+
+sub _find_tests {
+    my $res = shift;
 
     is $res->id,         1, 'right id';
     is $res->address_id, 1, 'right address_id';
@@ -40,6 +54,6 @@ subtest 'method find_by_id()' => sub {
 
     $res = $rs->find_by_id(999);
     ok !$res, 'right not found';
-};
+}
 
 done_testing();
