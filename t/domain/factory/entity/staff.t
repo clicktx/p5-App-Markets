@@ -3,8 +3,6 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-use_ok 'Markets::Domain::Factory::Entity::Staff';
-
 my $t = Test::Mojo->new('App');
 my $f = $t->app->factory('entity-staff');
 
