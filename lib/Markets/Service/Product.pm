@@ -19,50 +19,10 @@ sub choices_primary_category {
     return wantarray ? @categories : \@categories;
 }
 
-sub create_entity {
-    my ( $self, $product_id ) = @_;
-
-    my $result = $self->resultset->find($product_id);
-    my $data =
-      $result
-      ? {
-        id          => $result->id,
-        title       => $result->title,
-        description => $result->description,
-        price       => $result->price,
-        created_at  => $result->created_at,
-        updated_at  => $result->updated_at,
-      }
-      : {};
-
-    # Categories
-    my $product_categories =
-      $self->schema->resultset('Product::Category')->get_product_categories_arrayref($product_id);
-    $data->{product_categories} = $product_categories;
-
-    # Ancestors(Primary category path)
-    my @primary_category;
-    my $primary_category = $data->{product_categories}->[0];
-    if ($primary_category) {
-        my $ancestors =
-          $self->schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );
-        push @primary_category, @{$ancestors};
-
-        # Current category
-        my %primary;
-        $primary{id}    = $primary_category->{category_id};
-        $primary{title} = $primary_category->{title};
-        push @primary_category, \%primary;
-    }
-    $data->{primary_category} = \@primary_category;
-
-    return $self->app->factory('entity-product')->create($data);
-}
-
 sub duplicate_product {
     my ( $self, $product_id ) = @_;
 
-    my $entity = $self->create_entity($product_id);
+    my $entity = $self->controller->factory('product')->build($product_id);
     my $title  = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
     my $i      = $self->resultset->search( { title => { like => $title . '%' } } )->count + 1;
     $entity->title( $title . $i );
@@ -136,12 +96,6 @@ the following new ones.
 Argument: L<Markets::Domain::Entity::Product> object.
 
 Return: Array ou Array refference.
-
-=head2 C<create_entity>
-
-    my $product = $app->service('product')->create_entity($product_id);
-
-Return L<Markets::Domain::Entity::Product> object.
 
 =head2 C<duplicate_product>
 
