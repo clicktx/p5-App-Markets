@@ -27,8 +27,11 @@ subtest 'get_entity' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('category_tree');
 
+    is $c->entity_cache('category_tree'), undef, 'right not cache';
+
     my $tree = $service->get_entity();
     isa_ok $tree, 'Markets::Domain::Entity::CategoryTree';
+    ok $c->entity_cache('category_tree'), 'right cache';
 };
 
 done_testing();
