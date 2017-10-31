@@ -1,6 +1,5 @@
 package Markets::Service::Customer;
 use Mojo::Base 'Markets::Service';
-use Carp qw/croak/;
 use Try::Tiny;
 
 # getアクセスのみ履歴として保存する
@@ -106,16 +105,6 @@ the following new ones.
 
     Add history current URL for server session.
     Unsave list setting in L<Markets::Routes>.
-
-=head2 C<create_entity>
-
-    my $customer = $c->service('customer')->create_entity( customer_id => $customer_id );
-
-    my $customer = $c->service('customer')->create_entity( email => $customer_email );
-
-Return L<Markets::Domain::Entity::Customer> object.
-
-Required argument: C<customer_id> or C<email>
 
 =head2 C<load_history>
 

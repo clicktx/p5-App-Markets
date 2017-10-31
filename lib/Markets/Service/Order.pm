@@ -24,14 +24,6 @@ the following new ones.
 L<Markets::Service::Order> inherits all methods from L<Markets::Service> and implements
 the following new ones.
 
-=head2 C<create_entity>
-
-    my $category_tree = $c->service('order')->create_entity($shipment_id);
-
-Return L<Markets::Domain::Enity::SalesOrder> object.
-
-Creat and cache entity.getting method is L</get_entity>.
-
 =head1 AUTHOR
 
 Markets authors.
