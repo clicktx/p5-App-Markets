@@ -6,22 +6,6 @@ use Test::Mojo;
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
-use_ok 'Markets::Service::CategoryTree';
-
-subtest 'basic' => sub {
-    my $c       = $app->build_controller;
-    my $service = $c->service('category_tree');
-
-    can_ok $service, 'create_entity';
-};
-
-subtest 'create_entity' => sub {
-    my $c       = $app->build_controller;
-    my $service = $c->service('category_tree');
-
-    my $tree = $service->create_entity();
-    isa_ok $tree, 'Markets::Domain::Entity::CategoryTree';
-};
 
 subtest 'get_entity' => sub {
     my $c       = $app->build_controller;
@@ -31,7 +15,10 @@ subtest 'get_entity' => sub {
 
     my $tree = $service->get_entity();
     isa_ok $tree, 'Markets::Domain::Entity::CategoryTree';
-    ok $c->entity_cache('category_tree'), 'right cache';
+
+    my $cache = $c->entity_cache('category_tree');
+    ok $cache,     'right cache';
+    isa_ok $cache, 'Markets::Domain::Entity::CategoryTree';
 };
 
 done_testing();

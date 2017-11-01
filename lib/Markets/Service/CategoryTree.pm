@@ -17,8 +17,14 @@ sub create_entity {
 
 sub get_entity {
     my $self  = shift;
+
     my $cache = $self->app->entity_cache('category_tree');
-    return $cache ? $cache : $self->create_entity();
+    return $cache if $cache;
+
+    # Store in cache
+    my $entity = $self->app->factory('category_tree')->build;
+    $self->app->entity_cache( category_tree => $entity );
+    return $entity;
 }
 
 sub _create_branch_tree {
@@ -73,7 +79,7 @@ Creat and cache entity.getting method is L</get_entity>.
 Return L<Markets::Domain::Enity::CategoryTree> object.
 
 If there is a cache it returns it.
-If it is not cached, it creates an entity.
+If it is not cached, it creates an entity object.
 
 =head1 AUTHOR
 
