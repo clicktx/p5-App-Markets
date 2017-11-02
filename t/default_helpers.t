@@ -10,14 +10,17 @@ my $app = $t->app;
 subtest 'entity_cache' => sub {
     my $c = $app->build_controller;
 
-    is $c->entity_cache('hoge'), undef, 'right no cache';
+    isa_ok $c->entity_cache, 'Mojo::Cache';
+    is $c->entity_cache('foo'), undef, 'right no cache';
 
-    $c->entity_cache( 'hoge' => 1 );
-    is $c->entity_cache('hoge'), 1, 'right add cache';
+    $c->entity_cache( 'foo' => 1 );
+    is $c->entity_cache('foo'), 1, 'right add cache';
 
-    my $cache = $c->entity_cache( 'hoge' => 5 );
-    is $c->entity_cache('hoge'), 5, 'right replace cache';
-    is $cache, 5, 'right return value';
+    $c->entity_cache( 'foo' => 5 );
+    is $c->entity_cache('foo'), 5, 'right replace cache';
+
+    $c->entity_cache( 'bar' => 7 );
+    is $c->entity_cache('bar'), 7, 'right other cache';
 };
 
 done_testing();

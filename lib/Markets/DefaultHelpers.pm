@@ -1,9 +1,10 @@
 package Markets::DefaultHelpers;
 use Mojo::Base 'Mojolicious::Plugin';
 
-use Carp          ();
-use Scalar::Util  ();
-use Mojo::Util    ();
+use Carp         ();
+use Scalar::Util ();
+use Mojo::Util   ();
+use Mojo::Cache;
 use Markets::Util ();
 use Markets::Domain::Factory;
 
@@ -36,8 +37,13 @@ sub __x_default_lang {
 
 sub _entity_cache {
     my $self = shift;
-    my $caches = $self->stash('markets.entity.cache') || $self->app->defaults( 'markets.entity.cache' => {} );
-    return @_ > 1 ? $caches->{ $_[0] } = $_[1] : $caches->{ $_[0] };
+
+    my $cache = $self->app->defaults('markets.entity.cache');
+    if ( !$cache ) {
+        $cache = Mojo::Cache->new();
+        $self->app->defaults( 'markets.entity.cache' => $cache );
+    }
+    return @_ ? @_ > 1 ? $cache->set( $_[0] => $_[1] ) : $cache->get( $_[0] ) : $cache;
 }
 
 sub _factory {
@@ -118,6 +124,9 @@ Alias for $c->session;
     $c->cart($cart);
 
 =head2 C<entity_cache>
+
+    # Return L<Mojo::Cache> object.
+    my $mojo_cache = $c->entity_cache;
 
     # Getter
     my $entity = $c->entity_cache('foo_entity');
