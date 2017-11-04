@@ -10,6 +10,7 @@ sub t01_basic : Tests() {
     my $t    = $self->t;
 
     $t->get_ok('/category/1')->status_is(200)->content_like(qr/Sports/i);
+    $t->get_ok('/category/999')->status_is(404);
 }
 
 __PACKAGE__->runtests;

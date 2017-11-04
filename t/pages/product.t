@@ -6,12 +6,17 @@ use Test::More;
 use Test::Mojo;
 use DDP;
 
-sub add_item : Tests() {
+sub t01_basic : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    # 商品ページ
-    $t->get_ok('/product/1')->status_is(200)->content_like(qr/product/i);
+    $t->get_ok('/product/1')->status_is(200)->content_like(qr/Product1/);
+    $t->get_ok('/product/999')->status_is(404);
+}
+
+sub t02_add_item : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
 
     # カートに商品追加
     my $post_data = {
