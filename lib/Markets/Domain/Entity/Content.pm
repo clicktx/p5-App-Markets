@@ -1,5 +1,6 @@
 package Markets::Domain::Entity::Content;
 use Markets::Domain::Entity;
+use Markets::Domain::Collection;
 use Data::Page;
 
 has title       => '';
