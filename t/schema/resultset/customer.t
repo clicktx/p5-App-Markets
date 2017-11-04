@@ -41,4 +41,28 @@ subtest 'method find_by_email()' => sub {
     ok !$res, 'right not found';
 };
 
+subtest 'method get_id_by_email' => sub {
+    my $customer_id = $rs->get_id_by_email('c@x.org');
+    is $customer_id, 111, 'right get id';
+
+    $customer_id = $rs->get_id_by_email('xx@xx.org');
+    is $customer_id, undef, 'right no found';
+};
+
+subtest 'method search_by_id()' => sub {
+    my @res = $rs->search_by_id(111);
+    is @res, 1, 'right search by id';
+
+    @res = $rs->search_by_id(999);
+    ok !@res, 'right not found';
+};
+
+subtest 'method search_by_email()' => sub {
+    my @res = $rs->search_by_email('c@x.org');
+    is @res, 1, 'right search by email';
+
+    @res = $rs->search_by_email('xx@xx.org');
+    ok !@res, 'right not found';
+};
+
 done_testing();

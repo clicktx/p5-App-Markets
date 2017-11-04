@@ -6,7 +6,7 @@ use Markets::Domain::Factory;
 use_ok 'Markets::Domain::Entity::Preference';
 
 my $data = {
-    items => [
+    properties => [
         hoge => {
             id            => 3,
             value         => '',
@@ -45,7 +45,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'attributes' => sub {
-    can_ok $pref, 'items';
+    can_ok $pref, 'properties';
 };
 
 subtest 'value()' => sub {

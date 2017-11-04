@@ -13,8 +13,8 @@ sub index {
     my $category_id = $self->stash('category_id');
     my $page_no     = $form->param('p') || 1;
     my $rows        = 3;
-    my $category    = $self->service('category')->create_entity( $category_id, $page_no, $rows );
-    return $self->reply->not_found() unless $category;
+    my $category    = $self->factory('category')->build( $category_id, $page_no, $rows );
+    return $self->reply->not_found() unless $category->id;
 
     # widget category tree
     my $category_tree = $self->service('category_tree')->get_entity();

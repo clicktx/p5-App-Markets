@@ -2,13 +2,11 @@ package Markets::Domain::Entity;
 use Markets::Domain::Base;
 use Markets::Domain::Collection;
 use Markets::Domain::IxHash;
-
-use Carp qw/croak/;
 use Mojo::Util qw/sha1_sum/;
 use Scalar::Util qw/blessed/;
 use Data::Clone qw/data_clone/;
 
-has id => sub { Carp::croak 'Attribute "id" not implemented by subclass' };
+has 'id';
 
 my @needless_attrs = (qw/id created_at updated_at/);
 

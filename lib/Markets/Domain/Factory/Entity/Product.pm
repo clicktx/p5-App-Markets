@@ -1,6 +1,47 @@
 package Markets::Domain::Factory::Entity::Product;
 use Mojo::Base 'Markets::Domain::Factory';
 
+sub build {
+    my ( $self, $product_id ) = @_;
+
+    my $schema  = $self->app->schema;
+    my $columns = [
+        qw(
+          id
+          title
+          description
+          price
+          created_at
+          updated_at
+          )
+    ];
+    my $itr = $schema->resultset('Product')->search( { id => $product_id }, { columns => $columns } );
+    my $data = $itr->hashref_first || {};
+
+    # Categories
+    my $product_categories = $schema->resultset('Product::Category')->get_product_categories_arrayref($product_id);
+    $data->{product_categories} = $product_categories;
+
+    # Ancestors(Primary category path)
+    my @primary_category;
+    my $primary_category = $data->{product_categories}->[0];
+
+    if ($primary_category) {
+        my $ancestors =
+          $schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );
+        push @primary_category, @{$ancestors};
+
+        # Current category
+        my %primary;
+        $primary{id}    = $primary_category->{category_id};
+        $primary{title} = $primary_category->{title};
+        push @primary_category, \%primary;
+    }
+    $data->{primary_category} = \@primary_category;
+
+    return $self->create($data);
+}
+
 sub cook {
     my $self = shift;
 
@@ -38,6 +79,14 @@ the following new ones.
 
 L<Markets::Domain::Factory::Entity::Product> inherits all methods from L<Markets::Domain::Factory> and implements
 the following new ones.
+
+=head2 C<build>
+
+    my $entity = $factory->build( $product_id );
+
+Return L<Markets::Domain::Entity::Product> object.
+
+Create entity by product ID.
 
 =head1 AUTHOR
 

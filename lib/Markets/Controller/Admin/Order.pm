@@ -45,7 +45,7 @@ sub delete {
 sub duplicate {
     my $self = shift;
 
-    my $shipment_id = $self->stash('id');
+    # my $shipment_id = $self->stash('id');
 
     # 複数配送の場合はどうするか？
     use DDP;
@@ -60,7 +60,7 @@ sub duplicate {
     # $shipment->shipping_items->each( sub { p $_->as_fdat } );
 
     # return $self->redirect_to('RN_admin_orders');
-    return $self->render('admin/order/edit')
+    return $self->render('admin/order/edit');
 }
 
 # NOTE: Catalog::Checkoutに関連する実装がある。

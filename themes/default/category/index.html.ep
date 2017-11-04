@@ -22,11 +22,12 @@ category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name'
 % }
 
 <ul>
-    % while ( my $product = $products->next ) {
+    % $products->each( sub {
+        % my $product = shift;
         <li>
             <%= link_to $product->title => 'RN_product' => { product_id => $product->id } %>
         </li>
-    % }
+    % });
 </ul>
 
 <%= include 'common/pagination' %>

@@ -1,6 +1,18 @@
 package Markets::Domain::Factory::Entity::Customer;
 use Mojo::Base 'Markets::Domain::Factory';
 
+has resultset => sub { shift->app->schema->resultset('Customer') };
+
+sub build {
+    my ( $self, $arg ) = @_;
+
+    return unless $arg;
+    my $itr = $arg =~ /\@/ ? $self->resultset->search_by_email($arg) : $self->resultset->search_by_id($arg);
+
+    my $data = $itr->hashref_first;
+    return $data ? $self->create($data) : undef;
+}
+
 sub cook {
     my $self = shift;
 
@@ -40,6 +52,14 @@ the following new ones.
 
 L<Markets::Domain::Factory::Entity::Customer> inherits all methods from L<Markets::Domain::Factory> and implements
 the following new ones.
+
+=head2 C<build>
+
+    my $entity = $factory->build( $id | $email );
+
+Return L<Markets::Domain::Entity::Customer> object.
+
+Create entity by customer ID or Email address.
 
 =head1 AUTHOR
 

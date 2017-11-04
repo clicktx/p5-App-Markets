@@ -4,8 +4,9 @@ use Mojo::Base 'Markets::Schema::Base::ResultSet';
 sub get_ancestors_arrayref {
     my ( $self, $category_id ) = @_;
 
-    my @ancestors = $self->find($category_id)->ancestors->hashref_array;
-    return \@ancestors;
+    my $result = $self->find($category_id);
+    my $ancestors = $result ? $result->ancestors->hashref_array : [];
+    return $ancestors;
 }
 
 sub get_category_choices {

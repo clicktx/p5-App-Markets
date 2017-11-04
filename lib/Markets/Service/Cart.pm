@@ -9,23 +9,13 @@ sub add_item {
     # キャッシュする場合はservice('product')->load_entity()等としてキャッシュを使うようにする
     # fileキャッシュで全てのproductのキャッシュを生成するのもありか？
     my $product = $self->controller->stash('product');
-    $product = $self->controller->service('product')->create_entity( $args->{product_id} ) unless $product;
+    $product = $self->controller->factory('product')->build( $args->{product_id} ) unless $product;
 
     $args->{product_title} = $product->title;
     $args->{price}         = $product->price;
 
     my $item = $self->controller->factory('entity-selling_item')->create($args);
     return $self->controller->helpers->cart->add_item($item);
-}
-
-sub create_entity {
-    my $self = shift;
-
-    my $cart      = $self->controller->server_session->cart;
-    my $cart_data = $cart->data;
-    $cart_data->{cart_id} = $cart->cart_id;
-
-    return $self->app->factory('entity-cart')->create($cart_data);
 }
 
 # NOTE: とりあえず全てのshipping_itemsを戻すlogicのみ実装
@@ -74,12 +64,6 @@ the following new ones.
 =head2 C<add_item>
 
     my $cart = $c->service('cart')->add_item( $product, \%params);
-
-Return L<Markets::Domain::Entity::Cart> object.
-
-=head2 C<create_entity>
-
-    my $cart = $c->service('cart')->create_entity();
 
 Return L<Markets::Domain::Entity::Cart> object.
 

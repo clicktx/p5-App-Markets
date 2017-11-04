@@ -74,8 +74,7 @@ subtest 'Entity object base' => sub {
     $e1->id(111);
     is $e1->is_modified, 1, 'right modified';
 
-    eval { Markets::Domain::Entity::Hoge->new->id };
-    like $@, qr/Attribute "id" not implemented by subclass/, 'right not set entity id';
+    is Markets::Domain::Entity::Hoge->new->id, undef, 'right no data entity';
 };
 
 subtest 'to_data method' => sub {

@@ -29,6 +29,7 @@ sub t03_get_request : Tests() {
     $t->get_ok('/admin/product/1/duplicate')->status_is(200);
     $t->get_ok('/admin/product/1/edit')->status_is(200);
     $t->get_ok('/admin/product/1/edit/category')->status_is(200);
+    $t->get_ok('/admin/product/999')->status_is(404);
 
     # delete
     $t->get_ok('/admin/product/3/delete')->status_is(200);

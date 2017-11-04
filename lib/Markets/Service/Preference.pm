@@ -5,21 +5,10 @@ use Try::Tiny;
 my $stash_key = 'markets.entity.preference';
 has resultset => sub { shift->schema->resultset('Preference') };
 
-sub create_entity {
-    my $self = shift;
-    my $result = $self->resultset->search( {} );
-
-    my @items;
-    while ( my $row = $result->next ) {
-        my %data = $row->get_inflated_columns;
-        push @items, ( $row->name => \%data );
-    }
-    return $self->app->factory('entity-preference')->create( { items => \@items } );
-}
-
 sub load {
     my $self = shift;
-    my $pref = $self->create_entity;
+
+    my $pref = $self->app->factory('preference')->build;
     $self->app->defaults( $stash_key => $pref );
 
     $self->app->log->debug( 'Loading preferences from DB via ' . __PACKAGE__ );
@@ -33,9 +22,9 @@ sub store {
     return unless $pref->is_modified;
 
     my $cb = sub {
-        $pref->items->each(
+        $pref->properties->each(
             sub {
-                $self->resultset->search( { id => $b->id } )->update( { value => $b->value } ) if $b->is_modified;
+                $self->resultset->find( $b->id )->update( { value => $b->value } ) if $b->is_modified;
             }
         );
     };
@@ -67,12 +56,6 @@ the following new ones.
 
 L<Markets::Service::Preference> inherits all methods from L<Markets::Service> and implements
 the following new ones.
-
-=head2 C<create_entity>
-
-    my $preferences = $app->service('preference')->create_entity();
-
-Return L<Markets::Domain::Entity::Preference> object.
 
 =head2 C<load>
 

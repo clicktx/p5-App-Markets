@@ -26,7 +26,7 @@ sub login {
 
     my $login_id = $form->param('login_id');
     my $password = $form->param('password');
-    my $staff    = $self->service('admin-staff')->create_entity( login_id => $login_id );
+    my $staff    = $self->factory('staff')->build($login_id);
 
     if ( $staff->id ) {
         if ( $self->scrypt_verify( $password, $staff->password->hash ) ) {

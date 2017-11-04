@@ -8,30 +8,25 @@ my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 use_ok 'Markets::Service::Product';
 
-subtest 'basic' => sub {
-    my $c       = $app->build_controller;
-    my $service = $c->service('product');
-
-    can_ok $service, 'create_entity';
-};
-
 subtest 'duplicate_product' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
 
-    my $product = $service->duplicate_product(1);
-    my $e1      = $service->create_entity(1)->to_data;
-    my $e2      = $service->create_entity( $product->id )->to_data;
+    my $last_id = $app->schema->resultset('Product')->search( {}, { order_by => { -desc => 'id' } } )->first->id;
+    my $orig = $app->schema->resultset('Product')->find(1);
 
-    is $e1->{price},                     $e2->{price},              'right price';
-    is $e1->{description},               $e2->{description},        'right description';
-    is_deeply $e1->{product_categories}, $e2->{product_categories}, 'right product_categories';
+    my $product = $service->duplicate_product(1);
+    is $product->id, $last_id + 1, 'right id';
+    is $product->description, $orig->description, 'right description';
+    is $product->price,       $orig->price,       'right price';
+    like $product->title, qr/copy/, 'copy title';
+    is $product->product_categories, $orig->product_categories, 'right product_categories';
 };
 
 subtest 'choices_primary_category' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
-    my $e       = $service->create_entity(1);
+    my $e       = $app->factory('product')->build(1);
 
     my $choices = $service->choices_primary_category($e);
     is ref $choices, 'ARRAY', 'right get array ref';

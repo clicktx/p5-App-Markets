@@ -40,7 +40,7 @@ sub edit {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    my $entity     = $self->service('product')->create_entity($product_id);
+    my $entity     = $self->factory('product')->build($product_id);
 
     # Init form
     my $form = $self->form_set('admin-product');
@@ -61,7 +61,7 @@ sub category {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    my $entity     = $self->service('product')->create_entity($product_id);
+    my $entity     = $self->factory('product')->build($product_id);
 
     # NOTE: 存在しないproduct_idの場合はエラーにする
 

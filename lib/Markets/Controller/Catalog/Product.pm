@@ -15,7 +15,7 @@ sub index {
     my $product_id = $self->stash('product_id');
     $self->init_form( $form, $product_id );
 
-    my $product = $self->service('product')->create_entity($product_id);
+    my $product = $self->factory('product')->build($product_id);
     $self->stash( product => $product );
 
     my @breadcrumb;
