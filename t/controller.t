@@ -8,7 +8,7 @@ my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
 # routes
-my $r = $app->routes->namespaces( ['Markets::Controller'] );
+my $r = $app->routes->namespaces( ['Yetie::Controller'] );
 $r->get('/customer')->to('customer#login');
 $r->get('/staff')->to('staff#login');
 $r->get('/buged')->to('buged#login');
@@ -21,8 +21,8 @@ subtest 'is_logged_in' => sub {
 
 done_testing();
 
-package Markets::Controller::Customer;
-use Mojo::Base 'Markets::Controller::Catalog';
+package Yetie::Controller::Customer;
+use Mojo::Base 'Yetie::Controller::Catalog';
 
 sub login {
     my $c = shift;
@@ -30,8 +30,8 @@ sub login {
 }
 1;
 
-package Markets::Controller::Staff;
-use Mojo::Base 'Markets::Controller::Admin';
+package Yetie::Controller::Staff;
+use Mojo::Base 'Yetie::Controller::Admin';
 
 sub login {
     my $c = shift;
@@ -39,8 +39,8 @@ sub login {
 }
 1;
 
-package Markets::Controller::Buged;
-use Mojo::Base 'Markets::Controller';
+package Yetie::Controller::Buged;
+use Mojo::Base 'Yetie::Controller';
 
 sub login {
     my $c = shift;

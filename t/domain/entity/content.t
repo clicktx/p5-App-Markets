@@ -1,6 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
-use Markets::Domain::Factory;
+use Yetie::Domain::Factory;
 
 my $test_data = {
     breadcrumb => [
@@ -10,14 +10,14 @@ my $test_data = {
 };
 
 sub _create_entity {
-    Markets::Domain::Factory->new('entity-content')->create($test_data);
+    Yetie::Domain::Factory->new('entity-content')->create($test_data);
 }
 
-use_ok 'Markets::Domain::Entity::Content';
+use_ok 'Yetie::Domain::Entity::Content';
 
 subtest 'basic' => sub {
-    my $e = Markets::Domain::Entity::Content->new();
-    isa_ok $e, 'Markets::Domain::Entity';
+    my $e = Yetie::Domain::Entity::Content->new();
+    isa_ok $e, 'Yetie::Domain::Entity';
 
     can_ok $e, 'title';
     can_ok $e, 'description';
@@ -34,9 +34,9 @@ subtest 'breadcrumb' => sub {
 
     my $attr = $e->breadcrumb;
     use DDP;p $attr;
-    isa_ok $attr, 'Markets::Domain::Collection';
+    isa_ok $attr, 'Yetie::Domain::Collection';
     is @{$attr}, 2, 'right elements';
-    isa_ok $attr->[0], 'Markets::Domain::Entity::Breadcrumb';
+    isa_ok $attr->[0], 'Yetie::Domain::Entity::Breadcrumb';
 };
 
 subtest 'pager' => sub {

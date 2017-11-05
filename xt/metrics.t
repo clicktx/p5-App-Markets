@@ -5,8 +5,8 @@ use Test::Perl::Metrics::Lite (
     -mccabe_complexity => 15,    # default 10
     -loc               => 60,    # default 60
     -except_file       => [
-        qw(lib/Markets/View/DOM/EP.pm lib/Markets/Domain/Base.pm lib/Markets/Domain/Entity.pm),
-        qw(lib/Markets/Form/Field.pm)
+        qw(lib/Yetie/View/DOM/EP.pm lib/Yetie/Domain/Base.pm lib/Yetie/Domain/Entity.pm),
+        qw(lib/Yetie/Form/Field.pm)
     ],
 );
 

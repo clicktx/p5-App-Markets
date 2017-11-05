@@ -4,13 +4,13 @@ use File::Spec;
 use File::Basename qw(dirname);
 use lib File::Spec->catdir( dirname(__FILE__), '..', '..', 'lib' ), File::Spec->catdir( dirname(__FILE__), '..', '..' );
 use t::Util;
-use Markets::Schema;
-use Markets::Install::Util;
+use Yetie::Schema;
+use Yetie::Install::Util;
 use Mojo::File qw/path/;
 
 $ENV{TEST_MYSQL} ||= do {
     require Test::mysqld;
-    my $conf = Markets::Install::Util::load_config();
+    my $conf = Yetie::Install::Util::load_config();
 
     say 'Starting mysqld...';
     my $mysqld = Test::mysqld->new(
@@ -27,11 +27,11 @@ $ENV{TEST_MYSQL} ||= do {
 
     # create db
     say 'Create db...';
-    system 'mysqladmin -uroot -S ' . $conf->{db}->{socket} . ' create t_markets_db';
+    system 'mysqladmin -uroot -S ' . $conf->{db}->{socket} . ' create t_yetie_db';
 
     # create table
     say 'Create tables...';
-    my $schema = Markets::Schema->connect( $dsn, $conf->{user}, $conf->{password} );
+    my $schema = Yetie::Schema->connect( $dsn, $conf->{user}, $conf->{password} );
     $schema->deploy;
 
     # insert data
@@ -43,7 +43,7 @@ $ENV{TEST_MYSQL} ||= do {
         path( $base_dir, '..', '..',  'share', 'default_data.pl' ),
         path( $base_dir, '..', 'App', 'share', 'test_data.pl' )
       );
-    Markets::Install::Util::insert_data( $schema, $_ ) for @paths;
+    Yetie::Install::Util::insert_data( $schema, $_ ) for @paths;
 
     $dsn;
 };

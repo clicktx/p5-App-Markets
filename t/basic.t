@@ -16,12 +16,12 @@ subtest 'admin page' => sub {
 };
 
 subtest 'utility' => sub {
-    use_ok 'Markets::Util';
-    my $themes = Markets::Util::directories( 'themes',
+    use_ok 'Yetie::Util';
+    my $themes = Yetie::Util::directories( 'themes',
         { ignore => [ 'default', 'admin' ] } );
     is_deeply $themes, ['mytheme'], 'loading mytheme';
 
-    my $addons = Markets::Util::directories('addons');
+    my $addons = Yetie::Util::directories('addons');
     is ref $addons, 'ARRAY', 'loading addons';
 };
 

@@ -2,7 +2,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
 
-use_ok 'Markets::Domain::Entity::Preference::Property';
+use_ok 'Yetie::Domain::Entity::Preference::Property';
 
 my $data = {
     id            => 1,
@@ -15,10 +15,10 @@ my $data = {
     group_id      => 1,
 };
 
-my $e = Markets::Domain::Entity::Preference::Property->new($data);
+my $e = Yetie::Domain::Entity::Preference::Property->new($data);
 
 subtest 'basic' => sub {
-    isa_ok $e, 'Markets::Domain::Entity';
+    isa_ok $e, 'Yetie::Domain::Entity';
 };
 
 subtest 'attributes' => sub {

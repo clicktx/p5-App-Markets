@@ -3,9 +3,9 @@ use Mojo::Base -strict;
 use Test::More;
 
 use_ok $_ for qw(
-  Markets
+  Yetie
   MojoX::Session
-  Markets::Session::Store::Dbic
+  Yetie::Session::Store::Dbic
   Mojolicious::Plugin::Model
   Mojolicious::Plugin::LocaleTextDomainOO
 );

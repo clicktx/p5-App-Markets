@@ -11,7 +11,7 @@ subtest 'method build()' => sub {
     ok !$e, 'right argument empty';
 
     $e = $f->build(111);
-    isa_ok $e, 'Markets::Domain::Entity::Customer', 'right build by id';
+    isa_ok $e, 'Yetie::Domain::Entity::Customer', 'right build by id';
 
     $e = $f->build('c@x.org');
     is $e->id, 111, 'right build by email';

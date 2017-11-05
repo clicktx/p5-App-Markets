@@ -6,7 +6,7 @@ use Test::Mojo;
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
-use_ok 'Markets::Service::Product';
+use_ok 'Yetie::Service::Product';
 
 subtest 'duplicate_product' => sub {
     my $c       = $app->build_controller;

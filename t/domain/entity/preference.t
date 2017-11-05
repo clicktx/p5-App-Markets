@@ -1,9 +1,9 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
-use Markets::Domain::Factory;
+use Yetie::Domain::Factory;
 
-use_ok 'Markets::Domain::Entity::Preference';
+use_ok 'Yetie::Domain::Entity::Preference';
 
 my $data = {
     properties => [
@@ -38,10 +38,10 @@ my $data = {
     ],
 };
 
-my $pref = Markets::Domain::Factory->new('entity-preference')->create($data);
+my $pref = Yetie::Domain::Factory->new('entity-preference')->create($data);
 
 subtest 'basic' => sub {
-    isa_ok $pref, 'Markets::Domain::Entity';
+    isa_ok $pref, 'Yetie::Domain::Entity';
 };
 
 subtest 'attributes' => sub {

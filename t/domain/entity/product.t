@@ -1,6 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
-use Markets::Domain::Factory;
+use Yetie::Domain::Factory;
 
 my $test_data = {
     title            => 'product title',
@@ -24,14 +24,14 @@ my $test_data = {
 };
 
 sub _create_entity {
-    Markets::Domain::Factory->new('entity-product')->create($test_data);
+    Yetie::Domain::Factory->new('entity-product')->create($test_data);
 }
 
-use_ok 'Markets::Domain::Entity::Product';
+use_ok 'Yetie::Domain::Entity::Product';
 
 subtest 'basic' => sub {
-    my $e = Markets::Domain::Entity::Product->new();
-    isa_ok $e, 'Markets::Domain::Entity';
+    my $e = Yetie::Domain::Entity::Product->new();
+    isa_ok $e, 'Yetie::Domain::Entity';
 
     can_ok $e, 'title';
     can_ok $e, 'description';
@@ -46,18 +46,18 @@ subtest 'primary_category' => sub {
     my $e = _create_entity();
 
     my $attr = $e->primary_category;
-    isa_ok $attr, 'Markets::Domain::Collection';
+    isa_ok $attr, 'Yetie::Domain::Collection';
     is @{$attr}, 5, 'right elements';
-    isa_ok $attr->[0], 'Markets::Domain::Entity::CategoryTree::Node';
+    isa_ok $attr->[0], 'Yetie::Domain::Entity::CategoryTree::Node';
 };
 
 subtest 'product_categories' => sub {
     my $e = _create_entity();
 
     my $attr = $e->product_categories;
-    isa_ok $attr, 'Markets::Domain::Collection';
+    isa_ok $attr, 'Yetie::Domain::Collection';
     is @{$attr}, 3, 'right elements';
-    isa_ok $attr->[0], 'Markets::Domain::Entity::Product::Category';
+    isa_ok $attr->[0], 'Yetie::Domain::Entity::Product::Category';
 };
 
 done_testing();

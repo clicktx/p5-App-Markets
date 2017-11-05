@@ -5,13 +5,13 @@ use Mojo::DOM;
 use t::Util;
 use Mojo::Collection 'c';
 
-use_ok 'Markets::Form::Field';
+use_ok 'Yetie::Form::Field';
 
 my $t = Test::Mojo->new('App');
 my $c = $t->app->build_controller;
 
 sub f {
-    return Markets::Form::Field->new(
+    return Yetie::Form::Field->new(
         field_key     => 'item.[].name',
         name          => 'item.0.name',
         label         => 'label text',
@@ -54,7 +54,7 @@ subtest 'label' => sub {
 
 subtest 'input basic' => sub {
     my $f  = f();
-    my $f2 = Markets::Form::Field->new(
+    my $f2 = Yetie::Form::Field->new(
         field_key     => 'foo',
         name          => 'foo',
         default_value => 'bar',
@@ -134,7 +134,7 @@ subtest 'input other' => sub {
 };
 
 subtest 'hidden' => sub {
-    my $f = Markets::Form::Field->new( name => 'item.0.name', class => 'foo' );
+    my $f = Yetie::Form::Field->new( name => 'item.0.name', class => 'foo' );
 
     $f->default_value('default');
     my $dom = Mojo::DOM->new( $f->hidden($c) );
@@ -174,7 +174,7 @@ subtest 'hidden' => sub {
 };
 
 subtest 'textarea' => sub {
-    my $f = Markets::Form::Field->new(
+    my $f = Yetie::Form::Field->new(
         field_key     => 'order.note',
         name          => 'order.note',
         type          => 'textarea',
@@ -201,7 +201,7 @@ subtest 'textarea' => sub {
 };
 
 subtest 'radio checkbox' => sub {
-    my $f = Markets::Form::Field->new(
+    my $f = Yetie::Form::Field->new(
         name  => 'agreed',
         value => 'yes',
         label => 'I agreed',
@@ -247,7 +247,7 @@ subtest 'radio checkbox' => sub {
 };
 
 subtest 'select' => sub {
-    my $f = Markets::Form::Field->new(
+    my $f = Yetie::Form::Field->new(
         field_key => 'country',
         name      => 'country',
     );
@@ -317,7 +317,7 @@ subtest 'select' => sub {
 };
 
 subtest 'choice' => sub {
-    my $f = Markets::Form::Field->new(
+    my $f = Yetie::Form::Field->new(
         field_key => 'country',
         name      => 'country',
     );
@@ -380,7 +380,7 @@ subtest 'choice' => sub {
 };
 
 subtest 'field-with-error' => sub {
-    my $f = Markets::Form::Field->new(
+    my $f = Yetie::Form::Field->new(
         field_key => 'country.[].id',
         name      => 'country.0.id',
         label     => 'Country Name',
@@ -404,7 +404,7 @@ subtest 'field-with-error' => sub {
 };
 
 subtest 'help_block' => sub {
-    my $f = Markets::Form::Field->new(
+    my $f = Yetie::Form::Field->new(
         field_key => 'name',
         name      => 'name',
         help      => 'my name',
@@ -413,7 +413,7 @@ subtest 'help_block' => sub {
     is_deeply $dom->at('span')->attr, { class => 'form-help-block' }, 'right attrs';
     is $dom->at('span')->text, 'my name', 'right text';
 
-    $f = Markets::Form::Field->new(
+    $f = Yetie::Form::Field->new(
         field_key => 'name',
         name      => 'name',
         help      => sub { shift->__x( '{hoge} name', hoge => 'my' ) },
@@ -424,7 +424,7 @@ subtest 'help_block' => sub {
 };
 
 subtest 'error_block' => sub {
-    my $f = Markets::Form::Field->new(
+    my $f = Yetie::Form::Field->new(
         field_key      => 'name',
         name           => 'name',
         required       => 1,

@@ -5,7 +5,7 @@ use Test::More;
 use File::Basename 'dirname';
 use File::Spec::Functions 'catfile';
 use Mojo::Template;
-use Markets::View::EPLRenderer;
+use Yetie::View::EPLRenderer;
 use t::Util;
 
 # Empty template

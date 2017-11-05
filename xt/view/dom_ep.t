@@ -2,7 +2,7 @@ use Mojo::Base -strict;
 
 use Test::More;
 use Mojo::DOM;
-use Markets::View::DOM;
+use Yetie::View::DOM;
 
 # EP tag(basics)
 my $dom = Mojo::DOM->new(<<EOF);

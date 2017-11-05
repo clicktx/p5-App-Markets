@@ -16,7 +16,7 @@ subtest 'helpers' => sub {
     can_ok $c->helpers, 'form_widget';
 
     $c->form_field('test#field_name');
-    is $c->stash('markets.form.topic_field'), 'test#field_name', 'right topic_field';
+    is $c->stash('yetie.form.topic_field'), 'test#field_name', 'right topic_field';
     ok $c->form_widget('test#name'), 'right form widget';
 };
 
@@ -25,7 +25,7 @@ subtest 'form_set' => sub {
     $c->stash( controller => 'test', action => 'index' );
 
     my $fs = $c->form_set;
-    isa_ok $fs, 'Markets::Form::FieldSet', 'right not arguments';
+    isa_ok $fs, 'Yetie::Form::FieldSet', 'right not arguments';
 };
 
 done_testing();

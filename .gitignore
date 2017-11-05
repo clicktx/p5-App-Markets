@@ -16,7 +16,7 @@ MYMETA.yml
 /local/
 /run_script/
 /.carton/
-/Markets-*
+/Yetie-*
 /.build
 /_build_params
 /Build

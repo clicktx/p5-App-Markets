@@ -22,8 +22,8 @@ done_testing();
 
 {
 
-    package Markets::Controller::Catalog::Test;
-    use Mojo::Base 'Markets::Controller::Catalog';
+    package Yetie::Controller::Catalog::Test;
+    use Mojo::Base 'Yetie::Controller::Catalog';
     use Test::More;
 
     sub create_session { shift->render( text => 1 ) }
@@ -51,7 +51,7 @@ done_testing();
               'right add cart';
 
             # my $items = $c->service('cart')->items;
-            # isa_ok $items->first, 'Markets::Domain::Entity::Item', 'right add item';
+            # isa_ok $items->first, 'Yetie::Domain::Entity::Item', 'right add item';
             # is_deeply $items->first->to_data, { product_id => 1, quantity => 1 }, 'right detail';
         };
 

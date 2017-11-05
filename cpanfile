@@ -21,7 +21,6 @@ requires 'SQL::Translator',                         '0.11021';
 requires 'DBIx::Class::Candy',                      '0.005002';
 requires 'DBIx::Class::ResultSet::HashRef',         '1.002';
 requires 'DBIx::Class::Tree::NestedSet',            '0.10';
-requires 'DBIx::Class::AsFdat',                     '0.03';
 requires 'Server::Starter',                         '0.32';
 requires 'Gazelle',                                 '0.46';
 requires 'Tie::IxHash',                             '1.23';

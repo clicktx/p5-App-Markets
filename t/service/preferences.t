@@ -7,7 +7,7 @@ use Test::Mojo;
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
-use_ok 'Markets::Service::Preference';
+use_ok 'Yetie::Service::Preference';
 my $pref = $app->service('preference');
 
 can_ok $pref, 'load';

@@ -2,15 +2,15 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
 use t::Util;
-use Markets::Form::FieldSet;
+use Yetie::Form::FieldSet;
 
-use_ok 'Markets::Form::Validator';
+use_ok 'Yetie::Form::Validator';
 
 my $t = Test::Mojo->new('App');
 
 sub new_req {
     my $c = $t->app->build_controller;
-    my $f = Markets::Form::FieldSet->new( controller => $c );
+    my $f = Yetie::Form::FieldSet->new( controller => $c );
     my $v = $c->validation;
     return ( $c, $f, $v );
 }
@@ -111,7 +111,7 @@ subtest 'number' => sub {
 
     # Locale: RU (Russian; русский язык) / FR (French; français)
     $t->app->pref( locale_country => 'RU' );
-    $t->app->plugin('Markets::Form');
+    $t->app->plugin('Yetie::Form');
 
     ( $c, $f, $v ) = new_req();
     $v->input( { foo => '1 000 000,00', bar => '5,5' } );
@@ -121,7 +121,7 @@ subtest 'number' => sub {
 
     # Locale: DE (German, Deutsch)
     $t->app->pref( locale_country => 'DE' );
-    $t->app->plugin('Markets::Form');
+    $t->app->plugin('Yetie::Form');
 
     ( $c, $f, $v ) = new_req();
     $v->input( { foo => '1.000.000,00', bar => '5,5' } );

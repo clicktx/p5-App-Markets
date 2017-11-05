@@ -3,13 +3,13 @@
 carton exec -- \
 start_server \
 --port=3000 \
---pid-file=var/run/markets.pid \
---status-file=var/run/markets.status \
+--pid-file=var/run/yetie.pid \
+--status-file=var/run/yetie.status \
 -- plackup -R lib,themes,addons,share/locale \
 -MDevel::Leak::Object=GLOBAL_bless \
 -e '$Devel::Leak::Object::TRACKSOURCELINES = 1' \
 -s Starlet --max-workers=1 \
-script/markets
+script/yetie
 
 # Devel::Leak::Objectはcpanfileに未記載
 #[Plack/PSGIアプリケーションのメモリリークをDevel::Leak::Objectでチェック - blog.nomadscafe.jp](http://blog.nomadscafe.jp/2013/04/plackpsgidevelleakobject.html)

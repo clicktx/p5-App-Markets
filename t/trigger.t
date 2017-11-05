@@ -1,10 +1,10 @@
 use Mojo::Base -strict;
 
 use Test::More;
-use Markets::Trigger;
+use Yetie::Trigger;
 
 # priority
-my $e = Markets::Trigger->new;
+my $e = Yetie::Trigger->new;
 
 my $custom;
 my $cb = sub { $custom += shift };
