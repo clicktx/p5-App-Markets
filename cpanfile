@@ -56,6 +56,7 @@ on test => sub {
     requires 'Harriet';
     requires 'DateTime::Format::MySQL';
     requires 'Test::Perl::Critic';
+    requires 'Test::Declare'; # fix DBIx::Class::AsFdat
 };
 
 on develop => sub {
