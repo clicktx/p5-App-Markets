@@ -1,7 +1,7 @@
 {
-   "abstract" : "Markets",
+   "abstract" : "Yetie",
    "author" : [
-      "Markets authors."
+      "Yetie authors."
    ],
    "dynamic_config" : 0,
    "generated_by" : "Minilla/v3.0.9, CPAN::Meta::Converter version 2.150010",
@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "Markets",
+   "name" : "Yetie",
    "no_index" : {
       "directory" : [
          "t",
@@ -104,13 +104,13 @@
    "release_status" : "unstable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/clicktx/p5-Markets/issues"
+         "web" : "https://github.com/clicktx/p5-Yetie/issues"
       },
-      "homepage" : "https://github.com/clicktx/p5-Markets",
+      "homepage" : "https://github.com/clicktx/p5-Yetie",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/clicktx/p5-Markets.git",
-         "web" : "https://github.com/clicktx/p5-Markets"
+         "url" : "git://github.com/clicktx/p5-Yetie.git",
+         "web" : "https://github.com/clicktx/p5-Yetie"
       }
    },
    "version" : "0.01",

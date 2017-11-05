@@ -1,4 +1,4 @@
-name="Markets"
+name="Yetie"
 module_maker="ModuleBuild"
 badges=['travis', 'coveralls']
 

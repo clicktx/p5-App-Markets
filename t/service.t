@@ -9,7 +9,7 @@ my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
 # routes
-my $r = $app->routes->namespaces( ['Markets::Controller'] );
+my $r = $app->routes->namespaces( ['Yetie::Controller'] );
 $r->get('/good')->to('test#good');
 $r->get('/not_found')->to('test#not_found');
 $r->get('/buged')->to('test#buged');
@@ -19,18 +19,18 @@ subtest 'Service Layer basic' => sub {
     $t->get_ok('/good')->json_is(
         {
             is_cached  => 0,
-            service    => "Markets::Service::Test",
+            service    => "Yetie::Service::Test",
             app        => "App",
-            controller => "Markets::Controller::Test",
+            controller => "Yetie::Controller::Test",
             is_weak    => 1,
         }
     );
     $t->get_ok('/good')->json_is(
         {
             is_cached  => 1,
-            service    => "Markets::Service::Test",
+            service    => "Yetie::Service::Test",
             app        => "App",
-            controller => "Markets::Controller::Test",
+            controller => "Yetie::Controller::Test",
             is_weak    => 1,
         }
     );
@@ -41,8 +41,8 @@ subtest 'Service Layer basic' => sub {
 
 done_testing();
 
-package Markets::Controller::Test;
-use Mojo::Base 'Markets::Controller::Catalog';
+package Yetie::Controller::Test;
+use Mojo::Base 'Yetie::Controller::Catalog';
 use Test::More;
 
 sub good {
@@ -76,6 +76,6 @@ sub methods {
     my $c       = shift;
     my $service = $c->service('test');
 
-    isa_ok $service->schema, 'Markets::Schema';
+    isa_ok $service->schema, 'Yetie::Schema';
     return $c->render( json => {} );
 }

@@ -4,9 +4,9 @@ use Test::Deep;
 use DateTime;
 
 subtest 'basic' => sub {
-    use_ok 'Markets::Domain::Factory';
-    my $f   = Markets::Domain::Factory->new('entity-hoge');
-    my $e_c = 'Markets::Domain::Entity::Hoge';
+    use_ok 'Yetie::Domain::Factory';
+    my $f   = Yetie::Domain::Factory->new('entity-hoge');
+    my $e_c = 'Yetie::Domain::Entity::Hoge';
 
     # params method
     my $p = $f->params;
@@ -45,7 +45,7 @@ subtest 'basic' => sub {
 
 subtest 'factory' => sub {
     my $app = bless {}, 'Test::App';
-    my $f   = Markets::Domain::Factory->new('entity-hoge');
+    my $f   = Yetie::Domain::Factory->new('entity-hoge');
     $f->app($app);
 
     my $ff = $f->factory('entity-hoge');
@@ -53,64 +53,64 @@ subtest 'factory' => sub {
 };
 
 subtest 'has not cook' => sub {
-    my $f = Markets::Domain::Factory->new('entity-hoge');
-    is ref $f, 'Markets::Domain::Factory::Entity::Hoge', 'right namespace';
+    my $f = Yetie::Domain::Factory->new('entity-hoge');
+    is ref $f, 'Yetie::Domain::Factory::Entity::Hoge', 'right namespace';
 
     my $entity = $f->create_entity();
-    is ref $entity, 'Markets::Domain::Entity::Hoge', 'right namespace';
+    is ref $entity, 'Yetie::Domain::Entity::Hoge', 'right namespace';
     cmp_deeply { %{$entity} }, {}, 'right argument empty';
 
-    Markets::Domain::Entity::Hoge->attr( [qw(hoge fuga)] );
-    $f = Markets::Domain::Factory->new( 'entity-hoge', hoge => 1 );
+    Yetie::Domain::Entity::Hoge->attr( [qw(hoge fuga)] );
+    $f = Yetie::Domain::Factory->new( 'entity-hoge', hoge => 1 );
     $entity = $f->create_entity( fuga => 2 );
     cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash';
 
-    $f = Markets::Domain::Factory->new( 'entity-hoge', { hoge => 1 } );
+    $f = Yetie::Domain::Factory->new( 'entity-hoge', { hoge => 1 } );
     $entity = $f->create_entity( { fuga => 2 } );
     cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash reference';
 };
 
 subtest 'has cook' => sub {
-    Markets::Domain::Entity::Foo->attr( [qw(a b f h)] );
-    my $f = Markets::Domain::Factory->new('entity-foo');
-    is ref $f, 'Markets::Domain::Factory::Entity::Foo', 'right namespace';
+    Yetie::Domain::Entity::Foo->attr( [qw(a b f h)] );
+    my $f = Yetie::Domain::Factory->new('entity-foo');
+    is ref $f, 'Yetie::Domain::Factory::Entity::Foo', 'right namespace';
 
     my $entity = $f->create_entity();
-    is ref $entity, 'Markets::Domain::Entity::Foo', 'right namespace';
+    is ref $entity, 'Yetie::Domain::Entity::Foo', 'right namespace';
     cmp_deeply { %{$entity} }, { a => 1, b => 2, f => 'fuga', h => 'hoge' }, 'right parameter';
 };
 
 subtest 'no factory' => sub {
-    my $entity = Markets::Domain::Factory->new('entity-nofactory')->create;
-    is ref $entity, 'Markets::Domain::Entity::Nofactory', 'right namespace';
+    my $entity = Yetie::Domain::Factory->new('entity-nofactory')->create;
+    is ref $entity, 'Yetie::Domain::Entity::Nofactory', 'right namespace';
     cmp_deeply { %{$entity} }, {}, 'right parameter';
     is $entity->text, 'no factory', 'right method';
 };
 
 subtest 'factory method using' => sub {
-    Markets::Domain::Entity::Bar->attr('hoge');
-    my $f      = Markets::Domain::Factory->new('entity-bar');
+    Yetie::Domain::Entity::Bar->attr('hoge');
+    my $f      = Yetie::Domain::Factory->new('entity-bar');
     my $entity = $f->create_entity();
-    is ref $entity, 'Markets::Domain::Entity::Bar', 'right namespace';
-    cmp_deeply { %{$entity} }, { hoge => isa('Markets::Domain::Entity::Hoge'), }, 'right parameter';
+    is ref $entity, 'Yetie::Domain::Entity::Bar', 'right namespace';
+    cmp_deeply { %{$entity} }, { hoge => isa('Yetie::Domain::Entity::Hoge'), }, 'right parameter';
 };
 
 subtest 'aggregate method' => sub {
-    Markets::Domain::Entity::Agg->attr( [qw(hoges bars)] );
+    Yetie::Domain::Entity::Agg->attr( [qw(hoges bars)] );
 
-    my $f = Markets::Domain::Factory->new('entity-agg');
+    my $f = Yetie::Domain::Factory->new('entity-agg');
     eval { $f->aggregate( 'hoges', 'entity-hoge', 'abc' ) };
     ok $@, 'bad data type';
 
     my $entity = $f->create;
-    isa_ok $entity->hoges, 'Markets::Domain::Collection', 'right aggregate array';
-    isa_ok $entity->bars,  'Markets::Domain::IxHash',     'right aggregate hash';
+    isa_ok $entity->hoges, 'Yetie::Domain::Collection', 'right aggregate array';
+    isa_ok $entity->bars,  'Yetie::Domain::IxHash',     'right aggregate hash';
 };
 
 subtest 'inflate datetime for *_at' => sub {
-    Markets::Domain::Entity::Bar->attr( [qw(created_at)] );
+    Yetie::Domain::Entity::Bar->attr( [qw(created_at)] );
 
-    my $f = Markets::Domain::Factory->new('entity-bar')->create( { created_at => '2017-5-26 19:17:06' } );
+    my $f = Yetie::Domain::Factory->new('entity-bar')->create( { created_at => '2017-5-26 19:17:06' } );
     isa_ok $f->{created_at}, 'DateTime';
     is $f->{created_at}->ymd, '2017-05-26', 'right date';
 
@@ -123,7 +123,7 @@ subtest 'inflate datetime for *_at' => sub {
         second    => 47,
         time_zone => 'UTC',
     );
-    $f = Markets::Domain::Factory->new('entity-bar')->create( { created_at => $datetime } );
+    $f = Yetie::Domain::Factory->new('entity-bar')->create( { created_at => $datetime } );
     isa_ok $f->{created_at}, 'DateTime';
     is $f->{created_at}->ymd, '1964-10-16', 'right date';
 };
@@ -132,17 +132,17 @@ done_testing();
 
 {
 
-    package Markets::Domain::Factory::Entity::Hoge;
-    use Mojo::Base 'Markets::Domain::Factory';
+    package Yetie::Domain::Factory::Entity::Hoge;
+    use Mojo::Base 'Yetie::Domain::Factory';
 
-    package Markets::Domain::Entity::Hoge;
-    use Mojo::Base 'Markets::Domain::Entity';
+    package Yetie::Domain::Entity::Hoge;
+    use Mojo::Base 'Yetie::Domain::Entity';
 }
 
 {
 
-    package Markets::Domain::Factory::Entity::Foo;
-    use Mojo::Base 'Markets::Domain::Factory';
+    package Yetie::Domain::Factory::Entity::Foo;
+    use Mojo::Base 'Yetie::Domain::Factory';
 
     sub cook {
         my $self = shift;
@@ -150,21 +150,21 @@ done_testing();
         $self->params( { a => 1, b => 2 } );
     }
 
-    package Markets::Domain::Entity::Foo;
-    use Mojo::Base 'Markets::Domain::Entity';
+    package Yetie::Domain::Entity::Foo;
+    use Mojo::Base 'Yetie::Domain::Entity';
 }
 
 {
 
-    package Markets::Domain::Entity::Nofactory;
-    use Mojo::Base 'Markets::Domain::Entity';
+    package Yetie::Domain::Entity::Nofactory;
+    use Mojo::Base 'Yetie::Domain::Entity';
     sub text { 'no factory' }
 }
 
 {
 
-    package Markets::Domain::Factory::Entity::Bar;
-    use Mojo::Base 'Markets::Domain::Factory';
+    package Yetie::Domain::Factory::Entity::Bar;
+    use Mojo::Base 'Yetie::Domain::Factory';
 
     sub cook {
         my $self = shift;
@@ -172,14 +172,14 @@ done_testing();
         $self->param( hoge => $hoge );
     }
 
-    package Markets::Domain::Entity::Bar;
-    use Mojo::Base 'Markets::Domain::Entity';
+    package Yetie::Domain::Entity::Bar;
+    use Mojo::Base 'Yetie::Domain::Entity';
 }
 
 {
 
-    package Markets::Domain::Factory::Entity::Agg;
-    use Mojo::Base 'Markets::Domain::Factory';
+    package Yetie::Domain::Factory::Entity::Agg;
+    use Mojo::Base 'Yetie::Domain::Factory';
 
     sub cook {
         my $self = shift;
@@ -187,6 +187,6 @@ done_testing();
         $self->aggregate_kvlist( 'bars', 'entity-bar', [ a => {} ] );
     }
 
-    package Markets::Domain::Entity::Agg;
-    use Mojo::Base 'Markets::Domain::Entity';
+    package Yetie::Domain::Entity::Agg;
+    use Mojo::Base 'Yetie::Domain::Entity';
 }

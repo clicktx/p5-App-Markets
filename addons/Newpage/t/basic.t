@@ -5,11 +5,11 @@ use Test::Mojo;
 $ENV{MOJO_ADDON_TEST_MODE} = 1;
 
 # Change your addon name //////////////////////// #
-my $test_addon_name = 'Markets::Addon::Newpage';
+my $test_addon_name = 'Yetie::Addon::Newpage';
 #
 # /////////////////////////////////////////////// #
 
-my $t   = Test::Mojo->new('Markets');
+my $t   = Test::Mojo->new('Yetie');
 my $app = $t->app;
 t::Util->init_addon( $app, $test_addon_name, { is_enabled => 1 } );
 

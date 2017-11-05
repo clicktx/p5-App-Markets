@@ -5,9 +5,9 @@ use File::Spec;
 use File::Basename;
 use lib File::Spec->catdir( dirname(__FILE__), '..', 'lib' );
 use Mojo::File qw/path/;
-use Markets;
+use Yetie;
 
-my $app             = Markets->new;
+my $app             = Yetie->new;
 my $schema          = $app->schema;
 my $current_version = $schema->schema_version;
 
@@ -15,7 +15,7 @@ my $sql_dir = path( dirname(__FILE__), '..', 'share', 'sql' )->to_abs;
 $schema->create_ddl_dir( [qw/MySQL/], $current_version, $sql_dir, );
 
 say "Created DDL file";
-say path( $sql_dir, 'Markets-Schema-' . $current_version . '-MySQL.sql' )->to_rel();
+say path( $sql_dir, 'Yetie-Schema-' . $current_version . '-MySQL.sql' )->to_rel();
 
 exit;
 
@@ -31,7 +31,7 @@ sub print_ddl {
         no_comments => 0,
         parser      => 'SQL::Translator::Parser::DBIx::Class',
         parser_args => {
-            package => 'Markets::Schema',
+            package => 'Yetie::Schema',
         },
         producer => 'MySQL',
     );
@@ -50,9 +50,9 @@ create_ddl
 
 =head1 DESCRIPTION
 
-Create DDL file from Markets::Schema
-markets_current_dir/share/sql/Markets-Schema-xxxxx-MySQL.sql
+Create DDL file from Yetie::Schema
+yetie_current_dir/share/sql/Yetie-Schema-xxxxx-MySQL.sql
 
 =head1 AUTHOR
 
-Markets authors.
+Yetie authors.

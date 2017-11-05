@@ -1,5 +1,5 @@
 package App;
-use Mojo::Base 'Markets';
+use Mojo::Base 'Yetie';
 
 sub initialize_app {
     my $self = shift;

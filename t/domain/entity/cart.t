@@ -1,7 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
-use Markets::Domain::Factory;
+use Yetie::Domain::Factory;
 
 my $test_data = {
     items => [
@@ -27,7 +27,7 @@ my $test_data = {
 };
 
 sub _create_entity {
-    Markets::Domain::Factory->new('entity-cart')->create(
+    Yetie::Domain::Factory->new('entity-cart')->create(
         {
             cart_id => '12345',
             %{$test_data},
@@ -35,26 +35,26 @@ sub _create_entity {
     );
 }
 
-use_ok 'Markets::Domain::Entity::SellingItem';
+use_ok 'Yetie::Domain::Entity::SellingItem';
 
 subtest 'basic' => sub {
-    my $cart = Markets::Domain::Factory->new('entity-cart')->create();
-    isa_ok $cart, 'Markets::Domain::Entity';
+    my $cart = Yetie::Domain::Factory->new('entity-cart')->create();
+    isa_ok $cart, 'Yetie::Domain::Entity';
 
     ok $cart->id;
-    isa_ok $cart->items,     'Markets::Domain::Collection';
-    isa_ok $cart->shipments, 'Markets::Domain::Collection';
+    isa_ok $cart->items,     'Yetie::Domain::Collection';
+    isa_ok $cart->shipments, 'Yetie::Domain::Collection';
 };
 
 subtest 'attributes' => sub {
     my $cart = _create_entity;
     is $cart->cart_id, '12345', 'right cart_id';
 
-    isa_ok $cart->items, 'Markets::Domain::Collection', 'right items';
-    isa_ok $cart->items->first, 'Markets::Domain::Entity::SellingItem', 'right items';
+    isa_ok $cart->items, 'Yetie::Domain::Collection', 'right items';
+    isa_ok $cart->items->first, 'Yetie::Domain::Entity::SellingItem', 'right items';
 
-    isa_ok $cart->shipments, 'Markets::Domain::Collection', 'right shipments';
-    isa_ok $cart->shipments->first, 'Markets::Domain::Entity::Shipment', 'right shipments';
+    isa_ok $cart->shipments, 'Yetie::Domain::Collection', 'right shipments';
+    isa_ok $cart->shipments->first, 'Yetie::Domain::Entity::Shipment', 'right shipments';
 };
 
 subtest 'methods' => sub {
@@ -64,7 +64,7 @@ subtest 'methods' => sub {
     is $cart->total_item_count, 7,                                          'right total item count';
     is $cart->total_quantity,   25,                                         'right total quantity count';
 
-    my $cart2 = Markets::Domain::Factory->new('entity-cart')->create(
+    my $cart2 = Yetie::Domain::Factory->new('entity-cart')->create(
         {
             cart_id => '54321',
             %{$test_data},
@@ -77,25 +77,25 @@ subtest 'methods' => sub {
 
 subtest 'add_item' => sub {
     my $cart = _create_entity;
-    $cart->add_item( Markets::Domain::Entity::SellingItem->new( product_id => 11 ) );
+    $cart->add_item( Yetie::Domain::Entity::SellingItem->new( product_id => 11 ) );
     cmp_deeply $cart->items->last->to_data, { product_id => 11 }, 'right item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
-    $cart->add_item( Markets::Domain::Entity::SellingItem->new( product_id => 1, quantity => 1 ) );
+    $cart->add_item( Yetie::Domain::Entity::SellingItem->new( product_id => 1, quantity => 1 ) );
     cmp_deeply $cart->items->first->to_data, { product_id => 1, quantity => 2, price => 100 }, 'right item';
     is $cart->is_modified, 1, 'right modified';
 };
 
 subtest 'add_shipping_item' => sub {
     my $cart = _create_entity;
-    $cart->add_shipping_item( 0, Markets::Domain::Entity::SellingItem->new( product_id => 11 ) );
+    $cart->add_shipping_item( 0, Yetie::Domain::Entity::SellingItem->new( product_id => 11 ) );
     cmp_deeply $cart->shipments->first->shipping_items->last->to_data, { product_id => 11 }, 'right shipping_item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
     $cart->add_shipping_item( 0,
-        Markets::Domain::Entity::SellingItem->new( product_id => 4, quantity => 4, price => 100 ) );
+        Yetie::Domain::Entity::SellingItem->new( product_id => 4, quantity => 4, price => 100 ) );
     cmp_deeply $cart->shipments->first->shipping_items->first->to_data,
       { product_id => 4, quantity => 8, price => 100 }, 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
@@ -135,7 +135,7 @@ subtest 'clone' => sub {
 
 subtest 'remove_item' => sub {
     my $cart = _create_entity;
-    my $item = Markets::Domain::Entity::SellingItem->new( product_id => 2, quantity => 1 );
+    my $item = Yetie::Domain::Entity::SellingItem->new( product_id => 2, quantity => 1 );
     my $id   = $item->id;
 
     my $removed_item = $cart->remove_item($id);
@@ -147,7 +147,7 @@ subtest 'remove_item' => sub {
 
     # Unremove. not found item.
     $cart = _create_entity;
-    $item = Markets::Domain::Entity::SellingItem->new( product_id => 123, quantity => 1 );
+    $item = Yetie::Domain::Entity::SellingItem->new( product_id => 123, quantity => 1 );
     $id   = $item->id;
 
     $removed_item = $cart->remove_item($id);
@@ -164,7 +164,7 @@ subtest 'remove_item' => sub {
 
 subtest 'remove_shipping_item' => sub {
     my $cart = _create_entity;
-    my $item = Markets::Domain::Entity::SellingItem->new( product_id => 4 );
+    my $item = Yetie::Domain::Entity::SellingItem->new( product_id => 4 );
     my $id   = $item->id;
 
     my $removed_item = $cart->remove_shipping_item( 1, $id );
@@ -176,7 +176,7 @@ subtest 'remove_shipping_item' => sub {
 
     # Unremove. not found item.
     $cart = _create_entity;
-    $item = Markets::Domain::Entity::SellingItem->new( product_id => 123 );
+    $item = Yetie::Domain::Entity::SellingItem->new( product_id => 123 );
     $id   = $item->id;
 
     $removed_item = $cart->remove_shipping_item( 1, $id );
@@ -208,7 +208,7 @@ subtest 'merge' => sub {
         ],
         shipments => [ { shipping_address => {}, shipping_items => [] } ],
     };
-    my $stored_cart = Markets::Domain::Factory->new('entity-cart')->create(
+    my $stored_cart = Yetie::Domain::Factory->new('entity-cart')->create(
         {
             cart_id => '99999',
             %{$stored_data},

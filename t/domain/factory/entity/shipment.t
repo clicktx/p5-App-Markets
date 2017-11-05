@@ -3,18 +3,18 @@ use Test::More;
 use Test::Deep;
 use Test::Mojo;
 
-my $pkg = 'Markets::Domain::Factory';
-use_ok 'Markets::Domain::Factory::Entity::Shipment';
+my $pkg = 'Yetie::Domain::Factory';
+use_ok 'Yetie::Domain::Factory::Entity::Shipment';
 
 subtest 'argument empty' => sub {
     my $factory = $pkg->new('entity-shipment');
     my $entity  = $factory->create_entity();
     cmp_deeply $entity,
       bless {
-        shipping_address => ( bless {}, 'Markets::Domain::Entity::Address' ),
-        shipping_items => ( bless [], 'Markets::Domain::Collection' ),
+        shipping_address => ( bless {}, 'Yetie::Domain::Entity::Address' ),
+        shipping_items => ( bless [], 'Yetie::Domain::Collection' ),
       },
-      'Markets::Domain::Entity::Shipment';
+      'Yetie::Domain::Entity::Shipment';
 };
 
 subtest 'data' => sub {
@@ -28,11 +28,11 @@ subtest 'data' => sub {
     my $entity = $factory->create_entity();
     cmp_deeply $entity,
       bless {
-        shipping_address => ( bless { line1 => 'Silicon Valley' }, 'Markets::Domain::Entity::Address' ),
+        shipping_address => ( bless { line1 => 'Silicon Valley' }, 'Yetie::Domain::Entity::Address' ),
         shipping_items =>
-          ( bless [ bless {}, 'Markets::Domain::Entity::SellingItem', ], 'Markets::Domain::Collection' ),
+          ( bless [ bless {}, 'Yetie::Domain::Entity::SellingItem', ], 'Yetie::Domain::Collection' ),
       },
-      'Markets::Domain::Entity::Shipment';
+      'Yetie::Domain::Entity::Shipment';
 };
 
 done_testing;

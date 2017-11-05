@@ -6,15 +6,15 @@ use File::Basename;
 use lib File::Spec->catdir( dirname(__FILE__), '..', 'lib' );
 use Mojo::File qw/path/;
 
-use Markets::Schema;
-use Markets::App::Common;
-use Markets::Install::Util;
+use Yetie::Schema;
+use Yetie::App::Common;
+use Yetie::Install::Util;
 
-my $conf = Markets::Install::Util::load_config();
+my $conf = Yetie::Install::Util::load_config();
 
 # Deploy schema
-my $dsn = Markets::App::Common::_dsn( $conf->{db} );
-my $schema = Markets::Schema->connect( $dsn, $conf->{db}->{user}, $conf->{db}->{password} );
+my $dsn = Yetie::App::Common::_dsn( $conf->{db} );
+my $schema = Yetie::Schema->connect( $dsn, $conf->{db}->{user}, $conf->{db}->{password} );
 $schema->deploy( { add_drop_table => 1 } );
 
 # Insert data
@@ -23,7 +23,7 @@ my @paths;
 push @paths, ( path( $base_dir, 'default_data.pl' ), path( $base_dir, 'test_data.pl' ) );
 
 foreach my $path (@paths) {
-    eval { Markets::Install::Util::insert_data( $schema, $path ) };
+    eval { Yetie::Install::Util::insert_data( $schema, $path ) };
     die $@ if $@;
 }
 
@@ -46,4 +46,4 @@ __END__
 
 =head1 AUTHOR
 
-Markets authors.
+Yetie authors.

@@ -11,7 +11,7 @@ category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name'
     <li><%= link_to 'category sports-soccer' => 'RN_category_name_base' => { category_name => 'sports-soccer', category_id => 4 } %></li>
 </ul>
 
-<%= include 'widget/category_tree', tree => stash 'markets.widget.category_tree' %>
+<%= include 'widget/category_tree', tree => stash 'yetie.widget.category_tree' %>
 
 <h2>Products</h2>
 

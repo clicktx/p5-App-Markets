@@ -10,8 +10,8 @@ subtest 'found product' => sub {
     my $f = $app->factory('entity-product');
     my $e = $f->build(1);
     is $e->id, 1, 'right id';
-    isa_ok $e->primary_category,   'Markets::Domain::Collection';
-    isa_ok $e->product_categories, 'Markets::Domain::Collection';
+    isa_ok $e->primary_category,   'Yetie::Domain::Collection';
+    isa_ok $e->product_categories, 'Yetie::Domain::Collection';
     isa_ok $e->created_at,         'DateTime';
     isa_ok $e->updated_at,         'DateTime';
 };

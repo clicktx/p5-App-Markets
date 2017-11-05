@@ -5,13 +5,13 @@ use Test::Mojo;
 use t::Util;
 use Mojo::DOM;
 
-use_ok 'Markets::Form::FieldSet';
+use_ok 'Yetie::Form::FieldSet';
 
 my $t = Test::Mojo->new('App');
 my $c = $t->app->build_controller;
 
-use_ok 'Markets::Form::FieldSet::Test';
-my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+use_ok 'Yetie::Form::FieldSet::Test';
+my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
 
 subtest 'attributes' => sub {
     ok( $fs->can($_), "right $_" ) for qw(controller schema);
@@ -77,11 +77,11 @@ subtest 'export_field' => sub {
 
 subtest 'field' => sub {
     my $f = $fs->field('email');
-    isa_ok $f, 'Markets::Form::Field';
+    isa_ok $f, 'Yetie::Form::Field';
 };
 
 subtest 'field_info' => sub {
-    my $info = Markets::Form::FieldSet::Test->field_info('name');
+    my $info = Yetie::Form::FieldSet::Test->field_info('name');
     is_deeply $info,
       {
         type     => 'text',
@@ -116,19 +116,19 @@ subtest 'filters' => sub {
 
 subtest 'has_data' => sub {
     my $c = $t->app->build_controller;
-    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
     is $fs->has_data, '', 'right has not data';
 
     # Create new request
     $c = $t->app->build_controller;
-    $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs( [ email => 'a@b.c', ] );
     is $fs->has_data, 1, 'right has data';
 };
 
 subtest 'parameters' => sub {
     my $c = $t->app->build_controller;
-    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
         [
             email              => 'a@b.c',
@@ -182,16 +182,16 @@ subtest 'render tags' => sub {
     is ref $fs->render_label('email'), 'Mojo::ByteStream', 'right render_label method';
     is ref $fs->render('email'),       'Mojo::ByteStream', 'right render method';
 
-    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
 };
 
 subtest 'render tags with attrs' => sub {
-    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
     my $dom = Mojo::DOM->new( $fs->render('email') );
     is_deeply $dom->at('*')->attr->{value},       undef,         'right value';
     is_deeply $dom->at('*')->attr->{placeholder}, 'name@domain', 'right placeholder';
 
-    $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
     $dom = Mojo::DOM->new( $fs->render( 'email', value => 'foo', placeholder => 'bar' ) );
     is_deeply $dom->at('*')->attr->{value},       'foo', 'right value';
     is_deeply $dom->at('*')->attr->{placeholder}, 'bar', 'right placeholder';
@@ -206,7 +206,7 @@ subtest 'schema' => sub {
 
 subtest 'validate' => sub {
     my $c = $t->app->build_controller;
-    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
         [
             email              => 'a@b33',
@@ -234,7 +234,7 @@ subtest 'validate' => sub {
 
     # Create new request
     $c = $t->app->build_controller;
-    $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
         [
             email              => 'a@b.c',
@@ -257,7 +257,7 @@ subtest 'validate' => sub {
 
 subtest 'validate with filter' => sub {
     my $c = $t->app->build_controller;
-    my $fs = Markets::Form::FieldSet::Test->new( controller => $c );
+    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
     $c->req->params->pairs(
         [
             'email'       => '   a@b.c   ',

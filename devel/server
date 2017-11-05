@@ -4,8 +4,8 @@ MOJO_EVENTEMITTER_DEBUG=1 \
 carton exec -- \
 start_server \
 --port=3000 \
---pid-file=var/run/markets.pid \
---status-file=var/run/markets.status \
+--pid-file=var/run/yetie.pid \
+--status-file=var/run/yetie.status \
 -- plackup -R lib,themes,addons,share/locale \
 -s Gazelle --max-workers=1 \
-script/markets
+script/yetie

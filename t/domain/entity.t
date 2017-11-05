@@ -2,10 +2,10 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
 use Mojo::Util qw/sha1_sum/;
-use Markets::Domain::Collection qw/collection/;
-use Markets::Domain::IxHash qw/ix_hash/;
+use Yetie::Domain::Collection qw/collection/;
+use Yetie::Domain::IxHash qw/ix_hash/;
 
-my $pkg = 'Markets::Domain::Entity';
+my $pkg = 'Yetie::Domain::Entity';
 use_ok $pkg;
 
 subtest 'basic' => sub {
@@ -60,9 +60,9 @@ subtest 'to_array method' => sub {
 };
 
 subtest 'Entity object base' => sub {
-    my $e1   = Markets::Domain::Entity::Hoge->new( id => 1 );
-    my $e1_1 = Markets::Domain::Entity::Hoge->new( id => 1 );
-    my $e2   = Markets::Domain::Entity::Fuga->new( id => 2 );
+    my $e1   = Yetie::Domain::Entity::Hoge->new( id => 1 );
+    my $e1_1 = Yetie::Domain::Entity::Hoge->new( id => 1 );
+    my $e2   = Yetie::Domain::Entity::Fuga->new( id => 2 );
 
     is $e1->id, 1, 'right entity id';
     is $e1->is_equal($e1_1), 1, 'right equal object';
@@ -74,7 +74,7 @@ subtest 'Entity object base' => sub {
     $e1->id(111);
     is $e1->is_modified, 1, 'right modified';
 
-    is Markets::Domain::Entity::Hoge->new->id, undef, 'right no data entity';
+    is Yetie::Domain::Entity::Hoge->new->id, undef, 'right no data entity';
 };
 
 subtest 'to_data method' => sub {
@@ -176,11 +176,11 @@ done_testing();
 
 {
 
-    package Markets::Domain::Entity::Hoge;
-    use Markets::Domain::Entity;
+    package Yetie::Domain::Entity::Hoge;
+    use Yetie::Domain::Entity;
 }
 {
 
-    package Markets::Domain::Entity::Fuga;
-    use Markets::Domain::Entity;
+    package Yetie::Domain::Entity::Fuga;
+    use Yetie::Domain::Entity;
 }

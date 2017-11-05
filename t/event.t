@@ -1,10 +1,10 @@
 use Mojo::Base -strict;
 
 use Test::More;
-use Markets::EventEmitter;
+use Yetie::EventEmitter;
 
 # Normal event
-my $e = Markets::EventEmitter->new;
+my $e = Yetie::EventEmitter->new;
 my $called = 0;
 $e->on(
     {
@@ -27,7 +27,7 @@ is $@, "works!\n", 'right error';
 
 # Unhandled error event
 eval { $e->emit( error => 'works' ) };
-like $@, qr/^Markets::EventEmitter: works/, 'right error';
+like $@, qr/^Yetie::EventEmitter: works/, 'right error';
 
 # has_subscribers
 ok !$e->has_subscribers('foo'), 'no subscribers';
@@ -70,7 +70,7 @@ eval {
 like $@, qr/not support/, 'once, not support';
 
 # Unsubscribe
-$e = Markets::EventEmitter->new;
+$e = Yetie::EventEmitter->new;
 my $counter;
 my $event = $e->on(
     {

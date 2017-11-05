@@ -4,7 +4,7 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-use_ok 'Markets::Schema::ResultSet::Addon';
+use_ok 'Yetie::Schema::ResultSet::Addon';
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;

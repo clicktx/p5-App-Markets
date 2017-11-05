@@ -81,8 +81,8 @@ my %args = (
         'Test::mysqld' => '0',
     },
 
-    name            => 'Markets',
-    module_name     => 'Markets',
+    name            => 'Yetie',
+    module_name     => 'Yetie',
     allow_pureperl => 0,
 
     script_files => [glob('script/*'), glob('bin/*')],

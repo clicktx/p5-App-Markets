@@ -2,10 +2,10 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
 
-use_ok 'Markets::Domain::IxHash';
+use_ok 'Yetie::Domain::IxHash';
 
 use DDP;
-my $h = Markets::Domain::IxHash->new( a => 10, b => 20, c => 30, d => 40, e => 50 );
+my $h = Yetie::Domain::IxHash->new( a => 10, b => 20, c => 30, d => 40, e => 50 );
 
 subtest 'attributes' => sub {
     can_ok $h, $_ for $h->keys;
@@ -65,7 +65,7 @@ subtest 'grep' => sub {
 
     # Regex
     $new = $h->grep( [ qr//, qr// ] );
-    isa_ok $new, 'Markets::Domain::IxHash';
+    isa_ok $new, 'Yetie::Domain::IxHash';
     is_deeply \@{ $new->pairs }, [qw/a 10 b 20 c 30 d 40 e 50/];
     $new = $h->grep( [ qr/c|e/, qr// ] );
     is_deeply \@{ $new->pairs }, [qw/c 30 e 50/];
@@ -106,7 +106,7 @@ subtest 'last' => sub {
 subtest 'map' => sub {
     my $new;
     $new = $h->map( sub { } );
-    isa_ok $new, 'Markets::Domain::IxHash';
+    isa_ok $new, 'Yetie::Domain::IxHash';
     is_deeply \@{ $new->pairs }, [];
     $new = $h->map( sub { my ( $key, $value ) = @_; $key => $value + 1 } );
     is_deeply \@{ $new->pairs }, [qw/a 11 b 21 c 31 d 41 e 51/];
@@ -132,7 +132,7 @@ subtest 'to_hash' => sub {
 };
 
 subtest 'to_data' => sub {
-    use Markets::Domain::IxHash qw/ix_hash/;
+    use Yetie::Domain::IxHash qw/ix_hash/;
     my $h = ix_hash(
         a => ix_hash( a1 => ix_hash( a2 => 1 ) ),
         b => { b1        => 2 },

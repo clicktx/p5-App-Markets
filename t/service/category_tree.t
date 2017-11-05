@@ -14,11 +14,11 @@ subtest 'get_entity' => sub {
     is $c->entity_cache('category_tree'), undef, 'right not cache';
 
     my $tree = $service->get_entity();
-    isa_ok $tree, 'Markets::Domain::Entity::CategoryTree';
+    isa_ok $tree, 'Yetie::Domain::Entity::CategoryTree';
 
     my $cache = $c->entity_cache('category_tree');
     ok $cache,     'right cache';
-    isa_ok $cache, 'Markets::Domain::Entity::CategoryTree';
+    isa_ok $cache, 'Yetie::Domain::Entity::CategoryTree';
 };
 
 done_testing();

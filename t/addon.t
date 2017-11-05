@@ -7,7 +7,7 @@ use Data::Dumper;
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
-my $r   = $app->routes->namespaces( ['Markets::Controller'] );
+my $r   = $app->routes->namespaces( ['Yetie::Controller'] );
 
 subtest 'addons basic' => sub {
     my $addons = $app->addons;
@@ -23,47 +23,47 @@ subtest 'addons basic' => sub {
     is ref $addons->addon,     'HASH', 'right addon method';
 
     # Get addon object
-    my $addon = $addons->addon('Markets::Addon::TestAddon');
+    my $addon = $addons->addon('Yetie::Addon::TestAddon');
     ok defined $addon, 'right addon method';
-    isa_ok $addon, 'Markets::Addon';
+    isa_ok $addon, 'Yetie::Addon';
 
-    is ref $addons->addon('Markets::Addon::TestAddon'), 'Markets::Addon::TestAddon', 'access full module name';
-    is ref $addons->addon('TestAddon'),                 'Markets::Addon::TestAddon', 'access camel case';
-    is ref $addons->addon('test_addon'),                'Markets::Addon::TestAddon', 'access snake case';
+    is ref $addons->addon('Yetie::Addon::TestAddon'), 'Yetie::Addon::TestAddon', 'access full module name';
+    is ref $addons->addon('TestAddon'),                 'Yetie::Addon::TestAddon', 'access camel case';
+    is ref $addons->addon('test_addon'),                'Yetie::Addon::TestAddon', 'access snake case';
 
     # Set addon object
-    $addons->addon( 'Markets::Addon::FirstAddon' => Markets::Addon::TestAddon->new );
-    is ref $addons->addon('first_addon'), 'Markets::Addon::TestAddon', 'set addon full module name';
-    $addons->addon( SecondAddon => Markets::Addon::TestAddon->new );
-    is ref $addons->addon('second_addon'), 'Markets::Addon::TestAddon', 'set addon camel case';
-    $addons->addon( third_addon => Markets::Addon::TestAddon->new );
-    is ref $addons->addon('third_addon'), 'Markets::Addon::TestAddon', 'set addon snake case';
+    $addons->addon( 'Yetie::Addon::FirstAddon' => Yetie::Addon::TestAddon->new );
+    is ref $addons->addon('first_addon'), 'Yetie::Addon::TestAddon', 'set addon full module name';
+    $addons->addon( SecondAddon => Yetie::Addon::TestAddon->new );
+    is ref $addons->addon('second_addon'), 'Yetie::Addon::TestAddon', 'set addon camel case';
+    $addons->addon( third_addon => Yetie::Addon::TestAddon->new );
+    is ref $addons->addon('third_addon'), 'Yetie::Addon::TestAddon', 'set addon snake case';
 
     subtest 'load addon' => sub {
 
         #_full_module_name
-        is Markets::Addons::_full_module_name('Markets::Addon::MyAddon'), 'Markets::Addon::MyAddon';
-        is Markets::Addons::_full_module_name('MyAddon'),                 'Markets::Addon::MyAddon';
-        is Markets::Addons::_full_module_name('my_addon'),                'Markets::Addon::MyAddon';
+        is Yetie::Addons::_full_module_name('Yetie::Addon::MyAddon'), 'Yetie::Addon::MyAddon';
+        is Yetie::Addons::_full_module_name('MyAddon'),                 'Yetie::Addon::MyAddon';
+        is Yetie::Addons::_full_module_name('my_addon'),                'Yetie::Addon::MyAddon';
 
-        is ref $addons->load_addon("Markets::Addon::TestAddon"), 'Markets::Addon::TestAddon';
-        is ref $addons->load_addon("TestAddon"),                 'Markets::Addon::TestAddon';
-        is ref $addons->load_addon("test_addon"),                'Markets::Addon::TestAddon';
+        is ref $addons->load_addon("Yetie::Addon::TestAddon"), 'Yetie::Addon::TestAddon';
+        is ref $addons->load_addon("TestAddon"),                 'Yetie::Addon::TestAddon';
+        is ref $addons->load_addon("test_addon"),                'Yetie::Addon::TestAddon';
 
         my $not_found_addon;
         eval { $not_found_addon = $addons->load_addon("NotFoundAddon") };
         is $@, 'Addon "NotFoundAddon" missing, maybe you need to upload it?' . "\n";
 
         # Full module name
-        eval { $not_found_addon = $addons->load_addon("Markets::Addon::NotFoundAddon") };
-        is $@, 'Addon "Markets::Addon::NotFoundAddon" missing, maybe you need to upload it?' . "\n";
+        eval { $not_found_addon = $addons->load_addon("Yetie::Addon::NotFoundAddon") };
+        is $@, 'Addon "Yetie::Addon::NotFoundAddon" missing, maybe you need to upload it?' . "\n";
         is $not_found_addon, undef, "don't load addon";
     };
 };
 
 subtest 'addon basic' => sub {
-    my $addon = Markets::Addon::TestAddon->new;
-    is $addon->class_name, 'Markets::Addon::TestAddon', 'right class name';
+    my $addon = Yetie::Addon::TestAddon->new;
+    is $addon->class_name, 'Yetie::Addon::TestAddon', 'right class name';
     is $addon->name, 'test_addon', 'right addon name';
 
     # enable/disable
@@ -94,7 +94,7 @@ subtest 'for t/addons TestAddon' => sub {
 
     # Change status to disable
     my $addons = $app->addons;
-    my $addon  = $addons->addon('Markets::Addon::TestAddon');
+    my $addon  = $addons->addon('Yetie::Addon::TestAddon');
     $addons->to_disable($addon);
 
     $test_action = $app->addons->trigger->subscribers('action_example_trigger');
