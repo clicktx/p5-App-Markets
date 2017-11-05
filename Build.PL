@@ -92,7 +92,7 @@ my %args = (
     test_files           => ((-d '.git' || $ENV{RELEASE_TESTING}) && -d 'xt') ? 't/ xt/' : 't/',
     recursive_test_files => 1,
 
-    tap_harness_args => {"verbosity" => 1,"color" => "true"},
+    tap_harness_args => {"color" => "true","verbosity" => 1},
 
 );
 if (-d 'share') {
