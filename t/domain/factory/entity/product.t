@@ -10,7 +10,6 @@ subtest 'found product' => sub {
     my $f = $app->factory('entity-product');
     my $e = $f->build(1);
     is $e->id, 1, 'right id';
-    isa_ok $e->primary_category,   'Yetie::Domain::Collection';
     isa_ok $e->product_categories, 'Yetie::Domain::Collection';
     isa_ok $e->breadcrumb,         'Yetie::Domain::Collection';
     is @{ $e->breadcrumb }, 2, 'right breadcrumb';
@@ -23,7 +22,6 @@ subtest 'not found product' => sub {
     my $e = $f->build(999);
 
     is $e->id, undef, 'right id';
-    is @{ $e->primary_category },   0, 'right primary category';
     is @{ $e->product_categories }, 0, 'right product categories';
     is $e->created_at, undef, 'right created';
     is $e->updated_at, undef, 'right updated';

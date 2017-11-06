@@ -4,7 +4,6 @@ use Yetie::Domain::Entity;
 has title              => '';
 has description        => '';
 has price              => 0;
-has primary_category   => sub { Yetie::Domain::Collection->new };
 has product_categories => sub { Yetie::Domain::Collection->new };
 has breadcrumb         => sub { Yetie::Domain::Collection->new };
 
