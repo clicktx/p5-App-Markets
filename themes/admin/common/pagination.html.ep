@@ -1,2 +1,0 @@
-admin/common/pagination from
-<%= include 'common/pagination' =%>

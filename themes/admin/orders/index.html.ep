@@ -22,7 +22,7 @@
 % }
 </ul>
 
-<%= include 'admin/common/pagination' %>
+<%= include 'admin/component/pagination' %>
 
 <h2><%= __('Orders') %></h2>
 

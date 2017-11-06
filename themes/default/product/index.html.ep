@@ -10,7 +10,7 @@
 % });
 </div>
 
-<%= include 'common/breadcrumb' %>
+<%= include 'component/breadcrumb' %>
 
 <h1><%= stash 'title' %><%= stash 'product_id' %></h1>
 <ul>
