@@ -27,10 +27,8 @@ sub duplicate_product {
     my $i      = $self->resultset->search( { title => { like => $title . '%' } } )->count + 1;
     $entity->title( $title . $i );
 
-    my $data = $entity->to_data;
-    delete $data->{primary_category};
-
-    my $result = $self->resultset->create($data);
+    delete $entity->{breadcrumb};
+    my $result = $self->resultset->create( $entity->to_data );
 
     # Logging
     $self->app->admin_log->info( 'Duplicate product from ID:' . $product_id ) if $result;
