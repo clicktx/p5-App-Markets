@@ -13,7 +13,7 @@ sub index {
     my $category_id = $self->stash('category_id');
     my $page_no     = $form->param('p') || 1;
     my $rows        = 3;
-    my $category    = $self->factory('category')->build( $category_id, $page_no, $rows );
+    my $category    = $self->factory('category')->build( $category_id, { page => $page_no, rows => $rows } );
     return $self->reply->not_found() unless $category->id;
 
     # widget category tree
