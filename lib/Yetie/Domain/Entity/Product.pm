@@ -6,6 +6,7 @@ has description        => '';
 has price              => 0;
 has primary_category   => sub { Yetie::Domain::Collection->new };
 has product_categories => sub { Yetie::Domain::Collection->new };
+has breadcrumb         => sub { Yetie::Domain::Collection->new };
 
 has created_at => undef;
 has updated_at => undef;
@@ -37,6 +38,10 @@ the following new ones.
 Return L<Yetie::Domain::Collection> object.
 
 =head2 C<product_categories>
+
+Return L<Yetie::Domain::Collection> object.
+
+=head2 C<breadcrumb>
 
 Return L<Yetie::Domain::Collection> object.
 

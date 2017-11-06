@@ -12,8 +12,10 @@ subtest 'found product' => sub {
     is $e->id, 1, 'right id';
     isa_ok $e->primary_category,   'Yetie::Domain::Collection';
     isa_ok $e->product_categories, 'Yetie::Domain::Collection';
-    isa_ok $e->created_at,         'DateTime';
-    isa_ok $e->updated_at,         'DateTime';
+    isa_ok $e->breadcrumb,         'Yetie::Domain::Collection';
+    is @{ $e->breadcrumb }, 2, 'right breadcrumb';
+    isa_ok $e->created_at, 'DateTime';
+    isa_ok $e->updated_at, 'DateTime';
 };
 
 subtest 'not found product' => sub {

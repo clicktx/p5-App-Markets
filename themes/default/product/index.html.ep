@@ -10,7 +10,7 @@
 % });
 </div>
 
-<%= include 'component/breadcrumb' %>
+<%= include 'component/breadcrumb', breadcrumb => $product->breadcrumb %>
 
 <h1><%= stash 'title' %><%= stash 'product_id' %></h1>
 <ul>

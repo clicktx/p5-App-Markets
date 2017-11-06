@@ -39,6 +39,18 @@ sub build {
     }
     $data->{primary_category} = \@primary_category;
 
+    # breadcrumb
+    my @breadcrumb;
+    my $result = $schema->resultset('Category')->find( $primary_category->{category_id} );
+    $result->ancestors->each(
+        sub {
+            my $category = shift;
+            push @breadcrumb, $self->_create_link( $category->id, $category->title );
+        }
+    ) if $result;
+    push @breadcrumb, $self->_create_link( $primary_category->{category_id}, $primary_category->{title} );
+    $data->{breadcrumb} = \@breadcrumb;
+
     return $self->create($data);
 }
 
@@ -52,6 +64,19 @@ sub cook {
     # Aggregate primary_category
     my $primary_category = $self->param('primary_category');
     $self->aggregate( primary_category => 'entity-category_tree-node', $primary_category || [] );
+
+    # Aggregate breadcrumb
+    $self->aggregate( breadcrumb => 'entity-link', $self->param('breadcrumb') || [] );
+}
+
+sub _create_link {
+    my ( $self, $category_id, $title ) = @_;
+    return {
+        title => $title,
+        url   => $self->app->url_for(
+            'RN_category' => { category_name => $title, category_id => $category_id }
+        )
+    };
 }
 
 1;
