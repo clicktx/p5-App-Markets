@@ -49,8 +49,8 @@ sub _create_link {
     return {
         title => $title,
         url   => $self->app->url_for(
-            'RN_category_name_base' => { category_name => $title, category_id => $category_id }
-        )
+            'RN_category' => { category_name => $title, category_id => $category_id }
+        )->to_string
     };
 }
 

@@ -55,7 +55,7 @@ sub _create_link {
         title => $title,
         url   => $self->app->url_for(
             'RN_category' => { category_name => $title, category_id => $category_id }
-        )
+        )->to_string
     };
 }
 

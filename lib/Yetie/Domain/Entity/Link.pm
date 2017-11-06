@@ -3,7 +3,7 @@ use Yetie::Domain::Entity;
 use Mojo::URL;
 
 has title => '';
-has url => sub { Mojo::URL->new };
+has url   => '';
 
 1;
 __END__
@@ -24,8 +24,6 @@ the following new ones.
 =head2 C<title>
 
 =head2 C<url>
-
-Return L<Mojo::URL> object.
 
 =head1 METHODS
 
