@@ -2,7 +2,7 @@
 % title $content->title;
 
 <h1>Breadcrumb list</h1>
-<%= include 'component/breadcrumb' %>
+<%= include 'component/breadcrumb', breadcrumb => $category->breadcrumb %>
 
 <h1><%= stash 'title' %></h1>
 category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name' %>
@@ -22,7 +22,7 @@ category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name'
 % }
 
 <ul>
-    % $products->each( sub {
+    % $category->products->each( sub {
         % my $product = shift;
         <li>
             <%= link_to $product->title => 'RN_product' => { product_id => $product->id } %>

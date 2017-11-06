@@ -2,15 +2,7 @@
 % title 'Product';
 
 <h1>Breadcrumb list</h1>
-<div class="">
-% $product->primary_category->each( sub {
-    % my ( $e, $i ) = @_;
-    <%= link_to $e->title => 'RN_category_name_base' => { category_name => $e->title, category_id => $e->id } %>
-    <% if ( $i != $#{$product->primary_category} ){ %>&gt;<% } %>
-% });
-</div>
-
-<%= include 'component/breadcrumb' %>
+<%= include 'component/breadcrumb', breadcrumb => $product->breadcrumb %>
 
 <h1><%= stash 'title' %><%= stash 'product_id' %></h1>
 <ul>

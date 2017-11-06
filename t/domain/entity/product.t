@@ -3,14 +3,14 @@ use Test::More;
 use Yetie::Domain::Factory;
 
 my $test_data = {
-    title            => 'product title',
-    description      => 'product description',
-    price            => 999,
-    primary_category => [
-        { id => 2,  level => 0, root_id => 2, title => "Fashion" },
-        { id => 5,  level => 1, root_id => 2, title => "Women" },
-        { id => 10, level => 2, root_id => 2, title => "Clothing" },
-        { id => 11, level => 3, root_id => 2, title => "Dresses" },
+    title       => 'product title',
+    description => 'product description',
+    price       => 999,
+    breadcrumb  => [
+        { id => 2,  title => "Fashion" },
+        { id => 5,  title => "Women" },
+        { id => 10, title => "Clothing" },
+        { id => 11, title => "Dresses" },
         { id => 13, title => "Casual" }
     ],
     product_categories => [
@@ -36,19 +36,18 @@ subtest 'basic' => sub {
     can_ok $e, 'title';
     can_ok $e, 'description';
     can_ok $e, 'price';
-    can_ok $e, 'primary_category';
     can_ok $e, 'product_categories';
     can_ok $e, 'created_at';
     can_ok $e, 'updated_at';
 };
 
-subtest 'primary_category' => sub {
+subtest 'breadcrumb' => sub {
     my $e = _create_entity();
 
-    my $attr = $e->primary_category;
+    my $attr = $e->breadcrumb;
     isa_ok $attr, 'Yetie::Domain::Collection';
     is @{$attr}, 5, 'right elements';
-    isa_ok $attr->[0], 'Yetie::Domain::Entity::CategoryTree::Node';
+    isa_ok $attr->[0], 'Yetie::Domain::Entity::Link';
 };
 
 subtest 'product_categories' => sub {

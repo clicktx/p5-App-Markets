@@ -2,13 +2,13 @@ package Yetie::Domain::Factory::Entity::Category;
 use Mojo::Base 'Yetie::Domain::Factory';
 
 sub build {
-    my ( $self, $category_id, $page, $rows ) = ( shift, shift, shift // 1, shift // 10 );
+    my ( $self, $category_id, $opt ) = ( shift, shift, shift // {} );
 
     my $category = $self->app->schema->resultset('Category')->find($category_id);
     return $self->app->factory('entity-category')->create( {} ) unless $category;
 
-    my $data     = {
-        id => $category->id,
+    my $data = {
+        id    => $category->id,
         title => $category->title,
     };
 
@@ -29,21 +29,28 @@ sub build {
         { 'product_categories.category_id' => { IN => \@category_ids } },
         {
             prefetch => 'product_categories',
-            page     => $page,
-            rows     => $rows,
+            page     => $opt->{page} // 1,
+            rows     => $opt->{rows} // 10,
         },
     );
     $data->{products} = $products;
     return $self->app->factory('entity-category')->create($data);
 }
 
+sub cook {
+    my $self = shift;
+
+    # Aggregate breadcrumb
+    $self->aggregate( breadcrumb => 'entity-link', $self->param('breadcrumb') || [] );
+}
+
 sub _create_link {
     my ( $self, $category_id, $title ) = @_;
     return {
         title => $title,
-        uri   => $self->app->url_for(
-            'RN_category_name_base' => { category_name => $title, category_id => $category_id }
-        )
+        url   => $self->app->url_for(
+            'RN_category' => { category_name => $title, category_id => $category_id }
+        )->to_string
     };
 }
 
@@ -75,7 +82,7 @@ the following new ones.
 
 =head2 C<build>
 
-    my $entity = $factory->build( $category_id, $page, $rows );
+    my $entity = $factory->build( $category_id, { page => $page, rows => $rows} );
 
 Return L<Yetie::Domain::Entity::Category> object.
 

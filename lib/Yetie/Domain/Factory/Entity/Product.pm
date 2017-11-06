@@ -22,22 +22,18 @@ sub build {
     my $product_categories = $schema->resultset('Product::Category')->get_product_categories_arrayref($product_id);
     $data->{product_categories} = $product_categories;
 
-    # Ancestors(Primary category path)
-    my @primary_category;
+    # Breadcrumb
     my $primary_category = $data->{product_categories}->[0];
-
-    if ($primary_category) {
-        my $ancestors =
-          $schema->resultset('Category')->get_ancestors_arrayref( $primary_category->{category_id} );
-        push @primary_category, @{$ancestors};
-
-        # Current category
-        my %primary;
-        $primary{id}    = $primary_category->{category_id};
-        $primary{title} = $primary_category->{title};
-        push @primary_category, \%primary;
-    }
-    $data->{primary_category} = \@primary_category;
+    my @breadcrumb;
+    my $result = $schema->resultset('Category')->find( $primary_category->{category_id} );
+    $result->ancestors->each(
+        sub {
+            my $category = shift;
+            push @breadcrumb, $self->_create_link( $category->id, $category->title );
+        }
+    ) if $result;
+    push @breadcrumb, $self->_create_link( $primary_category->{category_id}, $primary_category->{title} );
+    $data->{breadcrumb} = \@breadcrumb;
 
     return $self->create($data);
 }
@@ -49,9 +45,18 @@ sub cook {
     my $product_categories = $self->param('product_categories');
     $self->aggregate( product_categories => 'entity-product-category', $product_categories || [] );
 
-    # Aggregate primary_category
-    my $primary_category = $self->param('primary_category');
-    $self->aggregate( primary_category => 'entity-category_tree-node', $primary_category || [] );
+    # Aggregate breadcrumb
+    $self->aggregate( breadcrumb => 'entity-link', $self->param('breadcrumb') || [] );
+}
+
+sub _create_link {
+    my ( $self, $category_id, $title ) = @_;
+    return {
+        title => $title,
+        url   => $self->app->url_for(
+            'RN_category' => { category_name => $title, category_id => $category_id }
+        )->to_string
+    };
 }
 
 1;

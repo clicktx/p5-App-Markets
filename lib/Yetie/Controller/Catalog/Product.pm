@@ -18,27 +18,6 @@ sub index {
     my $product = $self->factory('product')->build($product_id);
     $self->stash( product => $product );
 
-    my @breadcrumb;
-    $product->primary_category->each(
-        sub {
-            my $e = shift;
-            push @breadcrumb,
-              {
-                title => $e->title,
-                uri =>
-                  $self->url_for( 'RN_category_name_base' => { category_name => $e->title, category_id => $e->id } )
-              };
-        }
-    );
-
-    # content entity
-    my $content = $self->app->factory('entity-content')->create(
-        {
-            breadcrumb => \@breadcrumb,
-        }
-    );
-    $self->stash( content => $content );
-
     # 404
     return $self->reply->not_found unless $product->title;
 
