@@ -127,8 +127,8 @@ sub add_catalog_routes {
     $r->any('/product/:product_id')->to('product#index')->name('RN_product');
 
     # Category
+    # $r->get('/:category_name/c/:category_id')->to('category#index')->name('RN_category_name_base');
     $r->get('/category/:category_id')->to('category#index')->name('RN_category');
-    $r->get('/:category_name/c/:category_id')->to('category#index')->name('RN_category_name_base');
 }
 
 1;
