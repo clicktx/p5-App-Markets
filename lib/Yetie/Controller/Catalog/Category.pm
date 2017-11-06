@@ -23,16 +23,16 @@ sub index {
     # content entity
     my $content = $self->app->factory('entity-content')->create(
         {
-            title      => $category->title,
-            breadcrumb => $category->breadcrumb,
-            pager      => $category->products->pager,
-            params     => $form->params->to_hash,
+            title => $category->title,
+            # breadcrumb => $category->breadcrumb,
+            pager  => $category->products->pager,
+            params => $form->params->to_hash,
         }
     );
 
     $self->stash(
         content  => $content,
-        products => $category->products,
+        category => $category,
     );
 
     return $self->render();

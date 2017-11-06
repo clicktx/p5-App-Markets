@@ -37,11 +37,18 @@ sub build {
     return $self->app->factory('entity-category')->create($data);
 }
 
+sub cook {
+    my $self = shift;
+
+    # Aggregate breadcrumb
+    $self->aggregate( breadcrumb => 'entity-link', $self->param('breadcrumb') || [] );
+}
+
 sub _create_link {
     my ( $self, $category_id, $title ) = @_;
     return {
         title => $title,
-        uri   => $self->app->url_for(
+        url   => $self->app->url_for(
             'RN_category_name_base' => { category_name => $title, category_id => $category_id }
         )
     };
