@@ -1,13 +1,6 @@
 package Yetie::Domain::Factory::Entity::Content;
 use Mojo::Base 'Yetie::Domain::Factory';
 
-sub cook {
-    my $self = shift;
-
-    # Aggregate breadcrumb
-    $self->aggregate( breadcrumb => 'entity-breadcrumb', $self->param('breadcrumb') || [] );
-}
-
 1;
 __END__
 

@@ -35,7 +35,7 @@ sub index {
             # title      => $xx->title,
             # breadcrumb => $xx->breadcrumb,
             pager  => $products->pager,
-            params => $form->params->to_hash,
+            params => $form->params,
         }
     );
 

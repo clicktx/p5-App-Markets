@@ -2,17 +2,6 @@ use Mojo::Base -strict;
 use Test::More;
 use Yetie::Domain::Factory;
 
-my $test_data = {
-    breadcrumb => [
-        { title => 'Fashion', uri => '/fashion' },
-        { title => 'Women', uri => '/women' },
-    ],
-};
-
-sub _create_entity {
-    Yetie::Domain::Factory->new('entity-content')->create($test_data);
-}
-
 use_ok 'Yetie::Domain::Entity::Content';
 
 subtest 'basic' => sub {
@@ -26,24 +15,9 @@ subtest 'basic' => sub {
     can_ok $e, 'breadcrumb';
     can_ok $e, 'pager';
     can_ok $e, 'params';
-    is ref $e->params, 'HASH', 'right hash_ref';
-};
-
-subtest 'breadcrumb' => sub {
-    my $e = _create_entity();
-
-    my $attr = $e->breadcrumb;
-    use DDP;p $attr;
-    isa_ok $attr, 'Yetie::Domain::Collection';
-    is @{$attr}, 2, 'right elements';
-    isa_ok $attr->[0], 'Yetie::Domain::Entity::Breadcrumb';
-};
-
-subtest 'pager' => sub {
-    my $e = _create_entity();
-
-    my $attr = $e->pager;
-    isa_ok $attr, 'Data::Page';
+    isa_ok $e->breadcrumb, 'Yetie::Domain::Collection';
+    isa_ok $e->pager,      'Data::Page';
+    isa_ok $e->params,     'Yetie::Parameters';
 };
 
 done_testing();

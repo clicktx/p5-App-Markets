@@ -1,6 +1,7 @@
 package Yetie::Domain::Entity::Content;
 use Yetie::Domain::Entity;
 use Yetie::Domain::Collection;
+use Yetie::Parameters;
 use Data::Page;
 
 has title       => '';
@@ -10,7 +11,7 @@ has robots      => '';
 
 has breadcrumb => sub { Yetie::Domain::Collection->new };
 has pager      => sub { Data::Page->new };
-has params     => sub { {} };
+has params     => sub { Yetie::Parameters->new };
 
 1;
 __END__
@@ -40,7 +41,7 @@ the following new ones.
 
     $content->breadcrumb->each( sub { ... } );
 
-has L<Yetie::Domain::Entity::Breadcrumb> object in L<Yetie::Domain::Collection> object.
+has L<Yetie::Domain::Entity::Link> object in L<Yetie::Domain::Collection> object.
 
 =head2 C<pager>
 
@@ -48,7 +49,9 @@ has L<Data::Page> object.
 
 =head2 C<params>
 
-Return hash refference.This values is validated form parameters.
+Return L<Yetie::Parameters> object.
+
+NOTE: These values are validated form parameters.
 
 =head1 METHODS
 
