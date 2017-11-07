@@ -1,7 +1,8 @@
 package Yetie::Domain::Entity::Category;
 use Yetie::Domain::Entity;
+use Yetie::Domain::Collection;
 
-has breadcrumb => sub { [] };
+has breadcrumb => sub { Yetie::Domain::Collection->new };
 has 'products';
 has title   => '';
 
@@ -23,7 +24,7 @@ the following new ones.
 
 =head2 C<breadcrumb>
 
-Return Array reference.
+Return L<Yetie::Domain::Collection> object.
 
 =head2 C<products>
 
