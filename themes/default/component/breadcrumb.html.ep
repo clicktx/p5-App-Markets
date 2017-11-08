@@ -1,3 +1,4 @@
+% my $breadcrumb = $content->breadcrumb;
 <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
     % $breadcrumb->each( sub {
         % my ( $e, $i ) = @_;

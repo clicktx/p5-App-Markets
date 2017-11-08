@@ -24,7 +24,7 @@ sub index {
     my $content = $self->app->factory('entity-content')->create(
         {
             title => $category->title,
-            # breadcrumb => $category->breadcrumb,
+            breadcrumb => $category->breadcrumb,
             pager  => $category->products->pager,
             params => $form->params,
         }

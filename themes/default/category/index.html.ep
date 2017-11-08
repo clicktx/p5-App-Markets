@@ -2,7 +2,7 @@
 % title $content->title;
 
 <h1>Breadcrumb list</h1>
-<%= include 'component/breadcrumb', breadcrumb => $category->breadcrumb %>
+<%= include 'component/breadcrumb' %>
 
 <h1><%= stash 'title' %></h1>
 category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name' %>
