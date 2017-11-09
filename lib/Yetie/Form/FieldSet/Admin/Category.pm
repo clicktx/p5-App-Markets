@@ -1,4 +1,4 @@
-package Yetie::Form::FieldSet::Admin::Category::Index;
+package Yetie::Form::FieldSet::Admin::Category;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
