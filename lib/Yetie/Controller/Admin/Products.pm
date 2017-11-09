@@ -11,13 +11,14 @@ use Mojo::Base 'Yetie::Controller::Admin';
 sub index {
     my $self = shift;
 
-    my $form = $self->form_set();
+    my $form = $self->form_set('search');
     $self->init_form();
 
     # return $self->render() unless $form->has_data;
     $form->validate;
 
-    my $page = $form->param('p') || 1;
+    my $page     = $form->param('page')     || 1;
+    my $per_page = $form->param('per_page') || 5;
 
     # 1page当たりの表示件数
     # cookieに保存する
@@ -27,7 +28,7 @@ sub index {
 
     my $rs = $self->app->schema->resultset('Product');
     my $products =
-      $rs->search( {}, { order_by => { -desc => [ 'updated_at', 'created_at' ] }, page => $page, rows => 5 } );
+      $rs->search( {}, { order_by => { -desc => [ 'updated_at', 'created_at' ] }, page => $page, rows => $per_page } );
 
     # content entity
     my $content = $self->app->factory('entity-content')->create(

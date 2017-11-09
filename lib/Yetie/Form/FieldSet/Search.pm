@@ -1,8 +1,13 @@
-package Yetie::Form::FieldSet::Search::Common;
+package Yetie::Form::FieldSet::Search;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
-has_field 'p' => (
+has_field 'page' => (
+    type        => 'text',
+    validations => ['uint'],
+);
+
+has_field 'per_page' => (
     type        => 'text',
     validations => ['uint'],
 );
@@ -17,7 +22,7 @@ has_field 'sort' => (
     validations => [],
 );
 
-has_field 'direction' => (
+has_field 'order' => (
     type        => 'text',
     validations => [],
 );

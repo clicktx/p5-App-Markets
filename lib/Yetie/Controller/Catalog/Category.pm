@@ -4,16 +4,16 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 sub index {
     my $self = shift;
 
-    my $form = $self->form_set();
+    my $form = $self->form_set('search');
     $self->init_form();
 
     # return $self->render() unless $form->has_data;
     $form->validate;
 
     my $category_id = $self->stash('category_id');
-    my $page_no     = $form->param('p') || 1;
-    my $rows        = 3;
-    my $category    = $self->factory('category')->build( $category_id, { page => $page_no, rows => $rows } );
+    my $page_no     = $form->param('page') || 1;
+    my $per_page    = $form->param('per_page') || 3;
+    my $category    = $self->factory('category')->build( $category_id, { page => $page_no, rows => $per_page } );
     return $self->reply->not_found() unless $category->id;
 
     # widget category tree
@@ -23,10 +23,10 @@ sub index {
     # content entity
     my $content = $self->app->factory('entity-content')->create(
         {
-            title => $category->title,
+            title      => $category->title,
             breadcrumb => $category->breadcrumb,
-            pager  => $category->products->pager,
-            params => $form->params,
+            pager      => $category->products->pager,
+            params     => $form->params,
         }
     );
 

@@ -4,7 +4,7 @@ use Mojo::Base 'Yetie::Controller::Admin';
 sub index {
     my $self = shift;
 
-    my $form = $self->form_set();
+    my $form = $self->form_set('search');
     $self->init_form();
 
     # return $self->render() unless $form->has_data;
@@ -13,8 +13,8 @@ sub index {
     my $conditions = {
         where    => '',
         order_by => '',
-        page_no  => $form->param('p') || 1,
-        rows     => 5,
+        page_no  => $form->param('page') || 1,
+        rows     => $form->param('per_page') || 5,
     };
 
     my $rs     = $self->app->schema->resultset('Sales::Order::Shipment');
