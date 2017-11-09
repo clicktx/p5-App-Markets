@@ -9,11 +9,11 @@ has_field 'product_id' => (
 );
 
 has_field 'quantity' => (
-    type        => 'text',
-    label       => 'Quantity',
+    type          => 'text',
+    label         => 'Quantity',
     default_value => 1,
-    filters     => [qw(trim)],
-    validations => [qw(uint)],
+    filters       => [qw(trim)],
+    validations   => [ 'uint', [ min => 1 ] ],
 );
 
 1;
