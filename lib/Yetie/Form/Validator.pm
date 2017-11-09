@@ -311,6 +311,8 @@ L<Yetie::Form::Validator> validates values for L<Yetie>.
 
 =head1 CHECKS
 
+L<Yetie::Form::Validator> adds all the checks to L<Mojolicious::Validator>.
+
 These validation checks are available.
 
 =head2 C<ascii>
@@ -333,6 +335,14 @@ Value needs to be between these two values.
 
 =head2 C<email>
 
+=head2 C<equal_to>
+
+See L<Mojolicious::Validator/equal_to>.
+
+=head2 C<in>
+
+See L<Mojolicious::Validator/in>.
+
 =head2 C<int>
 
     $validation = $validation->int();
@@ -346,6 +356,10 @@ Value needs to be between these two values.
     $validation = $validation->length(3);
 
 String value length in bytes needs to be between these two values.
+
+=head2 C<like>
+
+See L<Mojolicious::Validator/like>.
 
 =head2 C<number>
 
@@ -368,6 +382,10 @@ It will be affected by application preferences C<locale-country>.
 
 Alias L</between> method.
 
+=head2 C<size>
+
+See L<Mojolicious::Validator/size>.
+
 =head2 C<time>
 
 =head2 C<uint>
@@ -377,7 +395,23 @@ Alias L</between> method.
     # valid     1, 123
     # invalid   3.3, a, -5
 
+=head2 C<upload>
+
+See L<Mojolicious::Validator/upload>.
+
 =head2 C<url>
+
+=head1 ATTRIBUTES
+
+L<Yetie::Form::Validator> adds all the attributes to L<Mojolicious::Validator>.
+
+=head1 METHODS
+
+L<Yetie::Form::Validator> adds all the methods to L<Mojolicious::Validator>.
+
+=head2 C<error_message>
+
+    say $validator->error_message('foo');
 
 =head1 SEE ALSO
 
