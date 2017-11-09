@@ -1,4 +1,4 @@
-package t::pages::admin::categories;
+package t::pages::admin::category;
 
 use Mojo::Base 't::pages::common';
 use t::Util;
@@ -11,7 +11,7 @@ sub t01_index : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $t->get_ok('/admin/categories')->status_is(200);
+    $t->get_ok('/admin/category')->status_is(200);
 }
 
 __PACKAGE__->runtests;

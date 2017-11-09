@@ -1,9 +1,9 @@
 % layout 'admin-default';
-% title __('Categories');
+% title __('Category');
 
 <h1><%= title %></h1>
 
-<h2><%= __('Categories') %></h2>
+<h2><%= __('Category') %></h2>
 
 % my @root_nodes = $rs->search( { level => 0 } );
 % foreach my $node (@root_nodes) {
@@ -19,7 +19,7 @@
 % }
 
 <h1>Create Category</h1>
-<%= form_for 'RN_admin_categories' => ( method => 'POST' ) => begin %>
+<%= form_for 'RN_admin_category' => ( method => 'POST' ) => begin %>
     <div class="">
         <%= form_label '#parent_id' %> <%= form_widget '#parent_id' %>
     </div>

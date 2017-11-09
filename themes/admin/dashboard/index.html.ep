@@ -10,7 +10,7 @@
 </ul>
 <h2><%= __('Categories') %></h2>
 <ul>
-    <li><%= link_to 'Categories index' => 'RN_admin_categories' %></li>
+    <li><%= link_to 'Category index' => 'RN_admin_category' %></li>
 </ul>
 
 <h2><%= __('Products') %></h2>
