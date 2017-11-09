@@ -34,9 +34,7 @@ our $NUMBER_RE = {
 #     step: $.validator.format( "Please enter a multiple of {0}." )
 # },
 
-my @methods = (
-    qw(ascii between date datetime decimal email int length range time uint url)
-);
+my @methods = (qw(ascii between date datetime decimal email int length max min range time uint url));
 
 # Message for Mojolicious::Validator default validators
 my $MESSAGES = {
@@ -55,6 +53,8 @@ my $MESSAGES = {
           : 'Please enter a value {0} characters long.';
     },
     like     => 'This field is invelid.',
+    max      => 'Please enter a value less than or equal to {0}.',
+    min      => 'Please enter a value greater than or equal to {0}.',
     number   => 'Invalid way to divide numbers.',
     time     => '',
     size     => 'Please enter a value between {0} and {1} characters long.',
@@ -113,6 +113,18 @@ sub _int {
 sub _length {
     my ( $validation, $name, $value, @args ) = @_;
     return FormValidator::Simple::Validator->LENGTH( [$value], \@args ) ? undef : 1;
+}
+
+sub _max {
+    my ( $validation, $name, $value, @args ) = @_;
+    if ( $value == $args[0] ) { return }
+    return FormValidator::Simple::Validator->LESS_THAN( [$value], \@args ) ? undef : 1;
+}
+
+sub _min {
+    my ( $validation, $name, $value, @args ) = @_;
+    if ( $value == $args[0] ) { return }
+    return FormValidator::Simple::Validator->GREATER_THAN( [$value], \@args ) ? undef : 1;
 }
 
 sub _number {
@@ -311,6 +323,8 @@ L<Yetie::Form::Validator> validates values for L<Yetie>.
 
 =head1 CHECKS
 
+L<Yetie::Form::Validator> adds all the checks to L<Mojolicious::Validator>.
+
 These validation checks are available.
 
 =head2 C<ascii>
@@ -333,6 +347,14 @@ Value needs to be between these two values.
 
 =head2 C<email>
 
+=head2 C<equal_to>
+
+See L<Mojolicious::Validator/equal_to>.
+
+=head2 C<in>
+
+See L<Mojolicious::Validator/in>.
+
 =head2 C<int>
 
     $validation = $validation->int();
@@ -346,6 +368,26 @@ Value needs to be between these two values.
     $validation = $validation->length(3);
 
 String value length in bytes needs to be between these two values.
+
+=head2 C<like>
+
+See L<Mojolicious::Validator/like>.
+
+=head2 C<max>
+
+numeric comparison
+
+    $validation = $validation->max(3);
+
+A value less than or equal.
+
+=head2 C<min>
+
+numeric comparison
+
+    $validation = $validation->min(3);
+
+A value greater than or equal.
 
 =head2 C<number>
 
@@ -368,6 +410,10 @@ It will be affected by application preferences C<locale-country>.
 
 Alias L</between> method.
 
+=head2 C<size>
+
+See L<Mojolicious::Validator/size>.
+
 =head2 C<time>
 
 =head2 C<uint>
@@ -377,7 +423,23 @@ Alias L</between> method.
     # valid     1, 123
     # invalid   3.3, a, -5
 
+=head2 C<upload>
+
+See L<Mojolicious::Validator/upload>.
+
 =head2 C<url>
+
+=head1 ATTRIBUTES
+
+L<Yetie::Form::Validator> adds all the attributes to L<Mojolicious::Validator>.
+
+=head1 METHODS
+
+L<Yetie::Form::Validator> adds all the methods to L<Mojolicious::Validator>.
+
+=head2 C<error_message>
+
+    say $validator->error_message('foo');
 
 =head1 SEE ALSO
 

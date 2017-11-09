@@ -93,6 +93,44 @@ subtest 'length' => sub {
     is $v->error('foo'), undef, 'right valid';
 };
 
+subtest 'max' => sub {
+    my ( $c, $f, $v ) = new_req();
+    $f->append_field( 'foo' => ( validations => [ [ 'max' => 3 ] ] ) );
+    $v->input( { foo => 4 } );
+    $f->validate;
+    is $v->error('foo')->[0], 'max', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 3 } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 2 } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+};
+
+subtest 'min' => sub {
+    my ( $c, $f, $v ) = new_req();
+    $f->append_field( 'foo' => ( validations => [ [ 'min' => 3 ] ] ) );
+    $v->input( { foo => 2 } );
+    $f->validate;
+    is $v->error('foo')->[0], 'min', 'right invalid';
+    ok $v->error_message('foo'), 'right error message';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 3 } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+
+    ( $c, $f, $v ) = new_req();
+    $v->input( { foo => 4 } );
+    $f->validate;
+    is $v->error('foo'), undef, 'right valid';
+};
+
 subtest 'number' => sub {
     my ( $c, $f, $v ) = new_req();
     $f->append_field( 'foo' => ( validations => ['number'] ) );
