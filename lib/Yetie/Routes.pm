@@ -51,7 +51,11 @@ sub add_admin_routes {
         }
 
         # Category
-        $r->any('/category')->to('admin-category#index')->name('RN_admin_category');
+        {
+            my $category = $r->any('/category')->to( controller => 'admin-category' );
+            $category->get('/')->to('#index')->name('RN_admin_category');
+            $category->post('/create')->to('#index')->name('RN_admin_category_create');
+        }
 
         # Products
         $r->any('/products')->to('admin-products#index')->name('RN_admin_products');

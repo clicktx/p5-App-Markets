@@ -18,6 +18,7 @@ sub index {
 
     return $self->render() unless $form->validate;
 
+    # Create category
     if ( $form->param('parent_id') ) {
 
         # Create children node
@@ -46,7 +47,7 @@ sub index {
     #     }
     # }
 
-    $self->render();
+    $self->redirect_to('RN_admin_category');
 }
 
 1;
