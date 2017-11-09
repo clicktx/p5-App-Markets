@@ -34,6 +34,10 @@ our $NUMBER_RE = {
 #     step: $.validator.format( "Please enter a multiple of {0}." )
 # },
 
+my @methods = (
+    qw(ascii between date datetime decimal email int length range time uint url)
+);
+
 # Message for Mojolicious::Validator default validators
 my $MESSAGES = {
     ascii    => 'Please enter only as ASCII.',
@@ -77,8 +81,7 @@ sub register {
         return ref $message eq 'CODE' ? $message->(@args) : $message;
     };
 
-    $app->validator->add_check( $_ => \&{ '_' . $_ } )
-      for qw(ascii between date datetime decimal email int length range time uint url);
+    $app->validator->add_check( $_ => \&{ '_' . $_ } ) for @methods;
 
     my $country = $app->pref('locale_country') || 'US';
     $app->validator->add_check( number => sub { _number( $country, @_ ) } );
