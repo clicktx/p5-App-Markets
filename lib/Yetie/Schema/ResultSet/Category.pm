@@ -1,5 +1,6 @@
 package Yetie::Schema::ResultSet::Category;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
+use Carp qw(croak);
 
 sub create_category {
     my ( $self, $title, $parent_id ) = @_;
@@ -38,6 +39,23 @@ sub get_category_choices {
         push @trees, @{ _tree( $root, $ids ) };
     }
     return \@trees;
+}
+
+sub has_title {
+    my ( $self, $title, $parent_id ) = @_;
+    croak 'Argument empty' unless $title;
+
+    my $where = { title => $title };
+    if ($parent_id) {
+        $where->{root_id} = $parent_id;
+        $where->{level} = { '!=' => 0 };
+    }
+    else {
+        $where->{level} = 0;
+    }
+
+    my $result = $self->find($where);
+    return $result ? 1 : 0;
 }
 
 sub _tree {
@@ -88,10 +106,10 @@ the following new ones.
 =head2 C<create_category>
 
     # Create root category
-    $rs->create_category($title);
+    my $result = $rs->create_category($title);
 
     # Create children category
-    $rs->create_category($title, $parent_id);
+    my $result = $rs->create_category($title, $parent_id);
 
 Create category.
 
@@ -112,6 +130,15 @@ Return Array refference.
     my $tree = $rs->get_category_choices( [ 1, 3, 5 ] );
 
 Return Array refference.
+
+=head2 C<has_title>
+
+    my $bool = $rs->has_title($title);
+    my $bool = $rs->has_title($title, $parent_id);
+
+    if ($bool){ say "$title exsts" }
+
+Return Boolean value.
 
 =head1 AUTHOR
 

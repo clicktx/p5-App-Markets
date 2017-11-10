@@ -30,6 +30,16 @@ subtest 'create_category' => sub {
     # Not found parent
     $result = $rs->create_category( 'buzz', 999 );
     is $result, undef, 'right not found parent';
+
+    subtest 'has_title' => sub {
+        eval { $rs->has_title() };
+        ok $@, 'right argument empty';
+
+        ok $rs->has_title('foo'), 'right has title';
+        ok !$rs->has_title('bar'), 'right has not title';
+        ok !$rs->has_title( 'foo', $parent_id ), 'right has not title';
+        ok $rs->has_title( 'bar', $parent_id ), 'right has title';
+    };
 };
 
 subtest 'get_ancestors_arrayref' => sub {
