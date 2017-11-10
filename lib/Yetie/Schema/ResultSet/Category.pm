@@ -1,6 +1,25 @@
 package Yetie::Schema::ResultSet::Category;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 
+sub create_category {
+    my ( $self, $title, $parent_id ) = @_;
+    return unless $title;
+
+    my $result;
+    if ($parent_id) {
+
+        # Create child node
+        my $parent = $self->find($parent_id) || return;
+        $result = $parent->add_to_children( { title => $title } );
+    }
+    else {
+        # Create root node
+        $result = $self->create( { title => $title } );
+    }
+
+    return $result;
+}
+
 sub get_ancestors_arrayref {
     my ( $self, $category_id ) = @_;
 
@@ -65,6 +84,18 @@ the following new ones.
 
 L<Yetie::Schema::ResultSet::Category> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
 the following new ones.
+
+=head2 C<create_category>
+
+    # Create root category
+    $rs->create_category($title);
+
+    # Create children category
+    $rs->create_category($title, $parent_id);
+
+Create category.
+
+Return Value: L<$result|DBIx::Class::Manual::ResultClass> | undef
 
 =head2 C<get_ancestors_arrayref>
 
