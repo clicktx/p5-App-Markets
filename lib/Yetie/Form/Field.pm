@@ -10,7 +10,8 @@ our $required_class = 'form-required-field-icon';
 our $required_icon  = '*';
 
 has id => sub { my $id = shift->name; $id =~ s/\./_/g; return "form_widget_$id" };
-has [qw(field_key default_value choices help label error_messages multiple expanded required)];
+has error_messages => sub { +{} };
+has [qw(field_key default_value choices help label multiple expanded required)];
 has [qw(name type value placeholder checked selected choiced)];
 
 sub AUTOLOAD {
@@ -83,6 +84,19 @@ sub data {
     my $self = shift;
     @_ > 1 ? my %pair = @_ : return $self->{ 'data-' . $_[0] };
     $self->{ 'data-' . $_ } = $pair{$_} for keys %pair;
+}
+
+sub error_message {
+    my $self = shift;
+
+    # Getter
+    return $self->error_messages unless @_;
+    my %args = @_ > 1 ? @_ : ref $_[0] eq 'HASH' ? %{ $_[0] } : return $self->error_messages->{ $_[0] };
+
+    # Setter
+    my %messages = %{ $self->error_messages };
+    $messages{$_} = $args{$_} for keys %args;
+    $self->error_messages( \%messages );
 }
 
 # check_box or radio_button into the label
@@ -406,6 +420,16 @@ Append class "field-with-error" to field.
 
     # Set attributes data-*
     $field->data( foo => 'bar', baz => 'bar', ... );
+
+=head2 C<error_message>
+
+    # Getter
+    my $hashref = $field->error_message();
+    my $string = $field->error_message('foo');
+
+    # Setter
+    $field->error_message( foo => 'foo', bar => 'bar' );
+    $field->error_message( { foo => 'foo', bar => 'bar' } );
 
 =head1 TAG HELPER METHODS
 

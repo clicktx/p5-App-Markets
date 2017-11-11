@@ -21,6 +21,19 @@ sub f {
     );
 }
 
+sub f2 {
+    return Yetie::Form::Field->new(
+        field_key      => 'title',
+        name           => 'title',
+        label          => 'label text',
+        placeholder    => 'example',
+        default_value  => '',
+        error_messages => {
+            foo => 'bar',
+        },
+    );
+}
+
 subtest 'append_class' => sub {
     my $f = f();
     $f->append_class('foo');
@@ -43,6 +56,32 @@ subtest 'data' => sub {
     is $f->{'data-baz'}, 'foo', 'right set';
     is $f->data('foo'), 'bar', 'right get';
     is $f->data('baz'), 'foo', 'right get';
+};
+
+subtest 'error_message' => sub {
+    my $f = f();
+
+    # getter
+    is_deeply $f->error_message(), {}, 'right all error messages';
+    is $f->error_message('foo'), undef, 'right getter';
+
+    my $f2 = f2();
+    is_deeply $f2->error_message(), { foo => 'bar' }, 'right all error messages';
+    is $f2->error_message('foo'), 'bar', 'right getter';
+
+    # setter
+    $f->error_message( foo => 'foo', bar => 'bar' );
+    is_deeply $f->error_message(), { foo => 'foo', bar => 'bar' }, 'right setter using array';
+
+    $f->error_message( { buz => 'buz', qux => 'qux' } );
+    is_deeply $f->error_message(),
+      {
+        foo => 'foo',
+        bar => 'bar',
+        buz => 'buz',
+        qux => 'qux'
+      },
+      'right setter using hashref';
 };
 
 subtest 'label' => sub {
