@@ -371,20 +371,35 @@ Yetie::Form::Field
 =head1 ATTRIBUTES
 
 =head2 C<id>
+
 =head2 C<field_key>
+
 =head2 C<default_value>
+
 =head2 C<choices>
+
 =head2 C<help>
+
 =head2 C<label>
+
 =head2 C<error_messages>
+
 =head2 C<multiple>
+
 =head2 C<expanded>
+
 =head2 C<required>
+
 =head2 C<name>
+
 =head2 C<type>
+
 =head2 C<value>
+
 =head2 C<placeholder>
+
 =head2 C<checked>
+
 =head2 C<selected>
 
 =head2 C<choiced>
@@ -430,6 +445,12 @@ Append class "field-with-error" to field.
     # Setter
     $field->error_message( foo => 'foo', bar => 'bar' );
     $field->error_message( { foo => 'foo', bar => 'bar' } );
+
+Get / Set error messages.
+
+    # In controller example
+    $form_set->field('foo')->error_message('error message {0} and {1}');
+    $form_set->field('foo')->error_message( bar_error => sub { ... } );
 
 =head1 TAG HELPER METHODS
 

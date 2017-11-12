@@ -71,6 +71,46 @@ Yetie::Form - Form for Yetie
     # Mojolicious::Lite
     plugin 'Yetie::Form';
 
+=head2 Custom Error Messages
+
+    package Yetie::Form::FieldSet::Category;
+    use Mojo::Base -strict;
+    use Yetie::Form::FieldSet;
+
+    has_field 'title' => (
+        type        => 'text',
+        ...
+        error_messages => {
+            custom_error => 'foo {0}',
+            custom_error2 => 'bar {0} {1}',
+            custom_error3 => sub {
+                return @_ > 1
+                  ? 'Please enter a value between {0} and {1} characters long.'
+                  : 'Please enter a value {0} characters long.';
+            },
+            ...
+        },
+    );
+    ...
+
+error_message attribute.
+
+    # In controller
+    my $form = $controller->form_set('category');
+    return $controller->render() unless $form->validate;
+
+    # Add or rewrite error message
+    $form->field('title')->error_message( custom_error => 'foo bar {0}' );
+
+    my $bool = $model->is_error( $form->param('title') );
+    if ($bool) {
+        # Error message is "foo bar buz"
+        $form->validation->error( title => [ 'custom_error', 1, ('buz') ] );
+        return $controller->render();
+    }
+
+Handle custom error messages in the controller.
+
 =head1 DESCRIPTION
 
 =head1 HELPERS
@@ -84,6 +124,8 @@ L<Yetie::Form> implements the following helpers.
     <%= form_label %>
     <%= form_widget %>
     <%= form_error %>
+
+Set the current topic.
 
 Return none.
 Cache the currently used form-field in "$c->stash".
