@@ -12,6 +12,14 @@ sub t01_index : Tests() {
     my $t    = $self->t;
 
     $t->get_ok('/admin/category')->status_is(200);
+
+    my $post_data = {
+        csrf_token => $self->csrf_token,
+        title      => 'foo',
+        parent_id  => undef,
+    };
+    $t->post_ok( '/admin/category', form => $post_data )->status_is( 200, 'right create new category' );
+    $t->post_ok( '/admin/category', form => $post_data )->status_is( 409, 'right title same name exists' );
 }
 
 __PACKAGE__->runtests;
