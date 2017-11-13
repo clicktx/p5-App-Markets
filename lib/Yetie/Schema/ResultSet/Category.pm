@@ -1,5 +1,25 @@
 package Yetie::Schema::ResultSet::Category;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
+use Carp qw(croak);
+
+sub create_category {
+    my ( $self, $title, $parent_id ) = @_;
+    return unless $title;
+
+    my $result;
+    if ($parent_id) {
+
+        # Create child node
+        my $parent = $self->find($parent_id) || return;
+        $result = $parent->add_to_children( { title => $title } );
+    }
+    else {
+        # Create root node
+        $result = $self->create( { title => $title } );
+    }
+
+    return $result;
+}
 
 sub get_ancestors_arrayref {
     my ( $self, $category_id ) = @_;
@@ -19,6 +39,23 @@ sub get_category_choices {
         push @trees, @{ _tree( $root, $ids ) };
     }
     return \@trees;
+}
+
+sub has_title {
+    my ( $self, $title, $parent_id ) = @_;
+    croak 'Argument empty' unless $title;
+
+    my $where = { title => $title };
+    if ($parent_id) {
+        $where->{root_id} = $parent_id;
+        $where->{level} = { '!=' => 0 };
+    }
+    else {
+        $where->{level} = 0;
+    }
+
+    my $result = $self->find($where);
+    return $result ? 1 : 0;
 }
 
 sub _tree {
@@ -66,6 +103,18 @@ the following new ones.
 L<Yetie::Schema::ResultSet::Category> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
 the following new ones.
 
+=head2 C<create_category>
+
+    # Create root category
+    my $result = $rs->create_category($title);
+
+    # Create children category
+    my $result = $rs->create_category($title, $parent_id);
+
+Create category.
+
+Return Value: L<$result|DBIx::Class::Manual::ResultClass> | undef
+
 =head2 C<get_ancestors_arrayref>
 
     my $array_ref = $rs->get_ancestors_arrayref($category_id);
@@ -81,6 +130,15 @@ Return Array refference.
     my $tree = $rs->get_category_choices( [ 1, 3, 5 ] );
 
 Return Array refference.
+
+=head2 C<has_title>
+
+    my $bool = $rs->has_title($title);
+    my $bool = $rs->has_title($title, $parent_id);
+
+    if ($bool){ say "$title exsts" }
+
+Return Boolean value.
 
 =head1 AUTHOR
 

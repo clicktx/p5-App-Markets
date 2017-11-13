@@ -12,6 +12,7 @@ use Yetie::Form::Field;
 
 has controller => sub { Mojolicious::Controller->new };
 has 'is_validated';
+has validation => sub { shift->controller->validation };
 
 sub append_field {
     my ( $self, $field_key ) = ( shift, shift );
@@ -359,6 +360,12 @@ Return L<Mojolicious::Controller> object.
     my $bool = $fieldset->is_validated;
 
 Return boolean value.
+
+=head2 C<validation>
+
+    $validation = $fieldset->validation;
+
+$controller->validation alias.
 
 =head1 FUNCTIONS
 

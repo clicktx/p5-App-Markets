@@ -15,6 +15,7 @@ my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
 
 subtest 'attributes' => sub {
     ok( $fs->can($_), "right $_" ) for qw(controller schema);
+    isa_ok $fs->validation, 'Mojolicious::Validator::Validation';
 };
 
 subtest 'c' => sub {
