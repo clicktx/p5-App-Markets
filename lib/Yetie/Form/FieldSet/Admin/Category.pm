@@ -7,6 +7,9 @@ has_field 'title' => (
     label       => 'Category Name',
     required    => 1,
     validations => [],
+    error_messages => {
+        duplicate_title => 'A category with the same name exists.',
+    },
 );
 
 has_field 'parent_id' => (
