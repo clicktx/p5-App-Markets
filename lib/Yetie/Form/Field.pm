@@ -691,6 +691,6 @@ In textarea, "default_value" and "value" is treated as content text.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Plugin::TagHelpers>, L<Yetie::Form>, L<Yetie::Form::FieldSet>
+L<Mojolicious::Plugin::TagHelpers>, L<Yetie::Form>, L<Yetie::Form>, L<Yetie::Form::FieldSet>
 
 =cut

@@ -529,6 +529,6 @@ Return boolean. success return true.
 
 =head1 SEE ALSO
 
-L<Yetie::Form>, L<Yetie::Form::Field>
+L<Yetie::Form>, L<Yetie::Form::Base>, L<Yetie::Form::Field>
 
 =cut
