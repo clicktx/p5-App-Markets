@@ -5,11 +5,7 @@ use CGI::Expand qw/expand_hash/;
 use Mojolicious::Controller;
 use Yetie::Util qw(load_class);
 
-# use Yetie::Form::FieldSet;
-
 has controller => sub { Mojolicious::Controller->new };
-
-# has fieldset   => sub { Yetie::Form::FieldSet->new };
 has 'fieldset';
 has is_validated => '0';
 has name_space   => 'Yetie::Form::FieldSet';
@@ -130,19 +126,36 @@ L<Yetie::Form::Base> inherits all attributes from L<Mojo::Base> and implements t
 
 =head2 C<controller>
 
+    my $controller = $form->controller;
+    $form->controller( Mojolicious::Controller->new );
+
 Return L<Mojolicious::Controller> object.
 
 =head2 C<fieldset>
 
-Return L<Yetie::Form::FieldSet> object.
+    my $fieldset = $form->fieldset;
+
+Return L<Yetie::Form::FieldSet> object or C<undefined>.
 
 =head2 C<is_validated>
+
+    my $bool = $fieldset->is_validated;
 
 Return boolean value.
 
 =head2 C<name_space>
 
+    my $ns = $form->name_space;
+    $form->name_space('Your::FormSet');
+
 Name space base.
+Default Yetie::Form::FieldSet
+
+=head2 C<validation>
+
+    $validation = $fieldset->validation;
+
+$controller->validation alias.
 
 =head1 METHODS
 
@@ -150,15 +163,53 @@ L<Yetie::Form::Base> inherits all methods from L<Mojo::Base> and implements the 
 
 =head2 C<has_data>
 
-    $bool = $fieldset->has_data;
+    $bool = $form->has_data;
 
 L<Mojolicious::Validator::Validation/has_data>
 
+=head2 C<param>
+
+    # Return scalar
+    my $param = $form->param('name');
+
+    # Return array refference
+    my $param = $form->param('favorite[]')
+
+The parameter is a validated values.
+This method should be called after the L</validate> method.
+
+=head2 C<params>
+
+    my $validated_params = $form->params;
+
+Return L<Mojo::Parameters> object.
+All parameters are validated values.
+This method should be called after the L</validate> method.
+
+=head2 C<scope_param>
+
+    my $scope = $form->scope_param('user');
+
+Return hash refference or array refference.
+The parameter is a validated values.
+This method should be called after the L</validate> method.
+
+Get expanded parameter. SEE L<CGI::Expand/expand_hash>
+
 =head2 C<validation>
+
+    my $validation = $form->validation;
 
 Return L<Mojo::Validator::Validation> object.
 
 Alias $controller->validation
+
+=head2 C<validate>
+
+    my $bool = $fieldset->validate;
+    say 'Validation failure!' unless $bool;
+
+Return boolean. success return true.
 
 =head1 SEE ALSO
 
