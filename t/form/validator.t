@@ -2,7 +2,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
 use t::Util;
-use Yetie::Form::FieldSet;
+use Yetie::Form::Base;
 
 use_ok 'Yetie::Form::Validator';
 
@@ -10,21 +10,21 @@ my $t = Test::Mojo->new('App');
 
 sub new_req {
     my $c = $t->app->build_controller;
-    my $f = Yetie::Form::FieldSet->new( controller => $c );
+    my $f = Yetie::Form::Base->new( 'test', controller => $c );
     my $v = $c->validation;
     return ( $c, $f, $v );
 }
 
 subtest 'required' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append_field( 'foo' => ( required => 1 ) );
+    $f->fieldset->append_field( 'foo' => ( required => 1 ) );
     $v->input( { foo => undef } );
     $f->validate;
     is $v->error('foo')->[0], 'required', 'right invalid';
     ok $v->error_message('foo'), 'right error message';
 
     ( $c, $f, $v ) = new_req();
-    $f->append_field( 'foo' => () );
+    $f->fieldset->append_field( 'foo' => () );
     $v->input( { foo => undef } );
     $f->validate;
     is $v->error('foo'), undef, 'right valid';
@@ -32,7 +32,7 @@ subtest 'required' => sub {
 
 subtest 'ascii' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append_field( 'foo' => ( validations => ['ascii'] ) );
+    $f->fieldset->append_field( 'foo' => ( validations => ['ascii'] ) );
     $v->input( { foo => 'あ' } );
     $f->validate;
     is $v->error('foo')->[0], 'ascii', 'right invalid';
@@ -41,7 +41,7 @@ subtest 'ascii' => sub {
 
 subtest 'int' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append_field( 'foo' => ( validations => ['int'] ) );
+    $f->fieldset->append_field( 'foo' => ( validations => ['int'] ) );
     $v->input( { foo => 'a' } );
     $f->validate;
     is $v->error('foo')->[0], 'int', 'right invalid';
@@ -60,7 +60,7 @@ subtest 'int' => sub {
 
 subtest 'length' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append_field( 'foo' => ( validations => [ [ 'length' => 3, 5 ] ] ) );
+    $f->fieldset->append_field( 'foo' => ( validations => [ [ 'length' => 3, 5 ] ] ) );
     $v->input( { foo => 'a' } );
     $f->validate;
     is $v->error('foo')->[0], 'length', 'right invalid';
@@ -76,7 +76,7 @@ subtest 'length' => sub {
     $f->validate;
     is $v->error('foo'), undef, 'right valid';
 
-    $f->append_field( 'foo' => ( validations => [ [ 'length' => 4 ] ] ) );
+    $f->fieldset->append_field( 'foo' => ( validations => [ [ 'length' => 4 ] ] ) );
     ( $c, $f, $v ) = new_req();
     $v->input( { foo => 'a' } );
     $f->validate;
@@ -95,7 +95,7 @@ subtest 'length' => sub {
 
 subtest 'max' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append_field( 'foo' => ( validations => [ [ 'max' => 3 ] ] ) );
+    $f->fieldset->append_field( 'foo' => ( validations => [ [ 'max' => 3 ] ] ) );
     $v->input( { foo => 4 } );
     $f->validate;
     is $v->error('foo')->[0], 'max', 'right invalid';
@@ -114,7 +114,7 @@ subtest 'max' => sub {
 
 subtest 'min' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append_field( 'foo' => ( validations => [ [ 'min' => 3 ] ] ) );
+    $f->fieldset->append_field( 'foo' => ( validations => [ [ 'min' => 3 ] ] ) );
     $v->input( { foo => 2 } );
     $f->validate;
     is $v->error('foo')->[0], 'min', 'right invalid';
@@ -133,8 +133,8 @@ subtest 'min' => sub {
 
 subtest 'number' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append_field( 'foo' => ( validations => ['number'] ) );
-    $f->append_field( 'bar' => ( validations => ['number'] ) );
+    $f->fieldset->append_field( 'foo' => ( validations => ['number'] ) );
+    $f->fieldset->append_field( 'bar' => ( validations => ['number'] ) );
     $v->input( { foo => '1 000 000,00', bar => '5,5' } );
     $f->validate;
     is $v->error('foo')->[0], 'number', 'right invalid';
@@ -170,7 +170,7 @@ subtest 'number' => sub {
 
 subtest 'range' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append_field( 'foo' => ( validations => [ [ 'range' => 3, 5 ] ] ) );
+    $f->fieldset->append_field( 'foo' => ( validations => [ [ 'range' => 3, 5 ] ] ) );
     $v->input( { foo => 2 } );
     $f->validate;
     is $v->error('foo')->[0], 'range', 'right invalid';
@@ -189,7 +189,7 @@ subtest 'range' => sub {
 
 subtest 'uint' => sub {
     my ( $c, $f, $v ) = new_req();
-    $f->append_field( 'foo' => ( validations => ['uint'] ) );
+    $f->fieldset->append_field( 'foo' => ( validations => ['uint'] ) );
     $v->input( { foo => 'a' } );
     $f->validate;
     is $v->error('foo')->[0], 'uint', 'right invalid';
