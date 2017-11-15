@@ -4,6 +4,7 @@ use Carp qw(croak);
 use CGI::Expand qw/expand_hash/;
 use Mojolicious::Controller;
 use Yetie::Util qw(load_class);
+use Yetie::Parameters;
 
 has controller => sub { Mojolicious::Controller->new };
 has 'fieldset';
@@ -40,6 +41,32 @@ sub params {
 
     $self->{_validated_parameters} = Yetie::Parameters->new(%output);
     return $self->{_validated_parameters};
+}
+
+sub render_error {
+    my ( $self, $name ) = @_;
+    $self->fieldset->field($name)->error_block( $self->controller );
+}
+
+sub render_help {
+    my ( $self, $name ) = @_;
+    $self->fieldset->field($name)->help_block( $self->controller );
+}
+
+sub render_label {
+    my ( $self, $name, %attrs ) = @_;
+    $self->fieldset->field($name)->label_for( $self->controller, %attrs );
+}
+
+sub render {
+    my ( $self, $name, %attrs ) = @_;
+
+    my $value = $self->controller->req->params->param($name);
+    $attrs{value} = $value if defined $value;
+
+    my $field = $self->fieldset->field($name);
+    my $method = $field->type || 'text';
+    $field->$method( $self->controller, %attrs );
 }
 
 sub scope_param { shift->params->every_param(shift) }
@@ -186,6 +213,31 @@ Return L<Mojo::Parameters> object.
 All parameters are validated values.
 This method should be called after the L</validate> method.
 
+=head2 C<render_error>
+
+    $form->render_error('email');
+
+If `$c->validation` has an error message it rendering HTML error message block.
+
+=head2 C<render_help>
+
+    $form->render_help('email');
+
+Rendering HTML help block.
+
+=head2 C<render_label>
+
+    $form->render_label('email');
+
+Rendering HTML label tag.
+
+=head2 C<render>
+
+    $form->render('email');
+    $form->render('email', value => 'foo', placeholder => 'bar' );
+
+Rendering HTML form widget(field or fields).
+
 =head2 C<scope_param>
 
     my $scope = $form->scope_param('user');
@@ -206,7 +258,7 @@ Alias $controller->validation
 
 =head2 C<validate>
 
-    my $bool = $fieldset->validate;
+    my $bool = $form->validate;
     say 'Validation failure!' unless $bool;
 
 Return boolean. success return true.

@@ -4,22 +4,20 @@ use Test::Mojo;
 use t::Util;
 
 my $t = Test::Mojo->new('App');
-
 use_ok 'Yetie::Form::Base';
-my $f = Yetie::Form::Base->new('test');
-isa_ok $f->controller, 'Mojolicious::Controller';
-isa_ok $f->fieldset,   'Yetie::Form::FieldSet::Test';
-ok !$f->is_validated, 'right is_validated';
-ok $f->name_space, 'right name_space';
 
-subtest 'has controller' => sub {
+subtest 'basic' => sub {
+    my $f = Yetie::Form::Base->new('test');
+    isa_ok $f->controller, 'Mojolicious::Controller';
+    isa_ok $f->fieldset,   'Yetie::Form::FieldSet::Test';
+    ok !$f->is_validated, 'right is_validated';
+    ok $f->name_space, 'right name_space';
+};
+
+subtest 'with controller' => sub {
     my $c = $t->app->build_controller;
-
     my $f = Yetie::Form::Base->new( 'test', controller => $c );
     isa_ok $f->validation, 'Mojolicious::Validator::Validation';
-
-    eval { $f->params };
-    ok $@, 'right not call validate';
 };
 
 subtest 'has_data' => sub {
@@ -84,6 +82,28 @@ subtest 'parameters' => sub {
     is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
 };
 
+subtest 'render tags' => sub {
+    my $c = $t->app->build_controller;
+    my $f = Yetie::Form::Base->new( 'test', controller => $c );
+    ok !$f->render_error('email');
+    is ref $f->render_help('email'),  'Mojo::ByteStream', 'right render_help method';
+    is ref $f->render_label('email'), 'Mojo::ByteStream', 'right render_label method';
+    is ref $f->render('email'),       'Mojo::ByteStream', 'right render method';
+};
+
+subtest 'render tags with attrs' => sub {
+    my $c   = $t->app->build_controller;
+    my $f   = Yetie::Form::Base->new( 'test', controller => $c );
+    my $dom = Mojo::DOM->new( $f->render('email') );
+    is_deeply $dom->at('*')->attr->{value},       undef,         'right value';
+    is_deeply $dom->at('*')->attr->{placeholder}, 'name@domain', 'right placeholder';
+
+    $f = Yetie::Form::Base->new( 'test', controller => $c );
+    $dom = Mojo::DOM->new( $f->render( 'email', value => 'foo', placeholder => 'bar' ) );
+    is_deeply $dom->at('*')->attr->{value},       'foo', 'right value';
+    is_deeply $dom->at('*')->attr->{placeholder}, 'bar', 'right placeholder';
+};
+
 subtest 'validate' => sub {
     my $c = $t->app->build_controller;
     my $f = Yetie::Form::Base->new( 'test', controller => $c );
@@ -133,6 +153,32 @@ subtest 'validate' => sub {
     );
     $result = $f->validate;
     ok $result, 'right validation';
+};
+
+subtest 'validate with filter' => sub {
+    my $c = $t->app->build_controller;
+    my $f = Yetie::Form::Base->new( 'test', controller => $c );
+    $c->req->params->pairs(
+        [
+            'email'       => '   a@b.c   ',
+            'item.0.name' => ' aaa ',
+            'item.1.name' => ' bbb ',
+            'item.2.name' => ' ccc ',
+        ]
+    );
+    $f->validate;
+    my $v = $c->validation;
+    is $v->param('email'),       'a@b.c';
+    is $v->param('item.0.name'), 'aaa';
+    is $v->param('item.1.name'), 'bbb';
+    is $v->param('item.2.name'), 'ccc';
+
+    # field value after render
+    my $dom = Mojo::DOM->new( $f->render('email') );
+    is_deeply $dom->at('*')->attr->{value}, 'a@b.c', 'right filtering value';
+
+    $dom = Mojo::DOM->new( $f->render('item.0.name') );
+    is_deeply $dom->at('*')->attr->{value}, 'aaa', 'right filtering value';
 };
 
 done_testing();
