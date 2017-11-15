@@ -24,6 +24,30 @@ sub new {
 
 sub has_data { shift->validation->has_data }
 
+sub param {
+    my ( $self, $key ) = @_;
+    $key =~ m/\[\]$/ ? $self->params->every_param($key) : $self->params->param($key);
+}
+
+sub params {
+    my $self = shift;
+    croak 'do not call "validate" method' unless $self->is_validated;
+    return $self->{_validated_parameters} if $self->{_validated_parameters};
+
+    my $v      = $self->validation;
+    my %output = %{ $v->output };
+
+    # NOTE: scope parameterは別に保存していないので
+    # 'user.name' フィールドを使う場合は 'user'フィールドを使うことが出来ない
+    my $expand_hash = expand_hash( \%output );
+    %output = ( %output, %{$expand_hash} );
+
+    $self->{_validated_parameters} = Yetie::Parameters->new(%output);
+    return $self->{_validated_parameters};
+}
+
+sub scope_param { shift->params->every_param(shift) }
+
 sub validate {
     my $self     = shift;
     my $v        = $self->controller->validation;

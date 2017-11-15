@@ -34,6 +34,56 @@ subtest 'has_data' => sub {
     is $f->has_data, 1, 'right has data';
 };
 
+subtest 'parameters' => sub {
+    my $c = $t->app->build_controller;
+    my $f = Yetie::Form::Base->new( 'test', controller => $c );
+    $c->req->params->pairs(
+        [
+            email              => 'a@b.c',
+            name               => 'frank',
+            address            => 'ny',
+            'favorite_color[]' => 'red',
+            'luky_number[]'    => 2,
+            'luky_number[]'    => 3,
+            'item.0.id'        => 11,
+            'item.1.id'        => 22,
+            'item.2.id'        => 33,
+            'item.0.name'      => 'aa',
+            'item.1.name'      => 'bb',
+            'item.2.name'      => 'cc',
+            iligal_param       => 'attack',
+        ]
+    );
+
+    eval { my $name = $f->param('name') };
+    ok $@, 'right before validate';
+
+    $f->validate;
+    is $f->param('email'), 'a@b.c', 'right param';
+    is_deeply $f->param('favorite_color[]'), ['red'], 'right every param';
+    is_deeply $f->scope_param('item'),
+      [
+        {
+            id   => 11,
+            name => 'aa',
+        },
+        {
+            id   => 22,
+            name => 'bb',
+        },
+        {
+            id   => 33,
+            name => 'cc',
+        },
+      ],
+      'right scope param';
+    is $f->param('iligal_param'), undef, 'right iligal param';
+
+    # to_hash
+    my $params = $f->params->to_hash;
+    is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
+};
+
 subtest 'validate' => sub {
     my $c = $t->app->build_controller;
     my $f = Yetie::Form::Base->new( 'test', controller => $c );
