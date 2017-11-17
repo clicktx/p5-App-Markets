@@ -55,7 +55,9 @@ sub _form_field {
     my ( $c, $topic ) = @_;
     die 'Arguments empty.' unless $topic;
 
-    $c->stash( $STASH_KEY . '.topic_field' => $topic );
+    my ( $form, $field ) = $topic =~ /#/ ? $topic =~ /(.*)#(.+)/ : ( undef, $topic );
+    $c->form($form) if $form;
+    $c->stash( $STASH_KEY . '.topic_field' => $field );
     return;
 }
 

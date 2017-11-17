@@ -17,8 +17,6 @@ subtest 'helpers' => sub {
     can_ok $c->helpers, 'form_set';
     can_ok $c->helpers, 'form_widget';
 
-    $c->form_field('test#field_name');
-    is $c->stash('yetie.form.topic_field'), 'test#field_name', 'right topic_field';
     ok $c->form_widget('test#name'), 'right form widget';
 };
 
@@ -39,6 +37,25 @@ subtest 'form_set' => sub {
 
     my $fs = $c->form_set;
     isa_ok $fs, 'Yetie::Form::FieldSet::Test::Index', 'right not arguments';
+};
+
+subtest 'form_field' => sub {
+    my $c = $t->app->build_controller;
+
+    $c->form_field('email');
+    is $c->stash( $stash_key . '.topic_field' ), 'email', 'right topic field';
+
+    $c->form_field('#email');
+    is $c->stash( $stash_key . '.topic_field' ), 'email', 'right topic field';
+
+    $c->form_field('test#email');
+    ok $c->stash($stash_key)->{test}, 'right create form object';
+    is $c->stash( $stash_key . '.topic' ),       'test',  'right topic form';
+    is $c->stash( $stash_key . '.topic_field' ), 'email', 'right topic field';
+
+    $c->form_field('search#q');
+    is $c->stash( $stash_key . '.topic' ),       'search', 'right switch topic form';
+    is $c->stash( $stash_key . '.topic_field' ), 'q',      'right switch topic field';
 };
 
 done_testing();
