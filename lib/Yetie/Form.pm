@@ -1,9 +1,11 @@
 package Yetie::Form;
 use Mojo::Base 'Mojolicious::Plugin';
+use Scalar::Util qw(weaken);
 use Yetie::Util qw(load_class);
+use Yetie::Form::Base;
 
 my $NAME_SPACE = 'Yetie::Form::FieldSet';
-my $STASH_NAME = 'yetie.form';
+my $STASH_KEY  = 'yetie.form';
 
 sub register {
     my ( $self, $app ) = @_;
@@ -11,20 +13,49 @@ sub register {
     # Load filters and validators
     $app->plugin($_) for qw(Yetie::Form::Filter Yetie::Form::Validator);
 
+    $app->plugin( 'Yetie::Form::TagHelpers' => { stash_key => $STASH_KEY } );
+
     # Helpers
-    $app->helper( form_error  => sub { _form_render( 'render_error', @_ ) } );
-    $app->helper( form_field  => sub { _form_field(@_) } );
-    $app->helper( form_help   => sub { _form_render( 'render_help',  @_ ) } );
-    $app->helper( form_label  => sub { _form_render( 'render_label', @_ ) } );
-    $app->helper( form_set    => sub { _form_set(@_) } );
-    $app->helper( form_widget => sub { _form_render( 'render',       @_ ) } );
+    $app->helper( form       => sub { _form(@_) } );
+    $app->helper( form_field => sub { _form_field(@_) } );
+    $app->helper( form_set   => sub { _form_set(@_) } );
+
+    # Tag Helpers
+    $app->helper( form_error => sub { _form_render( 'render_error', @_ ) } );
+    $app->helper( form_help  => sub { _form_render( 'render_help',  @_ ) } );
+    $app->helper( form_label => sub { _form_render( 'render_label', @_ ) } );
+
+    # $app->helper( form_widget => sub { _form_render( 'render',       @_ ) } );
+}
+
+sub _form {
+    my ( $c, $name ) = @_;
+    die 'Arguments empty.' unless $name;
+
+    # my $name = shift || $c->stash('controller') . '-' . $c->stash('action');
+    # $name = camelize($name) if $name =~ /^[a-z]/;
+
+    $c->stash( $STASH_KEY . '.topic' => $name );
+
+    $c->stash( $STASH_KEY => {} ) unless ref $c->stash($STASH_KEY) eq 'HASH';
+    my $form = $c->stash($STASH_KEY)->{$name};
+    if ( !$form ) {
+        $form = Yetie::Form::Base->new( $name, controller => $c );
+        weaken $form->{controller};
+
+        # Add trigger
+        # $c->app->plugins->emit_hook( after_build_form => $c, $form, $name );
+
+        $c->stash($STASH_KEY)->{$name} = $form;
+    }
+    return $form;
 }
 
 sub _form_field {
     my ( $c, $topic ) = @_;
     die 'Arguments empty.' unless $topic;
 
-    $c->stash( $STASH_NAME . '.topic_field' => $topic );
+    $c->stash( $STASH_KEY . '.topic_field' => $topic );
     return;
 }
 
@@ -34,25 +65,25 @@ sub _form_set {
     my $ns = shift || $c->stash('controller') . '-' . $c->stash('action');
     $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
 
-    $c->stash( $STASH_NAME => {} ) unless $c->stash($STASH_NAME);
-    my $formset = $c->stash($STASH_NAME)->{$ns};
+    $c->stash( $STASH_KEY => {} ) unless $c->stash($STASH_KEY);
+    my $formset = $c->stash($STASH_KEY)->{$ns};
     return $formset if $formset;
 
     my $class = $NAME_SPACE . "::" . $ns;
     load_class($class);
 
     $formset = $class->new( controller => $c );
-    $c->stash($STASH_NAME)->{$ns} = $formset;
+    $c->stash($STASH_KEY)->{$ns} = $formset;
     return $formset;
 }
 
 sub _form_render {
     my ( $method, $c, $topic_field ) = ( shift, shift, shift );
 
-    $topic_field = $c->stash( $STASH_NAME . '.topic_field' ) unless $topic_field;
+    $topic_field = $c->stash( $STASH_KEY . '.topic_field' ) unless $topic_field;
     my ( $fieldset, $field_key ) = $topic_field =~ /(.*)#(.+)/;
 
-    return _form_set( $c, $fieldset )->$method( $field_key, @_ );
+    return _form( $c, $fieldset )->$method( $field_key, @_ );
 }
 
 1;
@@ -207,6 +238,6 @@ Register helpers in L<Mojolicious> application.
 
 =head1 SEE ALSO
 
-L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Mojolicious::Plugin>
+L<Yetie::Form::Base>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Mojolicious::Plugin>
 
 =cut
