@@ -4,7 +4,6 @@ use Yetie::Form::FieldSet;
 
 has_field q => (
     type        => 'text',
-    placeholder => 'Search Word',
 );
 
 1;
