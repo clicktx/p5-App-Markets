@@ -3,7 +3,7 @@ use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
 has_field email => (
-    type        => 'text',
+    type        => 'email',
     placeholder => 'name@domain',
     label       => 'E-mail',
     required    => 1,
