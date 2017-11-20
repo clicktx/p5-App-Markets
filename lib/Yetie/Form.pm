@@ -18,14 +18,6 @@ sub register {
     # Helpers
     $app->helper( form       => sub { _form(@_) } );
     $app->helper( form_field => sub { _form_field(@_) } );
-    $app->helper( form_set   => sub { _form_set(@_) } );
-
-    # Tag Helpers
-    $app->helper( form_error => sub { _form_render( 'render_error', @_ ) } );
-    $app->helper( form_help  => sub { _form_render( 'render_help',  @_ ) } );
-    $app->helper( form_label => sub { _form_render( 'render_label', @_ ) } );
-
-    # $app->helper( form_widget => sub { _form_render( 'render',       @_ ) } );
 }
 
 sub _form {
@@ -59,33 +51,6 @@ sub _form_field {
     $c->form($form) if $form;
     $c->stash( $STASH_KEY . '.topic_field' => $field );
     return;
-}
-
-sub _form_set {
-    my $c = shift;
-
-    my $ns = shift || $c->stash('controller') . '-' . $c->stash('action');
-    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
-
-    $c->stash( $STASH_KEY => {} ) unless $c->stash($STASH_KEY);
-    my $formset = $c->stash($STASH_KEY)->{$ns};
-    return $formset if $formset;
-
-    my $class = $NAME_SPACE . "::" . $ns;
-    load_class($class);
-
-    $formset = $class->new( controller => $c );
-    $c->stash($STASH_KEY)->{$ns} = $formset;
-    return $formset;
-}
-
-sub _form_render {
-    my ( $method, $c, $topic_field ) = ( shift, shift, shift );
-
-    $topic_field = $c->stash( $STASH_KEY . '.topic_field' ) unless $topic_field;
-    my ( $fieldset, $field_key ) = $topic_field =~ /(.*)#(.+)/;
-
-    return _form( $c, $fieldset )->$method( $field_key, @_ );
 }
 
 1;
