@@ -9,6 +9,17 @@ sub register {
 }
 
 sub _form_widget {
+    my ( $form, $topic_field, %attrs ) = _topic(@_);
+
+    my $value = $form->controller->req->params->param($topic_field);
+    $attrs{value} = $value if defined $value;
+
+    my $field = $form->fieldset->field($topic_field);
+    my $method = $field->type || 'text';
+    $field->$method( $form->controller, %attrs );
+}
+
+sub _topic {
     my ( $stash_key, $c ) = ( shift, shift );
 
     my $topic =
@@ -20,20 +31,8 @@ sub _form_widget {
     $topic_form = $c->stash( $stash_key . '.topic' ) unless $topic_form;
     die 'Unable to set form' unless $topic_form;
 
-    my $form  = $c->form($topic_form);
-    my %attrs = @_;
-    return _render( $form, $topic_field, %attrs );
-}
-
-sub _render {
-    my ( $form, $name, %attrs ) = @_;
-
-    my $value = $form->controller->req->params->param($name);
-    $attrs{value} = $value if defined $value;
-
-    my $field = $form->fieldset->field($name);
-    my $method = $field->type || 'text';
-    $field->$method( $form->controller, %attrs );
+    my $form = $c->form($topic_form);
+    return ( $form, $topic_field, @_ );
 }
 
 1;
