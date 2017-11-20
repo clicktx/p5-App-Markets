@@ -11,6 +11,8 @@ has 'fieldset';
 has is_validated => '0';
 has name_space   => 'Yetie::Form::FieldSet';
 
+sub field { shift->fieldset->field(@_) }
+
 sub new {
     my ( $class, $ns ) = ( shift, shift );
 
@@ -187,6 +189,15 @@ $controller->validation alias.
 =head1 METHODS
 
 L<Yetie::Form::Base> inherits all methods from L<Mojo::Base> and implements the following new ones.
+
+=head2 C<field>
+
+    my $field = $form->field('field_name');
+
+    # Longer version
+    my $field = $form->fieldset->field('field_name');
+
+Return L<Yetie::Form::Field> object.
 
 =head2 C<has_data>
 

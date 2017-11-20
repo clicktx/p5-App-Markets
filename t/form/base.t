@@ -9,6 +9,7 @@ use_ok 'Yetie::Form::Base';
 subtest 'basic' => sub {
     my $f = Yetie::Form::Base->new('test');
     isa_ok $f->controller, 'Mojolicious::Controller';
+    isa_ok $f->field('email'),   'Yetie::Form::Field';
     isa_ok $f->fieldset,   'Yetie::Form::FieldSet::Test';
     ok !$f->is_validated, 'right is_validated';
     ok $f->name_space, 'right name_space';
