@@ -16,6 +16,30 @@ subtest 'exception' => sub {
     ok $@, 'right unable to set field name';
 };
 
+subtest 'form_error' => sub {
+    my $c = $t->app->build_controller;
+
+    my $dom = Mojo::DOM->new( $c->form_error('test#email') );
+    is $dom, '', 'right empty';
+};
+
+subtest 'form_help' => sub {
+    my $c = $t->app->build_controller;
+
+    my $dom = Mojo::DOM->new( $c->form_help('test#email') );
+    is_deeply $dom->at('span')->attr, { class => 'form-help-block' }, 'right attrs';
+    is $dom->at('span')->text, 'Your email', 'right text';
+};
+
+subtest 'form_label' => sub {
+    my $c = $t->app->build_controller;
+
+    my $dom = Mojo::DOM->new( $c->form_label('test#email') );
+    is_deeply $dom->at('*')->attr, { for => 'form_widget_email' }, 'right attr';
+    is $dom->at('*')->text, 'E-mail', 'right text';
+    is $dom->at('*')->children->first->tag, 'span', 'right required mark';
+};
+
 subtest 'form_widget' => sub {
     my $c = $t->app->build_controller;
 
@@ -59,29 +83,29 @@ subtest 'form_widget' => sub {
     is $dom->at('*')->attr->{name}, 'email', 'right #field_name';
 };
 
-sub f {
-    return Yetie::Form::Field->new(
-        field_key     => 'item.[].name',
-        name          => 'item.0.name',
-        label         => 'label text',
-        placeholder   => 'example',
-        default_value => 'sss',
-        required      => 1,
-    );
-}
-
-sub f2 {
-    return Yetie::Form::Field->new(
-        field_key      => 'title',
-        name           => 'title',
-        label          => 'label text',
-        placeholder    => 'example',
-        default_value  => '',
-        error_messages => {
-            foo => 'bar',
-        },
-    );
-}
+# sub f {
+#     return Yetie::Form::Field->new(
+#         field_key     => 'item.[].name',
+#         name          => 'item.0.name',
+#         label         => 'label text',
+#         placeholder   => 'example',
+#         default_value => 'sss',
+#         required      => 1,
+#     );
+# }
+#
+# sub f2 {
+#     return Yetie::Form::Field->new(
+#         field_key      => 'title',
+#         name           => 'title',
+#         label          => 'label text',
+#         placeholder    => 'example',
+#         default_value  => '',
+#         error_messages => {
+#             foo => 'bar',
+#         },
+#     );
+# }
 
 # subtest 'label' => sub {
 #     my $c   = $t->app->build_controller;

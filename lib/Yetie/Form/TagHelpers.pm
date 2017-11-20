@@ -5,7 +5,25 @@ sub register {
     my ( $self, $app, $conf ) = @_;
 
     my $stash_key = $conf->{stash_key};
+    $app->helper( form_error => sub { _form_error( $stash_key, @_ ) } );
+    $app->helper( form_help => sub { _form_help( $stash_key, @_ ) } );
+    $app->helper( form_label => sub { _form_label( $stash_key, @_ ) } );
     $app->helper( form_widget => sub { _form_widget( $stash_key, @_ ) } );
+}
+
+sub _form_error {
+    my ( $form, $topic_field ) = _topic(@_);
+    $form->field($topic_field)->error_block( $form->controller );
+}
+
+sub _form_help {
+    my ( $form, $topic_field ) = _topic(@_);
+    $form->field($topic_field)->help_block( $form->controller );
+}
+
+sub _form_label {
+    my ( $form, $topic_field, %attrs ) = _topic(@_);
+    $form->field($topic_field)->label_for( $form->controller, %attrs );
 }
 
 sub _form_widget {
