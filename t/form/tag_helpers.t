@@ -77,6 +77,47 @@ subtest 'help_block' => sub {
     is $dom->at('span')->text, 'my name', 'right text';
 };
 
+subtest 'hidden' => sub {
+    my ( $c, $h ) = init();
+    my $f = Yetie::Form::Field->new( name => 'item.0.name', class => 'foo' );
+
+    $f->default_value('default');
+    my $dom = Mojo::DOM->new( $h->hidden($f) );
+    is_deeply $dom->at('*')->attr,
+      {
+        type  => 'hidden',
+        id    => 'form-widget-item-0-name',
+        name  => 'item.0.name',
+        value => 'default',
+        class => 'foo'
+      },
+      'right hidden default_value';
+
+    $f->value('abc');
+    $dom = Mojo::DOM->new( $h->hidden($f) );
+    is_deeply $dom->at('*')->attr,
+      {
+        type  => 'hidden',
+        id    => 'form-widget-item-0-name',
+        name  => 'item.0.name',
+        value => 'abc',
+        class => 'foo'
+      },
+      'right hidden value';
+
+    $f->value(0);
+    $dom = Mojo::DOM->new( $h->hidden($f) );
+    is_deeply $dom->at('*')->attr,
+      {
+        type  => 'hidden',
+        id    => 'form-widget-item-0-name',
+        name  => 'item.0.name',
+        value => '0',
+        class => 'foo'
+      },
+      'right hidden value';
+};
+
 subtest 'label' => sub {
     my ( $c, $h ) = init();
     my $f   = f();
@@ -103,7 +144,7 @@ subtest 'label' => sub {
 #         is_deeply $dom->at('*')->attr,
 #           {
 #             type        => $type,
-#             id          => 'form_widget_item_0_name',
+#             id          => 'form-widget-item-0-name',
 #             name        => 'item.0.name',
 #             placeholder => 'example',
 #             required    => undef,
@@ -117,7 +158,7 @@ subtest 'label' => sub {
 #     is_deeply $dom->at('*')->attr,
 #       {
 #         type        => 'password',
-#         id          => 'form_widget_item_0_name',
+#         id          => 'form-widget-item-0-name',
 #         name        => 'item.0.name',
 #         placeholder => 'example',
 #         required    => undef,
@@ -134,7 +175,7 @@ subtest 'label' => sub {
 #         is_deeply $dom->at('*')->attr,
 #           {
 #             type     => $type,
-#             id       => 'form_widget_item_0_name',
+#             id       => 'form-widget-item-0-name',
 #             name     => 'item.0.name',
 #             required => undef,
 #             value    => 'sss',
@@ -147,7 +188,7 @@ subtest 'label' => sub {
 #     is_deeply $dom->at('*')->attr,
 #       {
 #         type     => 'datetime-local',
-#         id       => 'form_widget_item_0_name',
+#         id       => 'form-widget-item-0-name',
 #         name     => 'item.0.name',
 #         required => undef,
 #         value    => 'sss',
@@ -159,51 +200,11 @@ subtest 'label' => sub {
 #     is_deeply $dom->at('*')->attr,
 #       {
 #         type     => 'file',
-#         id       => 'form_widget_item_0_name',
+#         id       => 'form-widget-item-0-name',
 #         name     => 'item.0.name',
 #         required => undef,
 #       },
 #       "right datetime";
-# };
-#
-# subtest 'hidden' => sub {
-#     my $f = Yetie::Form::Field->new( name => 'item.0.name', class => 'foo' );
-#
-#     $f->default_value('default');
-#     my $dom = Mojo::DOM->new( $f->hidden($c) );
-#     is_deeply $dom->at('*')->attr,
-#       {
-#         type  => 'hidden',
-#         id    => 'form_widget_item_0_name',
-#         name  => 'item.0.name',
-#         value => 'default',
-#         class => 'foo'
-#       },
-#       'right hidden default_value';
-#
-#     $f->value('abc');
-#     $dom = Mojo::DOM->new( $f->hidden($c) );
-#     is_deeply $dom->at('*')->attr,
-#       {
-#         type  => 'hidden',
-#         id    => 'form_widget_item_0_name',
-#         name  => 'item.0.name',
-#         value => 'abc',
-#         class => 'foo'
-#       },
-#       'right hidden value';
-#
-#     $f->value(0);
-#     $dom = Mojo::DOM->new( $f->hidden($c) );
-#     is_deeply $dom->at('*')->attr,
-#       {
-#         type  => 'hidden',
-#         id    => 'form_widget_item_0_name',
-#         name  => 'item.0.name',
-#         value => '0',
-#         class => 'foo'
-#       },
-#       'right hidden value';
 # };
 #
 # subtest 'textarea' => sub {

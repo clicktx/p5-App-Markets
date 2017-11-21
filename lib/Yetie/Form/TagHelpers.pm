@@ -34,6 +34,11 @@ sub AUTOLOAD {
     # label
     return _label( $c, %attrs, @_ ) if $method eq 'label_for';
 
+    delete $attrs{$_} for qw(field_key type label);
+
+    # hidden
+    return _hidden( $c, %attrs, @_ ) if $method eq 'hidden';
+
     croak "Undefined subroutine &${package}::$method called";
 }
 
@@ -61,6 +66,16 @@ sub _help {
 
     my $text = ref $help ? $help->($c) : $c->__($help);
     return $c->tag( 'span', class => $help_class, sub { $text } );
+}
+
+sub _hidden {
+    my $c     = shift;
+    my %attrs = @_;
+
+    delete $attrs{required};
+    my $default_value = delete $attrs{default_value};
+    my $value = delete $attrs{value} // $default_value;
+    return $c->hidden_field( $attrs{name} => $value, %attrs );
 }
 
 sub _id {
