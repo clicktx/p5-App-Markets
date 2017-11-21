@@ -1,6 +1,8 @@
 package Yetie::Form::TagHelpers;
 use Mojo::Base -base;
 use Carp qw(croak);
+use Scalar::Util qw/blessed/;
+use Mojo::Collection 'c';
 use Mojolicious::Controller;
 use Mojolicious::Plugin::TagHelpers;
 
@@ -39,10 +41,47 @@ sub AUTOLOAD {
     # hidden
     return _hidden( $c, %attrs, @_ ) if $method eq 'hidden';
 
+    # select
+    return _select( $c, %attrs, @_ ) if $method eq 'select';
+
     # textarea
     return _textarea( $c, %attrs, @_ ) if $method eq 'textarea';
 
     croak "Undefined subroutine &${package}::$method called";
+}
+
+# I18N and bool selected
+# NOTE: This function is used only for "$c->select_field" helper
+sub _choices_for_select {
+    my $c       = shift;
+    my $choices = shift;
+
+    for my $group ( @{$choices} ) {
+        next unless ref $group;
+
+        # optgroup
+        if ( blessed $group && $group->isa('Mojo::Collection') ) {
+            my ( $label, $values, %attrs ) = @{$group};
+            $label  = $c->__($label);
+            $values = _choices_for_select( $c, $values );
+            $group  = c( $label => $values, %attrs );
+        }
+        else {
+            my ( $label, $value ) = @{$group};
+            $label = $c->__($label);
+
+            # true to "selected"
+            my %attrs = ( @{$group}[ 2 .. $#$group ] );
+
+            # choiced
+            my $choiced = delete $attrs{choiced};
+            if ($choiced) { $attrs{selected} = $choiced }
+
+            $attrs{selected} ? $attrs{selected} = 'selected' : delete $attrs{selected};
+            $group = [ $label, $value, %attrs ];
+        }
+    }
+    return $choices;
 }
 
 sub _error {
@@ -100,6 +139,15 @@ sub _label {
       : '';
     my $content = $c->__( $attrs{label} ) . $required_html;
     _validation( $c, $attrs{name}, 'label', for => $attrs{id}, %label_attrs, sub { $content } );
+}
+
+sub _select {
+    my $c     = shift;
+    my %attrs = @_;
+
+    my $choices = delete $attrs{choices} || [];
+    my $name = delete $attrs{name};
+    return $c->select_field( $name => _choices_for_select( $c, $choices ), %attrs );
 }
 
 sub _textarea {

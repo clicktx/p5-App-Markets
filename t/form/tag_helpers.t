@@ -2,6 +2,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
 use Mojo::DOM;
+use Mojo::Collection 'c';
 use t::Util;
 use Yetie::Form::Field;
 
@@ -126,6 +127,77 @@ subtest 'label' => sub {
     is $dom->at('*')->text, 'label text', 'right text';
 };
 
+subtest 'select' => sub {
+    my ( $c, $h ) = init();
+    my $f = Yetie::Form::Field->new(
+        field_key => 'country',
+        name      => 'country',
+    );
+
+    my $dom;
+    $dom = Mojo::DOM->new( $h->select($f) );
+    is $dom->at('*')->tag, 'select', 'right tag';
+    is_deeply $dom->at('*')->attr, { id => 'form-widget-country', name => 'country' }, 'right attr';
+
+    my $child;
+    $f->choices( [ 'de', 'en' ] );
+    $dom = Mojo::DOM->new( $h->select($f) );
+    is_deeply $dom->at('select')->attr, { id => 'form-widget-country', name => 'country' }, 'right attr';
+    $child = $dom->at('select')->child_nodes;
+    is @{$child}[0]->text, 'de', 'right text';
+    is_deeply @{$child}[0]->attr, { value => 'de' }, 'right attr';
+    is @{$child}[1]->text, 'en', 'right text';
+    is_deeply @{$child}[1]->attr, { value => 'en' }, 'right attr';
+
+    # selected, choiced
+    $f->choices( [ 'de', [ en => 'en', selected => 1 ] ] );
+    $dom   = Mojo::DOM->new( $h->select($f) );
+    $child = $dom->at('select')->child_nodes;
+    is_deeply @{$child}[1]->attr, { value => 'en', selected => 'selected' }, 'right option selected';
+    $f->choices( [ 'de', [ en => 'en', choiced => 1 ] ] );
+    $dom   = Mojo::DOM->new( $h->select($f) );
+    $child = $dom->at('select')->child_nodes;
+    is_deeply @{$child}[1]->attr, { value => 'en', selected => 'selected' }, 'right option choiced';
+
+    # using I18N t/share/locale/en.po
+    $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', class => 'test-class', selected => 0 ], 'cn' ] );
+    $dom   = Mojo::DOM->new( $h->select($f) );
+    $child = $dom->at('select')->child_nodes;
+    is @{$child}[0]->text, '日本', 'right text';
+    is_deeply @{$child}[0]->attr, { value => 'jp' }, 'right attr';
+    is @{$child}[1]->text, 'ドイツ', 'right text';
+    is_deeply @{$child}[1]->attr, { value => 'de', class => 'test-class' }, 'right attr';
+    is @{$child}[2]->text, 'cn', 'right text';
+    is_deeply @{$child}[2]->attr, { value => 'cn' }, 'right attr';
+
+    $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', class => 'test-class', selected => 1 ], 'cn' ] );
+    $dom   = Mojo::DOM->new( $h->select($f) );
+    $child = $dom->at('select')->child_nodes;
+    is_deeply @{$child}[1]->attr, { value => 'de', class => 'test-class', selected => 'selected' }, 'right selected';
+
+    my $child_child;
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ 'cn', 'jp' ], class => 'test-class' ) ] );
+    $dom   = Mojo::DOM->new( $h->select($f) );
+    $child = $dom->at('select')->child_nodes;
+    is_deeply @{$child}[0]->attr, { label => 'ヨーロッパ' }, 'right optgroup attr';
+    $child_child = @{$child}[0]->child_nodes;
+    is_deeply @{$child_child}[0]->attr, { value => 'de' }, 'right option attr';
+    is_deeply @{$child_child}[1]->attr, { value => 'en' }, 'right option attr';
+    is_deeply @{$child}[1]->attr, { label => 'アジア', class => 'test-class' }, 'right optgroup attr';
+    $child_child = @{$child}[1]->child_nodes;
+    is_deeply @{$child_child}[0]->attr, { value => 'cn' }, 'right option attr';
+    is_deeply @{$child_child}[1]->attr, { value => 'jp' }, 'right option attr';
+
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
+    $dom         = Mojo::DOM->new( $h->select($f) );
+    $child       = $dom->at('select')->child_nodes;
+    $child_child = @{$child}[1]->child_nodes;
+    is @{$child_child}[0]->text, '中国', 'right option text';
+    is_deeply @{$child_child}[0]->attr, { value => 'cn' }, 'right option attr';
+    is @{$child_child}[1]->text, '日本', 'right option text';
+    is_deeply @{$child_child}[1]->attr, { value => 'jp', selected => 'selected' }, 'right option selected';
+};
+
 subtest 'textarea' => sub {
     my ( $c, $h ) = init();
     my $f = Yetie::Form::Field->new(
@@ -145,13 +217,13 @@ subtest 'textarea' => sub {
 
     $f->value('baz');
     $dom = Mojo::DOM->new( $h->textarea($f) );
-    is $dom->at('*')->text, 'baz';
-    is $dom->at('*')->attr->{value}, undef;
+    is $dom->at('*')->text, 'baz', 'right text';
+    is $dom->at('*')->attr->{value}, undef, 'right attr value';
 
     $f->value(0);
     $dom = Mojo::DOM->new( $h->textarea($f) );
-    is $dom->at('*')->text, '0';
-    is $dom->at('*')->attr->{value}, undef;
+    is $dom->at('*')->text, '0', 'right text';
+    is $dom->at('*')->attr->{value}, undef, 'right attr value';
 };
 
 # subtest 'input basic' => sub {
@@ -280,76 +352,6 @@ subtest 'textarea' => sub {
 #         my $dom = Mojo::DOM->new( $f->$type($c) );
 #         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
 #     }
-# };
-#
-# subtest 'select' => sub {
-#     my $f = Yetie::Form::Field->new(
-#         field_key => 'country',
-#         name      => 'country',
-#     );
-#
-#     my $dom;
-#     $dom = Mojo::DOM->new( $f->select($c) );
-#     is $dom->at('*')->tag, 'select', 'right tag';
-#     is_deeply $dom->at('*')->attr, { id => 'form_widget_country', name => 'country' }, 'right attr';
-#
-#     my $child;
-#     $f->choices( [ 'de', 'en' ] );
-#     $dom = Mojo::DOM->new( $f->select($c) );
-#     is_deeply $dom->at('select')->attr, { id => 'form_widget_country', name => 'country' }, 'right attr';
-#     $child = $dom->at('select')->child_nodes;
-#     is @{$child}[0]->text, 'de', 'right text';
-#     is_deeply @{$child}[0]->attr, { value => 'de' }, 'right attr';
-#     is @{$child}[1]->text, 'en', 'right text';
-#     is_deeply @{$child}[1]->attr, { value => 'en' }, 'right attr';
-#
-#     # selected, choiced
-#     $f->choices( [ 'de', [ en => 'en', selected => 1 ] ] );
-#     $dom   = Mojo::DOM->new( $f->select($c) );
-#     $child = $dom->at('select')->child_nodes;
-#     is_deeply @{$child}[1]->attr, { value => 'en', selected => 'selected' }, 'right option selected';
-#     $f->choices( [ 'de', [ en => 'en', choiced => 1 ] ] );
-#     $dom   = Mojo::DOM->new( $f->select($c) );
-#     $child = $dom->at('select')->child_nodes;
-#     is_deeply @{$child}[1]->attr, { value => 'en', selected => 'selected' }, 'right option choiced';
-#
-#     # using I18N t/share/locale/en.po
-#     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', class => 'test-class', selected => 0 ], 'cn' ] );
-#     $dom   = Mojo::DOM->new( $f->select($c) );
-#     $child = $dom->at('select')->child_nodes;
-#     is @{$child}[0]->text, '日本', 'right text';
-#     is_deeply @{$child}[0]->attr, { value => 'jp' }, 'right attr';
-#     is @{$child}[1]->text, 'ドイツ', 'right text';
-#     is_deeply @{$child}[1]->attr, { value => 'de', class => 'test-class' }, 'right attr';
-#     is @{$child}[2]->text, 'cn', 'right text';
-#     is_deeply @{$child}[2]->attr, { value => 'cn' }, 'right attr';
-#
-#     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', class => 'test-class', selected => 1 ], 'cn' ] );
-#     $dom   = Mojo::DOM->new( $f->select($c) );
-#     $child = $dom->at('select')->child_nodes;
-#     is_deeply @{$child}[1]->attr, { value => 'de', class => 'test-class', selected => 'selected' }, 'right selected';
-#
-#     my $child_child;
-#     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ 'cn', 'jp' ], class => 'test-class' ) ] );
-#     $dom   = Mojo::DOM->new( $f->select($c) );
-#     $child = $dom->at('select')->child_nodes;
-#     is_deeply @{$child}[0]->attr, { label => 'ヨーロッパ' }, 'right optgroup attr';
-#     $child_child = @{$child}[0]->child_nodes;
-#     is_deeply @{$child_child}[0]->attr, { value => 'de' }, 'right option attr';
-#     is_deeply @{$child_child}[1]->attr, { value => 'en' }, 'right option attr';
-#     is_deeply @{$child}[1]->attr, { label => 'アジア', class => 'test-class' }, 'right optgroup attr';
-#     $child_child = @{$child}[1]->child_nodes;
-#     is_deeply @{$child_child}[0]->attr, { value => 'cn' }, 'right option attr';
-#     is_deeply @{$child_child}[1]->attr, { value => 'jp' }, 'right option attr';
-#
-#     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
-#     $dom         = Mojo::DOM->new( $f->select($c) );
-#     $child       = $dom->at('select')->child_nodes;
-#     $child_child = @{$child}[1]->child_nodes;
-#     is @{$child_child}[0]->text, '中国', 'right option text';
-#     is_deeply @{$child_child}[0]->attr, { value => 'cn' }, 'right option attr';
-#     is @{$child_child}[1]->text, '日本', 'right option text';
-#     is_deeply @{$child_child}[1]->attr, { value => 'jp', selected => 'selected' }, 'right option selected';
 # };
 #
 # subtest 'choice' => sub {
