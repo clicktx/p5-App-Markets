@@ -9,6 +9,12 @@ use_ok 'Yetie::Form::TagHelpers';
 
 my $t = Test::Mojo->new('App');
 
+sub init {
+    my $c = $t->app->build_controller;
+    my $h = Yetie::Form::TagHelpers->new( controller => $c );
+    return ( $c, $h );
+}
+
 sub f {
     return Yetie::Form::Field->new(
         field_key     => 'item.[].name',
@@ -33,11 +39,31 @@ sub f {
 #     );
 # }
 
+subtest 'help_block' => sub {
+    my ( $c, $h ) = init();
+    my $f = Yetie::Form::Field->new(
+        field_key => 'name',
+        name      => 'name',
+        help      => 'my name',
+    );
+    my $dom = Mojo::DOM->new( $h->help_block($f) );
+    is_deeply $dom->at('span')->attr, { class => 'form-help-block' }, 'right attrs';
+    is $dom->at('span')->text, 'my name', 'right text';
+
+    $f = Yetie::Form::Field->new(
+        field_key => 'name',
+        name      => 'name',
+        help      => sub { shift->__x( '{hoge} name', hoge => 'my' ) },
+    );
+    $dom = Mojo::DOM->new( $h->help_block($f) );
+    is_deeply $dom->at('span')->attr, { class => 'form-help-block' }, 'right attrs';
+    is $dom->at('span')->text, 'my name', 'right text';
+};
+
 subtest 'label' => sub {
-    my $c     = $t->app->build_controller;
-    my $h     = Yetie::Form::TagHelpers->new( controller => $c );
-    my $field = f();
-    my $dom   = Mojo::DOM->new( $h->label_for($field) );
+    my ( $c, $h ) = init();
+    my $f   = f();
+    my $dom = Mojo::DOM->new( $h->label_for($f) );
     is_deeply $dom->at('*')->attr, { for => 'form-widget-item-0-name' }, 'right attr';
     is $dom->at('*')->text, 'label text', 'right text';
 };
@@ -391,26 +417,6 @@ subtest 'label' => sub {
 #     $c->validation->error( 'country.0.id[]' => ['custom_check'] );
 #     $dom = Mojo::DOM->new( $f->choice($c) );
 #     ok $dom->find('fieldset.field-with-error')->size, 'right class';
-# };
-#
-# subtest 'help_block' => sub {
-#     my $f = Yetie::Form::Field->new(
-#         field_key => 'name',
-#         name      => 'name',
-#         help      => 'my name',
-#     );
-#     my $dom = Mojo::DOM->new( $f->help_block($c) );
-#     is_deeply $dom->at('span')->attr, { class => 'form-help-block' }, 'right attrs';
-#     is $dom->at('span')->text, 'my name', 'right text';
-#
-#     $f = Yetie::Form::Field->new(
-#         field_key => 'name',
-#         name      => 'name',
-#         help      => sub { shift->__x( '{hoge} name', hoge => 'my' ) },
-#     );
-#     $dom = Mojo::DOM->new( $f->help_block($c) );
-#     is_deeply $dom->at('span')->attr, { class => 'form-help-block' }, 'right attrs';
-#     is $dom->at('span')->text, 'my name', 'right text';
 # };
 #
 # subtest 'error_block' => sub {

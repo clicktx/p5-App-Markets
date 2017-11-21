@@ -24,8 +24,18 @@ sub AUTOLOAD {
     my $help           = delete $attrs{help};
     my $error_messages = delete $attrs{error_messages};
 
+    # help
+    return _help( $c, $help ) if $method eq 'help_block';
+
     # label
     return _label( $c, %attrs, @_ ) if $method eq 'label_for';
+}
+
+sub _help {
+    my ( $c, $help ) = @_;
+
+    my $text = ref $help ? $help->($c) : $c->__($help);
+    return $c->tag( 'span', class => $help_class, sub { $text } );
 }
 
 sub _id {
