@@ -1,5 +1,6 @@
 package Yetie::Form::TagHelpers;
 use Mojo::Base -base;
+use Carp qw(croak);
 use Mojolicious::Controller;
 use Mojolicious::Plugin::TagHelpers;
 
@@ -24,11 +25,35 @@ sub AUTOLOAD {
     my $help           = delete $attrs{help};
     my $error_messages = delete $attrs{error_messages};
 
+    # error message
+    return _error( $c, $attrs{name}, $error_messages ) if $method eq 'error_block';
+
     # help
     return _help( $c, $help ) if $method eq 'help_block';
 
     # label
     return _label( $c, %attrs, @_ ) if $method eq 'label_for';
+
+    croak "Undefined subroutine &${package}::$method called";
+}
+
+sub _error {
+    my ( $c, $name, $error_messages ) = @_;
+
+    my $error = $c->validation->error($name);
+    return unless $error;
+
+    my ( $check, $result, @args ) = @{$error};
+    my $message = ref $error_messages eq 'HASH' ? $error_messages->{$check} : '';
+
+    # Default error message
+    if ( !$message ) { $message = $c->validation->error_message($name) || 'This field is invalid.' }
+
+    my %args;
+    while ( my ( $i, $v ) = each @args ) { $args{$i} = $v }
+
+    my $text = ref $message ? $message->($c) : $c->__x( $message, \%args );
+    return $c->tag( 'span', class => $error_class, sub { $text } );
 }
 
 sub _help {

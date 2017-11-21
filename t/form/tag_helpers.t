@@ -26,18 +26,35 @@ sub f {
     );
 }
 
-# sub f2 {
-#     return Yetie::Form::Field->new(
-#         field_key      => 'title',
-#         name           => 'title',
-#         label          => 'label text',
-#         placeholder    => 'example',
-#         default_value  => '',
-#         error_messages => {
-#             foo => 'bar',
-#         },
-#     );
-# }
+subtest 'basic' => sub {
+    my ( $c, $h ) = init();
+    my $f = f();
+    eval { $h->hoo($f) };
+    like $@, qr/Undefined subroutine/, 'right Undefined subroutine';
+};
+
+subtest 'error_block' => sub {
+    my ( $c, $h ) = init();
+    my $f = Yetie::Form::Field->new(
+        field_key      => 'name',
+        name           => 'name',
+        required       => 1,
+        error_messages => { required => 'Name is required.' },
+    );
+    my $dom = Mojo::DOM->new( $h->error_block($f) );
+    is $dom, '', 'right empty';
+
+    # invalid field
+    $c->validation->error( name => [ 'required', 1 ] );
+    $dom = Mojo::DOM->new( $h->error_block($f) );
+    is_deeply $dom->at('span')->attr, { class => 'form-error-block' }, 'right attrs';
+    is $dom->at('span')->text, 'Name is required.', 'right message';
+
+    $f = f();
+    $c->validation->error( 'item.0.name' => [ 'required', 1 ] );
+    $dom = Mojo::DOM->new( $h->error_block($f) );
+    is $dom->at('span')->text, 'This field is required.', 'right default message';
+};
 
 subtest 'help_block' => sub {
     my ( $c, $h ) = init();
@@ -419,21 +436,5 @@ subtest 'label' => sub {
 #     ok $dom->find('fieldset.field-with-error')->size, 'right class';
 # };
 #
-# subtest 'error_block' => sub {
-#     my $f = Yetie::Form::Field->new(
-#         field_key      => 'name',
-#         name           => 'name',
-#         required       => 1,
-#         error_messages => { required => 'Name is required.' },
-#     );
-#     my $dom = Mojo::DOM->new( $f->error_block($c) );
-#     is $dom, '', 'right empty';
-#
-#     # invalid field
-#     $c->validation->error( name => [ 'required', 1 ] );
-#     $dom = Mojo::DOM->new( $f->error_block($c) );
-#     is_deeply $dom->at('span')->attr, { class => 'form-error-block' }, 'right attrs';
-#     is $dom->at('span')->text, 'Name is required.', 'right message';
-# };
 
 done_testing();
