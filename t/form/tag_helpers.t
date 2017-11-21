@@ -3,20 +3,23 @@ use Test::More;
 use Test::Mojo;
 use Mojo::DOM;
 use t::Util;
+use Yetie::Form::Field;
+
+use_ok 'Yetie::Form::TagHelpers';
 
 my $t = Test::Mojo->new('App');
 
-# sub f {
-#     return Yetie::Form::Field->new(
-#         field_key     => 'item.[].name',
-#         name          => 'item.0.name',
-#         label         => 'label text',
-#         placeholder   => 'example',
-#         default_value => 'sss',
-#         required      => 1,
-#     );
-# }
-#
+sub f {
+    return Yetie::Form::Field->new(
+        field_key     => 'item.[].name',
+        name          => 'item.0.name',
+        label         => 'label text',
+        placeholder   => 'example',
+        default_value => 'sss',
+        required      => 1,
+    );
+}
+
 # sub f2 {
 #     return Yetie::Form::Field->new(
 #         field_key      => 'title',
@@ -30,13 +33,14 @@ my $t = Test::Mojo->new('App');
 #     );
 # }
 
-# subtest 'label' => sub {
-#     my $c   = $t->app->build_controller;
-#     my $f   = f();
-#     my $dom = Mojo::DOM->new( $f->label_for($c) );
-#     is_deeply $dom->at('*')->attr, { for => 'form_widget_item_0_name' }, 'right attr';
-#     is $dom->at('*')->text, 'label text', 'right text';
-# };
+subtest 'label' => sub {
+    my $c     = $t->app->build_controller;
+    my $h     = Yetie::Form::TagHelpers->new( controller => $c );
+    my $field = f();
+    my $dom   = Mojo::DOM->new( $h->label_for($field) );
+    is_deeply $dom->at('*')->attr, { for => 'form-widget-item-0-name' }, 'right attr';
+    is $dom->at('*')->text, 'label text', 'right text';
+};
 
 # subtest 'input basic' => sub {
 #     my $f  = f();
