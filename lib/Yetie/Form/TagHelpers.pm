@@ -39,6 +39,9 @@ sub AUTOLOAD {
     # hidden
     return _hidden( $c, %attrs, @_ ) if $method eq 'hidden';
 
+    # textarea
+    return _textarea( $c, %attrs, @_ ) if $method eq 'textarea';
+
     croak "Undefined subroutine &${package}::$method called";
 }
 
@@ -97,6 +100,18 @@ sub _label {
       : '';
     my $content = $c->__( $attrs{label} ) . $required_html;
     _validation( $c, $attrs{name}, 'label', for => $attrs{id}, %label_attrs, sub { $content } );
+}
+
+sub _textarea {
+    my $c     = shift;
+    my %attrs = @_;
+
+    my $name          = delete $attrs{name};
+    my $default_value = delete $attrs{default_value};
+    my $value         = delete $attrs{value} // $default_value;
+    $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
+
+    return $c->text_area( $name => $value, %attrs );
 }
 
 sub _validation { Mojolicious::Plugin::TagHelpers::_validation(@_) }

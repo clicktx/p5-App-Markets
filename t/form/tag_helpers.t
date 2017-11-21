@@ -126,6 +126,34 @@ subtest 'label' => sub {
     is $dom->at('*')->text, 'label text', 'right text';
 };
 
+subtest 'textarea' => sub {
+    my ( $c, $h ) = init();
+    my $f = Yetie::Form::Field->new(
+        field_key     => 'order.note',
+        name          => 'order.note',
+        type          => 'textarea',
+        label         => 'Note',
+        cols          => 40,
+        default_value => 'default text',
+    );
+    my $dom = Mojo::DOM->new( $h->textarea($f) );
+    is $dom->at('*')->tag, 'textarea', 'right tag';
+    is_deeply $dom->at('*')->attr,
+      { id => 'form-widget-order-note', name => 'order.note', cols => 40 },
+      'right textarea';
+    is $dom->at('*')->text, 'default text', 'right text';
+
+    $f->value('baz');
+    $dom = Mojo::DOM->new( $h->textarea($f) );
+    is $dom->at('*')->text, 'baz';
+    is $dom->at('*')->attr->{value}, undef;
+
+    $f->value(0);
+    $dom = Mojo::DOM->new( $h->textarea($f) );
+    is $dom->at('*')->text, '0';
+    is $dom->at('*')->attr->{value}, undef;
+};
+
 # subtest 'input basic' => sub {
 #     my $f  = f();
 #     my $f2 = Yetie::Form::Field->new(
@@ -207,32 +235,6 @@ subtest 'label' => sub {
 #       "right datetime";
 # };
 #
-# subtest 'textarea' => sub {
-#     my $f = Yetie::Form::Field->new(
-#         field_key     => 'order.note',
-#         name          => 'order.note',
-#         type          => 'textarea',
-#         label         => 'Note',
-#         cols          => 40,
-#         default_value => 'default text',
-#     );
-#     my $dom = Mojo::DOM->new( $f->textarea($c) );
-#     is $dom->at('*')->tag, 'textarea', 'right tag';
-#     is_deeply $dom->at('*')->attr,
-#       { id => 'form_widget_order_note', name => 'order.note', cols => 40 },
-#       'right textarea';
-#     is $dom->at('*')->text, 'default text', 'right text';
-#
-#     $f->value('baz');
-#     $dom = Mojo::DOM->new( $f->textarea($c) );
-#     is $dom->at('*')->text, 'baz';
-#     is $dom->at('*')->attr->{value}, undef;
-#
-#     $f->value(0);
-#     $dom = Mojo::DOM->new( $f->textarea($c) );
-#     is $dom->at('*')->text, '0';
-#     is $dom->at('*')->attr->{value}, undef;
-# };
 #
 # subtest 'radio checkbox' => sub {
 #     my $f = Yetie::Form::Field->new(
