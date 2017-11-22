@@ -12,7 +12,7 @@ my $t = Test::Mojo->new('App');
 
 sub init {
     my $c = $t->app->build_controller;
-    my $h = Yetie::Form::TagHelpers->new( controller => $c );
+    my $h = Yetie::Form::TagHelpers->new($c);
     return ( $c, $h );
 }
 

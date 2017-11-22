@@ -1,7 +1,7 @@
 package Yetie::Form::TagHelpers;
 use Mojo::Base -base;
 use Carp qw(croak);
-use Scalar::Util qw/blessed/;
+use Scalar::Util qw(blessed weaken);
 use Mojo::Collection 'c';
 use Mojolicious::Controller;
 use Mojolicious::Plugin::TagHelpers;
@@ -71,6 +71,13 @@ sub AUTOLOAD {
     }
 
     croak "Undefined subroutine &${package}::$method called";
+}
+
+sub new {
+    my ( $class, $controller ) = @_;
+    my $self = $class->SUPER::new( controller => $controller );
+    weaken $self->{controller};
+    return $self;
 }
 
 # check_box or radio_button into the label
@@ -312,15 +319,29 @@ Yetie::Form::TagHelpers
 
 =head1 SYNOPSIS
 
+    my $tag_helpers = Yetie::Form::TagHelpers->new($controller);
+    my $field = $form->fieldset->field('field_name');
+    say $tag_helpers->text( $field, %attrs );
+
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
 L<Yetie::Form::TagHelpers> inherits all attributes from L<Mojo::Base> and implements the following new ones.
 
+=head2 C<controller>
+
+    my controller = $tag_helpers->controller;
+
+Return weak reference L<Mojolicious::Controller> object.
+
 =head1 METHODS
 
 L<Yetie::Form::TagHelpers> inherits all methods from L<Mojo::Base> and implements the following new ones.
+
+=head2 C<new>
+
+    my $tag_helpers = Yetie::Form::TagHelpers->new($controller);
 
 =head1 SEE ALSO
 
