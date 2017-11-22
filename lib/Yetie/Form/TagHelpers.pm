@@ -38,6 +38,9 @@ sub AUTOLOAD {
 
     delete $attrs{$_} for qw(field_key type label);
 
+    # choice
+    return _choice_list_widget( $c, %attrs, @_ ) if $method eq 'choice';
+
     # hidden
     return _hidden( $c, %attrs, @_ ) if $method eq 'hidden';
 
@@ -48,6 +51,70 @@ sub AUTOLOAD {
     return _textarea( $c, %attrs, @_ ) if $method eq 'textarea';
 
     croak "Undefined subroutine &${package}::$method called";
+}
+
+# check_box or radio_button into the label
+sub _choice_field {
+    my ( $c, $values, $pair ) = ( shift, shift, shift );
+
+    $pair = [ $pair, $pair ] unless ref $pair eq 'ARRAY';
+    my %attrs = ( value => $pair->[1], @$pair[ 2 .. $#$pair ], @_ );
+
+    # choiced
+    my $choiced = delete $attrs{choiced};
+    if ($choiced) { $attrs{checked} = $choiced }
+
+    if ( @{$values} ) { delete $attrs{checked} }
+    else {    # default checked(bool)
+        $attrs{checked} ? $attrs{checked} = undef : delete $attrs{checked};
+    }
+
+    my $value = $attrs{value} // 'on';
+    $attrs{checked} = undef if grep { $_ eq $value } @{$values};
+    my $name = delete $attrs{name};
+
+    my $tag = _validation( $c, $name, 'input', name => $name, %attrs );
+    my $label_text = $c->tag( 'span', class => 'label-text', $c->__( $pair->[0] ) );
+    return $c->tag( 'label', sub { $tag . $label_text } );
+}
+
+# NOTE: multipleの場合はname属性を xxx[] に変更する？
+sub _choice_list_widget {
+    my $c    = shift;
+    my %args = @_;
+
+    my $choices = delete $args{choices} || [];
+    my $multiple = delete $args{multiple} ? 1 : 0;
+    my $expanded = delete $args{expanded} ? 1 : 0;
+    my $flag     = $multiple . $expanded;
+
+    # Add suffix for multiple
+    $args{name} .= '[]' if $multiple;
+
+    # radio
+    if ( $flag == 1 ) {
+        $args{type} = 'radio';
+        return _list_field( $c, $choices, %args );
+    }
+
+    # select-multiple
+    elsif ( $flag == 10 ) {
+        $args{multiple} = undef;
+        my $name = delete $args{name};
+        return $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
+    }
+
+    # checkbox
+    elsif ( $flag == 11 ) {
+        $args{type} = 'checkbox';
+        return _list_field( $c, $choices, %args );
+    }
+
+    # select
+    else {
+        my $name = delete $args{name};
+        return $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
+    }
 }
 
 # I18N and bool selected
@@ -139,6 +206,37 @@ sub _label {
       : '';
     my $content = $c->__( $attrs{label} ) . $required_html;
     _validation( $c, $attrs{name}, 'label', for => $attrs{id}, %label_attrs, sub { $content } );
+}
+
+# checkbox list or radio button list
+sub _list_field {
+    my $c       = shift;
+    my $choices = shift;
+    my %args    = @_;
+
+    delete $args{$_} for qw(value id);
+    my @values = @{ $c->req->every_param( $args{name} ) };
+
+    my $root_class;
+    my $groups = '';
+    for my $group ( @{$choices} ) {
+        if ( blessed $group && $group->isa('Mojo::Collection') ) {
+            my ( $label, $v, %attrs ) = @$group;
+            $root_class = 'form-choice-groups' unless $root_class;
+
+            $label = $c->__($label);
+            my $legend = $c->tag( 'legend', $label );
+            my $items = join '',
+              map { $c->tag( 'div', class => 'form-choice-item', _choice_field( $c, \@values, $_, %args ) ) } @$v;
+            $groups .= $c->tag( 'fieldset', class => 'form-choice-group', %attrs, sub { $legend . $items } );
+        }
+        else {
+            $root_class = 'form-choice-group' unless $root_class;
+            my $row = _choice_field( $c, \@values, $group, %args );
+            $groups .= $c->tag( 'div', class => 'form-choice-item', sub { $row } );
+        }
+    }
+    return _validation( $c, $args{name}, 'fieldset', class => $root_class, sub { $groups } );
 }
 
 sub _select {

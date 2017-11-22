@@ -34,6 +34,117 @@ subtest 'basic' => sub {
     like $@, qr/Undefined subroutine/, 'right Undefined subroutine';
 };
 
+# subtest 'checkbox and radio' => sub {
+#     my ( $c, $h ) = init();
+#     my $f = Yetie::Form::Field->new(
+#         name  => 'agreed',
+#         value => 'yes',
+#         label => 'I agreed',
+#     );
+# 
+#     for my $type (qw/radio checkbox/) {
+#         my $dom = Mojo::DOM->new( $f->$type($c) );
+#         is $dom->at('*')->tag, 'label', "right $type parent";
+#         is $dom->at('span')->text, '私は同意した', "right $type label text";
+#         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type";
+#     }
+# 
+#     $f->checked(0);
+#     for my $type (qw/radio checkbox/) {
+#         my $dom = Mojo::DOM->new( $f->$type($c) );
+#         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
+#     }
+# 
+#     # bool "checked"
+#     $f->checked(1);
+#     for my $type (qw/radio checkbox/) {
+#         my $dom = Mojo::DOM->new( $f->$type($c) );
+#         is_deeply $dom->at('input')->attr,
+#           { checked => undef, type => $type, name => 'agreed', value => 'yes' },
+#           "right $type checked";
+#     }
+# 
+#     # using choiced
+#     $f->checked(0);
+#     $f->choiced(1);
+#     for my $type (qw/radio checkbox/) {
+#         my $dom = Mojo::DOM->new( $f->$type($c) );
+#         is_deeply $dom->at('input')->attr,
+#           { checked => undef, type => $type, name => 'agreed', value => 'yes' },
+#           "right $type checked";
+#     }
+# 
+#     $f->choiced(0);
+#     for my $type (qw/radio checkbox/) {
+#         my $dom = Mojo::DOM->new( $f->$type($c) );
+#         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
+#     }
+# };
+
+subtest 'choice' => sub {
+    my ( $c, $h ) = init();
+    my $f = Yetie::Form::Field->new(
+        field_key => 'country',
+        name      => 'country',
+    );
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
+
+    my $dom;
+
+    # select
+    $f->multiple(0);
+    $f->expanded(0);
+    $dom = Mojo::DOM->new( $h->choice($f) );
+    is $dom->at('*')->tag, 'select', 'right tag';
+
+    # select (multiple)
+    $f->multiple(1);
+    $f->expanded(0);
+    $dom = Mojo::DOM->new( $h->choice($f) );
+    is $dom->at('*')->attr->{multiple}, undef, 'right multiple';
+
+    # radio list
+    my $input;
+    $f->multiple(0);
+    $f->expanded(1);
+    $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 0 ], 'cn' ] );
+    $dom = Mojo::DOM->new( $h->choice($f) );
+    is_deeply $dom->at('fieldset')->attr, { class => 'form-choice-group' }, 'right class';
+    is_deeply $dom->at('div')->attr,      { class => 'form-choice-item' },  'right class';
+    $input = $dom->find('input');
+    is_deeply $input->[1]->attr, { name => 'country', type => 'radio', value => 'de' }, 'right type is radio';
+
+    $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 1 ], 'cn' ] );
+    $dom   = Mojo::DOM->new( $h->choice($f) );
+    $input = $dom->find('input');
+    is_deeply $input->[1]->attr, { checked => undef, name => 'country', type => 'radio', value => 'de' }, 'right attr';
+
+    $f->choices( [ c( EU => [ 'de', 'en' ], class => 'test-class' ) ] );
+    $dom = Mojo::DOM->new( $h->choice($f) );
+    is_deeply $dom->at('fieldset fieldset')->attr, { class => 'test-class' }, 'right class';
+
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
+    $dom = Mojo::DOM->new( $h->choice($f) );
+    is_deeply $dom->at('fieldset')->attr,          { class => 'form-choice-groups' }, 'right class';
+    is_deeply $dom->at('fieldset fieldset')->attr, { class => 'form-choice-group' },  'right class';
+    my $child;
+    $child = $dom->at('fieldset')->child_nodes;
+    is $child->[0]->at('legend')->text, 'ヨーロッパ', 'right group legend';
+    is $child->[1]->at('legend')->text, 'アジア',       'right group legend';
+    $input = $dom->find('input');
+    is_deeply $input->[3]->attr, { checked => undef, name => 'country', type => 'radio', value => 'jp' }, 'right attr';
+
+    # checkbox list (multiple)
+    $f->multiple(1);
+    $f->expanded(1);
+    $dom   = Mojo::DOM->new( $h->choice($f) );
+    $input = $dom->find('input');
+    is_deeply $input->[0]->attr, { name => 'country[]', type => 'checkbox', value => 'de' }, 'right type is checkbox';
+    is_deeply $input->[3]->attr,
+      { checked => undef, name => 'country[]', type => 'checkbox', value => 'jp' },
+      'right checked';
+};
+
 subtest 'error_block' => sub {
     my ( $c, $h ) = init();
     my $f = Yetie::Form::Field->new(
@@ -55,6 +166,31 @@ subtest 'error_block' => sub {
     $c->validation->error( 'item.0.name' => [ 'required', 1 ] );
     $dom = Mojo::DOM->new( $h->error_block($f) );
     is $dom->at('span')->text, 'This field is required.', 'right default message';
+};
+
+subtest 'field-with-error' => sub {
+    my ( $c, $h ) = init();
+    my $f = Yetie::Form::Field->new(
+        field_key => 'country.[].id',
+        name      => 'country.0.id',
+        label     => 'Country Name',
+    );
+
+    # Set validaion error
+    $c->validation->error( 'country.0.id' => ['custom_check'] );
+
+    # label
+    my $dom = Mojo::DOM->new( $h->label_for($f) );
+    ok $dom->find('.field-with-error')->size, 'right class';
+
+    # choice
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
+    $f->multiple(1);
+    $f->expanded(1);
+
+    $c->validation->error( 'country.0.id[]' => ['custom_check'] );
+    $dom = Mojo::DOM->new( $h->choice($f) );
+    ok $dom->find('fieldset.field-with-error')->size, 'right class';
 };
 
 subtest 'help_block' => sub {
@@ -307,139 +443,4 @@ subtest 'textarea' => sub {
 #       "right datetime";
 # };
 #
-#
-# subtest 'radio checkbox' => sub {
-#     my $f = Yetie::Form::Field->new(
-#         name  => 'agreed',
-#         value => 'yes',
-#         label => 'I agreed',
-#     );
-#
-#     for my $type (qw/radio checkbox/) {
-#         my $dom = Mojo::DOM->new( $f->$type($c) );
-#         is $dom->at('*')->tag, 'label', "right $type parent";
-#         is $dom->at('span')->text, '私は同意した', "right $type label text";
-#         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type";
-#     }
-#
-#     $f->checked(0);
-#     for my $type (qw/radio checkbox/) {
-#         my $dom = Mojo::DOM->new( $f->$type($c) );
-#         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
-#     }
-#
-#     # bool "checked"
-#     $f->checked(1);
-#     for my $type (qw/radio checkbox/) {
-#         my $dom = Mojo::DOM->new( $f->$type($c) );
-#         is_deeply $dom->at('input')->attr,
-#           { checked => undef, type => $type, name => 'agreed', value => 'yes' },
-#           "right $type checked";
-#     }
-#
-#     # using choiced
-#     $f->checked(0);
-#     $f->choiced(1);
-#     for my $type (qw/radio checkbox/) {
-#         my $dom = Mojo::DOM->new( $f->$type($c) );
-#         is_deeply $dom->at('input')->attr,
-#           { checked => undef, type => $type, name => 'agreed', value => 'yes' },
-#           "right $type checked";
-#     }
-#
-#     $f->choiced(0);
-#     for my $type (qw/radio checkbox/) {
-#         my $dom = Mojo::DOM->new( $f->$type($c) );
-#         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
-#     }
-# };
-#
-# subtest 'choice' => sub {
-#     my $f = Yetie::Form::Field->new(
-#         field_key => 'country',
-#         name      => 'country',
-#     );
-#     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
-#
-#     my $dom;
-#
-#     # select
-#     $f->multiple(0);
-#     $f->expanded(0);
-#     $dom = Mojo::DOM->new( $f->choice($c) );
-#     is $dom->at('*')->tag, 'select', 'right tag';
-#
-#     # select (multiple)
-#     $f->multiple(1);
-#     $f->expanded(0);
-#     $dom = Mojo::DOM->new( $f->choice($c) );
-#     is $dom->at('*')->attr->{multiple}, undef, 'right multiple';
-#
-#     # radio list
-#     my $input;
-#     $f->multiple(0);
-#     $f->expanded(1);
-#     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 0 ], 'cn' ] );
-#     $dom = Mojo::DOM->new( $f->choice($c) );
-#     is_deeply $dom->at('fieldset')->attr, { class => 'form-choice-group' }, 'right class';
-#     is_deeply $dom->at('div')->attr,      { class => 'form-choice-item' },  'right class';
-#     $input = $dom->find('input');
-#     is_deeply $input->[1]->attr, { name => 'country', type => 'radio', value => 'de' }, 'right type is radio';
-#
-#     $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 1 ], 'cn' ] );
-#     $dom   = Mojo::DOM->new( $f->choice($c) );
-#     $input = $dom->find('input');
-#     is_deeply $input->[1]->attr, { checked => undef, name => 'country', type => 'radio', value => 'de' }, 'right attr';
-#
-#     $f->choices( [ c( EU => [ 'de', 'en' ], class => 'test-class' ) ] );
-#     $dom = Mojo::DOM->new( $f->choice($c) );
-#     is_deeply $dom->at('fieldset fieldset')->attr, { class => 'test-class' }, 'right class';
-#
-#     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
-#     $dom = Mojo::DOM->new( $f->choice($c) );
-#     is_deeply $dom->at('fieldset')->attr,          { class => 'form-choice-groups' }, 'right class';
-#     is_deeply $dom->at('fieldset fieldset')->attr, { class => 'form-choice-group' },  'right class';
-#     my $child;
-#     $child = $dom->at('fieldset')->child_nodes;
-#     is $child->[0]->at('legend')->text, 'ヨーロッパ', 'right group legend';
-#     is $child->[1]->at('legend')->text, 'アジア',       'right group legend';
-#     $input = $dom->find('input');
-#     is_deeply $input->[3]->attr, { checked => undef, name => 'country', type => 'radio', value => 'jp' }, 'right attr';
-#
-#     # checkbox list (multiple)
-#     $f->multiple(1);
-#     $f->expanded(1);
-#     $dom   = Mojo::DOM->new( $f->choice($c) );
-#     $input = $dom->find('input');
-#     is_deeply $input->[0]->attr, { name => 'country[]', type => 'checkbox', value => 'de' }, 'right type is checkbox';
-#     is_deeply $input->[3]->attr,
-#       { checked => undef, name => 'country[]', type => 'checkbox', value => 'jp' },
-#       'right checked';
-# };
-#
-# subtest 'field-with-error' => sub {
-#     my $f = Yetie::Form::Field->new(
-#         field_key => 'country.[].id',
-#         name      => 'country.0.id',
-#         label     => 'Country Name',
-#     );
-#
-#     # Set validaion error
-#     $c->validation->error( 'country.0.id' => ['custom_check'] );
-#
-#     # label
-#     my $dom = Mojo::DOM->new( $f->label_for($c) );
-#     ok $dom->find('.field-with-error')->size, 'right class';
-#
-#     # choice
-#     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
-#     $f->multiple(1);
-#     $f->expanded(1);
-#
-#     $c->validation->error( 'country.0.id[]' => ['custom_check'] );
-#     $dom = Mojo::DOM->new( $f->choice($c) );
-#     ok $dom->find('fieldset.field-with-error')->size, 'right class';
-# };
-#
-
 done_testing();
