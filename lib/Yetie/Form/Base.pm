@@ -282,6 +282,6 @@ Return boolean. success return true.
 
 =head1 SEE ALSO
 
-L<Yetie::Form>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::Form::TagHelpers>,
+L<Yetie::Form>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::Form::TagHelpers>
 
 =cut
