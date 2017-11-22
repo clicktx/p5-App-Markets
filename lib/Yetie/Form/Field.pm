@@ -162,8 +162,8 @@ Append class "field-with-error" to field.
 Get / Set error messages.
 
     # In controller example
-    $form_set->field('foo')->error_message('error message {0} and {1}');
-    $form_set->field('foo')->error_message( bar_error => sub { ... } );
+    $form->field('foo')->error_message('error message {0} and {1}');
+    $form->field('foo')->error_message( bar_error => sub { ... } );
 
 =head1 SEE ALSO
 

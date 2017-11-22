@@ -131,7 +131,7 @@ Yetie::Form::FieldSet
     ...
 
     # In controller
-    my $form = $c->form_set('user');
+    my $form = $c->form('user');
 
     if ( $form->validate ){
 
