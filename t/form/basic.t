@@ -83,7 +83,7 @@ subtest 'form_label' => sub {
     my $c = $t->app->build_controller;
 
     my $dom = Mojo::DOM->new( $c->form_label('test#email') );
-    is_deeply $dom->at('*')->attr, { for => 'form_widget_email' }, 'right attr';
+    is_deeply $dom->at('*')->attr, { for => 'form-widget-email' }, 'right attr';
     is $dom->at('*')->text, 'E-mail', 'right text';
     is $dom->at('*')->children->first->tag, 'span', 'right required mark';
 
@@ -99,7 +99,7 @@ subtest 'form_widget' => sub {
     is_deeply $dom->at('*')->attr,
       {
         type => 'text',
-        id   => 'form_widget_q',
+        id   => 'form-widget-q',
         name => 'q',
       },
       'right widget basic';
@@ -108,7 +108,7 @@ subtest 'form_widget' => sub {
     is_deeply $dom->at('*')->attr,
       {
         type       => 'text',
-        id         => 'form_widget_q',
+        id         => 'form-widget-q',
         name       => 'q',
         class      => 'foo',
         'data-bar' => 'buz',
@@ -120,7 +120,7 @@ subtest 'form_widget' => sub {
     is_deeply $dom->at('*')->attr,
       {
         type     => 'text',
-        id       => 'form_widget_name',
+        id       => 'form-widget-name',
         name     => 'name',
         required => undef,
       },
