@@ -11,7 +11,7 @@ sub init_form {
 sub index {
     my $self = shift;
 
-    my $form       = $self->form_set('product');
+    my $form       = $self->form('product');
     my $product_id = $self->stash('product_id');
     $self->init_form( $form, $product_id );
 

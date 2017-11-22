@@ -4,7 +4,7 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 sub index {
     my $self = shift;
 
-    my $form = $self->form_set('checkout');
+    my $form = $self->form('checkout-index');
     return $self->render() unless $form->has_data;
 
     $self->redirect_to('RN_checkout_address');
@@ -13,7 +13,7 @@ sub index {
 sub address {
     my $self = shift;
 
-    my $form = $self->form_set('checkout-address');
+    my $form = $self->form('checkout-address');
 
     # e.g.
     $form->field('billing_address.line1')->default_value('ogikubo');
@@ -41,7 +41,7 @@ sub address {
 sub shipping {
     my $self = shift;
 
-    my $form = $self->form_set('checkout-shipping');
+    my $form = $self->form('checkout-shipping');
     return $self->render() unless $form->has_data;
 
     return $self->render() unless $form->validate;
@@ -86,7 +86,7 @@ sub shipping {
 sub confirm {
     my $self = shift;
 
-    my $form = $self->form_set('checkout-confirm');
+    my $form = $self->form('checkout-confirm');
     return $self->render() unless $form->has_data;
 
     return $self->render() unless $form->validate;

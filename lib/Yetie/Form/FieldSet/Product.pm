@@ -16,4 +16,11 @@ has_field 'quantity' => (
     validations   => [ 'uint', [ min => 1 ] ],
 );
 
+has_field 'categories' => (
+    type        => 'choice',
+    expanded    => 1,
+    multiple    => 1,
+    validations => ['uint'],
+);
+
 1;

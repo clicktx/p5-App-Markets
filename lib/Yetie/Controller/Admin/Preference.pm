@@ -8,7 +8,7 @@ sub index {
     my $validation = $self->validation;
     $self->render() unless $validation->has_data;
 
-    my $form = $self->form_set('admin-preference');
+    my $form = $self->form('admin-preference');
     if ( $form->validate ) {
         for my $name ( @{ $form->params->names } ) {
             $self->pref( $name => $form->param($name) );

@@ -14,7 +14,7 @@ sub index {
 
     $self->stash( item => $item );
 
-    my $form = $self->form_set('example');
+    my $form = $self->form('example');
     return $self->render() unless $form->has_data;
 
     use DDP;

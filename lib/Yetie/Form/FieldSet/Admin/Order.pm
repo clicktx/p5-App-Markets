@@ -1,4 +1,4 @@
-package Yetie::Form::FieldSet::Admin::Order::Delete;
+package Yetie::Form::FieldSet::Admin::Order;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 

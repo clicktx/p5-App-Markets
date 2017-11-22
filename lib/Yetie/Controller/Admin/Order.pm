@@ -15,7 +15,7 @@ sub index {
 sub delete {
     my $self = shift;
 
-    my $form = $self->form_set();    # admin-orders-delete
+    my $form = $self->form('admin-order');
     return $self->render() unless $form->has_data;
 
     say 'form ok' if $form->validate;

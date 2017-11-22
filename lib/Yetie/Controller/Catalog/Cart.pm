@@ -24,7 +24,7 @@ sub index {
     $self->service('cart')->revert_shipping_item() if $cart->shipments->size == 1;
 
     # Initialize form
-    my $form = $self->form_set('cart');
+    my $form = $self->form('cart');
     $self->init_form( $form, $cart );
 
     return $self->render() unless $form->has_data;

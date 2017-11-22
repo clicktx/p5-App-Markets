@@ -16,7 +16,7 @@ sub login {
     $self->flash( ref => $self->flash('ref') );
 
     # Initialize form
-    my $form = $self->form_set();    #'admin-staff-login'
+    my $form = $self->form('admin-login');
 
     # $self->init_form( $form );
 
