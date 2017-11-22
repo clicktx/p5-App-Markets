@@ -14,8 +14,7 @@ use_ok 'Yetie::Form::FieldSet::Test';
 my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
 
 subtest 'attributes' => sub {
-    ok( $fs->can($_), "right $_" ) for qw(controller schema);
-    isa_ok $fs->validation, 'Mojolicious::Validator::Validation';
+    ok( $fs->can($_), "right $_" ) for qw(schema);
 };
 
 subtest 'c' => sub {
@@ -115,171 +114,11 @@ subtest 'filters' => sub {
       'right all filters';
 };
 
-subtest 'has_data' => sub {
-    my $c = $t->app->build_controller;
-    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
-    is $fs->has_data, '', 'right has not data';
-
-    # Create new request
-    $c = $t->app->build_controller;
-    $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
-    $c->req->params->pairs( [ email => 'a@b.c', ] );
-    is $fs->has_data, 1, 'right has data';
-};
-
-subtest 'parameters' => sub {
-    my $c = $t->app->build_controller;
-    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
-    $c->req->params->pairs(
-        [
-            email              => 'a@b.c',
-            name               => 'frank',
-            address            => 'ny',
-            'favorite_color[]' => 'red',
-            'luky_number[]'    => 2,
-            'luky_number[]'    => 3,
-            'item.0.id'        => 11,
-            'item.1.id'        => 22,
-            'item.2.id'        => 33,
-            'item.0.name'      => 'aa',
-            'item.1.name'      => 'bb',
-            'item.2.name'      => 'cc',
-            iligal_param       => 'attack',
-        ]
-    );
-
-    eval { my $name = $fs->param('name') };
-    ok $@, 'right before validate';
-
-    $fs->validate;
-    is $fs->param('email'), 'a@b.c', 'right param';
-    is_deeply $fs->param('favorite_color[]'), ['red'], 'right every param';
-    is_deeply $fs->scope_param('item'),
-      [
-        {
-            id   => 11,
-            name => 'aa',
-        },
-        {
-            id   => 22,
-            name => 'bb',
-        },
-        {
-            id   => 33,
-            name => 'cc',
-        },
-      ],
-      'right scope param';
-    is $fs->param('iligal_param'), undef, 'right iligal param';
-
-    # to_hash
-    my $params = $fs->params->to_hash;
-    is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
-};
-
-subtest 'render tags' => sub {
-    ok !$fs->render_error('email');
-    is ref $fs->render_help('email'),  'Mojo::ByteStream', 'right render_help method';
-    is ref $fs->render_label('email'), 'Mojo::ByteStream', 'right render_label method';
-    is ref $fs->render('email'),       'Mojo::ByteStream', 'right render method';
-
-    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
-};
-
-subtest 'render tags with attrs' => sub {
-    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
-    my $dom = Mojo::DOM->new( $fs->render('email') );
-    is_deeply $dom->at('*')->attr->{value},       undef,         'right value';
-    is_deeply $dom->at('*')->attr->{placeholder}, 'name@domain', 'right placeholder';
-
-    $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
-    $dom = Mojo::DOM->new( $fs->render( 'email', value => 'foo', placeholder => 'bar' ) );
-    is_deeply $dom->at('*')->attr->{value},       'foo', 'right value';
-    is_deeply $dom->at('*')->attr->{placeholder}, 'bar', 'right placeholder';
-};
-
 subtest 'schema' => sub {
     my $schema = $fs->schema;
     is ref $schema, 'HASH';
     my $field_schema = $fs->schema('email');
     is ref $field_schema, 'HASH';
-};
-
-subtest 'validate' => sub {
-    my $c = $t->app->build_controller;
-    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
-    $c->req->params->pairs(
-        [
-            email              => 'a@b33',
-            name               => '',
-            address            => 'ny',
-            'favorite_color[]' => 'red',
-            'luky_number[]'    => 2,
-            'luky_number[]'    => 3,
-            'item.0.id'        => 11,
-            'item.1.id'        => '',
-            'item.2.id'        => 33,
-            'item.0.name'      => '',
-            'item.1.name'      => '',
-            'item.2.name'      => '',
-        ]
-    );
-    my $result = $fs->validate;
-    ok !$result, 'right failed validation';
-
-    my $v = $fs->controller->validation;
-    my ( $check, $res, @args ) = @{ $v->error('email') };
-    is $check, 'like', 'right validation error';
-    is_deeply $v->error('name'),      ['required'], 'right required';
-    is_deeply $v->error('item.1.id'), ['required'], 'right required';
-
-    # Create new request
-    $c = $t->app->build_controller;
-    $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
-    $c->req->params->pairs(
-        [
-            email              => 'a@b.c',
-            name               => 'frank',
-            address            => 'ny',
-            'favorite_color[]' => 'red',
-            'luky_number[]'    => 2,
-            'luky_number[]'    => 3,
-            'item.0.id'        => 11,
-            'item.1.id'        => 22,
-            'item.2.id'        => 33,
-            'item.0.name'      => '',
-            'item.1.name'      => '',
-            'item.2.name'      => '',
-        ]
-    );
-    $result = $fs->validate;
-    ok $result, 'right validation';
-};
-
-subtest 'validate with filter' => sub {
-    my $c = $t->app->build_controller;
-    my $fs = Yetie::Form::FieldSet::Test->new( controller => $c );
-    $c->req->params->pairs(
-        [
-            'email'       => '   a@b.c   ',
-            'item.0.name' => ' aaa ',
-            'item.1.name' => ' bbb ',
-            'item.2.name' => ' ccc ',
-        ]
-    );
-    $fs->validate;
-    my $v = $c->validation;
-    is $v->param('email'),       'a@b.c';
-    is $v->param('item.0.name'), 'aaa';
-    is $v->param('item.1.name'), 'bbb';
-    is $v->param('item.2.name'), 'ccc';
-
-    # field value after render
-    my $dom = Mojo::DOM->new( $fs->render('email') );
-    is_deeply $dom->at('*')->attr->{value}, 'a@b.c', 'right filtering value';
-
-    $dom = Mojo::DOM->new( $fs->render('item.0.name') );
-    is_deeply $dom->at('*')->attr->{value}, 'aaa', 'right filtering value';
 };
 
 # This test should be done at the end!

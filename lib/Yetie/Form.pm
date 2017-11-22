@@ -1,58 +1,95 @@
 package Yetie::Form;
 use Mojo::Base 'Mojolicious::Plugin';
-use Yetie::Util qw(load_class);
+use Scalar::Util qw(weaken);
+use Yetie::Form::Base;
 
-my $NAME_SPACE = 'Yetie::Form::FieldSet';
-my $STASH_NAME = 'yetie.form';
+my $STASH_KEY = 'yetie.form';
 
 sub register {
-    my ( $self, $app ) = @_;
+    my ( $self, $app, $conf ) = @_;
+    my $stash_key = $conf->{stash_key} || $STASH_KEY;
 
     # Load filters and validators
     $app->plugin($_) for qw(Yetie::Form::Filter Yetie::Form::Validator);
 
     # Helpers
-    $app->helper( form_error  => sub { _form_render( 'render_error', @_ ) } );
-    $app->helper( form_field  => sub { _form_field(@_) } );
-    $app->helper( form_help   => sub { _form_render( 'render_help',  @_ ) } );
-    $app->helper( form_label  => sub { _form_render( 'render_label', @_ ) } );
-    $app->helper( form_set    => sub { _form_set(@_) } );
-    $app->helper( form_widget => sub { _form_render( 'render',       @_ ) } );
+    $app->helper( form => sub { _form( $stash_key, @_ ) } );
+    $app->helper( form_field => sub { _form_field( $stash_key, @_ ) } );
+
+    # Tag Helpers
+    $app->helper( form_error => sub { _form_error( $stash_key, @_ ) } );
+    $app->helper( form_help => sub { _form_help( $stash_key, @_ ) } );
+    $app->helper( form_label => sub { _form_label( $stash_key, @_ ) } );
+    $app->helper( form_widget => sub { _form_widget( $stash_key, @_ ) } );
+}
+
+sub _form {
+    my ( $stash_key, $c, $name ) = @_;
+    die 'Arguments empty.' unless $name;
+
+    # my $name = shift || $c->stash('controller') . '-' . $c->stash('action');
+    # $name = camelize($name) if $name =~ /^[a-z]/;
+
+    $c->stash( $stash_key . '.topic' => $name );
+
+    $c->stash( $stash_key => {} ) unless ref $c->stash($stash_key) eq 'HASH';
+    my $form = $c->stash($stash_key)->{$name};
+    if ( !$form ) {
+        $form = Yetie::Form::Base->new( $name, controller => $c );
+        weaken $form->{controller};
+
+        # Add trigger
+        # $c->app->plugins->emit_hook( after_build_form => $c, $form, $name );
+
+        $c->stash($stash_key)->{$name} = $form;
+    }
+    return $form;
 }
 
 sub _form_field {
-    my ( $c, $topic ) = @_;
+    my ( $stash_key, $c, $topic ) = @_;
     die 'Arguments empty.' unless $topic;
 
-    $c->stash( $STASH_NAME . '.topic_field' => $topic );
+    my ( $form, $field ) = $topic =~ /#/ ? $topic =~ /(.*)#(.+)/ : ( undef, $topic );
+    $c->form($form) if $form;
+    $c->stash( $stash_key . '.topic_field' => $field );
     return;
 }
 
-sub _form_set {
-    my $c = shift;
-
-    my $ns = shift || $c->stash('controller') . '-' . $c->stash('action');
-    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
-
-    $c->stash( $STASH_NAME => {} ) unless $c->stash($STASH_NAME);
-    my $formset = $c->stash($STASH_NAME)->{$ns};
-    return $formset if $formset;
-
-    my $class = $NAME_SPACE . "::" . $ns;
-    load_class($class);
-
-    $formset = $class->new( controller => $c );
-    $c->stash($STASH_NAME)->{$ns} = $formset;
-    return $formset;
+sub _form_error {
+    my ( $form, $topic_field ) = _topic(@_);
+    $form->render_error($topic_field);
 }
 
-sub _form_render {
-    my ( $method, $c, $topic_field ) = ( shift, shift, shift );
+sub _form_help {
+    my ( $form, $topic_field ) = _topic(@_);
+    $form->render_help($topic_field);
+}
 
-    $topic_field = $c->stash( $STASH_NAME . '.topic_field' ) unless $topic_field;
-    my ( $fieldset, $field_key ) = $topic_field =~ /(.*)#(.+)/;
+sub _form_label {
+    my ( $form, $topic_field, %attrs ) = _topic(@_);
+    $form->render_label( $topic_field, %attrs );
+}
 
-    return _form_set( $c, $fieldset )->$method( $field_key, @_ );
+sub _form_widget {
+    my ( $form, $topic_field, %attrs ) = _topic(@_);
+    $form->render( $topic_field, %attrs );
+}
+
+sub _topic {
+    my ( $stash_key, $c ) = ( shift, shift );
+
+    my $topic =
+      ( @_ ? @_ % 2 ? shift : $c->stash( $stash_key . '.topic_field' ) : $c->stash( $stash_key . '.topic_field' ) )
+      || '';
+    my ( $topic_form, $topic_field ) = $topic =~ /#/ ? $topic =~ /(.*)#(.+)/ : ( undef, $topic );
+    die 'Unable to set field name' unless $topic_field;
+
+    $topic_form = $c->stash( $stash_key . '.topic' ) unless $topic_form;
+    die 'Unable to set form' unless $topic_form;
+
+    my $form = $c->form($topic_form);
+    return ( $form, $topic_field, @_ );
 }
 
 1;
@@ -93,10 +130,11 @@ Yetie::Form - Form for Yetie
     );
     ...
 
-error_message attribute.
+Customize the error messages in the controller.
+Use C<error_message> method.
 
     # In controller
-    my $form = $controller->form_set('category');
+    my $form = $controller->form('category');
     return $controller->render() unless $form->validate;
 
     # Add or rewrite error message
@@ -109,42 +147,39 @@ error_message attribute.
         return $controller->render();
     }
 
-Handle custom error messages in the controller.
-
 =head1 DESCRIPTION
 
 =head1 HELPERS
 
 L<Yetie::Form> implements the following helpers.
 
+=head2 C<form>
+
+    # Yetie::Form::FieldSet::Example
+    my $form = $c->form('example');
+
+    # Yetie::Form::FieldSet::Admin::Example
+    my $form = $c->form('admin-example');
+
+    # Controller is "Foo" and Action is "index"
+    # require class is Yetie::Form::FieldSet::Foo::Index
+    my $form = $c->form();
+
+Return L<Yetie::Form::FieldSet> object.
+And Set it to the current topic form.
+
 =head2 C<form_field>
 
     # In templates
-    <%= form_field 'foo-bar#field1' %>
-    <%= form_label %>
-    <%= form_widget %>
-    <%= form_error %>
-
-Set the current topic.
+    %= form_field 'foo-bar#field'
+    %= form_label
+    %= form_widget
+    %= form_error
 
 Return none.
+Set it to the current topic form-field.
+
 Cache the currently used form-field in "$c->stash".
-
-=head2 C<form_set>
-
-    # Yetie::Form::FieldSet::Example
-    my $form_set = $c->form_set('example');
-
-    # Yetie::Form::FieldSet::Admin::Example
-    my $form_set = $c->form_set('admin-example');
-
-    # Controller is "Hoge" and Action is "index"
-    # require class is Yetie::Form::FieldSet::Hoge::Index
-    my $form_set = $c->form_set();
-
-Return L<Yetie::Form::FieldSet> object.
-
-Namespace C<Yetie::Form::FieldSet::*>
 
 =head1 TAG HELPERS
 
@@ -155,28 +190,24 @@ All helpers are L<Mojolicious::Plugin::TagHelpers> wrapper.
     # In template
     %= form_error('example#email')
 
-    # Longer Version
-    %= form_set('example')->render_error('email')
+Rendering error message.
+
+The default class for this block is "form-error-block".
 
 =head2 C<form_help>
 
     # In template
     %= form_help('example#email')
 
-    # Longer Version
-    %= form_set('example')->render_help('email')
+The default class for this block is "form-help-block".
 
 =head2 C<form_label>
 
     # In template
     %= form_label('example#email')
-    %= form_label('example#email', class => 'hoge')
+    %= form_label('example#email', class => 'foo')
 
-    # Longer Version
-    %= form_set('example')->render_label('email')
-
-Rendering tag from Yetie::Form::Type::xxx.
-L<Mojolicious::Plugin::TagHelpers> wrapper method.
+Rendering <label> tag.
 
 Only "class" attribute can be added.
 
@@ -184,15 +215,12 @@ Only "class" attribute can be added.
 
     # In template
     %= form_widget('example#email')
-
-    # Longer Version
-    %= form_set('example')->render_widget('email')
-
-    # With attributes
     %= form_widget('example#email', value => 'name@domain.com')
+    %= form_widget('example#email', %attrs)
 
-Rendering tag from Yetie::Form::Type::xxx.
-L<Mojolicious::Plugin::TagHelpers> wrapper method.
+Rendering <input>, <textarea>, <select>, <radio>, <checkbox>, <hidden> tag.
+
+Can add arbitrary attributes.
 
 =head1 METHODS
 
@@ -207,6 +235,7 @@ Register helpers in L<Mojolicious> application.
 
 =head1 SEE ALSO
 
-L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Mojolicious::Plugin>
+L<Yetie::Form::Base>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::Form::TagHelpers>,
+L<Mojolicious::Plugin>
 
 =cut
