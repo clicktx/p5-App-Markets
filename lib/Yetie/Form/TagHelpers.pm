@@ -41,6 +41,15 @@ sub AUTOLOAD {
     # choice
     return _choice_list_widget( $c, %attrs, @_ ) if $method eq 'choice';
 
+    # checkbox/radio
+    if ( $method eq 'checkbox' || $method eq 'radio' ) {
+        delete $attrs{id};
+        $attrs{type} = $method;
+
+        my @values = @{ $c->req->every_param( $attrs{name} ) };
+        return _choice_field( $c, \@values, $field->label, %attrs, @_ );
+    }
+
     # hidden
     return _hidden( $c, %attrs, @_ ) if $method eq 'hidden';
 

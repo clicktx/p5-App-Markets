@@ -34,52 +34,52 @@ subtest 'basic' => sub {
     like $@, qr/Undefined subroutine/, 'right Undefined subroutine';
 };
 
-# subtest 'checkbox and radio' => sub {
-#     my ( $c, $h ) = init();
-#     my $f = Yetie::Form::Field->new(
-#         name  => 'agreed',
-#         value => 'yes',
-#         label => 'I agreed',
-#     );
-# 
-#     for my $type (qw/radio checkbox/) {
-#         my $dom = Mojo::DOM->new( $f->$type($c) );
-#         is $dom->at('*')->tag, 'label', "right $type parent";
-#         is $dom->at('span')->text, '私は同意した', "right $type label text";
-#         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type";
-#     }
-# 
-#     $f->checked(0);
-#     for my $type (qw/radio checkbox/) {
-#         my $dom = Mojo::DOM->new( $f->$type($c) );
-#         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
-#     }
-# 
-#     # bool "checked"
-#     $f->checked(1);
-#     for my $type (qw/radio checkbox/) {
-#         my $dom = Mojo::DOM->new( $f->$type($c) );
-#         is_deeply $dom->at('input')->attr,
-#           { checked => undef, type => $type, name => 'agreed', value => 'yes' },
-#           "right $type checked";
-#     }
-# 
-#     # using choiced
-#     $f->checked(0);
-#     $f->choiced(1);
-#     for my $type (qw/radio checkbox/) {
-#         my $dom = Mojo::DOM->new( $f->$type($c) );
-#         is_deeply $dom->at('input')->attr,
-#           { checked => undef, type => $type, name => 'agreed', value => 'yes' },
-#           "right $type checked";
-#     }
-# 
-#     $f->choiced(0);
-#     for my $type (qw/radio checkbox/) {
-#         my $dom = Mojo::DOM->new( $f->$type($c) );
-#         is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
-#     }
-# };
+subtest 'checkbox and radio' => sub {
+    my ( $c, $h ) = init();
+    my $f = Yetie::Form::Field->new(
+        name  => 'agreed',
+        value => 'yes',
+        label => 'I agreed',
+    );
+
+    for my $type (qw/radio checkbox/) {
+        my $dom = Mojo::DOM->new( $h->$type($f) );
+        is $dom->at('*')->tag, 'label', "right $type parent";
+        is $dom->at('span')->text, '私は同意した', "right $type label text";
+        is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type";
+    }
+
+    $f->checked(0);
+    for my $type (qw/radio checkbox/) {
+        my $dom = Mojo::DOM->new( $h->$type($f) );
+        is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
+    }
+
+    # bool "checked"
+    $f->checked(1);
+    for my $type (qw/radio checkbox/) {
+        my $dom = Mojo::DOM->new( $h->$type($f) );
+        is_deeply $dom->at('input')->attr,
+          { checked => undef, type => $type, name => 'agreed', value => 'yes' },
+          "right $type checked";
+    }
+
+    # using choiced
+    $f->checked(0);
+    $f->choiced(1);
+    for my $type (qw/radio checkbox/) {
+        my $dom = Mojo::DOM->new( $h->$type($f) );
+        is_deeply $dom->at('input')->attr,
+          { checked => undef, type => $type, name => 'agreed', value => 'yes' },
+          "right $type checked";
+    }
+
+    $f->choiced(0);
+    for my $type (qw/radio checkbox/) {
+        my $dom = Mojo::DOM->new( $h->$type($f) );
+        is_deeply $dom->at('input')->attr, { type => $type, name => 'agreed', value => 'yes' }, "right $type unchecked";
+    }
+};
 
 subtest 'choice' => sub {
     my ( $c, $h ) = init();
@@ -376,7 +376,7 @@ subtest 'textarea' => sub {
 #
 #     my @types = qw(email number search tel text url);
 #     for my $type (@types) {
-#         $dom = Mojo::DOM->new( $f->$type($c) );
+#         $dom = Mojo::DOM->new( $h->$type($f) );
 #         is_deeply $dom->at('*')->attr,
 #           {
 #             type        => $type,
@@ -407,7 +407,7 @@ subtest 'textarea' => sub {
 #     my @types = qw(color range date month time week);
 #     my $dom;
 #     for my $type (@types) {
-#         $dom = Mojo::DOM->new( $f->$type($c) );
+#         $dom = Mojo::DOM->new( $h->$type($f) );
 #         is_deeply $dom->at('*')->attr,
 #           {
 #             type     => $type,
