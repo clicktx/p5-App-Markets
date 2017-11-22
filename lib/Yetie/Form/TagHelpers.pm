@@ -2,7 +2,7 @@ package Yetie::Form::TagHelpers;
 use Mojo::Base -base;
 use Carp qw(croak);
 use Scalar::Util qw(blessed weaken);
-use Mojo::Collection 'c';
+use Mojo::Collection qw(c);
 use Mojolicious::Controller;
 use Mojolicious::Plugin::TagHelpers;
 
@@ -343,8 +343,239 @@ L<Yetie::Form::TagHelpers> inherits all methods from L<Mojo::Base> and implement
 
     my $tag_helpers = Yetie::Form::TagHelpers->new($controller);
 
+=head1 TAG HELPER METHODS
+
+Return code refference.
+All methods is L<Mojolicious::Plugin::TagHelpers> wrapper methods.
+
+=head2 C<checkbox>
+
+    my $f = Yetie::Form::Field->new(
+        name    => 'agreed',
+        value   => 'yes',
+        label   => 'I agreed',
+        checked => 1,
+    );
+    say $tag_helpers->checkbox($f);
+
+    # HTML
+    <label><input checked name="agreed" type="checkbox" value="yes">I agreed</label>
+
+=head2 C<choice>
+
+    my $f = Yetie::Form::Field->new( name => 'country' );
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
+    # Select field
+    $f->multiple(0);
+    $f->expanded(0);
+    say $tag_helpers->choice($f);
+
+    # HTML
+    <select id="country" name="country">
+        <optgroup label="EU">
+            <option value="de">de</option>
+            <option value="en">en</option>
+        </optgroup>
+        <optgroup label="Asia">
+            <option value="cn">China</option>
+            <option selected="selected" value="jp">Japan</option>
+        </optgroup>
+    </select>
+
+    # Select field multiple
+    my $f = Yetie::Form::Field->new( name => 'country[]' );
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
+    $f->multiple(1);
+    $f->expanded(0);
+    say $tag_helpers->choice($f);
+
+    # HTML
+    <select id="country" multiple name="country[]">
+        <optgroup label="EU">
+            <option value="de">de</option>
+            <option value="en">en</option>
+        </optgroup>
+        <optgroup label="Asia">
+            <option value="cn">China</option>
+            <option selected="selected" value="jp">Japan</option>
+        </optgroup>
+    </select>
+
+Rendering Select Field and Select Field multiple tag.
+See L<Mojolicious::Plugin::TagHelpers/select_field>
+
+    $f->choices( [ [ Japan => 'jp' ], [ Germany => 'de', checked => 1 ], 'cn' ] );
+
+    # Radio button
+    $f->multiple(0);
+    $f->expanded(1);
+    say $tag_helpers->choice($f);
+
+    # HTML
+    <fieldset class="form-choice-group">
+        <div class="form-choice-item">
+            <label><input name="country" type="radio" value="jp">Japan</label>
+        </div>
+        <div class="form-choice-item">
+            <label><input name="country" type="radio" value="de">Germany</label>
+        </div>
+        <div class="form-choice-item">
+            <label><input name="country" type="radio" value="cn">cn</label>
+        </div>
+    </fieldset>
+
+    # Check box
+    my $f = Yetie::Form::Field->new( name => 'country[]' );
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
+    $f->multiple(1);
+    $f->expanded(1);
+    say $tag_helpers->choice($f);
+
+    # HTML
+    <fieldset class="form-choice-group">
+        <div class="form-choice-item">
+            <label><input name="country[]" type="checkbox" value="jp">Japan</label>
+        </div>
+        <div class="form-choice-item">
+            <label><input name="country[]" type="checkbox" value="de">Germany</label>
+        </div>
+        <div class="form-choice-item">
+            <label><input name="country[]" type="checkbox" value="cn">cn</label>
+        </div>
+    </fieldset>
+
+    # Group choices
+    $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ) ] );
+    say $tag_helpers->choice($f);
+
+    # HTML
+    <fieldset class="form-choice-groups">
+        <fieldset class="form-choice-group">
+            <legend>EU</legend>
+            <div class="form-choice-item">
+                <label><input name="country[]" type="checkbox" value="de">de</label>
+            </div>
+            <div class="form-choice-item">
+                <label><input name="country[]" type="checkbox" value="en">en</label>
+            </div>
+        </fieldset>
+        <fieldset class="form-choice-group">
+            <legend>Asia</legend>
+            <div class="form-choice-item">
+                <label><input name="country[]" type="checkbox" value="cn">China</label>
+            </div>
+            <div class="form-choice-item">
+                <label><input checked name="country[]" type="checkbox" value="jp">Japan</label>
+            </div>
+        </fieldset>
+    </fieldset>
+
+=head2 C<color>
+
+=head2 C<date>
+
+=head2 C<datetime>
+
+=head2 C<email>
+
+=head2 C<file>
+
+=head2 C<help_block>
+
+    # plain text
+    my $f = Yetie::Form::Field->new(
+        name    => 'name',
+        help   => 'Your name.',
+    );
+    say $tag_helpers->help_block($f);
+
+    # HTML
+    <span class="">Your name.</span>
+
+    # code refference
+    my $f = Yetie::Form::Field->new(
+        name    => 'password',
+        help   => sub {
+            shift->__x(
+                'Must be {low}-{high} characters long.',
+                { low => 4, high => 8 },
+            )
+        },
+    );
+    say $tag_helpers->help_block($f);
+
+    # HTML
+    <span class="">Must be 4-8 characters long.</span>
+
+Render help block.
+
+C<I18N>
+
+Default $c->__($text) or code refference $code($c)
+See L<Mojolicious::Plugin::LocaleTextDomainOO>
+
+=head2 C<label_for>
+
+=head2 C<month>
+
+=head2 C<number>
+
+=head2 C<hidden>
+
+=head2 C<password>
+
+=head2 C<radio>
+
+    my $f = Yetie::Form::Field->new(
+        name    => 'agreed',
+        value   => 'yes',
+        label   => 'I agreed',
+        checked => 1,
+    );
+    say $tag_helpers->radio($f);
+
+    # HTML
+    <label><input checked name="agreed" type="radio" value="yes">I agreed</label>
+
+=head2 C<range>
+
+=head2 C<search>
+
+=head2 C<select>
+
+=head2 C<tel>
+
+=head2 C<text>
+
+=head2 C<textarea>
+
+    my $f = Yetie::Form::Field->new(
+        name          => 'description',
+        label         => 'Description',
+        cols          => 40,
+        default_value => 'default text',
+    );
+    say $tag_helpers->textarea($f);
+
+    # HTML
+    <textarea name="description" cols="40">default text</textarea>
+
+    $f->value('text text text');
+    say $tag_helpers->textarea($f);
+
+    # HTML
+    <textarea name="description" cols="40">text text text</textarea>
+
+In textarea, "default_value" and "value" is treated as content text.
+
+=head2 C<time>
+
+=head2 C<url>
+
+=head2 C<week>
+
 =head1 SEE ALSO
 
-L<Yetie::Form>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>
+L<Yetie::Form>, L<Yetie::Form::Base>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>
 
 =cut
