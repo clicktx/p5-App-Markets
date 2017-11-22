@@ -43,7 +43,7 @@ sub edit {
     my $entity     = $self->factory('product')->build($product_id);
 
     # Init form
-    my $form = $self->form_set('admin-product');
+    my $form = $self->form('admin-product');
     $self->form_default_value( $form, $entity );
 
     my $categories = $self->service('product')->choices_primary_category($entity);
@@ -66,7 +66,7 @@ sub category {
     # NOTE: 存在しないproduct_idの場合はエラーにする
 
     # Init form
-    my $form = $self->form_set();
+    my $form = $self->form('admin-product');
 
     my $category_ids = [];
     $entity->product_categories->each( sub { push @{$category_ids}, $_->category_id } );
