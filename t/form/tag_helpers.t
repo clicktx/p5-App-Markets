@@ -255,6 +255,89 @@ subtest 'hidden' => sub {
       'right hidden value';
 };
 
+subtest 'input basic' => sub {
+    my ( $c, $h ) = init();
+    my $f  = f();
+    my $f2 = Yetie::Form::Field->new(
+        field_key     => 'foo',
+        name          => 'foo',
+        default_value => 'bar',
+    );
+    $f2->value('baz');
+    my $dom;
+    $dom = Mojo::DOM->new( $h->text($f2) );
+    is $dom->at('*')->attr->{value}, 'baz';
+
+    my @types = qw(email number search tel text url);
+    for my $type (@types) {
+        $dom = Mojo::DOM->new( $h->$type($f) );
+        is_deeply $dom->at('*')->attr,
+          {
+            type        => $type,
+            id          => 'form-widget-item-0-name',
+            name        => 'item.0.name',
+            placeholder => 'example',
+            required    => undef,
+            value       => 'sss',
+          },
+          "right $type";
+    }
+
+    # password_field
+    $dom = Mojo::DOM->new( $h->password($f) );
+    is_deeply $dom->at('*')->attr,
+      {
+        type        => 'password',
+        id          => 'form-widget-item-0-name',
+        name        => 'item.0.name',
+        placeholder => 'example',
+        required    => undef,
+      },
+      "right password";
+};
+
+subtest 'input other' => sub {
+    my ( $c, $h ) = init();
+    my $f     = f();
+    my @types = qw(color range date month time week);
+    my $dom;
+    for my $type (@types) {
+        $dom = Mojo::DOM->new( $h->$type($f) );
+        is_deeply $dom->at('*')->attr,
+          {
+            type     => $type,
+            id       => 'form-widget-item-0-name',
+            name     => 'item.0.name',
+            required => undef,
+            value    => 'sss',
+          },
+          "right $type";
+    }
+
+    # datetime-local
+    $dom = Mojo::DOM->new( $h->datetime($f) );
+    is_deeply $dom->at('*')->attr,
+      {
+        type     => 'datetime-local',
+        id       => 'form-widget-item-0-name',
+        name     => 'item.0.name',
+        required => undef,
+        value    => 'sss',
+      },
+      "right datetime";
+
+    # file_field
+    $dom = Mojo::DOM->new( $h->file($f) );
+    is_deeply $dom->at('*')->attr,
+      {
+        type     => 'file',
+        id       => 'form-widget-item-0-name',
+        name     => 'item.0.name',
+        required => undef,
+      },
+      "right datetime";
+};
+
 subtest 'label' => sub {
     my ( $c, $h ) = init();
     my $f   = f();
@@ -362,85 +445,4 @@ subtest 'textarea' => sub {
     is $dom->at('*')->attr->{value}, undef, 'right attr value';
 };
 
-# subtest 'input basic' => sub {
-#     my $f  = f();
-#     my $f2 = Yetie::Form::Field->new(
-#         field_key     => 'foo',
-#         name          => 'foo',
-#         default_value => 'bar',
-#     );
-#     $f2->value('baz');
-#     my $dom;
-#     $dom = Mojo::DOM->new( $f2->text($c) );
-#     is $dom->at('*')->attr->{value}, 'baz';
-#
-#     my @types = qw(email number search tel text url);
-#     for my $type (@types) {
-#         $dom = Mojo::DOM->new( $h->$type($f) );
-#         is_deeply $dom->at('*')->attr,
-#           {
-#             type        => $type,
-#             id          => 'form-widget-item-0-name',
-#             name        => 'item.0.name',
-#             placeholder => 'example',
-#             required    => undef,
-#             value       => 'sss',
-#           },
-#           "right $type";
-#     }
-#
-#     # password_field
-#     my $dom = Mojo::DOM->new( $f->password($c) );
-#     is_deeply $dom->at('*')->attr,
-#       {
-#         type        => 'password',
-#         id          => 'form-widget-item-0-name',
-#         name        => 'item.0.name',
-#         placeholder => 'example',
-#         required    => undef,
-#       },
-#       "right password";
-# };
-#
-# subtest 'input other' => sub {
-#     my $f     = f();
-#     my @types = qw(color range date month time week);
-#     my $dom;
-#     for my $type (@types) {
-#         $dom = Mojo::DOM->new( $h->$type($f) );
-#         is_deeply $dom->at('*')->attr,
-#           {
-#             type     => $type,
-#             id       => 'form-widget-item-0-name',
-#             name     => 'item.0.name',
-#             required => undef,
-#             value    => 'sss',
-#           },
-#           "right $type";
-#     }
-#
-#     # datetime-local
-#     $dom = Mojo::DOM->new( $f->datetime($c) );
-#     is_deeply $dom->at('*')->attr,
-#       {
-#         type     => 'datetime-local',
-#         id       => 'form-widget-item-0-name',
-#         name     => 'item.0.name',
-#         required => undef,
-#         value    => 'sss',
-#       },
-#       "right datetime";
-#
-#     # file_field
-#     $dom = Mojo::DOM->new( $f->file($c) );
-#     is_deeply $dom->at('*')->attr,
-#       {
-#         type     => 'file',
-#         id       => 'form-widget-item-0-name',
-#         name     => 'item.0.name',
-#         required => undef,
-#       },
-#       "right datetime";
-# };
-#
 done_testing();

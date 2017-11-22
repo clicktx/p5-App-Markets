@@ -59,6 +59,17 @@ sub AUTOLOAD {
     # textarea
     return _textarea( $c, %attrs, @_ ) if $method eq 'textarea';
 
+    # input
+    for my $name (qw(email number search tel text url password)) {
+        return _input( $c, "${name}_field", %attrs, @_ ) if $method eq $name;
+    }
+    for my $name (qw(color range date month time week file datetime)) {
+        if ( $method eq $name ) {
+            delete $attrs{$_} for qw(placeholder);
+            return _input( $c, "${name}_field", %attrs, @_ );
+        }
+    }
+
     croak "Undefined subroutine &${package}::$method called";
 }
 
@@ -200,6 +211,26 @@ sub _id {
     my $name = shift;
     $name =~ s/\./-/g;
     return $wiget_id_prefix . '-' . $name;
+}
+
+sub _input {
+    my $c      = shift;
+    my $method = shift;
+    my %attrs  = @_;
+
+    my $name          = delete $attrs{name};
+    my $default_value = delete $attrs{default_value};
+
+    if ( $method eq 'password_field' || $method eq 'file_field' ) {
+        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
+        return $c->$method( $name, %attrs );
+    }
+    else {
+        $attrs{placeholder} = $c->__( $attrs{placeholder} ) if exists $attrs{placeholder};
+
+        $attrs{value} = $default_value if $default_value && !exists $attrs{value};
+        return $c->$method( $name, %attrs );
+    }
 }
 
 sub _label {
