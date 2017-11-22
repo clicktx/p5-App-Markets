@@ -13,6 +13,7 @@ subtest 'basic' => sub {
     isa_ok $f->fieldset,   'Yetie::Form::FieldSet::Test';
     ok !$f->is_validated, 'right is_validated';
     ok $f->name_space, 'right name_space';
+    isa_ok $f->tag_helpers,   'Yetie::Form::TagHelpers';
 };
 
 subtest 'with controller' => sub {

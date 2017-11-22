@@ -58,28 +58,22 @@ sub _form_field {
 
 sub _form_error {
     my ( $form, $topic_field ) = _topic(@_);
-    $form->fieldset->field($topic_field)->error_block( $form->controller );
+    $form->render_error($topic_field);
 }
 
 sub _form_help {
     my ( $form, $topic_field ) = _topic(@_);
-    $form->fieldset->field($topic_field)->help_block( $form->controller );
+    $form->render_help($topic_field);
 }
 
 sub _form_label {
     my ( $form, $topic_field, %attrs ) = _topic(@_);
-    $form->fieldset->field($topic_field)->label_for( $form->controller, %attrs );
+    $form->render_label( $topic_field, %attrs );
 }
 
 sub _form_widget {
     my ( $form, $topic_field, %attrs ) = _topic(@_);
-
-    my $value = $form->controller->req->params->param($topic_field);
-    $attrs{value} = $value if defined $value;
-
-    my $field = $form->fieldset->field($topic_field);
-    my $method = $field->type || 'text';
-    $field->$method( $form->controller, %attrs );
+    $form->render( $topic_field, %attrs );
 }
 
 sub _topic {
@@ -241,6 +235,7 @@ Register helpers in L<Mojolicious> application.
 
 =head1 SEE ALSO
 
-L<Yetie::Form::Base>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Mojolicious::Plugin>
+L<Yetie::Form::Base>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::Form::TagHelpers>,
+L<Mojolicious::Plugin>
 
 =cut

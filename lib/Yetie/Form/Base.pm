@@ -5,11 +5,13 @@ use CGI::Expand qw/expand_hash/;
 use Mojolicious::Controller;
 use Yetie::Util qw(load_class);
 use Yetie::Parameters;
+use Yetie::Form::TagHelpers;
 
 has controller => sub { Mojolicious::Controller->new };
 has 'fieldset';
 has is_validated => '0';
 has name_space   => 'Yetie::Form::FieldSet';
+has tag_helpers  => sub { Yetie::Form::TagHelpers->new( shift->controller ) };
 
 sub field { shift->fieldset->field(@_) }
 
@@ -47,17 +49,20 @@ sub params {
 
 sub render_error {
     my ( $self, $name ) = @_;
-    $self->fieldset->field($name)->error_block( $self->controller );
+    my $field = $self->fieldset->field($name);
+    $self->tag_helpers->error_block($field);
 }
 
 sub render_help {
     my ( $self, $name ) = @_;
-    $self->fieldset->field($name)->help_block( $self->controller );
+    my $field = $self->fieldset->field($name);
+    $self->tag_helpers->help_block($field);
 }
 
 sub render_label {
     my ( $self, $name, %attrs ) = @_;
-    $self->fieldset->field($name)->label_for( $self->controller, %attrs );
+    my $field = $self->fieldset->field($name);
+    $self->tag_helpers->label_for( $field, %attrs );
 }
 
 sub render {
@@ -68,7 +73,7 @@ sub render {
 
     my $field = $self->fieldset->field($name);
     my $method = $field->type || 'text';
-    $field->$method( $self->controller, %attrs );
+    $self->tag_helpers->$method( $field, %attrs );
 }
 
 sub scope_param { shift->params->every_param(shift) }
@@ -239,6 +244,7 @@ Rendering HTML help block.
 =head2 C<render_label>
 
     $form->render_label('email');
+    $form->render_label( 'email', class => 'foo' );
 
 Rendering HTML label tag.
 
@@ -276,6 +282,6 @@ Return boolean. success return true.
 
 =head1 SEE ALSO
 
-L<Yetie::Form>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Mojolicious::Plugin>
+L<Yetie::Form>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::Form::TagHelpers>
 
 =cut

@@ -6,7 +6,8 @@ use Test::Perl::Metrics::Lite (
     -loc               => 60,    # default 60
     -except_file       => [
         qw(lib/Yetie/View/DOM/EP.pm lib/Yetie/Domain/Base.pm lib/Yetie/Domain/Entity.pm),
-        qw(lib/Yetie/Form/Field.pm)
+        # at AUTOLOAD
+        'lib/Yetie/Form/TagHelpers.pm',
     ],
 );
 
