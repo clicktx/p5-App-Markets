@@ -4,7 +4,7 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 sub index {
     my $self = shift;
 
-    my $form = $self->form_set('search');
+    my $form = $self->form('search');
     $self->init_form();
 
     # return $self->render() unless $form->has_data;
