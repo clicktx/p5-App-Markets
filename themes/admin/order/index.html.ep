@@ -20,7 +20,7 @@ shipping_address line1: <%= $shipment->shipping_address->line1 %><br>
 
 <%= form_for 'RN_admin_order_delete' => begin %>
     <%= csrf_field %>
-    <%= hidden_field id => $id %>
+    <%= form_widget 'admin-order#id', value => $id %>
     <%= submit_button 'Delete this Order' %>
 <% end %>
 <ul>
