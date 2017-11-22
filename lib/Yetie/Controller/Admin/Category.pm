@@ -4,7 +4,7 @@ use Mojo::Base 'Yetie::Controller::Admin';
 sub index {
     my $self = shift;
 
-    my $form = $self->form_set('admin-category');
+    my $form = $self->form('admin-category');
     my $rs   = $self->app->schema->resultset('Category');
     $self->stash( rs => $rs );
 
