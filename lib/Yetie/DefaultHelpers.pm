@@ -11,6 +11,9 @@ use Yetie::Domain::Factory;
 sub register {
     my ( $self, $app ) = @_;
 
+    # TagHelpers more
+    $app->plugin('Yetie::TagHelpers');
+
     $app->helper( __x_default_lang => sub { __x_default_lang(@_) } );
     $app->helper( addons           => sub { shift->app->addons(@_) } );
     $app->helper( cookie_session   => sub { shift->session(@_) } );
