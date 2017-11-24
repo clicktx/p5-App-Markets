@@ -5,16 +5,19 @@ use Mojolicious::Plugin::TagHelpers;
 sub register {
     my ( $self, $app ) = @_;
 
-    $app->helper( submit_button => __PACKAGE__->can("_submit_button") );
+    my @helpers = (qw(submit_button));
+    $app->helper( $_ => __PACKAGE__->can("_$_") ) for @helpers;
 }
 
 sub _submit_button {
     my ( $c, $value ) = ( shift, shift // 'Ok' );
 
     my %attrs = @_;
-    my $type = %attrs{type} || 'submit';
-    return Mojolicious::Plugin::TagHelpers::_tag( 'input', value => $value, @_, type => $type );
+    my $type = delete $attrs{type} || 'submit';
+    _tag( 'input', type => $type, value => $value, @_ );
 }
+
+sub _tag { Mojolicious::Plugin::TagHelpers::_tag(@_) }
 
 1;
 __END__
