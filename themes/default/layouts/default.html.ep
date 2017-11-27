@@ -15,23 +15,6 @@
         <footer>
             <%= include 'footer' %>
         </footer>
-        %= javascript 'https://code.jquery.com/jquery-3.2.1.min.js', integrity => "sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=", crossorigin => "anonymous"
-        %= javascript begin
-            $(function(){
-                $('.submit-post').click(function(){
-                    var $this = $(this);
-                    var $parent = $this.parent();
-                    var $form = $this.parents('form');
-                    $form.attr( 'action', $parent.data('action') );
-                    $('<input>').attr({
-                        type:  'hidden',
-                        name:  $parent.data('name'),
-                        value: $parent.data('value')
-                    }).appendTo($form);
-                    $form.submit();
-                    return false;
-                });
-            });
-        % end
+        <%= include 'common/java_script' %>
     </body>
 </html>
