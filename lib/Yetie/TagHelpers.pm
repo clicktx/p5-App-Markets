@@ -5,16 +5,32 @@ use Mojolicious::Plugin::TagHelpers;
 sub register {
     my ( $self, $app ) = @_;
 
-    $app->helper( submit_button => __PACKAGE__->can("_submit_button") );
+    my @helpers = (qw(button submit_button));
+    $app->helper( $_ => __PACKAGE__->can("_$_") ) for @helpers;
+}
+
+sub _button {
+    my ( $c, $name ) = ( shift, shift );
+
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $content = @_ % 2 ? shift : undef;
+    $content = $content // $cb // 'Ok';
+
+    my %attrs = @_;
+    my $type = $attrs{type} || 'submit';
+
+    return _tag( 'button', name => $name, type => $type, @_, $content );
 }
 
 sub _submit_button {
     my ( $c, $value ) = ( shift, shift // 'Ok' );
 
     my %attrs = @_;
-    my $type = %attrs{type} || 'submit';
-    return Mojolicious::Plugin::TagHelpers::_tag( 'input', value => $value, @_, type => $type );
+    my $type = $attrs{type} || 'submit';
+    _tag( 'input', type => $type, value => $value, @_ );
 }
+
+sub _tag { Mojolicious::Plugin::TagHelpers::_tag(@_) }
 
 1;
 __END__
@@ -28,6 +44,26 @@ Yetie::TagHelpers - Tag helpers plugin for Yetie
 =head1 HELPERS
 
 L<Yetie::TagHelpers> implements the following helpers.
+
+=head2 C<button>
+
+    %= button 'story'
+    %= button 'story', type => 'button'
+    %= button story => 'Reset', type => 'reset'
+    %= button story => 'Default', value => 'never'
+    %= button story => (type => 'button') => begin
+        Default
+    % end
+
+Generate C<button> tag.
+
+    <button name="story" type="submit">Ok</button>
+    <button name="story" type="button">Ok</button>
+    <button name="story" type="reset">Reset</button>
+    <button name="story" type="submit" value="never">Default</button>
+    <button name="story" type="button">
+        Default
+    </button>
 
 =head2 C<submit_button>
 

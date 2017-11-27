@@ -102,6 +102,7 @@ sub add_catalog_routes {
     # Cart
     $r->any('/cart')->to('cart#index')->name('RN_cart');
     $r->post('/cart/clear')->to('cart#clear')->name('RN_cart_clear');
+    $r->post('/cart/delete')->to('cart#delete')->name('RN_cart_delete');
 
     # Checkout
     {
