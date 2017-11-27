@@ -24,6 +24,8 @@ sub clone {
     return $clone;
 }
 
+sub has_data { return shift->id ? 1 : 0 }
+
 sub hash_code {
     my ( $self, $arg ) = @_;
     if   ( @_ > 1 ) { return defined $arg      ? sha1_sum($arg)        : undef }
@@ -135,6 +137,12 @@ the following new ones.
     my $clone = $self->clone;
 
 Return object.
+
+=head2 C<has_data>
+
+    my $bool = $entity->has_data;
+
+Return boolean value.
 
 =head2 C<hash_code>
 

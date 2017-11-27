@@ -53,6 +53,14 @@ subtest 'clone' => sub {
     cmp_deeply $clone->{fuga}->{a}->[0], {}, 'right three dimensions';
 };
 
+subtest 'has_data' => sub {
+    my $e = Yetie::Domain::Entity::Hoge->new( id => 1 );
+    ok $e->has_data, 'right has data';
+
+    $e = Yetie::Domain::Entity::Hoge->new();
+    ok !$e->has_data, 'right has not data';
+};
+
 subtest 'to_array method' => sub {
     my $data = { id => 1, hoge => 1, fuga => 2 };
     my $e = $pkg->new($data);
