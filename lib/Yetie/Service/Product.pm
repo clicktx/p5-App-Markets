@@ -46,6 +46,8 @@ sub new_product {
     return $self->resultset->create( { title => $title } );
 }
 
+# NOTE: 実際の動作がdelete相当となっている。method名変更するか論理削除にするか。
+# [”delete”と”remove”の使い分けについて | SDNA ローカライズチームブログ](http://www.sonydna.com/sdna/solution/pr_loc/blog/20160511.html)
 sub remove_product {
     my ( $self, $product_id ) = @_;
 
