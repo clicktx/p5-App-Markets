@@ -25,11 +25,23 @@ sub t03_get_request : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $t->get_ok('/admin/product/create')->status_is(200);
-    $t->get_ok('/admin/product/1/duplicate')->status_is(200);
-    $t->get_ok('/admin/product/1/edit')->status_is(200);
-    $t->get_ok('/admin/product/1/edit/category')->status_is(200);
+    # index
     $t->get_ok('/admin/product/999')->status_is(404);
+
+    # create
+    $t->get_ok('/admin/product/create')->status_is(200);
+
+    # duplicate
+    $t->get_ok('/admin/product/1/duplicate')->status_is(200);
+    $t->get_ok('/admin/product/999/duplicate')->status_is(404);
+
+    # edit
+    $t->get_ok('/admin/product/1/edit')->status_is(200);
+    $t->get_ok('/admin/product/999/edit')->status_is(404);
+
+    # edit category
+    $t->get_ok('/admin/product/1/edit/category')->status_is(200);
+    $t->get_ok('/admin/product/999/edit/category')->status_is(404);
 
     # delete
     $t->get_ok('/admin/product/3/delete')->status_is(200);
@@ -41,7 +53,8 @@ sub t04_post_request : Tests() {
     my $t    = $self->t;
 
     my $post_data = { csrf_token => $self->csrf_token };
-    $t->post_ok( '/admin/product/100/edit/category', form => $post_data )->status_is(200);
+    $t->post_ok( '/admin/product/1/edit/category',   form => $post_data )->status_is(200);
+    $t->post_ok( '/admin/product/999/edit/category', form => $post_data )->status_is(404);
 }
 
 __PACKAGE__->runtests;
