@@ -9,11 +9,17 @@ sub basic : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    my $post_data = { csrf_token => $self->csrf_token };
     $t->get_ok('/cart')->status_is(200)->content_like(qr/cart/i);
-    $t->post_ok( '/cart', form => $post_data )->status_is(200);
+    $t->post_ok( '/cart', form => { csrf_token => $self->csrf_token } )->status_is(200);
 
-    $t->post_ok( '/cart/clear', form => $post_data )->status_is(200);
+    $t->post_ok( '/cart/clear', form => { csrf_token => $self->csrf_token } )->status_is(200);
+    $t->post_ok(
+        '/cart/delete',
+        form => {
+            csrf_token     => $self->csrf_token,
+            target_item_id => 'aaabbbccc',
+        }
+    )->status_is(200);
 }
 
 __PACKAGE__->runtests;

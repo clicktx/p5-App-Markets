@@ -48,4 +48,17 @@ sub clear {
     return $self->redirect_to('RN_cart');
 }
 
+sub delete {
+    my $self = shift;
+
+    my $form = $self->form('cart-delete');
+    return $self->reply->exception('Bad request') unless $form->validate;
+
+    # NOTE: 複数配送時の場合はshipping_itemsのitemを削除する必要がありそう（未実装）
+    my $target = $form->param('target_item_id');
+    $self->cart->remove_item($target);
+
+    return $self->redirect_to('RN_cart');
+}
+
 1;

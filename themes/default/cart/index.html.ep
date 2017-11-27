@@ -14,13 +14,24 @@
 
         % $cart->items->each( sub {
             % my ($item, $i) = @_;
-            <li>
+            <li class="cart-item">
                 <a href="<%= url_for 'RN_product' => { product_id => $item->product_id } %>">
                     <%= $item->product_title %>
                 </a>
                  | <%= $item->price %>
                  | QTY:<%= $item->quantity %><%= form_widget("cart#quantity.$i") %><%= form_error("cart#item.$i.quantity") %>
                  | <%= $item->subtotal %>
+                <div class="cart-item-control">
+                    <span data-action="<%= url_for 'RN_cart_delete' %>" data-name="target_item_id" data-value="<%= $item->id %>">
+                        <%= link_to '#' => ( name => "button.delete.$i", class => 'btn btn-link submit-post' ) => begin %>
+                            Delete
+                        <% end %>
+                    </span>
+                    <i class="separater-icon">|</i>
+                    <%= button "button.save-for-later.$i" => ( type => 'button', class => 'btn btn-link' ) => begin %>
+                        Save for later
+                    <% end %>
+                </div>
             </li>
         % } );
     </ul>
