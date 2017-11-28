@@ -2,11 +2,11 @@
 %= javascript begin
     $(function(){
         var token = '<%= csrf_token %>';
-        $('.submit-post').click(function(){
+        $('a.submit-post').click(function(){
             var $this = $(this);
             var $parent = $this.parent();
             var $form = $this.parents('form');
-            $form.attr( 'action', $parent.data('action') );
+            $form.attr( 'action', $this.attr('href') );
             $('<input>').attr({
                 type:  'hidden',
                 name:  'csrf_token',
@@ -14,8 +14,8 @@
             }).appendTo($form);
             $('<input>').attr({
                 type:  'hidden',
-                name:  $parent.data('name'),
-                value: $parent.data('value')
+                name:  $this.data('name'),
+                value: $this.data('value')
             }).appendTo($form);
             $form.submit();
             return false;
