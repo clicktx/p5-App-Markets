@@ -1,11 +1,17 @@
 %= javascript 'https://code.jquery.com/jquery-3.2.1.min.js', integrity => "sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=", crossorigin => "anonymous"
 %= javascript begin
     $(function(){
+        var token = '<%= csrf_token %>';
         $('.submit-post').click(function(){
             var $this = $(this);
             var $parent = $this.parent();
             var $form = $this.parents('form');
             $form.attr( 'action', $parent.data('action') );
+            $('<input>').attr({
+                type:  'hidden',
+                name:  'csrf_token',
+                value: token
+            }).appendTo($form);
             $('<input>').attr({
                 type:  'hidden',
                 name:  $parent.data('name'),
