@@ -23,6 +23,8 @@ sub duplicate_product {
     my ( $self, $product_id ) = @_;
 
     my $entity = $self->controller->factory('product')->build($product_id);
+    return unless $entity->has_data;
+
     my $title  = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
     my $i      = $self->resultset->search( { title => { like => $title . '%' } } )->count + 1;
     $entity->title( $title . $i );
@@ -46,6 +48,8 @@ sub new_product {
     return $self->resultset->create( { title => $title } );
 }
 
+# NOTE: 実際の動作がdelete相当となっている。method名変更するか論理削除にするか。
+# [”delete”と”remove”の使い分けについて | SDNA ローカライズチームブログ](http://www.sonydna.com/sdna/solution/pr_loc/blog/20160511.html)
 sub remove_product {
     my ( $self, $product_id ) = @_;
 
@@ -101,7 +105,7 @@ Return: Array ou Array refference.
 
 Duplicate from C<$product_id>.
 
-Return L<Yetie::Schema::Result::Product> object.
+Return L<Yetie::Schema::Result::Product> object or C<undefined>.
 
 =head2 C<new_product>
 

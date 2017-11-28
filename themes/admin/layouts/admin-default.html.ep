@@ -15,5 +15,6 @@
         <footer>
             <%= include 'admin/footer' %>
         </footer>
+        <%= include 'common/java_script' %>
     </body>
 </html>

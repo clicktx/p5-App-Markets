@@ -65,9 +65,9 @@ sub add_admin_routes {
             my $product = $r->any('/product')->to( controller => 'admin-product' )->name('RN_admin_product');
 
             # NOTE: create, delete, duplicate はPOST requestのみにするべき
-            $product->any('/create')->to('#create')->name('RN_admin_product_create');
-            $product->any('/:product_id/delete')->to('#delete')->name('RN_admin_product_delete');
-            $product->any('/:product_id/duplicate')->to('#duplicate')->name('RN_admin_product_duplicate');
+            $product->post('/create')->to('#create')->name('RN_admin_product_create');
+            $product->post('/:product_id/delete')->to('#delete')->name('RN_admin_product_delete');
+            $product->post('/:product_id/duplicate')->to('#duplicate')->name('RN_admin_product_duplicate');
             $product->any('/:product_id/edit')->to('#edit')->name('RN_admin_product_edit');
             $product->any('/:product_id/edit/category')->to('#category')->name('RN_admin_product_category');
         }

@@ -4,7 +4,7 @@
 <h1><%= title %></h1>
 
 <ul>
-    <li><%= link_to __('Add New Product') => 'RN_admin_product_create' %></li>
+    <li><%= link_to 'RN_admin_product_create' => ( class => 'submit-post' ) => begin %><%= __('Add New Product') %><% end %></li>
 </ul>
 
 <%= form_for 'RN_admin_products' => ( method => 'GET' ) => begin %>
@@ -15,18 +15,19 @@
 <h2><%= __('Products') %></h2>
 
 <ul>
-% $products->each( sub {
-    % my $product = shift;
-    <li>
-        <%= link_to 'RN_admin_product_edit' => { product_id => $product->id } => begin %>
-            <%= $product->title %>
-        <% end %>
-         - <%= $product->description %> <%= $product->price %>
-        [<%= link_to __('Edit') => 'RN_admin_product_edit' => { product_id => $product->id } %>]
-        [<%= link_to __('Duplicate') => 'RN_admin_product_duplicate' => { product_id => $product->id } %>]
-        [<%= link_to __('Delete') => 'RN_admin_product_delete' => { product_id => $product->id } %>]
-    </li>
-% });
+    % $products->each( sub {
+        % my $product = shift;
+        % my $id = $product->id;
+        <li>
+            <%= link_to 'RN_admin_product_edit' => { product_id => $id } => begin %>
+                <%= $product->title %>
+            <% end %>
+             - <%= $product->description %> <%= $product->price %>
+            [<%= link_to 'RN_admin_product_edit' => { product_id => $id } =>begin %><%= __('Edit') %><% end %>]
+            [<%= link_to 'RN_admin_product_duplicate' => { product_id => $id } => ( class => 'submit-post' ) => begin %><%= __('Duplicate') %><% end %>]
+            [<%= link_to 'RN_admin_product_delete' => { product_id => $id } => ( class => 'submit-post' ) => begin %><%= __('Delete') %><% end %>]
+        </li>
+    % });
 </ul>
 
 <%= include 'admin/component/pagination' %>

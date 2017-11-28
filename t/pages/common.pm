@@ -28,12 +28,17 @@ sub admin_loged_in {
 }
 
 sub make_path {
+    my ( $self, $route, $args ) = @_;
+    return $route->is_endpoint ? $route->render($args) : $self->make_path( $route->children );
+}
+
+sub make_paths {
     my ( $self, $routes, $args ) = @_;
 
     my @paths;
     foreach my $r ( @{$routes} ) {
         if ( $r->is_endpoint ) { push @paths, $r->render($args) }
-        else                   { $self->make_path( $r->children ) }
+        else                   { $self->make_paths( $r->children ) }
     }
     return \@paths;
 }

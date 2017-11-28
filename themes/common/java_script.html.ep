@@ -1,0 +1,26 @@
+%= javascript 'https://code.jquery.com/jquery-3.2.1.min.js', integrity => "sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=", crossorigin => "anonymous"
+%= javascript begin
+    $(function(){
+        var token = '<%= csrf_token %>';
+        $('a.submit-post').click( function(){
+            var $this = $(this);
+            var $form = $('<form>').attr({
+                action: $this.attr('href'),
+                method: 'POST',
+            });
+            $('<input>').attr({
+                type:  'hidden',
+                name:  'csrf_token',
+                value: token
+            }).appendTo($form);
+            $('<input>').attr({
+                type:  'hidden',
+                name:  $this.data('name'),
+                value: $this.data('value')
+            }).appendTo($form);
+            $('body').append($form);
+            $form.submit();
+            return false;
+        });
+    });
+% end

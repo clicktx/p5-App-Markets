@@ -24,16 +24,15 @@ sub delete {
 
     return $delete_product
       ? $self->redirect_to('RN_admin_products')
-      : $self->reply->exception( $self->__('Failed to delete product.') );
+      : $self->reply->not_found();
 }
 
 sub duplicate {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    $self->service('product')->duplicate_product($product_id);
-
-    return $self->redirect_to('RN_admin_products');
+    my $result     = $self->service('product')->duplicate_product($product_id);
+    return $result ? $self->redirect_to('RN_admin_products') : $self->reply->not_found();
 }
 
 sub edit {
@@ -41,6 +40,7 @@ sub edit {
 
     my $product_id = $self->stash('product_id');
     my $entity     = $self->factory('product')->build($product_id);
+    return $self->reply->not_found() unless $entity->has_data;
 
     # Init form
     my $form = $self->form('admin-product');
@@ -62,8 +62,7 @@ sub category {
 
     my $product_id = $self->stash('product_id');
     my $entity     = $self->factory('product')->build($product_id);
-
-    # NOTE: 存在しないproduct_idの場合はエラーにする
+    return $self->reply->not_found() unless $entity->has_data;
 
     # Init form
     my $form = $self->form('admin-product');
