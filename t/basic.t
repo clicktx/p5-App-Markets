@@ -18,7 +18,7 @@ subtest 'admin page' => sub {
 subtest 'utility' => sub {
     use_ok 'Yetie::Util';
     my $themes = Yetie::Util::directories( 'themes',
-        { ignore => [ 'default', 'admin' ] } );
+        { ignore => [ 'admin', 'common', 'default' ] } );
     is_deeply $themes, ['mytheme'], 'loading mytheme';
 
     my $addons = Yetie::Util::directories('addons');
