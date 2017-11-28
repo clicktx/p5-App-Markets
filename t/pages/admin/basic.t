@@ -11,7 +11,7 @@ sub t01_not_logedin_request : Tests() {
 
     $t->ua->max_redirects(0);
 
-    my $paths = $self->make_path( $self->app->routes->find('RN_admin_bridge')->children, {} );
+    my $paths = $self->make_paths( $self->app->routes->find('RN_admin_bridge')->children, {} );
     foreach my $path ( @{$paths} ) {
         $t->get_ok($path)->status_is( 302, 'right redirect' );
     }
