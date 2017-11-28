@@ -24,7 +24,7 @@ sub delete {
 
     return $delete_product
       ? $self->redirect_to('RN_admin_products')
-      : $self->reply->exception( $self->__('Failed to delete product.') );
+      : $self->reply->not_found();
 }
 
 sub duplicate {
