@@ -27,6 +27,11 @@ sub admin_loged_in {
     ok $self->server_session->staff_id, 'right staff loged in';
 }
 
+sub make_path {
+    my ( $self, $route, $args ) = @_;
+    return $route->is_endpoint ? $route->render($args) : $self->make_path( $route->children );
+}
+
 sub make_paths {
     my ( $self, $routes, $args ) = @_;
 
