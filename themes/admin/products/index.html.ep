@@ -14,8 +14,7 @@
 
 <h2><%= __('Products') %></h2>
 
-<form id="admin-product" method="post">
-    <ul>
+<ul>
     % $products->each( sub {
         % my $product = shift;
         % my $id = $product->id;
@@ -29,7 +28,6 @@
             [<%= link_to 'RN_admin_product_delete' => { product_id => $id } => ( class => 'submit-post' ) => begin %><%= __('Delete') %><% end %>]
         </li>
     % });
-    </ul>
-</form>
+</ul>
 
 <%= include 'admin/component/pagination' %>
