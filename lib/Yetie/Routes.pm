@@ -14,79 +14,63 @@ sub register {
 # Routes for Admin
 sub add_admin_routes {
     my ( $self, $app ) = @_;
-
     my $r = $app->routes->any( $app->pref('admin_uri_prefix') )->to( namespace => 'Yetie::Controller' );
 
-    # Not required authorization Routes
-    {
-        my $login = $r->any('login')->to( controller => 'admin-staff' );
-        $login->any('/')->to('#login')->name('RN_admin_login');
-    }
+    # Not authorization required
+    my $login = $r->any('login')->to( controller => 'admin-staff' );
+    $login->any('/')->to('#login')->name('RN_admin_login');
 
-    # Required authorization Routes
+    # Authorization required
     $r = $r->under->to('admin-staff#authorize')->name('RN_admin_bridge');
+
+    # Dashboard
+    $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
+    $r->get('/dashboard')->to('admin-dashboard#index')->name('RN_admin_dashboard');
+
+    # Logout
+    $r->get('/logout')->to('admin-staff#logout')->name('RN_admin_logout');
+
+    # Settings
+    my $settings = $r->any('/settings')->to( controller => 'admin-setting' );
+    $settings->get('/')->to('#index')->name('RN_admin_settings');
     {
-        # Dashboard
-        $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
-        $r->get('/dashboard')->to('admin-dashboard#index')->name('RN_admin_dashboard');
-
-        # Logout
-        $r->get('/logout')->to('admin-staff#logout')->name('RN_admin_logout');
-
-        # Settings
-        {
-            my $settings = $r->any('/settings')->to( controller => 'admin-setting' );
-            $settings->get('/')->to('#index')->name('RN_admin_settings');
-            {
-                my $addons = $settings->any('/addon')->to( controller => 'admin-addon' );
-                $addons->get('/:action')->to('addon#')->name('RN_admin_settings_addon_action');
-                $addons->get('/')->to('#index')->name('RN_admin_settings_addon');
-            }
-        }
-
-        # Preferences
-        {
-            my $pref = $r->any('/preferences')->to( controller => 'admin-preference' );
-            $pref->any('/')->to('#index')->name('RN_admin_preferences');
-        }
-
-        # Category
-        {
-            my $category = $r->any('/category')->to( controller => 'admin-category' );
-            $category->get('/')->to('#index')->name('RN_admin_category');
-            $category->post('/')->to('#index')->name('RN_admin_category_create');
-        }
-
-        # Products
-        $r->any('/products')->to('admin-products#index')->name('RN_admin_products');
-
-        # Product
-        {
-            my $product = $r->any('/product')->to( controller => 'admin-product' )->name('RN_admin_product');
-
-            # NOTE: create, delete, duplicate はPOST requestのみにするべき
-            $product->post('/create')->to('#create')->name('RN_admin_product_create');
-            $product->post('/:product_id/delete')->to('#delete')->name('RN_admin_product_delete');
-            $product->post('/:product_id/duplicate')->to('#duplicate')->name('RN_admin_product_duplicate');
-            $product->any('/:product_id/edit')->to('#edit')->name('RN_admin_product_edit');
-            $product->any('/:product_id/edit/category')->to('#category')->name('RN_admin_product_category');
-        }
-
-        # Orders
-        $r->any('/orders')->to('admin-orders#index')->name('RN_admin_orders');
-
-        # Order
-        {
-            # NOTE: create, delete, duplicate はPOST requestのみにするべき
-            my $order = $r->any('/order')->to( controller => 'admin-order' );
-            $order->get('/:id')->to('#index')->name('RN_admin_order');
-            $order->any('/:id/edit')->to('#edit')->name('RN_admin_order_edit');
-            $order->post('/delete')->to('#delete')->name('RN_admin_order_delete');
-
-            # $order->any('/create')->to('#create')->name('RN_admin_order_create');
-            $order->any('/:id/duplicate')->to('#duplicate')->name('RN_admin_order_duplicate');
-        }
+        my $addons = $settings->any('/addon')->to( controller => 'admin-addon' );
+        $addons->get('/:action')->to('addon#')->name('RN_admin_settings_addon_action');
+        $addons->get('/')->to('#index')->name('RN_admin_settings_addon');
     }
+
+    # Preferences
+    my $pref = $r->any('/preferences')->to( controller => 'admin-preference' );
+    $pref->any('/')->to('#index')->name('RN_admin_preferences');
+
+    # Category
+    my $category = $r->any('/category')->to( controller => 'admin-category' );
+    $category->get('/')->to('#index')->name('RN_admin_category');
+    $category->post('/')->to('#index')->name('RN_admin_category_create');
+
+    # Products
+    $r->any('/products')->to('admin-products#index')->name('RN_admin_products');
+
+    # Product
+    my $product = $r->any('/product')->to( controller => 'admin-product' )->name('RN_admin_product');
+    $product->post('/create')->to('#create')->name('RN_admin_product_create');
+    $product->post('/:product_id/delete')->to('#delete')->name('RN_admin_product_delete');
+    $product->post('/:product_id/duplicate')->to('#duplicate')->name('RN_admin_product_duplicate');
+    $product->any('/:product_id/edit')->to('#edit')->name('RN_admin_product_edit');
+    $product->any('/:product_id/edit/category')->to('#category')->name('RN_admin_product_category');
+
+    # Orders
+    $r->any('/orders')->to('admin-orders#index')->name('RN_admin_orders');
+
+    # Order
+    # NOTE: create, delete, duplicate はPOST requestのみにするべき
+    my $order = $r->any('/order')->to( controller => 'admin-order' );
+    $order->get('/:id')->to('#index')->name('RN_admin_order');
+    $order->any('/:id/edit')->to('#edit')->name('RN_admin_order_edit');
+    $order->post('/delete')->to('#delete')->name('RN_admin_order_delete');
+
+    # $order->any('/create')->to('#create')->name('RN_admin_order_create');
+    $order->any('/:id/duplicate')->to('#duplicate')->name('RN_admin_order_duplicate');
 }
 
 # Routes for Catalog
@@ -105,14 +89,12 @@ sub add_catalog_routes {
     $r->post('/cart/delete')->to('cart#delete')->name('RN_cart_delete');
 
     # Checkout
-    {
-        my $checkout = $r->any('/checkout')->to( controller => 'checkout' );
-        $checkout->any('/')->to('#index')->name('RN_checkout');
-        $checkout->any('/address')->to('#address')->name('RN_checkout_address');
-        $checkout->any('/shipping')->to('#shipping')->name('RN_checkout_shipping');
-        $checkout->any('/confirm')->to('#confirm')->name('RN_checkout_confirm');
-        $checkout->get('/complete')->to('#complete')->name('RN_checkout_complete');
-    }
+    my $checkout = $r->any('/checkout')->to( controller => 'checkout' );
+    $checkout->any('/')->to('#index')->name('RN_checkout');
+    $checkout->any('/address')->to('#address')->name('RN_checkout_address');
+    $checkout->any('/shipping')->to('#shipping')->name('RN_checkout_shipping');
+    $checkout->any('/confirm')->to('#confirm')->name('RN_checkout_confirm');
+    $checkout->get('/complete')->to('#complete')->name('RN_checkout_complete');
 
     # For Customers
     $r->get('/register')->to('register#index')->name('RN_customer_create_account');
@@ -121,7 +103,7 @@ sub add_catalog_routes {
     $r->any('/login')->to('account#login')->name('RN_customer_login');
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
     {
-        # Required authorization Routes
+        # Authorization required
         my $account = $r->under('/account')->to('account#authorize')->name('RN_customer_bridge');
         $account->get('/home')->to('account#home')->name('RN_customer_home');
         $account->get('/orders')->to('account#orders')->name('RN_customer_orders');
