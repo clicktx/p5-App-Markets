@@ -65,7 +65,7 @@ sub category {
     return $self->reply->not_found() unless $entity->has_data;
 
     # Init form
-    my $form = $self->form('admin-product');
+    my $form = $self->form('admin-product-category');
 
     my $category_ids = [];
     $entity->product_categories->each( sub { push @{$category_ids}, $_->category_id } );
