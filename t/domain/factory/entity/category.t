@@ -10,6 +10,7 @@ subtest 'found category' => sub {
     my $e = $f->build( 1, { page => 1, rows => 2 } );
     is $e->id,    1,        'right ID';
     is $e->title, 'Sports', 'right title';
+    is $e->parent_id, undef, 'right parent_id';
     isa_ok $e->breadcrumb, 'Yetie::Domain::Collection';
 
     # NOTE: entityを生成していない。

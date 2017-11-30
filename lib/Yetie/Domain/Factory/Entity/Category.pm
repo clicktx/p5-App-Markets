@@ -7,9 +7,11 @@ sub build {
     my $category = $self->app->schema->resultset('Category')->find($category_id);
     return $self->app->factory('entity-category')->create( {} ) unless $category;
 
+    my $parent_id = $category->parent ? $category->parent->id : undef;
     my $data = {
-        id    => $category->id,
-        title => $category->title,
+        id        => $category->id,
+        parent_id => $parent_id,
+        title     => $category->title,
     };
 
     # breadcrumb
