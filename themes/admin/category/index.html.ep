@@ -25,14 +25,15 @@
 <h1>Create Category</h1>
 <%= form_for 'RN_admin_category_create' => ( method => 'POST' ) => begin %>
     <div class="">
-        <%= form_label 'admin-category#parent_id' %>
-        <%= form_widget 'admin-category#parent_id' %>
+        <%= form_field 'admin-category#parent_id' %>
+        <%= form_label %>
+        <%= form_widget %>
     </div>
     <div class="">
         <%= form_field 'admin-category#title' %>
-        <%= form_label 'admin-category#title' %>
-        <%= form_widget 'admin-category#title' %>
-        <%= form_error 'admin-category#title' %>
+        <%= form_label %>
+        <%= form_widget %>
+        <%= form_error %>
     </div>
     <%= csrf_field %>
     <%= submit_button 'Create' %>
