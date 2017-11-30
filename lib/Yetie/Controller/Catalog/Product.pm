@@ -30,7 +30,7 @@ sub index {
     );
 
     # 404
-    return $self->reply->not_found unless $product->title;
+    return $self->reply->not_found unless $product->has_data;
 
     my $validation = $self->validation;
     return $self->render() unless $validation->has_data;

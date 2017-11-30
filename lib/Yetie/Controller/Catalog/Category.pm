@@ -14,7 +14,7 @@ sub index {
     my $page_no     = $form->param('page') || 1;
     my $per_page    = $form->param('per_page') || 3;
     my $category    = $self->factory('category')->build( $category_id, { page => $page_no, rows => $per_page } );
-    return $self->reply->not_found() unless $category->id;
+    return $self->reply->not_found() unless $category->has_data;
 
     # widget category tree
     my $category_tree = $self->service('category_tree')->get_entity();
