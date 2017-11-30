@@ -22,4 +22,11 @@ sub t01_index : Tests() {
     $t->post_ok( '/admin/category', form => $post_data )->status_is( 409, 'right title same name exists' );
 }
 
+sub t02_edit : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $t->get_ok('/admin/category/1/edit')->status_is(200);
+}
+
 __PACKAGE__->runtests;

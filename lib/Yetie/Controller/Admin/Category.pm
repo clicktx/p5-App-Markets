@@ -31,4 +31,9 @@ sub index {
     $self->redirect_to('RN_admin_category');
 }
 
+sub edit {
+    my $self = shift;
+    return $self->render();
+}
+
 1;

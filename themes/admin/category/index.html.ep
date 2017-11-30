@@ -8,12 +8,16 @@
 % my @root_nodes = $rs->search( { level => 0 } );
 % foreach my $node (@root_nodes) {
     <div class="">
-        id=<%= $node->id %> field1=<%= $node->title %>
+        <%= link_to 'RN_admin_category_edit' => { category_id => $node->id } => begin %>
+            id=<%= $node->id %> field1=<%= $node->title %>
+        <% end %>
     </div>
     % my $desc_rs = $node->descendants;
     % while ( my $desc = $desc_rs->next ) {
         <div class="">
-            <%= '**' x $desc->level %> id=<%= $desc->id %> field1=<%= $desc->title %>
+            <%= link_to 'RN_admin_category_edit' => { category_id => $desc->id } => begin %>
+                <%= '**' x $desc->level %> id=<%= $desc->id %> field1=<%= $desc->title %>
+            <% end %>
         </div>
     % }
 % }
