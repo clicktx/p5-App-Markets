@@ -27,6 +27,7 @@ sub t02_edit : Tests() {
     my $t    = $self->t;
 
     $t->get_ok('/admin/category/1/edit')->status_is(200);
+    $t->get_ok('/admin/category/999/edit')->status_is(404);
 }
 
 __PACKAGE__->runtests;
