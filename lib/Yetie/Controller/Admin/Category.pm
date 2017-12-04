@@ -32,6 +32,21 @@ sub index {
 
 sub edit {
     my $self = shift;
+
+    my $category_id = $self->stash('category_id');
+    my $entity      = $self->factory('category')->build($category_id);
+    return $self->reply->not_found() unless $entity->has_data;
+
+    my $form = $self->form('admin-category');
+    my $rs   = $self->app->schema->resultset('Category');
+    my $tree = $rs->get_category_choices;
+    $form->field('parent_id')->choices($tree);
+    $form->fill_in($entity);
+
+    return $self->render() unless $form->has_data or $form->validate;
+
+    # update
+
     return $self->render();
 }
 
