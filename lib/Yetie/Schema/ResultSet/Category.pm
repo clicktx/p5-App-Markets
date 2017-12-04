@@ -33,12 +33,13 @@ sub get_category_choices {
     my ( $self, $ids ) = ( shift, shift || [] );
     $ids = [$ids] unless ref $ids;
 
-    my @trees;
+    my @tree;
     my @root_nodes = $self->search( { level => 0 } );
     foreach my $root (@root_nodes) {
-        push @trees, @{ _tree( $root, $ids ) };
+        push @tree, @{ _tree( $root, $ids ) };
     }
-    return \@trees;
+    unshift @tree, [ 'None(root)' => 0 ];
+    return \@tree;
 }
 
 sub has_title {
