@@ -14,11 +14,14 @@ sub fill_in {
         my $value = $entity->$name;
         next unless defined $value;
 
-        if ( !ref $value ) {
+        if ( ref $value eq 'ARRAY' ) {
+            _string( $field, $_ ) for @{$value};
+        }
+        elsif ( !ref $value ) {
             _string( $field, $value );
         }
         else {
-            # 複数の場合。配列、collection、等
+            die 'Illegal type: ' . ref $value;
         }
 
     }
