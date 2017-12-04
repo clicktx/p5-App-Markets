@@ -2,6 +2,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
 use t::Util;
+use Mojo::Collection qw(c);
 
 my $t = Test::Mojo->new('App');
 use_ok 'Yetie::Form::Base';
@@ -9,11 +10,11 @@ use_ok 'Yetie::Form::Base';
 subtest 'basic' => sub {
     my $f = Yetie::Form::Base->new('test');
     isa_ok $f->controller, 'Mojolicious::Controller';
-    isa_ok $f->field('email'),   'Yetie::Form::Field';
-    isa_ok $f->fieldset,   'Yetie::Form::FieldSet::Test';
+    isa_ok $f->field('email'), 'Yetie::Form::Field';
+    isa_ok $f->fieldset, 'Yetie::Form::FieldSet::Test';
     ok !$f->is_validated, 'right is_validated';
-    ok $f->name_space, 'right name_space';
-    isa_ok $f->tag_helpers,   'Yetie::Form::TagHelpers';
+    ok $f->name_space,      'right name_space';
+    isa_ok $f->tag_helpers, 'Yetie::Form::TagHelpers';
 };
 
 subtest 'with controller' => sub {
@@ -32,6 +33,106 @@ subtest 'has_data' => sub {
     $f = Yetie::Form::Base->new( 'test', controller => $c );
     $c->req->params->pairs( [ email => 'a@b.c', ] );
     is $f->has_data, 1, 'right has data';
+};
+
+subtest 'fill_in' => sub {
+    my $c = $t->app->build_controller;
+    my $f = Yetie::Form::Base->new( 'test', controller => $c );
+    my $e = Yetie::Domain::Factory->new('test')->create_entity();
+
+    # choice singular
+    $f->field('favorite_color')->type('choice');
+    $f->field('favorite_color')->multiple(0);
+    $f->field('favorite_color')->expanded(0);
+    $f->field('favorite_color')->choices( [qw(red green blue)] );
+    $e->favorite_color('green');
+    $f->fill_in($e);
+    is_deeply $f->field('favorite_color')->choices, [ 'red', [ green => 'green', choiced => 1 ], 'blue' ],
+      'right choice singular';
+
+    $f->field('favorite_color')->choices( [ 'red', [ Green => 'green' ], 'blue' ] );
+    $f->fill_in($e);
+    is_deeply $f->field('favorite_color')->choices, [ 'red', [ Green => 'green', choiced => 1 ], 'blue' ],
+      'right choice singular';
+
+    $f->field('favorite_color')
+      ->choices( [ c( Warm => [ [ Red => 'red' ], [ Yellow => 'yellow' ] ] ), c( Cool => [ 'green', 'blue' ] ) ] );
+    $f->fill_in($e);
+    is_deeply $f->field('favorite_color')->choices,
+      [
+        c( Warm => [ [ Red => 'red' ], [ Yellow => 'yellow' ] ] ),
+        c( Cool => [ [ green => 'green', choiced => 1 ], 'blue' ] )
+      ],
+      'right choice singular';
+
+    $f->field('favorite_color')
+      ->choices( [ c( Warm => [ [ Red => 'red' ], [ Yellow => 'yellow' ] ] ), c( Cool => [ 'green', 'blue' ] ) ] );
+    $e->favorite_color('yellow');
+    $f->fill_in($e);
+    is_deeply $f->field('favorite_color')->choices,
+      [ c( Warm => [ [ Red => 'red' ], [ Yellow => 'yellow', choiced => 1 ] ] ), c( Cool => [ 'green', 'blue' ] ) ],
+      'right choice singular';
+
+    # choice multiple
+    $f->field('favorite_color')->multiple(1);
+    $f->field('favorite_color')->expanded(0);
+    $f->field('favorite_color')->choices( [qw(red green blue)] );
+    $e->favorite_color( [ 'green', 'blue' ] );
+    $f->fill_in($e);
+    is_deeply $f->field('favorite_color')->choices,
+      [ 'red', [ green => 'green', choiced => 1 ], [ blue => 'blue', choiced => 1 ] ], 'right choice multiple';
+
+    $f->field('favorite_color')->choices( [ 'red', [ Green => 'green' ], 'blue' ] );
+    $f->fill_in($e);
+    is_deeply $f->field('favorite_color')->choices,
+      [ 'red', [ Green => 'green', choiced => 1 ], [ blue => 'blue', choiced => 1 ] ], 'right choice multiple';
+
+    $f->field('favorite_color')
+      ->choices( [ c( Warm => [ [ Red => 'red' ], [ Yellow => 'yellow' ] ] ), c( Cool => [ 'green', 'blue' ] ) ] );
+    $f->fill_in($e);
+    is_deeply $f->field('favorite_color')->choices,
+      [
+        c( Warm => [ [ Red => 'red' ], [ Yellow => 'yellow' ] ] ),
+        c( Cool => [ [ green => 'green', choiced => 1 ], [ blue => 'blue', choiced => 1 ] ] )
+      ],
+      'right choice multiple';
+
+    $f->field('favorite_color')
+      ->choices( [ c( Warm => [ [ Red => 'red' ], [ Yellow => 'yellow' ] ] ), c( Cool => [ 'green', 'blue' ] ) ] );
+    $e->favorite_color( [ 'yellow', 'green' ] );
+    $f->fill_in($e);
+    is_deeply $f->field('favorite_color')->choices,
+      [
+        c( Warm => [ [ Red => 'red' ], [ Yellow => 'yellow', choiced => 1 ] ] ),
+        c( Cool => [ [ green => 'green', choiced => 1 ], 'blue' ] )
+      ],
+      'right choice multiple';
+
+    # select
+    $f->field('luky_number')->type('select');
+    $f->field('luky_number')->choices( [qw(1 2 3)] );
+    $e->luky_number(2);
+    $f->fill_in($e);
+    is_deeply $f->field('luky_number')->choices, [ 1, [ 2 => 2, choiced => 1 ], 3 ], 'right select';
+
+    # radio
+    $f->field('luky_number')->type('radio');
+    $f->field('luky_number')->choices( [qw(1 2 3)] );
+    $e->luky_number(2);
+    $f->fill_in($e);
+    is_deeply $f->field('luky_number')->choices, [ 1, [ 2 => 2, choiced => 1 ], 3 ], 'right radio';
+
+    # checkbox
+    $f->field('luky_number')->type('checkbox');
+    $f->field('luky_number')->choices( [qw(1 2 3)] );
+    $e->luky_number(2);
+    $f->fill_in($e);
+    is_deeply $f->field('luky_number')->choices, [ 1, [ 2 => 2, choiced => 1 ], 3 ], 'right checkbox';
+
+    # exception
+    $e->luky_number( c( 2, 3 ) );
+    eval { $f->fill_in($e) };
+    ok $@, 'right exception';
 };
 
 subtest 'parameters' => sub {

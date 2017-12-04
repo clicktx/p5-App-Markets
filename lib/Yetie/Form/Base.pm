@@ -2,6 +2,8 @@ package Yetie::Form::Base;
 use Mojo::Base -base;
 use Carp qw(croak);
 use CGI::Expand qw/expand_hash/;
+use Scalar::Util qw(blessed);
+use Mojo::Collection qw(c);
 use Mojolicious::Controller;
 use Yetie::Util qw(load_class);
 use Yetie::Parameters;
@@ -14,6 +16,29 @@ has name_space   => 'Yetie::Form::FieldSet';
 has tag_helpers  => sub { Yetie::Form::TagHelpers->new( shift->controller ) };
 
 sub field { shift->fieldset->field(@_) }
+
+sub fill_in {
+    my ( $self, $entity ) = @_;
+
+    my @names = $self->fieldset->field_keys;
+    foreach my $name (@names) {
+        next unless $entity->can($name);
+
+        my $field = $self->fieldset->field($name);
+        my $value = $entity->$name;
+        next unless defined $value;
+
+        if ( ref $value eq 'ARRAY' ) {
+            _fill_field( $field, $_ ) for @{$value};
+        }
+        elsif ( !ref $value ) {
+            _fill_field( $field, $value );
+        }
+        else {
+            die 'Illegal type: ' . ref $value;
+        }
+    }
+}
 
 sub new {
     my ( $class, $ns ) = ( shift, shift );
@@ -142,6 +167,35 @@ sub _fieldset {
     return $class->new;
 }
 
+sub _fill_field {
+    my ( $field, $value ) = @_;
+
+    if ( $field->type =~ /^(choice|select|checkbox|radio)$/ ) {
+        $field->choices( _fill_choice_field( $field->choices, $value ) );
+    }
+    else { $field->default_value($value) }
+}
+
+sub _fill_choice_field {
+    my ( $choices, $value ) = @_;
+
+    foreach my $v ( @{$choices} ) {
+        if ( blessed $v && $v->isa('Mojo::Collection') ) {
+            my ( $label, $values, @attrs ) = @{$v};
+
+            $values = _fill_choice_field( $values, $value );
+            $v = c( $label, $values, @attrs );
+        }
+        elsif ( ref $v eq 'ARRAY' ) {
+            push @{$v}, ( choiced => 1 ) if $v->[1] eq $value;
+        }
+        else {
+            $v = [ $v => $v, choiced => 1 ] if $v eq $value;
+        }
+    }
+    return $choices;
+}
+
 1;
 __END__
 =encoding utf8
@@ -203,6 +257,12 @@ L<Yetie::Form::Base> inherits all methods from L<Mojo::Base> and implements the 
     my $field = $form->fieldset->field('field_name');
 
 Return L<Yetie::Form::Field> object.
+
+=head2 C<fill_in>
+
+    $form->fill_in($entity);
+
+Fill in form default value from L<Yetie::Domain::Entity> object.
 
 =head2 C<has_data>
 
