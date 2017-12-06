@@ -15,7 +15,6 @@ has_field 'title' => (
 has_field 'parent_id' => (
     type     => 'choice',
     label    => 'Parent Category',
-    required => 1,
     expanded => 0,
     multiple => 0,
     choices  => [],
