@@ -299,27 +299,27 @@ This method should be called after the L</validate> method.
 
 =head2 C<render_error>
 
-    $form->render_error('email');
+    say $form->render_error('email');
 
 If `$c->validation` has an error message it rendering HTML error message block.
 
 =head2 C<render_help>
 
-    $form->render_help('email');
+    say $form->render_help('email');
 
 Rendering HTML help block.
 
 =head2 C<render_label>
 
-    $form->render_label('email');
-    $form->render_label( 'email', class => 'foo' );
+    say $form->render_label('email');
+    say $form->render_label( 'email', class => 'foo' );
 
 Rendering HTML label tag.
 
 =head2 C<render>
 
-    $form->render('email');
-    $form->render('email', value => 'foo', placeholder => 'bar' );
+    say $form->render('email');
+    say $form->render('email', value => 'foo', placeholder => 'bar' );
 
 Rendering HTML form widget(field or fields).
 
