@@ -106,8 +106,9 @@ sub scope_param { shift->params->every_param(shift) }
 
 sub validate {
     my $self     = shift;
-    my $v        = $self->controller->validation;
-    my $names    = $self->controller->req->params->names;
+    my $c        = $self->controller;
+    my $v        = $c->validation;
+    my $names    = $c->req->params->names;
     my $fieldset = $self->fieldset;
 
     foreach my $field_key ( @{ $fieldset->field_keys } ) {
@@ -124,13 +125,13 @@ sub validate {
             foreach my $key (@match) {
                 $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
                 $self->_do_check($_) for @$checks;
-                _replace_req_param( $self->controller, $key );
+                _replace_req_param( $c, $key );
             }
         }
         else {
             $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
             $self->_do_check($_) for @$checks;
-            _replace_req_param( $self->controller, $field_key );
+            _replace_req_param( $c, $field_key );
         }
     }
     $self->is_validated(1);
@@ -148,13 +149,14 @@ sub _replace_req_param {
 
 sub _do_check {
     my $self = shift;
+    my $c    = $self->controller;
+    my $v    = $c->validation;
 
-    my $v = $self->controller->validation;
     my ( $check, @args ) = ref $_[0] eq 'ARRAY' ? @{ $_[0] } : $_[0];
     return $v->$check unless @args;
 
     # scalar refference to preference value
-    @args = map { ref $_ eq 'SCALAR' ? $self->controller->pref( ${$_} ) : $_ } @args;
+    @args = map { ref $_ eq 'SCALAR' ? $c->pref( ${$_} ) : $_ } @args;
     return $v->$check(@args);
 }
 
