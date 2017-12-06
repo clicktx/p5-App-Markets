@@ -8,7 +8,7 @@ sub index {
     $self->init_form();
 
     # return $self->render() unless $form->has_data;
-    $form->validate;
+    $form->do_validate;
 
     my $conditions = {
         where    => '',

@@ -18,7 +18,7 @@ sub delete {
     my $form = $self->form('admin-order');
     return $self->render() unless $form->has_data;
 
-    say 'form ok' if $form->validate;
+    say 'form ok' if $form->do_validate;
 
     my $shipment_id = $form->param('id');
 

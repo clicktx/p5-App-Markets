@@ -15,6 +15,40 @@ has is_validated => '0';
 has name_space   => 'Yetie::Form::FieldSet';
 has tag_helpers  => sub { Yetie::Form::TagHelpers->new( shift->controller ) };
 
+sub do_validate {
+    my $self     = shift;
+    my $c        = $self->controller;
+    my $v        = $c->validation;
+    my $names    = $c->req->params->names;
+    my $fieldset = $self->fieldset;
+
+    foreach my $field_key ( @{ $fieldset->field_keys } ) {
+        my $required = $fieldset->schema->{$field_key}->{required};
+        my $filters  = $fieldset->filters($field_key);
+        my $checks   = $fieldset->checks($field_key);
+
+        # multiple field: eg. parameter_name = "favorite_color[]"
+        $field_key .= '[]' if $fieldset->schema($field_key)->{multiple};
+
+        # expanding field: e.g. field_key = "user.[].id" parameter_name = "user.0.id"
+        if ( $field_key =~ m/\.\[\]/ ) {
+            my @match = grep { my $name = $fieldset->_replace_key($_); $field_key eq $name } @{$names};
+            foreach my $key (@match) {
+                $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
+                $self->_do_check($_) for @$checks;
+                _replace_req_param( $c, $key );
+            }
+        }
+        else {
+            $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
+            $self->_do_check($_) for @$checks;
+            _replace_req_param( $c, $field_key );
+        }
+    }
+    $self->is_validated(1);
+    return $v->has_error ? undef : 1;
+}
+
 sub field { shift->fieldset->field(@_) }
 
 sub fill_in {
@@ -58,7 +92,7 @@ sub param {
 
 sub params {
     my $self = shift;
-    croak 'do not call "validate" method' unless $self->is_validated;
+    croak 'do not call "do_validate" method' unless $self->is_validated;
     return $self->{_validated_parameters} if $self->{_validated_parameters};
 
     my $v      = $self->validation;
@@ -103,40 +137,6 @@ sub render {
 }
 
 sub scope_param { shift->params->every_param(shift) }
-
-sub validate {
-    my $self     = shift;
-    my $c        = $self->controller;
-    my $v        = $c->validation;
-    my $names    = $c->req->params->names;
-    my $fieldset = $self->fieldset;
-
-    foreach my $field_key ( @{ $fieldset->field_keys } ) {
-        my $required = $fieldset->schema->{$field_key}->{required};
-        my $filters  = $fieldset->filters($field_key);
-        my $checks   = $fieldset->checks($field_key);
-
-        # multiple field: eg. parameter_name = "favorite_color[]"
-        $field_key .= '[]' if $fieldset->schema($field_key)->{multiple};
-
-        # expanding field: e.g. field_key = "user.[].id" parameter_name = "user.0.id"
-        if ( $field_key =~ m/\.\[\]/ ) {
-            my @match = grep { my $name = $fieldset->_replace_key($_); $field_key eq $name } @{$names};
-            foreach my $key (@match) {
-                $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
-                $self->_do_check($_) for @$checks;
-                _replace_req_param( $c, $key );
-            }
-        }
-        else {
-            $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
-            $self->_do_check($_) for @$checks;
-            _replace_req_param( $c, $field_key );
-        }
-    }
-    $self->is_validated(1);
-    return $v->has_error ? undef : 1;
-}
 
 sub validation { shift->controller->validation }
 
@@ -254,6 +254,13 @@ $controller->validation alias.
 
 L<Yetie::Form::Base> inherits all methods from L<Mojo::Base> and implements the following new ones.
 
+=head2 C<do_validate>
+
+    my $bool = $form->do_validate;
+    say 'Validation failure!' unless $bool;
+
+Return boolean. success return true.
+
 =head2 C<field>
 
     my $field = $form->field('field_name');
@@ -287,7 +294,7 @@ L<Mojolicious::Validator::Validation/has_data>
     my $param = $form->param('favorite[]')
 
 The parameter is a validated values.
-This method should be called after the L</validate> method.
+This method should be called after the L</do_validate> method.
 
 =head2 C<params>
 
@@ -295,7 +302,7 @@ This method should be called after the L</validate> method.
 
 Return L<Mojo::Parameters> object.
 All parameters are validated values.
-This method should be called after the L</validate> method.
+This method should be called after the L</do_validate> method.
 
 =head2 C<render_error>
 
@@ -329,7 +336,7 @@ Rendering HTML form widget(field or fields).
 
 Return hash refference or array refference.
 The parameter is a validated values.
-This method should be called after the L</validate> method.
+This method should be called after the L</do_validate> method.
 
 Get expanded parameter. SEE L<CGI::Expand/expand_hash>
 
@@ -340,13 +347,6 @@ Get expanded parameter. SEE L<CGI::Expand/expand_hash>
 Return L<Mojo::Validator::Validation> object.
 
 Alias $controller->validation
-
-=head2 C<validate>
-
-    my $bool = $form->validate;
-    say 'Validation failure!' unless $bool;
-
-Return boolean. success return true.
 
 =head1 SEE ALSO
 

@@ -29,7 +29,7 @@ sub index {
 
     return $self->render() unless $form->has_data;
 
-    if ( $form->validate ) {
+    if ( $form->do_validate ) {
 
         # Edit cart
         $cart->items->each(
@@ -52,7 +52,7 @@ sub delete {
     my $self = shift;
 
     my $form = $self->form('cart-delete');
-    return $self->reply->exception('Bad request') unless $form->validate;
+    return $self->reply->exception('Bad request') unless $form->do_validate;
 
     # NOTE: 複数配送時の場合はshipping_itemsのitemを削除する必要がありそう（未実装）
     my $target = $form->param('target_item_id');

@@ -19,7 +19,7 @@ sub index {
 
     use DDP;
     my $validation = $self->validation;
-    if ( $form->validate ) {
+    if ( $form->do_validate ) {
 
         # NOTE :
         # filter後の値は$validation->outputに格納されるため、

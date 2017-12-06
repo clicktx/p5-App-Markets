@@ -22,7 +22,7 @@ sub login {
 
     return $self->render() unless $form->has_data;
 
-    return $self->render() unless $form->validate;
+    return $self->render() unless $form->do_validate;
 
     my $email    = $form->param('email');
     my $password = $form->param('password');

@@ -5,12 +5,6 @@
 
 <h1><%= title %></h1>
 <%= form_for 'RN_admin_category_edit' => ( method => 'POST' ) => begin %>
-
-    <div class="">
-        <%= form_field 'admin-category#parent_id' %>
-        <%= form_label %>
-        <%= form_widget %>
-    </div>
     <div class="">
         <%= form_field 'admin-category#title' %>
         <%= form_label %>

@@ -158,9 +158,9 @@ subtest 'parameters' => sub {
     );
 
     eval { my $name = $f->param('name') };
-    ok $@, 'right before validate';
+    ok $@, 'right before do_validate';
 
-    $f->validate;
+    $f->do_validate;
     is $f->param('email'), 'a@b.c', 'right param';
     is_deeply $f->param('favorite_color[]'), ['red'], 'right every param';
     is_deeply $f->scope_param('item'),
@@ -208,7 +208,7 @@ subtest 'render tags with attrs' => sub {
     is_deeply $dom->at('*')->attr->{placeholder}, 'bar', 'right placeholder';
 };
 
-subtest 'validate' => sub {
+subtest 'do_validate' => sub {
     my $c = $t->app->build_controller;
     my $f = Yetie::Form::Base->new( 'test', controller => $c );
     $c->req->params->pairs(
@@ -227,7 +227,7 @@ subtest 'validate' => sub {
             'item.2.name'      => '',
         ]
     );
-    my $result = $f->validate;
+    my $result = $f->do_validate;
     ok !$result, 'right failed validation';
 
     my $v = $f->controller->validation;
@@ -255,11 +255,11 @@ subtest 'validate' => sub {
             'item.2.name'      => '',
         ]
     );
-    $result = $f->validate;
+    $result = $f->do_validate;
     ok $result, 'right validation';
 };
 
-subtest 'validate with filter' => sub {
+subtest 'do_validate with filter' => sub {
     my $c = $t->app->build_controller;
     my $f = Yetie::Form::Base->new( 'test', controller => $c );
     $c->req->params->pairs(
@@ -270,7 +270,7 @@ subtest 'validate with filter' => sub {
             'item.2.name' => ' ccc ',
         ]
     );
-    $f->validate;
+    $f->do_validate;
     my $v = $c->validation;
     is $v->param('email'),       'a@b.c';
     is $v->param('item.0.name'), 'aaa';

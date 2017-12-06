@@ -50,7 +50,7 @@ sub edit {
     $form->field('primary_category')->choices($categories);
     $self->init_form();
 
-    return $self->render() if !$form->has_data or !$form->validate;
+    return $self->render() if !$form->has_data or !$form->do_validate;
 
     # Update data
     $self->service('product')->update_product( $product_id, $form->params->to_hash );
@@ -74,7 +74,7 @@ sub category {
     $form->field('categories')->choices($category_choices);
     $self->init_form();
 
-    return $self->render() if !$form->has_data or !$form->validate;
+    return $self->render() if !$form->has_data or !$form->do_validate;
 
     # Selected categories
     my $category_ids = $form->param('categories[]');

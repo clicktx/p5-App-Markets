@@ -135,7 +135,7 @@ Use C<error_message> method.
 
     # In controller
     my $form = $controller->form('category');
-    return $controller->render() unless $form->validate;
+    return $controller->render() unless $form->do_validate;
 
     # Add or rewrite error message
     $form->field('title')->error_message( custom_error => 'foo bar {0}' );

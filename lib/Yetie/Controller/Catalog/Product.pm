@@ -36,7 +36,7 @@ sub index {
     return $self->render() unless $validation->has_data;
 
     # Add to cart
-    if ( $form->validate ) {
+    if ( $form->do_validate ) {
         $self->service('cart')->add_item( $form->params->to_hash );
 
         $self->flash( ref => $self->req->url->to_string );
