@@ -59,7 +59,14 @@ sub action_before {
     return $self;
 }
 
-sub action_after { }
+sub action_after {
+    my $self = shift;
+
+    my $validation = $self->validation;
+    $" = ',';
+    $self->app->log->debug( 'Form has validation error at', @{ $validation->failed } ) if $validation->has_error;
+    return $self;
+}
 
 sub finalize {
     my $self = shift;
