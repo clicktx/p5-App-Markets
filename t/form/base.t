@@ -46,7 +46,8 @@ subtest 'fill_in' => sub {
     $f->field('favorite_color')->expanded(0);
     $f->field('favorite_color')->choices( [qw(red green blue)] );
     $e->favorite_color('green');
-    $f->fill_in($e);
+    my $result = $f->fill_in($e);
+    isa_ok $result, 'Yetie::Form::Base', 'right return value';
     is_deeply $f->field('favorite_color')->choices, [ 'red', [ green => 'green', choiced => 1 ], 'blue' ],
       'right choice singular';
 

@@ -38,6 +38,7 @@ sub fill_in {
             die 'Illegal type: ' . ref $value;
         }
     }
+    return $self;
 }
 
 sub new {
@@ -206,6 +207,8 @@ Yetie::Form::Base - Form for Yetie
 
 =head1 SYNOPSIS
 
+    my $form = Yetie::Form::Base->new( 'foo', controller => $c );
+
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
@@ -262,7 +265,10 @@ Return L<Yetie::Form::Field> object.
 
     $form->fill_in($entity);
 
+    my $form = Yetie::Form::Base->new('foo')->fill_in($entity);
+
 Fill in form default value from L<Yetie::Domain::Entity> object.
+Return L<Yetie::Form::Base> object.
 
 =head2 C<has_data>
 
