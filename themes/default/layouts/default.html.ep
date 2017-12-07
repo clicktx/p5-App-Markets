@@ -16,5 +16,6 @@
             <%= include 'footer' %>
         </footer>
         <%= include 'common/java_script' %>
+        <%= include 'common/style' %>
     </body>
 </html>
