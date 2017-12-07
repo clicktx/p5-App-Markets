@@ -147,6 +147,10 @@ implements the following new ones.
 
 =head2 C<csrf_protect>
 
+    $c->csrf_protect();
+
+Request method 'POST' requires CSRF token.
+
 =head2 C<is_logged_in>
 
     my $bool = $c->is_logged_in;
