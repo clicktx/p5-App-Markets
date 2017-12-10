@@ -59,6 +59,16 @@ sub has_title {
     return $result ? 1 : 0;
 }
 
+sub update_category {
+    my ( $self, $entity, $option ) = @_;
+    my $cols = [ qw(title), @{$option} ];
+
+    my $data = {};
+    $data->{$_} = $entity->$_ for @{$cols};
+
+    $self->search( { id => $entity->id } )->update($data);
+}
+
 sub _tree {
     my ( $root, $ids ) = @_;
 
@@ -140,6 +150,15 @@ Return Array refference.
     if ($bool){ say "$title exsts" }
 
 Return Boolean value.
+
+=head2 C<update_category>
+
+    $service->update_category( $entity, \@option );
+
+    $service->update_category( $entity, [ 'column_foo', 'colmun_bar' ] );
+
+Update category using entity data.
+Add a column to be updated with the second argument.
 
 =head1 AUTHOR
 

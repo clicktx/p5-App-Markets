@@ -41,18 +41,15 @@ sub edit {
     return $self->render() unless $form->has_data;
     return $self->render() unless $form->do_validate;
 
-    # update
-    # title
     $entity->title( $form->param('title') );
+    return $self->render() unless $entity->is_modified;
 
-    use DDP;
-    p $entity;
-    p $entity->is_modified;
-    $self->service('category')->update( $entity, [] ) if $entity->is_modified;
+    # update
+    $self->schema->resultset('Category')->update_category( $entity, [] );
 
-    p $self->current_route;
-    p $self->server_session;
-    $self->app->admin_log->info('Category updated for id:' . $category_id );
+    my $staff_id = $self->server_session->staff_id;
+    $self->app->admin_log->info("ID: $staff_id updated category_id: $category_id");
+
     return $self->redirect_to( $self->current_route, category_id => $category_id );
 }
 
