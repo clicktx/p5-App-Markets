@@ -70,7 +70,7 @@ sub category {
     my $category_ids = [];
     $entity->product_categories->each( sub { push @{$category_ids}, $_->category_id } );
 
-    my $category_choices = $self->service('category')->get_category_choices($category_ids);
+    my $category_choices = $self->schema->resultset('Category')->get_category_choices($category_ids);
     $form->field('categories')->choices($category_choices);
     $self->init_form();
 

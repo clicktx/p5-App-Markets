@@ -3,8 +3,6 @@ use Mojo::Base 'Yetie::Service';
 
 has resultset => sub { shift->schema->resultset('Category') };
 
-sub get_category_choices { shift->resultset->get_category_choices(@_) }
-
 sub update {
     my ( $self, $entity, $option ) = @_;
     my $cols = [ qw(title), @{$option} ];
@@ -38,17 +36,11 @@ the following new ones.
 L<Yetie::Service::Category> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
-=head2 C<get_category_choices>
-
-    my $choices = $service->get_category_choices(\@category_ids);
-
-See L<Yetie::Schema::ResultSet::Category/get_category_choices>
-
 =head2 C<update>
 
     $service->update( $entity, \@option );
 
-    $service->update( $entity, [ 'foo', 'bar' ] );
+    $service->update( $entity, [ 'column_foo', 'colmun_bar' ] );
 
 Update database.
 Add a column to be updated with the second argument.
