@@ -36,9 +36,13 @@ sub t02_login_process : Tests() {
     my $tx         = $t->tx;
     my $csrf_token = $self->csrf_token;
 
+    # not found customer
+    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'xx@xxxx.xxx', password => '12345678' } )
+      ->status_is( 401, 'not found customer' );
+
     # password failure
     $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'c@x.org', password => '11223344' } )
-      ->status_is( 200, 'password failure' );
+      ->status_is( 401, 'password failure' );
 
     # accept and redirect to wishlist?
     $t->get_ok('/account/wishlist');
