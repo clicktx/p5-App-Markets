@@ -39,9 +39,15 @@ sub login {
             my $route = $self->flash('ref') || 'RN_admin_dashboard';
             return $self->redirect_to($route);
         }
-        else { $self->app->log->warn( 'Staff login failed: password mismatch at login id: ' . $login_id ) }
+        else {
+            $self->stash( status => 401 );
+            $self->app->admin_log->warn( 'Staff login failed: password mismatch at login id: ' . $login_id );
+        }
     }
-    else { $self->app->log->warn( 'Staff login failed: not found login id: ' . $login_id ) }
+    else {
+        $self->stash( status => 401 );
+        $self->app->admin_log->warn( 'Staff login failed: not found login id: ' . $login_id );
+    }
 
     # Login failure
     $form->field('login_id')->append_error_class;

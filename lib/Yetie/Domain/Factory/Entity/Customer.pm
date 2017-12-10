@@ -9,8 +9,8 @@ sub build {
     return unless $arg;
     my $itr = $arg =~ /\@/ ? $self->resultset->search_by_email($arg) : $self->resultset->search_by_id($arg);
 
-    my $data = $itr->hashref_first;
-    return $data ? $self->create($data) : undef;
+    my $data = $itr->hashref_first || {};
+    return $self->create($data);
 }
 
 sub cook {

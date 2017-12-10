@@ -18,8 +18,8 @@ sub build {
             prefetch => 'password',
         }
     );
-    my $data = $itr->hashref_first;
-    return $data ? $self->create($data) : undef;
+    my $data = $itr->hashref_first || {};
+    return $self->create($data);
 }
 
 sub cook {
