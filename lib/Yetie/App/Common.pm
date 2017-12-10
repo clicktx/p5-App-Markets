@@ -115,21 +115,6 @@ sub initialize_app {
     _add_hooks($self);
 }
 
-sub log {
-    my $app = shift;
-
-    # Check if we have a log directory that is writable
-    my $log      = Mojo::Log->new;
-    my $home     = $app->home;
-    my $mode     = $app->mode;
-    my $log_name = shift // $mode;
-    $log->path( $home->child( 'var', 'log', "$log_name.log" ) )
-      if -d $home->child( 'var', 'log' ) && -w _;
-
-    # Reduced log output outside of development mode
-    return $mode eq 'development' ? $log : $log->level('info');
-}
-
 sub _add_hooks {
     my $app = shift;
     $app->hook(
@@ -230,16 +215,6 @@ following new ones.
 
 L<Yetie::App::Common> inherits all methods from L<Mojolicious> and implements
 the following new ones.
-
-=head2 C<log>
-
-    # into default log
-    $app->log->debug('message');
-
-    # change log file var/log/foo.log
-    $app->log('foo')->debug('message');
-
-See L<Mojolicious/log>, L<Mojo::Log>
 
 =head1 SEE ALSO
 
