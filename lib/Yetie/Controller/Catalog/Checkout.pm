@@ -21,7 +21,7 @@ sub address {
 
     return $self->render() unless $form->has_data;
 
-    if ( $form->validate ) {
+    if ( $form->do_validate ) {
 
         # billing address
         my $billing_address = $form->param('billing_address.line1');
@@ -44,7 +44,7 @@ sub shipping {
     my $form = $self->form('checkout-shipping');
     return $self->render() unless $form->has_data;
 
-    return $self->render() unless $form->validate;
+    return $self->render() unless $form->do_validate;
 
     # 複数配送を使うか
     if ( $self->pref('can_multiple_shipments') ) {
@@ -89,7 +89,7 @@ sub confirm {
     my $form = $self->form('checkout-confirm');
     return $self->render() unless $form->has_data;
 
-    return $self->render() unless $form->validate;
+    return $self->render() unless $form->do_validate;
 
     # checkout complete
     $self->complete_validate;

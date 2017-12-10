@@ -16,10 +16,18 @@ sub t01_index : Tests() {
     my $post_data = {
         csrf_token => $self->csrf_token,
         title      => 'foo',
-        parent_id  => undef,
+        parent_id  => 0,                   # create root category
     };
     $t->post_ok( '/admin/category', form => $post_data )->status_is( 200, 'right create new category' );
     $t->post_ok( '/admin/category', form => $post_data )->status_is( 409, 'right title same name exists' );
+}
+
+sub t02_edit : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $t->get_ok('/admin/category/1/edit')->status_is(200);
+    $t->get_ok('/admin/category/999/edit')->status_is(404);
 }
 
 __PACKAGE__->runtests;

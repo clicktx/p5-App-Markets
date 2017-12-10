@@ -59,7 +59,14 @@ sub action_before {
     return $self;
 }
 
-sub action_after { }
+sub action_after {
+    my $self = shift;
+
+    my $validation = $self->validation;
+    $" = ',';
+    $self->app->log->debug( 'Form has validation error at', @{ $validation->failed } ) if $validation->has_error;
+    return $self;
+}
 
 sub finalize {
     my $self = shift;
@@ -139,6 +146,10 @@ L<Yetie::Controller> inherits all methods from L<Mojolicious::Controller> and
 implements the following new ones.
 
 =head2 C<csrf_protect>
+
+    $c->csrf_protect();
+
+Request method 'POST' requires CSRF token.
 
 =head2 C<is_logged_in>
 

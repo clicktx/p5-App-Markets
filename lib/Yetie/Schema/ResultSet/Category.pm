@@ -33,12 +33,13 @@ sub get_category_choices {
     my ( $self, $ids ) = ( shift, shift || [] );
     $ids = [$ids] unless ref $ids;
 
-    my @trees;
+    my @tree;
     my @root_nodes = $self->search( { level => 0 } );
     foreach my $root (@root_nodes) {
-        push @trees, @{ _tree( $root, $ids ) };
+        push @tree, @{ _tree( $root, $ids ) };
     }
-    return \@trees;
+    unshift @tree, [ 'None(root)' => 0 ];
+    return \@tree;
 }
 
 sub has_title {
@@ -56,6 +57,16 @@ sub has_title {
 
     my $result = $self->find($where);
     return $result ? 1 : 0;
+}
+
+sub update_category {
+    my ( $self, $entity, $option ) = @_;
+    my $cols = [ qw(title), @{$option} ];
+
+    my $data = {};
+    $data->{$_} = $entity->$_ for @{$cols};
+
+    $self->search( { id => $entity->id } )->update($data);
 }
 
 sub _tree {
@@ -139,6 +150,15 @@ Return Array refference.
     if ($bool){ say "$title exsts" }
 
 Return Boolean value.
+
+=head2 C<update_category>
+
+    $service->update_category( $entity, \@option );
+
+    $service->update_category( $entity, [ 'column_foo', 'colmun_bar' ] );
+
+Update category using entity data.
+Add a column to be updated with the second argument.
 
 =head1 AUTHOR
 

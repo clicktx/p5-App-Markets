@@ -30,13 +30,13 @@ sub index {
     );
 
     # 404
-    return $self->reply->not_found unless $product->title;
+    return $self->reply->not_found unless $product->has_data;
 
     my $validation = $self->validation;
     return $self->render() unless $validation->has_data;
 
     # Add to cart
-    if ( $form->validate ) {
+    if ( $form->do_validate ) {
         $self->service('cart')->add_item( $form->params->to_hash );
 
         $self->flash( ref => $self->req->url->to_string );

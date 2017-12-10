@@ -28,7 +28,6 @@ sub login {
     my $c = shift;
     return $c->render( json => { is_logged_in => $c->is_logged_in } );
 }
-1;
 
 package Yetie::Controller::Staff;
 use Mojo::Base 'Yetie::Controller::Admin';
@@ -37,7 +36,6 @@ sub login {
     my $c = shift;
     return $c->render( json => { is_logged_in => $c->is_logged_in } );
 }
-1;
 
 package Yetie::Controller::Buged;
 use Mojo::Base 'Yetie::Controller';

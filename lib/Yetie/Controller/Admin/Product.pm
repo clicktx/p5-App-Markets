@@ -50,7 +50,7 @@ sub edit {
     $form->field('primary_category')->choices($categories);
     $self->init_form();
 
-    return $self->render() if !$form->has_data or !$form->validate;
+    return $self->render() if !$form->has_data or !$form->do_validate;
 
     # Update data
     $self->service('product')->update_product( $product_id, $form->params->to_hash );
@@ -70,11 +70,11 @@ sub category {
     my $category_ids = [];
     $entity->product_categories->each( sub { push @{$category_ids}, $_->category_id } );
 
-    my $category_choices = $self->service('category')->get_category_choices($category_ids);
+    my $category_choices = $self->schema->resultset('Category')->get_category_choices($category_ids);
     $form->field('categories')->choices($category_choices);
     $self->init_form();
 
-    return $self->render() if !$form->has_data or !$form->validate;
+    return $self->render() if !$form->has_data or !$form->do_validate;
 
     # Selected categories
     my $category_ids = $form->param('categories[]');

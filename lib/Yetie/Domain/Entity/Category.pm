@@ -3,8 +3,8 @@ use Yetie::Domain::Entity;
 use Yetie::Domain::Collection;
 
 has breadcrumb => sub { Yetie::Domain::Collection->new };
-has 'products';
-has title   => '';
+has [qw(parent_id products)];
+has title => '';
 
 1;
 __END__
@@ -25,6 +25,11 @@ the following new ones.
 =head2 C<breadcrumb>
 
 Return L<Yetie::Domain::Collection> object.
+
+=head2 C<parent_id>
+
+Return parent category ID.
+If the root category, return C<undefined>.
 
 =head2 C<products>
 

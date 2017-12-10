@@ -1,0 +1,3 @@
+%= stylesheet begin
+    .field-with-error { color: #f00; }
+% end

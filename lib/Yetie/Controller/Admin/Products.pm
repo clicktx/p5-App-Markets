@@ -15,7 +15,7 @@ sub index {
     $self->init_form();
 
     # return $self->render() unless $form->has_data;
-    $form->validate;
+    $form->do_validate;
 
     my $page     = $form->param('page')     || 1;
     my $per_page = $form->param('per_page') || 5;

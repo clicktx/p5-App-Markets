@@ -80,4 +80,13 @@ subtest 'get_ancestors_arrayref' => sub {
     is_deeply $array, [], 'right not found';
 };
 
+subtest 'update_category' => sub {
+    my $entity = Mojo::Base->new( id => 3, title => 'foo' );
+    $entity->attr( [qw(id title)] );
+    $rs->update_category( $entity, [] );
+
+    my $result = $rs->find(3);
+    is $result->title, 'foo', 'right updated title';
+};
+
 done_testing();
