@@ -5,6 +5,18 @@ has resultset => sub { shift->schema->resultset('Category') };
 
 sub get_category_choices { shift->resultset->get_category_choices(@_) }
 
+sub update {
+    my ( $self, $entity, $option ) = @_;
+    my $cols = [ qw(title), @{$option} ];
+
+    my $data = {};
+    $data->{$_} = $entity->$_ for @{$cols};
+
+    # NOTE: findにするとSQLの実行が1回増える。
+    # $self->resultset->find( $entity->id )->update($data);
+    $self->resultset->search( { id => $entity->id } )->update($data);
+}
+
 1;
 __END__
 
@@ -31,6 +43,15 @@ the following new ones.
     my $choices = $service->get_category_choices(\@category_ids);
 
 See L<Yetie::Schema::ResultSet::Category/get_category_choices>
+
+=head2 C<update>
+
+    $service->update( $entity, \@option );
+
+    $service->update( $entity, [ 'foo', 'bar' ] );
+
+Update database.
+Add a column to be updated with the second argument.
 
 =head1 AUTHOR
 
