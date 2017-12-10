@@ -37,40 +37,23 @@ sub edit {
     my $entity      = $self->factory('category')->build($category_id);
     return $self->reply->not_found() unless $entity->has_data;
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    my $form = $self->form('admin-category');
-    my $rs   = $self->app->schema->resultset('Category');
-    my $tree = $rs->get_category_choices;
-    $form->field('parent_id')->choices($tree);
-    $form->fill_in($entity);
-
-    return $self->render() unless $form->has_data or $form->do_validate;
-=======
     my $form = $self->form('admin-category')->fill_in($entity);
     return $self->render() unless $form->has_data;
-    return $self->render() unless $form->validate;
->>>>>>> Stashed changes
-=======
-    my $form = $self->form('admin-category')->fill_in($entity);
-    return $self->render() unless $form->has_data;
-    return $self->render() unless $form->validate;
->>>>>>> Stashed changes
+    return $self->render() unless $form->do_validate;
 
     # update
-    my $rs = $self->app->schema->resultset('Category');
-    use DDP;
-    p $entity;
-
     # title
     $entity->title( $form->param('title') );
 
+    use DDP;
     p $entity;
     p $entity->is_modified;
+    $self->service('category')->update( $entity, [] ) if $entity->is_modified;
 
-    # p $entity->to_hash;
-
-    return $self->render();
+    p $self->current_route;
+    p $self->server_session;
+    $self->app->admin_log->info('Category updated for id:' . $category_id );
+    return $self->redirect_to( $self->current_route, category_id => $category_id );
 }
 
 1;
