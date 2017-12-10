@@ -29,8 +29,14 @@ sub t02_admin_login_process : Tests() {
     ok $sid, 'right sid';
 
     $t->get_ok('/admin/orders')->status_is( 302, 'right redirect' );
-    $t->post_ok( '/admin/login', form => { csrf_token => $csrf_token, login_id => 'staff' } )->status_is(200)
-      ->text_like( 'title' => qr/login/i, 'failure login' );
+
+    # not found staff
+    $t->post_ok( '/admin/login', form => { csrf_token => $csrf_token, login_id => 'foobar', password => '12345678' } )
+      ->status_is( 401, 'not found staff' )->text_like( 'title' => qr/login/i, 'failure login' );
+
+    # password failure
+    $t->post_ok( '/admin/login', form => { csrf_token => $csrf_token, login_id => 'staff', password => '1111' } )
+      ->status_is( 401, 'password failure' )->text_like( 'title' => qr/login/i, 'failure login' );
 
     $t->ua->max_redirects(1);
     $t->post_ok( '/admin/login', form => { csrf_token => $csrf_token, login_id => 'staff', password => '12345678' } )
