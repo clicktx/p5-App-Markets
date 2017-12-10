@@ -44,11 +44,13 @@ sub login {
             return $self->redirect_to($route);
         }
         else {
-            $self->app->log->warn( 'Customer login failed: password mismatch at email: ' . $email );
+            $self->stash( status => 401 );
+            $self->app->customer_log->warn( 'Customer login failed: password mismatch at email: ' . $email );
         }
     }
     else {
-        $self->app->log->warn( 'Customer login failed: not found email: ' . $email );
+        $self->stash( status => 401 );
+        $self->app->customer_log->warn( 'Customer login failed: not found email: ' . $email );
     }
 
     # Login failure
