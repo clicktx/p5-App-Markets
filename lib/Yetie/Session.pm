@@ -2,8 +2,6 @@ package Yetie::Session;
 use Mojo::Base 'Mojolicious::Plugin';
 use Yetie::Session::ServerSession;
 use Yetie::Session::Store::Dbic;
-use Data::Dumper;
-use DDP;
 
 sub register {
     my ( $self, $app, $args ) = @_;
