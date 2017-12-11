@@ -204,8 +204,14 @@ subtest 'render tags with attrs' => sub {
 
     $f = Yetie::Form::Base->new( 'test', controller => $c );
     $dom = Mojo::DOM->new( $f->render( 'email', value => 'foo', placeholder => 'bar' ) );
-    is_deeply $dom->at('*')->attr->{value},       'foo', 'right value';
-    is_deeply $dom->at('*')->attr->{placeholder}, 'bar', 'right placeholder';
+    is_deeply $dom->at('*')->attr->{type},        'email', 'right input type';
+    is_deeply $dom->at('*')->attr->{value},       'foo',   'right value';
+    is_deeply $dom->at('*')->attr->{placeholder}, 'bar',   'right placeholder';
+
+    # change type
+    $f = Yetie::Form::Base->new( 'test', controller => $c );
+    $dom = Mojo::DOM->new( $f->render( 'email', type => 'text' ) );
+    is_deeply $dom->at('*')->attr->{type}, 'text', 'right input type';
 };
 
 subtest 'do_validate' => sub {

@@ -218,6 +218,9 @@ Only "class" attribute can be added.
     %= form_widget('example#email', value => 'name@domain.com')
     %= form_widget('example#email', %attrs)
 
+    # Change type
+    %= form_widget('example#email', type => 'text')
+
 Rendering <input>, <textarea>, <select>, <radio>, <checkbox>, <hidden> tag.
 
 Can add arbitrary attributes.

@@ -132,7 +132,7 @@ sub render {
     $attrs{value} = $value if defined $value;
 
     my $field = $self->fieldset->field($name);
-    my $method = $field->type || 'text';
+    my $method = $attrs{type} || $field->type || 'text';
     $self->tag_helpers->$method( $field, %attrs );
 }
 
