@@ -4,9 +4,7 @@ use Mojo::Base 'Yetie::Domain::Factory';
 has resultset => sub { shift->app->schema->resultset('Customer') };
 
 sub build {
-    my ( $self, $arg ) = @_;
-
-    return unless $arg;
+    my ( $self, $arg ) = ( shift, shift // '' );
     my $itr = $arg =~ /\@/ ? $self->resultset->search_by_email($arg) : $self->resultset->search_by_id($arg);
 
     my $data = $itr->hashref_first;
