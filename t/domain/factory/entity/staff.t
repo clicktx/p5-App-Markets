@@ -4,23 +4,27 @@ use Test::More;
 use Test::Mojo;
 
 my $t = Test::Mojo->new('App');
-my $f = $t->app->factory('entity-staff');
 
 subtest 'method build()' => sub {
+    my $f = $t->app->factory('entity-staff');
     my $e = $f->build();
-    ok !$e, 'right argument empty';
+    ok !$e->has_data, 'right argument empty';
 
+    $f = $t->app->factory('entity-staff');
     $e = $f->build(222);
     isa_ok $e, 'Yetie::Domain::Entity::Staff', 'right build by id';
 
+    $f = $t->app->factory('entity-staff');
     $e = $f->build('staff');
     is $e->id, 223, 'right build by email';
 
+    $f = $t->app->factory('entity-staff');
     $e = $f->build(999);
-    is $e, undef, 'right not found ID';
+    ok !$e->has_data, 'right not found ID';
 
+    $f = $t->app->factory('entity-staff');
     $e = $f->build('foobar');
-    is $e, undef, 'right not found login_id';
+    ok !$e->has_data, 'right not found login_id';
 };
 
 done_testing;
