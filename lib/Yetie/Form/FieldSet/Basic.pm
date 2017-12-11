@@ -27,7 +27,8 @@ has_field login_id => (
     label       => 'Login ID',
     required    => 1,
     filters     => [qw(trim)],
-    validations => [ [ size => 4, 64 ] ],
+    validations => [ 'ascii', [ size => 4, 64 ], [ like => qr/\D/ ] ],
+    error_messages => { like => 'Please include at least one alphabet.' },
 );
 
 has_field password => (
