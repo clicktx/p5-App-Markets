@@ -52,14 +52,14 @@ my $MESSAGES = {
           ? 'Please enter a value between {0} and {1} characters long.'
           : 'Please enter a value {0} characters long.';
     },
-    like     => 'This field is invelid.',
+    like     => 'This field is invalid.',
     max      => 'Please enter a value less than or equal to {0}.',
     min      => 'Please enter a value greater than or equal to {0}.',
     number   => 'Invalid way to divide numbers.',
     time     => '',
     size     => 'Please enter a value between {0} and {1} characters long.',
     uint     => 'Please enter only unsigined integer.',
-    upload   => 'This field is invelid.',
+    upload   => 'This field is invalid.',
     url      => '',
     required => 'This field is required.',
 };
