@@ -1,0 +1,10 @@
+% layout 'admin-default';
+% title __('Order') . ' / ' . __('Edit');
+
+<h1><%= title %></h1>
+
+<h2><%= __('Order ID') . ':' . stash('id') %></h2>
+
+<ul>
+    <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
+</ul>

@@ -12,6 +12,11 @@ sub index {
     $self->render();
 }
 
+sub create {
+    my $self = shift;
+    return $self->render();
+}
+
 sub delete {
     my $self = shift;
 
