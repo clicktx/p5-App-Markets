@@ -193,6 +193,10 @@ subtest 'render tags' => sub {
     is ref $f->render_help('email'),  'Mojo::ByteStream', 'right render_help method';
     is ref $f->render_label('email'), 'Mojo::ByteStream', 'right render_label method';
     is ref $f->render('email'),       'Mojo::ByteStream', 'right render method';
+
+    $f = Yetie::Form::Base->new( 'test', controller => $c );
+    my $dom = Mojo::DOM->new( $f->render('no_attrs') );
+    is_deeply $dom->at('*')->attr->{type}, 'text', 'right input type';
 };
 
 subtest 'render tags with attrs' => sub {

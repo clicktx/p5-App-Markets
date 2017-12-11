@@ -2,6 +2,8 @@ package Yetie::Form::FieldSet::Test;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
+has_field no_attrs => ();
+
 has_field email => (
     type        => 'email',
     placeholder => 'name@domain',
