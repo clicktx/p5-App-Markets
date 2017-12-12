@@ -48,14 +48,14 @@ has_many
 L<Yetie::Schema::Result::Sales::OrderHeader> inherits all methods from L<Yetie::Schema::Base::Result> and implements
 the following new ones.
 
-=head2 C<is_multiple_shipment>
+=head2 C<is_multiple_shipping>
 
-    my $bool = $result->is_multiple_shipment;
+    my $bool = $result->is_multiple_shipping;
 
 Return boolean value.
 
 =cut
 
-sub is_multiple_shipment { shift->shipments->count > 1 ? 1 : 0 }
+sub is_multiple_shipping { shift->shipments->count > 1 ? 1 : 0 }
 
 1;
