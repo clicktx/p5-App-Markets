@@ -51,9 +51,11 @@ sub duplicate {
     my $self = shift;
 
     # my $shipment_id = $self->stash('id');
+    my $form = $self->form('admin-order');
 
     # 複数配送の場合はどうするか？
     use DDP;
+    p $form;
 
     # オーダーをすべてコピー
     # my $order    = $self->schema->resultset('Sales::OrderHeader')->find_by_shipment_id($shipment_id)->copy;
