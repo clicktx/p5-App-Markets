@@ -12,11 +12,11 @@ my $test_data = {
     shipments => [
         {
             shipping_address => { line1 => 'Tokyo' },
-            shipping_items => [ { product_id => 4, quantity => 4, price => 100 } ]
+            items => [ { product_id => 4, quantity => 4, price => 100 } ]
         },
         {
             shipping_address => { line1 => 'Osaka' },
-            shipping_items   => [
+            items            => [
                 { product_id => 4, quantity => 4, price => 100 },
                 { product_id => 5, quantity => 5, price => 100 },
                 { product_id => 6, quantity => 6, price => 100 },
@@ -90,13 +90,13 @@ subtest 'add_item' => sub {
 subtest 'add_shipping_item' => sub {
     my $cart = _create_entity;
     $cart->add_shipping_item( 0, Yetie::Domain::Entity::SellingItem->new( product_id => 11 ) );
-    cmp_deeply $cart->shipments->first->shipping_items->last->to_data, { product_id => 11 }, 'right shipping_item';
+    cmp_deeply $cart->shipments->first->items->last->to_data, { product_id => 11 }, 'right shipping_item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
     $cart->add_shipping_item( 0,
         Yetie::Domain::Entity::SellingItem->new( product_id => 4, quantity => 4, price => 100 ) );
-    cmp_deeply $cart->shipments->first->shipping_items->first->to_data,
+    cmp_deeply $cart->shipments->first->items->first->to_data,
       { product_id => 4, quantity => 8, price => 100 }, 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
 };
@@ -106,7 +106,7 @@ subtest 'clear' => sub {
     $cart->clear;
     is $cart->items->size, 0;
 
-    # NOTE: shipping_itemsは削除するべきか？
+    # NOTE: itemsは削除するべきか？
     # is $cart->total_item_count, 0;
 };
 
@@ -126,10 +126,9 @@ subtest 'clone' => sub {
     isnt $cart->shipments->[0], $clone->shipments->[0], 'right shipment reference';
     cmp_deeply $cart->shipments->[0]->to_data, $clone->shipments->[0]->to_data, 'right shipment data';
 
-    isnt $cart->shipments->[0]->shipping_items->[0], $clone->shipments->[0]->shipping_items->[0],
-      'right shipment item reference';
-    cmp_deeply $cart->shipments->[0]->shipping_items->[0]->to_data,
-      $clone->shipments->[0]->shipping_items->[0]->to_data,
+    isnt $cart->shipments->[0]->items->[0], $clone->shipments->[0]->items->[0], 'right shipment item reference';
+    cmp_deeply $cart->shipments->[0]->items->[0]->to_data,
+      $clone->shipments->[0]->items->[0]->to_data,
       'right shipment item data';
 };
 
@@ -170,7 +169,7 @@ subtest 'remove_shipping_item' => sub {
     my $removed_item = $cart->remove_shipping_item( 1, $id );
     is $removed_item->is_equal($item), 1, 'right return value';
     is $cart->is_modified, 1, 'right modified';
-    cmp_deeply $cart->to_data->{shipments}->[1]->{shipping_items},
+    cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [ { product_id => 5, quantity => 5, price => 100 }, { product_id => 6, quantity => 6, price => 100 }, ],
       'right remove shipping item';
 
@@ -182,7 +181,7 @@ subtest 'remove_shipping_item' => sub {
     $removed_item = $cart->remove_shipping_item( 1, $id );
     is $removed_item, undef, 'right return value';
     is $cart->is_modified, 0, 'right not modified';
-    cmp_deeply $cart->to_data->{shipments}->[1]->{shipping_items},
+    cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
         { product_id => 4, quantity => 4, price => 100 },
         { product_id => 5, quantity => 5, price => 100 },
@@ -206,7 +205,7 @@ subtest 'merge' => sub {
             { product_id => 1, quantity => 1, price => 100 },
             { product_id => 5, quantity => 5, price => 100 },
         ],
-        shipments => [ { shipping_address => {}, shipping_items => [] } ],
+        shipments => [ { shipping_address => {}, items => [] } ],
     };
     my $stored_cart = Yetie::Domain::Factory->new('entity-cart')->create(
         {
@@ -240,7 +239,7 @@ subtest 'merge' => sub {
             { product_id => 2, quantity => 2, price => 100 },
             { product_id => 3, quantity => 3, price => 100 },
         ],
-        shipments => [ { shipping_address => {}, shipping_items => [] } ],
+        shipments => [ { shipping_address => {}, items => [] } ],
       },
       'right merge data';
     is $merged_cart->_is_modified, 1, 'right modified';

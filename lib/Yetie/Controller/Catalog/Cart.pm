@@ -54,7 +54,7 @@ sub delete {
     my $form = $self->form('cart-delete');
     return $self->reply->exception('Bad request') unless $form->do_validate;
 
-    # NOTE: 複数配送時の場合はshipping_itemsのitemを削除する必要がありそう（未実装）
+    # NOTE: 複数配送時の場合はitemsのitemを削除する必要がありそう（未実装）
     my $target = $form->param('target_item_id');
     $self->cart->remove_item($target);
 

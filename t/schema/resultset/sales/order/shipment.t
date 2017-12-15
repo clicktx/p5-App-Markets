@@ -19,7 +19,7 @@ subtest 'method find_by_id()' => sub {
       {
         order_header     => ignore(),
         shipping_address => ignore(),
-        shipping_items   => ignore(),
+        items            => ignore(),
       },
       'right related_resultsets';
     cmp_deeply $res->order_header->{related_resultsets},

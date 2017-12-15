@@ -64,7 +64,7 @@ sub duplicate {
     # my $shipment = $self->schema->resultset('Sales::Order::Shipment')->find_by_id($shipment_id);
     # p $shipment->order_header->as_fdat;
     # p $shipment->as_fdat;
-    # $shipment->shipping_items->each( sub { p $_->as_fdat } );
+    # $shipment->items->each( sub { p $_->as_fdat } );
 
     # return $self->redirect_to('RN_admin_orders');
     return $self->render('admin/order/edit');
@@ -75,9 +75,13 @@ sub duplicate {
 sub edit {
     my $self = shift;
 
-    # my $shipment_id = $self->stash('id');
-    #
-    # use DDP;
+    my $shipment_id = $self->stash('id');
+    my $order       = $self->schema->resultset('Sales::OrderHeader')->find_by_shipment_id($shipment_id);
+    use DDP;
+    p $order;
+    my $e = $self->factory('order')->create();
+    p $e;
+
     # my $rs = $self->app->schema->resultset('Sales::Order::Shipment');
 
     # my $schema = $self->app->schema;
@@ -87,15 +91,15 @@ sub edit {
     # p $order_rs;
     # my $shipments_rs = $order_rs->related_resultset('shipments');
     # p $shipments_rs;
-    # my $shipping_items_rs = $shipments_rs->related_resultset('shipping_items');
-    # p $shipping_items_rs;
+    # my $items_rs = $shipments_rs->related_resultset('items');
+    # p $items_rs;
 
     # my $order = $order_rs->hashref_array;
     # p $order;
     # my $shipments = $shipments_rs->hashref_array;
     # p $shipments;
-    # my $shipping_items = $shipping_items_rs->hashref_array;
-    # p $shipping_items;
+    # my $items = $items_rs->hashref_array;
+    # p $items;
 
     # my $rs = $self->app->schema->resultset('Order::Shipment');
     # my @shipments = $rs->search( { order_id => $shipment_id } )->all;
@@ -104,7 +108,7 @@ sub edit {
     # foreach my $shipment (@shipments) {
     #     p $shipment->result_source->resultset->hashref_rs;
     # p $shipment->hashref_rs;
-    # my $items = $shipment->shipping_items;
+    # my $items = $shipment->items;
     # p $items;
     # }
 
@@ -112,10 +116,10 @@ sub edit {
     #
     #     p $shipment;
     #
-    #     # my $shipping_items = $shipment->shipping_items;
-    #     # p $shipping_items;
+    #     # my $items = $shipment->items;
+    #     # p $items;
     #
-    #     my $items = $shipment->shipping_items->hashref_array;
+    #     my $items = $shipment->items->hashref_array;
     #     p $items;
     # }
 

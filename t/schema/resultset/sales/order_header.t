@@ -43,14 +43,14 @@ sub _find_tests {
             cmp_deeply $shipment->{related_resultsets},
               {
                 shipping_address => ignore(),
-                shipping_items   => ignore(),
+                items            => ignore(),
               },
               'right shipment no.' . $num . ' related_resultsets';
         }
     );
 
-    my @shipping_items = $res->shipments->first->shipping_items;
-    is @shipping_items, 2, 'right shipping_items';
+    my @items = $res->shipments->first->items;
+    is @items, 2, 'right shipping items';
 
     $res = $rs->find_by_id(999);
     ok !$res, 'right not found';

@@ -40,17 +40,17 @@ sub add_shipping_item {
     croak 'Second argument was not a Object' if ref $item =~ /::/;
 
     my $shipment = $self->shipments->[$index];
-    _add_item( $shipment->shipping_items, $item );
+    _add_item( $shipment->items, $item );
 
     $self->_is_modified(1);
     return $self;
 }
 
 sub all_shipping_items {
-    shift->shipments->map( sub { $_->shipping_items->each } );
+    shift->shipments->map( sub { $_->items->each } );
 }
 
-# NOTE: shipping_itemsにあるitemsも削除するべきか？
+# NOTE: shipment.itemsにあるitemsも削除するべきか？
 sub clear {
     my $self = shift;
     $self->items->each( sub { $self->remove_item( $_->id ) } );
@@ -115,9 +115,9 @@ sub remove_shipping_item {
     croak 'Second argument was not a Scalar' if ref \$item_id ne 'SCALAR';
 
     my $shipment = $self->shipments->[$index];
-    my ( $removed, $collection ) = _remove_item( $shipment->shipping_items, $item_id );
+    my ( $removed, $collection ) = _remove_item( $shipment->items, $item_id );
 
-    $shipment->shipping_items($collection) if $removed;
+    $shipment->items($collection) if $removed;
     return $removed;
 }
 

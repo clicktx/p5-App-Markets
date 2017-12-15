@@ -12,7 +12,7 @@ subtest 'argument empty' => sub {
     cmp_deeply $entity,
       bless {
         shipping_address => ( bless {}, 'Yetie::Domain::Entity::Address' ),
-        shipping_items => ( bless [], 'Yetie::Domain::Collection' ),
+        items => ( bless [], 'Yetie::Domain::Collection' ),
       },
       'Yetie::Domain::Entity::Shipment';
 };
@@ -22,15 +22,14 @@ subtest 'data' => sub {
         'entity-shipment',
         {
             shipping_address => { line1 => 'Silicon Valley' },
-            shipping_items   => [       {} ],
+            items            => [       {} ],
         }
     );
     my $entity = $factory->create_entity();
     cmp_deeply $entity,
       bless {
         shipping_address => ( bless { line1 => 'Silicon Valley' }, 'Yetie::Domain::Entity::Address' ),
-        shipping_items =>
-          ( bless [ bless {}, 'Yetie::Domain::Entity::SellingItem', ], 'Yetie::Domain::Collection' ),
+        items => ( bless [ bless {}, 'Yetie::Domain::Entity::SellingItem', ], 'Yetie::Domain::Collection' ),
       },
       'Yetie::Domain::Entity::Shipment';
 };

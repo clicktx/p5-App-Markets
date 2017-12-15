@@ -38,7 +38,7 @@ subtest 'method to_array()' => sub {
 
 subtest 'method each()' => sub {
     my $rs = $schema->resultset('Sales::OrderHeader');
-    my $order = $rs->find( 1, { prefetch => { shipments => [ 'shipping_address', 'shipping_items' ] } }, );
+    my $order = $rs->find( 1, { prefetch => { shipments => [ 'shipping_address', 'items' ] } }, );
 
     subtest 'basic' => sub {
         my @res = $order->shipments->each;
@@ -50,7 +50,7 @@ subtest 'method each()' => sub {
         $order->shipments->each(
             sub {
                 push @res, $_;
-                $_->shipping_items->each( sub { push @items, $_ } );
+                $_->items->each( sub { push @items, $_ } );
             }
         );
         is @res,   2;
