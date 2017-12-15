@@ -8,7 +8,7 @@ sub index {
     my $order    = $self->schema->resultset('Sales::Order')->find_by_id($order_id);
     return $self->reply->not_found unless $order;
 
-    $self->stash( shipment => $order );
+    $self->stash( order => $order );
     $self->render();
 }
 
@@ -34,13 +34,13 @@ sub delete {
     # NOTE: 400 Bad Request が適切
     return $self->reply->not_found unless $order;
 
-    my $order_header_id = $order->order_header_id;
-    my $cnt = $rs->search( { order_header_id => $order_header_id } )->count;
+    my $sales_id = $order->sales_id;
+    my $cnt = $rs->search( { sales_id => $sales_id } )->count;
     if ( $cnt > 1 ) {    # delete shipment
         $order->delete;
     }
     else {               # delete order
-        my $order = $self->app->schema->resultset('Sales')->find($order_header_id);
+        my $order = $self->app->schema->resultset('Sales')->find($sales_id);
         $order->delete;
     }
 

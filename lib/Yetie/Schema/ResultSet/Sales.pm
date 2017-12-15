@@ -5,7 +5,7 @@ sub get_id_by_order_id {
     my ( $self, $order_id ) = @_;
 
     my $result = $self->result_source->schema->resultset('Sales::Order')->find($order_id);
-    return $result ? $result->order_header_id : undef;
+    return $result ? $result->sales_id : undef;
 }
 
 sub find_by_id {
@@ -28,8 +28,8 @@ sub find_by_id {
 sub find_by_order_id {
     my ( $self, $order_id ) = @_;
 
-    my $order_header_id = $self->get_id_by_order_id($order_id);
-    return $self->find_by_id($order_header_id);
+    my $sales_id = $self->get_id_by_order_id($order_id);
+    return $self->find_by_id($sales_id);
 }
 
 1;
@@ -58,11 +58,11 @@ the following new ones.
 
 =head2 C<get_id_by_order_id>
 
-    my $order_header_id = $rs->get_id_by_order_id($order_id);
+    my $sales_id = $rs->get_id_by_order_id($order_id);
 
 =head2 C<find_by_id>
 
-    my $order = $rs->find_by_id($order_header_id);
+    my $order = $rs->find_by_id($sales_id);
 
 =head2 C<find_by_order_id>
 
