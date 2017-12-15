@@ -8,7 +8,7 @@ use Test::Deep;
 my $t      = Test::Mojo->new('App');
 my $app    = $t->app;
 my $schema = $app->schema;
-my $rs     = $schema->resultset('Sales::OrderHeader');
+my $rs     = $schema->resultset('Sales');
 
 subtest 'method get_id_by_shipment_id()' => sub {
     is $rs->get_id_by_shipment_id(2),   1,     'right id';
@@ -33,11 +33,11 @@ sub _find_tests {
       {
         billing_address => ignore(),
         customer        => ignore(),
-        shipments       => ignore(),
+        orders       => ignore(),
       },
       'right related_resultsets';
 
-    $res->shipments->each(
+    $res->orders->each(
         sub {
             my ( $shipment, $num ) = @_;
             cmp_deeply $shipment->{related_resultsets},
@@ -49,7 +49,7 @@ sub _find_tests {
         }
     );
 
-    my @items = $res->shipments->first->items;
+    my @items = $res->orders->first->items;
     is @items, 2, 'right shipping items';
 
     $res = $rs->find_by_id(999);

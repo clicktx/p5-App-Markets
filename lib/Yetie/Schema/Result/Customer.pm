@@ -39,7 +39,7 @@ has_many
   { 'foreign.customer_id' => 'self.id' };
 
 has_many
-  order_headers => 'Yetie::Schema::Result::Sales::OrderHeader',
+  sales => 'Yetie::Schema::Result::Sales',
   { 'foreign.customer_id' => 'self.id' };
 
 1;

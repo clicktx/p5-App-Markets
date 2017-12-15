@@ -37,7 +37,7 @@ subtest 'method to_array()' => sub {
 };
 
 subtest 'method each()' => sub {
-    my $rs = $schema->resultset('Sales::OrderHeader');
+    my $rs = $schema->resultset('Sales');
     my $order = $rs->find( 1, { prefetch => { shipments => [ 'shipping_address', 'items' ] } }, );
 
     subtest 'basic' => sub {

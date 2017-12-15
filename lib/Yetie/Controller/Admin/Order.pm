@@ -40,7 +40,7 @@ sub delete {
         $shipment->delete;
     }
     else {               # delete order
-        my $order = $self->app->schema->resultset('Sales::OrderHeader')->find($order_header_id);
+        my $order = $self->app->schema->resultset('Sales')->find($order_header_id);
         $order->delete;
     }
 
@@ -58,7 +58,7 @@ sub duplicate {
     p $form;
 
     # オーダーをすべてコピー
-    # my $order    = $self->schema->resultset('Sales::OrderHeader')->find_by_shipment_id($shipment_id)->copy;
+    # my $order    = $self->schema->resultset('Sales')->find_by_shipment_id($shipment_id)->copy;
     # p $order;
 
     # my $shipment = $self->schema->resultset('Sales::Order::Shipment')->find_by_id($shipment_id);
@@ -76,7 +76,7 @@ sub edit {
     my $self = shift;
 
     my $shipment_id = $self->stash('id');
-    my $order       = $self->schema->resultset('Sales::OrderHeader')->find_by_shipment_id($shipment_id);
+    my $order       = $self->schema->resultset('Sales')->find_by_shipment_id($shipment_id);
     use DDP;
     p $order;
     my $e = $self->factory('order')->create();
