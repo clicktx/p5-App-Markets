@@ -23,8 +23,7 @@
 <h2><%= __('Orders') %></h2>
 <ul>
     <li><%= link_to 'Orders index' => 'RN_admin_orders' %></li>
-    <li><%= link_to 'Orders index' => 'RN_admin_orders' %></li>
-    <li><%= link_to 'Orders index' => 'RN_admin_orders' %></li>
+    <li><%= link_to 'Create New Order' => 'RN_admin_order_create' %></li>
 </ul>
 
 <h2><%= __('Customre') %></h2>

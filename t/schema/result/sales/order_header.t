@@ -9,12 +9,12 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('Sales::OrderHeader');
 
-subtest 'is_multiple_shipment' => sub {
+subtest 'is_multiple_shipping' => sub {
     my $res = $rs->find_by_id(1);
-    ok $res->is_multiple_shipment, 'right multiple shipments';
+    ok $res->is_multiple_shipping, 'right multiple shipments';
 
     $res = $rs->find_by_id(2);
-    ok !$res->is_multiple_shipment, 'right single shipment';
+    ok !$res->is_multiple_shipping, 'right single shipment';
 };
 
 done_testing();
