@@ -1,4 +1,4 @@
-package Yetie::Schema::ResultSet::Sales::OrderHeader;
+package Yetie::Schema::ResultSet::Sales;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 
 sub get_id_by_shipment_id {
@@ -18,7 +18,7 @@ sub find_by_id {
                 'customer',
                 'billing_address',
                 {
-                    shipments => [ 'shipping_address', 'shipping_items' ],
+                    orders => [ 'shipping_address', 'shipping_items' ],
                 },
             ],
         },
@@ -38,22 +38,22 @@ __END__
 
 =head1 NAME
 
-Yetie::Schema::ResultSet::Sales::OrderHeader
+Yetie::Schema::ResultSet::Sales
 
 =head1 SYNOPSIS
 
-    my $data = $schema->resultset('Sales::OrderHeader')->method();
+    my $data = $schema->resultset('Sales')->method();
 
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::ResultSet::Sales::OrderHeader> inherits all attributes from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Sales> inherits all attributes from L<Yetie::Schema::Base::ResultSet> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::ResultSet::Sales::OrderHeader> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Sales> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
 the following new ones.
 
 =head2 C<get_id_by_shipment_id>

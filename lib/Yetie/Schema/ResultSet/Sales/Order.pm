@@ -1,4 +1,4 @@
-package Yetie::Schema::ResultSet::Sales::Order::Shipment;
+package Yetie::Schema::ResultSet::Sales::Order;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 
 sub find_by_id {
@@ -43,22 +43,22 @@ __END__
 
 =head1 NAME
 
-Yetie::Schema::ResultSet::Sales::Order::Shipment
+Yetie::Schema::ResultSet::Sales::Order
 
 =head1 SYNOPSIS
 
-    my $data = $schema->resultset('Sales::Order::Shipment')->method();
+    my $data = $schema->resultset('Sales::Order')->method();
 
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::ResultSet::Sales::Order::Shipment> inherits all attributes from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Sales::Order> inherits all attributes from L<Yetie::Schema::Base::ResultSet> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::ResultSet::Sales::Order::Shipment> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Sales::Order> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
 the following new ones.
 
 =head2 C<find_by_id>
