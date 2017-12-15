@@ -7,7 +7,7 @@ use Test::Mojo;
 my $t      = Test::Mojo->new('App');
 my $app    = $t->app;
 my $schema = $app->schema;
-my $rs     = $schema->resultset('Sales::OrderHeader');
+my $rs     = $schema->resultset('Sales');
 
 subtest 'is_multiple_shipping' => sub {
     my $res = $rs->find_by_id(1);

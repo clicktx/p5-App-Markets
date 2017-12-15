@@ -13,7 +13,7 @@ my $CART_DATA = {
         { product_id => 1, quantity => 1, price => 100 },
         { product_id => 3, quantity => 3, price => 300 },
     ],
-    shipments => [ { shipping_items => [] } ],
+    shipments => [ { items => [] } ],
 };
 
 sub startup : Test(startup) {
@@ -67,7 +67,7 @@ sub test_04_address_post : Tests() {
     is $url, '/checkout/address', 'right post to get';
 
     # Reload session
-    $self->server_session->load($self->sid);
+    $self->server_session->load( $self->sid );
 
     my $cart = $self->server_session->cart;
     is $cart->data('billing_address')->{line1}, 'Silicon Valley', '';
@@ -91,10 +91,10 @@ sub test_06_shipping_post : Tests() {
     is $url, '/checkout/shipping', 'right post to get';
 
     # Reload session
-    $self->server_session->load($self->sid);
+    $self->server_session->load( $self->sid );
 
     my $cart = $self->server_session->cart;
-    is_deeply $cart->data('shipments')->[0]->{shipping_items}, $CART_DATA->{items}, 'right moved items';
+    is_deeply $cart->data('shipments')->[0]->{items}, $CART_DATA->{items}, 'right moved items';
 }
 
 sub test_10_confirm : Tests() {
@@ -114,13 +114,13 @@ sub test_20_complete : Tests() {
     # NOTE: もっとスマートにテストを書きたい
     # Entity order objectを使うとか
     my $last_order =
-      $self->app->schema->resultset('Sales::OrderHeader')->search( {}, { order_by => { -desc => 'id' } } )->first;
+      $self->app->schema->resultset('Sales')->search( {}, { order_by => { -desc => 'id' } } )->first;
     is $last_order->billing_address->line1, 'Silicon Valley', 'right billing address';
 
-    my $shipment1 = $last_order->shipments->first;
+    my $shipment1 = $last_order->orders->first;
     is $shipment1->shipping_address->line1, 'San Francisco', 'right shipping address';
 
-    my $items = $shipment1->shipping_items;
+    my $items = $shipment1->items;
     my $row   = $items->next;
     is $row->product_id, 2, 'right item1 product id';
     is $row->quantity,   2, 'right item1 quantity';

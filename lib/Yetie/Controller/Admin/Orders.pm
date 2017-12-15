@@ -17,7 +17,7 @@ sub index {
         rows     => $form->param('per_page') || 5,
     };
 
-    my $rs     = $self->app->schema->resultset('Sales::Order::Shipment');
+    my $rs     = $self->app->schema->resultset('Sales::Order');
     my $orders = $rs->search_sales_list($conditions);
 
     # content entity

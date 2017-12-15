@@ -36,10 +36,10 @@ sub t03_duplicate : Tests() {
 #     my $self = shift;
 #     my $t    = $self->t;
 #
-#     my $shipment_id = 3;    # NOTE: duplicateで生成された最新のidを取得する。
+#     my $order_id = 3;    # NOTE: duplicateで生成された最新のidを取得する。
 #     my $post_data   = {
 #         csrf_token => $self->csrf_token,
-#         id         => $shipment_id,
+#         id         => $order_id,
 #     };
 #
 #     $t->post_ok( '/admin/order/delete', form => $post_data )->status_is( 200, 'right found shipment order' );

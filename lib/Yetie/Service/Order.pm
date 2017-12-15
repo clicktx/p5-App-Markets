@@ -1,7 +1,7 @@
 package Yetie::Service::Order;
 use Mojo::Base 'Yetie::Service';
 
-has resultset => sub { shift->schema->resultset('Sales::OrderHeader') };
+has resultset => sub { shift->schema->resultset('Sales::Order') };
 
 1;
 __END__
