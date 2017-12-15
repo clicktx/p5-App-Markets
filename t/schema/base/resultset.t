@@ -9,7 +9,7 @@ my $app    = $t->app;
 my $schema = $app->schema;
 
 subtest 'method to_array()' => sub {
-    my $rs = $schema->resultset('Sales::Order::Shipment::Item');
+    my $rs = $schema->resultset('Sales::Order::Item');
 
     subtest 'basic' => sub {
         my $itr   = $rs->search( { shipment_id => 1 } );

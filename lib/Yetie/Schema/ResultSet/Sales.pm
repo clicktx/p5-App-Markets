@@ -1,10 +1,10 @@
 package Yetie::Schema::ResultSet::Sales;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 
-sub get_id_by_shipment_id {
-    my ( $self, $shipment_id ) = @_;
+sub get_id_by_order_id {
+    my ( $self, $order_id ) = @_;
 
-    my $result = $self->result_source->schema->resultset('Sales::Order::Shipment')->find($shipment_id);
+    my $result = $self->result_source->schema->resultset('Sales::Order')->find($order_id);
     return $result ? $result->order_header_id : undef;
 }
 
@@ -25,10 +25,10 @@ sub find_by_id {
     );
 }
 
-sub find_by_shipment_id {
-    my ( $self, $shipment_id ) = @_;
+sub find_by_order_id {
+    my ( $self, $order_id ) = @_;
 
-    my $order_header_id = $self->get_id_by_shipment_id($shipment_id);
+    my $order_header_id = $self->get_id_by_order_id($order_id);
     return $self->find_by_id($order_header_id);
 }
 
@@ -56,17 +56,17 @@ the following new ones.
 L<Yetie::Schema::ResultSet::Sales> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
 the following new ones.
 
-=head2 C<get_id_by_shipment_id>
+=head2 C<get_id_by_order_id>
 
-    my $order_header_id = $rs->get_id_by_shipment_id($shipment_id);
+    my $order_header_id = $rs->get_id_by_order_id($order_id);
 
 =head2 C<find_by_id>
 
     my $order = $rs->find_by_id($order_header_id);
 
-=head2 C<find_by_shipment_id>
+=head2 C<find_by_order_id>
 
-    my $order = $rs->find_by_shipment_id($shipment_id);
+    my $order = $rs->find_by_order_id($order_id);
 
 =head1 AUTHOR
 
