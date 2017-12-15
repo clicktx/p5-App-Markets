@@ -41,4 +41,22 @@ has_many
   orders => 'Yetie::Schema::Result::Sales::Order',
   { 'foreign.sales_id' => 'self.id' };
 
+sub is_multiple_shipping { shift->orders->count > 1 ? 1 : 0 }
+
 1;
+__END__
+
+=encoding utf8
+
+=head1 METHODS
+
+L<Yetie::Schema::Result::Sales> inherits all methods from L<Yetie::Schema::Base::Result> and implements
+the following new ones.
+
+=head2 C<is_multiple_shipping>
+
+    my $bool = $result->is_multiple_shipping;
+
+Return boolean value.
+
+=cut
