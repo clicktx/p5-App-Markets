@@ -62,7 +62,7 @@ sub duplicate {
     # p $order;
 
     # my $order = $self->schema->resultset('Sales::Order')->find_by_id($order_id);
-    # p $order->order_header->as_fdat;
+    # p $order->sales->as_fdat;
     # p $order->as_fdat;
     # $order->items->each( sub { p $_->as_fdat } );
 

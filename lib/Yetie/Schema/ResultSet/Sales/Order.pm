@@ -11,7 +11,7 @@ sub find_by_id {
                 'shipping_address',
                 'items',
                 {
-                    order_header => [ 'customer', 'billing_address' ],
+                    sales => [ 'customer', 'billing_address' ],
                 },
             ],
         },
@@ -32,7 +32,7 @@ sub search_sales_list {
             page     => $page_no,
             rows     => $rows,
             order_by => $order_by,
-            prefetch => [ 'shipping_address', { order_header => [ 'customer', 'billing_address' ] }, ],
+            prefetch => [ 'shipping_address', { sales => [ 'customer', 'billing_address' ] }, ],
         }
     );
 }

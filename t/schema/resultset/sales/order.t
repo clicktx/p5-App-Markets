@@ -17,12 +17,12 @@ subtest 'method find_by_id()' => sub {
     is $res->address_id,      1, 'right address_id';
     cmp_deeply $res->{related_resultsets},
       {
-        order_header     => ignore(),
+        sales     => ignore(),
         shipping_address => ignore(),
         items            => ignore(),
       },
       'right related_resultsets';
-    cmp_deeply $res->order_header->{related_resultsets},
+    cmp_deeply $res->sales->{related_resultsets},
       {
         customer        => ignore(),
         billing_address => ignore(),
@@ -50,11 +50,11 @@ subtest 'method search_sales_list()' => sub {
     is $row->address_id,      1, 'right address_id';
     cmp_deeply $row->{related_resultsets},
       {
-        order_header     => ignore(),
+        sales     => ignore(),
         shipping_address => ignore(),
       },
       'right related_resultsets';
-    cmp_deeply $row->order_header->{related_resultsets},
+    cmp_deeply $row->sales->{related_resultsets},
       {
         customer        => ignore(),
         billing_address => ignore(),
