@@ -90,7 +90,7 @@
     ],
 
     # Orders
-    'Sales::OrderHeader' => [
+    'Sales' => [
         [qw/id customer_id address_id created_at updated_at/],
         [ 1, 111, 1, '2017-06-06 20:01:35', '2017-06-06 20:01:35' ],
         [ 2, 112, 2, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
@@ -100,8 +100,8 @@
         [ 6, 113, 4, '2017-07-07 07:14:45', '2017-07-07 07:14:45' ],
         [ 7, 113, 4, '2017-07-07 07:15:01', '2017-07-07 07:15:01' ],
     ],
-    'Sales::Order::Shipment' => [
-        [qw/id order_header_id address_id/],
+    'Sales::Order' => [
+        [qw/id sales_id address_id/],
         [ 1, 1, 1 ],
         [ 2, 1, 3 ],
         [ 3, 2, 2 ],
@@ -115,8 +115,8 @@
         [ 11, 6, 4 ],
         [ 12, 7, 4 ],
     ],
-    'Sales::Order::Shipment::Item' => [
-        [qw/shipment_id product_id quantity price/],
+    'Sales::Order::Item' => [
+        [qw/order_id product_id quantity price/],
         [ 1, 3, 3, 300 ],
         [ 1, 1, 1, 101 ], # change price
         [ 2, 2, 2, 200 ],
