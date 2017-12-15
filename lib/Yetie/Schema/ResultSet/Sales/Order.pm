@@ -9,7 +9,7 @@ sub find_by_id {
         {
             prefetch => [
                 'shipping_address',
-                'shipping_items',
+                'items',
                 {
                     order_header => [ 'customer', 'billing_address' ],
                 },
