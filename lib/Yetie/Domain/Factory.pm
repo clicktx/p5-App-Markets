@@ -2,9 +2,9 @@ package Yetie::Domain::Factory;
 use Mojo::Base -base;
 use Carp 'croak';
 use DateTime::Format::Strptime;
-use Mojo::Util    ();
-use Mojo::Loader  ();
-use Yetie::Util ();
+use Mojo::Util   ();
+use Mojo::Loader ();
+use Yetie::Util  ();
 use Yetie::Schema;
 use Yetie::Domain::Collection qw/collection/;
 use Yetie::Domain::IxHash qw/ix_hash/;
@@ -91,15 +91,15 @@ sub factory {
 }
 
 sub new {
-    my ( $self, $ns ) = ( shift, shift );
-    Carp::croak 'Argument empty' unless $ns;
+    my ( $self, $arg ) = ( shift, shift );
+    Carp::croak 'Argument empty' unless $arg;
 
-    $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
-    $ns = 'Entity::' . $ns          if $ns !~ /^Entity::/;
+    my $entity_name = Mojo::Util::camelize($arg);
+    $entity_name =~ s/Entity:://;
 
     my $factory_base_class = 'Yetie::Domain::Factory';
-    my $factory_class      = $factory_base_class . '::' . $ns;
-    my $entity_class       = 'Yetie::Domain::' . $ns;
+    my $factory_class      = $factory_base_class . '::' . $entity_name;
+    my $entity_class       = 'Yetie::Domain::Entity::' . $entity_name;
 
     my $e = Mojo::Loader::load_class($factory_class);
     die "Exception: $e" if ref $e;
@@ -185,7 +185,7 @@ Create C<Yetie::Domain::IxHash> type aggregate.
 
 =head2 C<cook>
 
-    # Yetie::Domain::Factory::Entity::YourEntity;
+    # Yetie::Domain::Factory::YourEntity;
     sub cook {
         # Overdide this method.
         # your factory codes here!
