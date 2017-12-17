@@ -4,7 +4,7 @@ use Test::Deep;
 use Test::Mojo;
 
 my $pkg = 'Yetie::Domain::Factory';
-use_ok 'Yetie::Domain::Factory::Entity::Cart';
+use_ok 'Yetie::Domain::Factory::Cart';
 
 my $shipments = bless [
     bless {

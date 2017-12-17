@@ -1,4 +1,4 @@
-package Yetie::Domain::Factory::Entity::Customer;
+package Yetie::Domain::Factory::Customer;
 use Mojo::Base 'Yetie::Domain::Factory';
 
 has resultset => sub { shift->app->schema->resultset('Customer') };
@@ -30,11 +30,11 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Factory::Entity::Customer
+Yetie::Domain::Factory::Customer
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Customer->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Customer->new( %args )->create;
 
     # In controller
     my $entity = $c->factory('entity-customer')->create(%args);
@@ -43,12 +43,12 @@ Yetie::Domain::Factory::Entity::Customer
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Factory::Entity::Customer> inherits all attributes from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Customer> inherits all attributes from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Factory::Entity::Customer> inherits all methods from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Customer> inherits all methods from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head2 C<build>
