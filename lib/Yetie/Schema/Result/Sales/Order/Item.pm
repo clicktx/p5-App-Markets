@@ -38,4 +38,8 @@ belongs_to
   an_order => 'Yetie::Schema::Result::Sales::Order',
   { 'foreign.id' => 'self.order_id' };
 
+belongs_to
+  product => 'Yetie::Schema::Result::Product',
+  { 'foreign.id' => 'self.product_id' };
+
 1;

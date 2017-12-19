@@ -40,6 +40,10 @@ has_many
   product_categories => 'Yetie::Schema::Result::Product::Category',
   { 'foreign.product_id' => 'self.id' };
 
+has_many
+  order_items => 'Yetie::Schema::Result::Order::Item',
+  { 'foreign.product_id' => 'self.id' };
+
 # Add Index
 sub sqlt_deploy_hook {
     my ( $self, $sqlt_table ) = @_;

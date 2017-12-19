@@ -21,6 +21,50 @@
     # ],
 
     #  ▽ -----  From share/test_data.pl  ----- ▽
+    # Category
+    'Category' => [
+        [qw/id root_id lft rgt level title/],
+        [ 1, 1, 1, 6, 0, 'Sports'],
+        [ 2, 2, 1, 22, 0, 'Fashion'],
+        [ 3, 1, 2, 3, 1, 'Golf'],
+        [ 4, 1, 4, 5, 1, 'Soccer'],
+        [ 5, 2, 2, 13, 1, 'Women'],
+        [ 6, 2, 14, 15, 1, 'Men'],
+        [ 7, 2, 16, 17, 1, 'Girls'],
+        [ 8, 2, 18, 19, 1, 'Boys'],
+        [ 9, 2, 20, 21, 1, 'Baby'],
+        [ 10, 2, 3, 12, 2, 'Clothing'],
+        [ 11, 2, 4, 9, 3, 'Dresses'],
+        [ 12, 2, 10, 11, 3, 'Tops & Tees'],
+        [ 13, 2, 5, 6, 4, 'Casual'],
+        [ 14, 2, 7, 8, 4, 'Formal'],
+    ],
+
+    # Product
+    'Product' => [
+        [qw/id title description price created_at updated_at/],
+        [ 1, 'test product1', 'product description1', 100, '2017-08-23 23:47:04', '2017-08-23 23:47:04' ],
+        [ 2, 'test product2', 'product description2', 200, '2017-08-23 23:55:12', '2017-08-23 23:55:12' ],
+        [ 3, 'test product3', 'product description', 300, '2017-08-23 23:59:35', '2017-08-23 23:59:35' ],
+        [ 4, 'test product4', 'product description', 333, '2017-08-24 01:01:11', '2017-08-24 01:01:11' ],
+        [ 5, 'test product5', 'product description', 333, '2017-08-24 01:01:35', '2017-08-24 01:01:35' ],
+        [ 6, 'test product6', 'product description', 333, '2017-08-24 01:02:02', '2017-08-24 01:02:02' ],
+        [ 7, 'test product7', 'product description', 333, '2017-08-24 01:02:21', '2017-08-24 01:02:21' ],
+        [ 8, 'test product8', 'product description', 333, '2017-08-24 01:02:34', '2017-08-24 01:02:34' ],
+        [ 9, 'test product9', 'product description', 333, '2017-08-24 01:02:45', '2017-08-24 01:02:45' ],
+        # id: 10 is deleted in t/page/admin/product.t
+        [ 10, 'test product10', 'product description', 333, '2017-08-24 01:02:56', '2017-08-24 01:02:56' ],
+    ],
+
+    # Product Category
+    'Product::Category' => [
+        [qw/product_id category_id is_primary/],
+        [ 1, 3, 1 ],
+        [ 1, 5, 0 ],
+        [ 2, 3, 1 ],
+        [ 3, 3, 1 ],
+    ],
+
     # For Accounts
     'Email' => [
         [qw/id address is_verified/],
@@ -121,49 +165,5 @@
         [ 1, 1, 1, 101 ], # change price
         [ 2, 2, 2, 200 ],
         [ 3, 4, 4, 333 ],
-    ],
-
-    # Category
-    'Category' => [
-        [qw/id root_id lft rgt level title/],
-        [ 1, 1, 1, 6, 0, 'Sports'],
-        [ 2, 2, 1, 22, 0, 'Fashion'],
-        [ 3, 1, 2, 3, 1, 'Golf'],
-        [ 4, 1, 4, 5, 1, 'Soccer'],
-        [ 5, 2, 2, 13, 1, 'Women'],
-        [ 6, 2, 14, 15, 1, 'Men'],
-        [ 7, 2, 16, 17, 1, 'Girls'],
-        [ 8, 2, 18, 19, 1, 'Boys'],
-        [ 9, 2, 20, 21, 1, 'Baby'],
-        [ 10, 2, 3, 12, 2, 'Clothing'],
-        [ 11, 2, 4, 9, 3, 'Dresses'],
-        [ 12, 2, 10, 11, 3, 'Tops & Tees'],
-        [ 13, 2, 5, 6, 4, 'Casual'],
-        [ 14, 2, 7, 8, 4, 'Formal'],
-    ],
-
-    # Product
-    'Product' => [
-        [qw/id title description price created_at updated_at/],
-        [ 1, 'test product1', 'product description1', 100, '2017-08-23 23:47:04', '2017-08-23 23:47:04' ],
-        [ 2, 'test product2', 'product description2', 200, '2017-08-23 23:55:12', '2017-08-23 23:55:12' ],
-        # deleted product from t/page/admin/product.t
-        [ 3, 'test product3', 'product description', 300, '2017-08-23 23:59:35', '2017-08-23 23:59:35' ],
-        [ 4, 'test product4', 'product description', 333, '2017-08-24 01:01:11', '2017-08-24 01:01:11' ],
-        [ 5, 'test product5', 'product description', 333, '2017-08-24 01:01:35', '2017-08-24 01:01:35' ],
-        [ 6, 'test product6', 'product description', 333, '2017-08-24 01:02:02', '2017-08-24 01:02:02' ],
-        [ 7, 'test product7', 'product description', 333, '2017-08-24 01:02:21', '2017-08-24 01:02:21' ],
-        [ 8, 'test product8', 'product description', 333, '2017-08-24 01:02:34', '2017-08-24 01:02:34' ],
-        [ 9, 'test product9', 'product description', 333, '2017-08-24 01:02:45', '2017-08-24 01:02:45' ],
-        [ 10, 'test product10', 'product description', 333, '2017-08-24 01:02:56', '2017-08-24 01:02:56' ],
-    ],
-
-    # Product Category
-    'Product::Category' => [
-        [qw/product_id category_id is_primary/],
-        [ 1, 3, 1 ],
-        [ 1, 5, 0 ],
-        [ 2, 3, 1 ],
-        [ 3, 3, 1 ],
     ],
 )
