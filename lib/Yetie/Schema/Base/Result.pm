@@ -14,6 +14,16 @@ sub insert {
     $self->next::method(@_);
 }
 
+sub to_hash {
+    my $self    = shift;
+    my @columns = $self->result_class->choose_column_name(@_);
+
+    my %pair;
+    $pair{$_} = $self->get_column($_) for @columns;
+
+    return wantarray ? (%pair) : \%pair;
+}
+
 sub choose_column_name {
     my $self = shift;
     my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};

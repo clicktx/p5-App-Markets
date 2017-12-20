@@ -32,4 +32,40 @@ subtest 'choose_column_name' => sub {
     is_deeply \@array, [qw(group_id name summary value)], 'right option ignore_colmuns';
 };
 
+subtest 'method to_hash()' => sub {
+
+    subtest 'basic' => sub {
+        my $result = $rs->search()->first;
+        my $hash   = $result->to_hash;
+        is ref $hash, 'HASH', 'right variable type';
+
+        my %hash = $result->to_hash;
+        my @keys = keys %hash;
+        is @keys, 8, 'right hash key lots';
+        @keys = sort @keys;
+        is_deeply \@keys, [
+            qw(
+              default_value
+              group_id
+              id
+              name
+              position
+              summary
+              title
+              value
+              )
+          ],
+          'right all colmuns keys';
+    };
+
+    subtest 'options' => sub {
+        my $result = $rs->search()->first;
+        my %hash = $result->to_hash( ignore_columns => [qw( default_value id position summary title)] );
+        is_deeply \%hash, { group_id => 1, name => 'admin_uri_prefix', value => undef }, 'right ignore columns';
+
+        %hash = $result->to_hash( columns => [qw(id position)] );
+        is_deeply \%hash, { id => 1, position => 100 }, 'right pick on columns';
+    };
+};
+
 done_testing();
