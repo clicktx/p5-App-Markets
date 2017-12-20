@@ -4,12 +4,12 @@ use Test::Deep;
 use Test::Mojo;
 
 my $pkg = 'Yetie::Domain::Factory';
-use_ok 'Yetie::Domain::Factory::Entity::Cart';
+use_ok 'Yetie::Domain::Factory::Cart';
 
 my $shipments = bless [
     bless {
         shipping_address => ( bless {}, 'Yetie::Domain::Entity::Address' ),
-        shipping_items => ( bless [], 'Yetie::Domain::Collection' ),
+        items => ( bless [], 'Yetie::Domain::Collection' ),
     },
     'Yetie::Domain::Entity::Shipment'
   ],
@@ -65,9 +65,9 @@ subtest 'argument items data only' => sub {
 };
 
 subtest 'argument shipments data only' => sub {
-    my $e = $pkg->new( 'entity-cart', { shipments => [ { shipping_items => [ {}, {} ] } ] }, )->create_entity;
-    $shipments->[0]->{shipping_items} = bless [ ( bless {}, 'Yetie::Domain::Entity::SellingItem' ),
-        ( bless {}, 'Yetie::Domain::Entity::SellingItem' ) ],
+    my $e = $pkg->new( 'entity-cart', { shipments => [ { items => [ {}, {} ] } ] }, )->create_entity;
+    $shipments->[0]->{items} =
+      bless [ ( bless {}, 'Yetie::Domain::Entity::SellingItem' ), ( bless {}, 'Yetie::Domain::Entity::SellingItem' ) ],
       'Yetie::Domain::Collection';
     cmp_deeply $e,
       bless {

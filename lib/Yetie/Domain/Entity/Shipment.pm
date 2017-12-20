@@ -5,25 +5,25 @@ use Yetie::Domain::Collection;
 use Yetie::Domain::Entity::Address;
 
 has shipping_address => sub { Yetie::Domain::Entity::Address->new };
-has shipping_items   => sub { Yetie::Domain::Collection->new };
+has items            => sub { Yetie::Domain::Collection->new };
 
 sub clone {
     my $self  = shift;
     my $clone = data_clone($self);
-    $clone->shipping_items( $self->shipping_items->map( sub { $_->clone } ) )
-      if $self->shipping_items->can('map');
+    $clone->items( $self->items->map( sub { $_->clone } ) )
+      if $self->items->can('map');
     $clone->_is_modified(0);
     return $clone;
 }
 
-sub item_count { shift->shipping_items->size }
+sub item_count { shift->items->size }
 
 sub subtotal_quantity {
-    shift->shipping_items->reduce( sub { $a + $b->quantity }, 0 );
+    shift->items->reduce( sub { $a + $b->quantity }, 0 );
 }
 
 sub subtotal {
-    shift->shipping_items->reduce( sub { $a + $b->subtotal }, 0 );
+    shift->items->reduce( sub { $a + $b->subtotal }, 0 );
 }
 
 1;
@@ -46,7 +46,7 @@ the following new ones.
 
 Return L<Yetie::Domain::Entity::Address> object.
 
-=head2 C<shipping_items>
+=head2 C<items>
 
 Return L<Yetie::Domain::Collection> object.
 

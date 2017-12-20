@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Sales::Order::Shipment::Item;
+package Yetie::Schema::Result::Sales::Order::Item;
 use Mojo::Base 'Yetie::Schema::Base::Result';
 use DBIx::Class::Candy -autotable => v1;
 use Yetie::Schema::Result::Product;
@@ -8,7 +8,7 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column shipment_id => {
+column order_id => {
     data_type   => 'INT',
     is_nullable => 0,
 };
@@ -33,8 +33,13 @@ column quantity => {
 
 column price => Yetie::Schema::Result::Product->column_info('price');
 
+# NOTE: 'order' is SQL reserved word.
 belongs_to
-  shipment => 'Yetie::Schema::Result::Sales::Order::Shipment',
-  { 'foreign.id' => 'self.shipment_id' };
+  an_order => 'Yetie::Schema::Result::Sales::Order',
+  { 'foreign.id' => 'self.order_id' };
+
+belongs_to
+  product => 'Yetie::Schema::Result::Product',
+  { 'foreign.id' => 'self.product_id' };
 
 1;

@@ -9,10 +9,10 @@ my $app    = $t->app;
 my $schema = $app->schema;
 
 subtest 'method to_array()' => sub {
-    my $rs = $schema->resultset('Sales::Order::Shipment::Item');
+    my $rs = $schema->resultset('Sales::Order::Item');
 
     subtest 'basic' => sub {
-        my $itr   = $rs->search( { shipment_id => 1 } );
+        my $itr   = $rs->search( { order_id => 1 } );
         my @array = $itr->to_array;
         my $array = $itr->to_array;
 
@@ -20,37 +20,37 @@ subtest 'method to_array()' => sub {
         is ref $array, 'ARRAY', 'right array refference';
 
         my @keys = sort( keys %{ $array[0] } );
-        is_deeply \@keys, [qw(id price product_id product_title quantity shipment_id)], 'right all columns';
+        is_deeply \@keys, [qw(id order_id price product_id product_title quantity)], 'right all columns';
     };
 
     subtest 'options' => sub {
-        my $itr = $rs->search( { shipment_id => 1 } );
+        my $itr = $rs->search( { order_id => 1 } );
 
-        my @array = $itr->to_array( ignore_columns => [qw(product_title shipment_id)] );
+        my @array = $itr->to_array( ignore_columns => [qw(product_title order_id)] );
         my @keys = sort( keys %{ $array[0] } );
         is_deeply \@keys, [qw(id price product_id quantity)], 'right option "ignore_columns"';
 
-        @array = $itr->to_array( columns => [qw(product_title shipment_id)] );
+        @array = $itr->to_array( columns => [qw(product_title order_id)] );
         @keys = sort( keys %{ $array[0] } );
-        is_deeply \@keys, [qw(product_title shipment_id)], 'right option "columns"';
+        is_deeply \@keys, [qw(order_id product_title)], 'right option "columns"';
     };
 };
 
 subtest 'method each()' => sub {
-    my $rs = $schema->resultset('Sales::OrderHeader');
-    my $order = $rs->find( 1, { prefetch => { shipments => [ 'shipping_address', 'shipping_items' ] } }, );
+    my $rs = $schema->resultset('Sales');
+    my $order = $rs->find( 1, { prefetch => { orders => [ 'shipping_address', 'items' ] } }, );
 
     subtest 'basic' => sub {
-        my @res = $order->shipments->each;
+        my @res = $order->orders->each;
         is @res, 2;
     };
 
     subtest 'default argument' => sub {
         my ( @res, @items );
-        $order->shipments->each(
+        $order->orders->each(
             sub {
                 push @res, $_;
-                $_->shipping_items->each( sub { push @items, $_ } );
+                $_->items->each( sub { push @items, $_ } );
             }
         );
         is @res,   2;
@@ -59,7 +59,7 @@ subtest 'method each()' => sub {
 
     subtest 'number' => sub {
         my ( @res, @num );
-        $order->shipments->each(
+        $order->orders->each(
             sub {
                 my ( $e, $n ) = @_;
                 push @res, $e;

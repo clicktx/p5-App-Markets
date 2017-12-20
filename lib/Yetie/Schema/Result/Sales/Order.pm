@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Sales::Order::Shipment;
+package Yetie::Schema::Result::Sales::Order;
 use Mojo::Base 'Yetie::Schema::Base::Result';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -7,7 +7,7 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column order_header_id => {
+column sales_id => {
     data_type   => 'INT',
     is_nullable => 0,
 };
@@ -17,17 +17,16 @@ column address_id => {
     is_nullable => 0,
 };
 
-# NOTE: 'order' is SQL reserved word.
 belongs_to
-  order_header => 'Yetie::Schema::Result::Sales::OrderHeader',
-  { 'foreign.id' => 'self.order_header_id' };
+  sales => 'Yetie::Schema::Result::Sales',
+  { 'foreign.id' => 'self.sales_id' };
 
 belongs_to
   shipping_address => 'Yetie::Schema::Result::Address',
   { 'foreign.id' => 'self.address_id' };
 
 has_many
-  shipping_items => 'Yetie::Schema::Result::Sales::Order::Shipment::Item',
-  { 'foreign.shipment_id' => 'self.id' };
+  items => 'Yetie::Schema::Result::Sales::Order::Item',
+  { 'foreign.order_id' => 'self.id' };
 
 1;

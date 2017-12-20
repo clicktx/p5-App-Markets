@@ -1,4 +1,4 @@
-package Yetie::Domain::Factory::Entity::Test;
+package Yetie::Domain::Factory::Test;
 use Mojo::Base 'Yetie::Domain::Factory';
 
 sub cook { }

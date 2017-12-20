@@ -7,11 +7,11 @@
     <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
 </ul>
 
-order_header_id: <%= $shipment->order_header->id %><br>
-shipment id: <%= $shipment->id %><br>
-shipping_address line1: <%= $shipment->shipping_address->line1 %><br>
+sales_id: <%= $order->sales->id %><br>
+shipment id: <%= $order->id %><br>
+shipping_address line1: <%= $order->shipping_address->line1 %><br>
 <ol>
-    % $shipment->shipping_items->each( sub {
+    % $order->items->each( sub {
         <li>
             ID: <%= $_->id %> | PRODUCT ID: <%= $_->product_id %> | QTY: <%= $_->quantity %>
         </li>

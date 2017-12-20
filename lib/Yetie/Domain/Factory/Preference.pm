@@ -1,4 +1,4 @@
-package Yetie::Domain::Factory::Entity::Preference;
+package Yetie::Domain::Factory::Preference;
 use Mojo::Base 'Yetie::Domain::Factory';
 
 has resultset => sub { shift->app->schema->resultset('Preference') };
@@ -30,11 +30,11 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Factory::Entity::Preference
+Yetie::Domain::Factory::Preference
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Preference->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Preference->new( %args )->create;
 
     # In controller
     my $entity = $c->factory('entity-prefence')->create(%args);
@@ -43,12 +43,12 @@ Yetie::Domain::Factory::Entity::Preference
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Factory::Entity::Preference> inherits all attributes from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Preference> inherits all attributes from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Factory::Entity::Preference> inherits all methods from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Preference> inherits all methods from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head2 C<build>

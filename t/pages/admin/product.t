@@ -71,8 +71,9 @@ sub t03_request : Tests() {
     $t->post_ok( '/admin/product/999/edit/category', form => $post_data )->status_is(404);
 
     # delete
-    $t->get_ok('/admin/product/3/delete')->status_is(404);
-    $t->post_ok( '/admin/product/3/delete',   form => $post_data )->status_is(200);
+    $t->get_ok('/admin/product/10/delete')->status_is(404);
+    $t->post_ok( '/admin/product/10/delete',  form => $post_data )->status_is(200);
+    $t->post_ok( '/admin/product/3/delete',   form => $post_data )->status_is( 500, 'right undeleted foreign key' );
     $t->post_ok( '/admin/product/999/delete', form => $post_data )->status_is(404);
 }
 

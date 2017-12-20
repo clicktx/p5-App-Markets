@@ -56,7 +56,7 @@ sub shipping {
 
     # shipping address
     # 商品をshipmentに移動
-    # cart.itemsからitemを減らす。shipment.shipping_itemsを増やす
+    # cart.itemsからitemを減らす。shipment.itemsを増やす
     # 本来は数量を考慮しなくてはならない
     # $item.quantityが0になった場合の動作はどうする？
     my $cart = $self->cart;
@@ -98,7 +98,7 @@ sub confirm {
 sub complete_validate {
     my $self = shift;
 
-    # NOTE: itemsに商品がある場合 or shipping_itemsが1つも無い場合はcomplete出来ない。
+    # NOTE: itemsに商品がある場合 or shipment.itemsが1つも無い場合はcomplete出来ない。
     my $cart = $self->cart;
     return $self->redirect_to('RN_cart') if $cart->count('items') or !$cart->count('all_shipping_items');
 
@@ -131,6 +131,8 @@ sub complete_validate {
         my $shipping_address_id = $result->id;
         $shipment->{shipping_address} = { id => $shipping_address_id };
     }
+    $order->{orders} = delete $order->{shipments};
+
     use DDP;
     p $order;    # debug
 
@@ -141,7 +143,7 @@ sub complete_validate {
         # Order
         # $order->{order_number} = $schema->sequence('Order');
         # $schema->resultset('Order')->create($order);    # NOTE: itemsはbulk insert されない
-        $schema->resultset('Sales::OrderHeader')->create($order);
+        $schema->resultset('Sales')->create($order);
 
         # NOTE:
         # DBIx::Class::ResultSet https://metacpan.org/pod/DBIx::Class::ResultSet#populate

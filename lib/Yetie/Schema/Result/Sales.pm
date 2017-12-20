@@ -1,6 +1,6 @@
-package Yetie::Schema::Result::Sales::OrderHeader;
+package Yetie::Schema::Result::Sales;
 use Mojo::Base 'Yetie::Schema::Base::Result';
-use DBIx::Class::Candy -autotable => v1;
+use DBIx::Class::Candy -autotable => 'singular';
 
 primary_column id => {
     data_type         => 'INT',
@@ -38,14 +38,19 @@ belongs_to
   { 'foreign.id' => 'self.address_id' };
 
 has_many
-  shipments => 'Yetie::Schema::Result::Sales::Order::Shipment',
-  { 'foreign.order_header_id' => 'self.id' };
+  orders => 'Yetie::Schema::Result::Sales::Order',
+  { 'foreign.sales_id' => 'self.id' };
+
+sub is_multiple_shipping { shift->orders->count > 1 ? 1 : 0 }
+
+1;
+__END__
 
 =encoding utf8
 
 =head1 METHODS
 
-L<Yetie::Schema::Result::Sales::OrderHeader> inherits all methods from L<Yetie::Schema::Base::Result> and implements
+L<Yetie::Schema::Result::Sales> inherits all methods from L<Yetie::Schema::Base::Result> and implements
 the following new ones.
 
 =head2 C<is_multiple_shipping>
@@ -55,7 +60,3 @@ the following new ones.
 Return boolean value.
 
 =cut
-
-sub is_multiple_shipping { shift->shipments->count > 1 ? 1 : 0 }
-
-1;
