@@ -30,11 +30,11 @@ sub to_array {
     my $self = shift;
     my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
 
-    my @columns = $args->{columns} ? @{ $args->{columns} } : $self->result_source->columns;
-    my $ignore_columns = $args->{ignore_columns} || [];
+    my @columns        = $args->{columns}        ? @{ $args->{columns} }        : $self->result_source->columns;
+    my @ignore_columns = $args->{ignore_columns} ? @{ $args->{ignore_columns} } : ();
 
     my %cnt;
-    $cnt{$_}++ for ( @columns, @{$ignore_columns} );
+    $cnt{$_}++ for ( @columns, @ignore_columns );
     my @uniq = grep { $cnt{$_} < 2 } keys %cnt;
 
     my @array;
