@@ -14,6 +14,20 @@ sub insert {
     $self->next::method(@_);
 }
 
+sub choose_column_name {
+    my $self = shift;
+    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+
+    my @columns        = $args->{columns}        ? @{ $args->{columns} }        : $self->columns;
+    my @ignore_columns = $args->{ignore_columns} ? @{ $args->{ignore_columns} } : ();
+
+    my %cnt;
+    $cnt{$_}++ for ( @columns, @ignore_columns );
+    my @uniq = grep { $cnt{$_} < 2 } keys %cnt;
+
+    return wantarray ? @uniq : \@uniq;
+}
+
 sub update {
     my $self = shift;
 
@@ -52,6 +66,18 @@ the following new ones.
 Override method.
 
 The difference, insert C<created_at> and C<updated_at> on insert(create).
+
+=head2 C<choose_column_name>
+
+    # pick on columns
+    my $cols = $result->choose_column_name( columns => [qw/id name title/] );
+    my @cols = $result->choose_column_name( columns => [qw/id name title/] );
+
+    # ignored columns
+    my $cols = $result->choose_column_name( ignore_columns => [qw/id/] );
+    my @cols = $result->choose_column_name( ignore_columns => [qw/id/] );
+
+Return C<Array> or C<Array refference>.
 
 =head2 C<update>
 
