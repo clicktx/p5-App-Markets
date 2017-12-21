@@ -89,6 +89,25 @@ Override method.
 
 The difference, insert C<created_at> and C<updated_at> on insert(create).
 
+=head2 C<to_hash>
+
+    my %data = $result->to_hash();
+    my $data = $result->to_hash();
+
+Return C<Hash> or C<Hash refference>.
+
+=over
+
+=item OPTIONS
+
+    # pick on columns
+    my %data = $restul->to_hash( columns => [qw/foo bar/] );
+
+    # ignored columns
+    my %data = $result->to_hash( ignore_columns => [qw/foo bar/] );
+
+=back
+
 =head2 C<update>
 
 Override method.

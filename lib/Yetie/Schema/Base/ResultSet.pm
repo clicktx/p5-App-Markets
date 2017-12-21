@@ -90,8 +90,14 @@ Return C<Array> or C<Array refference>.
 
 Dump columns data.
 
+=over
+
+=item OPTIONS
+
     my @data = $rs->search({})->to_array( columns => [qw/id name title/] );
     my @data = $rs->search({})->to_array( ignore_columns => [qw/id/] );
+
+=back
 
 =head2 C<update>
 
