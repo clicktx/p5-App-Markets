@@ -13,7 +13,8 @@
         </li>
 
         % $cart->items->each( sub {
-            % my ($item, $i) = @_;
+            % my ( $item, $num ) = @_;
+            % my $i = $num - 1;
             <li class="cart-item">
                 <a href="<%= url_for 'RN_product' => { product_id => $item->product_id } %>">
                     <%= $item->product_title %>

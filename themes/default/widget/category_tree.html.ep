@@ -1,6 +1,6 @@
 <%= tag 'ul' => begin =%>
     % $tree->children->each( sub {
-        % my ( $node, $i ) = @_;
+        % my $node = shift;
         <%= tag 'li' => begin =%>
             <%= link_to 'RN_category' => { category_id => $node->id } => begin =%>
             <%= $node->title =%>
