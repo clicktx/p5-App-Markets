@@ -15,13 +15,6 @@ my @entities;
 Yetie::Domain::Entity->attr( [qw(hoge)] );
 push @entities, Yetie::Domain::Entity->new($_) for @data;
 
-subtest 'each' => sub {
-    my $c = Yetie::Domain::Collection->new( 1, 2, 3 );
-    my @idx;
-    $c->each( sub { my ( $e, $i ) = @_; push @idx, $i } );
-    is_deeply \@idx, [ 0, 1, 2 ], 'right';
-};
-
 subtest 'find' => sub {
     my $c = Yetie::Domain::Collection->new(@entities);
     is $c->find(2)->{hoge}, 2, 'right found entity';
