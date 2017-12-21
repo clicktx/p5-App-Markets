@@ -77,9 +77,10 @@ sub merge {
     foreach my $item ( @{ $stored->items } ) {
         $self->items->each(
             sub {
-                my ( $e, $i ) = @_;
+                my ( $e, $num ) = @_;
                 if ( $e->is_equal($item) ) {
                     $item->quantity( $e->quantity + $item->quantity );
+                    my $i = $num - 1;
                     splice @{ $self->items }, $i, 1;
                 }
             }
