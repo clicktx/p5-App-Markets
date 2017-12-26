@@ -267,13 +267,13 @@ Return Entity Cart Object.
 
     my $removed_item = $cart->remove_item($item_id);
 
-Return L<Yetie::Domain::Entity::SellingItem> object or undef.
+Return L<Yetie::Domain::Entity::Cart::Item> object or undef.
 
 =head2 C<remove_shipping_item>
 
     my $removed_item = $cart->remove_shipping_item($index, $item_id);
 
-Return L<Yetie::Domain::Entity::SellingItem> object or undef.
+Return L<Yetie::Domain::Entity::Cart::Item> object or undef.
 
 =head2 C<subtotal>
 
@@ -301,4 +301,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::Entity::Shipment>, L<Yetie::Domain::Entity::SellingItem>
+L<Yetie::Domain::Entity>, L<Yetie::Domain::Entity::Shipment>, L<Yetie::Domain::Entity::Cart::Item>
