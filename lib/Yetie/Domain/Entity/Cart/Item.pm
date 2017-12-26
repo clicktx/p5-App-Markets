@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::SellingItem;
+package Yetie::Domain::Entity::Cart::Item;
 use Yetie::Domain::Entity;
 
 has id => sub { shift->hash_code };
@@ -28,7 +28,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::SellingItem
+Yetie::Domain::Entity::Cart::Item
 
 =head1 SYNOPSIS
 
@@ -36,7 +36,7 @@ Yetie::Domain::Entity::SellingItem
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::SellingItem> inherits all attributes from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::Cart::Item> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<id>
@@ -51,7 +51,7 @@ the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::SellingItem> inherits all methods from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::Cart::Item> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<subtotal>
