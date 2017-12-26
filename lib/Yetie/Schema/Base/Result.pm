@@ -3,6 +3,20 @@ use Mojo::Base 'DBIx::Class::Core';
 
 __PACKAGE__->load_components(qw/InflateColumn::DateTime/);
 
+sub choose_column_name {
+    my $self = shift;
+    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+
+    my @columns        = $args->{columns}        ? @{ $args->{columns} }        : $self->columns;
+    my @ignore_columns = $args->{ignore_columns} ? @{ $args->{ignore_columns} } : ();
+
+    my %cnt;
+    $cnt{$_}++ for ( @columns, @ignore_columns );
+    my @uniq = grep { $cnt{$_} < 2 } keys %cnt;
+
+    return wantarray ? @uniq : \@uniq;
+}
+
 sub insert {
     my $self = shift;
 
@@ -22,20 +36,6 @@ sub to_hash {
     $pair{$_} = $self->get_column($_) for @columns;
 
     return wantarray ? (%pair) : \%pair;
-}
-
-sub choose_column_name {
-    my $self = shift;
-    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
-
-    my @columns        = $args->{columns}        ? @{ $args->{columns} }        : $self->columns;
-    my @ignore_columns = $args->{ignore_columns} ? @{ $args->{ignore_columns} } : ();
-
-    my %cnt;
-    $cnt{$_}++ for ( @columns, @ignore_columns );
-    my @uniq = grep { $cnt{$_} < 2 } keys %cnt;
-
-    return wantarray ? @uniq : \@uniq;
 }
 
 sub update {
@@ -71,12 +71,6 @@ the following new ones.
 L<Yetie::Schema::Base::Result> inherits all methods from L<DBIx::Class::Core> and implements
 the following new ones.
 
-=head2 C<insert>
-
-Override method.
-
-The difference, insert C<created_at> and C<updated_at> on insert(create).
-
 =head2 C<choose_column_name>
 
     # pick on columns
@@ -88,6 +82,31 @@ The difference, insert C<created_at> and C<updated_at> on insert(create).
     my @cols = $result->choose_column_name( ignore_columns => [qw/id/] );
 
 Return C<Array> or C<Array refference>.
+
+=head2 C<insert>
+
+Override method.
+
+The difference, insert C<created_at> and C<updated_at> on insert(create).
+
+=head2 C<to_hash>
+
+    my %data = $result->to_hash();
+    my $data = $result->to_hash();
+
+Return C<Hash> or C<Hash refference>.
+
+=over
+
+=item OPTIONS
+
+    # pick on columns
+    my %data = $restul->to_hash( columns => [qw/foo bar/] );
+
+    # ignored columns
+    my %data = $result->to_hash( ignore_columns => [qw/foo bar/] );
+
+=back
 
 =head2 C<update>
 

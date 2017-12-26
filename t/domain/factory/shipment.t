@@ -29,7 +29,7 @@ subtest 'data' => sub {
     cmp_deeply $entity,
       bless {
         shipping_address => ( bless { line1 => 'Silicon Valley' }, 'Yetie::Domain::Entity::Address' ),
-        items => ( bless [ bless {}, 'Yetie::Domain::Entity::SellingItem', ], 'Yetie::Domain::Collection' ),
+        items => ( bless [ bless {}, 'Yetie::Domain::Entity::Cart::Item', ], 'Yetie::Domain::Collection' ),
       },
       'Yetie::Domain::Entity::Shipment';
 };

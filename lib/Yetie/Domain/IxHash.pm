@@ -125,6 +125,11 @@ Yetie::Domain::IxHash
 
 =head1 SYNOPSIS
 
+    my $hash = ix_hash( foo => 1, bar => 2, baz => 3 );
+
+    # foo1 bar2 baz3
+    $hash->each( sub { say $a, $b } );
+
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
@@ -133,7 +138,7 @@ Yetie::Domain::IxHash
 
 =head2 C<ix_hash>
 
-    my $collection = collection(1, 2, 3);
+    my $hash = ix_hash( foo => 1, bar => 2, baz => 3 );
 
 Construct a new index-hash-based L<Yetie::Domain::IxHash> object.
 

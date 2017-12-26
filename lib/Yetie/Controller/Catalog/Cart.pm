@@ -6,7 +6,8 @@ sub init_form {
 
     $cart->items->each(
         sub {
-            my ( $item, $i ) = @_;
+            my ( $item, $num ) = @_;
+            my $i = $num - 1;
             $form->field("quantity.$i")->value( $item->quantity );
         }
     );
@@ -34,7 +35,8 @@ sub index {
         # Edit cart
         $cart->items->each(
             sub {
-                my ( $item, $i ) = @_;
+                my ( $item, $num ) = @_;
+                my $i = $num - 1;
                 $item->quantity( $form->scope_param('quantity')->[$i] );
             }
         );
