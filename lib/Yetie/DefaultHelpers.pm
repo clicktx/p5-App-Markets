@@ -21,6 +21,7 @@ sub register {
     $app->helper( entity_cache     => sub { _entity_cache(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
+    $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
     $app->helper( schema           => sub { shift->app->schema } );
     $app->helper( service          => sub { _service(@_) } );
     $app->helper( template         => sub { _template(@_) } );
@@ -157,6 +158,13 @@ Return L<Yetie::Domain::Factory> Object.
     $c->pref( hoge => 'fizz', fuga => 'bazz' );
 
 Get/Set preference.
+
+=head2 C<resultset>
+
+    my $resultset = $c->resultset('Foo::Bar');
+    my $resultset = $c->resultset('foo-bar');
+
+Return L<Yetie::Schema::ResultSet> object.
 
 =head2 C<schema>
 
