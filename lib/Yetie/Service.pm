@@ -4,6 +4,8 @@ use Scalar::Util ();
 
 has [qw/app controller/];
 
+sub factory { shift->app->factory(@_) }
+
 sub schema { shift->app->schema(@_) }
 
 sub new {
@@ -53,6 +55,12 @@ a L<Mojolicious::Controller> object.
 
 L<Yetie::Service> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
+
+=head2 C<factory>
+
+    my $factory = $service->factory('entity-foo');
+
+Alias $app->factory().
 
 =head2 C<schema>
 
