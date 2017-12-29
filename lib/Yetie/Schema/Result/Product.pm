@@ -41,7 +41,7 @@ has_many
   { 'foreign.product_id' => 'self.id' };
 
 has_many
-  order_items => 'Yetie::Schema::Result::Order::Item',
+  order_items => 'Yetie::Schema::Result::Sales::Order::Item',
   { 'foreign.product_id' => 'self.id' };
 
 # Add Index
