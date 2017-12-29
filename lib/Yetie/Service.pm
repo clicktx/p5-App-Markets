@@ -5,8 +5,6 @@ use Scalar::Util ();
 
 has [qw/app controller/];
 
-sub model { shift->app->model(@_) }
-
 sub schema { shift->app->schema(@_) }
 
 sub new {
@@ -56,12 +54,6 @@ a L<Mojolicious::Controller> object.
 
 L<Yetie::Service> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
-
-=head2 C<model>
-
-    $service->model('hoge')->mehod;
-
-Alias $app->model().
 
 =head2 C<schema>
 
