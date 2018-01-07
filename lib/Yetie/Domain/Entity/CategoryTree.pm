@@ -1,6 +1,5 @@
 package Yetie::Domain::Entity::CategoryTree;
 use Yetie::Domain::Entity;
-use Yetie::Domain::Collection;
 
 has children => sub { Yetie::Domain::Collection->new };
 
