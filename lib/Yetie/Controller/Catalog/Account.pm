@@ -64,7 +64,7 @@ sub logout {
     my $self = shift;
 
     my $session = $self->server_session;
-    $self->model('account')->remove_session($session);
+    $session->remove_session;
     $self->render();
 }
 

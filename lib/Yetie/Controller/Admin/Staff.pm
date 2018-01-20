@@ -60,7 +60,7 @@ sub logout {
     my $self = shift;
 
     my $session = $self->server_session;
-    $self->model('account')->remove_session($session);
+    $session->remove_session;
 
     return $self->redirect_to('RN_admin_login');
 }

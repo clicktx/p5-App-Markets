@@ -43,6 +43,19 @@ sub remove_cart {
     return $self->store->delete_cart($id);
 }
 
+sub remove_session {
+    my $self = shift;
+
+    # 2重ログアウト対策
+    $self->_is_flushed(1);
+    return 0 unless $self->_is_stored;
+
+    $self->expire;
+    $self->_is_flushed(0);
+    $self->flush;
+    return 1;
+}
+
 sub staff_id {
     my ( $self, $id ) = @_;
     return $id ? $self->data( staff_id => $id ) : $self->data('staff_id');
@@ -142,6 +155,13 @@ Stored session data.
     $session->remove_cart($cart_id);
 
 Remove cart from DB.
+
+=head2 C<remove_session>
+
+    my $bool = $session->remove_session;
+
+Remove session.
+Return C<boolean> value.
 
 =head2 C<staff_id>
 
