@@ -177,4 +177,13 @@ subtest 'cart is_modified' => sub {
     is $cart->is_modified, 1, 'right cart modified';
 };
 
+subtest 'remove_session' => sub {
+    my $session = t::Util::server_session($app);
+    $session->create;
+    $session->flush;
+
+    is $session->remove_session, 1, 'right remove session';
+    is $session->remove_session, 0, 'right do not remove session';
+};
+
 done_testing();
