@@ -35,7 +35,7 @@ column price => Yetie::Schema::Result::Product->column_info('price');
 
 # NOTE: 'order' is SQL reserved word.
 belongs_to
-  an_order => 'Yetie::Schema::Result::Sales::Order',
+  sales_order => 'Yetie::Schema::Result::Sales::Order',
   { 'foreign.id' => 'self.order_id' };
 
 belongs_to
