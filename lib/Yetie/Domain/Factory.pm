@@ -199,12 +199,6 @@ Create C<Yetie::Domain::IxHash> type aggregate.
 
 Alias for L</create_entity>.
 
-=head2 C<create_collection>
-
-    my $entity = $factory->create_collection( 1, 2, 3 );
-    my $entity = $factory->create_collection( [ 1, 2, 3 ] );
-    my $entity = $factory->create_collection( [ [ 1, 2 ], [ 3, 4 ], [ 5, 6 ] ] );
-
 =head2 C<create_entity>
 
     my $entity = $factory->create_entity;
