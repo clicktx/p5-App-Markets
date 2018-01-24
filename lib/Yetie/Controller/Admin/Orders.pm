@@ -8,32 +8,11 @@ sub index {
     $self->init_form();
 
     # return $self->render() unless $form->has_data;
-    $form->do_validate;
+    return $self->render() unless $form->do_validate;
 
-    my $conditions = {
-        where    => '',
-        order_by => '',
-        page_no  => $form->param('page') || 1,
-        rows     => $form->param('per_page') || 5,
-    };
+    my $orders = $self->service('orders')->content($form);
+    $self->stash( content => $orders );
 
-    my $rs     = $self->app->schema->resultset('Sales::Order');
-    my $orders = $rs->search_sales_list($conditions);
-
-    # content entity
-    my $content = $self->app->factory('entity-content')->create(
-        {
-            # title      => $xx->title,
-            # breadcrumb => $xx->breadcrumb,
-            pager  => $orders->pager,
-            params => $form->params,
-        }
-    );
-
-    $self->stash(
-        content => $content,
-        orders  => $orders,
-    );
     $self->render();
 }
 
