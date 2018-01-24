@@ -1,10 +1,10 @@
 package Yetie::Domain::Entity;
 use Yetie::Domain::Base;
-use Yetie::Domain::Collection;
-use Yetie::Domain::IxHash;
-use Mojo::Util qw/sha1_sum/;
-use Scalar::Util qw/blessed/;
-use Data::Clone qw/data_clone/;
+use Yetie::Domain::Collection qw(collection);
+use Yetie::Domain::IxHash qw(ix_hash);
+use Mojo::Util qw();
+use Scalar::Util qw();
+use Data::Clone qw();
 
 has 'id';
 
@@ -12,12 +12,12 @@ my @needless_attrs = (qw/id created_at updated_at/);
 
 sub clone {
     my $self  = shift;
-    my $clone = data_clone($self);
+    my $clone = Data::Clone::data_clone($self);
 
     my @attributes = keys %{$self};
     foreach my $attr (@attributes) {
         next unless $self->can($attr);
-        next unless blessed( $self->$attr );
+        next unless Scalar::Util::blessed( $self->$attr );
         $clone->$attr( $self->$attr->map( sub { $_->clone } ) ) if $self->$attr->can('map');
     }
     $clone->_is_modified(0);
@@ -28,8 +28,8 @@ sub has_data { return shift->id ? 1 : 0 }
 
 sub hash_code {
     my ( $self, $arg ) = @_;
-    if   ( @_ > 1 ) { return defined $arg      ? sha1_sum($arg)        : undef }
-    else            { return defined $self->id ? sha1_sum( $self->id ) : undef }
+    if   ( @_ > 1 ) { return defined $arg      ? Mojo::Util::sha1_sum($arg)        : undef }
+    else            { return defined $self->id ? Mojo::Util::sha1_sum( $self->id ) : undef }
 }
 
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
@@ -73,7 +73,7 @@ sub to_data {
     my $self = shift;
     my $h    = $self->to_hash;
     my %hash;
-    $hash{$_} = blessed $h->{$_} ? $h->{$_}->to_data : $h->{$_} for keys %{$h};
+    $hash{$_} = Scalar::Util::blessed $h->{$_} ? $h->{$_}->to_data : $h->{$_} for keys %{$h};
     return \%hash;
 }
 
@@ -116,6 +116,20 @@ Yetie::Domain::Entity - Entity Object Base Class
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
+
+=head1 FUNCTIONS
+
+=head2 C<collection>
+
+    my $collection = collection( 'foo', 'bar', 'baz' );
+
+Construct a new index-hash-based L<Yetie::Domain::Collection> object.
+
+=head2 C<ix_hash>
+
+    my $ix_hash = ix_hash( foo => 1, bar => 2, baz => 3 );
+
+Construct a new index-hash-based L<Yetie::Domain::IxHash> object.
 
 =head1 ATTRIBUTES
 
@@ -220,4 +234,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Base>, L<Mojo::Base>
+L<Yetie::Domain::Base>, L<Mojo::Base>, L<Yetie::Domain::Collection>, L<Yetie::Domain::IxHash>

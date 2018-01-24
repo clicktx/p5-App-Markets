@@ -34,6 +34,16 @@ subtest 'basic' => sub {
     is $e->hash_code(undef), undef, 'right undefined arg entity';
 };
 
+subtest 'function' => sub {
+    my $c = collection( 1, 2, 3 );
+    isa_ok $c, 'Yetie::Domain::Collection';
+    is_deeply $c, [ 1, 2, 3 ], 'right deeply';
+
+    my $h = ix_hash( a => 1, b => 2 );
+    isa_ok $h, 'Yetie::Domain::IxHash';
+    is_deeply $h, { a => 1, b => 2 }, 'right deeply';
+};
+
 subtest 'clone' => sub {
     my $data = { id => 1, hoge => [ {}, {} ], fuga => { a => [ {}, {} ] } };
     my $e = $pkg->new($data);
