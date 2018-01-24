@@ -4,25 +4,29 @@
 <h1><%= title %></h1>
 
 <ul>
-% while ( my $order = $orders->next ) {
+% my $orders = $content->order_list;
+% $orders->each( sub {
+    % my $order_summary = shift;
     <li>
         [
-        <%= link_to url_for( 'RN_admin_order_edit', id => $order->id ) => begin %>
+        <%= link_to url_for( 'RN_admin_order_edit', id => $order_summary->id ) => begin %>
             edit
         <% end %>
         ]
-        [ <%= link_to 'duplicate' => url_for( 'RN_admin_order_duplicate', id => $order->id ) %> ]
-        <% my $sales = $order->sales; %>
-        <%= link_to url_for( 'RN_admin_order', id => $order->id ) => begin %>
-            sales id: <%= $sales->id %>  ship id: <%= $order->id %>
-            <%= $sales->created_at %>
-            <%= $sales->billing_address->line1 %> to <%= $order->shipping_address->line1 %>
+        [ <%= link_to 'duplicate' => url_for( 'RN_admin_order_duplicate', id => $order_summary->id ) %> ]
+        <%= link_to url_for( 'RN_admin_order', id => $order_summary->id ) => begin %>
+            order id: <%= $order_summary->id %>
+            purchased_on: <%= $order_summary->purchased_on %>
+            bill_to_name: <%= $order_summary->bill_to_name %>
+            ship_to_name: <%= $order_summary->ship_to_name %>
+            total_amount: <%= $order_summary->total_amount %>
+            order_status: <%= $order_summary->order_status %>
         <% end %>
     </li>
-% }
+% });
 </ul>
 
-<%= include 'admin/component/pagination' %>
+<%= include 'admin/component/pagination', pager => $content->pager, params => $content->form->params %>
 
 <h2><%= __('Orders') %></h2>
 
