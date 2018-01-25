@@ -6,6 +6,8 @@ has [qw/app controller/];
 
 sub factory { shift->app->factory(@_) }
 
+sub service { shift->app->service(@_) }
+
 sub schema { shift->app->schema(@_) }
 
 sub new {
@@ -61,6 +63,12 @@ the following new ones.
     my $factory = $service->factory('entity-foo');
 
 Alias $app->factory().
+
+=head2 C<service>
+
+    my $hoo_service = $service->service('hoo');
+
+Alias $app->service().
 
 =head2 C<schema>
 
