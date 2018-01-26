@@ -18,7 +18,7 @@ sub find_by_id {
     );
 }
 
-sub search_sales_list {
+sub search_sales_orders {
     my ( $self, $args ) = @_;
 
     my $where = $args->{where} || {};
@@ -32,7 +32,7 @@ sub search_sales_list {
             page     => $page_no,
             rows     => $rows,
             order_by => $order_by,
-            prefetch => [ 'shipping_address', { sales => [ 'customer', 'billing_address' ] }, ],
+            prefetch => [ 'shipping_address', 'items', { sales => [ 'customer', 'billing_address' ] }, ],
         }
     );
 }
@@ -65,11 +65,11 @@ the following new ones.
 
     my $shipment = $rs->find_by_id($shipment_id);
 
-=head2 C<search_sales_list>
+=head2 C<search_sales_orders>
 
-    my $orders = $rs->search_sales_list( \%args);
+    my $orders = $rs->search_sales_orders( \%args);
 
-    my $orders = $rs->search_sales_list(
+    my $orders = $rs->search_sales_orders(
         {
             where => { ... },
             order_by => { ... },

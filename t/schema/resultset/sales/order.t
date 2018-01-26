@@ -12,12 +12,12 @@ my $rs     = $schema->resultset('Sales::Order');
 
 subtest 'method find_by_id()' => sub {
     my $res = $rs->find_by_id(1);
-    is $res->id,              1, 'right id';
-    is $res->sales_id, 1, 'right sales_id';
-    is $res->address_id,      1, 'right address_id';
+    is $res->id,         1, 'right id';
+    is $res->sales_id,   1, 'right sales_id';
+    is $res->address_id, 1, 'right address_id';
     cmp_deeply $res->{related_resultsets},
       {
-        sales     => ignore(),
+        sales            => ignore(),
         shipping_address => ignore(),
         items            => ignore(),
       },
@@ -33,25 +33,26 @@ subtest 'method find_by_id()' => sub {
     ok !$res, 'right not found';
 };
 
-subtest 'method search_sales_list()' => sub {
+subtest 'method search_sales_orders()' => sub {
     my $args = {
         where    => '',
         order_by => { -asc => 'me.id' },
         page_no  => 1,
         rows     => 3,
     };
-    my $itr = $rs->search_sales_list($args);
+    my $itr = $rs->search_sales_orders($args);
     is $itr->count, 3, 'right count';
     isa_ok $itr->pager, 'DBIx::Class::ResultSet::Pager', 'right pager';
 
     my $row = $itr->first;
-    is $row->id,              1, 'right id';
-    is $row->sales_id, 1, 'right sales_id';
-    is $row->address_id,      1, 'right address_id';
+    is $row->id,         1, 'right id';
+    is $row->sales_id,   1, 'right sales_id';
+    is $row->address_id, 1, 'right address_id';
     cmp_deeply $row->{related_resultsets},
       {
-        sales     => ignore(),
+        sales            => ignore(),
         shipping_address => ignore(),
+        items            => ignore(),
       },
       'right related_resultsets';
     cmp_deeply $row->sales->{related_resultsets},
@@ -62,7 +63,7 @@ subtest 'method search_sales_list()' => sub {
       'right customer lated_resultsets';
 
     $args->{where} = { 'me.id' => 999 };
-    $itr = $rs->search_sales_list($args);
+    $itr = $rs->search_sales_orders($args);
     is $itr->count, 0, 'right count';
 };
 
