@@ -18,7 +18,9 @@ subtest 'basic' => sub {
     is $item->quantity,      1,              'right quantity';
     is $item->price,         100,            'right price';
 
-    is $item->hash_code, '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2', 'right hash_code';
+    my $hash_code = '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2';
+    is $item->hash_code, $hash_code, 'right hash_code';
+    is $item->id, $hash_code, 'right id';
     is $item->is_modified, 0, 'right default modified';
 
     $item->product_id(111);
@@ -36,16 +38,6 @@ subtest 'basic' => sub {
 
     is $item->is_equal($item),  1, 'right equal item';
     is $item->is_equal($item2), 0, 'right not equal item';
-};
-
-subtest 'subtotal' => sub {
-    my $item = Yetie::Domain::Entity::Cart::Item->new(
-        {
-            quantity => 2,
-            price    => 300,
-        }
-    );
-    is $item->subtotal, 600, 'right subtotal';
 };
 
 done_testing();
