@@ -17,10 +17,6 @@ subtest 'basic' => sub {
     is $item->product_title, 'test product', 'right product_title';
     is $item->quantity,      1,              'right quantity';
     is $item->price,         100,            'right price';
-
-    my $hash_code = '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2';
-    is $item->hash_code, $hash_code, 'right hash_code';
-    is $item->id, $hash_code, 'right id';
     is $item->is_modified, 0, 'right default modified';
 
     $item->product_id(111);

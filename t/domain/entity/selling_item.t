@@ -38,4 +38,13 @@ subtest 'subtotal' => sub {
     is $item->subtotal, 600, 'right subtotal';
 };
 
+subtest 'to_digest' => sub {
+    my $item = Yetie::Domain::Entity::SellingItem->new(
+        {
+            product_id => 111,
+        }
+    );
+    is $item->to_digest, '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2', 'right identify';
+};
+
 done_testing();

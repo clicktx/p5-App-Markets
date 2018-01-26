@@ -1,7 +1,6 @@
 package Yetie::Domain::Entity::SellingItem;
 use Yetie::Domain::Entity;
 
-has id => sub { shift->hash_code };
 has product_id    => '';
 has product_title => '';
 has price         => 0;
@@ -13,6 +12,15 @@ sub subtotal {
 
     $subtotal = $self->price * $self->quantity;
     return $subtotal;
+}
+
+sub to_digest {
+    my $self = shift;
+    my $bytes;
+
+    # $bytes .= ...;
+    $bytes .= $self->product_id;
+    return $self->hash_code($bytes);
 }
 
 1;
@@ -30,8 +38,6 @@ Yetie::Domain::Entity::SellingItem
 
 L<Yetie::Domain::Entity::SellingItem> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
-
-=head2 C<id>
 
 =head2 C<product_id>
 
@@ -52,6 +58,13 @@ the following new ones.
 
 Returns the combined price of all the items in the row.
 This is equal to C< $item-E<gt>price> times C<$item-E<gt>quantity>.
+
+=head2 C<to_digest>
+
+    my $id = $item->to_digest;
+
+Return SHA1 string.
+This method gets a string identifying items.
 
 =head1 AUTHOR
 

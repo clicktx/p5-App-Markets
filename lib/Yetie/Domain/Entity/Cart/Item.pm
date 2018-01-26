@@ -1,15 +1,7 @@
 package Yetie::Domain::Entity::Cart::Item;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::SellingItem';
 
-has id => sub { shift->hash_code };
-
-sub hash_code {
-    my $self  = shift;
-    my $bytes = $self->product_id;
-
-    # $bytes .= ...;
-    $self->SUPER::hash_code($bytes);
-}
+has id => sub { shift->to_digest };
 
 1;
 __END__
