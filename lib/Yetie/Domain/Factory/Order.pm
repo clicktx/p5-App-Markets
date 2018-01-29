@@ -9,6 +9,9 @@ sub cook {
 
     my $shipping_address = $self->factory('entity-address')->create( $self->param('shipping_address') || {} );
     $self->param( shipping_address => $shipping_address );
+
+    my $items = $self->factory('entity-order-items')->create( { item_list => $self->param('items') || [] } );
+    $self->param( items => $items );
 }
 
 1;
