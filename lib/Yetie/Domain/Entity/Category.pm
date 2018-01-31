@@ -1,6 +1,5 @@
 package Yetie::Domain::Entity::Category;
 use Yetie::Domain::Entity;
-use Yetie::Domain::Collection;
 
 has breadcrumb => sub { Yetie::Domain::Collection->new };
 has [qw(parent_id products)];

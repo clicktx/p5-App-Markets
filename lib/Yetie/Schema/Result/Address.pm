@@ -25,4 +25,11 @@ has_many
   orders => 'Yetie::Schema::Result::Sales::Order',
   { 'foreign.address_id' => 'self.id' };
 
+# inflate_column 'line1' => {
+#     inflate => sub { my $value = shift; bless \$value, 'Hoge' },
+#     deflate => sub { },
+# };
+
+sub to_data { shift->as_fdat }
+
 1;

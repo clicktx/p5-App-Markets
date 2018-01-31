@@ -30,4 +30,4 @@
     % });
 </ul>
 
-<%= include 'admin/component/pagination' %>
+<%= include 'admin/component/pagination', pager => $content->pager, params => $content->params %>

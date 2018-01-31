@@ -42,7 +42,8 @@ has_many
 
 has_many
   order_items => 'Yetie::Schema::Result::Sales::Order::Item',
-  { 'foreign.product_id' => 'self.id' };
+  { 'foreign.product_id' => 'self.id' },
+  { cascade_delete       => 0 };
 
 # Add Index
 sub sqlt_deploy_hook {

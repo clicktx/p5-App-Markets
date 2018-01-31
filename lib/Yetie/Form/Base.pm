@@ -162,7 +162,7 @@ sub _do_check {
 
 sub _fieldset {
     my $self = shift;
-    my $ns = shift || die 'Argument empty';
+    my $ns = shift || 'Basic';
     $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
 
     my $class = $self->name_space . "::" . $ns;

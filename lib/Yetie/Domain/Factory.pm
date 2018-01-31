@@ -47,20 +47,7 @@ sub create_entity {
     my $self = shift;
 
     my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
-
-    # inflate datetime
-    my @keys = grep { $_ =~ qr/^.+_at$/ } keys %{$args};
-    foreach my $key (@keys) {
-        next if !$args->{$key} or ref $args->{$key} eq 'DateTime';
-
-        my $strp = DateTime::Format::Strptime->new(
-            pattern   => '%Y-%m-%d %H:%M:%S',
-            time_zone => $Yetie::Schema::TIME_ZONE,
-        );
-        $args->{$key} = $strp->parse_datetime( $args->{$key} );
-    }
-
-    $self->params($args);
+    $self->params( _inflate_datetime($args) );
 
     # cooking entity
     $self->cook();
@@ -130,6 +117,23 @@ sub params {
     # Setter
     my %args = @_ > 1 ? @_ : %{ $_[0] };
     $self->{$_} = $args{$_} for keys %args;
+}
+
+sub _inflate_datetime {
+    my $args = shift;
+
+    # inflate datetime
+    my @keys = grep { $_ =~ qr/^.+_at$/ } keys %{$args};
+    foreach my $key (@keys) {
+        next if !$args->{$key} or ref $args->{$key} eq 'DateTime';
+
+        my $strp = DateTime::Format::Strptime->new(
+            pattern   => '%Y-%m-%d %H:%M:%S',
+            time_zone => $Yetie::Schema::TIME_ZONE,
+        );
+        $args->{$key} = $strp->parse_datetime( $args->{$key} );
+    }
+    return $args;
 }
 
 1;

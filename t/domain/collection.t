@@ -9,13 +9,19 @@ my @data = ( { id => 1, hoge => 1 }, { id => 2, hoge => 2 }, { id => 3, hoge => 
 
 subtest 'basic' => sub {
     isa_ok Yetie::Domain::Collection->new(), 'Mojo::Collection';
+
+    my $c = Yetie::Domain::Collection::c( 1, 2, 3 );
+    is_deeply $c, [ 1, 2, 3 ], 'right c()';
+
+    $c = Yetie::Domain::Collection::collection( 1, 2, 3 );
+    is_deeply $c, [ 1, 2, 3 ], 'right collection()';
 };
 
-my @entities;
-Yetie::Domain::Entity->attr( [qw(hoge)] );
-push @entities, Yetie::Domain::Entity->new($_) for @data;
-
 subtest 'find' => sub {
+    my @entities;
+    Yetie::Domain::Entity->attr( [qw(hoge)] );
+    push @entities, Yetie::Domain::Entity->new($_) for @data;
+
     my $c = Yetie::Domain::Collection->new(@entities);
     is $c->find(2)->{hoge}, 2, 'right found entity';
     is $c->find(5), undef, 'right not found entity';

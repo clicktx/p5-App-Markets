@@ -2,7 +2,9 @@ package Yetie::Domain::Collection;
 use Mojo::Base 'Mojo::Collection';
 use Scalar::Util qw/blessed/;
 
-our @EXPORT_OK = ('collection');
+our @EXPORT_OK = qw(c collection);
+
+sub c { collection(@_) }
 
 sub collection { __PACKAGE__->new(@_) }
 
@@ -36,6 +38,10 @@ L<Yetie::Domain::Collection> inherits all attributes from L<Mojo::Collection> an
 the following new ones.
 
 =head1 FUNCTIONS
+
+=head2 C<c>
+
+Alias L</collection>.
 
 =head2 C<collection>
 

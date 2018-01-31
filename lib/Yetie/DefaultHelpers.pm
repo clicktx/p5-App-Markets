@@ -55,6 +55,7 @@ sub _factory {
 
     my $factory = Yetie::Domain::Factory->new(@_);
     $factory->app( $self->app );
+    Scalar::Util::weaken $factory->{app};
     return $factory;
 }
 

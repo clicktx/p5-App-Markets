@@ -76,6 +76,8 @@ sub methods {
     my $c       = shift;
     my $service = $c->service('test');
 
+    can_ok $service, 'factory';
+    can_ok $service, 'service';
     isa_ok $service->schema, 'Yetie::Schema';
     return $c->render( json => {} );
 }

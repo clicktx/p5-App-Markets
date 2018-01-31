@@ -25,8 +25,8 @@ sub duplicate_product {
     my $entity = $self->controller->factory('product')->build($product_id);
     return unless $entity->has_data;
 
-    my $title  = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
-    my $i      = $self->resultset->search( { title => { like => $title . '%' } } )->count + 1;
+    my $title = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
+    my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count + 1;
     $entity->title( $title . $i );
 
     delete $entity->{breadcrumb};
@@ -36,6 +36,13 @@ sub duplicate_product {
     $self->app->admin_log->info( 'Duplicate product from ID:' . $product_id ) if $result;
 
     return $result;
+}
+
+sub is_sold {
+    my ( $self, $product_id ) = @_;
+
+    my $cnt = $self->schema->resultset('Sales::Order::Item')->search( { product_id => $product_id } )->count;
+    return $cnt ? 1 : 0;
 }
 
 sub new_product {

@@ -18,7 +18,7 @@ sub find_by_id {
     );
 }
 
-sub search_sales_list {
+sub search_sales_orders {
     my ( $self, $args ) = @_;
 
     my $where = $args->{where} || {};
@@ -32,9 +32,34 @@ sub search_sales_list {
             page     => $page_no,
             rows     => $rows,
             order_by => $order_by,
-            prefetch => [ 'shipping_address', { sales => [ 'customer', 'billing_address' ] }, ],
+            prefetch => [ 'shipping_address', 'items', { sales => [ 'customer', 'billing_address' ] }, ],
         }
     );
+}
+
+sub to_data {
+    my $self = shift;
+
+    my @order_list;
+    $self->each(
+        sub {
+            my $order = _mapping(shift);
+            push @order_list, $order;
+        }
+    );
+    return \@order_list;
+}
+
+sub _mapping {
+    my $row = shift;
+    return {
+        id               => $row->id,
+        purchased_on     => $row->sales->created_at,
+        billing_address  => $row->sales->billing_address->to_data,
+        shipping_address => $row->shipping_address->to_data,
+        items            => $row->items->to_data,
+        order_status => '',
+    };
 }
 
 1;
@@ -65,11 +90,11 @@ the following new ones.
 
     my $shipment = $rs->find_by_id($shipment_id);
 
-=head2 C<search_sales_list>
+=head2 C<search_sales_orders>
 
-    my $orders = $rs->search_sales_list( \%args);
+    my $orders = $rs->search_sales_orders( \%args);
 
-    my $orders = $rs->search_sales_list(
+    my $orders = $rs->search_sales_orders(
         {
             where => { ... },
             order_by => { ... },
@@ -77,6 +102,10 @@ the following new ones.
             $rows => 20,
         }
     );
+
+=head2 C<to_data>
+
+    my $data = $rs->to_data;
 
 =head1 AUTHOR
 

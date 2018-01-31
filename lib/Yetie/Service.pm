@@ -1,23 +1,24 @@
 package Yetie::Service;
 use Mojo::Base -base;
-
 use Scalar::Util ();
 
 has [qw/app controller/];
 
-sub model { shift->app->model(@_) }
+sub factory { shift->app->factory(@_) }
+
+sub service { shift->app->service(@_) }
 
 sub schema { shift->app->schema(@_) }
 
 sub new {
-    my ( $self, $c ) = @_;
+    my ( $class, $c ) = @_;
+
     my $app = $c->app;
+    my $self = $class->SUPER::new( app => $app, controller => $c );
 
-    my $class = $self->SUPER::new( app => $app, controller => $c );
-
-    Scalar::Util::weaken $class->{app};
-    Scalar::Util::weaken $class->{controller};
-    return $class;
+    Scalar::Util::weaken $self->{app};
+    Scalar::Util::weaken $self->{controller};
+    return $self;
 }
 
 1;
@@ -57,11 +58,17 @@ a L<Mojolicious::Controller> object.
 L<Yetie::Service> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
 
-=head2 C<model>
+=head2 C<factory>
 
-    $service->model('hoge')->mehod;
+    my $factory = $service->factory('entity-foo');
 
-Alias $app->model().
+Alias $app->factory().
+
+=head2 C<service>
+
+    my $hoo_service = $service->service('hoo');
+
+Alias $app->service().
 
 =head2 C<schema>
 

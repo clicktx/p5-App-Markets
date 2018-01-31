@@ -1,7 +1,6 @@
 package Yetie::Domain::Entity::Shipment;
 use Yetie::Domain::Entity;
 use Data::Clone qw/data_clone/;
-use Yetie::Domain::Collection;
 use Yetie::Domain::Entity::Address;
 
 has shipping_address => sub { Yetie::Domain::Entity::Address->new };
