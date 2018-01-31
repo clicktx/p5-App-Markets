@@ -17,11 +17,14 @@ sub create {
 }
 
 sub delete {
-    my $self = shift;
+    my $self       = shift;
+    my $product_id = $self->stash('product_id');
 
-    my $product_id     = $self->stash('product_id');
+    # 販売済みの商品は削除不可
+    my $bool = $self->service('product')->is_sold($product_id);
+    return $self->reply->exception('Could not delete item.This item has already been sold.') if $bool;
+
     my $delete_product = $self->service('product')->remove_product($product_id);
-
     return $delete_product
       ? $self->redirect_to('RN_admin_products')
       : $self->reply->not_found();
