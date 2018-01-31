@@ -72,9 +72,11 @@ sub t03_request : Tests() {
 
     # delete
     $t->get_ok('/admin/product/10/delete')->status_is(404);
-    $t->post_ok( '/admin/product/10/delete',  form => $post_data )->status_is(200);
-    $t->post_ok( '/admin/product/3/delete',   form => $post_data )->status_is( 500, 'right undeleted foreign key' );
-    $t->post_ok( '/admin/product/999/delete', form => $post_data )->status_is(404);
+    $t->post_ok( '/admin/product/10/delete', form => $post_data )->status_is(200);
+    $t->post_ok( '/admin/product/10/delete', form => $post_data )->status_is(404);
+
+    # 販売済み商品は削除できない
+    $t->post_ok( '/admin/product/1/delete', form => $post_data )->status_is( 500, 'right not deleted(already sold)' );
 }
 
 __PACKAGE__->runtests;
