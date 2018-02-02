@@ -38,7 +38,8 @@ column updated_at => {
 
 has_many
   product_categories => 'Yetie::Schema::Result::Product::Category',
-  { 'foreign.product_id' => 'self.id' };
+  { 'foreign.product_id' => 'self.id' },
+  { cascade_delete       => 0 };
 
 has_many
   order_items => 'Yetie::Schema::Result::Sales::Order::Item',
