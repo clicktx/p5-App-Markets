@@ -37,7 +37,8 @@ column title => {
 
 has_many
   products => 'Yetie::Schema::Result::Product::Category',
-  { 'foreign.category_id' => 'self.id' };
+  { 'foreign.category_id' => 'self.id' },
+  { cascade_delete        => 0 };
 
 # NOTE: 下記に書いた場合deploy_schema時にテーブル作成に失敗する（relation設定によるもの？）
 #       tree_columnsを呼ばないとapplicationで動かないため、App::Commonで読み込む。

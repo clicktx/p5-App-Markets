@@ -16,6 +16,9 @@ column is_enabled => {
     default_value => 0,
 };
 
-has_many triggers => 'Yetie::Schema::Result::Addon::Trigger', 'addon_id';
+has_many
+  triggers => 'Yetie::Schema::Result::Addon::Trigger',
+  'addon_id',
+  { cascade_delete => 1 };
 
 1;

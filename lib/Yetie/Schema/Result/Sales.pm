@@ -39,7 +39,8 @@ belongs_to
 
 has_many
   orders => 'Yetie::Schema::Result::Sales::Order',
-  { 'foreign.sales_id' => 'self.id' };
+  { 'foreign.sales_id' => 'self.id' },
+  { cascade_delete     => 0 };
 
 sub is_multiple_shipping { shift->orders->count > 1 ? 1 : 0 }
 

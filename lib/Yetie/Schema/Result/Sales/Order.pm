@@ -27,6 +27,7 @@ belongs_to
 
 has_many
   items => 'Yetie::Schema::Result::Sales::Order::Item',
-  { 'foreign.order_id' => 'self.id' };
+  { 'foreign.order_id' => 'self.id' },
+  { cascade_delete     => 0 };
 
 1;

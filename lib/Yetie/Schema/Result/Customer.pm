@@ -32,14 +32,17 @@ belongs_to
 
 has_many
   emails => 'Yetie::Schema::Result::Customer::Email',
-  { 'foreign.customer_id' => 'self.id' };
+  { 'foreign.customer_id' => 'self.id' },
+  { cascade_delete        => 0 };
 
 has_many
   addresses => 'Yetie::Schema::Result::Customer::Address',
-  { 'foreign.customer_id' => 'self.id' };
+  { 'foreign.customer_id' => 'self.id' },
+  { cascade_delete        => 0 };
 
 has_many
   sales => 'Yetie::Schema::Result::Sales',
-  { 'foreign.customer_id' => 'self.id' };
+  { 'foreign.customer_id' => 'self.id' },
+  { cascade_delete        => 0 };
 
 1;
