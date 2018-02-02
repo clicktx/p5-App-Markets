@@ -1,14 +1,12 @@
 package Yetie::Domain::Entity::Order;
 use Yetie::Domain::Entity;
-use Yetie::Domain::Entity::Customer;
-use Yetie::Domain::Entity::Address;
 
 has created_at       => undef;
 has updated_at       => undef;
-has customer         => sub { Yetie::Domain::Entity::Customer->new };
-has billing_address  => sub { Yetie::Domain::Entity::Address->new };
-has shipping_address => sub { Yetie::Domain::Entity::Address->new };
-has items            => sub { Yetie::Domain::Collection->new };
+has customer         => sub { __PACKAGE__->factory('entity-customer') };
+has billing_address  => sub { __PACKAGE__->factory('entity-address') };
+has shipping_address => sub { __PACKAGE__->factory('entity-address') };
+has items            => sub { __PACKAGE__->factory('entity-order-items') };
 
 has purchased_on => '';
 has order_status => '';

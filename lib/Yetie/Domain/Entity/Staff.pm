@@ -5,7 +5,7 @@ use Yetie::Domain::Entity::Password;
 has login_id   => '';
 has created_at => undef;
 has updated_at => undef;
-has password   => sub { Yetie::Domain::Entity::Password->new };
+has password   => sub { __PACKAGE__->factory('entity-password') };
 
 1;
 __END__
