@@ -12,14 +12,14 @@ sub search_orders {
         page_no  => $form->param('page') || 1,
         rows     => $form->param('per_page') || 5,
     };
-    my $rs     = $self->resultset->search_sales_orders($conditions);
-    my $data   = $rs->to_data;
+    my $result = $self->resultset->search_sales_orders($conditions);
+    my $data   = $result->to_data;
     my $orders = $self->factory('entity-page-orders')->create(
         {
             title      => 'Orders',
             form       => $form,
             breadcrumb => [],
-            pager      => $rs->pager,
+            pager      => $result->pager,
             order_list => $data,
         }
     );
