@@ -1,9 +1,8 @@
 package Yetie::Domain::Entity::Shipment;
 use Yetie::Domain::Entity;
 use Data::Clone qw/data_clone/;
-use Yetie::Domain::Entity::Address;
 
-has shipping_address => sub { Yetie::Domain::Entity::Address->new };
+has shipping_address => sub { __PACKAGE__->factory('entity-address') };
 has items            => sub { Yetie::Domain::Collection->new };
 
 sub clone {

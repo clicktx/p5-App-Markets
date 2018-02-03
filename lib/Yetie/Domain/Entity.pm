@@ -1,5 +1,6 @@
 package Yetie::Domain::Entity;
 use Yetie::Domain::Base;
+use Yetie::Domain::Factory;
 use Yetie::Domain::Collection qw(collection);
 use Yetie::Domain::IxHash qw(ix_hash);
 use Mojo::Util qw();
@@ -22,6 +23,11 @@ sub clone {
     }
     $clone->_is_modified(0);
     return $clone;
+}
+
+sub factory {
+    my ( $class, $entity_name ) = @_;
+    Yetie::Domain::Factory->new($entity_name)->create();
 }
 
 sub has_data { return shift->id ? 1 : 0 }
@@ -151,6 +157,12 @@ the following new ones.
     my $clone = $self->clone;
 
 Return object.
+
+=head2 C<factory>
+
+    __PACKAGE__->factory('entity-foo');
+
+Return Yetie::Domain::Entity object.
 
 =head2 C<has_data>
 
