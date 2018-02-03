@@ -41,25 +41,8 @@ sub to_data {
     my $self = shift;
 
     my @order_list;
-    $self->each(
-        sub {
-            my $order = _mapping(shift);
-            push @order_list, $order;
-        }
-    );
+    $self->each( sub { push @order_list, shift->to_data } );
     return \@order_list;
-}
-
-sub _mapping {
-    my $row = shift;
-    return {
-        id               => $row->id,
-        purchased_on     => $row->sales->created_at,
-        billing_address  => $row->sales->billing_address->to_data,
-        shipping_address => $row->shipping_address->to_data,
-        items            => $row->items->to_data,
-        order_status => '',
-    };
 }
 
 1;

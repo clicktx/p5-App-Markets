@@ -29,4 +29,16 @@ has_many
   items => 'Yetie::Schema::Result::Sales::Order::Item',
   { 'foreign.order_id' => 'self.id' };
 
+sub to_data {
+    my $self = shift;
+    return {
+        id               => $self->id,
+        purchased_on     => $self->sales->created_at,
+        billing_address  => $self->sales->billing_address->to_data,
+        shipping_address => $self->shipping_address->to_data,
+        items            => $self->items->to_data,
+        order_status     => '',
+    };
+}
+
 1;
