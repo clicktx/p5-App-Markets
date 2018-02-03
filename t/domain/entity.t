@@ -71,6 +71,14 @@ subtest 'has_data' => sub {
     ok !$e->has_data, 'right has not data';
 };
 
+subtest 'is_empty' => sub {
+    my $e = Yetie::Domain::Entity::Hoge->new( id => 1 );
+    ok !$e->is_empty, 'right is not empty';
+
+    $e = Yetie::Domain::Entity::Hoge->new();
+    ok $e->is_empty, 'right is empty';
+};
+
 subtest 'to_array method' => sub {
     my $data = { id => 1, hoge => 1, fuga => 2 };
     my $e = $pkg->new($data);

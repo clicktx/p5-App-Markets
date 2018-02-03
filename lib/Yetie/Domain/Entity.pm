@@ -38,6 +38,8 @@ sub hash_code {
     else            { return defined $self->id ? Mojo::Util::sha1_sum( $self->id ) : undef }
 }
 
+sub is_empty { shift->id ? 0 : 1 }
+
 sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
 sub is_modified {
@@ -180,6 +182,12 @@ Return SHA1 checksum. Default bytes is L<Yetie::Domain::Entity/id>.
 =head2 C<id>
 
     my $entity_id = $entity->id;
+
+=head2 C<is_empty>
+
+    my $bool = $entity->is_empty;
+
+Return boolean value.
 
 =head2 C<is_equal>
 
