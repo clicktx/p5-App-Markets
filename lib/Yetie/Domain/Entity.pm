@@ -25,6 +25,8 @@ sub clone {
     return $clone;
 }
 
+sub equal { shift->id eq shift->id ? 1 : 0 }
+
 sub factory {
     my ( $class, $entity_name ) = @_;
     Yetie::Domain::Factory->new($entity_name)->create();
@@ -39,8 +41,6 @@ sub hash_code {
 }
 
 sub is_empty { shift->id ? 0 : 1 }
-
-sub is_equal { shift->id eq shift->id ? 1 : 0 }
 
 sub is_modified {
     my $self = shift;
@@ -160,6 +160,12 @@ the following new ones.
 
 Return object.
 
+=head2 C<equal>
+
+    my $bool = $entity->equal($other_entity);
+
+Return boolean value.
+
 =head2 C<factory>
 
     __PACKAGE__->factory('entity-foo');
@@ -186,12 +192,6 @@ Return SHA1 checksum. Default bytes is L<Yetie::Domain::Entity/id>.
 =head2 C<is_empty>
 
     my $bool = $entity->is_empty;
-
-Return boolean value.
-
-=head2 C<is_equal>
-
-    my $bool = $entity->is_equal($other_entity);
 
 Return boolean value.
 

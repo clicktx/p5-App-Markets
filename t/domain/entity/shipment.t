@@ -23,12 +23,12 @@ subtest 'basic' => sub {
     is $shipment->id, 1, 'right id';
 };
 
-subtest 'is_equal' => sub {
+subtest 'equal' => sub {
     my $shipment  = Yetie::Domain::Entity::Shipment->new( { id => 1 } );
     my $shipment2 = Yetie::Domain::Entity::Shipment->new( { id => 2 } );
 
-    is $shipment->is_equal($shipment),  1, 'right equal item';
-    is $shipment->is_equal($shipment2), 0, 'right not equal item';
+    is $shipment->equal($shipment),  1, 'right equal item';
+    is $shipment->equal($shipment2), 0, 'right not equal item';
 };
 
 # subtest 'clone' => sub {};

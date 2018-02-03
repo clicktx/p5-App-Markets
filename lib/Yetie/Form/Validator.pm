@@ -235,7 +235,7 @@ sub digits {
 sub equal_to {
     my ( $self, $name, $other, $err_msg ) = @_;
     $err_msg ||= $self->c->__('Invalid value');
-    $self->formfields->is_equal( $name, $other, $err_msg );
+    $self->formfields->equal( $name, $other, $err_msg );
 }
 
 # accept – Makes a file upload accept only specified mime-types.
