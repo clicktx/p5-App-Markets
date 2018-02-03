@@ -45,7 +45,7 @@ belongs_to
 sub to_data {
     my $self = shift;
 
-    my @columns = qw(id product_title quantity price);
+    my @columns = qw(id product_id product_title quantity price);
     my $data    = {};
     $data->{$_} = $self->$_ for @columns;
     return $data;
