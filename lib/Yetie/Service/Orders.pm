@@ -3,7 +3,7 @@ use Mojo::Base 'Yetie::Service';
 
 has resultset => sub { shift->app->resultset('Sales::Order') };
 
-sub search_order {
+sub search_orders {
     my ( $self, $form ) = @_;
 
     my $conditions = {

@@ -10,7 +10,7 @@ sub index {
     # return $self->render() unless $form->has_data;
     return $self->render() unless $form->do_validate;
 
-    my $orders = $self->service('orders')->search_order($form);
+    my $orders = $self->service('orders')->search_orders($form);
     $self->stash( content => $orders );
 
     $self->render();
