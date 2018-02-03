@@ -79,7 +79,7 @@ sub edit {
     my $order    = $self->schema->resultset('Sales')->find_by_order_id($order_id);
     use DDP;
     p $order;
-    my $e = $self->factory('order')->create();
+    my $e = $self->factory('entity-order_detail')->create();
     p $e;
 
     # my $rs = $self->app->schema->resultset('Sales::Order');

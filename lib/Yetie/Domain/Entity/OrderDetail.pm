@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::Order;
+package Yetie::Domain::Entity::OrderDetail;
 use Yetie::Domain::Entity;
 
 has created_at       => undef;
@@ -20,7 +20,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Order
+Yetie::Domain::Entity::OrderDetail
 
 =head1 SYNOPSIS
 
@@ -28,12 +28,12 @@ Yetie::Domain::Entity::Order
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Order> inherits all attributes from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::OrderDetail> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Order> inherits all methods from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::OrderDetail> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head1 AUTHOR

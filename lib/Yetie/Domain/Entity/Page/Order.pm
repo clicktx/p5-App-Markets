@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::Page::Order;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
-has detail => sub { __PACKAGE__->factory('entity-order') };
+has detail => sub { __PACKAGE__->factory('entity-order_detail') };
 
 1;
 __END__
