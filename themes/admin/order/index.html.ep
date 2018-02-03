@@ -7,13 +7,16 @@
     <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
 </ul>
 
-sales_id: <%= $order->sales->id %><br>
-shipment id: <%= $order->id %><br>
+<% my $order = stash('content'); %>
+order id: <%= $order->id %><br>
 shipping_address line1: <%= $order->shipping_address->line1 %><br>
 <ol>
     % $order->items->each( sub {
         <li>
-            ID: <%= $_->id %> | PRODUCT ID: <%= $_->product_id %> | QTY: <%= $_->quantity %>
+            ID: <%= $_->id %> | PRODUCT ID: <%= $_->product_id %>
+            | product_title: <%= $_->product_title %>
+            | QTY: <%= $_->quantity %> | price: <%= $_->price %>
+            | line total: <%= $_->subtotal %>
         </li>
     % });
 </ol>
