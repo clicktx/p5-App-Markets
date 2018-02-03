@@ -7,6 +7,9 @@ primary_column type => {
     size      => 4,
 };
 
-has_many customer_addresses => 'Yetie::Schema::Result::Customer::Address', 'type';
+has_many
+  customer_addresses => 'Yetie::Schema::Result::Customer::Address',
+  'type',
+  { cascade_delete => 0 };
 
 1;

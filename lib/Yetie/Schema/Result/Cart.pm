@@ -24,6 +24,9 @@ column updated_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
-has_many session => 'Yetie::Schema::Result::Session', 'cart_id';
+has_many
+  session => 'Yetie::Schema::Result::Session',
+  'cart_id',
+  { cascade_delete => 1 };
 
 1;
