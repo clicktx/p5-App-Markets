@@ -2,13 +2,13 @@ package Yetie::Controller::Admin::Order;
 use Mojo::Base 'Yetie::Controller::Admin';
 
 sub index {
-    my $self = shift;
-
+    my $self     = shift;
     my $order_id = $self->stash('id');
-    my $order    = $self->schema->resultset('Sales::Order')->find_by_id($order_id);
-    return $self->reply->not_found unless $order;
 
-    $self->stash( order => $order );
+    my $order = $self->service('order')->find_order($order_id);
+    return $self->reply->not_found if $order->is_empty;
+
+    $self->stash( content => $order );
     $self->render();
 }
 
@@ -79,7 +79,7 @@ sub edit {
     my $order    = $self->schema->resultset('Sales')->find_by_order_id($order_id);
     use DDP;
     p $order;
-    my $e = $self->factory('order')->create();
+    my $e = $self->factory('entity-order_detail')->create();
     p $e;
 
     # my $rs = $self->app->schema->resultset('Sales::Order');

@@ -71,6 +71,14 @@ subtest 'has_data' => sub {
     ok !$e->has_data, 'right has not data';
 };
 
+subtest 'is_empty' => sub {
+    my $e = Yetie::Domain::Entity::Hoge->new( id => 1 );
+    ok !$e->is_empty, 'right is not empty';
+
+    $e = Yetie::Domain::Entity::Hoge->new();
+    ok $e->is_empty, 'right is empty';
+};
+
 subtest 'to_array method' => sub {
     my $data = { id => 1, hoge => 1, fuga => 2 };
     my $e = $pkg->new($data);
@@ -83,8 +91,8 @@ subtest 'Entity object base' => sub {
     my $e2   = Yetie::Domain::Entity::Fuga->new( id => 2 );
 
     is $e1->id, 1, 'right entity id';
-    is $e1->is_equal($e1_1), 1, 'right equal object';
-    is $e1->is_equal($e2),   0, 'right not equal object';
+    is $e1->equal($e1_1), 1, 'right equal object';
+    is $e1->equal($e2),   0, 'right not equal object';
     is $e1->hash_code, '356a192b7913b04c54574d18c28d46e6395428ab', 'right hash code';
 
     $e1->id(1);

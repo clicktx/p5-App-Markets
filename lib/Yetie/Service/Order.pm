@@ -3,6 +3,16 @@ use Mojo::Base 'Yetie::Service';
 
 has resultset => sub { shift->schema->resultset('Sales::Order') };
 
+sub find_order {
+    my ( $self, $order_id ) = @_;
+
+    my $result = $self->resultset->find_by_id($order_id);
+    my $data = $result ? $result->to_data : {};
+
+    my $order_detail = $self->factory('entity-order_detail')->create($data);
+    return $order_detail;
+}
+
 1;
 __END__
 

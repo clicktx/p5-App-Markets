@@ -3,6 +3,8 @@ use Yetie::Domain::Entity;
 
 has item_list => sub { Yetie::Domain::Collection->new };
 
+sub each { shift->item_list->each(@_) }
+
 sub total_amount {
     my $self = shift;
 
@@ -35,6 +37,12 @@ Return C<Yetie::Domain::Collection> object.
 
 L<Yetie::Domain::Entity::SellingItems> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<each>
+
+    $items->each( sub{ ... } );
+
+alias method $items->item_list->each()
 
 =head2 C<total_amount>
 

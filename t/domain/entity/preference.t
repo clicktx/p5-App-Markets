@@ -5,6 +5,11 @@ use Yetie::Domain::Factory;
 
 use_ok 'Yetie::Domain::Entity::Preference';
 
+subtest 'default attributes' => sub {
+    my $p = Yetie::Domain::Entity::Preference->new;
+    isa_ok $p->properties, 'Yetie::Domain::IxHash', 'right propeties';
+};
+
 my $data = {
     properties => [
         hoge => {

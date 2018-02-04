@@ -30,4 +30,16 @@ has_many
   { 'foreign.order_id' => 'self.id' },
   { cascade_delete     => 0 };
 
+sub to_data {
+    my $self = shift;
+    return {
+        id               => $self->id,
+        purchased_on     => $self->sales->created_at,
+        billing_address  => $self->sales->billing_address->to_data,
+        shipping_address => $self->shipping_address->to_data,
+        items            => $self->items->to_data,
+        order_status     => '',
+    };
+}
+
 1;

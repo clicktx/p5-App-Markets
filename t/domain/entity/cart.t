@@ -71,8 +71,8 @@ subtest 'methods' => sub {
         }
     );
 
-    is $cart->is_equal($cart),  1, 'right equal entity';
-    is $cart->is_equal($cart2), 0, 'right not equal entity';
+    is $cart->equal($cart),  1, 'right equal entity';
+    is $cart->equal($cart2), 0, 'right not equal entity';
 };
 
 subtest 'add_item' => sub {
@@ -138,7 +138,7 @@ subtest 'remove_item' => sub {
     my $id   = $item->id;
 
     my $removed_item = $cart->remove_item($id);
-    is $removed_item->is_equal($item), 1, 'right return value';
+    is $removed_item->equal($item), 1, 'right return value';
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{items},
       [ { product_id => 1, quantity => 1, price => 100 }, { product_id => 3, quantity => 3, price => 100 }, ],
@@ -167,7 +167,7 @@ subtest 'remove_shipping_item' => sub {
     my $id   = $item->id;
 
     my $removed_item = $cart->remove_shipping_item( 1, $id );
-    is $removed_item->is_equal($item), 1, 'right return value';
+    is $removed_item->equal($item), 1, 'right return value';
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [ { product_id => 5, quantity => 5, price => 100 }, { product_id => 6, quantity => 6, price => 100 }, ],

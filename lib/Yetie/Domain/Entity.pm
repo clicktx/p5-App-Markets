@@ -1,5 +1,6 @@
 package Yetie::Domain::Entity;
 use Yetie::Domain::Base;
+use Yetie::Domain::Factory;
 use Yetie::Domain::Collection qw(collection);
 use Yetie::Domain::IxHash qw(ix_hash);
 use Mojo::Util qw();
@@ -24,6 +25,13 @@ sub clone {
     return $clone;
 }
 
+sub equal { shift->id eq shift->id ? 1 : 0 }
+
+sub factory {
+    my ( $class, $entity_name ) = @_;
+    Yetie::Domain::Factory->new($entity_name)->create();
+}
+
 sub has_data { return shift->id ? 1 : 0 }
 
 sub hash_code {
@@ -32,7 +40,7 @@ sub hash_code {
     else            { return defined $self->id ? Mojo::Util::sha1_sum( $self->id ) : undef }
 }
 
-sub is_equal { shift->id eq shift->id ? 1 : 0 }
+sub is_empty { shift->id ? 0 : 1 }
 
 sub is_modified {
     my $self = shift;
@@ -152,6 +160,18 @@ the following new ones.
 
 Return object.
 
+=head2 C<equal>
+
+    my $bool = $entity->equal($other_entity);
+
+Return boolean value.
+
+=head2 C<factory>
+
+    __PACKAGE__->factory('entity-foo');
+
+Return Yetie::Domain::Entity object.
+
 =head2 C<has_data>
 
     my $bool = $entity->has_data;
@@ -169,9 +189,9 @@ Return SHA1 checksum. Default bytes is L<Yetie::Domain::Entity/id>.
 
     my $entity_id = $entity->id;
 
-=head2 C<is_equal>
+=head2 C<is_empty>
 
-    my $bool = $entity->is_equal($other_entity);
+    my $bool = $entity->is_empty;
 
 Return boolean value.
 

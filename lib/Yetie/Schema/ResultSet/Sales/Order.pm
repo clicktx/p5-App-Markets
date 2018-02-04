@@ -1,19 +1,21 @@
 package Yetie::Schema::ResultSet::Sales::Order;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 
+my $prefetch = [
+    'shipping_address',
+    'items',
+    {
+        sales => [ 'customer', 'billing_address' ],
+    },
+];
+
 sub find_by_id {
     my ( $self, $shipment_id ) = @_;
 
     return $self->find(
         $shipment_id,
         {
-            prefetch => [
-                'shipping_address',
-                'items',
-                {
-                    sales => [ 'customer', 'billing_address' ],
-                },
-            ],
+            prefetch => $prefetch,
         },
     );
 }
@@ -32,7 +34,7 @@ sub search_sales_orders {
             page     => $page_no,
             rows     => $rows,
             order_by => $order_by,
-            prefetch => [ 'shipping_address', 'items', { sales => [ 'customer', 'billing_address' ] }, ],
+            prefetch => $prefetch,
         }
     );
 }
@@ -41,25 +43,8 @@ sub to_data {
     my $self = shift;
 
     my @order_list;
-    $self->each(
-        sub {
-            my $order = _mapping(shift);
-            push @order_list, $order;
-        }
-    );
+    $self->each( sub { push @order_list, shift->to_data } );
     return \@order_list;
-}
-
-sub _mapping {
-    my $row = shift;
-    return {
-        id               => $row->id,
-        purchased_on     => $row->sales->created_at,
-        billing_address  => $row->sales->billing_address->to_data,
-        shipping_address => $row->shipping_address->to_data,
-        items            => $row->items->to_data,
-        order_status => '',
-    };
 }
 
 1;

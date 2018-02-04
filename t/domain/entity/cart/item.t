@@ -32,8 +32,8 @@ subtest 'basic' => sub {
         }
     );
 
-    is $item->is_equal($item),  1, 'right equal item';
-    is $item->is_equal($item2), 0, 'right not equal item';
+    is $item->equal($item),  1, 'right equal item';
+    is $item->equal($item2), 0, 'right not equal item';
 };
 
 done_testing();
