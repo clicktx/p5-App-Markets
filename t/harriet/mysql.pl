@@ -41,7 +41,7 @@ $ENV{TEST_MYSQL} ||= do {
     push @paths,
       (
         path( $base_dir, '..', '..',  'share', 'default_data.pl' ),
-        path( $base_dir, '..', 'App', 'share', 'test_data.pl' )
+        path( $base_dir, '..', 'App', 'share', 'sample_data.pl' )
       );
     Yetie::Install::Util::insert_data( $schema, $_ ) for @paths;
 
