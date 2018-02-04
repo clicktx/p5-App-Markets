@@ -137,10 +137,10 @@
         [ 12, 7, 4 ],
     ],
     'Sales::Order::Item' => [
-        [qw/order_id product_id quantity price/],
-        [ 1, 3, 3, 300 ],
-        [ 1, 1, 1, 101 ], # change price
-        [ 2, 2, 2, 200 ],
-        [ 3, 4, 4, 333 ],
+        [qw/order_id product_id quantity price product_title/],
+        [ 1, 3, 3, 300, 'product 3' ],
+        [ 1, 1, 1, 101, 'product 1' ], # change price
+        [ 2, 2, 2, 200, 'product 2' ],
+        [ 3, 4, 4, 333, 'product 4' ],
     ],
 )
