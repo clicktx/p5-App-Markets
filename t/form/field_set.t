@@ -81,6 +81,11 @@ subtest 'field' => sub {
     isa_ok $f, 'Yetie::Form::Field';
 };
 
+subtest 'fieldset' => sub {
+    my $other = $fs->fieldset('search');
+    is $other, 'Yetie::Form::FieldSet::Search', 'right fieldset';
+};
+
 subtest 'field_info' => sub {
     my $info = Yetie::Form::FieldSet::Test->field_info('name');
     is_deeply $info,

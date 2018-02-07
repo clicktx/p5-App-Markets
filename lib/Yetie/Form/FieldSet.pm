@@ -4,6 +4,8 @@ use Mojo::Util qw/monkey_patch/;
 use Mojo::Collection;
 use Tie::IxHash;
 use Yetie::Form::Field;
+use Mojo::Util;
+use Yetie::Util;
 
 sub append_field {
     my ( $self, $field_key ) = ( shift, shift );
@@ -56,6 +58,14 @@ sub field {
     my $field = Yetie::Form::Field->new( field_key => $field_key, name => $name, %{$attrs}, %{$args} );
     $self->{_field}->{$cache_key} = $field;
     return $field;
+}
+
+sub fieldset {
+    my ( $self, $target ) = ( shift, shift );
+
+    my $fieldset = __PACKAGE__ . '::' . Mojo::Util::camelize($target);
+    Yetie::Util::load_class($fieldset);
+    return $fieldset;
 }
 
 sub filters { shift->_get_data( shift, 'filters' ) }
@@ -302,6 +312,16 @@ See L</has_field> above for infomation on the contens of the hashref.
 
 Return L<Yetie::Form::Field> object.
 Object once created are cached in "$fieldset->{_field}->{$field_key}".
+
+=head2 C<fieldset>
+
+    # Yetie::Form::FieldSet::Foo
+    my $pkg = $fieldset->fieldset('foo');
+
+    has_field 'customer_name' => __PACKAGE__->fieldset('person')->field_info('name');
+
+Return package name.
+Load a class.
 
 =head2 C<filters>
 
