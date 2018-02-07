@@ -1,5 +1,6 @@
 % layout 'admin-default';
 % title __('Order Details');
+% my $order = stash('content');
 
 <h1><%= title %></h1>
 
@@ -8,11 +9,40 @@
 </ul>
 
 %= content billing_address => begin
-    <h3>billing_address</h3>
+    <h3>Billing Address</h3>
+    <%= link_to 'RN_admin_order_edit_billing_address' => begin %>
+        Edit
+    <% end %>
+    <ul>
+        <li>Line1: <%= $order->billing_address->line1 %></li>
+    </ul>
+% end
+
+%= content shipping_address => begin
+    <h3>Shipping Address</h3>
+    <%= link_to 'RN_admin_order_edit_shipping_address' => begin %>
+        Edit
+    <% end %>
+    <ul>
+        <li>Line1: <%= $order->shipping_address->line1 %></li>
+    </ul>
+% end
+
+%= content items_orderd => begin
+    <h3>Items Ordered</h3>
+    <ol>
+        % $order->items->each( sub {
+            <li>
+                ID: <%= $_->id %> | PRODUCT ID: <%= $_->product_id %>
+                | product_title: <%= $_->product_title %>
+                | QTY: <%= $_->quantity %> | price: <%= $_->price %>
+                | line total: <%= $_->subtotal %>
+            </li>
+        % });
+    </ol>
 % end
 
 %= content main => begin
-    <% my $order = stash('content'); %>
     order id: <%= $order->id %><br>
     shipping_address line1: <%= $order->shipping_address->line1 %><br>
     <ol>

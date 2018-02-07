@@ -1,7 +1,7 @@
 package Yetie::Controller::Admin::Order;
 use Mojo::Base 'Yetie::Controller::Admin';
 
-sub index {
+sub details {
     my $self     = shift;
     my $order_id = $self->stash('id');
 
