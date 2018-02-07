@@ -59,16 +59,20 @@ subtest 'export_field' => sub {
       [qw(item.[].id no_attrs email name address favorite_color luky_number item.[].name)], 'right exported all';
 
     # Module base import
-    is_deeply Test::Form::FieldSet::Foo->field_info,
+    my %foo = Test::Form::FieldSet::Foo->field_info;
+    is_deeply \%foo,
       {
         aa => {},
         bb => {},
         cc => {},
       },
       'right import all';
-    is_deeply Test::Form::FieldSet::Bar->field_info, { bb => {} }, 'right import';
-    is_deeply Test::Form::FieldSet::Buzz->field_info, {}, 'right not import';
-    is_deeply Test::Form::FieldSet::Qux->field_info,
+    my %bar = Test::Form::FieldSet::Bar->field_info;
+    is_deeply \%bar, { bb => {} }, 'right import';
+    my %baz = Test::Form::FieldSet::Buzz->field_info;
+    is_deeply \%baz, {}, 'right not import';
+    my %qux = Test::Form::FieldSet::Qux->field_info;
+    is_deeply \%qux,
       {
         bb => {},
         ff => {},
@@ -87,8 +91,8 @@ subtest 'fieldset' => sub {
 };
 
 subtest 'field_info' => sub {
-    my $info = Yetie::Form::FieldSet::Test->field_info('name');
-    is_deeply $info,
+    my %info = Yetie::Form::FieldSet::Test->field_info('name');
+    is_deeply \%info,
       {
         type     => 'text',
         required => 1
@@ -138,7 +142,8 @@ subtest 'append/remove' => sub {
     # Hash refference
     $fs->append_field( bbb => { type => 'choice' } );
     @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/no_attrs email name address favorite_color luky_number item.[].id item.[].name aaa bbb/],
+    is_deeply \@field_keys,
+      [qw/no_attrs email name address favorite_color luky_number item.[].id item.[].name aaa bbb/],
       'right field_keys';
     is_deeply $fs->schema('bbb'), { type => 'choice' }, 'right schema';
 

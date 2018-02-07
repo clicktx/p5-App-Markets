@@ -32,7 +32,7 @@ sub field_info {
     my $self = shift;
     my $class = ref $self || $self;
 
-    return $class->schema(shift);
+    return %{ $class->schema(shift) };
 }
 
 sub field_keys {
@@ -292,12 +292,12 @@ the following new ones.
 
 =head2 C<field_info>
 
-    my $field_info = $fieldset->field_info($field_name);
+    my %field_info = $fieldset->field_info($field_name);
 
 This method is an alias for L<schema>.
 
-Returns the field metadata hashref for a field, as originally passed to "has_field".
-See L</has_field> above for infomation on the contens of the hashref.
+Returns the field metadata hash for a field, as originally passed to "has_field".
+See L</has_field> above for information on the contents of the hash.
 
 =head2 C<field_keys>
 
