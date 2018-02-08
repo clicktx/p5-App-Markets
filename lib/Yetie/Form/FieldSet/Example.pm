@@ -8,6 +8,13 @@ use Yetie::Form::FieldSet::Basic -all;
 # Yetie::Form::FieldSet::Basic->aaa(qw/email password password_again/);
 # Yetie::Form::FieldSet::Basic->aaa(); #export all field
 
+# has_field 'foo' => {
+#     fieldset('bar')->field_info('baz'),
+#     required => 0,
+#     default_value => 1,
+#     ...
+# };
+
 has_field 'item.[].id' => (
     type        => 'hidden',
     label       => 'Item ID',
