@@ -11,6 +11,7 @@
         <header>
             <%= include 'admin/header' %>
         </header>
+        !!Deprecated!!
         <%= content %>
         <footer>
             <%= include 'admin/footer' %>
