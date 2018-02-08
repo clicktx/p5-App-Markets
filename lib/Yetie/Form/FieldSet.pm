@@ -60,14 +60,6 @@ sub field {
     return $field;
 }
 
-sub fieldset {
-    my ( $self, $target ) = ( shift, shift );
-
-    my $fieldset = __PACKAGE__ . '::' . Mojo::Util::camelize($target);
-    Yetie::Util::load_class($fieldset);
-    return $fieldset;
-}
-
 sub filters { shift->_get_data( shift, 'filters' ) }
 
 sub import {
@@ -78,8 +70,9 @@ sub import {
     no warnings 'once';
     push @{"${caller}::ISA"}, $class;
     tie %{"${caller}::schema"}, 'Tie::IxHash';
+    monkey_patch $caller, 'fieldset',  sub { _fieldset(@_) };
     monkey_patch $caller, 'has_field', sub { append_field( $caller, @_ ) };
-    monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
+    monkey_patch $caller, 'c',         sub { Mojo::Collection->new(@_) };
 
     return unless @_;
 
@@ -102,6 +95,14 @@ sub schema {
     no strict 'refs';
     my %schema = %{"${class}::schema"};
     return $field_key ? $schema{$field_key} : \%schema;
+}
+
+sub _fieldset {
+    my $target = shift;
+
+    my $fieldset = __PACKAGE__ . '::' . Mojo::Util::camelize($target);
+    Yetie::Util::load_class($fieldset);
+    return $fieldset;
 }
 
 sub _get_data {
@@ -253,6 +254,16 @@ the following new ones.
 
 Construct a new array-based L<Mojo::Collection> object.
 
+=head2 C<fieldset>
+
+    # "Yetie::Form::FieldSet::Foo"
+    my $pkg = fieldset('foo');
+
+    has_field 'customer_name' => fieldset('person')->field_info('name');
+
+Return package name.
+Load a class.
+
 =head2 C<has_field>
 
     has_field 'field_name' => ( type => 'text', ... );
@@ -312,16 +323,6 @@ See L</has_field> above for information on the contents of the hash.
 
 Return L<Yetie::Form::Field> object.
 Object once created are cached in "$fieldset->{_field}->{$field_key}".
-
-=head2 C<fieldset>
-
-    # Yetie::Form::FieldSet::Foo
-    my $pkg = $fieldset->fieldset('foo');
-
-    has_field 'customer_name' => __PACKAGE__->fieldset('person')->field_info('name');
-
-Return package name.
-Load a class.
 
 =head2 C<filters>
 

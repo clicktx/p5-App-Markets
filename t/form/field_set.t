@@ -86,8 +86,9 @@ subtest 'field' => sub {
 };
 
 subtest 'fieldset' => sub {
-    my $other = $fs->fieldset('search');
-    is $other, 'Yetie::Form::FieldSet::Search', 'right fieldset';
+    my $pkg = fieldset('search');
+    is $pkg, 'Yetie::Form::FieldSet::Search', 'right fieldset';
+    can_ok $pkg, 'new';
 };
 
 subtest 'field_info' => sub {
