@@ -1,0 +1,25 @@
+<% extends 'admin/order/details', title => __('Order Edit') . ' / ' . __('Billing Address'); =%>
+<% my $order = stash('content'); =%>
+<% my $order_id = $order->id; =%>
+
+<% content content_header => begin =%>
+    <h1><%= title %></h1>
+
+    <ul>
+        <li>
+            <%= link_to 'RN_admin_order_details' => ( order_id => $order_id ) => begin %>Back to Order Details<% end %>
+        </li>
+    </ul>
+<% end =%>
+
+<% content billing_address => begin =%>
+    <%= form_for '' => ( method => 'POST' ) => begin %>
+        <%= csrf_field %>
+        <% form 'billing_address'; %>
+        <% my $fields = [qw(name line1 line2 city state postal_code phone mobile fax email)]; %>
+        <%= include 'admin/form/fields', fields => $fields %>
+        <div class="">
+            <%= submit_button 'Save Billing Address' %>
+        </div>
+    <% end %>
+<% end =%>

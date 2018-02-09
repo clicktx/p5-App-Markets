@@ -1,0 +1,13 @@
+% my $field_block = begin
+    % my $field = shift;
+    <div class="">
+        %= form_field $field
+        %= form_label
+        %= form_widget
+        %= form_help
+        %= form_error
+    </div>
+% end
+% foreach ( @{$fields} ){
+    <%= $field_block->($_) =%>
+% }
