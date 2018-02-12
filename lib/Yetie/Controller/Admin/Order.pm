@@ -37,10 +37,9 @@ sub delete {
 }
 
 sub details {
-    my $self     = shift;
-    my $order_id = $self->stash('id');
+    my $self = shift;
 
-    my $order = $self->service('order')->find_order($order_id);
+    my $order = $self->_find_order;
     return $self->reply->not_found if $order->is_empty;
 
     $self->stash( domain => $order );
@@ -50,7 +49,9 @@ sub details {
 sub duplicate {
     my $self = shift;
 
-    # my $order_id = $self->stash('id');
+    my $order = $self->_find_order;
+    return $self->reply->not_found if $order->is_empty;
+
     my $form = $self->form('admin-order');
 
     # 複数配送の場合はどうするか？
@@ -67,16 +68,16 @@ sub duplicate {
     # $order->items->each( sub { p $_->as_fdat } );
 
     # return $self->redirect_to('RN_admin_orders');
+    $self->stash( domain => $order );
     return $self->render('admin/order/edit');
 }
 
 # NOTE: Catalog::Checkoutに関連する実装がある。
 # また、管理者注文も考慮する必要がある。
 sub edit {
-    my $self     = shift;
-    my $order_id = $self->stash('id');
+    my $self = shift;
 
-    my $order = $self->service('order')->find_order($order_id);
+    my $order = $self->_find_order;
     return $self->reply->not_found if $order->is_empty;
 
     my $form = $self->form('address');
@@ -90,6 +91,13 @@ sub edit {
     $self->render();
 
     return $self->render();
+}
+
+sub _find_order {
+    my $self = shift;
+
+    my $order_id = $self->stash('id');
+    $self->service('order')->find_order($order_id);
 }
 
 1;
