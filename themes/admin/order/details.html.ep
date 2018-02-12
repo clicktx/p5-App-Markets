@@ -1,4 +1,4 @@
-<% my $order = stash('content'); =%>
+<% my $order = stash('domain'); =%>
 <% extends 'admin/layouts/default', title => $order->page_title; =%>
 <div class="">
     <%= content content_header => begin =%>

@@ -8,7 +8,7 @@ sub details {
     my $order = $self->service('order')->find_order($order_id);
     return $self->reply->not_found if $order->is_empty;
 
-    $self->stash( content => $order );
+    $self->stash( domain => $order );
     $self->render();
 }
 
@@ -85,7 +85,7 @@ sub edit {
     use DDP;p $form;
     
 
-    $self->stash( content => $order );
+    $self->stash( domain => $order );
     $self->render();
 
     return $self->render();
