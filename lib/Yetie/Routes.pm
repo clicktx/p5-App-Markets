@@ -69,6 +69,9 @@ sub add_admin_routes {
     $order->get('/:id')->to('#details')->name('RN_admin_order_details');
     $order->any('/create')->to('#create')->name('RN_admin_order_create');
     $order->post('/delete')->to('#delete')->name('RN_admin_order_delete');
+    $order->any('/:id/edit')->to('#edit')->name('RN_admin_order_edit');
+    my $order_edit = $order->any('/:id/edit')->to( controller => 'admin-order-edit' );
+    $order_edit->any('/billing_address')->to('#billing_address')->name('RN_admin_order_edit_billing_address');
 
     # $order->any('/create')->to('#create')->name('RN_admin_order_create');
     $order->any('/:id/duplicate')->to('#duplicate')->name('RN_admin_order_duplicate');
