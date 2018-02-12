@@ -1,10 +1,8 @@
-<% extends 'admin/layouts/default', title => __('Order Details'); =%>
 <% my $order = stash('content'); =%>
-
+<% extends 'admin/layouts/default', title => $order->page_title; =%>
 <div class="">
     <%= content content_header => begin =%>
-        <h1><%= title %></h1>
-
+        <h1><%= __(title) %></h1>
         <ul>
             <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
         </ul>
