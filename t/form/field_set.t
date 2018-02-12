@@ -101,6 +101,16 @@ subtest 'field_info' => sub {
       'right field info';
 };
 
+subtest 'extends' => sub {
+    my %info = extends('test#name');
+    is_deeply \%info,
+      {
+        type     => 'text',
+        required => 1
+      },
+      'right field info';
+};
+
 subtest 'field_keys' => sub {
     my @field_keys = $fs->field_keys;
     is_deeply \@field_keys, [qw/no_attrs email name address favorite_color luky_number item.[].id item.[].name/],

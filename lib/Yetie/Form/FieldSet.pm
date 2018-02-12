@@ -70,6 +70,7 @@ sub import {
     no warnings 'once';
     push @{"${caller}::ISA"}, $class;
     tie %{"${caller}::schema"}, 'Tie::IxHash';
+    monkey_patch $caller, 'extends',   sub { _extends(@_) };
     monkey_patch $caller, 'fieldset',  sub { _fieldset(@_) };
     monkey_patch $caller, 'has_field', sub { append_field( $caller, @_ ) };
     monkey_patch $caller, 'c',         sub { Mojo::Collection->new(@_) };
@@ -95,6 +96,11 @@ sub schema {
     no strict 'refs';
     my %schema = %{"${class}::schema"};
     return $field_key ? $schema{$field_key} : \%schema;
+}
+
+sub _extends {
+    my ( $class, $field ) = split( /#/, shift );
+    _fieldset($class)->field_info($field);
 }
 
 sub _fieldset {
@@ -253,6 +259,13 @@ the following new ones.
     my $collection = c(1, 2, 3);
 
 Construct a new array-based L<Mojo::Collection> object.
+
+=head2 C<extends>
+
+    my %field_info = extends('foo#bar');
+
+    # longer version
+    my %field_info = fieldset('foo')->field_info('bar');
 
 =head2 C<fieldset>
 
