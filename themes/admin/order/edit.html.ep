@@ -1,10 +1,15 @@
-% layout 'admin-default';
 % title __('Order') . ' / ' . __('Edit');
+% extends 'admin/order/details';
 
-<h1><%= title %></h1>
+% content billing_address => begin
+    <%= form_for 'RN_admin_order_edit' => ( method => 'POST' ) => begin %>
+        <div class="">
+            <%= form_widget 'address#line1' %>
+        </div>
+        <div class="">
+            <%= submit_button 'Save Billing Address' %>
+        </div>
+    <% end %>
+% end
 
-<h2><%= __('Order ID') . ':' . $id %></h2>
-
-<ul>
-    <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
-</ul>
+%= content 'main'

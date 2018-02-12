@@ -1,17 +1,6 @@
 package Yetie::Controller::Admin::Order;
 use Mojo::Base 'Yetie::Controller::Admin';
 
-sub index {
-    my $self     = shift;
-    my $order_id = $self->stash('id');
-
-    my $order = $self->service('order')->find_order($order_id);
-    return $self->reply->not_found if $order->is_empty;
-
-    $self->stash( content => $order );
-    $self->render();
-}
-
 sub create {
     my $self = shift;
     return $self->render();
@@ -47,10 +36,22 @@ sub delete {
     return $self->redirect_to('RN_admin_orders');
 }
 
+sub details {
+    my $self = shift;
+
+    my $order = $self->_find_order;
+    return $self->reply->not_found if $order->is_empty;
+
+    $self->stash( domain => $order );
+    $self->render();
+}
+
 sub duplicate {
     my $self = shift;
 
-    # my $order_id = $self->stash('id');
+    my $order = $self->_find_order;
+    return $self->reply->not_found if $order->is_empty;
+
     my $form = $self->form('admin-order');
 
     # 複数配送の場合はどうするか？
@@ -67,6 +68,7 @@ sub duplicate {
     # $order->items->each( sub { p $_->as_fdat } );
 
     # return $self->redirect_to('RN_admin_orders');
+    $self->stash( domain => $order );
     return $self->render('admin/order/edit');
 }
 
@@ -75,57 +77,27 @@ sub duplicate {
 sub edit {
     my $self = shift;
 
-    my $order_id = $self->stash('id');
-    my $order    = $self->schema->resultset('Sales')->find_by_order_id($order_id);
+    my $order = $self->_find_order;
+    return $self->reply->not_found if $order->is_empty;
+
+    my $form = $self->form('address');
+
+    # $self->form_default_value( $form, $entity );
+    $form->field($_)->default_value( $order->billing_address->$_ ) for qw(line1);
     use DDP;
-    p $order;
-    my $e = $self->factory('entity-order_detail')->create();
-    p $e;
+    p $form;
 
-    # my $rs = $self->app->schema->resultset('Sales::Order');
-
-    # my $schema = $self->app->schema;
-
-    # my $order_rs          = $schema->resultset('Order')->search( { id => $order_id } );
-    # my $order_rs = $schema->resultset('Order')->find($order_id);
-    # p $order_rs;
-    # my $orders_rs = $order_rs->related_resultset('shipments');
-    # p $orders_rs;
-    # my $items_rs = $orders_rs->related_resultset('items');
-    # p $items_rs;
-
-    # my $order = $order_rs->hashref_array;
-    # p $order;
-    # my $orders = $orders_rs->hashref_array;
-    # p $orders;
-    # my $items = $items_rs->hashref_array;
-    # p $items;
-
-    # my $rs = $self->app->schema->resultset('Order::Shipment');
-    # my @shipments = $rs->search( { order_id => $order_id } )->all;
-
-    #####
-    # foreach my $order (@shipments) {
-    #     p $order->result_source->resultset->hashref_rs;
-    # p $order->hashref_rs;
-    # my $items = $order->items;
-    # p $items;
-    # }
-
-    # while (my $order = $array->next) {
-    #
-    #     p $order;
-    #
-    #     # my $items = $order->items;
-    #     # p $items;
-    #
-    #     my $items = $order->items->hashref_array;
-    #     p $items;
-    # }
-
-    #####
+    $self->stash( domain => $order );
+    $self->render();
 
     return $self->render();
+}
+
+sub _find_order {
+    my $self = shift;
+
+    my $order_id = $self->stash('id');
+    $self->service('order')->find_order($order_id);
 }
 
 1;

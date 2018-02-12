@@ -1,0 +1,11 @@
+<% my $order = stash('domain'); =%>
+<% my $order_id = $order->id; =%>
+<% extends 'admin/order/details', title => $order->page_title; =%>
+<% content content_header => begin =%>
+    <h1><%= __(title) %></h1>
+    <ul>
+        <li>
+            <%= link_to 'RN_admin_order_details' => ( order_id => $order_id ) => begin %>Back to Order Details<% end %>
+        </li>
+    </ul>
+<% end =%>

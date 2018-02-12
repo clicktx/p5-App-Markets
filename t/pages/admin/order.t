@@ -12,7 +12,7 @@ sub t01_index : Tests() {
     my $t    = $self->t;
 
     $t->get_ok('/admin/order/1')->status_is(200)->content_like(qr/Order Details/);
-    $t->get_ok('/admin/order/99999')->status_is(404);
+    $t->get_ok('/admin/order/999')->status_is(404);
 }
 
 sub t02_edit : Tests() {
@@ -20,8 +20,7 @@ sub t02_edit : Tests() {
     my $t    = $self->t;
 
     $t->get_ok('/admin/order/1/edit')->status_is(200);
-
-    # $t->get_ok('/admin/order/99999/edit')->status_is(404);
+    $t->get_ok('/admin/order/999/edit')->status_is(404);
 }
 
 sub t03_duplicate : Tests() {
@@ -29,6 +28,7 @@ sub t03_duplicate : Tests() {
     my $t    = $self->t;
 
     $t->get_ok('/admin/order/1/duplicate')->status_is(200);
+    $t->get_ok('/admin/order/999/duplicate')->status_is(404);
 }
 
 #
@@ -44,7 +44,7 @@ sub t03_duplicate : Tests() {
 #
 #     $t->post_ok( '/admin/order/delete', form => $post_data )->status_is( 200, 'right found shipment order' );
 #
-#     $post_data->{id} = 99999;
+#     $post_data->{id} = 999;
 #     $t->post_ok( '/admin/order/delete', form => $post_data )->status_is( 404, 'right not found shipment order' );
 # }
 

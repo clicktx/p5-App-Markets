@@ -1,0 +1,8 @@
+% extends 'admin/layouts/wrapper';
+% content main_container => begin
+    <div class="container">
+        <div id="main-content">
+            <%= content =%>
+        </div>
+    </div>
+% end

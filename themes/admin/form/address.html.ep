@@ -1,0 +1,44 @@
+<% # Deprecated %>
+<% form 'billing_address'; %>
+<div class="">
+    <%= form_field '#name' %>
+    <%= form_label %>
+    <%= form_widget %>
+    <%= form_help %>
+    <%= form_error %>
+</div>
+<div class="">
+    <%= form_field '#line1' %>
+    <%= form_label %>
+    <%= form_widget %>
+    <%= form_help %>
+    <%= form_error %>
+</div>
+<div class="">
+    <%= form_field '#line2' %>
+    <%= form_label %>
+    <%= form_widget %>
+    <%= form_help %>
+    <%= form_error %>
+</div>
+<div class="">
+    <%= form_field '#city' %>
+    <%= form_label %>
+    <%= form_widget %>
+    <%= form_help %>
+    <%= form_error %>
+</div>
+<div class="">
+    <%= form_field '#state' %>
+    <%= form_label %>
+    <%= form_widget %>
+    <%= form_help %>
+    <%= form_error %>
+</div>
+<div class="">
+    <%= form_field '#postal_code' %>
+    <%= form_label %>
+    <%= form_widget %>
+    <%= form_help %>
+    <%= form_error %>
+</div>

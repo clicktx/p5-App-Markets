@@ -1,26 +1,4 @@
 (
-    # Preferences
-    'Preference' => [
-        [ 'name', 'value', 'default_value', 'title', 'summary', 'position', 'group_id' ],
-        [ 'pref_test1', undef, 'test1', '', '', 100, 1 ],
-        [ 'pref_test2', undef, 'test2', '', '', 200, 1 ],
-        [ 'pref_test3', undef, 'test3', '', '', 300, 1 ],
-        [ 'pref_test4', undef, 'test4', '', '', 400, 1 ],
-    ],
-
-    # Addons
-    'Addon' => [
-        [qw/id name is_enabled/],
-        [qw/1 test_addon 1/],
-        [qw/2 disable_addon 0/],
-    ],
-    # 'Addon::Trigger' => [
-    #     [qw/id addon_id trigger_name priority/],
-    #     [qw/100 2 replace_template 333/],
-    #     [qw/101 2 filter_form 555/],
-    # ],
-
-    #  ▽ -----  From share/test_data.pl  ----- ▽
     # Category
     'Category' => [
         [qw/id root_id lft rgt level title/],
@@ -52,7 +30,6 @@
         [ 7, 'test product7', 'product description', 333, '2017-08-24 01:02:21', '2017-08-24 01:02:21' ],
         [ 8, 'test product8', 'product description', 333, '2017-08-24 01:02:34', '2017-08-24 01:02:34' ],
         [ 9, 'test product9', 'product description', 333, '2017-08-24 01:02:45', '2017-08-24 01:02:45' ],
-        # id: 10 is deleted in t/page/admin/product.t
         [ 10, 'test product10', 'product description', 333, '2017-08-24 01:02:56', '2017-08-24 01:02:56' ],
     ],
 
@@ -160,10 +137,10 @@
         [ 12, 7, 4 ],
     ],
     'Sales::Order::Item' => [
-        [qw/order_id product_id quantity price/],
-        [ 1, 3, 3, 300 ],
-        [ 1, 1, 1, 101 ], # change price
-        [ 2, 2, 2, 200 ],
-        [ 3, 4, 4, 333 ],
+        [qw/order_id product_id quantity price product_title/],
+        [ 1, 3, 3, 300, 'product 3' ],
+        [ 1, 1, 1, 101, 'product 1' ], # change price
+        [ 2, 2, 2, 200, 'product 2' ],
+        [ 3, 4, 4, 333, 'product 4' ],
     ],
 )

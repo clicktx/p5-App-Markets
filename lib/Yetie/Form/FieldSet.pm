@@ -4,6 +4,8 @@ use Mojo::Util qw/monkey_patch/;
 use Mojo::Collection;
 use Tie::IxHash;
 use Yetie::Form::Field;
+use Mojo::Util;
+use Yetie::Util;
 
 sub append_field {
     my ( $self, $field_key ) = ( shift, shift );
@@ -30,7 +32,7 @@ sub field_info {
     my $self = shift;
     my $class = ref $self || $self;
 
-    return $class->schema(shift);
+    return %{ $class->schema(shift) };
 }
 
 sub field_keys {
@@ -68,8 +70,10 @@ sub import {
     no warnings 'once';
     push @{"${caller}::ISA"}, $class;
     tie %{"${caller}::schema"}, 'Tie::IxHash';
+    monkey_patch $caller, 'extends',   sub { _extends(@_) };
+    monkey_patch $caller, 'fieldset',  sub { _fieldset(@_) };
     monkey_patch $caller, 'has_field', sub { append_field( $caller, @_ ) };
-    monkey_patch $caller, 'c', sub { Mojo::Collection->new(@_) };
+    monkey_patch $caller, 'c',         sub { Mojo::Collection->new(@_) };
 
     return unless @_;
 
@@ -92,6 +96,19 @@ sub schema {
     no strict 'refs';
     my %schema = %{"${class}::schema"};
     return $field_key ? $schema{$field_key} : \%schema;
+}
+
+sub _extends {
+    my ( $class, $field ) = split( /#/, shift );
+    _fieldset($class)->field_info($field);
+}
+
+sub _fieldset {
+    my $target = shift;
+
+    my $fieldset = __PACKAGE__ . '::' . Mojo::Util::camelize($target);
+    Yetie::Util::load_class($fieldset);
+    return $fieldset;
 }
 
 sub _get_data {
@@ -243,6 +260,23 @@ the following new ones.
 
 Construct a new array-based L<Mojo::Collection> object.
 
+=head2 C<extends>
+
+    my %field_info = extends('foo#bar');
+
+    # longer version
+    my %field_info = fieldset('foo')->field_info('bar');
+
+=head2 C<fieldset>
+
+    # "Yetie::Form::FieldSet::Foo"
+    my $pkg = fieldset('foo');
+
+    has_field 'customer_name' => fieldset('person')->field_info('name');
+
+Return package name.
+Load a class.
+
 =head2 C<has_field>
 
     has_field 'field_name' => ( type => 'text', ... );
@@ -282,12 +316,12 @@ the following new ones.
 
 =head2 C<field_info>
 
-    my $field_info = $fieldset->field_info($field_name);
+    my %field_info = $fieldset->field_info($field_name);
 
 This method is an alias for L<schema>.
 
-Returns the field metadata hashref for a field, as originally passed to "has_field".
-See L</has_field> above for infomation on the contens of the hashref.
+Returns the field metadata hash for a field, as originally passed to "has_field".
+See L</has_field> above for information on the contents of the hash.
 
 =head2 C<field_keys>
 

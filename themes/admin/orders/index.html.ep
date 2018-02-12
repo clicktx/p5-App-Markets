@@ -14,7 +14,7 @@
         <% end %>
         ]
         [ <%= link_to 'duplicate' => url_for( 'RN_admin_order_duplicate', id => $order_summary->id ) %> ]
-        <%= link_to url_for( 'RN_admin_order', id => $order_summary->id ) => begin %>
+        <%= link_to url_for( 'RN_admin_order_details', id => $order_summary->id ) => begin %>
             order id: <%= $order_summary->id %>
             purchased_on: <%= $order_summary->purchased_on %>
             bill_to_name: <%= $order_summary->bill_to_name %>
