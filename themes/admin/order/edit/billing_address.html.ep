@@ -1,17 +1,4 @@
-<% extends 'admin/order/details', title => __('Order Edit') . ' / ' . __('Billing Address'); =%>
-<% my $order = stash('content'); =%>
-<% my $order_id = $order->id; =%>
-
-<% content content_header => begin =%>
-    <h1><%= title %></h1>
-
-    <ul>
-        <li>
-            <%= link_to 'RN_admin_order_details' => ( order_id => $order_id ) => begin %>Back to Order Details<% end %>
-        </li>
-    </ul>
-<% end =%>
-
+<% extends 'admin/order/edit/base'; =%>
 <% content billing_address => begin =%>
     <%= form_for '' => ( method => 'POST' ) => begin %>
         <%= csrf_field %>
