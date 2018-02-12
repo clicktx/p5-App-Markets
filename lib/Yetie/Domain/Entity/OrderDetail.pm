@@ -1,6 +1,7 @@
 package Yetie::Domain::Entity::OrderDetail;
 use Yetie::Domain::Entity;
 
+has page_title => 'Order Details';
 has created_at       => undef;
 has updated_at       => undef;
 has customer         => sub { __PACKAGE__->factory('entity-customer') };
