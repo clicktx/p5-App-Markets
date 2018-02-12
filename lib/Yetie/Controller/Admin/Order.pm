@@ -1,17 +1,6 @@
 package Yetie::Controller::Admin::Order;
 use Mojo::Base 'Yetie::Controller::Admin';
 
-sub details {
-    my $self     = shift;
-    my $order_id = $self->stash('id');
-
-    my $order = $self->service('order')->find_order($order_id);
-    return $self->reply->not_found if $order->is_empty;
-
-    $self->stash( domain => $order );
-    $self->render();
-}
-
 sub create {
     my $self = shift;
     return $self->render();
@@ -47,6 +36,17 @@ sub delete {
     return $self->redirect_to('RN_admin_orders');
 }
 
+sub details {
+    my $self     = shift;
+    my $order_id = $self->stash('id');
+
+    my $order = $self->service('order')->find_order($order_id);
+    return $self->reply->not_found if $order->is_empty;
+
+    $self->stash( domain => $order );
+    $self->render();
+}
+
 sub duplicate {
     my $self = shift;
 
@@ -80,10 +80,11 @@ sub edit {
     return $self->reply->not_found if $order->is_empty;
 
     my $form = $self->form('address');
+
     # $self->form_default_value( $form, $entity );
     $form->field($_)->default_value( $order->billing_address->$_ ) for qw(line1);
-    use DDP;p $form;
-    
+    use DDP;
+    p $form;
 
     $self->stash( domain => $order );
     $self->render();
