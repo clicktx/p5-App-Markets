@@ -73,57 +73,20 @@ sub duplicate {
 # NOTE: Catalog::Checkoutに関連する実装がある。
 # また、管理者注文も考慮する必要がある。
 sub edit {
-    my $self = shift;
-
+    my $self     = shift;
     my $order_id = $self->stash('id');
-    my $order    = $self->schema->resultset('Sales')->find_by_order_id($order_id);
-    use DDP;
-    p $order;
-    my $e = $self->factory('entity-order_detail')->create();
-    p $e;
 
-    # my $rs = $self->app->schema->resultset('Sales::Order');
+    my $order = $self->service('order')->find_order($order_id);
+    return $self->reply->not_found if $order->is_empty;
 
-    # my $schema = $self->app->schema;
+    my $form = $self->form('address');
+    # $self->form_default_value( $form, $entity );
+    $form->field($_)->default_value( $order->billing_address->$_ ) for qw(line1);
+    use DDP;p $form;
+    
 
-    # my $order_rs          = $schema->resultset('Order')->search( { id => $order_id } );
-    # my $order_rs = $schema->resultset('Order')->find($order_id);
-    # p $order_rs;
-    # my $orders_rs = $order_rs->related_resultset('shipments');
-    # p $orders_rs;
-    # my $items_rs = $orders_rs->related_resultset('items');
-    # p $items_rs;
-
-    # my $order = $order_rs->hashref_array;
-    # p $order;
-    # my $orders = $orders_rs->hashref_array;
-    # p $orders;
-    # my $items = $items_rs->hashref_array;
-    # p $items;
-
-    # my $rs = $self->app->schema->resultset('Order::Shipment');
-    # my @shipments = $rs->search( { order_id => $order_id } )->all;
-
-    #####
-    # foreach my $order (@shipments) {
-    #     p $order->result_source->resultset->hashref_rs;
-    # p $order->hashref_rs;
-    # my $items = $order->items;
-    # p $items;
-    # }
-
-    # while (my $order = $array->next) {
-    #
-    #     p $order;
-    #
-    #     # my $items = $order->items;
-    #     # p $items;
-    #
-    #     my $items = $order->items->hashref_array;
-    #     p $items;
-    # }
-
-    #####
+    $self->stash( content => $order );
+    $self->render();
 
     return $self->render();
 }
