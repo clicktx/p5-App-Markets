@@ -59,7 +59,7 @@ has_field 'mobile' => (
 );
 
 has_field 'email' => (
-    extends 'email#email',
+    extends('email#email'),
     autocomplete => 'section-sent billing email',
     required     => 1,
 );
