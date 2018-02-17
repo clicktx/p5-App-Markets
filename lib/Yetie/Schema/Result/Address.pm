@@ -33,6 +33,7 @@ has_many
 #     deflate => sub { },
 # };
 
-sub to_data { shift->as_fdat }
+# sub to_data { shift->as_fdat }
+# sub to_data { shift->to_hash(@_) }
 
 1;

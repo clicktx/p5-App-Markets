@@ -28,6 +28,8 @@ sub insert {
     $self->next::method(@_);
 }
 
+sub to_data { shift->to_hash(@_) }
+
 sub to_hash {
     my $self    = shift;
     my @columns = $self->result_class->choose_column_name(@_);
@@ -88,6 +90,12 @@ Return C<Array> or C<Array refference>.
 Override method.
 
 The difference, insert C<created_at> and C<updated_at> on insert(create).
+
+=head2 C<to_hash>
+
+    my $hash = $result->to_data(%option);
+
+Alias L</to_hash>.
 
 =head2 C<to_hash>
 
