@@ -35,7 +35,7 @@ sub to_hash {
     my %pair;
     $pair{$_} = $self->get_column($_) for @columns;
 
-    return wantarray ? (%pair) : \%pair;
+    return \%pair;
 }
 
 sub update {
@@ -91,10 +91,15 @@ The difference, insert C<created_at> and C<updated_at> on insert(create).
 
 =head2 C<to_hash>
 
-    my %data = $result->to_hash();
-    my $data = $result->to_hash();
+    my $hash = $result->to_hash();
 
-Return C<Hash> or C<Hash refference>.
+    # Only columns "hoo" and "bar"
+    my $hash = $result->to_hash( columns => [ 'hoo', 'bar' ] );
+
+    # Ignore columns "hoo" and "bar"
+    my $hash = $result->to_hash( ignore_columns => [ 'hoo', 'bar' ] );
+
+Return C<Hash refference>.
 
 =over
 

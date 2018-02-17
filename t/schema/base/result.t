@@ -38,33 +38,27 @@ subtest 'method to_hash()' => sub {
         my $result = $rs->search()->first;
         my $hash   = $result->to_hash;
         is ref $hash, 'HASH', 'right variable type';
-
-        my %hash = $result->to_hash;
-        my @keys = keys %hash;
-        is @keys, 8, 'right hash key lots';
-        @keys = sort @keys;
-        is_deeply \@keys, [
-            qw(
-              default_value
-              group_id
-              id
-              name
-              position
-              summary
-              title
-              value
-              )
-          ],
-          'right all colmuns keys';
+        is_deeply $hash,
+          {
+            default_value => '/admin',
+            group_id      => 1,
+            id            => 1,
+            name          => 'admin_uri_prefix',
+            position      => 100,
+            summary       => 'pref.summary.admin_uri_prefix',
+            title         => 'pref.title.admin_uri_prefix',
+            value         => undef,
+          },
+          'right data';
     };
 
     subtest 'options' => sub {
         my $result = $rs->search()->first;
-        my %hash = $result->to_hash( ignore_columns => [qw( default_value id position summary title)] );
-        is_deeply \%hash, { group_id => 1, name => 'admin_uri_prefix', value => undef }, 'right ignore columns';
+        my $ignore = $result->to_hash( ignore_columns => [qw( default_value id position summary title)] );
+        is_deeply $ignore, { group_id => 1, name => 'admin_uri_prefix', value => undef }, 'right ignore columns';
 
-        %hash = $result->to_hash( columns => [qw(id position)] );
-        is_deeply \%hash, { id => 1, position => 100 }, 'right pick on columns';
+        my $consider = $result->to_hash( columns => [qw(id position)] );
+        is_deeply $consider, { id => 1, position => 100 }, 'right pick on columns';
     };
 };
 
