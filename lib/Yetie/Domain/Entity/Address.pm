@@ -2,7 +2,11 @@ package Yetie::Domain::Entity::Address;
 use Yetie::Domain::Entity;
 
 has id => sub { shift->hash_code };
-has line1 => '';
+has line1       => '';
+has line2       => '';
+has level1      => '';
+has level2      => '';
+has postal_code => '';
 
 sub hash_code {
     my $self  = shift;
