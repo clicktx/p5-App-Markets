@@ -13,6 +13,33 @@ column line1 => {
     is_nullable => 0,
 };
 
+column line2 => {
+    data_type   => 'VARCHAR',
+    size        => 255,
+    is_nullable => 0,
+};
+
+column level1 => {
+    data_type   => 'VARCHAR',
+    size        => 255,
+    is_nullable => 0,
+    comments    => 'State/Province/Province/Region',
+};
+
+column level2 => {
+    data_type   => 'VARCHAR',
+    size        => 255,
+    is_nullable => 0,
+    comments    => 'City/Town',
+};
+
+column postal_code => {
+    data_type   => 'VARCHAR',
+    size        => 255,
+    is_nullable => 0,
+    comments    => 'Post Code/Zip Code',
+};
+
 has_many
   customer_addresses => 'Yetie::Schema::Result::Customer::Address',
   { 'foreign.address_id' => 'self.id' },
@@ -27,12 +54,5 @@ has_many
   orders => 'Yetie::Schema::Result::Sales::Order',
   { 'foreign.address_id' => 'self.id' },
   { cascade_delete       => 0 };
-
-# inflate_column 'line1' => {
-#     inflate => sub { my $value = shift; bless \$value, 'Hoge' },
-#     deflate => sub { },
-# };
-
-sub to_data { shift->as_fdat }
 
 1;

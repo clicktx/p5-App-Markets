@@ -22,10 +22,12 @@
     ],
 
     # reference table
-    'Reference::AddressType' => [
-        [ qw/type/ ],
-        [ 'post' ],
-        [ 'bill' ],
-        [ 'ship' ],
+    'Address::Type' => [
+        [ qw/id name/ ],
+        [ 1, 'postal' ],
+        [ 2, 'billing' ],
+        [ 3, 'shipping' ],
+        [ 4, 'delivery' ],
+        [ 5, 'residential' ],
     ],
 )
