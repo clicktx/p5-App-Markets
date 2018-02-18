@@ -56,12 +56,12 @@
         [ 9, 'i@x.org', 0 ],
     ],
     'Address' => [
-        [qw/id line1 line2 level2 level1 postal_code/],
-        [ 1, '42 Pendergast St.', '', 'Piedmont', 'SC', '29673'],
-        [ 2, '7004 Tunnel St.', '', 'New Brunswick', 'NJ', '08901'],
-        [ 3, '803 Wild Rose St.', '', 'Woodstock', 'GA', '30188'],
-        [ 4, '906 Pearl Ave.', '', 'Patchogue', 'NY', '11772'],
-        [ 5, '67 Valley St.', '', 'Palmetto', 'FL', '34221'],
+        [qw/id line1 line2 level2 level1 postal_code hash_code/],
+        [ 1, '42 Pendergast St.', '', 'Piedmont', 'SC', '29673', 'ddd317d966c94506903100cf3f48afee955127c4' ],
+        [ 2, '7004 Tunnel St.', '', 'New Brunswick', 'NJ', '08901', '5bcd318a8e608b5d727edbe36dbdc6cc16491b8c' ],
+        [ 3, '803 Wild Rose St.', '', 'Woodstock', 'GA', '30188', '0484ec673cb6aa6b61e14791dfb791a389cec27b' ],
+        [ 4, '906 Pearl Ave.', '', 'Patchogue', 'NY', '11772', '62f2d8907cff247986fd732b96bc8c41fa1d996d' ],
+        [ 5, '67 Valley St.', '', 'Palmetto', 'FL', '34221', '1f5cfa154b71e8b1841be16086f1850c20d73fb2' ],
     ],
     'Password' => [
         [qw/id hash/],

@@ -7,39 +7,49 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
+column hash_code => {
+    data_type   => 'VARCHAR',
+    size        => 64,
+    is_nullable => 0,
+};
+
 column line1 => {
     data_type   => 'VARCHAR',
-    size        => 255,
+    size        => 128,
     is_nullable => 0,
 };
 
 column line2 => {
     data_type   => 'VARCHAR',
-    size        => 255,
+    size        => 128,
     is_nullable => 0,
 };
 
 column level1 => {
     data_type   => 'VARCHAR',
-    size        => 255,
+    size        => 32,
     is_nullable => 0,
     comments    => 'State/Province/Province/Region',
 };
 
 column level2 => {
     data_type   => 'VARCHAR',
-    size        => 255,
+    size        => 32,
     is_nullable => 0,
     comments    => 'City/Town',
 };
 
 column postal_code => {
     data_type   => 'VARCHAR',
-    size        => 255,
+    size        => 16,
     is_nullable => 0,
     comments    => 'Post Code/Zip Code',
 };
 
+# Index
+unique_constraint ui_hash_code => [qw/hash_code/];
+
+# Relation
 has_many
   customer_addresses => 'Yetie::Schema::Result::Customer::Address',
   { 'foreign.address_id' => 'self.id' },
