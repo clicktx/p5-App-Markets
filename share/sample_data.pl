@@ -56,11 +56,12 @@
         [ 9, 'i@x.org', 0 ],
     ],
     'Address' => [
-        [qw/id line1/],
-        [ 1, 'Silicon Valley' ],
-        [ 2, 'San Jose' ],
-        [ 3, 'Las Vegas' ],
-        [ 4, 'San Francisco'],
+        [qw/id line1 line2 level2 level1 postal_code/],
+        [ 1, '42 Pendergast St.', '', 'Piedmont', 'SC', '29673'],
+        [ 2, '7004 Tunnel St.', '', 'New Brunswick', 'NJ', '08901'],
+        [ 3, '803 Wild Rose St.', '', 'Woodstock', 'GA', '30188'],
+        [ 4, '906 Pearl Ave.', '', 'Patchogue', 'NY', '11772'],
+        [ 5, '67 Valley St.', '', 'Palmetto', 'FL', '34221'],
     ],
     'Password' => [
         [qw/id hash/],
