@@ -7,13 +7,6 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column password_id => {
-    data_type => 'INT',
-
-    # 登録者以外の購入者（ビジター購入）もcustomre登録される？
-    is_nullable => 1,
-};
-
 column created_at => {
     data_type   => 'DATETIME',
     is_nullable => 0,
@@ -26,9 +19,11 @@ column updated_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
-belongs_to
-  password => 'Yetie::Schema::Result::Password',
-  { 'foreign.id' => 'self.password_id' };
+# Relation
+might_have
+  password => 'Yetie::Schema::Result::Customer::Password',
+  { 'foreign.customer_id' => 'self.id' },
+  { cascade_delete        => 0 };
 
 has_many
   emails => 'Yetie::Schema::Result::Customer::Email',
