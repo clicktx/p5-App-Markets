@@ -25,14 +25,15 @@ column updated_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
-# answer question hint create_by_user_id is_active
-
+# Relation
 might_have
   customer => 'Yetie::Schema::Result::Customer',
-  { 'foreign.password_id' => 'self.id' };
+  { 'foreign.password_id' => 'self.id' },
+  { cascade_delete        => 0 };
 
-# might_have
-#   staff => 'Yetie::Schema::Result::Staff',
-#   { 'foreign.password_id' => 'self.id' };
+might_have
+  staff => 'Yetie::Schema::Result::Staff',
+  { 'foreign.password_id' => 'self.id' },
+  { cascade_delete        => 0 };
 
 1;
