@@ -73,13 +73,14 @@
         [ 3, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY='],
         # 12345678
         [ 4, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='],
+        [ 5, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='],
     ],
 
     # Staffs
     'Staff' => [
         [qw/id login_id password_id created_at updated_at/],
-        [ 222, 'default', 1, '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
-        [ 223, 'staff', 1, '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
+        [ 222, 'default', 4, '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
+        [ 223, 'staff',   5, '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
     ],
 
     # Customers
