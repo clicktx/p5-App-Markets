@@ -30,6 +30,11 @@ column updated_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
+# Index
+unique_constraint staffs_ui_login_id    => [qw/login_id/];
+unique_constraint staffs_ui_password_id => [qw/password_id/];
+
+# Relation
 belongs_to
   password => 'Yetie::Schema::Result::Password',
   { 'foreign.id' => 'self.password_id' };
