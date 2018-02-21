@@ -34,7 +34,7 @@ sub login {
             # Login success
             # logging etc.
 
-            $self->service('admin-staff')->login( $staff->id );
+            $self->service('staff')->login( $staff->id );
 
             my $route = $self->flash('ref') || 'RN_admin_dashboard';
             return $self->redirect_to($route);
