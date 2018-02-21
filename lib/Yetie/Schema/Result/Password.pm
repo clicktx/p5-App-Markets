@@ -7,6 +7,11 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
+column account_id => {
+    data_type   => 'INT',
+    is_nullable => 0,
+};
+
 column hash => {
     data_type   => 'VARCHAR',
     size        => 128,
@@ -26,14 +31,8 @@ column updated_at => {
 };
 
 # Relation
-might_have
-  customer => 'Yetie::Schema::Result::Customer',
-  { 'foreign.password_id' => 'self.id' },
-  { cascade_delete        => 0 };
-
-might_have
-  staff => 'Yetie::Schema::Result::Staff',
-  { 'foreign.password_id' => 'self.id' },
-  { cascade_delete        => 0 };
+belongs_to
+  account => 'Yetie::Schema::Result::Account',
+  { 'foreign.id' => 'self.account_id' };
 
 1;

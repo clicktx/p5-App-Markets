@@ -13,7 +13,7 @@ column login_id => {
     is_nullable => 0,
 };
 
-column password_id => {
+column account_id => {
     data_type   => 'INT',
     is_nullable => 0,
 };
@@ -31,13 +31,13 @@ column updated_at => {
 };
 
 # Index
-unique_constraint staffs_ui_login_id    => [qw/login_id/];
-unique_constraint staffs_ui_password_id => [qw/password_id/];
+unique_constraint staffs_ui_login_id   => [qw/login_id/];
+unique_constraint staffs_ui_account_id => [qw/account_id/];
 
 # Relation
 belongs_to
-  password => 'Yetie::Schema::Result::Password',
-  { 'foreign.id' => 'self.password_id' };
+  account => 'Yetie::Schema::Result::Account',
+  { 'foreign.id' => 'self.account_id' };
 
 # has_many
 #   emails => 'Yetie::Schema::Result::Staff::Email',
