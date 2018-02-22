@@ -40,6 +40,14 @@ sub to_array {
     return wantarray ? @array : \@array;
 }
 
+sub to_data {
+    my $self = shift;
+
+    my @data;
+    $self->each( sub { push @data, shift->to_data } );
+    return \@data;
+}
+
 sub update {
     my $self = shift;
 
@@ -89,6 +97,12 @@ the following new ones.
 Return C<Array> or C<Array refference>.
 
 Dump columns data.
+
+=head2 C<to_data>
+
+    my $data = $rs->search(...)->to_data;
+
+Return C<Array refference>.
 
 =over
 
