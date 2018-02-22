@@ -1,27 +1,6 @@
 package Yetie::Domain::Factory::Staff;
 use Mojo::Base 'Yetie::Domain::Factory';
 
-sub build {
-    my ( $self, $arg ) = @_;
-
-    # NOTE: staff のlogin_id は数字のみを許可しないこと
-    my $where = $arg =~ /\D/ ? { 'me.login_id' => $arg } : { 'me.id' => $arg };
-    my $columns = [
-        qw(me.id me.login_id me.created_at me.updated_at),
-        qw(password.id password.hash password.created_at password.updated_at),
-    ];
-
-    my $itr = $self->app->schema->resultset('Staff')->search(
-        $where,
-        {
-            columns  => $columns,
-            prefetch => 'password',
-        }
-    );
-    my $data = $itr->hashref_first || {};
-    return $self->create($data);
-}
-
 sub cook {
     my $self = shift;
 
@@ -55,14 +34,6 @@ the following new ones.
 
 L<Yetie::Domain::Factory::Staff> inherits all methods from L<Yetie::Domain::Factory> and implements
 the following new ones.
-
-=head2 C<build>
-
-    my $entity = $factory->build( $id | $login_id );
-
-Return L<Yetie::Domain::Entity::Staff> object.
-
-Create entity by staff ID or login_id.
 
 =head1 AUTHOR
 
