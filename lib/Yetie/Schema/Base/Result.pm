@@ -28,7 +28,10 @@ sub insert {
     $self->next::method(@_);
 }
 
-sub to_data { shift->to_hash(@_) }
+sub to_data {
+    my %pair = shift->get_inflated_columns;
+    return \%pair;
+}
 
 sub to_hash {
     my $self    = shift;
@@ -91,11 +94,15 @@ Override method.
 
 The difference, insert C<created_at> and C<updated_at> on insert(create).
 
-=head2 C<to_hash>
+=head2 C<to_data>
 
-    my $hash = $result->to_data(%option);
+    my $hash = $result->to_data;
 
-Alias L</to_hash>.
+Return C<Hash refference> of column, object|value pairs.
+
+NOTE: Values for any columns set to use inflation will be inflated and returns as objects.
+
+See L<DBIx::Class::Row/get_inflated_columns>.
 
 =head2 C<to_hash>
 
