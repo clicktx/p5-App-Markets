@@ -46,7 +46,16 @@ sub create { shift->create_entity(@_) }
 sub create_entity {
     my $self = shift;
 
-    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+    # my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+    # NOTE: For now to debuggable code...
+    my $args;
+    if (@_) {
+        $args = @_ > 1 ? {@_} : ref $_[0] eq 'HASH' ? { %{ $_[0] } } : Carp::croak 'Not a HASH reference';
+    }
+    else {
+        $args = {};
+    }
+
     $self->params( _inflate_datetime($args) );
 
     # cooking entity
@@ -121,6 +130,7 @@ sub params {
 
 sub _inflate_datetime {
     my $args = shift;
+    warn 'Deprecated';
 
     # inflate datetime
     my @keys = grep { $_ =~ qr/^.+_at$/ } keys %{$args};
