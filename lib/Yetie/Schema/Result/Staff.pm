@@ -48,4 +48,16 @@ belongs_to
 #   { 'foreign.customer_id' => 'self.id' };
 #
 
+sub to_data {
+    my $self = shift;
+
+    return {
+        id         => $self->id,
+        login_id   => $self->login_id,
+        created_at => $self->created_at,
+        updated_at => $self->updated_at,
+        account    => $self->account->to_data,
+    };
+}
+
 1;

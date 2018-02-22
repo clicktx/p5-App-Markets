@@ -35,4 +35,15 @@ has_one
   { 'foreign.account_id' => 'self.id' },
   { cascade_delete       => 0 };
 
+sub to_data {
+    my $self = shift;
+
+    return {
+        id         => $self->id,
+        password   => $self->password->to_data,
+        created_at => $self->created_at,
+        updated_at => $self->updated_at,
+    };
+}
+
 1;
