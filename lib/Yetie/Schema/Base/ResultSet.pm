@@ -41,10 +41,8 @@ sub to_array {
 }
 
 sub to_data {
-    my $self = shift;
-
     my @data;
-    $self->each( sub { push @data, shift->to_data } );
+    shift->each( sub { push @data, $_->to_data } );
     return \@data;
 }
 
