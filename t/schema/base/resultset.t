@@ -37,13 +37,10 @@ subtest 'method to_array()' => sub {
 };
 
 subtest 'method to_data()' => sub {
-    my $rs = $schema->resultset('Sales');
-    my $order = $rs->search( {} )->to_data;
+    my $rs    = $schema->resultset('Sales');
+    my $order = $rs->search()->to_data;
 
     is ref $order, 'ARRAY', 'right types';
-    is $order->[0]->{id},          1;
-    is $order->[0]->{customer_id}, 111;
-    is $order->[0]->{address_id},  1;
 };
 
 subtest 'method each()' => sub {
