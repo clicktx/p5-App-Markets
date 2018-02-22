@@ -20,7 +20,7 @@ column updated_at => {
 };
 
 # Relation
-has_many
+has_one
   password => 'Yetie::Schema::Result::Password',
   { 'foreign.account_id' => 'self.id' },
   { cascade_delete       => 0 };
