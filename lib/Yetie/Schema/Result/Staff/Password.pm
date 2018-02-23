@@ -27,4 +27,15 @@ belongs_to
   staff => 'Yetie::Schema::Result::Staff',
   { 'foreign.id' => 'self.staff_id' };
 
+sub to_data {
+    my $self = shift;
+
+    return {
+        id         => $self->staff_id,
+        hash       => $self->hash,
+        created_at => $self->created_at,
+        updated_at => $self->updated_at,
+    };
+}
+
 1;

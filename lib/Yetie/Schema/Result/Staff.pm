@@ -32,7 +32,7 @@ unique_constraint staffs_ui_login_id => [qw/login_id/];
 has_one
   password => 'Yetie::Schema::Result::Staff::Password',
   { 'foreign.staff_id' => 'self.id' },
-  { cascade_delete        => 0 };
+  { cascade_delete     => 0 };
 
 # has_many
 #   emails => 'Yetie::Schema::Result::Staff::Email',
@@ -52,7 +52,7 @@ sub to_data {
         login_id   => $self->login_id,
         created_at => $self->created_at,
         updated_at => $self->updated_at,
-        account    => $self->account->to_data,
+        password   => $self->password->to_data,
     };
 }
 
