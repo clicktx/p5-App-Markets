@@ -4,9 +4,6 @@ use Mojo::Base 'Yetie::Domain::Factory';
 sub cook {
     my $self = shift;
 
-    # account
-    my $account = $self->factory('entity-account')->create( $self->{account} || {} );
-    $self->param( account => $account );
 }
 
 1;

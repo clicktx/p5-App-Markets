@@ -1,7 +1,6 @@
 package Yetie::Domain::Entity::Staff;
 use Yetie::Domain::Entity;
 
-has account    => sub { __PACKAGE__->factory('entity-account') };
 has login_id   => undef;
 has created_at => undef;
 has updated_at => undef;
@@ -25,12 +24,6 @@ the following new ones.
 =head2 C<id>
 
     my $id = $staff->id;
-
-=head2 C<account>
-
-    my $account = $staff->account;
-
-Return L<Yetie::Domain::Entity::Account> object.
 
 =head2 C<created_at>
 
