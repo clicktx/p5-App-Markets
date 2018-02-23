@@ -1,7 +1,6 @@
 package Yetie::Domain::Entity::Password;
 use Yetie::Domain::Entity;
 
-has account_id => undef;
 has hash       => undef;
 has created_at => undef;
 has updated_at => undef;
