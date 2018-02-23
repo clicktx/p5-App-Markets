@@ -1,8 +1,6 @@
 package Yetie::Schema::ResultSet::Staff;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 
-my $prefetch = { account => 'password' };
-
 sub find_by_login_id {
     my ( $self, $login_id ) = @_;
 
@@ -11,7 +9,7 @@ sub find_by_login_id {
             'me.login_id' => $login_id
         },
         {
-            prefetch => $prefetch
+            prefetch => 'password'
         },
     );
 }
