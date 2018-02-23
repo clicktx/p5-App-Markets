@@ -4,6 +4,7 @@ use Yetie::Domain::Entity;
 has login_id   => undef;
 has created_at => undef;
 has updated_at => undef;
+has password   => sub { __PACKAGE__->factory('entity-password') };
 
 1;
 __END__
