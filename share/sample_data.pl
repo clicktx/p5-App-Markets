@@ -63,28 +63,6 @@
         [ 4, '906 Pearl Ave.', '', 'Patchogue', 'NY', '11772', '62f2d8907cff247986fd732b96bc8c41fa1d996d' ],
         [ 5, '67 Valley St.', '', 'Palmetto', 'FL', '34221', '1f5cfa154b71e8b1841be16086f1850c20d73fb2' ],
     ],
-    # Accounts
-    'Account' => [
-        [qw/id created_at updated_at/],
-        [ 1, '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
-        [ 2, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
-        [ 3, '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
-        [ 4, '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
-        [ 5, '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
-    ],
-
-    'Password' => [
-        [qw/id account_id hash created_at updated_at/],
-        # 12345678
-        [ 1, 1, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-06-06 19:50:05', '2017-06-06 19:50:05' ],
-        # 22334455
-        [ 2, 2, 'SCRYPT:16384:8:1:VGcabum1/mW1UQ207AZL4Abdj96TtHYtFWJRjBIuYv8=:5lLK4OF1oG9mdI9G89hgh4kvcXJ8jVnCqIAy8QXwluE=', '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
-        # 44556677
-        [ 3, 3, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY=', '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
-        # 12345678
-        [ 4, 4, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
-        [ 5, 5, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
-    ],
 
     # Staffs
     'Staff' => [
