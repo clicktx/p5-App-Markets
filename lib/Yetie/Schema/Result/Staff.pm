@@ -31,17 +31,17 @@ unique_constraint staffs_ui_login_id => [qw/login_id/];
 # Relation
 has_one
   password => 'Yetie::Schema::Result::Staff::Password',
-  { 'foreign.customer_id' => 'self.id' },
+  { 'foreign.staff_id' => 'self.id' },
   { cascade_delete        => 0 };
 
 # has_many
 #   emails => 'Yetie::Schema::Result::Staff::Email',
-#   { 'foreign.customer_id' => 'self.id' },
+#   { 'foreign.staff_id' => 'self.id' },
 #   { cascade_delete        => 0 };
 #
 # has_many
 #   addresses => 'Yetie::Schema::Result::Staff::Address',
-#   { 'foreign.customer_id' => 'self.id' },
+#   { 'foreign.staff_id' => 'self.id' },
 #   { cascade_delete        => 0 };
 
 sub to_data {
