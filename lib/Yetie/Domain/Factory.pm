@@ -2,6 +2,7 @@ package Yetie::Domain::Factory;
 use Mojo::Base -base;
 use Carp 'croak';
 use DateTime::Format::Strptime;
+use Scalar::Util ();
 use Mojo::Util   ();
 use Mojo::Loader ();
 use Yetie::Util  ();
@@ -83,6 +84,7 @@ sub factory {
 
     my $factory = $self->new(@_);
     $factory->app( $self->app );
+    Scalar::Util::weaken $factory->{app};
     return $factory;
 }
 
