@@ -13,11 +13,6 @@ column login_id => {
     is_nullable => 0,
 };
 
-column account_id => {
-    data_type   => 'INT',
-    is_nullable => 0,
-};
-
 column created_at => {
     data_type   => 'DATETIME',
     is_nullable => 0,
@@ -31,22 +26,23 @@ column updated_at => {
 };
 
 # Index
-unique_constraint staffs_ui_login_id   => [qw/login_id/];
-unique_constraint staffs_ui_account_id => [qw/account_id/];
+unique_constraint staffs_ui_login_id => [qw/login_id/];
 
 # Relation
-belongs_to
-  account => 'Yetie::Schema::Result::Account',
-  { 'foreign.id' => 'self.account_id' };
+has_one
+  password => 'Yetie::Schema::Result::Staff::Password',
+  { 'foreign.customer_id' => 'self.id' },
+  { cascade_delete        => 0 };
 
 # has_many
 #   emails => 'Yetie::Schema::Result::Staff::Email',
-#   { 'foreign.customer_id' => 'self.id' };
+#   { 'foreign.customer_id' => 'self.id' },
+#   { cascade_delete        => 0 };
 #
 # has_many
 #   addresses => 'Yetie::Schema::Result::Staff::Address',
-#   { 'foreign.customer_id' => 'self.id' };
-#
+#   { 'foreign.customer_id' => 'self.id' },
+#   { cascade_delete        => 0 };
 
 sub to_data {
     my $self = shift;

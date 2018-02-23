@@ -7,13 +7,6 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column account_id => {
-    data_type => 'INT',
-
-    # 未登録カスタマーを許容
-    is_nullable => 1,
-};
-
 column created_at => {
     data_type   => 'DATETIME',
     is_nullable => 0,
@@ -26,13 +19,11 @@ column updated_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
-# Index
-unique_constraint customers_ui_account_id => [qw/account_id/];
-
 # Relation
-belongs_to
-  account => 'Yetie::Schema::Result::Account',
-  { 'foreign.id' => 'self.account_id' };
+might_have
+  password => 'Yetie::Schema::Result::Customer::Password',
+  { 'foreign.customer_id' => 'self.id' },
+  { cascade_delete        => 0 };
 
 has_many
   emails => 'Yetie::Schema::Result::Customer::Email',
