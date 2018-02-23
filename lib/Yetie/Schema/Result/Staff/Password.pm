@@ -1,16 +1,8 @@
-package Yetie::Schema::Result::Password;
+package Yetie::Schema::Result::Staff::Password;
 use Mojo::Base 'Yetie::Schema::Base::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-primary_column id => {
-    data_type         => 'INT',
-    is_auto_increment => 1,
-};
-
-column account_id => {
-    data_type   => 'INT',
-    is_nullable => 0,
-};
+primary_column staff_id => { data_type => 'INT' };
 
 column hash => {
     data_type   => 'VARCHAR',
@@ -32,7 +24,7 @@ column updated_at => {
 
 # Relation
 belongs_to
-  account => 'Yetie::Schema::Result::Account',
-  { 'foreign.id' => 'self.account_id' };
+  staff => 'Yetie::Schema::Result::Staff',
+  { 'foreign.id' => 'self.staff_id' };
 
 1;
