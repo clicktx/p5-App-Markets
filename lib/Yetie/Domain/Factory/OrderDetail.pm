@@ -4,14 +4,9 @@ use Mojo::Base 'Yetie::Domain::Factory';
 sub cook {
     my $self = shift;
 
-    my $billing_address = $self->factory('entity-address')->create( $self->param('billing_address') || {} );
-    $self->param( billing_address => $billing_address );
-
-    my $shipping_address = $self->factory('entity-address')->create( $self->param('shipping_address') || {} );
-    $self->param( shipping_address => $shipping_address );
-
-    my $items = $self->factory('entity-order-items')->create( { item_list => $self->param('items') || [] } );
-    $self->param( items => $items );
+    $self->aggregate( billing_address  => 'entity-address', $self->{billing_address}  || {} );
+    $self->aggregate( shipping_address => 'entity-address', $self->{shipping_address} || {} );
+    $self->aggregate( items => 'entity-order-items', { item_list => $self->param('items') || [] } );
 }
 
 1;

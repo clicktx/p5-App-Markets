@@ -5,8 +5,7 @@ sub cook {
     my $self = shift;
 
     # billing_address
-    my $billing_address = $self->factory('entity-address')->create( $self->{billing_address} || {} );
-    $self->param( billing_address => $billing_address );
+    $self->aggregate( billing_address => 'entity-address', $self->{billing_address} || {} );
 
     # Aggregate items
     $self->aggregate_collection( 'items', 'entity-cart-item', $self->param('items') || [] );
