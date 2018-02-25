@@ -19,6 +19,14 @@ has entity_class => sub {
 
 sub aggregate {
     my ( $self, $accessor, $entity, $data ) = @_;
+    croak 'Data type is not Hash refference' if ref $data ne 'HASH';
+
+    $self->param( $accessor => $self->factory($entity)->create($data) );
+    return $self;
+}
+
+sub aggregate_collection {
+    my ( $self, $accessor, $entity, $data ) = @_;
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @array;
@@ -185,17 +193,23 @@ the following new ones.
 
 =head2 C<aggregate>
 
+    my $entity = $factory->aggregate( 'user', 'entity-user', \%data );
+
+Create C<Yetie::Domain::Entity> type aggregate.
+
+=head2 C<aggregate_collection>
+
     my @data = (qw/a b c d e f/);
-    my $entity = $factory->aggregate( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate( 'items', 'entity-xxx-item', \@data );
+    my $entity = $factory->aggregate_collection( $accessor_name, $target_entity, \@data );
+    my $entity = $factory->aggregate_collection( 'items', 'entity-xxx-item', \@data );
 
 Create C<Yetie::Domain::Collection> type aggregate.
 
 =head2 C<aggregate_kvlist>
 
     my @data = ( key => 'value', key2 => 'value2', ... );
-    my $entity = $factory->aggregate_kv( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate_kv( 'items', 'entity-xxx-item', \@data );
+    my $entity = $factory->aggregate_kvlist( $accessor_name, $target_entity, \@data );
+    my $entity = $factory->aggregate_kvlist( 'items', 'entity-xxx-item', \@data );
 
 Create C<Yetie::Domain::IxHash> type aggregate.
 
