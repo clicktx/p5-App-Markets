@@ -102,6 +102,9 @@ subtest 'aggregate method' => sub {
     eval { $f->aggregate( 'hoges', 'entity-hoge', 'abc' ) };
     ok $@, 'bad data type';
 
+    $f->aggregate( 'hoges', 'entity-hoge', [ {} ] );
+    $f->aggregate_kvlist( 'bars', 'entity-bar', [ a => {} ] );
+
     my $entity = $f->create;
     isa_ok $entity->hoges, 'Yetie::Domain::Collection', 'right aggregate array';
     isa_ok $entity->bars,  'Yetie::Domain::IxHash',     'right aggregate hash';
@@ -180,12 +183,6 @@ done_testing();
 
     package Yetie::Domain::Factory::Agg;
     use Mojo::Base 'Yetie::Domain::Factory';
-
-    sub cook {
-        my $self = shift;
-        $self->aggregate( 'hoges', 'entity-hoge', [ {} ] );
-        $self->aggregate_kvlist( 'bars', 'entity-bar', [ a => {} ] );
-    }
 
     package Yetie::Domain::Entity::Agg;
     use Mojo::Base 'Yetie::Domain::Entity';
