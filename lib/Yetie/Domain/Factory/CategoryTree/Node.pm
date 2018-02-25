@@ -7,7 +7,7 @@ sub cook {
     # Aggregate children
     my $children = $self->param('children');
     if ( ref $children eq 'ARRAY' ) {
-        $self->aggregate( children => 'entity-category_tree-node', $children );
+        $self->aggregate_collection( children => 'entity-category_tree-node', $children );
     }
 }
 

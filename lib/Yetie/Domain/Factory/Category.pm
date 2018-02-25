@@ -43,7 +43,7 @@ sub cook {
     my $self = shift;
 
     # Aggregate breadcrumb
-    $self->aggregate( breadcrumb => 'entity-link', $self->param('breadcrumb') || [] );
+    $self->aggregate_collection( breadcrumb => 'entity-link', $self->param('breadcrumb') || [] );
 }
 
 sub _create_link {
