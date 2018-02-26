@@ -32,6 +32,16 @@ subtest 'choose_column_name' => sub {
     is_deeply \@array, [qw(group_id name summary value)], 'right option ignore_colmuns';
 };
 
+subtest 'method to_data()' => sub {
+    my $rs     = $schema->resultset('Sales');
+    my $result = $rs->search()->first->to_data;
+
+    is $result->{id},             1;
+    is $result->{customer_id},    111;
+    is $result->{address_id},     1;
+    isa_ok $result->{created_at}, 'DateTime';
+};
+
 subtest 'method to_hash()' => sub {
 
     subtest 'basic' => sub {

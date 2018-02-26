@@ -43,10 +43,10 @@ sub cook {
 
     # Aggregate product_categories
     my $product_categories = $self->param('product_categories');
-    $self->aggregate( product_categories => 'entity-product-category', $product_categories || [] );
+    $self->aggregate_collection( product_categories => 'entity-product-category', $product_categories || [] );
 
     # Aggregate breadcrumb
-    $self->aggregate( breadcrumb => 'entity-link', $self->param('breadcrumb') || [] );
+    $self->aggregate_collection( breadcrumb => 'entity-link', $self->param('breadcrumb') || [] );
 }
 
 sub _create_link {

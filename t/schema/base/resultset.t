@@ -36,6 +36,13 @@ subtest 'method to_array()' => sub {
     };
 };
 
+subtest 'method to_data()' => sub {
+    my $rs    = $schema->resultset('Sales');
+    my $order = $rs->search()->to_data;
+
+    is ref $order, 'ARRAY', 'right types';
+};
+
 subtest 'method each()' => sub {
     my $rs = $schema->resultset('Sales');
     my $order = $rs->find( 1, { prefetch => { orders => [ 'shipping_address', 'items' ] } }, );

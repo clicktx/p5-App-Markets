@@ -96,15 +96,22 @@ subtest 'factory method using' => sub {
 };
 
 subtest 'aggregate method' => sub {
-    Yetie::Domain::Entity::Agg->attr( [qw(hoges bars)] );
-
+    Yetie::Domain::Entity::Agg->attr( [qw(hoge foos bars)] );
     my $f = Yetie::Domain::Factory->new('entity-agg');
-    eval { $f->aggregate( 'hoges', 'entity-hoge', 'abc' ) };
+
+    eval { $f->aggregate_collection( 'foos', 'entity-foo', 'abc' ) };
+    ok $@, 'bad data type';
+    eval { $f->aggregate_kvlist( 'bars', 'entity-bar', 'abc' ) };
     ok $@, 'bad data type';
 
+    $f->aggregate( 'hoge', 'entity-hoge', {} );
+    $f->aggregate_collection( 'foos', 'entity-foo', [ {} ] );
+    $f->aggregate_kvlist( 'bars', 'entity-bar', [ a => {} ] );
+
     my $entity = $f->create;
-    isa_ok $entity->hoges, 'Yetie::Domain::Collection', 'right aggregate array';
-    isa_ok $entity->bars,  'Yetie::Domain::IxHash',     'right aggregate hash';
+    isa_ok $entity->hoge, 'Yetie::Domain::Entity',     'right aggregate scalar';
+    isa_ok $entity->foos, 'Yetie::Domain::Collection', 'right aggregate array';
+    isa_ok $entity->bars, 'Yetie::Domain::IxHash',     'right aggregate hash';
 };
 
 subtest 'inflate datetime for *_at' => sub {
@@ -168,8 +175,7 @@ done_testing();
 
     sub cook {
         my $self = shift;
-        my $hoge = $self->factory('entity-hoge')->create;
-        $self->param( hoge => $hoge );
+        $self->aggregate( hoge => 'entity-hoge', {} );
     }
 
     package Yetie::Domain::Entity::Bar;
@@ -180,12 +186,6 @@ done_testing();
 
     package Yetie::Domain::Factory::Agg;
     use Mojo::Base 'Yetie::Domain::Factory';
-
-    sub cook {
-        my $self = shift;
-        $self->aggregate( 'hoges', 'entity-hoge', [ {} ] );
-        $self->aggregate_kvlist( 'bars', 'entity-bar', [ a => {} ] );
-    }
 
     package Yetie::Domain::Entity::Agg;
     use Mojo::Base 'Yetie::Domain::Entity';

@@ -13,8 +13,7 @@ sub cook {
     $self->param( items => collection(@items) );
 
     # shipping_address
-    my $shipping_address = $self->factory('entity-address')->create( $self->{shipping_address} || {} );
-    $self->param( shipping_address => $shipping_address );
+    $self->aggregate( shipping_address => 'entity-address', $self->{shipping_address} || {} );
 }
 
 1;

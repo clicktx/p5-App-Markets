@@ -1,8 +1,7 @@
 package Yetie::Domain::Entity::Staff;
 use Yetie::Domain::Entity;
-use Yetie::Domain::Entity::Password;
 
-has login_id   => '';
+has login_id   => undef;
 has created_at => undef;
 has updated_at => undef;
 has password   => sub { __PACKAGE__->factory('entity-password') };
@@ -27,12 +26,6 @@ the following new ones.
 
     my $id = $staff->id;
 
-=head2 C<password>
-
-    my $password = $staff->password;
-
-Return L<Yetie::Domain::Entity::Password> object.
-
 =head2 C<created_at>
 
 =head2 C<updated_at>
@@ -42,20 +35,10 @@ Return L<Yetie::Domain::Entity::Password> object.
 L<Yetie::Domain::Entity::Staff> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<clone>
-
-    my $clone_entity = $staff->clone;
-
-=head2 C<is_modified>
-
-    my $bool = $staff->is_modified;
-
-Return boolean value.
-
 =head1 AUTHOR
 
 Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::Entity::Password>
+L<Yetie::Domain::Entity::Account>, L<Yetie::Domain::Entity>

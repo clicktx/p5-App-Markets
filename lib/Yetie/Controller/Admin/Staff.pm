@@ -26,7 +26,7 @@ sub login {
 
     my $login_id = $form->param('login_id');
     my $password = $form->param('password');
-    my $staff    = $self->factory('staff')->build($login_id);
+    my $staff    = $self->service('staff')->find_staff($login_id);
 
     if ( $staff->id ) {
         if ( $self->scrypt_verify( $password, $staff->password->hash ) ) {
@@ -34,7 +34,7 @@ sub login {
             # Login success
             # logging etc.
 
-            $self->service('admin-staff')->login( $staff->id );
+            $self->service('staff')->login( $staff->id );
 
             my $route = $self->flash('ref') || 'RN_admin_dashboard';
             return $self->redirect_to($route);

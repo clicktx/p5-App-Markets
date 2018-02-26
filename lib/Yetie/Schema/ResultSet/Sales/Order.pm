@@ -39,14 +39,6 @@ sub search_sales_orders {
     );
 }
 
-sub to_data {
-    my $self = shift;
-
-    my @order_list;
-    $self->each( sub { push @order_list, shift->to_data } );
-    return \@order_list;
-}
-
 1;
 __END__
 =encoding utf8
@@ -87,10 +79,6 @@ the following new ones.
             $rows => 20,
         }
     );
-
-=head2 C<to_data>
-
-    my $data = $rs->to_data;
 
 =head1 AUTHOR
 

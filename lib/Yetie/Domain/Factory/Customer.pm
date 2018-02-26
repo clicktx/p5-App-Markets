@@ -15,8 +15,7 @@ sub cook {
     my $self = shift;
 
     # password
-    my $password = $self->factory('entity-password')->create( $self->{password} || {} );
-    $self->param( password => $password );
+    $self->aggregate( password => 'entity-password', $self->{password} || {} );
 
     # emails
     # my $emails = collection(qw/1 2 3/);
