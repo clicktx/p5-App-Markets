@@ -80,6 +80,18 @@ sub search_related {
 }
 *search_related_rs = \&search_related;
 
+sub to_data {
+    my $self = shift;
+
+    return {
+        id       => $self->id,
+        level    => $self->level,
+        root_id  => $self->root_id,
+        title    => $self->title,
+        children => $self->children->to_data,
+    };
+}
+
 1;
 __END__
 =encoding utf8
