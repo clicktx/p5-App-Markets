@@ -17,7 +17,8 @@ sub index {
     return $self->reply->not_found() unless $category->has_data;
 
     # widget category tree
-    my $category_tree = $self->service('category_tree')->get_entity();
+    my $service = $self->service('category_tree');
+    my $category_tree = $service->get_cache || $service->search_all;
     $self->stash( 'yetie.widget.category_tree' => $category_tree );
 
     # content entity
