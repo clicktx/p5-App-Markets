@@ -1,7 +1,7 @@
 package Yetie;
 use Mojo::Base 'Yetie::App';
 
-our $VERSION = '0.01';
+use version; our $VERSION = version->declare('v0.0.1');
 
 1;
 __END__
