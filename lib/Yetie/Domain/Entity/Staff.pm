@@ -1,5 +1,6 @@
 package Yetie::Domain::Entity::Staff;
 use Yetie::Domain::Entity;
+use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
 has login_id   => undef;
 has logged_in  => 0;
@@ -8,6 +9,14 @@ has updated_at => undef;
 has password   => sub { __PACKAGE__->factory('entity-password') };
 
 sub is_staff { shift->id ? 1 : 0 }
+
+sub verify_password {
+    my ( $self, $password ) = @_;
+    return 0 unless scrypt_hash_verify( $password, $self->password->hash );
+
+    $self->logged_in(1);
+    return 1;
+}
 
 1;
 __END__
@@ -61,6 +70,12 @@ the following new ones.
     my $bool = $staff->is_staff;
 
 Return boolean value.
+
+=head2 C<verify_password>
+
+    my $bool = $staff->verify_password($password);
+
+Once the password is authenticated, L</logged_in> attribute is set to true.
 
 =head1 AUTHOR
 
