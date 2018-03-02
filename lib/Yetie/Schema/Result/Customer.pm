@@ -40,4 +40,16 @@ has_many
   { 'foreign.customer_id' => 'self.id' },
   { cascade_delete        => 0 };
 
+sub to_data {
+    my $self = shift;
+
+    return {
+        id         => $self->id,
+        created_at => $self->created_at,
+        updated_at => $self->updated_at,
+        password   => $self->password->to_data,
+        emails     => $self->emails->to_data,
+    };
+}
+
 1;

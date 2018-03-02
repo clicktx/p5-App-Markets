@@ -27,4 +27,15 @@ belongs_to
   customer => 'Yetie::Schema::Result::Customer',
   { 'foreign.id' => 'self.customer_id' };
 
+sub to_data {
+    my $self = shift;
+
+    return {
+        id         => $self->customer_id,
+        hash       => $self->hash,
+        created_at => $self->created_at,
+        updated_at => $self->updated_at,
+    };
+}
+
 1;
