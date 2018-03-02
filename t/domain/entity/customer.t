@@ -1,10 +1,11 @@
 use Mojo::Base -strict;
 use Test::More;
 
-use_ok 'Yetie::Domain::Entity::Customer';
+my $pkg = 'Yetie::Domain::Entity::Customer';
+use_ok $pkg;
 
 subtest 'basic' => sub {
-    my $customer = Yetie::Domain::Entity::Customer->new( { id => 1 } );
+    my $customer = $pkg->new( { id => 1 } );
     isa_ok $customer, 'Yetie::Domain::Entity';
 
     is $customer->id,           1;
