@@ -2,10 +2,12 @@ package Yetie::Domain::Entity::Customer;
 use Yetie::Domain::Entity;
 use Yetie::Domain::Entity::Password;
 
-has created_at  => undef;
-has updated_at  => undef;
-has password    => sub { __PACKAGE__->factory('entity-password') };
-has emails      => sub { Yetie::Domain::Collection->new };
+has created_at => undef;
+has updated_at => undef;
+has password   => sub { __PACKAGE__->factory('entity-password') };
+has emails     => sub { Yetie::Domain::Collection->new };
+
+sub is_registerd { shift->password->hash ? 1 : 0 }
 
 1;
 __END__
@@ -45,6 +47,12 @@ Return L<Yetie::Domain::Entity::Password> object.
 
 L<Yetie::Domain::Entity::Customer> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<is_registerd>
+
+    my $bool = $customer->is_registerd;
+
+Returns true if registered.
 
 =head1 AUTHOR
 
