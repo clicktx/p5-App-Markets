@@ -2,7 +2,6 @@ package Yetie::Domain::Entity::Customer;
 use Yetie::Domain::Entity;
 use Yetie::Domain::Entity::Password;
 
-has password_id => 0;
 has created_at  => undef;
 has updated_at  => undef;
 has password    => sub { __PACKAGE__->factory('entity-password') };
@@ -24,27 +23,21 @@ Yetie::Domain::Entity::Customer
 L<Yetie::Domain::Entity::Customer> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<created_at>
-
 =head2 C<emails>
 
     my $emails = $customer->emails;
     $emails->each( sub { ... } );
 
 Return L<Yetie::Domain::Collection> object.
-Elements is L<Yetie::Domain::Entity::Email> object.
-
-=head2 C<id>
-
-    my $id = $customer->id;
-
-=head2 C<password_id>
+Elements are L<Yetie::Domain::Entity::Email> object.
 
 =head2 C<password>
 
     my $password = $customer->password;
 
 Return L<Yetie::Domain::Entity::Password> object.
+
+=head2 C<created_at>
 
 =head2 C<updated_at>
 
@@ -53,20 +46,10 @@ Return L<Yetie::Domain::Entity::Password> object.
 L<Yetie::Domain::Entity::Customer> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<clone>
-
-    my $clone_entity = $customer->clone;
-
-=head2 C<is_modified>
-
-    my $bool = $customer->is_modified;
-
-Return boolean value.
-
 =head1 AUTHOR
 
 Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::Collection>, L<Yetie::Domain::Entity::Password>
+L<Yetie::Domain::Entity::Password>, L<Yetie::Domain::Entity::Email>, L<Yetie::Domain::Entity>
