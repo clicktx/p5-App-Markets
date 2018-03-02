@@ -20,13 +20,11 @@ sub login_process {
     my $staff = $self->find_staff($login_id);
 
     # FIXME: log messageをハードコーティングしない
-    # Not found staff
     return $self->_login_failed( 'Login failed: not found account at login_id: ' . $login_id ) unless $staff->is_staff;
 
-    # Failed password
-    my $res = $staff->verify_password($password);
+    # Authentication
     return $self->_login_failed( 'Login failed: password mismatch at login id: ' . $login_id )
-      unless $staff->logged_in;
+      unless $staff->verify_password($password);
 
     return $self->_logged_in($staff);
 }
