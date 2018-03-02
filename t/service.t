@@ -39,6 +39,12 @@ subtest 'Service Layer basic' => sub {
     $t->get_ok('/methods')->status_is(200);
 };
 
+subtest 'story' => sub {
+    my $c     = $app->build_controller;
+    my $story = $c->service('test')->story;
+    isa_ok $story, 'Yetie::Service::Test::Story';
+};
+
 done_testing();
 
 package Yetie::Controller::Test;

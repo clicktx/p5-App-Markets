@@ -21,6 +21,12 @@ sub new {
     return $self;
 }
 
+sub story {
+    my $self = shift;
+    my $story_class = ( ref $self || shift ) . "::Story";
+    return $story_class->new( $self->controller );
+}
+
 1;
 __END__
 
@@ -66,7 +72,7 @@ Alias $app->factory().
 
 =head2 C<service>
 
-    my $hoo_service = $service->service('hoo');
+    my $hoo_service = $service->service('foo');
 
 Alias $app->service().
 
@@ -77,10 +83,16 @@ Alias $app->service().
 
 Alias $app->schema().
 
+=head2 C<story>
+
+    my $story = $service->story;
+
+Return Yetie::Service::*::Story object.
+
 =head1 AUTHOR
 
 Yetie authors.
 
 =head1 SEE ALSO
 
- L<Mojo::Base> L<Mojolicious>
+L<Mojo::Base>, L<Mojolicious>
