@@ -10,7 +10,7 @@ sub find_staff {
     my $result = $self->resultset->find_by_login_id($login_id);
     my $data = $result ? $result->to_data : {};
 
-    return $self->factory('staff')->create($data);
+    return $self->factory('entity-staff')->create($data);
 }
 
 # NOTE: scenario(story) class?
