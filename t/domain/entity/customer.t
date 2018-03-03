@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Yetie::Domain::Factory;
 
 my $pkg = 'Yetie::Domain::Entity::Customer';
 use_ok $pkg;
@@ -20,6 +21,23 @@ subtest 'is_registerd' => sub {
 
     $customer = Yetie::Domain::Factory->new('entity-customer')->create( password => { hash => 'hoo' } );
     is $customer->is_registerd, 1, 'right register';
+};
+
+subtest 'verify_password' => sub {
+    my $customer = Yetie::Domain::Factory->new('entity-customer')->create( password => { hash => 'aaa' } );
+    is $customer->verify_password('123'), 0, 'right unverified';
+    ok !$customer->logged_in, 'right not logged in';
+
+    $customer = Yetie::Domain::Factory->new('entity-customer')->create(
+        password => {
+            hash =>
+'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='
+        }
+    );
+    is $customer->verify_password('123'), 0, 'right unverified';
+    ok !$customer->logged_in, 'right not logged in';
+    is $customer->verify_password('12345678'), 1, 'right verified';
+    ok $customer->logged_in, 'right logged in';
 };
 
 done_testing();

@@ -1,14 +1,23 @@
 package Yetie::Domain::Entity::Customer;
 use Yetie::Domain::Entity;
 use Yetie::Domain::Entity::Password;
+use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
 has logged_in  => 0;
 has created_at => undef;
 has updated_at => undef;
 has password   => sub { __PACKAGE__->factory('entity-password') };
-has emails     => sub { Yetie::Domain::Collection->new };
+has emails     => sub { __PACKAGE__->collection };
 
 sub is_registerd { shift->password->hash ? 1 : 0 }
+
+sub verify_password {
+    my ( $self, $password ) = @_;
+    return 0 unless scrypt_hash_verify( $password, $self->password->hash );
+
+    $self->logged_in(1);
+    return 1;
+}
 
 1;
 __END__
@@ -60,6 +69,12 @@ the following new ones.
     my $bool = $customer->is_registerd;
 
 Returns true if registered.
+
+=head2 C<verify_password>
+
+    my $bool = $customer->verify_password($password);
+
+Once the password is authenticated, L</logged_in> attribute is set to true.
 
 =head1 AUTHOR
 
