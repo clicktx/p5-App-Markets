@@ -49,45 +49,6 @@ sub load_history {
     $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
-sub login {
-    my ( $self, $customer_id ) = @_;
-    return unless $customer_id;
-
-    my $c       = $self->controller;
-    my $session = $c->server_session;
-
-    # 2重ログイン
-    return if $session->customer_id;
-
-    # Set customer id (logedin flag)
-    $session->customer_id($customer_id);
-
-    # Before data
-    my $session_data    = $session->data;
-    my $visitor_cart_id = $session->cart_id;
-
-    # Merge cart data
-    my $cart_data   = $session->store->load_cart_data($customer_id) || {};
-    my $stored_cart = $c->factory('entity-cart')->create($cart_data);
-    my $merged_cart = $c->cart->merge($stored_cart);
-
-    try {
-        my $txn = $self->schema->txn_scope_guard;
-
-        # Remove before cart(and session) from DB
-        $session->remove_cart($visitor_cart_id);
-
-        # Regenerate sid and set cart id
-        $session->create( { cart_id => $customer_id } );
-        $session->data($session_data);
-        $session->cart->data( $merged_cart->to_data );
-        $session->flush;
-
-        $txn->commit;
-    }
-    catch { $c->schema->txn_failed($_) };
-}
-
 sub _logged_in {
     my ( $self, $customer ) = @_;
 
@@ -191,10 +152,6 @@ the following new ones.
 =head2 C<load_history>
 
     my $history = $c->service('customer')->load_history;
-
-=head2 C<login>
-
-    $c->service('customer')->login($customer_id);
 
 =head1 STORIES
 
