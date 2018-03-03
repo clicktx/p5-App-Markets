@@ -2,6 +2,17 @@ package Yetie::Service::Customer;
 use Mojo::Base 'Yetie::Service';
 use Try::Tiny;
 
+has resultset => sub { shift->app->schema->resultset('Customer') };
+
+sub find_customer {
+    my ( $self, $email ) = @_;
+
+    my $result = $self->resultset->find_by_email($email);
+    my $data = $result ? $result->to_data : {};
+
+    return $self->factory('entity-customer')->create($data);
+}
+
 # getアクセスのみ履歴として保存する
 sub add_history {
     my $self = shift;
@@ -77,6 +88,77 @@ sub login {
     catch { $c->schema->txn_failed($_) };
 }
 
+sub _logged_in {
+    my ( $self, $customer ) = @_;
+
+    my $session = $self->controller->server_session;
+
+    # Double login
+    return 1 if $session->customer_id;
+
+    # Set customer id (logedin flag)
+    $session->customer_id( $customer->id );
+
+    # Before data
+    my $session_data    = $session->data;
+    my $visitor_cart_id = $session->cart_id;
+
+    # NOTE: 別メソッドに切り出す
+    # Merge cart data
+    my $cart_data   = $session->store->load_cart_data($customer->id) || {};
+    my $stored_cart = $self->factory('entity-cart')->create($cart_data);
+    my $merged_cart = $self->controller->cart->merge($stored_cart);
+
+    try {
+        my $txn = $self->schema->txn_scope_guard;
+
+        # Remove before cart(and session) from DB
+        $session->remove_cart($visitor_cart_id);
+
+        # Regenerate sid and set cart id
+        $session->create( { cart_id => $customer->id } );
+        $session->data($session_data);
+        $session->cart->data( $merged_cart->to_data );
+        $session->flush;
+
+        $txn->commit;
+    }
+    catch { $self->schema->txn_failed($_) };
+
+    # Regenerate sid
+    $session->regenerate_sid;
+    return 1;
+}
+
+# NOTE: logging 未完成
+sub _login_failed {
+    my ( $self, $message, $error_code ) = @_;
+    $self->controller->stash( status => 401 );
+
+    # Logging
+    # my $message = $self->app->message($error_code);
+    $self->app->customer_log->warn($message);
+    return 0;
+}
+
+package Yetie::Service::Customer::Story;
+use Mojo::Base 'Yetie::Service::Customer';
+
+sub login_process {
+    my ( $self, $email, $password ) = @_;
+
+    my $customer = $self->find_customer($email);
+
+    # FIXME: log messageをハードコーティングしない
+    return $self->_login_failed( 'Login failed: not found account at email: ' . $email ) unless $customer->is_registerd;
+
+    # Authentication
+    return $self->_login_failed( 'Login failed: password mismatch at email: ' . $email )
+      unless $customer->verify_password($password);
+
+    return $self->_logged_in($customer);
+}
+
 1;
 __END__
 
@@ -113,6 +195,17 @@ the following new ones.
 =head2 C<login>
 
     $c->service('customer')->login($customer_id);
+
+=head1 STORIES
+
+C<Yetie::Service::Customer::Story> inherits all methods from L<Yetie::Service::Customer> and implements
+the following new ones.
+
+=head2 C<login_process>
+
+    my $bool = $service->story->login_process;
+
+Returns true if login succeeded.
 
 =head1 AUTHOR
 

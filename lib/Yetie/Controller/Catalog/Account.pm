@@ -12,52 +12,21 @@ sub authorize {
 
 sub login {
     my $self = shift;
-
     $self->flash( ref => $self->flash('ref') );
 
     # Initialize form
     my $form = $self->form('account-login');
-
-    # $self->init_form( $form );
-
     return $self->render() unless $form->has_data;
-
     return $self->render() unless $form->do_validate;
 
     my $email    = $form->param('email');
     my $password = $form->param('password');
-    my $customer = $self->factory('customer')->build($email);
-
-    if ( $customer->id ) {
-        if ( $self->scrypt_verify( $password, $customer->password->hash ) ) {
-
-            # Login success
-            # logging etc.
-
-            $self->service('customer')->login( $customer->id );
-
-            my $route = $self->flash('ref') || 'RN_customer_home';
-
-# NOTE: redirect する前にURLを検証する必要がある？
-# [高木浩光＠自宅の日記 - ログイン成功時のリダイレクト先として任意サイトの指定が可能であってはいけない](http://takagi-hiromitsu.jp/diary/20070512.html)
-# session cookieの改竄は可能？
-            return $self->redirect_to($route);
-        }
-        else {
-            $self->stash( status => 401 );
-            $self->app->customer_log->warn( 'Customer login failed: password mismatch at email: ' . $email );
-        }
-    }
-    else {
-        $self->stash( status => 401 );
-        $self->app->customer_log->warn( 'Customer login failed: not found email: ' . $email );
-    }
+    my $route    = $self->flash('ref') || 'RN_customer_home';
+    return $self->redirect_to($route) if $self->service('customer')->story->login_process( $email, $password );
 
     # Login failure
-    $form->field('email')->append_error_class;
-    $form->field('password')->append_error_class;
-
-    $self->render( login_failure => 1 );
+    $form->field($_)->append_error_class for qw(email password);
+    return $self->render( login_failure => 1 );
 }
 
 sub logout {
