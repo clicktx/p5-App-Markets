@@ -9,6 +9,7 @@ subtest 'basic' => sub {
     isa_ok $customer, 'Yetie::Domain::Entity';
 
     is $customer->id,           1;
+    is $customer->logged_in,    0;
     isa_ok $customer->password, 'Yetie::Domain::Entity::Password';
     isa_ok $customer->emails,   'Yetie::Domain::Collection';
 };

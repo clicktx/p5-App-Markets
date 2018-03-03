@@ -2,6 +2,7 @@ package Yetie::Domain::Entity::Customer;
 use Yetie::Domain::Entity;
 use Yetie::Domain::Entity::Password;
 
+has logged_in  => 0;
 has created_at => undef;
 has updated_at => undef;
 has password   => sub { __PACKAGE__->factory('entity-password') };
@@ -24,6 +25,12 @@ Yetie::Domain::Entity::Customer
 
 L<Yetie::Domain::Entity::Customer> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<logged_in>
+
+    my $bool = $customer->logged_in;
+
+Returns C<true> if the staff is logged in.
 
 =head2 C<emails>
 
