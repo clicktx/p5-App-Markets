@@ -49,6 +49,21 @@ sub load_history {
     $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
+sub login_process {
+    my ( $self, $email, $password ) = @_;
+
+    my $customer = $self->find_customer($email);
+
+    # FIXME: log messageをハードコーティングしない
+    return $self->_login_failed( 'Login failed: not found account at email: ' . $email ) unless $customer->is_registerd;
+
+    # Authentication
+    return $self->_login_failed( 'Login failed: password mismatch at email: ' . $email )
+      unless $customer->verify_password($password);
+
+    return $self->_logged_in($customer);
+}
+
 sub _logged_in {
     my ( $self, $customer ) = @_;
 
@@ -102,24 +117,6 @@ sub _login_failed {
     return 0;
 }
 
-package Yetie::Service::Customer::Story;
-use Mojo::Base 'Yetie::Service::Customer';
-
-sub login_process {
-    my ( $self, $email, $password ) = @_;
-
-    my $customer = $self->find_customer($email);
-
-    # FIXME: log messageをハードコーティングしない
-    return $self->_login_failed( 'Login failed: not found account at email: ' . $email ) unless $customer->is_registerd;
-
-    # Authentication
-    return $self->_login_failed( 'Login failed: password mismatch at email: ' . $email )
-      unless $customer->verify_password($password);
-
-    return $self->_logged_in($customer);
-}
-
 1;
 __END__
 
@@ -158,11 +155,6 @@ Return L<Yetie::Domain::Entity::Customer> object.
 =head2 C<load_history>
 
     my $history = $c->service('customer')->load_history;
-
-=head1 STORIES
-
-C<Yetie::Service::Customer::Story> inherits all methods from L<Yetie::Service::Customer> and implements
-the following new ones.
 
 =head2 C<login_process>
 

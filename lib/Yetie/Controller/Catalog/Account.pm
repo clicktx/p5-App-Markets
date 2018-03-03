@@ -22,7 +22,7 @@ sub login {
     my $email    = $form->param('email');
     my $password = $form->param('password');
     my $route    = $self->flash('ref') || 'RN_customer_home';
-    return $self->redirect_to($route) if $self->service('customer')->story->login_process( $email, $password );
+    return $self->redirect_to($route) if $self->service('customer')->login_process( $email, $password );
 
     # Login failure
     $form->field($_)->append_error_class for qw(email password);
