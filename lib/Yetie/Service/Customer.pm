@@ -4,15 +4,6 @@ use Try::Tiny;
 
 has resultset => sub { shift->app->schema->resultset('Customer') };
 
-sub find_customer {
-    my ( $self, $email ) = @_;
-
-    my $result = $self->resultset->find_by_email($email);
-    my $data = $result ? $result->to_data : {};
-
-    return $self->factory('entity-customer')->create($data);
-}
-
 # getアクセスのみ履歴として保存する
 sub add_history {
     my $self = shift;
@@ -38,9 +29,18 @@ sub add_history {
 
     unshift @$history, $url;
     use DDP;
-    say "   history is";    # debug
+    say "   history is";    # NOTE: debug
     p $history;
     $c->server_session->data( history => $history );
+}
+
+sub find_customer {
+    my ( $self, $email ) = @_;
+
+    my $result = $self->resultset->find_by_email($email);
+    my $data = $result ? $result->to_data : {};
+
+    return $self->factory('entity-customer')->create($data);
 }
 
 sub load_history {
@@ -66,7 +66,7 @@ sub _logged_in {
 
     # NOTE: 別メソッドに切り出す
     # Merge cart data
-    my $cart_data   = $session->store->load_cart_data($customer->id) || {};
+    my $cart_data   = $session->store->load_cart_data( $customer->id ) || {};
     my $stored_cart = $self->factory('entity-cart')->create($cart_data);
     my $merged_cart = $self->controller->cart->merge($stored_cart);
 
@@ -148,6 +148,12 @@ the following new ones.
 
     Add history current URL for server session.
     Unsave list setting in L<Yetie::Routes>.
+
+=head2 C<find_customer>
+
+    my $entity = $service->find_customer($email);
+
+Return L<Yetie::Domain::Entity::Customer> object.
 
 =head2 C<load_history>
 
