@@ -1,16 +1,6 @@
 package Yetie::Domain::Factory::Customer;
 use Mojo::Base 'Yetie::Domain::Factory';
 
-has resultset => sub { shift->app->schema->resultset('Customer') };
-
-sub build {
-    my ( $self, $arg ) = ( shift, shift // '' );
-    my $itr = $arg =~ /\@/ ? $self->resultset->search_by_email($arg) : $self->resultset->search_by_id($arg);
-
-    my $data = $itr->hashref_first || {};
-    return $self->create($data);
-}
-
 sub cook {
     my $self = shift;
 
@@ -50,14 +40,6 @@ the following new ones.
 
 L<Yetie::Domain::Factory::Customer> inherits all methods from L<Yetie::Domain::Factory> and implements
 the following new ones.
-
-=head2 C<build>
-
-    my $entity = $factory->build( $id | $email );
-
-Return L<Yetie::Domain::Entity::Customer> object.
-
-Create entity by customer ID or Email address.
 
 =head1 AUTHOR
 
