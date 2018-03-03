@@ -3,7 +3,6 @@ use Yetie::Domain::Entity;
 use Yetie::Domain::Entity::Password;
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
-has logged_in  => 0;
 has created_at => undef;
 has updated_at => undef;
 has password   => sub { __PACKAGE__->factory('entity-password') };
@@ -13,10 +12,7 @@ sub is_registerd { shift->password->hash ? 1 : 0 }
 
 sub verify_password {
     my ( $self, $password ) = @_;
-    return 0 unless scrypt_hash_verify( $password, $self->password->hash );
-
-    $self->logged_in(1);
-    return 1;
+    return scrypt_hash_verify( $password, $self->password->hash ) ? 1 : 0;
 }
 
 1;
@@ -74,7 +70,7 @@ Returns true if registered.
 
     my $bool = $customer->verify_password($password);
 
-Once the password is authenticated, L</logged_in> attribute is set to true.
+Returns true if authenticated.
 
 =head1 AUTHOR
 

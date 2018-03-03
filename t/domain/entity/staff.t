@@ -11,7 +11,6 @@ subtest 'basic' => sub {
 
     is $staff->id, 1, 'right staff ID';
     isa_ok $staff->password, 'Yetie::Domain::Entity::Password';
-    is $staff->logged_in, 0, 'right not logged_in';
 
     can_ok $staff, 'login_id';
     can_ok $staff, 'created_at';
@@ -28,7 +27,6 @@ subtest 'is_staff' => sub {
 subtest 'verify_password' => sub {
     my $staff = Yetie::Domain::Factory->new('entity-staff')->create( password => { hash => 'aaa' } );
     is $staff->verify_password('123'), 0, 'right unverified';
-    ok !$staff->logged_in, 'right not logged in';
 
     $staff = Yetie::Domain::Factory->new('entity-staff')->create(
         password => {
@@ -36,10 +34,8 @@ subtest 'verify_password' => sub {
 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='
         }
     );
-    is $staff->verify_password('123'), 0, 'right unverified';
-    ok !$staff->logged_in, 'right not logged in';
-    is $staff->verify_password('12345678'), 1, 'right verified';
-    ok $staff->logged_in, 'right logged in';
+    ok !$staff->verify_password('123'), 'right unverified';
+    ok $staff->verify_password('12345678'), 'right verified';
 };
 
 done_testing();

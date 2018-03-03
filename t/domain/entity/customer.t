@@ -10,7 +10,6 @@ subtest 'basic' => sub {
     isa_ok $customer, 'Yetie::Domain::Entity';
 
     is $customer->id,           1;
-    is $customer->logged_in,    0;
     isa_ok $customer->password, 'Yetie::Domain::Entity::Password';
     isa_ok $customer->emails,   'Yetie::Domain::Collection';
 };
@@ -26,7 +25,6 @@ subtest 'is_registerd' => sub {
 subtest 'verify_password' => sub {
     my $customer = Yetie::Domain::Factory->new('entity-customer')->create( password => { hash => 'aaa' } );
     is $customer->verify_password('123'), 0, 'right unverified';
-    ok !$customer->logged_in, 'right not logged in';
 
     $customer = Yetie::Domain::Factory->new('entity-customer')->create(
         password => {
@@ -34,10 +32,8 @@ subtest 'verify_password' => sub {
 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='
         }
     );
-    is $customer->verify_password('123'), 0, 'right unverified';
-    ok !$customer->logged_in, 'right not logged in';
-    is $customer->verify_password('12345678'), 1, 'right verified';
-    ok $customer->logged_in, 'right logged in';
+    ok !$customer->verify_password('123'), 'right unverified';
+    ok $customer->verify_password('12345678'), 'right verified';
 };
 
 done_testing();
