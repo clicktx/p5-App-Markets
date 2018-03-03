@@ -34,7 +34,7 @@ sub _logged_in {
     my $session = $self->controller->server_session;
 
     # Double login
-    return if $session->staff_id;
+    return 1 if $session->staff_id;
 
     # Set staff id (logedin flag)
     $session->staff_id( $staff->id );
