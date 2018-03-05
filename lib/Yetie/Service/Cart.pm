@@ -18,6 +18,14 @@ sub add_item {
     return $self->controller->helpers->cart->add_item($item);
 }
 
+sub find_customer_cart {
+    my ( $self, $customer_id ) = @_;
+
+    my $session = $self->controller->server_session;
+    my $data = $session->store->load_cart_data($customer_id) || {};
+    return $self->factory('entity-cart')->create($data);
+}
+
 # NOTE: とりあえず全てのshipment itemsを戻すlogicのみ実装
 sub revert_shipping_item {
     my $self = shift;
