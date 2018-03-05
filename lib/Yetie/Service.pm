@@ -6,7 +6,7 @@ has [qw/app controller/];
 
 sub factory { shift->app->factory(@_) }
 
-sub service { shift->app->service(@_) }
+sub service { shift->controller->service(@_) }
 
 sub schema { shift->app->schema(@_) }
 
@@ -68,7 +68,7 @@ Alias $app->factory().
 
     my $hoo_service = $service->service('foo');
 
-Alias $app->service().
+Alias $controller->service().
 
 =head2 C<schema>
 
