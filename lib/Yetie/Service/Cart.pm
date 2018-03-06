@@ -2,19 +2,19 @@ package Yetie::Service::Cart;
 use Mojo::Base 'Yetie::Service';
 
 sub add_item {
-    my ( $self, $args ) = @_;
+    my ( $self, $form_params ) = @_;
 
     # NOTE: APIで利用する場合にproductがstashに無い場合は生成する。
     # productをMojo::Cache等でキャッシュするか？
     # キャッシュする場合はservice('product')->load_entity()等としてキャッシュを使うようにする
     # fileキャッシュで全てのproductのキャッシュを生成するのもありか？
     my $product = $self->controller->stash('product');
-    $product = $self->controller->factory('product')->build( $args->{product_id} ) unless $product;
+    $product = $self->controller->factory('product')->build( $form_params->{product_id} ) unless $product;
 
-    $args->{product_title} = $product->title;
-    $args->{price}         = $product->price;
+    $form_params->{product_title} = $product->title;
+    $form_params->{price}         = $product->price;
 
-    my $item = $self->controller->factory('entity-cart-item')->create($args);
+    my $item = $self->controller->factory('entity-cart-item')->create($form_params);
     return $self->controller->helpers->cart->add_item($item);
 }
 
