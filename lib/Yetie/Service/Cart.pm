@@ -11,6 +11,7 @@ sub add_item {
     my $product = $self->controller->stash('product');
     $product = $self->factory('product')->build( $form_params->{product_id} ) unless $product;
 
+    # NOTE: データマッピングは別のメソッドで行うように
     $form_params->{product_title} = $product->title;
     $form_params->{price}         = $product->price;
 
@@ -24,6 +25,19 @@ sub find_customer_cart {
     my $session = $self->controller->server_session;
     my $data = $session->store->load_cart_data($customer_id) || {};
     return $self->factory('entity-cart')->create($data);
+}
+
+sub merge_cart {
+    my ( $self, $customer_id ) = @_;
+    my $c       = $self->controller;
+    my $session = $c->server_session;
+
+    my $customer_cart = $self->find_customer_cart($customer_id);
+    my $merged_cart   = $c->cart->merge($customer_cart);
+
+    # Remove previous cart from DB
+    $session->remove_cart( $session->cart_id );
+    return $merged_cart;
 }
 
 # NOTE: とりあえず全てのshipment itemsを戻すlogicのみ実装
