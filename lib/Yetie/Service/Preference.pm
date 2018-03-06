@@ -2,13 +2,14 @@ package Yetie::Service::Preference;
 use Mojo::Base 'Yetie::Service';
 use Try::Tiny;
 
-my $stash_key = 'yetie.entity.preference';
 has resultset => sub { shift->schema->resultset('Preference') };
+my $stash_key = 'yetie.entity.preference';
 
 sub load {
     my $self = shift;
 
-    my $pref = $self->app->factory('preference')->build;
+    my $properties = $self->resultset->search( {} )->to_data;
+    my $pref = $self->factory('preference')->create( properties => $properties );
     $self->app->defaults( $stash_key => $pref );
 
     $self->app->log->debug( 'Loading preferences from DB via ' . __PACKAGE__ );
