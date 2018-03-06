@@ -85,9 +85,31 @@ the following new ones.
 
 =head2 C<add_item>
 
-    my $cart = $c->service('cart')->add_item( $product, \%params);
+    my $cart = $service->add_item( $product, \%params);
 
 Return L<Yetie::Domain::Entity::Cart> object.
+
+=head2 C<find_cart>
+
+    my $cart = $service->find_cart($cart_id);
+
+Return L<Yetie::Domain::Entity::Cart> object.
+
+=head2 C<merge_cart>
+
+    my $merged_cart = $service->merge_cart($customer_id);
+
+Return L<Yetie::Domain::Entity::Cart> object.
+
+Merge with saved customer cart.
+
+=head2 C<revert_shipping_item>
+
+    $service->revert_shipping_item();
+
+Return void.
+
+Revert all shipping items to the cart.
 
 =head1 AUTHOR
 
