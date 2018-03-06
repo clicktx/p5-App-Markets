@@ -105,12 +105,17 @@ subtest 'aggregate method' => sub {
 
     $f->aggregate( 'hoge', 'entity-hoge', {} );
     $f->aggregate_collection( 'foos', 'entity-foo', [ {} ] );
-    $f->aggregate_kvlist( 'bars', 'entity-bar', [ a => {} ] );
+    $f->aggregate_kvlist( 'bars', 'entity-bar', [ { a => {} } ] );
 
     my $entity = $f->create;
-    isa_ok $entity->hoge, 'Yetie::Domain::Entity',     'right aggregate scalar';
-    isa_ok $entity->foos, 'Yetie::Domain::Collection', 'right aggregate array';
-    isa_ok $entity->bars, 'Yetie::Domain::IxHash',     'right aggregate hash';
+    isa_ok $entity->hoge, 'Yetie::Domain::Entity';
+    is_deeply $entity->hoge->to_data, {}, 'right aggregate';
+
+    isa_ok $entity->foos, 'Yetie::Domain::Collection';
+    is_deeply $entity->foos->to_data, [ { a => 1, b => 2, f => 'fuga', h => 'hoge' } ], 'right aggregate array';
+
+    isa_ok $entity->bars, 'Yetie::Domain::IxHash';
+    is_deeply $entity->bars->to_data, { a => { hoge => {} } }, 'right aggregate hash';
 };
 
 done_testing();
