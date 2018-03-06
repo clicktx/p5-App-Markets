@@ -71,22 +71,23 @@ sub grand_total {
 }
 
 sub merge {
-    my ( $self, $stored ) = ( shift->clone, shift->clone );
+    my ( $self, $target ) = @_;
+    my ( $clone, $stored ) = ( $self->clone, $target->clone );
 
     # items
     foreach my $item ( @{ $stored->items } ) {
-        $self->items->each(
+        $clone->items->each(
             sub {
                 my ( $e, $num ) = @_;
                 if ( $e->equal($item) ) {
                     $item->quantity( $e->quantity + $item->quantity );
                     my $i = $num - 1;
-                    splice @{ $self->items }, $i, 1;
+                    splice @{ $clone->items }, $i, 1;
                 }
             }
         );
     }
-    push @{ $stored->items }, @{ $self->items };
+    push @{ $stored->items }, @{ $clone->items };
 
     # shipments
     # NOTE: [WIP]
