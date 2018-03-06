@@ -38,9 +38,9 @@ sub aggregate_kvlist {
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @kvlist;
-    while ( @{$data} ) {
-        my ( $key, $value ) = ( shift @{$data}, shift @{$data} );
-        push @kvlist, ( $key, $self->factory($entity)->create($value) );
+    foreach my $kv ( @{$data} ) {
+        my ( $key, $value ) = %{$kv};
+        push @kvlist, ( $key => $self->factory($entity)->create($value) );
     }
     $self->param( $accessor => ix_hash(@kvlist) );
     return $self;
@@ -183,7 +183,7 @@ Create C<Yetie::Domain::Collection> type aggregate.
 
 =head2 C<aggregate_kvlist>
 
-    my @data = ( key => 'value', key2 => 'value2', ... );
+    my @data = ( { label => { key => 'value' } }, { label2 => { key2 => 'value2' } }, ... );
     my $entity = $factory->aggregate_kvlist( $accessor_name, $target_entity, \@data );
     my $entity = $factory->aggregate_kvlist( 'items', 'entity-xxx-item', \@data );
 
