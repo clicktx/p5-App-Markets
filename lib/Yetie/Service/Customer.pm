@@ -61,48 +61,25 @@ sub login_process {
     return $self->_login_failed( 'Login failed: password mismatch at email: ' . $email )
       unless $customer->verify_password($password);
 
-    return $self->_logged_in($customer);
+    return $self->_logged_in( $customer->id );
 }
 
 sub _logged_in {
-    my ( $self, $customer ) = @_;
-
+    my ( $self, $customer_id ) = @_;
     my $session = $self->controller->server_session;
 
     # Double login
     return 1 if $session->customer_id;
 
     # Set customer id (logedin flag)
-    $session->customer_id( $customer->id );
+    $session->customer_id($customer_id);
 
-    # Before data
-    my $session_data    = $session->data;
-    my $visitor_cart_id = $session->cart_id;
+    # Merge cart
+    my $merged_cart = $self->service('cart')->merge_cart($customer_id);
 
-    # NOTE: 別メソッドに切り出す
-    # Merge cart data
-    my $cart_data   = $session->store->load_cart_data( $customer->id ) || {};
-    my $stored_cart = $self->factory('entity-cart')->create($cart_data);
-    my $merged_cart = $self->controller->cart->merge($stored_cart);
-
-    try {
-        my $txn = $self->schema->txn_scope_guard;
-
-        # Remove before cart(and session) from DB
-        $session->remove_cart($visitor_cart_id);
-
-        # Regenerate sid and set cart id
-        $session->create( { cart_id => $customer->id } );
-        $session->data($session_data);
-        $session->cart->data( $merged_cart->to_data );
-        $session->flush;
-
-        $txn->commit;
-    }
-    catch { $self->schema->txn_failed($_) };
-
-    # Regenerate sid
-    $session->regenerate_sid;
+    # Regenerate sid and set cart id
+    $session->create( { cart_id => $customer_id } );
+    $session->cart->data( $merged_cart->to_data );
     return 1;
 }
 
