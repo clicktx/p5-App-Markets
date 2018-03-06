@@ -1,23 +1,6 @@
 package Yetie::Domain::Factory::Preference;
 use Mojo::Base 'Yetie::Domain::Factory';
 
-has resultset => sub { shift->app->schema->resultset('Preference') };
-
-sub build {
-    my $self = shift;
-
-    my $itr = $self->resultset->search( {} );
-    my @properties;
-    $itr->each(
-        sub {
-            my $row  = shift;
-            my %data = $row->get_inflated_columns;
-            push @properties, ( $row->name => \%data );
-        }
-    );
-    return $self->create( { properties => \@properties } );
-}
-
 sub cook {
     my $self = shift;
 
@@ -37,7 +20,7 @@ Yetie::Domain::Factory::Preference
     my $entity = Yetie::Domain::Factory::Preference->new( %args )->create;
 
     # In controller
-    my $entity = $c->factory('entity-prefence')->create(%args);
+    my $entity = $c->factory('entity-preference')->create(%args);
 
 =head1 DESCRIPTION
 
@@ -50,12 +33,6 @@ the following new ones.
 
 L<Yetie::Domain::Factory::Preference> inherits all methods from L<Yetie::Domain::Factory> and implements
 the following new ones.
-
-=head2 C<build>
-
-    my $entity = $factory->build();
-
-Return L<Yetie::Domain::Entity::Preference> object.
 
 =head1 AUTHOR
 
