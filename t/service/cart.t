@@ -13,7 +13,7 @@ $t->get_ok('/test/get_csrf_token')->status_is(200);
 my $csrf_token = $t->tx->res->content->get_body_chunk;
 my $params = { product_id => 1, quantity => 1, csrf_token => $csrf_token };
 $t->post_ok( '/test/add_item', form => $params )->status_is(200);
-$t->get_ok('/test/find_customer_cart')->status_is(200);
+$t->get_ok('/test/find_cart')->status_is(200);
 
 done_testing();
 
@@ -40,10 +40,10 @@ done_testing();
         $c->render( text => 1 );
     }
 
-    sub find_customer_cart {
+    sub find_cart {
         my $c = shift;
 
-        my $customer_cart = $c->service('cart')->find_customer_cart('111');
+        my $customer_cart = $c->service('cart')->find_cart('111');
         isa_ok $customer_cart, 'Yetie::Domain::Entity::Cart';
         $c->render( text => 1 );
     }

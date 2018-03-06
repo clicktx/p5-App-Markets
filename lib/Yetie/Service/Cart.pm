@@ -19,11 +19,11 @@ sub add_item {
     return $self->controller->cart->add_item($item);
 }
 
-sub find_customer_cart {
-    my ( $self, $customer_id ) = @_;
+sub find_cart {
+    my ( $self, $cart_id ) = @_;
 
     my $session = $self->controller->server_session;
-    my $data = $session->store->load_cart_data($customer_id) || {};
+    my $data = $session->store->load_cart_data($cart_id) || {};
     return $self->factory('entity-cart')->create($data);
 }
 
@@ -32,7 +32,7 @@ sub merge_cart {
     my $c       = $self->controller;
     my $session = $c->server_session;
 
-    my $customer_cart = $self->find_customer_cart($customer_id);
+    my $customer_cart = $self->find_cart($customer_id);
     my $merged_cart   = $c->cart->merge($customer_cart);
 
     # Remove previous cart from DB
