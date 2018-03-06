@@ -2,6 +2,8 @@ package Yetie::Service::Customer;
 use Mojo::Base 'Yetie::Service';
 use Try::Tiny;
 
+has resultset => sub { shift->app->schema->resultset('Customer') };
+
 # getアクセスのみ履歴として保存する
 sub add_history {
     my $self = shift;
@@ -27,9 +29,18 @@ sub add_history {
 
     unshift @$history, $url;
     use DDP;
-    say "   history is";    # debug
+    say "   history is";    # NOTE: debug
     p $history;
     $c->server_session->data( history => $history );
+}
+
+sub find_customer {
+    my ( $self, $email ) = @_;
+
+    my $result = $self->resultset->find_by_email($email);
+    my $data = $result ? $result->to_data : {};
+
+    return $self->factory('entity-customer')->create($data);
 }
 
 sub load_history {
@@ -38,43 +49,49 @@ sub load_history {
     $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
-sub login {
+sub login_process {
+    my ( $self, $email, $password ) = @_;
+
+    my $customer = $self->find_customer($email);
+
+    # FIXME: log messageをハードコーティングしない
+    return $self->_login_failed( 'Login failed: not found account at email: ' . $email ) unless $customer->is_registerd;
+
+    # Authentication
+    return $self->_login_failed( 'Login failed: password mismatch at email: ' . $email )
+      unless $customer->verify_password($password);
+
+    return $self->_logged_in( $customer->id );
+}
+
+sub _logged_in {
     my ( $self, $customer_id ) = @_;
-    return unless $customer_id;
+    my $session = $self->controller->server_session;
 
-    my $c       = $self->controller;
-    my $session = $c->server_session;
-
-    # 2重ログイン
-    return if $session->customer_id;
+    # Double login
+    return 1 if $session->customer_id;
 
     # Set customer id (logedin flag)
     $session->customer_id($customer_id);
 
-    # Before data
-    my $session_data    = $session->data;
-    my $visitor_cart_id = $session->cart_id;
+    # Merge cart
+    my $merged_cart = $self->service('cart')->merge_cart($customer_id);
 
-    # Merge cart data
-    my $cart_data   = $session->store->load_cart_data($customer_id) || {};
-    my $stored_cart = $c->factory('entity-cart')->create($cart_data);
-    my $merged_cart = $c->cart->merge($stored_cart);
+    # Regenerate sid and set cart id
+    $session->create( { cart_id => $customer_id } );
+    $session->cart->data( $merged_cart->to_data );
+    return 1;
+}
 
-    try {
-        my $txn = $self->schema->txn_scope_guard;
+# NOTE: logging 未完成
+sub _login_failed {
+    my ( $self, $message, $error_code ) = @_;
+    $self->controller->stash( status => 401 );
 
-        # Remove before cart(and session) from DB
-        $session->remove_cart($visitor_cart_id);
-
-        # Regenerate sid and set cart id
-        $session->create( { cart_id => $customer_id } );
-        $session->data($session_data);
-        $session->cart->data( $merged_cart->to_data );
-        $session->flush;
-
-        $txn->commit;
-    }
-    catch { $c->schema->txn_failed($_) };
+    # Logging
+    # my $message = $self->app->message($error_code);
+    $self->app->customer_log->warn($message);
+    return 0;
 }
 
 1;
@@ -106,13 +123,21 @@ the following new ones.
     Add history current URL for server session.
     Unsave list setting in L<Yetie::Routes>.
 
+=head2 C<find_customer>
+
+    my $entity = $service->find_customer($email);
+
+Return L<Yetie::Domain::Entity::Customer> object.
+
 =head2 C<load_history>
 
     my $history = $c->service('customer')->load_history;
 
-=head2 C<login>
+=head2 C<login_process>
 
-    $c->service('customer')->login($customer_id);
+    my $bool = $service->story->login_process;
+
+Returns true if login succeeded.
 
 =head1 AUTHOR
 

@@ -10,7 +10,7 @@ sub find_staff {
     my $result = $self->resultset->find_by_login_id($login_id);
     my $data = $result ? $result->to_data : {};
 
-    return $self->factory('staff')->create($data);
+    return $self->factory('entity-staff')->create($data);
 }
 
 # NOTE: scenario(story) class?
@@ -20,13 +20,11 @@ sub login_process {
     my $staff = $self->find_staff($login_id);
 
     # FIXME: log messageをハードコーティングしない
-    # Not found staff
     return $self->_login_failed( 'Login failed: not found account at login_id: ' . $login_id ) unless $staff->is_staff;
 
-    # Failed password
-    my $res = $staff->verify_password($password);
+    # Authentication
     return $self->_login_failed( 'Login failed: password mismatch at login id: ' . $login_id )
-      unless $staff->logged_in;
+      unless $staff->verify_password($password);
 
     return $self->_logged_in($staff);
 }
@@ -36,7 +34,7 @@ sub _logged_in {
     my $session = $self->controller->server_session;
 
     # Double login
-    return if $session->staff_id;
+    return 1 if $session->staff_id;
 
     # Set staff id (logedin flag)
     $session->staff_id( $staff->id );
@@ -46,6 +44,7 @@ sub _logged_in {
     return 1;
 }
 
+# NOTE: logging 未完成
 sub _login_failed {
     my ( $self, $message, $error_code ) = @_;
     $self->controller->stash( status => 401 );

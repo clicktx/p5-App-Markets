@@ -2,20 +2,42 @@ package Yetie::Service::Cart;
 use Mojo::Base 'Yetie::Service';
 
 sub add_item {
-    my ( $self, $args ) = @_;
+    my ( $self, $form_params ) = @_;
 
     # NOTE: APIで利用する場合にproductがstashに無い場合は生成する。
     # productをMojo::Cache等でキャッシュするか？
     # キャッシュする場合はservice('product')->load_entity()等としてキャッシュを使うようにする
     # fileキャッシュで全てのproductのキャッシュを生成するのもありか？
     my $product = $self->controller->stash('product');
-    $product = $self->controller->factory('product')->build( $args->{product_id} ) unless $product;
+    $product = $self->factory('product')->build( $form_params->{product_id} ) unless $product;
 
-    $args->{product_title} = $product->title;
-    $args->{price}         = $product->price;
+    # NOTE: データマッピングは別のメソッドで行うように
+    $form_params->{product_title} = $product->title;
+    $form_params->{price}         = $product->price;
 
-    my $item = $self->controller->factory('entity-cart-item')->create($args);
-    return $self->controller->helpers->cart->add_item($item);
+    my $item = $self->factory('entity-cart-item')->create($form_params);
+    return $self->controller->cart->add_item($item);
+}
+
+sub find_cart {
+    my ( $self, $cart_id ) = @_;
+
+    my $session = $self->controller->server_session;
+    my $data = $session->store->load_cart_data($cart_id) || {};
+    return $self->factory('entity-cart')->create($data);
+}
+
+sub merge_cart {
+    my ( $self, $customer_id ) = @_;
+    my $c       = $self->controller;
+    my $session = $c->server_session;
+
+    my $customer_cart = $self->find_cart($customer_id);
+    my $merged_cart   = $c->cart->merge($customer_cart);
+
+    # Remove previous cart from DB
+    $session->remove_cart( $session->cart_id );
+    return $merged_cart;
 }
 
 # NOTE: とりあえず全てのshipment itemsを戻すlogicのみ実装
@@ -63,9 +85,31 @@ the following new ones.
 
 =head2 C<add_item>
 
-    my $cart = $c->service('cart')->add_item( $product, \%params);
+    my $cart = $service->add_item( $product, \%params);
 
 Return L<Yetie::Domain::Entity::Cart> object.
+
+=head2 C<find_cart>
+
+    my $cart = $service->find_cart($cart_id);
+
+Return L<Yetie::Domain::Entity::Cart> object.
+
+=head2 C<merge_cart>
+
+    my $merged_cart = $service->merge_cart($customer_id);
+
+Return L<Yetie::Domain::Entity::Cart> object.
+
+Merge with saved customer cart.
+
+=head2 C<revert_shipping_item>
+
+    $service->revert_shipping_item();
+
+Return void.
+
+Revert all shipping items to the cart.
 
 =head1 AUTHOR
 

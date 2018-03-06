@@ -1,7 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
-use DateTime;
 
 subtest 'basic' => sub {
     use_ok 'Yetie::Domain::Factory';
@@ -112,27 +111,6 @@ subtest 'aggregate method' => sub {
     isa_ok $entity->hoge, 'Yetie::Domain::Entity',     'right aggregate scalar';
     isa_ok $entity->foos, 'Yetie::Domain::Collection', 'right aggregate array';
     isa_ok $entity->bars, 'Yetie::Domain::IxHash',     'right aggregate hash';
-};
-
-subtest 'inflate datetime for *_at' => sub {
-    Yetie::Domain::Entity::Bar->attr( [qw(created_at)] );
-
-    my $f = Yetie::Domain::Factory->new('entity-bar')->create( { created_at => '2017-5-26 19:17:06' } );
-    isa_ok $f->{created_at}, 'DateTime';
-    is $f->{created_at}->ymd, '2017-05-26', 'right date';
-
-    my $datetime = DateTime->new(
-        year      => 1964,
-        month     => 10,
-        day       => 16,
-        hour      => 16,
-        minute    => 12,
-        second    => 47,
-        time_zone => 'UTC',
-    );
-    $f = Yetie::Domain::Factory->new('entity-bar')->create( { created_at => $datetime } );
-    isa_ok $f->{created_at}, 'DateTime';
-    is $f->{created_at}->ymd, '1964-10-16', 'right date';
 };
 
 done_testing();

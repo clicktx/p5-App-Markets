@@ -216,21 +216,21 @@ subtest 'merge' => sub {
     my $merged_cart = $cart->merge($stored_cart);
     cmp_deeply $cart->to_data,
       {
-        cart_id         => ignore(),
+        cart_id         => '12345',
         billing_address => ignore(),
         %{$test_data}
       },
       'right non-destructive';
     cmp_deeply $stored_cart->to_data,
       {
-        cart_id         => ignore(),
+        cart_id         => '99999',
         billing_address => ignore(),
         %{$stored_data}
       },
       'right non-destructive';
     cmp_deeply $merged_cart->to_data,
       {
-        cart_id         => ignore(),
+        cart_id         => '99999',
         billing_address => ignore(),
         items           => [
             { product_id => 4, quantity => 4, price => 100 },

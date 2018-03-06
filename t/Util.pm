@@ -31,6 +31,12 @@ sub get_cookie_values {
     return Mojo::JSON::j( b64_decode $value);
 }
 
+sub get_csrf_token {
+    my $t = shift;
+    my $cookie = get_cookie_values( $t, 'session' );
+    return $cookie->{csrf_token};
+}
+
 sub get_sid {
     my $t = shift;
     my ($cookie) = grep { $_->name eq 'sid' } @{ $t->ua->cookie_jar->all };
@@ -45,7 +51,7 @@ sub init_addon {
 
     $installed_addons->{$name} = {
         is_enabled => $is_enabled,
-        triggers      => [],
+        triggers   => [],
     };
     $app->addons->init($installed_addons);
 
