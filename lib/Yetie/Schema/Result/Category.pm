@@ -81,15 +81,19 @@ sub search_related {
 *search_related_rs = \&search_related;
 
 sub to_data {
-    my $self = shift;
+    my ( $self, $options ) = @_;
 
-    return {
-        id       => $self->id,
-        level    => $self->level,
-        root_id  => $self->root_id,
-        title    => $self->title,
-        children => $self->children->to_data,
+    my $data = {
+        id      => $self->id,
+        level   => $self->level,
+        root_id => $self->root_id,
+        title   => $self->title,
     };
+
+    # Options
+    $data->{children} = $self->children->to_data unless $options->{no_children};
+
+    return $data;
 }
 
 1;
