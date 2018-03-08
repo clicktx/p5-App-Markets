@@ -28,6 +28,7 @@ sub insert {
     $self->next::method(@_);
 }
 
+# NOTE: Arguments ($class, \%options)
 sub to_data {
     my %pair = shift->get_inflated_columns;
     return \%pair;
@@ -103,6 +104,21 @@ Return C<Hash refference> of column, object|value pairs.
 NOTE: Values for any columns set to use inflation will be inflated and returns as objects.
 
 See L<DBIx::Class::Row/get_inflated_columns>.
+
+C<options>
+
+Argumtnts from ResultSet::to_data(\%options)
+
+    # In main
+    my $data = $resultset->to_data( { foo => 'bar' } );
+
+    # Override Result Class
+    sub to_data {
+        my $self    = shift;
+        # { foo => 'bar' }
+        my $options = shift;
+        ...
+    }
 
 =head2 C<to_hash>
 

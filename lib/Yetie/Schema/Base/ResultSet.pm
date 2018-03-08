@@ -42,7 +42,7 @@ sub to_array {
 
 sub to_data {
     my @data;
-    shift->each( sub { push @data, $_->to_data } );
+    shift->each( sub { push @data, $_->to_data( shift || {} ) } );
     return \@data;
 }
 
@@ -98,7 +98,7 @@ Dump columns data.
 
 =head2 C<to_data>
 
-    my $data = $rs->search(...)->to_data;
+    my $data = $rs->search(...)->to_data(\%option);
 
 Return C<Array refference>.
 
