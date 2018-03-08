@@ -80,11 +80,11 @@ sub category {
     return $self->render() if !$form->has_data or !$form->do_validate;
 
     # Selected categories
-    my $category_ids = $form->param('categories[]');
-    return $self->render() unless @{$category_ids};
+    my $selected_categories = $form->param('categories[]');
+    return $self->render() unless @{$selected_categories};
 
     my $primary_category_id = @{ $entity->product_categories } ? $entity->product_categories->first->category_id : '';
-    $self->service('product')->update_product_categories( $product_id, $category_ids, $primary_category_id );
+    $self->service('product')->update_product_categories( $product_id, $selected_categories, $primary_category_id );
     return $self->render();
 }
 
