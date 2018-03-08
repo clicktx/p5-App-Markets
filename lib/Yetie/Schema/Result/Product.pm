@@ -36,6 +36,7 @@ column updated_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
+# Relation
 has_many
   product_categories => 'Yetie::Schema::Result::Product::Category',
   { 'foreign.product_id' => 'self.id' },
@@ -51,6 +52,20 @@ sub sqlt_deploy_hook {
     my ( $self, $sqlt_table ) = @_;
 
     $sqlt_table->add_index( name => 'idx_title', fields => ['title'] );
+}
+
+sub to_data {
+    my $self = shift;
+
+    return {
+        id                 => $self->id,
+        title              => $self->title,
+        description        => $self->description,
+        price              => $self->price,
+        created_at         => $self->created_at,
+        updated_at         => $self->updated_at,
+        product_categories => $self->product_categories->to_data,
+    };
 }
 
 1;
