@@ -2,8 +2,9 @@ package Yetie::Domain::Entity::Breadcrumb;
 use Yetie::Domain::Entity;
 use Mojo::URL;
 
+has class => '';
 has title => '';
-has url   => '';
+has url   => sub { Mojo::URL->new };
 
 1;
 __END__
@@ -21,9 +22,13 @@ Yetie::Domain::Entity::Breadcrumb
 L<Yetie::Domain::Entity::Breadcrumb> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<class>
+
 =head2 C<title>
 
 =head2 C<url>
+
+Returns L<Mojo::URL> object.
 
 =head1 METHODS
 

@@ -7,8 +7,9 @@ subtest 'basic' => sub {
     my $e = Yetie::Domain::Entity::Breadcrumb->new();
     isa_ok $e, 'Yetie::Domain::Entity';
 
+    can_ok $e, 'class';
     can_ok $e, 'title';
-    can_ok $e, 'url';
+    isa_ok $e->url, 'Mojo::URL';
 };
 
 done_testing();
