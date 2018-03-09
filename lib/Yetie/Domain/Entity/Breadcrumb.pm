@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::Link;
+package Yetie::Domain::Entity::Breadcrumb;
 use Yetie::Domain::Entity;
 use Mojo::URL;
 
@@ -10,7 +10,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Link
+Yetie::Domain::Entity::Breadcrumb
 
 =head1 SYNOPSIS
 
@@ -18,7 +18,7 @@ Yetie::Domain::Entity::Link
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Link> inherits all attributes from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::Breadcrumb> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<title>
@@ -27,7 +27,7 @@ the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Link> inherits all methods from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::Breadcrumb> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head1 AUTHOR
