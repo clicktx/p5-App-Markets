@@ -8,6 +8,11 @@ my $t      = Test::Mojo->new('App');
 my $app    = $t->app;
 my $schema = $app->schema;
 
+subtest 'attribute' => sub {
+    my $rs = $schema->resultset('Sales');
+    isa_ok $rs->schema, 'Yetie::Schema';
+};
+
 subtest 'method to_array()' => sub {
     my $rs = $schema->resultset('Sales::Order::Item');
 

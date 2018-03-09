@@ -1,6 +1,8 @@
 package Yetie::Schema::Base::ResultSet;
 use Mojo::Base 'DBIx::Class::ResultSet::HashRef';
 
+has schema => sub { shift->result_source->schema };
+
 # Base::Result::insertで対応しているので不要
 # sub create {
 #     my $self = shift;
@@ -50,11 +52,7 @@ sub to_data {
 sub update {
     my $self = shift;
 
-    my $schema = $self->result_source->schema;
-    if ( $self->result_source->has_column('updated_at') ) {
-        $_[0]->{updated_at} = $schema->now;
-    }
-
+    $_[0]->{updated_at} = $self->schema->now if $self->result_source->has_column('updated_at');
     $self->next::method(@_);
 }
 

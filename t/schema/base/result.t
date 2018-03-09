@@ -9,6 +9,11 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('Preference');
 
+subtest 'attribute' => sub {
+    my $result = $rs->search()->first;
+    isa_ok $result->schema, 'Yetie::Schema';
+};
+
 subtest 'choose_column_name' => sub {
     my $result = $rs->search()->first;
     my @array  = $result->choose_column_name();

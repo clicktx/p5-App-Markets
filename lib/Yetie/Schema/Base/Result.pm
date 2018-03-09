@@ -3,6 +3,8 @@ use Mojo::Base 'DBIx::Class::Core';
 
 __PACKAGE__->load_components(qw/InflateColumn::DateTime AsFdat/);
 
+has schema => sub { shift->result_source->schema };
+
 sub choose_column_name {
     my $self = shift;
     my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
@@ -20,8 +22,7 @@ sub choose_column_name {
 sub insert {
     my $self = shift;
 
-    my $schema = $self->result_source->schema;
-    my $now    = $schema->now;
+    my $now = $self->schema->now;
     $self->created_at($now) if $self->can('created_at');
     $self->updated_at($now) if $self->can('updated_at');
 
@@ -47,11 +48,7 @@ sub to_hash {
 sub update {
     my $self = shift;
 
-    my $schema = $self->result_source->schema;
-    if ( $self->can('updated_at') ) {
-        $self->updated_at( $schema->now );
-    }
-
+    $self->updated_at( $self->schema->now ) if $self->can('updated_at');
     $self->next::method(@_);
 }
 

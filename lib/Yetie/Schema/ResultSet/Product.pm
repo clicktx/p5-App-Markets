@@ -45,8 +45,8 @@ sub update_product_categories {
         $product->product_categories->populate($product_categories);
     };
 
-    try { $self->result_source->schema->txn_do($cb) }
-    catch { $self->result_source->schema->txn_failed($_) };
+    try { $self->schema->txn_do($cb) }
+    catch { $self->schema->txn_failed($_) };
 
     return $product;
 }
@@ -66,8 +66,8 @@ sub update_product {
         $product->update($params);
     };
 
-    try { $self->result_source->schema->txn_do($cb) }
-    catch { $self->result_source->schema->txn_failed($_) };
+    try { $self->schema->txn_do($cb) }
+    catch { $self->schema->txn_failed($_) };
     return $product;
 }
 
