@@ -3,7 +3,7 @@ use Yetie::Domain::Entity;
 use Data::Clone qw/data_clone/;
 
 has shipping_address => sub { __PACKAGE__->factory('entity-address') };
-has items            => sub { Yetie::Domain::Collection->new };
+has items            => sub { __PACKAGE__->collection };
 
 sub clone {
     my $self  = shift;

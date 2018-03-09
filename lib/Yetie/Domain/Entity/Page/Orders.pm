@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::Page::Orders;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
-has order_list => sub { Yetie::Domain::Collection->new };
+has order_list => sub { __PACKAGE__->collection };
 
 1;
 __END__

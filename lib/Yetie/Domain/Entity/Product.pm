@@ -4,8 +4,8 @@ use Yetie::Domain::Entity;
 has title              => '';
 has description        => '';
 has price              => 0;
-has product_categories => sub { Yetie::Domain::Collection->new };
-has breadcrumb         => sub { Yetie::Domain::Collection->new };
+has product_categories => sub { __PACKAGE__->collection };
+has breadcrumb         => sub { __PACKAGE__->collection };
 
 has created_at => undef;
 has updated_at => undef;
