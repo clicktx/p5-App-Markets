@@ -135,6 +135,20 @@ Getting columns is C<id, root_id, level, title>
 
 See L<DBIx::Class::Tree::NestedSet/search_related>.
 
+=head2 C<to_data>
+
+I<OPTIONS>
+
+=over
+
+=item * no_children
+
+    my $data = $result->to_data( { no_children => 1 } );
+
+Set to C<true>, returns value does not include C<children>.
+
+=back
+
 =head1 AUTHOR
 
 Yetie authors.
