@@ -54,6 +54,18 @@ sub sqlt_deploy_hook {
     $sqlt_table->add_index( name => 'idx_title', fields => ['title'] );
 }
 
+# Methods
+sub find_primary_category {
+    my $self = shift;
+
+    my $rs = $self->product_categories->search( { is_primary => 1 } );
+    my $primary_category = $self->schema->resultset('Category')->find(
+        {
+            id => { '=' => $rs->get_column('category_id')->as_query }
+        }
+    );
+}
+
 sub to_data {
     my $self = shift;
 
@@ -65,7 +77,57 @@ sub to_data {
         created_at         => $self->created_at,
         updated_at         => $self->updated_at,
         product_categories => $self->product_categories->to_data,
+        breadcrumbs        => $self->find_primary_category->to_data_family_tree,
     };
 }
 
 1;
+__END__
+=encoding utf8
+
+=head1 NAME
+
+Yetie::Schema::Result::Product
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 ATTRIBUTES
+
+L<Yetie::Schema::Result::Product> inherits all attributes from L<Yetie::Schema::Base::Result> and implements
+the following new ones.
+
+=head1 METHODS
+
+L<Yetie::Schema::Result::Product> inherits all methods from L<Yetie::Schema::Base::Result> and implements
+the following new ones.
+
+=head2 C<find_primary_category>
+
+    $primary_category = $result->find_primary_category;
+
+Returns L<Yetie::Schema::Result::Category> object.
+
+=head2 C<to_data>
+
+    {
+        id                 => '',
+        title              => '',
+        description        => '',
+        price              => '',
+        created_at         => DateT,
+        updated_at         => DateT,
+        product_categories => [],
+        breadcrumbs        => [],
+    }
+
+Return C<Hash reference>.
+
+=head1 AUTHOR
+
+Yetie authors.
+
+=head1 SEE ALSO
+
+L<Yetie::Schema::Base::Result>, L<Yetie::Schema>
