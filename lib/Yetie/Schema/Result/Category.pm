@@ -116,7 +116,7 @@ sub _breadcrumb {
     my $self = shift;
     return {
         title => $self->title,
-        url   => $self->schema->app->url_for( 'RN_product', product_id => $self->id ),
+        url   => $self->schema->app->url_for( 'RN_category', category_id => $self->id ),
     };
 }
 
