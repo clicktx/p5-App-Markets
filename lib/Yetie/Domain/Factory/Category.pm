@@ -42,8 +42,8 @@ sub build {
 sub cook {
     my $self = shift;
 
-    # Aggregate breadcrumb
-    $self->aggregate_collection( breadcrumb => 'entity-link', $self->param('breadcrumb') || [] );
+    # Aggregate breadcrumbs
+    $self->aggregate_collection( breadcrumbs => 'entity-link', $self->param('breadcrumbs') || [] );
 }
 
 sub _create_link {
