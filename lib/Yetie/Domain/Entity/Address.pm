@@ -1,14 +1,17 @@
 package Yetie::Domain::Entity::Address;
 use Yetie::Domain::Entity;
 
-has id => sub { shift->hash_code };
-has line1 => '';
+has line1       => '';
+has line2       => '';
+has level1      => '';
+has level2      => '';
+has postal_code => '';
 
 sub hash_code {
     my $self  = shift;
-    my $bytes = $self->line1;
 
-    # $bytes .= ...;
+    my $bytes;
+    $bytes .= $self->$_ for qw(line1 line2 level1 level2 postal_code);
     $self->SUPER::hash_code($bytes);
 }
 

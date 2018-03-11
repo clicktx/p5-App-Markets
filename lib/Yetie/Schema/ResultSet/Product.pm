@@ -2,6 +2,20 @@ package Yetie::Schema::ResultSet::Product;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 use Try::Tiny;
 
+sub find_product {
+    my ( $self, $product_id ) = @_;
+
+    return $self->find(
+        {
+            'me.id' => $product_id
+        },
+        {
+            prefetch => { product_categories => 'detail' },
+            order_by => 'lft',
+        }
+    );
+}
+
 sub update_product_categories {
     my ( $self, $product_id, $category_ids, $primary_category_id ) = @_;
 
@@ -31,8 +45,8 @@ sub update_product_categories {
         $product->product_categories->populate($product_categories);
     };
 
-    try { $self->result_source->schema->txn_do($cb) }
-    catch { $self->result_source->schema->txn_failed($_) };
+    try { $self->schema->txn_do($cb) }
+    catch { $self->schema->txn_failed($_) };
 
     return $product;
 }
@@ -52,8 +66,8 @@ sub update_product {
         $product->update($params);
     };
 
-    try { $self->result_source->schema->txn_do($cb) }
-    catch { $self->result_source->schema->txn_failed($_) };
+    try { $self->schema->txn_do($cb) }
+    catch { $self->schema->txn_failed($_) };
     return $product;
 }
 
@@ -80,6 +94,12 @@ the following new ones.
 
 L<Yetie::Schema::ResultSet::Product> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
 the following new ones.
+
+=head2 C<find_product>
+
+    my $result = $resultset->find_product($product_id);
+
+Return L<Yetie::Schema::Result::Product> object.
 
 =head2 C<update_product_categories>
 

@@ -55,8 +55,7 @@ sub startup : Test(startup) {
     $t->ua->get('/');
 
     # CSRF token
-    my $v = t::Util::get_cookie_values( $t => 'session' );
-    $self->{csrf_token} = $v->{csrf_token};
+    $self->{csrf_token} = t::Util::get_csrf_token($t);
 
     # redirect
     $self->ua->max_redirects(1);

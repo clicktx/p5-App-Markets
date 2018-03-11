@@ -8,6 +8,11 @@ my $t      = Test::Mojo->new('App');
 my $app    = $t->app;
 my $schema = $app->schema;
 
+subtest 'attribute' => sub {
+    my $rs = $schema->resultset('Sales');
+    isa_ok $rs->schema, 'Yetie::Schema';
+};
+
 subtest 'method to_array()' => sub {
     my $rs = $schema->resultset('Sales::Order::Item');
 
@@ -34,6 +39,13 @@ subtest 'method to_array()' => sub {
         @keys = sort( keys %{ $array[0] } );
         is_deeply \@keys, [qw(order_id product_title)], 'right option "columns"';
     };
+};
+
+subtest 'method to_data()' => sub {
+    my $rs    = $schema->resultset('Sales');
+    my $order = $rs->search()->to_data;
+
+    is ref $order, 'ARRAY', 'right types';
 };
 
 subtest 'method each()' => sub {

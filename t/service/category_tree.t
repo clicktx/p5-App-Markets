@@ -7,16 +7,16 @@ use Test::Mojo;
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
-subtest 'get_entity' => sub {
+subtest 'search_all and get_cache' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('category_tree');
 
-    is $c->entity_cache('category_tree'), undef, 'right not cache';
+    is $service->get_cache, undef, 'right not cached';
 
-    my $tree = $service->get_entity();
+    my $tree = $service->search_all();
     isa_ok $tree, 'Yetie::Domain::Entity::CategoryTree';
 
-    my $cache = $c->entity_cache('category_tree');
+    my $cache = $service->get_cache;
     ok $cache,     'right cache';
     isa_ok $cache, 'Yetie::Domain::Entity::CategoryTree';
 };

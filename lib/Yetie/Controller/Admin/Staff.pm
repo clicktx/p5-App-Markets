@@ -17,43 +17,19 @@ sub login {
 
     # Initialize form
     my $form = $self->form('admin-login');
-
-    # $self->init_form( $form );
-
     return $self->render() unless $form->has_data;
 
     return $self->render() unless $form->do_validate;
 
     my $login_id = $form->param('login_id');
     my $password = $form->param('password');
-    my $staff    = $self->factory('staff')->build($login_id);
 
-    if ( $staff->id ) {
-        if ( $self->scrypt_verify( $password, $staff->password->hash ) ) {
+    my $route = $self->flash('ref') || 'RN_admin_dashboard';
+    return $self->redirect_to($route) if $self->service('staff')->login_process( $login_id, $password );
 
-            # Login success
-            # logging etc.
-
-            $self->service('admin-staff')->login( $staff->id );
-
-            my $route = $self->flash('ref') || 'RN_admin_dashboard';
-            return $self->redirect_to($route);
-        }
-        else {
-            $self->stash( status => 401 );
-            $self->app->admin_log->warn( 'Staff login failed: password mismatch at login id: ' . $login_id );
-        }
-    }
-    else {
-        $self->stash( status => 401 );
-        $self->app->admin_log->warn( 'Staff login failed: not found login id: ' . $login_id );
-    }
-
-    # Login failure
-    $form->field('login_id')->append_error_class;
-    $form->field('password')->append_error_class;
-
-    $self->render( login_failure => 1 );
+    # Set error class
+    $form->field($_)->append_error_class for qw(login_id password);
+    return $self->render( login_failure => 1 );
 }
 
 sub logout {

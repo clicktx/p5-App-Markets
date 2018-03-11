@@ -3,6 +3,8 @@ use Mojo::Base 'DBIx::Class::Core';
 
 __PACKAGE__->load_components(qw/InflateColumn::DateTime AsFdat/);
 
+has schema => sub { shift->result_source->schema };
+
 sub choose_column_name {
     my $self = shift;
     my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
@@ -20,12 +22,17 @@ sub choose_column_name {
 sub insert {
     my $self = shift;
 
-    my $schema = $self->result_source->schema;
-    my $now    = $schema->now;
+    my $now = $self->schema->now;
     $self->created_at($now) if $self->can('created_at');
     $self->updated_at($now) if $self->can('updated_at');
 
     $self->next::method(@_);
+}
+
+# NOTE: Arguments ($class, \%options)
+sub to_data {
+    my %pair = shift->get_inflated_columns;
+    return \%pair;
 }
 
 sub to_hash {
@@ -35,17 +42,13 @@ sub to_hash {
     my %pair;
     $pair{$_} = $self->get_column($_) for @columns;
 
-    return wantarray ? (%pair) : \%pair;
+    return \%pair;
 }
 
 sub update {
     my $self = shift;
 
-    my $schema = $self->result_source->schema;
-    if ( $self->can('updated_at') ) {
-        $self->updated_at( $schema->now );
-    }
-
+    $self->updated_at( $self->schema->now ) if $self->can('updated_at');
     $self->next::method(@_);
 }
 
@@ -89,12 +92,42 @@ Override method.
 
 The difference, insert C<created_at> and C<updated_at> on insert(create).
 
+=head2 C<to_data>
+
+    my $hash = $result->to_data;
+
+Return C<Hash refference> of column, object|value pairs.
+
+NOTE: Values for any columns set to use inflation will be inflated and returns as objects.
+
+See L<DBIx::Class::Row/get_inflated_columns>.
+
+C<options>
+
+Argumtnts from ResultSet::to_data(\%options)
+
+    # In main
+    my $data = $resultset->to_data( { foo => 'bar' } );
+
+    # Override Result Class
+    sub to_data {
+        my $self    = shift;
+        # { foo => 'bar' }
+        my $options = shift;
+        ...
+    }
+
 =head2 C<to_hash>
 
-    my %data = $result->to_hash();
-    my $data = $result->to_hash();
+    my $hash = $result->to_hash();
 
-Return C<Hash> or C<Hash refference>.
+    # Only columns "hoo" and "bar"
+    my $hash = $result->to_hash( columns => [ 'hoo', 'bar' ] );
+
+    # Ignore columns "hoo" and "bar"
+    my $hash = $result->to_hash( ignore_columns => [ 'hoo', 'bar' ] );
+
+Return C<Hash refference>.
 
 =over
 

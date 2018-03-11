@@ -3,11 +3,11 @@ use Yetie::Domain::Entity;
 use Yetie::Form::Base;
 use Data::Page;
 
-has title       => '';
-has description => '';
-has keywords    => '';
-has robots      => '';
-has breadcrumb  => sub { Yetie::Domain::Collection->new };
+has meta_title       => sub { shift->title };
+has meta_description => sub { shift->description };
+has meta_keywords    => '';
+has meta_robots      => '';
+has breadcrumbs => sub { __PACKAGE__->collection };
 has form        => sub { Yetie::Form::Base->new };
 has pager       => sub { Data::Page->new };
 
@@ -27,17 +27,17 @@ Yetie::Domain::Entity::Page
 L<Yetie::Domain::Entity::Page> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<title>
+=head2 C<meta_title>
 
-=head2 C<description>
+=head2 C<meta_description>
 
-=head2 C<keywords>
+=head2 C<meta_keywords>
 
-=head2 C<robots>
+=head2 C<meta_robots>
 
-=head2 C<breadcrumb>
+=head2 C<breadcrumbs>
 
-    $content->breadcrumb->each( sub { ... } );
+    $content->breadcrumbs->each( sub { ... } );
 
 has L<Yetie::Domain::Entity::Link> object in L<Yetie::Domain::Collection> object.
 

@@ -1,11 +1,10 @@
 package Yetie::Domain::Factory;
 use Mojo::Base -base;
 use Carp 'croak';
-use DateTime::Format::Strptime;
+use Scalar::Util ();
 use Mojo::Util   ();
 use Mojo::Loader ();
 use Yetie::Util  ();
-use Yetie::Schema;
 use Yetie::Domain::Collection qw/collection/;
 use Yetie::Domain::IxHash qw/ix_hash/;
 
@@ -17,6 +16,14 @@ has entity_class => sub {
 };
 
 sub aggregate {
+    my ( $self, $accessor, $entity, $data ) = @_;
+    croak 'Data type is not Hash refference' if ref $data ne 'HASH';
+
+    $self->param( $accessor => $self->factory($entity)->create($data) );
+    return $self;
+}
+
+sub aggregate_collection {
     my ( $self, $accessor, $entity, $data ) = @_;
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
@@ -31,9 +38,9 @@ sub aggregate_kvlist {
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @kvlist;
-    while ( @{$data} ) {
-        my ( $key, $value ) = ( shift @{$data}, shift @{$data} );
-        push @kvlist, ( $key, $self->factory($entity)->create($value) );
+    foreach my $kv ( @{$data} ) {
+        my ( $key, $value ) = %{$kv};
+        push @kvlist, ( $key => $self->factory($entity)->create($value) );
     }
     $self->param( $accessor => ix_hash(@kvlist) );
     return $self;
@@ -46,8 +53,13 @@ sub create { shift->create_entity(@_) }
 sub create_entity {
     my $self = shift;
 
-    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
-    $self->params( _inflate_datetime($args) );
+    # my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+    # NOTE: For now to debuggable code...
+    my $args = {};
+    if (@_) {
+        $args = @_ > 1 ? {@_} : ref $_[0] eq 'HASH' ? { %{ $_[0] } } : Carp::croak 'Not a HASH reference';
+    }
+    $self->params($args);
 
     # cooking entity
     $self->cook();
@@ -74,6 +86,7 @@ sub factory {
 
     my $factory = $self->new(@_);
     $factory->app( $self->app );
+    Scalar::Util::weaken $factory->{app};
     return $factory;
 }
 
@@ -119,23 +132,6 @@ sub params {
     $self->{$_} = $args{$_} for keys %args;
 }
 
-sub _inflate_datetime {
-    my $args = shift;
-
-    # inflate datetime
-    my @keys = grep { $_ =~ qr/^.+_at$/ } keys %{$args};
-    foreach my $key (@keys) {
-        next if !$args->{$key} or ref $args->{$key} eq 'DateTime';
-
-        my $strp = DateTime::Format::Strptime->new(
-            pattern   => '%Y-%m-%d %H:%M:%S',
-            time_zone => $Yetie::Schema::TIME_ZONE,
-        );
-        $args->{$key} = $strp->parse_datetime( $args->{$key} );
-    }
-    return $args;
-}
-
 1;
 __END__
 
@@ -173,17 +169,23 @@ the following new ones.
 
 =head2 C<aggregate>
 
+    my $entity = $factory->aggregate( 'user', 'entity-user', \%data );
+
+Create C<Yetie::Domain::Entity> type aggregate.
+
+=head2 C<aggregate_collection>
+
     my @data = (qw/a b c d e f/);
-    my $entity = $factory->aggregate( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate( 'items', 'entity-xxx-item', \@data );
+    my $entity = $factory->aggregate_collection( $accessor_name, $target_entity, \@data );
+    my $entity = $factory->aggregate_collection( 'items', 'entity-xxx-item', \@data );
 
 Create C<Yetie::Domain::Collection> type aggregate.
 
 =head2 C<aggregate_kvlist>
 
-    my @data = ( key => 'value', key2 => 'value2', ... );
-    my $entity = $factory->aggregate_kv( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate_kv( 'items', 'entity-xxx-item', \@data );
+    my @data = ( { label => { key => 'value' } }, { label2 => { key2 => 'value2' } }, ... );
+    my $entity = $factory->aggregate_kvlist( $accessor_name, $target_entity, \@data );
+    my $entity = $factory->aggregate_kvlist( 'items', 'entity-xxx-item', \@data );
 
 Create C<Yetie::Domain::IxHash> type aggregate.
 

@@ -6,7 +6,7 @@ has [qw/app controller/];
 
 sub factory { shift->app->factory(@_) }
 
-sub service { shift->app->service(@_) }
+sub service { shift->controller->service(@_) }
 
 sub schema { shift->app->schema(@_) }
 
@@ -66,9 +66,9 @@ Alias $app->factory().
 
 =head2 C<service>
 
-    my $hoo_service = $service->service('hoo');
+    my $hoo_service = $service->service('foo');
 
-Alias $app->service().
+Alias $controller->service().
 
 =head2 C<schema>
 
@@ -83,4 +83,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
- L<Mojo::Base> L<Mojolicious>
+L<Mojo::Base>, L<Mojolicious>

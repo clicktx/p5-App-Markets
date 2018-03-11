@@ -5,16 +5,15 @@ sub cook {
     my $self = shift;
 
     # billing_address
-    my $billing_address = $self->factory('entity-address')->create( $self->{billing_address} || {} );
-    $self->param( billing_address => $billing_address );
+    $self->aggregate( billing_address => 'entity-address', $self->{billing_address} || {} );
 
     # Aggregate items
-    $self->aggregate( 'items', 'entity-cart-item', $self->param('items') || [] );
+    $self->aggregate_collection( 'items', 'entity-cart-item', $self->param('items') || [] );
 
     # Aggregate shipments
     my $param = $self->param('shipments') || [ {} ];
     push @{$param}, {} unless @{$param};    # NOTE: At the time of "$param eq []"
-    $self->aggregate( 'shipments', 'entity-shipment', $param );
+    $self->aggregate_collection( 'shipments', 'entity-shipment', $param );
 }
 
 1;

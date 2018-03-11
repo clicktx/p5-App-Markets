@@ -70,7 +70,6 @@ sub action_after {
 
 sub finalize {
     my $self = shift;
-    return if $self->flash('_is_redirect');
 
     $self->server_session->flush;
     return $self;
@@ -79,9 +78,6 @@ sub finalize {
 # Override method
 sub redirect_to {
     my $self = shift;
-
-    # Add redirect flag
-    $self->flash( _is_redirect => 1 );
 
     # Don't override 3xx status
     my $res = $self->res;

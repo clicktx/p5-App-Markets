@@ -33,6 +33,9 @@
 <div class="">
     <%= content items_orderd => begin =%>
         <h3>Items Ordered</h3>
+        <%= link_to 'RN_admin_order_edit_items' => begin %>
+            Edit
+        <% end %>
         <ol>
             % $order->items->each( sub {
                 <li>

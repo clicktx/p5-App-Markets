@@ -22,15 +22,15 @@ has_field 'line2' => (
     required     => 0,
 );
 
-has_field 'city' => (
-    $address->field_info('city'),
-    autocomplete => 'section-sent billing city',
+has_field 'level1' => (
+    $address->field_info('level1'),
+    autocomplete => 'section-sent billing address-level1',
     required     => 1,
 );
 
-has_field 'state' => (
-    $address->field_info('state'),
-    autocomplete => 'section-sent billing state',
+has_field 'level2' => (
+    $address->field_info('level2'),
+    autocomplete => 'section-sent billing address-level2',
     required     => 1,
 );
 

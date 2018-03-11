@@ -1,11 +1,8 @@
-package Yetie::Schema::Result::Password;
+package Yetie::Schema::Result::Staff::Password;
 use Mojo::Base 'Yetie::Schema::Base::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-primary_column id => {
-    data_type         => 'INT',
-    is_auto_increment => 1,
-};
+primary_column staff_id => { data_type => 'INT' };
 
 column hash => {
     data_type   => 'VARCHAR',
@@ -25,14 +22,20 @@ column updated_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
-# answer question hint create_by_user_id is_active
+# Relation
+belongs_to
+  staff => 'Yetie::Schema::Result::Staff',
+  { 'foreign.id' => 'self.staff_id' };
 
-might_have
-  customer => 'Yetie::Schema::Result::Customer',
-  { 'foreign.password_id' => 'self.id' };
+sub to_data {
+    my $self = shift;
 
-# might_have
-#   staff => 'Yetie::Schema::Result::Staff',
-#   { 'foreign.password_id' => 'self.id' };
+    return {
+        id         => $self->staff_id,
+        hash       => $self->hash,
+        created_at => $self->created_at,
+        updated_at => $self->updated_at,
+    };
+}
 
 1;

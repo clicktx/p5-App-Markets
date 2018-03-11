@@ -12,33 +12,41 @@ subtest 'default attributes' => sub {
 
 my $data = {
     properties => [
-        hoge => {
-            id            => 3,
-            value         => '',
-            default_value => '33',
-            position      => 100,
-            group_id      => 2,
+        {
+            hoge => {
+                id            => 3,
+                value         => '',
+                default_value => '33',
+                position      => 100,
+                group_id      => 2,
+            }
         },
-        fuga => {
-            id            => 4,
-            value         => '',
-            default_value => '44',
-            position      => 200,
-            group_id      => 1,
+        {
+            fuga => {
+                id            => 4,
+                value         => '',
+                default_value => '44',
+                position      => 200,
+                group_id      => 1,
+            }
         },
-        pref2 => {
-            id            => 2,
-            value         => '',
-            default_value => '22',
-            position      => 300,
-            group_id      => 2,
+        {
+            pref2 => {
+                id            => 2,
+                value         => '',
+                default_value => '22',
+                position      => 300,
+                group_id      => 2,
+            }
         },
-        pref1 => {
-            id            => 1,
-            value         => '',
-            default_value => '11',
-            position      => 500,
-            group_id      => 1,
+        {
+            pref1 => {
+                id            => 1,
+                value         => '',
+                default_value => '11',
+                position      => 500,
+                group_id      => 1,
+            }
         },
     ],
 };

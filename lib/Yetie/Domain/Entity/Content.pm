@@ -8,7 +8,7 @@ has description => '';
 has keywords    => '';
 has robots      => '';
 
-has breadcrumb => sub { Yetie::Domain::Collection->new };
+has breadcrumb => sub { __PACKAGE__->collection };
 has pager      => sub { Data::Page->new };
 has params     => sub { Yetie::Parameters->new };
 

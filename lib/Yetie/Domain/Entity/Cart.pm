@@ -4,8 +4,8 @@ use Carp qw/croak/;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 has cart_id   => '';
-has items     => sub { Yetie::Domain::Collection->new };
-has shipments => sub { Yetie::Domain::Collection->new };
+has items     => sub { __PACKAGE__->collection };
+has shipments => sub { __PACKAGE__->collection };
 has [qw/billing_address/];
 
 my @needless_attrs = (qw/cart_id items/);
@@ -71,22 +71,23 @@ sub grand_total {
 }
 
 sub merge {
-    my ( $self, $stored ) = ( shift->clone, shift->clone );
+    my ( $self, $target ) = @_;
+    my ( $clone, $stored ) = ( $self->clone, $target->clone );
 
     # items
     foreach my $item ( @{ $stored->items } ) {
-        $self->items->each(
+        $clone->items->each(
             sub {
                 my ( $e, $num ) = @_;
                 if ( $e->equal($item) ) {
                     $item->quantity( $e->quantity + $item->quantity );
                     my $i = $num - 1;
-                    splice @{ $self->items }, $i, 1;
+                    splice @{ $clone->items }, $i, 1;
                 }
             }
         );
     }
-    push @{ $stored->items }, @{ $self->items };
+    push @{ $stored->items }, @{ $clone->items };
 
     # shipments
     # NOTE: [WIP]

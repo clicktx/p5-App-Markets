@@ -56,37 +56,44 @@
         [ 9, 'i@x.org', 0 ],
     ],
     'Address' => [
-        [qw/id line1/],
-        [ 1, 'Silicon Valley' ],
-        [ 2, 'San Jose' ],
-        [ 3, 'Las Vegas' ],
-        [ 4, 'San Francisco'],
-    ],
-    'Password' => [
-        [qw/id hash/],
-        # 12345678
-        [ 1, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='],
-        # 22334455
-        [ 2, 'SCRYPT:16384:8:1:VGcabum1/mW1UQ207AZL4Abdj96TtHYtFWJRjBIuYv8=:5lLK4OF1oG9mdI9G89hgh4kvcXJ8jVnCqIAy8QXwluE='],
-        # 44556677
-        [ 3, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY='],
-        # 12345678
-        [ 4, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='],
+        [qw/id line1 line2 level2 level1 postal_code hash_code/],
+        [ 1, '42 Pendergast St.', '', 'Piedmont', 'SC', '29673', 'ddd317d966c94506903100cf3f48afee955127c4' ],
+        [ 2, '7004 Tunnel St.', '', 'New Brunswick', 'NJ', '08901', '5bcd318a8e608b5d727edbe36dbdc6cc16491b8c' ],
+        [ 3, '803 Wild Rose St.', '', 'Woodstock', 'GA', '30188', '0484ec673cb6aa6b61e14791dfb791a389cec27b' ],
+        [ 4, '906 Pearl Ave.', '', 'Patchogue', 'NY', '11772', '62f2d8907cff247986fd732b96bc8c41fa1d996d' ],
+        [ 5, '67 Valley St.', '', 'Palmetto', 'FL', '34221', '1f5cfa154b71e8b1841be16086f1850c20d73fb2' ],
     ],
 
     # Staffs
     'Staff' => [
-        [qw/id login_id password_id created_at updated_at/],
-        [ 222, 'default', 1, '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
-        [ 223, 'staff', 1, '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
+        [qw/id login_id created_at updated_at/],
+        [ 222, 'default', '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
+        [ 223, 'staff',   '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
+    ],
+    'Staff::Password' => [
+        [qw/staff_id hash created_at updated_at/],
+        # 12345678
+        [ 222, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
+        [ 223, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
     ],
 
     # Customers
     'Customer' => [
-        [qw/id password_id created_at updated_at/],
-        [ 111, 1, '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
-        [ 112, 2, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
-        [ 113, 3, '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
+        [qw/id created_at updated_at/],
+        [ 111, '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
+        [ 112, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
+        [ 113, '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
+        [ 114, '2017-07-10 10:11:02', '2017-07-10 10:11:02' ],
+        [ 115, '2017-07-10 10:20:21', '2017-07-10 10:20:21' ],
+    ],
+    'Customer::Password' => [
+        [qw/customer_id hash created_at updated_at/],
+        # 12345678
+        [ 111, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-06-06 19:50:05', '2017-06-06 19:50:05' ],
+        # 22334455
+        [ 112, 'SCRYPT:16384:8:1:VGcabum1/mW1UQ207AZL4Abdj96TtHYtFWJRjBIuYv8=:5lLK4OF1oG9mdI9G89hgh4kvcXJ8jVnCqIAy8QXwluE=', '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
+        # 44556677
+        [ 113, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY=', '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
     ],
     'Customer::Email' => [
         [qw/customer_id email_id is_primary/],
@@ -101,13 +108,13 @@
         [ 113, 9, 1 ],
     ],
     'Customer::Address' => [
-        [qw/type customer_id address_id/],
-        [qw/post 111 1/],
-        [qw/bill 111 1/],
-        [qw/ship 111 1/],
-        [qw/ship 112 2/],
-        [qw/ship 113 3/],
-        [qw/ship 113 4/],
+        [qw/customer_id address_id address_type_id/],
+        [qw/111 1 1/],
+        [qw/111 1 2/],
+        [qw/111 1 3/],
+        [qw/112 2 3/],
+        [qw/113 3 3/],
+        [qw/113 4 3/],
     ],
 
     # Orders

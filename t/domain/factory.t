@@ -1,7 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
-use DateTime;
 
 subtest 'basic' => sub {
     use_ok 'Yetie::Domain::Factory';
@@ -96,36 +95,27 @@ subtest 'factory method using' => sub {
 };
 
 subtest 'aggregate method' => sub {
-    Yetie::Domain::Entity::Agg->attr( [qw(hoges bars)] );
-
+    Yetie::Domain::Entity::Agg->attr( [qw(hoge foos bars)] );
     my $f = Yetie::Domain::Factory->new('entity-agg');
-    eval { $f->aggregate( 'hoges', 'entity-hoge', 'abc' ) };
+
+    eval { $f->aggregate_collection( 'foos', 'entity-foo', 'abc' ) };
+    ok $@, 'bad data type';
+    eval { $f->aggregate_kvlist( 'bars', 'entity-bar', 'abc' ) };
     ok $@, 'bad data type';
 
+    $f->aggregate( 'hoge', 'entity-hoge', {} );
+    $f->aggregate_collection( 'foos', 'entity-foo', [ {} ] );
+    $f->aggregate_kvlist( 'bars', 'entity-bar', [ { a => {} } ] );
+
     my $entity = $f->create;
-    isa_ok $entity->hoges, 'Yetie::Domain::Collection', 'right aggregate array';
-    isa_ok $entity->bars,  'Yetie::Domain::IxHash',     'right aggregate hash';
-};
+    isa_ok $entity->hoge, 'Yetie::Domain::Entity';
+    is_deeply $entity->hoge->to_data, {}, 'right aggregate';
 
-subtest 'inflate datetime for *_at' => sub {
-    Yetie::Domain::Entity::Bar->attr( [qw(created_at)] );
+    isa_ok $entity->foos, 'Yetie::Domain::Collection';
+    is_deeply $entity->foos->to_data, [ { a => 1, b => 2, f => 'fuga', h => 'hoge' } ], 'right aggregate array';
 
-    my $f = Yetie::Domain::Factory->new('entity-bar')->create( { created_at => '2017-5-26 19:17:06' } );
-    isa_ok $f->{created_at}, 'DateTime';
-    is $f->{created_at}->ymd, '2017-05-26', 'right date';
-
-    my $datetime = DateTime->new(
-        year      => 1964,
-        month     => 10,
-        day       => 16,
-        hour      => 16,
-        minute    => 12,
-        second    => 47,
-        time_zone => 'UTC',
-    );
-    $f = Yetie::Domain::Factory->new('entity-bar')->create( { created_at => $datetime } );
-    isa_ok $f->{created_at}, 'DateTime';
-    is $f->{created_at}->ymd, '1964-10-16', 'right date';
+    isa_ok $entity->bars, 'Yetie::Domain::IxHash';
+    is_deeply $entity->bars->to_data, { a => { hoge => {} } }, 'right aggregate hash';
 };
 
 done_testing();
@@ -168,8 +158,7 @@ done_testing();
 
     sub cook {
         my $self = shift;
-        my $hoge = $self->factory('entity-hoge')->create;
-        $self->param( hoge => $hoge );
+        $self->aggregate( hoge => 'entity-hoge', {} );
     }
 
     package Yetie::Domain::Entity::Bar;
@@ -180,12 +169,6 @@ done_testing();
 
     package Yetie::Domain::Factory::Agg;
     use Mojo::Base 'Yetie::Domain::Factory';
-
-    sub cook {
-        my $self = shift;
-        $self->aggregate( 'hoges', 'entity-hoge', [ {} ] );
-        $self->aggregate_kvlist( 'bars', 'entity-bar', [ a => {} ] );
-    }
 
     package Yetie::Domain::Entity::Agg;
     use Mojo::Base 'Yetie::Domain::Entity';

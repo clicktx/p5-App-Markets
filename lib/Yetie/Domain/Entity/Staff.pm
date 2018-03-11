@@ -1,11 +1,18 @@
 package Yetie::Domain::Entity::Staff;
 use Yetie::Domain::Entity;
-use Yetie::Domain::Entity::Password;
+use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
-has login_id   => '';
+has login_id   => undef;
 has created_at => undef;
 has updated_at => undef;
 has password   => sub { __PACKAGE__->factory('entity-password') };
+
+sub is_staff { shift->id ? 1 : 0 }
+
+sub verify_password {
+    my ( $self, $password ) = @_;
+    return scrypt_hash_verify( $password, $self->password->hash ) ? 1 : 0;
+}
 
 1;
 __END__
@@ -27,9 +34,15 @@ the following new ones.
 
     my $id = $staff->id;
 
+=head2 C<login_id>
+
+    my $login_id = $staff->login_id;
+
+Return LoginID.
+
 =head2 C<password>
 
-    my $password = $staff->password;
+    my $password = $customer->password;
 
 Return L<Yetie::Domain::Entity::Password> object.
 
@@ -42,15 +55,17 @@ Return L<Yetie::Domain::Entity::Password> object.
 L<Yetie::Domain::Entity::Staff> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<clone>
+=head2 C<is_staff>
 
-    my $clone_entity = $staff->clone;
-
-=head2 C<is_modified>
-
-    my $bool = $staff->is_modified;
+    my $bool = $staff->is_staff;
 
 Return boolean value.
+
+=head2 C<verify_password>
+
+    my $bool = $staff->verify_password($password);
+
+Returns true if authenticated.
 
 =head1 AUTHOR
 
@@ -58,4 +73,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::Entity::Password>
+L<Yetie::Domain::Entity::Password>, L<Yetie::Domain::Entity>

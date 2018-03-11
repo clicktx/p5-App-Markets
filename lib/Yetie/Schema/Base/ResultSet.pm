@@ -1,6 +1,8 @@
 package Yetie::Schema::Base::ResultSet;
 use Mojo::Base 'DBIx::Class::ResultSet::HashRef';
 
+has schema => sub { shift->result_source->schema };
+
 # Base::Result::insertで対応しているので不要
 # sub create {
 #     my $self = shift;
@@ -40,14 +42,17 @@ sub to_array {
     return wantarray ? @array : \@array;
 }
 
+sub to_data {
+    my ( $self, $args ) = ( shift, shift // {} );
+    my @data;
+    $self->each( sub { push @data, $_->to_data($args) } );
+    return \@data;
+}
+
 sub update {
     my $self = shift;
 
-    my $schema = $self->result_source->schema;
-    if ( $self->result_source->has_column('updated_at') ) {
-        $_[0]->{updated_at} = $schema->now;
-    }
-
+    $_[0]->{updated_at} = $self->schema->now if $self->result_source->has_column('updated_at');
     $self->next::method(@_);
 }
 
@@ -89,6 +94,12 @@ the following new ones.
 Return C<Array> or C<Array refference>.
 
 Dump columns data.
+
+=head2 C<to_data>
+
+    my $data = $rs->search(...)->to_data(\%option);
+
+Return C<Array refference>.
 
 =over
 

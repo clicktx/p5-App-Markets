@@ -3,11 +3,11 @@
         % my $node = shift;
         <%= tag 'li' => begin =%>
             <%= link_to 'RN_category' => { category_id => $node->id } => begin =%>
-            <%= $node->title =%>
+                <%= $node->title =%>
             <% end =%>
         <%= end =%>
-        % if ($node->children){
+        <% if ($node->has_child){ =%>
             <%= include 'widget/category_tree', tree => $node =%>
-        % }
+        <% } =%>
     % });
 <% end =%>

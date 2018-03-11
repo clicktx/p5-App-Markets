@@ -1,7 +1,9 @@
 package Yetie::Domain::Entity::Password;
 use Yetie::Domain::Entity;
 
-has [qw/id hash created_at updated_at/];
+has hash       => undef;
+has created_at => undef;
+has updated_at => undef;
 
 1;
 __END__
