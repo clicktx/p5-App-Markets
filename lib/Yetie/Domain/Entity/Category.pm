@@ -1,8 +1,10 @@
 package Yetie::Domain::Entity::Category;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
-has title     => '';
+has level     => 0;
+has root_id   => 0;
 has parent_id => undef;
+has title     => '';
 has products  => sub { __PACKAGE__->collection };
 
 1;
@@ -21,12 +23,16 @@ Yetie::Domain::Entity::Category
 L<Yetie::Domain::Entity::Category> inherits all attributes from L<Yetie::Domain::Entity::Page> and implements
 the following new ones.
 
-=head2 C<title>
+=head2 C<level>
+
+=head2 C<root_id>
 
 =head2 C<parent_id>
 
 Return parent category ID.
 If the root category, return C<undefined>.
+
+=head2 C<title>
 
 =head2 C<products>
 
