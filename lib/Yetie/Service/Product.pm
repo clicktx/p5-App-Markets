@@ -38,6 +38,14 @@ sub duplicate_product {
     return $result;
 }
 
+sub find_product {
+    my ( $self, $product_id ) = @_;
+
+    my $product = $self->resultset->find_product($product_id);
+    my $data    = $product->to_data;
+    return $self->factory('entity-product')->create($data);
+}
+
 sub is_sold {
     my ( $self, $product_id ) = @_;
 
@@ -113,6 +121,12 @@ Return: Array ou Array refference.
 Duplicate from C<$product_id>.
 
 Return L<Yetie::Schema::Result::Product> object or C<undefined>.
+
+=head2 C<find_product>
+
+    my $product = $service->find_product($product_id);
+
+Return L<Yetie::Domain::Entity::Product> object.
 
 =head2 C<new_product>
 
