@@ -15,19 +15,8 @@ sub index {
     my $product_id = $self->stash('product_id');
     $self->init_form( $form, $product_id );
 
-    my $product = $self->factory('product')->build($product_id);
-
-    # content entity
-    my $content = $self->app->factory('entity-content')->create(
-        {
-            title => $product->title,
-            breadcrumb => $product->breadcrumb,
-        }
-    );
-    $self->stash(
-        content => $content,
-        product => $product,
-    );
+    my $product = $self->service('product')->find_product($product_id);
+    $self->stash(content => $product);
 
     # 404
     return $self->reply->not_found unless $product->has_data;
