@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+        <title><%= __(title) %></title>
+    </head>
+    <body>
+        <header>
+            <%= include 'header' %>
+        </header>
+    <%= content main_container => begin =%>
+        <%= content =%>
+    <% end =%>
+        <footer>
+            <%= include 'footer' %>
+        </footer>
+        <%= include 'common/java_script' %>
+        <%= include 'common/style' %>
+    </body>
+</html>

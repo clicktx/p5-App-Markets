@@ -1,0 +1,10 @@
+% extends 'layouts/wrapper';
+% content main_container => begin
+<div class="container">
+    <div id="main">
+        <%= content %>
+    </div>
+    <div id="first-sidebar">first-sidebar</div>
+    <div id="second-sidebar">second-sidebar</div>
+</div>
+% end
