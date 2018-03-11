@@ -1,9 +1,8 @@
-% my $breadcrumb = $content->breadcrumb;
 <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
-    % $breadcrumb->each( sub {
+    % $breadcrumbs->each( sub {
         % my ( $e, $num ) = @_;
         % my $title = $self->tag('span' => ( itemprop => 'name' ) => $e->title);
-        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <li class="<%= $e->class %>" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
             <%= link_to sub { $title } => $e->url => ( itemprop => 'item' ) %>
             <meta itemprop="position" content="<%= $num %>" />
         </li>
