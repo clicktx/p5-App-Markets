@@ -96,6 +96,30 @@ sub to_data {
     return $data;
 }
 
+sub to_breadcrumbs {
+    my $self = shift;
+    my $app  = $self->schema->app;
+
+    # Ancestors category
+    my @breadcrumbs;
+    $self->ancestors->each( sub { push @breadcrumbs, $_->_breadcrumb } );
+
+    # Current category
+    my $current = $self->_breadcrumb;
+    $current->{class} = 'current';
+    push @breadcrumbs, $current;
+
+    return \@breadcrumbs;
+}
+
+sub _breadcrumb {
+    my $self = shift;
+    return {
+        title => $self->title,
+        url   => $self->schema->app->url_for( 'RN_product', product_id => $self->id ),
+    };
+}
+
 1;
 __END__
 =encoding utf8
@@ -148,6 +172,25 @@ I<OPTIONS>
 Set to C<true>, returns value does not include C<children>.
 
 =back
+
+=head2 C<to_breadcrumbs>
+
+    my $tree = $result->to_breadcrumbs;
+
+Return C<Array reference>.
+
+    [
+        {
+            title   => '',
+            url     => Mojo::URL,
+        },
+        ...
+        {
+            class   => 'current',
+            title   => '',
+            url     => Mojo::URL,
+        }
+    ]
 
 =head1 AUTHOR
 

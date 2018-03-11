@@ -3,6 +3,7 @@ use Mojo::Base -strict;
 use t::Util;
 use Test::More;
 use Test::Mojo;
+use Test::Deep;
 
 my $t      = Test::Mojo->new('App');
 my $app    = $t->app;
@@ -47,6 +48,25 @@ subtest 'to_data' => sub {
         title   => 'Sports',
       },
       'right option';
+};
+
+subtest 'to_breadcrumbs' => sub {
+    my $res    = $rs->find(3);
+    my $crumbs = $res->to_breadcrumbs;
+
+    cmp_deeply $crumbs,
+      [
+        {
+            title => 'Sports',
+            url   => obj_isa('Mojo::URL'),
+        },
+        {
+            class => 'current',
+            title => 'Golf',
+            url   => obj_isa('Mojo::URL'),
+        },
+      ],
+      'right deeply';
 };
 
 done_testing();

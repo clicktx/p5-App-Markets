@@ -77,7 +77,7 @@ sub to_data {
         created_at         => $self->created_at,
         updated_at         => $self->updated_at,
         product_categories => $self->product_categories->to_data,
-        breadcrumbs        => $self->find_primary_category->to_data_family_tree,
+        breadcrumbs        => $self->find_primary_category->to_breadcrumbs,
     };
 }
 
