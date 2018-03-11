@@ -4,13 +4,21 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-my $t      = Test::Mojo->new('App');
-my $app    = $t->app;
-my $schema = $app->schema;
+my $t   = Test::Mojo->new('App');
+my $app = $t->app;
+my $rs  = $app->schema->resultset('Product');
+
+subtest 'find_product' => sub {
+    my $result = $rs->find_product(1);
+    is $result->title, 'test product1', 'right title';
+
+    isa_ok $result, 'Yetie::Schema::Result::Product';
+    isa_ok $result->created_at,         'DateTime';
+    isa_ok $result->product_categories, 'Yetie::Schema::ResultSet::Product::Category';
+    isa_ok $result->product_categories->first->detail, 'Yetie::Schema::Result::Category';
+};
 
 subtest 'update_product_categories' => sub {
-    my $rs = $schema->resultset('Product');
-
     my $product_id          = 1;
     my @product_categories  = ( 1, 2, 3 );
     my $primary_category_id = 2;

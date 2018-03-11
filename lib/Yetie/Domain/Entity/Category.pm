@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::Category;
 use Yetie::Domain::Entity;
 
-has breadcrumb => sub { Yetie::Domain::Collection->new };
+has breadcrumb => sub { __PACKAGE__->collection };
 has [qw(parent_id products)];
 has title => '';
 

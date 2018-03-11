@@ -11,6 +11,7 @@ column is_primary => {
     default_value => 0,
 };
 
+# Relation
 belongs_to
   product => 'Yetie::Schema::Result::Product',
   { 'foreign.id' => 'self.product_id' };
@@ -18,5 +19,15 @@ belongs_to
 belongs_to
   detail => 'Yetie::Schema::Result::Category',
   { 'foreign.id' => 'self.category_id' };
+
+sub to_data {
+    my $self = shift;
+
+    return {
+        category_id => $self->category_id,
+        is_primary  => $self->is_primary,
+        title       => $self->detail->title,
+    };
+}
 
 1;

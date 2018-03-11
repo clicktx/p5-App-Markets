@@ -81,14 +81,42 @@ sub search_related {
 *search_related_rs = \&search_related;
 
 sub to_data {
-    my $self = shift;
+    my ( $self, $options ) = @_;
 
+    my $data = {
+        id      => $self->id,
+        level   => $self->level,
+        root_id => $self->root_id,
+        title   => $self->title,
+    };
+
+    # Options
+    $data->{children} = $self->children->to_data unless $options->{no_children};
+
+    return $data;
+}
+
+sub to_breadcrumbs {
+    my $self = shift;
+    my $app  = $self->schema->app;
+
+    # Ancestors category
+    my @breadcrumbs;
+    $self->ancestors->each( sub { push @breadcrumbs, $_->_breadcrumb } );
+
+    # Current category
+    my $current = $self->_breadcrumb;
+    $current->{class} = 'current';
+    push @breadcrumbs, $current;
+
+    return \@breadcrumbs;
+}
+
+sub _breadcrumb {
+    my $self = shift;
     return {
-        id       => $self->id,
-        level    => $self->level,
-        root_id  => $self->root_id,
-        title    => $self->title,
-        children => $self->children->to_data,
+        title => $self->title,
+        url   => $self->schema->app->url_for( 'RN_category', category_id => $self->id ),
     };
 }
 
@@ -130,6 +158,39 @@ NOTE: return values includes C<me.id> in addition to descendant ids.
 Getting columns is C<id, root_id, level, title>
 
 See L<DBIx::Class::Tree::NestedSet/search_related>.
+
+=head2 C<to_data>
+
+I<OPTIONS>
+
+=over
+
+=item * no_children
+
+    my $data = $result->to_data( { no_children => 1 } );
+
+Set to C<true>, returns value does not include C<children>.
+
+=back
+
+=head2 C<to_breadcrumbs>
+
+    my $tree = $result->to_breadcrumbs;
+
+Return C<Array reference>.
+
+    [
+        {
+            title   => '',
+            url     => Mojo::URL,
+        },
+        ...
+        {
+            class   => 'current',
+            title   => '',
+            url     => Mojo::URL,
+        }
+    ]
 
 =head1 AUTHOR
 
