@@ -1,9 +1,9 @@
 package Yetie::Domain::Entity::Category;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
-has breadcrumb => sub { __PACKAGE__->collection };
-has [qw(parent_id products)];
-has title => '';
+has title     => '';
+has parent_id => undef;
+has products  => sub { __PACKAGE__->collection };
 
 1;
 __END__
@@ -18,12 +18,10 @@ Yetie::Domain::Entity::Category
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Category> inherits all attributes from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::Category> inherits all attributes from L<Yetie::Domain::Entity::Page> and implements
 the following new ones.
 
-=head2 C<breadcrumb>
-
-Return L<Yetie::Domain::Collection> object.
+=head2 C<title>
 
 =head2 C<parent_id>
 
@@ -34,11 +32,9 @@ If the root category, return C<undefined>.
 
 Return L<Yetie::Schema::ResultSet::Product> object or C<undefined>.
 
-=head2 C<title>
-
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Category> inherits all methods from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::Category> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
 the following new ones.
 
 =head1 AUTHOR
@@ -47,4 +43,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>
+L<Yetie::Domain::Entity::Page>, L<Yetie::Domain::Entity>
