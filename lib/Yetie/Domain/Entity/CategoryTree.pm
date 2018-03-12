@@ -3,7 +3,6 @@ use Yetie::Domain::Entity;
 
 has level     => 0;
 has root_id   => 0;
-has parent_id => undef;
 has title     => '';
 has children  => sub { __PACKAGE__->collection };
 
@@ -28,11 +27,6 @@ the following new ones.
 =head2 C<level>
 
 =head2 C<root_id>
-
-=head2 C<parent_id>
-
-Return parent category ID.
-If the root category, return C<undefined>.
 
 =head2 C<title>
 

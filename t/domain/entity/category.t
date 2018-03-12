@@ -8,7 +8,6 @@ subtest 'basic' => sub {
     isa_ok $p, 'Yetie::Domain::Entity';
 
     can_ok $p, 'breadcrumb';
-    can_ok $p, 'parent_id';
     can_ok $p, 'products';
     can_ok $p, 'title';
 };

@@ -84,11 +84,10 @@ sub to_data {
     my ( $self, $options ) = @_;
 
     my $data = {
-        id        => $self->id,
-        level     => $self->level,
-        root_id   => $self->root_id,
-        parent_id => $self->parent ? $self->parent->id : undef,
-        title     => $self->title,
+        id      => $self->id,
+        level   => $self->level,
+        root_id => $self->root_id,
+        title   => $self->title,
     };
 
     # Options
