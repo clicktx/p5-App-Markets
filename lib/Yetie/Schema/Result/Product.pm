@@ -67,18 +67,25 @@ sub find_primary_category {
 }
 
 sub to_data {
-    my $self = shift;
+    my ( $self, $options ) = @_;
 
-    return {
-        id                 => $self->id,
-        title              => $self->title,
-        description        => $self->description,
-        price              => $self->price,
-        created_at         => $self->created_at,
-        updated_at         => $self->updated_at,
-        product_categories => $self->product_categories->to_data,
-        breadcrumbs        => $self->find_primary_category->to_breadcrumbs,
+    my $data = {
+        id          => $self->id,
+        title       => $self->title,
+        description => $self->description,
+        price       => $self->price,
     };
+
+    # Options
+    if ( !$options->{no_datetime} ) {
+        $data->{created_at} = $self->created_at;
+        $data->{updated_at} = $self->updated_at;
+    }
+    if ( !$options->{no_relation} ) {
+        $data->{product_categories} = $self->product_categories->to_data;
+        $data->{breadcrumbs}        = $self->find_primary_category->to_breadcrumbs;
+    }
+    return $data;
 }
 
 1;
@@ -116,13 +123,27 @@ Returns L<Yetie::Schema::Result::Category> object.
         title              => '',
         description        => '',
         price              => '',
-        created_at         => DateT,
-        updated_at         => DateT,
+        created_at         => DateTime,
+        updated_at         => DateTime,
         product_categories => [],
         breadcrumbs        => [],
     }
 
 Return C<Hash reference>.
+
+I<OPTIONS>
+
+=over
+
+=item * no_datetime
+
+Data does not include C<created_at> and C<updated_at>.
+
+=item * no_relation
+
+Data does not include C<product_categories> and C<breadcrumbs>.
+
+=back
 
 =head1 AUTHOR
 
