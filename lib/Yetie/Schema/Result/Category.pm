@@ -161,6 +161,8 @@ See L<DBIx::Class::Tree::NestedSet/search_related>.
 
 =head2 C<to_data>
 
+    my $hashref = $result->to_data;
+
 I<OPTIONS>
 
 =over
