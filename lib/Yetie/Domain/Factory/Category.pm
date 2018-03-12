@@ -4,6 +4,10 @@ use Mojo::Base 'Yetie::Domain::Factory';
 sub cook {
     my $self = shift;
 
+    # Aggregate products
+    my $products = $self->param('products');
+    $self->aggregate_collection( products => 'entity-product', $products || [] );
+
     # Aggregate breadcrumbs
     my $breadcrumbs = $self->param('breadcrumbs');
     $self->aggregate_collection( breadcrumbs => 'entity-breadcrumb', $breadcrumbs || [] );

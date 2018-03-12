@@ -20,7 +20,8 @@ sub find_category {
     my $page_no  = $form->param('page')     || 1;
     my $per_page = $form->param('per_page') || 3;
     my $products_rs = $category->search_products_in_categories( { page => $page_no, rows => $per_page } );
-    $data->{products} = $products_rs;
+    $data->{products} = $products_rs->to_data( { no_datetime => 1, no_relation => 1 } );
+    $data->{pager} = $products_rs->pager;
 
     return $factory->create($data);
 }
