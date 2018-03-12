@@ -10,6 +10,12 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('Category');
 
+subtest 'descendant_ids' => sub {
+    my $res = $rs->find(1);
+    my $ids = $res->descendant_ids;
+    is_deeply $ids, [ 1, 3, 4 ], 'right descendant categories IDs';
+};
+
 subtest 'to_data' => sub {
     my $res  = $rs->find(1);
     my $data = $res->to_data;
