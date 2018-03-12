@@ -10,18 +10,16 @@ sub find_category {
     my $category = $self->resultset->find($category_id);
     return $factory->create( {} ) unless $category;
 
-    my $data = $category->to_data( { no_children => 1 } );
-    $data->{form} = $form;
-
-    # breadcrumbs
-    $data->{breadcrumbs} = $category->to_breadcrumbs;
-
     # products
     my $page_no  = $form->param('page')     || 1;
     my $per_page = $form->param('per_page') || 3;
     my $products_rs = $category->search_products_in_categories( { page => $page_no, rows => $per_page } );
-    $data->{products} = $products_rs->to_data( { no_datetime => 1, no_relation => 1 } );
-    $data->{pager} = $products_rs->pager;
+
+    my $data = $category->to_data( { no_children => 1 } );
+    $data->{form}        = $form;
+    $data->{breadcrumbs} = $category->to_breadcrumbs;
+    $data->{products}    = $products_rs->to_data( { no_datetime => 1, no_relation => 1 } );
+    $data->{pager}       = $products_rs->pager;
 
     return $factory->create($data);
 }
