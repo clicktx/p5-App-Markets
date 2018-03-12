@@ -11,9 +11,7 @@ sub index {
     $form->do_validate;
 
     my $category_id = $self->stash('category_id');
-    my $page_no     = $form->param('page') || 1;
-    my $per_page    = $form->param('per_page') || 3;
-    my $category    = $self->factory('category')->build( $category_id, { page => $page_no, rows => $per_page } );
+    my $category = $self->service('category')->find_category( $category_id, $form );
     return $self->reply->not_found() unless $category->has_data;
 
     # widget category tree
@@ -21,21 +19,7 @@ sub index {
     my $category_tree = $service->get_cache || $service->search_all;
     $self->stash( 'yetie.widget.category_tree' => $category_tree );
 
-    # content entity
-    my $content = $self->app->factory('entity-content')->create(
-        {
-            title      => $category->title,
-            breadcrumb => $category->breadcrumb,
-            pager      => $category->products->pager,
-            params     => $form->params,
-        }
-    );
-
-    $self->stash(
-        content  => $content,
-        category => $category,
-    );
-
+    $self->stash( content => $category );
     return $self->render();
 }
 
