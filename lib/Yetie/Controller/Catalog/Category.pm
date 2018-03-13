@@ -11,7 +11,7 @@ sub index {
     $form->do_validate;
 
     my $category_id = $self->stash('category_id');
-    my $category = $self->service('category')->find_category( $category_id, $form );
+    my $category = $self->service('category')->find_category_with_products( $category_id, $form );
     return $self->reply->not_found() unless $category->has_data;
 
     # widget category tree
