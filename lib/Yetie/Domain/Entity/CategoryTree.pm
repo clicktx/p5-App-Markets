@@ -1,10 +1,10 @@
 package Yetie::Domain::Entity::CategoryTree;
 use Yetie::Domain::Entity;
 
-has level    => 0;
-has root_id  => 0;
-has title    => '';
-has children => sub { __PACKAGE__->collection };
+has level     => 0;
+has root_id   => 0;
+has title     => '';
+has children  => sub { __PACKAGE__->collection };
 
 sub has_child { @{ shift->children } ? 1 : 0 }
 

@@ -70,6 +70,23 @@ sub descendant_ids {
     return wantarray ? @ids : \@ids;
 }
 
+# NOTE: 下位カテゴリに所属するproductsも全て取得
+# TODO: SQLが非効率な可能性が高いので検証
+sub search_products_in_categories {
+    my $self = shift;
+    my $args = @_ ? @_ > 1 ? {@_} : shift : {};
+
+    my @category_ids = $self->descendant_ids;
+    my $products     = $self->schema->resultset('Product')->search(
+        { 'product_categories.category_id' => { IN => \@category_ids } },
+        {
+            prefetch => 'product_categories',
+            page     => $args->{page} // 1,
+            rows     => $args->{rows} // 10,
+        },
+    );
+}
+
 # search_related with special handling for relationships
 sub search_related {
     my ( $self, $rel, $cond, @rest ) = @_;
@@ -153,6 +170,16 @@ Return Array or Array refference.
 
 NOTE: return values includes C<me.id> in addition to descendant ids.
 
+=head2 C<search_products_in_categories>
+
+    my $rs = $category->search_products_in_categories( page => 1, rows => 10 );
+    my $rs = $category->search_products_in_categories( { page => 1, rows => 10 } );
+
+Return L<Yetie::Schema::ResultSet::Product> object.
+
+Search products belonging to this category.
+Includes descendants of the current category.
+
 =head2 C<search_related>
 
 Getting columns is C<id, root_id, level, title>
@@ -160,6 +187,8 @@ Getting columns is C<id, root_id, level, title>
 See L<DBIx::Class::Tree::NestedSet/search_related>.
 
 =head2 C<to_data>
+
+    my $hashref = $result->to_data;
 
 I<OPTIONS>
 

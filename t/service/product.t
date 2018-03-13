@@ -40,6 +40,10 @@ subtest 'duplicate_product' => sub {
 subtest 'find_product' => sub {
     my $e = $app->service('product')->find_product(1);
     isa_ok $e, 'Yetie::Domain::Entity::Product';
+    is $e->id, 1, 'right ID';
+
+    $e = $app->service('product')->find_product(999);
+    is $e->id, undef, 'right not found product';
 };
 
 subtest 'new_product' => sub {

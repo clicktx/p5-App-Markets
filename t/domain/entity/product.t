@@ -6,7 +6,7 @@ my $test_data = {
     title       => 'product title',
     description => 'product description',
     price       => 999,
-    breadcrumb  => [
+    breadcrumbs => [
         { id => 2,  title => "Fashion" },
         { id => 5,  title => "Women" },
         { id => 10, title => "Clothing" },
@@ -41,13 +41,13 @@ subtest 'basic' => sub {
     can_ok $e, 'updated_at';
 };
 
-subtest 'breadcrumb' => sub {
+subtest 'breadcrumbs' => sub {
     my $e = _create_entity();
 
-    my $attr = $e->breadcrumb;
+    my $attr = $e->breadcrumbs;
     isa_ok $attr, 'Yetie::Domain::Collection';
     is @{$attr}, 5, 'right elements';
-    isa_ok $attr->[0], 'Yetie::Domain::Entity::Link';
+    isa_ok $attr->[0], 'Yetie::Domain::Entity::Breadcrumb';
 };
 
 subtest 'product_categories' => sub {

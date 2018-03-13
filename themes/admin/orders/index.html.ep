@@ -26,7 +26,7 @@
 % });
 </ul>
 
-<%= include 'admin/component/pagination', pager => $content->pager, params => $content->form->params %>
+<%= include 'admin/component/pagination', pager => $content->pager, params => $content->form->params->to_hash %>
 
 <h2><%= __('Orders') %></h2>
 

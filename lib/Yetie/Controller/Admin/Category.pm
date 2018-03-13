@@ -34,10 +34,12 @@ sub edit {
     my $self = shift;
 
     my $category_id = $self->stash('category_id');
-    my $entity      = $self->factory('category')->build($category_id);
+
+    my $form = $self->form('admin-category');
+    my $entity = $self->service('category')->find_category( $category_id, $form );
     return $self->reply->not_found() unless $entity->has_data;
 
-    my $form = $self->form('admin-category')->fill_in($entity);
+    $form->fill_in($entity);
     return $self->render() unless $form->has_data;
     return $self->render() unless $form->do_validate;
 

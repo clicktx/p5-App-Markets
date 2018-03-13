@@ -42,7 +42,7 @@ sub find_product {
     my ( $self, $product_id ) = @_;
 
     my $product = $self->resultset->find_product($product_id);
-    my $data    = $product->to_data;
+    my $data = $product ? $product->to_data : {};
     return $self->factory('entity-product')->create($data);
 }
 

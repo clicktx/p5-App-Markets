@@ -22,7 +22,7 @@ category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name'
 % }
 
 <ul>
-    % $category->products->each( sub {
+    % $content->products->each( sub {
         % my $product = shift;
         <li>
             <%= link_to $product->title => 'RN_product' => { product_id => $product->id } %>
@@ -30,4 +30,4 @@ category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name'
     % });
 </ul>
 
-<%= include 'component/pagination', pager => $content->pager, params => $content->params %>
+<%= include 'component/pagination', pager => $content->pager, params => $content->form->params->to_hash %>

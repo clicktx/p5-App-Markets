@@ -10,6 +10,23 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('Category');
 
+subtest 'descendant_ids' => sub {
+    my $res = $rs->find(1);
+    my $ids = $res->descendant_ids;
+    is_deeply $ids, [ 1, 3, 4 ], 'right descendant categories IDs';
+};
+
+subtest 'search_products_in_categories' => sub {
+    my $res = $rs->find(1);
+
+    my $products_rs = $res->search_products_in_categories( page => 1, rows => 3 );
+    isa_ok $products_rs, 'Yetie::Schema::ResultSet::Product';
+    is $products_rs->all, 3, 'right arguments hash';
+
+    $products_rs = $res->search_products_in_categories( { page => 1, rows => 1 } );
+    is $products_rs->all, 1, 'right arguments hashref';
+};
+
 subtest 'to_data' => sub {
     my $res  = $rs->find(1);
     my $data = $res->to_data;
