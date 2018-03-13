@@ -5,7 +5,7 @@ use DateTime;
 use Mojo::Util 'camelize';
 use Data::Page::Navigation;
 
-our $VERSION   = 0.001;
+use version; our $VERSION = version->declare('v0.0.1');
 our $TIME_ZONE = 'UTC';
 
 has 'app';
