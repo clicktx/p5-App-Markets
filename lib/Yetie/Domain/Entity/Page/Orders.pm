@@ -23,6 +23,8 @@ the following new ones.
 
     my $collection = $entity->order_list;
 
+Return L<Yetie::Domain::Collection> object.
+
 =head1 METHODS
 
 L<Yetie::Domain::Entity::Page::Orders> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
@@ -34,4 +36,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::Entity::Page>
+L<Yetie::Domain::Entity::Page>, L<Yetie::Domain::Entity>
