@@ -3,27 +3,43 @@ use Mojo::Base 'Yetie::Service';
 
 has resultset => sub { shift->schema->resultset('Category') };
 
-sub find_category {
-    my ( $self, $category_id, $form ) = @_;
+sub find_category_with_products { shift->_find_category( @_, 1 ) }
 
+sub find_category { shift->_find_category( @_, undef ) }
+
+sub _find_category {
+    my ( $self, $category_id, $form, $with_products ) = @_;
     my $category = $self->resultset->find($category_id);
-    return $self->_create_entity( {} ) unless $category;
+    return $self->factory('entity-category')->create( {} ) unless $category;
 
-    # products
+    my $products_rs = $with_products ? _append_products( $form, $category ) : undef;
+    my $data = _to_data( $form, $category, $products_rs );
+    return $self->factory('entity-category')->create($data);
+}
+
+sub _append_products {
+    my ( $form, $category ) = @_;
+
+    # TODO: デバッグ用なので削除する
     my $page_no  = $form->param('page')     || 1;
     my $per_page = $form->param('per_page') || 3;
-    my $products_rs = $category->search_products_in_categories( { page => $page_no, rows => $per_page } );
+
+    return $category->search_products_in_categories( { page => $page_no, rows => $per_page } );
+}
+
+sub _to_data {
+    my ( $form, $category, $products_rs ) = @_;
 
     my $data = $category->to_data( { no_children => 1 } );
     $data->{form}        = $form;
     $data->{breadcrumbs} = $category->to_breadcrumbs;
-    $data->{products}    = $products_rs->to_data( { no_datetime => 1, no_relation => 1 } );
-    $data->{pager}       = $products_rs->pager;
+    return $data unless $products_rs;
 
-    return $self->_create_entity($data);
+    # with products
+    $data->{products} = $products_rs->to_data( { no_datetime => 1, no_relation => 1 } );
+    $data->{pager} = $products_rs->pager;
+    return $data;
 }
-
-sub _create_entity { shift->factory('entity-category')->create(shift) }
 
 1;
 __END__
@@ -46,7 +62,15 @@ the following new ones.
 L<Yetie::Service::Category> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
-head2 C<find_category>
+=head2 C<find_category_with_products>
+
+    my $entity = $service->find_category_with_products( $category_id, $form );
+
+Return L<Yetie::Domain::Entity::Category> object.
+
+The attribute "products" has a list of products.
+
+=head2 C<find_category>
 
     my $entity = $service->find_category( $category_id, $form );
 
