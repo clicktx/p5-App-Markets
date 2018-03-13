@@ -30,4 +30,4 @@ category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name'
     % });
 </ul>
 
-<%= include 'component/pagination', pager => $content->pager, params => $content->form->params %>
+<%= include 'component/pagination', pager => $content->pager, params => $content->form->params->to_hash %>
