@@ -6,9 +6,8 @@ has resultset => sub { shift->schema->resultset('Category') };
 sub find_category {
     my ( $self, $category_id, $form ) = @_;
 
-    my $factory  = $self->factory('entity-category');
     my $category = $self->resultset->find($category_id);
-    return $factory->create( {} ) unless $category;
+    return $self->_create_entity( {} ) unless $category;
 
     # products
     my $page_no  = $form->param('page')     || 1;
@@ -21,8 +20,10 @@ sub find_category {
     $data->{products}    = $products_rs->to_data( { no_datetime => 1, no_relation => 1 } );
     $data->{pager}       = $products_rs->pager;
 
-    return $factory->create($data);
+    return $self->_create_entity($data);
 }
+
+sub _create_entity { shift->factory('entity-category')->create(shift) }
 
 1;
 __END__
