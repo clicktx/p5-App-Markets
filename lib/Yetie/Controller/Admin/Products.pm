@@ -26,24 +26,26 @@ sub index {
     #items_per_page cs
     #page_count
 
-    my $rs = $self->app->schema->resultset('Product');
-    my $products =
-      $rs->search( {}, { order_by => { -desc => [ 'updated_at', 'created_at' ] }, page => $page, rows => $per_page } );
-
-    # content entity
-    my $content = $self->app->factory('entity-content')->create(
+    my $rs          = $self->app->schema->resultset('Product');
+    my $products_rs = $rs->search(
+        {},
         {
-            # title      => $xx->title,
-            # breadcrumb => $xx->breadcrumb,
-            pager  => $products->pager,
-            params => $form->params,
+            order_by => { -desc => [ 'updated_at', 'created_at' ] },
+            page     => $page,
+            rows     => $per_page,
         }
     );
 
-    $self->stash(
-        content  => $content,
-        products => $products,
-    );
+    my $data = {
+        meta_title   => '',
+        breadcrumbs  => [],
+        form         => $form,
+        product_list => $products_rs->to_data( { no_relation => 1 } ),
+        pager        => $products_rs->pager,
+    };
+    my $products = $self->factory('entity-products')->create($data);
+
+    $self->stash( content => $products );
     $self->render();
 }
 
