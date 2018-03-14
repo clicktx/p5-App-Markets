@@ -10,7 +10,7 @@ sub search_orders {
         where    => '',
         order_by => '',
         page_no  => $form->param('page') || 1,
-        rows     => $form->param('per_page') || 5,
+        per_page => $form->param('per_page') || 5,
     };
     my $result = $self->resultset->search_sales_orders($conditions);
     my $data   = $result->to_data;
