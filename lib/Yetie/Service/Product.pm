@@ -22,15 +22,16 @@ sub choices_primary_category {
 sub duplicate_product {
     my ( $self, $product_id ) = @_;
 
-    my $entity = $self->controller->factory('product')->build($product_id);
+    my $entity = $self->find_product($product_id);
     return unless $entity->has_data;
 
     my $title = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
     my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count + 1;
     $entity->title( $title . $i );
 
-    delete $entity->{breadcrumb};
-    my $result = $self->resultset->create( $entity->to_data );
+    my $data = $entity->to_data;
+    delete $data->{breadcrumbs};
+    my $result = $self->resultset->create($data);
 
     # Logging
     $self->app->admin_log->info( 'Duplicate product from ID:' . $product_id ) if $result;
