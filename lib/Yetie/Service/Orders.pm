@@ -10,20 +10,18 @@ sub search_orders {
         where    => '',
         order_by => '',
         page_no  => $form->param('page') || 1,
-        rows     => $form->param('per_page') || 5,
+        per_page => $form->param('per_page') || 5,
     };
     my $result = $self->resultset->search_sales_orders($conditions);
-    my $data   = $result->to_data;
-    my $orders = $self->factory('entity-page-orders')->create(
-        {
-            title      => 'Orders',
-            form       => $form,
-            breadcrumb => [],
-            pager      => $result->pager,
-            order_list => $data,
-        }
-    );
-    return $orders;
+
+    my $data = {
+        title      => 'Orders',
+        form       => $form,
+        breadcrumb => [],
+        order_list => $result->to_data,
+        pager      => $result->pager,
+    };
+    return $self->factory('entity-page-orders')->create($data);
 }
 
 1;
@@ -46,6 +44,10 @@ the following new ones.
 
 L<Yetie::Service::Orders> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
+
+=head2 C<search_orders>
+
+    my $entity = $service->search_orders($form);
 
 =head1 AUTHOR
 

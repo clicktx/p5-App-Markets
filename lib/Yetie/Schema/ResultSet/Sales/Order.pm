@@ -25,13 +25,13 @@ sub search_sales_orders {
 
     my $where = $args->{where} || {};
     my $order_by = $args->{order_by} || { -desc => 'me.id' };
-    my $page_no = $args->{page_no};
-    my $rows    = $args->{rows};
+    my $page = $args->{page_no};
+    my $rows = $args->{per_page};
 
     return $self->search(
         $where,
         {
-            page     => $page_no,
+            page     => $page,
             rows     => $rows,
             order_by => $order_by,
             prefetch => $prefetch,
