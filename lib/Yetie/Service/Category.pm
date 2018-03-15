@@ -36,7 +36,7 @@ sub _to_data {
     return $data unless $products_rs;
 
     # with products
-    $data->{products} = $products_rs->to_data( { no_datetime => 1, no_relation => 1 } );
+    $data->{products} = $products_rs->to_data( { no_datetime => 1, no_relation => 1, no_breadcrumbs => 1 } );
     $data->{pager} = $products_rs->pager;
     return $data;
 }
