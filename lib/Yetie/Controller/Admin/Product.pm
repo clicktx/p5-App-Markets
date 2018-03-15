@@ -42,7 +42,7 @@ sub edit {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    my $entity     = $self->factory('product')->build($product_id);
+    my $entity     = $self->service('product')->find_product($product_id);
     return $self->reply->not_found() unless $entity->has_data;
 
     # Init form
@@ -64,7 +64,7 @@ sub category {
     my $self = shift;
 
     my $product_id = $self->stash('product_id');
-    my $entity     = $self->factory('product')->build($product_id);
+    my $entity     = $self->service('product')->find_product($product_id);
     return $self->reply->not_found() unless $entity->has_data;
 
     # Init form

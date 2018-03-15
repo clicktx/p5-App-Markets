@@ -15,11 +15,11 @@ sub search_orders {
     my $result = $self->resultset->search_sales_orders($conditions);
 
     my $data = {
-        title      => 'Orders',
-        form       => $form,
-        breadcrumb => [],
-        order_list => $result->to_data,
-        pager      => $result->pager,
+        meta_title  => 'Orders',
+        form        => $form,
+        breadcrumbs => [],
+        order_list  => $result->to_data,
+        pager       => $result->pager,
     };
     return $self->factory('entity-page-orders')->create($data);
 }

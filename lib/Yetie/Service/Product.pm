@@ -22,15 +22,16 @@ sub choices_primary_category {
 sub duplicate_product {
     my ( $self, $product_id ) = @_;
 
-    my $entity = $self->controller->factory('product')->build($product_id);
+    my $entity = $self->find_product($product_id);
     return unless $entity->has_data;
 
     my $title = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
     my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count + 1;
     $entity->title( $title . $i );
 
-    delete $entity->{breadcrumb};
-    my $result = $self->resultset->create( $entity->to_data );
+    my $data = $entity->to_data;
+    delete $data->{breadcrumbs};
+    my $result = $self->resultset->create($data);
 
     # Logging
     $self->app->admin_log->info( 'Duplicate product from ID:' . $product_id ) if $result;
@@ -38,11 +39,19 @@ sub duplicate_product {
     return $result;
 }
 
-sub find_product {
+sub find_product_with_breadcrumbs {
     my ( $self, $product_id ) = @_;
 
     my $product = $self->resultset->find_product($product_id);
     my $data = $product ? $product->to_data : {};
+    return $self->factory('entity-product')->create($data);
+}
+
+sub find_product {
+    my ( $self, $product_id ) = @_;
+
+    my $product = $self->resultset->find_product($product_id);
+    my $data = $product ? $product->to_data( { no_breadcrumbs => 1 } ) : {};
     return $self->factory('entity-product')->create($data);
 }
 
@@ -121,6 +130,14 @@ Return: Array ou Array refference.
 Duplicate from C<$product_id>.
 
 Return L<Yetie::Schema::Result::Product> object or C<undefined>.
+
+=head2 C<find_product_with_breadcrumbs>
+
+    my $product = $service->find_product($product_id);
+
+Return L<Yetie::Domain::Entity::Product> object.
+
+Data does include C<breadcrumbs>.
 
 =head2 C<find_product>
 
