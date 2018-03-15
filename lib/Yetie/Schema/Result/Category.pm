@@ -115,7 +115,6 @@ sub to_data {
 
 sub to_breadcrumbs {
     my $self = shift;
-    my $app  = $self->schema->app;
 
     # Ancestors category
     my @breadcrumbs;
