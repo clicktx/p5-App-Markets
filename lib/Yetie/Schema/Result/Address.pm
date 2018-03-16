@@ -7,7 +7,7 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column hash_code => {
+column hash => {
     data_type   => 'VARCHAR',
     size        => 64,
     is_nullable => 0,
@@ -47,7 +47,7 @@ column postal_code => {
 };
 
 # Index
-unique_constraint ui_hash_code => [qw/hash_code/];
+unique_constraint ui_hash => [qw/hash/];
 
 # Relation
 has_many

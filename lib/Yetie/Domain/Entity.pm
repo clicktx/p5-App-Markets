@@ -1,8 +1,8 @@
 package Yetie::Domain::Entity;
 use Yetie::Domain::Base;
 use Yetie::Domain::Factory;
-use Yetie::Domain::Collection qw(collection);
-use Yetie::Domain::IxHash qw(ix_hash);
+use Yetie::Domain::Collection qw();
+use Yetie::Domain::IxHash qw();
 use Mojo::Util qw();
 use Scalar::Util qw();
 use Data::Clone qw();

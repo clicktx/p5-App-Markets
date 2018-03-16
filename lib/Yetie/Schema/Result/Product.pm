@@ -83,7 +83,9 @@ sub to_data {
     }
     if ( !$options->{no_relation} ) {
         $data->{product_categories} = $self->product_categories->to_data;
-        $data->{breadcrumbs}        = $self->find_primary_category->to_breadcrumbs;
+    }
+    if ( !$options->{no_breadcrumbs} ) {
+        $data->{breadcrumbs} = $self->find_primary_category->to_breadcrumbs;
     }
     return $data;
 }
@@ -133,6 +135,14 @@ Return C<Hash reference>.
 
 I<OPTIONS>
 
+    my $data = $result->to_data(
+        {
+            no_datetime      => 1,
+            no_relation      => 1,
+            no_breadcrumbs   => 1,
+        }
+    );
+
 =over
 
 =item * no_datetime
@@ -141,7 +151,11 @@ Data does not include C<created_at> and C<updated_at>.
 
 =item * no_relation
 
-Data does not include C<product_categories> and C<breadcrumbs>.
+Data does not include C<product_categories>
+
+=item * no_breadcrumbs
+
+Data does not include C<breadcrumbs>.
 
 =back
 

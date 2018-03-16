@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::Page::Orders;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
-has order_list => sub { __PACKAGE__->collection };
+has order_list => sub { Yetie::Domain::Collection->new };
 
 1;
 __END__
@@ -23,6 +23,8 @@ the following new ones.
 
     my $collection = $entity->order_list;
 
+Return L<Yetie::Domain::Collection> object.
+
 =head1 METHODS
 
 L<Yetie::Domain::Entity::Page::Orders> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
@@ -34,4 +36,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::Entity::Page>
+L<Yetie::Domain::Entity::Page>, L<Yetie::Domain::Entity>

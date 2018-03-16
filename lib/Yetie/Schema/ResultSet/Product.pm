@@ -16,6 +16,24 @@ sub find_product {
     );
 }
 
+sub search_products {
+    my ( $self, $conditions ) = @_;
+
+    my $where    = $conditions->{where}    || {};
+    my $order_by = $conditions->{order_by} || { -desc => [ 'updated_at', 'created_at' ] };
+    my $page     = $conditions->{page_no}  || 1;
+    my $rows     = $conditions->{per_page} || 10;
+
+    return $self->search(
+        $where,
+        {
+            order_by => $order_by,
+            page     => $page,
+            rows     => $rows,
+        }
+    );
+}
+
 sub update_product_categories {
     my ( $self, $product_id, $category_ids, $primary_category_id ) = @_;
 
@@ -100,6 +118,12 @@ the following new ones.
     my $result = $resultset->find_product($product_id);
 
 Return L<Yetie::Schema::Result::Product> object.
+
+=head2 C<search_products>
+
+    my $products_rs = $resultset->search_products(\%conditions);
+
+Return L<Yetie::Schema::ResultSet::Product> object.
 
 =head2 C<update_product_categories>
 

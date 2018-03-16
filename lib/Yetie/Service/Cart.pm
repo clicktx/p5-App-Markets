@@ -9,7 +9,7 @@ sub add_item {
     # キャッシュする場合はservice('product')->load_entity()等としてキャッシュを使うようにする
     # fileキャッシュで全てのproductのキャッシュを生成するのもありか？
     my $product = $self->controller->stash('product');
-    $product = $self->factory('product')->build( $form_params->{product_id} ) unless $product;
+    $product = $self->service('product')->find_product( $form_params->{product_id} ) unless $product;
 
     # NOTE: データマッピングは別のメソッドで行うように
     $form_params->{product_title} = $product->title;

@@ -11,7 +11,7 @@ use_ok 'Yetie::Service::Product';
 subtest 'choices_primary_category' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
-    my $e       = $app->factory('product')->build(1);
+    my $e       = $service->find_product(1);
 
     my $choices = $service->choices_primary_category($e);
     is ref $choices, 'ARRAY', 'right get array ref';
@@ -37,10 +37,18 @@ subtest 'duplicate_product' => sub {
     is $product->product_categories, $orig->product_categories, 'right product_categories';
 };
 
+subtest 'find_product_with_breadcrumbs' => sub {
+    my $e = $app->service('product')->find_product_with_breadcrumbs(1);
+    isa_ok $e, 'Yetie::Domain::Entity::Product';
+    is $e->id, 1, 'right ID';
+    isa_ok $e->breadcrumbs->[0], 'Yetie::Domain::Entity::Breadcrumb';
+};
+
 subtest 'find_product' => sub {
     my $e = $app->service('product')->find_product(1);
     isa_ok $e, 'Yetie::Domain::Entity::Product';
     is $e->id, 1, 'right ID';
+    is_deeply $e->breadcrumbs, [], 'right no breadcrumbs';
 
     $e = $app->service('product')->find_product(999);
     is $e->id, undef, 'right not found product';

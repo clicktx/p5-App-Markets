@@ -85,7 +85,7 @@ sub _logged_in {
 
 # NOTE: logging 未完成
 sub _login_failed {
-    my ( $self, $message, $error_code ) = @_;
+    my ( $self, $message ) = @_;
     $self->controller->stash( status => 401 );
 
     # Logging

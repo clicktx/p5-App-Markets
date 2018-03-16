@@ -7,7 +7,7 @@ has meta_title       => sub { shift->title };
 has meta_description => sub { shift->description };
 has meta_keywords    => '';
 has meta_robots      => '';
-has breadcrumbs => sub { __PACKAGE__->collection };
+has breadcrumbs => sub { Yetie::Domain::Collection->new };
 has form        => sub { Yetie::Form::Base->new };
 has pager       => sub { Data::Page->new };
 

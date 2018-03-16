@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::SellingItems;
 use Yetie::Domain::Entity;
 
-has item_list => sub { __PACKAGE__->collection };
+has item_list => sub { Yetie::Domain::Collection->new };
 
 sub each { shift->item_list->each(@_) }
 
