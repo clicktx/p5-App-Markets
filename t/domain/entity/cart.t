@@ -11,19 +11,37 @@ my $test_data = {
     ],
     shipments => [
         {
-            shipping_address => { line1 => 'Tokyo' },
+            shipping_address => {
+                level1      => '',
+                level2      => '',
+                line1       => 'Tokyo',
+                line2       => '',
+                postal_code => '',
+            },
             items => [ { product_id => 4, quantity => 4, price => 100 } ]
         },
         {
-            shipping_address => { line1 => 'Osaka' },
-            items            => [
+            shipping_address => {
+                level1      => '',
+                level2      => '',
+                line1       => 'Osaka',
+                line2       => '',
+                postal_code => '',
+            },
+            items => [
                 { product_id => 4, quantity => 4, price => 100 },
                 { product_id => 5, quantity => 5, price => 100 },
                 { product_id => 6, quantity => 6, price => 100 },
             ]
         },
     ],
-    billing_address => { line1 => 'Gunma' },
+    billing_address => {
+        level1      => '',
+        level2      => '',
+        line1       => 'Gunma',
+        line2       => '',
+        postal_code => '',
+    },
 };
 
 sub _create_entity {
@@ -58,8 +76,13 @@ subtest 'attributes' => sub {
 };
 
 subtest 'methods' => sub {
-    my $cart = _create_entity;
-    cmp_deeply $cart->to_data, { cart_id => ignore(), %{$test_data} }, 'right data structure';
+    my $cart      = _create_entity;
+    my $cart_data = $cart->to_data;
+    my $d         = $test_data;
+    $d->{billing_address}->{hash}                    = 'a82fa13bc1bbb9eae4602e4c9c7e4c7c4f6d319b';
+    $d->{shipments}->[0]->{shipping_address}->{hash} = '963dd210cc93a4597038ceabe0fe93b258a362b9';
+    $d->{shipments}->[1]->{shipping_address}->{hash} = 'bd88cc6c2baf90656affa4162b5346eee01cc4e7';
+    cmp_deeply $cart_data, { cart_id => ignore(), %{$d} }, 'right data structure';
     is $cart->id,               '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->total_item_count, 7,                                          'right total item count';
     is $cart->total_quantity,   25,                                         'right total quantity count';
@@ -205,7 +228,18 @@ subtest 'merge' => sub {
             { product_id => 1, quantity => 1, price => 100 },
             { product_id => 5, quantity => 5, price => 100 },
         ],
-        shipments => [ { shipping_address => {}, items => [] } ],
+        shipments => [
+            {
+                shipping_address => {
+                    level1      => '',
+                    level2      => '',
+                    line1       => '',
+                    line2       => '',
+                    postal_code => '',
+                },
+                items => []
+            }
+        ],
     };
     my $stored_cart = Yetie::Domain::Factory->new('entity-cart')->create(
         {
@@ -213,22 +247,26 @@ subtest 'merge' => sub {
             %{$stored_data},
         }
     );
-    my $merged_cart = $cart->merge($stored_cart);
-    cmp_deeply $cart->to_data,
-      {
-        cart_id         => '12345',
-        billing_address => ignore(),
-        %{$test_data}
-      },
-      'right non-destructive';
-    cmp_deeply $stored_cart->to_data,
-      {
-        cart_id         => '99999',
-        billing_address => ignore(),
-        %{$stored_data}
-      },
-      'right non-destructive';
-    cmp_deeply $merged_cart->to_data,
+
+    my $d = $test_data;
+    $d->{cart_id}                                    = '12345';
+    $d->{billing_address}->{hash}                    = 'a82fa13bc1bbb9eae4602e4c9c7e4c7c4f6d319b';
+    $d->{shipments}->[0]->{shipping_address}->{hash} = '963dd210cc93a4597038ceabe0fe93b258a362b9';
+    $d->{shipments}->[1]->{shipping_address}->{hash} = 'bd88cc6c2baf90656affa4162b5346eee01cc4e7';
+    my $cart_data = $cart->to_data;
+    cmp_deeply $cart_data, $d, 'right non-destructive';
+
+    $d                                               = $stored_data;
+    $d->{cart_id}                                    = '99999';
+    $d->{billing_address}->{hash}                    = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
+    $d->{shipments}->[0]->{shipping_address}->{hash} = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
+    my $stored_cart_data = $stored_cart->to_data;
+    cmp_deeply $stored_cart_data, $d, 'right stored';
+
+    my $merged_cart      = $cart->merge($stored_cart);
+    my $merged_cart_data = $merged_cart->to_data;
+
+    cmp_deeply $merged_cart_data,
       {
         cart_id         => '99999',
         billing_address => ignore(),
@@ -239,7 +277,7 @@ subtest 'merge' => sub {
             { product_id => 2, quantity => 2, price => 100 },
             { product_id => 3, quantity => 3, price => 100 },
         ],
-        shipments => [ { shipping_address => {}, items => [] } ],
+        shipments => [ { shipping_address => ignore(), items => [] } ],
       },
       'right merge data';
     is $merged_cart->_is_modified, 1, 'right modified';
