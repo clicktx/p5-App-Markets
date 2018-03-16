@@ -4,7 +4,7 @@ use Yetie::Domain::Entity;
 has level     => 0;
 has root_id   => 0;
 has title     => '';
-has children  => sub { __PACKAGE__->collection };
+has children  => sub { Yetie::Domain::Collection->new };
 
 sub has_child { @{ shift->children } ? 1 : 0 }
 

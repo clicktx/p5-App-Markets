@@ -4,7 +4,7 @@ use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 has level     => 0;
 has root_id   => 0;
 has title     => '';
-has products  => sub { __PACKAGE__->collection };
+has products  => sub { Yetie::Domain::Collection->new };
 
 1;
 __END__

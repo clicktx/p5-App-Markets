@@ -6,7 +6,7 @@ has description        => '';
 has price              => 0;
 has created_at         => undef;
 has updated_at         => undef;
-has product_categories => sub { __PACKAGE__->collection };
+has product_categories => sub { Yetie::Domain::Collection->new };
 
 1;
 __END__

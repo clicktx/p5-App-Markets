@@ -4,8 +4,8 @@ use Carp qw/croak/;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 has cart_id   => '';
-has items     => sub { __PACKAGE__->collection };
-has shipments => sub { __PACKAGE__->collection };
+has items     => sub { Yetie::Domain::Collection->new };
+has shipments => sub { Yetie::Domain::Collection->new };
 has [qw/billing_address/];
 
 my @needless_attrs = (qw/cart_id items/);

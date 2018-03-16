@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::Products;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
-has product_list => sub { __PACKAGE__->collection };
+has product_list => sub { Yetie::Domain::Collection->new };
 
 sub each { shift->product_list->each(@_) }
 
