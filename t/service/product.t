@@ -11,7 +11,7 @@ use_ok 'Yetie::Service::Product';
 subtest 'choices_primary_category' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
-    my $e       = $app->factory('product')->build(1);
+    my $e       = $service->find_product(1);
 
     my $choices = $service->choices_primary_category($e);
     is ref $choices, 'ARRAY', 'right get array ref';
