@@ -38,7 +38,7 @@ subtest 'method search_sales_orders()' => sub {
         where    => '',
         order_by => { -asc => 'me.id' },
         page_no  => 1,
-        rows     => 3,
+        per_page => 3,
     };
     my $itr = $rs->search_sales_orders($args);
     is $itr->count, 3, 'right count';
