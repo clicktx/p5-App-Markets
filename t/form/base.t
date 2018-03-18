@@ -144,6 +144,8 @@ subtest 'parameters' => sub {
             email              => 'a@b.c',
             name               => 'frank',
             address            => 'ny',
+            'billing.line1'    => 'foo',
+            'billing.line2'    => 'bar',
             'favorite_color[]' => 'red',
             'luky_number[]'    => 2,
             'luky_number[]'    => 3,
@@ -178,7 +180,13 @@ subtest 'parameters' => sub {
             name => 'cc',
         },
       ],
-      'right scope param';
+      'right scope params array';
+    is_deeply $f->scope_param('billing'),
+      {
+        line1 => 'foo',
+        line2 => 'bar',
+      },
+      'right scope params hash';
     is $f->param('iligal_param'), undef, 'right iligal param';
 
     # to_hash

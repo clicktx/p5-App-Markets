@@ -136,7 +136,12 @@ sub render {
     $self->tag_helpers->$method( $field, %attrs );
 }
 
-sub scope_param { shift->params->every_param(shift) }
+sub scope_param {
+
+    # shift->params->every_param(shift)
+    my $params = shift->params->every_param(shift);
+    @{$params} == 1 ? @{$params}->[0] : $params;
+}
 
 sub validation { shift->controller->validation }
 
@@ -339,6 +344,14 @@ The parameter is a validated values.
 This method should be called after the L</do_validate> method.
 
 Get expanded parameter. SEE L<CGI::Expand/expand_hash>
+
+    # ?a.0=3&a.2=4&b.c=x&b.d=y
+
+    $args_a = $form->scope_param('a');
+    # [ 3, undef, 4 ]
+
+    $args_b = $form->scope_param('b');
+    # { c => 'x', d => 'y' }
 
 =head2 C<validation>
 

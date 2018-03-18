@@ -30,6 +30,16 @@ has_field address => (
     validations => [],
 );
 
+has_field 'billing.line1' => (
+    type     => 'text',
+    required => 0,
+);
+
+has_field 'billing.line2' => (
+    type     => 'text',
+    required => 0,
+);
+
 has_field favorite_color => (
     type        => 'choice',
     multiple    => 1,
