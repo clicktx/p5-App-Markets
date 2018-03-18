@@ -2,15 +2,6 @@ package Yetie::Form::FieldSet::Basic;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
-has_field 'address.line1' => (
-    type        => 'text',
-    placeholder => 'Street Address',
-    label       => 'Line1',
-    required    => 1,
-    filters     => [qw(trim)],
-    validations => [],
-);
-
 has_field email => (
     type          => 'email',
     placeholder   => 'use@mail.com',
