@@ -199,7 +199,7 @@ Import all fields.
         placeholder   => 'name@domain',
         label         => 'E-mail',
         default_value => 'a@b.com',
-        required      => 1,
+        required      => 0,
         filters       => [qw(trim)],
         validations   => [],
     );
@@ -208,7 +208,7 @@ Import all fields.
         type        => 'password',
         placeholder => 'your password',
         label       => 'Password',
-        required      => 1,
+        required    => 1,
         filters     => [],
         validations => [ { size => [ \'customer_password_min', \'customer_password_max' ] }, ],
         help        => sub {
@@ -232,6 +232,22 @@ Import all fields.
             equal_to => 'The passwords you entered do not much.',
         },
     );
+
+Inherit Yetie::Form::FieldSet::Example class
+
+    package Yetie::Form::FieldSet::Foo;
+
+    has_field 'foo_email' => (
+        extends('example#email'),
+        required     => 1,
+    );
+
+    # Longer version
+    # has_field 'foo_email' => (
+    #     fieldset('example')->field_info('email'),
+    #     required     => 1,
+    # );
+
 
 =head2 C<validations>
 
