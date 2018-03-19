@@ -24,8 +24,8 @@ sub address {
     if ( $form->do_validate ) {
 
         # billing address
-        my $billing_address = $form->param('billing_address.line1');
-        $self->cart->billing_address->line1($billing_address);
+        my $billing_address = $form->scope_param('billing_address');
+        $self->cart->billing_address->$_( $billing_address->{$_} ) for keys %{$billing_address};
 
         # shipping address
         my $shipping_address = $form->param('shipping_address.line1');

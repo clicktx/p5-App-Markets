@@ -19,18 +19,94 @@
 <%= form_for 'RN_checkout_address' => ( method => 'POST') => begin %>
     <%= csrf_field %>
     <div class="">
-        billing address: <%= form_field '#billing_address.line1' %>
-        <%= form_label %>
-        <%= form_widget %>
-        <%= form_error %>
+        Billing Address
+        <div class="">
+            <%= form_field '#billing_address.personal_name' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_help %>
+            <%= form_error %>
+        </div>
+        <div class="">
+            <%= form_field '#billing_address.company_name' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_help %>
+            <%= form_error %>
+        </div>
+        <div class="">
+            <%= form_field '#billing_address.line1' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_help %>
+            <%= form_error %>
+        </div>
+        <div class="">
+            <%= form_field '#billing_address.line2' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_help %>
+            <%= form_error %>
+        </div>
+        <div class="">
+            <%= form_field '#billing_address.level2' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_help %>
+            <%= form_error %>
+        </div>
+        <div class="">
+            <%= form_field '#billing_address.level1' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_help %>
+            <%= form_error %>
+        </div>
+        <div class="">
+            <%= form_field '#billing_address.postal_code' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_help %>
+            <%= form_error %>
+        </div>
+        <div class="">
+            <%= form_field '#billing_address.phone' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_help %>
+            <%= form_error %>
+        </div>
+        <div class="">
+            <%= form_field '#billing_address.fax' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_help %>
+            <%= form_error %>
+        </div>
+        <div class="">
+            <%= form_field '#billing_address.mobile' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_help %>
+            <%= form_error %>
+        </div>
     </div>
     <div class="">
-        shipping address: <%= form_field '#shipping_address.line1' %>
-        <%= form_label %>
-        <%= form_widget %>
-        <%= form_error %>
+        Shipping Address
+        <div class="">
+            <%= form_field '#shipping_address.line1' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_error %>
+        </div>
+        <div class="">
+            <%= form_field '#shipping_address.line2' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_error %>
+        </div>
     </div>
-    <%= submit_button 'Next' %>
+    <%= submit_button 'Continue' %>
 <% end %>
 
 <%= link_to 'Back to page' => 'RN_checkout' %>
