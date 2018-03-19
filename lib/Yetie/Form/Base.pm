@@ -137,8 +137,6 @@ sub render {
 }
 
 sub scope_param {
-
-    # shift->params->every_param(shift)
     my $params = shift->params->every_param(shift);
     @{$params} == 1 ? @{$params}->[0] : $params;
 }
