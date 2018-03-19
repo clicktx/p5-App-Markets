@@ -4,12 +4,17 @@ use Test::More;
 use_ok 'Yetie::Domain::Entity::Address';
 
 my $data = {
-    id          => 1,
-    line1       => '42 Pendergast St.',
-    line2       => '',
-    level1      => 'SC',
-    level2      => 'Piedmont',
-    postal_code => '29673',
+    id            => 1,
+    line1         => '42 Pendergast St.',
+    line2         => '',
+    level1        => 'SC',
+    level2        => 'Piedmont',
+    postal_code   => '29673',
+    personal_name => 'Claire Underwood',
+    company_name  => '',
+    phone         => '123-4567',
+    fax           => '',
+    mobile        => '',
 };
 
 subtest 'basic' => sub {
@@ -20,11 +25,23 @@ subtest 'basic' => sub {
     can_ok $address, 'line2';
     can_ok $address, 'level1';
     can_ok $address, 'level2';
+    can_ok $address, 'personal_name';
+    can_ok $address, 'company_name';
+    can_ok $address, 'phone';
+    can_ok $address, 'fax';
+    can_ok $address, 'mobile';
 };
 
 subtest 'hash_code' => sub {
-    my $address = Yetie::Domain::Entity::Address->new($data);
-    is $address->hash_code, 'ddd317d966c94506903100cf3f48afee955127c4', 'right hash code';
+    my $address   = Yetie::Domain::Entity::Address->new($data);
+    my $hash_code = $address->hash_code;
+    is $hash_code, '1e9f2a0d62fb60bb2cbdea2cb7ba55f98561a473', 'right hash code';
+
+    $address->phone('222-3333');
+    is $address->hash_code, $hash_code, 'right change phone';
+
+    $address->personal_name('foo');
+    isnt $address->hash_code, $hash_code, 'right change personal_name';
 };
 
 done_testing();
