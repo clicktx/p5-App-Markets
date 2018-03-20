@@ -51,30 +51,18 @@ sub do_validate {
 
 sub field { shift->fieldset->field(@_) }
 
+sub fill_in_scopes {
+    my $self = shift;
+    my %args = @_ > 1 ? @_ : %{ $_[0] };
+    $self->fill_in( $_, $args{$_} ) for keys %args;
+    return $self;
+}
+
 sub fill_in {
     my $self = shift;
     my ( $scope, $entity ) = @_ > 1 ? ( shift, shift ) : ( undef, shift );
 
-    my @names = $self->fieldset->field_keys;
-    foreach my $name (@names) {
-        my $method = $name;
-        $method =~ s/$scope\.//g if $scope;
-        next unless $entity->can($method);
-
-        my $value = $entity->$method;
-        next unless defined $value;
-
-        my $field = $self->fieldset->field($name);
-        if ( ref $value eq 'ARRAY' ) {
-            _fill_field( $field, $_ ) for @{$value};
-        }
-        elsif ( !ref $value ) {
-            _fill_field( $field, $value );
-        }
-        else {
-            die 'Illegal type: ' . ref $value;
-        }
-    }
+    $self->_fill_in( $scope, $entity );
     return $self;
 }
 
@@ -176,15 +164,6 @@ sub _fieldset {
     return $class->new;
 }
 
-sub _fill_field {
-    my ( $field, $value ) = @_;
-
-    if ( $field->type =~ /^(choice|select|checkbox|radio)$/ ) {
-        $field->choices( _fill_choice_field( $field->choices, $value ) );
-    }
-    else { $field->default_value($value) }
-}
-
 sub _fill_choice_field {
     my ( $choices, $value ) = @_;
 
@@ -203,6 +182,40 @@ sub _fill_choice_field {
         }
     }
     return $choices;
+}
+
+sub _fill_field {
+    my ( $field, $value ) = @_;
+
+    if ( $field->type =~ /^(choice|select|checkbox|radio)$/ ) {
+        $field->choices( _fill_choice_field( $field->choices, $value ) );
+    }
+    else { $field->default_value($value) }
+}
+
+sub _fill_in {
+    my ( $self, $scope, $entity ) = @_;
+    my @names = $self->fieldset->field_keys;
+    foreach my $name (@names) {
+        my $method = $name;
+        $method =~ s/$scope\.//g if $scope;
+        next unless $entity->can($method);
+
+        my $value = $entity->$method;
+        next unless defined $value;
+
+        my $field = $self->fieldset->field($name);
+        if ( ref $value eq 'ARRAY' ) {
+            _fill_field( $field, $_ ) for @{$value};
+        }
+        elsif ( !ref $value ) {
+            _fill_field( $field, $value );
+        }
+        else {
+            die 'Illegal type: ' . ref $value;
+        }
+    }
+    return $self;
 }
 
 1;
@@ -275,6 +288,15 @@ Return boolean. success return true.
     my $field = $form->fieldset->field('field_name');
 
 Return L<Yetie::Form::Field> object.
+
+=head2 C<fill_in_scopes>
+
+    $form->fill_in( foo => $entity, bar => $entity );
+    $form->fill_in( { foo => $entity, bar => $entity } );
+
+Fill in form for scope parameter.
+
+See L</fill_in>.
 
 =head2 C<fill_in>
 
