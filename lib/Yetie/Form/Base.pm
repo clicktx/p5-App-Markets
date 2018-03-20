@@ -52,16 +52,19 @@ sub do_validate {
 sub field { shift->fieldset->field(@_) }
 
 sub fill_in {
-    my ( $self, $entity ) = @_;
+    my $self = shift;
+    my ( $scope, $entity ) = @_ > 1 ? ( shift, shift ) : ( undef, shift );
 
     my @names = $self->fieldset->field_keys;
     foreach my $name (@names) {
-        next unless $entity->can($name);
+        my $method = $name;
+        $method =~ s/$scope\.//g if $scope;
+        next unless $entity->can($method);
 
-        my $field = $self->fieldset->field($name);
-        my $value = $entity->$name;
+        my $value = $entity->$method;
         next unless defined $value;
 
+        my $field = $self->fieldset->field($name);
         if ( ref $value eq 'ARRAY' ) {
             _fill_field( $field, $_ ) for @{$value};
         }
@@ -276,6 +279,7 @@ Return L<Yetie::Form::Field> object.
 =head2 C<fill_in>
 
     $form->fill_in($entity);
+    $form->fill_in( scope_name => $entity );
 
     my $form = Yetie::Form::Base->new('foo')->fill_in($entity);
 

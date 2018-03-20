@@ -40,6 +40,13 @@ subtest 'fill_in' => sub {
     my $f = Yetie::Form::Base->new( 'test', controller => $c );
     my $e = Yetie::Domain::Factory->new('test')->create_entity();
 
+    # scope
+    $e->line1('foo');
+    $e->line2('bar');
+    $f->fill_in( billing => $e );
+    is $f->field('billing.line1')->default_value, 'foo', 'right scope';
+    is $f->field('billing.line2')->default_value, 'bar', 'right scope';
+
     # choice singular
     $f->field('favorite_color')->type('choice');
     $f->field('favorite_color')->multiple(0);

@@ -1,6 +1,6 @@
 package Yetie::Domain::Entity::Test;
 use Yetie::Domain::Entity;
 
-has [qw(email name address favorite_color luky_number)];
+has [qw(email name address line1 line2 favorite_color luky_number)];
 
 1;
