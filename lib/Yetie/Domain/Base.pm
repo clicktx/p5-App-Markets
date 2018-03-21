@@ -88,7 +88,7 @@ sub new {
 }
 
 sub _is_changed {
-    my ( $attr, $obj, $value ) = @_;
+    my ( $attr, $obj, $value ) = ( shift, shift, shift // '' );
     $obj->{$attr} = '' unless defined $obj->{$attr};    # undef to ''
     return exists $obj->{$attr} ? $obj->{$attr} eq $value ? 0 : 1 : 1;
 }
