@@ -129,7 +129,7 @@ sub render {
 
 sub scope_param {
     my $params = shift->params->every_param(shift);
-    @{$params} == 1 ? @{$params}->[0] : $params;
+    @{$params} == 1 ? $params->[0] : $params;
 }
 
 sub validation { shift->controller->validation }
