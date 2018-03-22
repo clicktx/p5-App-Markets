@@ -27,14 +27,18 @@ subtest 'checks' => sub {
     cmp_deeply $fs->checks('email'), [ [ size => 2, 5 ], [ like => ignore() ] ], 'right get validations';
     cmp_deeply $fs->checks,
       {
-        no_attrs       => [],
-        email          => [ [ size => 2, 5 ], [ like => ignore() ] ],
-        name           => [],
-        address        => [],
-        favorite_color => [],
-        luky_number    => [],
-        'item.[].id'   => [],
-        'item.[].name' => [],
+        no_attrs              => [],
+        email                 => [ [ size => 2, 5 ], [ like => ignore() ] ],
+        name                  => [],
+        address               => [],
+        favorite_color        => [],
+        luky_number           => [],
+        'item.[].id'          => [],
+        'item.[].name'        => [],
+        'billing.line1'       => [],
+        'billing.line2'       => [],
+        'burgers.[].name'     => [],
+        'burgers.[].toppings' => [],
       },
       'right all field_key validations';
 };
@@ -55,8 +59,13 @@ subtest 'export_field' => sub {
 
     # Export all fields
     $fs->export_field();
-    is_deeply \@{ __PACKAGE__->field_keys },
-      [qw(item.[].id no_attrs email name address favorite_color luky_number item.[].name)], 'right exported all';
+    is_deeply \@{ __PACKAGE__->field_keys }, [
+        qw(
+          item.[].id no_attrs email name address favorite_color luky_number
+          item.[].name billing.line1 billing.line2 burgers.[].name burgers.[].toppings
+          )
+      ],
+      'right exported all';
 
     # Module base import
     my %foo = Test::Form::FieldSet::Foo->field_info;
@@ -113,7 +122,12 @@ subtest 'extends' => sub {
 
 subtest 'field_keys' => sub {
     my @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/no_attrs email name address favorite_color luky_number item.[].id item.[].name/],
+    is_deeply \@field_keys, [
+        qw/
+          no_attrs email name address favorite_color luky_number item.[].id item.[].name
+          billing.line1 billing.line2 burgers.[].name burgers.[].toppings
+          /
+      ],
       'right field_keys';
     my $field_keys = $fs->field_keys;
     is ref $field_keys, 'ARRAY', 'right scalar';
@@ -124,14 +138,18 @@ subtest 'filters' => sub {
     is ref $fs->filters('name'), 'ARRAY', 'right filters';
     cmp_deeply $fs->filters,
       {
-        no_attrs       => [],
-        email          => [qw/trim/],
-        name           => [],
-        address        => [],
-        favorite_color => [],
-        luky_number    => [],
-        'item.[].id'   => [],
-        'item.[].name' => [qw/trim/],
+        no_attrs              => [],
+        email                 => [qw/trim/],
+        name                  => [],
+        address               => [],
+        favorite_color        => [],
+        luky_number           => [],
+        'item.[].id'          => [],
+        'item.[].name'        => [qw/trim/],
+        'billing.line1'       => [],
+        'billing.line2'       => [],
+        'burgers.[].name'     => [],
+        'burgers.[].toppings' => [],
       },
       'right all filters';
 };
@@ -147,20 +165,37 @@ subtest 'schema' => sub {
 subtest 'append/remove' => sub {
     $fs->append_field( aaa => ( type => 'text' ) );
     my @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/no_attrs email name address favorite_color luky_number item.[].id item.[].name aaa/],
+    is_deeply \@field_keys, [
+        qw/
+          no_attrs email name address favorite_color luky_number item.[].id item.[].name
+          billing.line1 billing.line2 burgers.[].name burgers.[].toppings
+          aaa
+          /
+      ],
       'right field_keys';
 
     # Hash refference
     $fs->append_field( bbb => { type => 'choice' } );
     @field_keys = $fs->field_keys;
-    is_deeply \@field_keys,
-      [qw/no_attrs email name address favorite_color luky_number item.[].id item.[].name aaa bbb/],
+    is_deeply \@field_keys, [
+        qw/
+          no_attrs email name address favorite_color luky_number item.[].id item.[].name
+          billing.line1 billing.line2 burgers.[].name burgers.[].toppings
+          aaa bbb
+          /
+      ],
       'right field_keys';
     is_deeply $fs->schema('bbb'), { type => 'choice' }, 'right schema';
 
     $fs->remove('name');
     @field_keys = $fs->field_keys;
-    is_deeply \@field_keys, [qw/no_attrs email address favorite_color luky_number item.[].id item.[].name aaa bbb/],
+    is_deeply \@field_keys, [
+        qw/
+          no_attrs email address favorite_color luky_number item.[].id item.[].name
+          billing.line1 billing.line2 burgers.[].name burgers.[].toppings
+          aaa bbb
+          /
+      ],
       'right field_keys';
 };
 
