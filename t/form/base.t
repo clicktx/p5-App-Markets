@@ -3,6 +3,7 @@ use Test::More;
 use Test::Mojo;
 use t::Util;
 use Mojo::Collection qw(c);
+use Yetie::Domain::Collection qw(collection);
 
 my $t = Test::Mojo->new('App');
 use_ok 'Yetie::Form::Base';
@@ -136,19 +137,6 @@ subtest 'fill_in' => sub {
     ok $@, 'right exception';
 };
 
-subtest 'fill_in for scope' => sub {
-    my $c = $t->app->build_controller;
-    my $f = Yetie::Form::Base->new( 'test', controller => $c );
-    my $e = Yetie::Domain::Factory->new('test')->create_entity();
-
-    # text
-    $e->billing->line1('foo');
-    $e->billing->line2('bar');
-    $f->fill_in($e);
-    is $f->field('billing.line1')->default_value, 'foo', 'right scope';
-    is $f->field('billing.line2')->default_value, 'bar', 'right scope';
-};
-
 subtest 'parameters' => sub {
     my $c = $t->app->build_controller;
     my $f = Yetie::Form::Base->new( 'test', controller => $c );
@@ -157,8 +145,6 @@ subtest 'parameters' => sub {
             email              => 'a@b.c',
             name               => 'frank',
             address            => 'ny',
-            'billing.line1'    => 'foo',
-            'billing.line2'    => 'bar',
             'favorite_color[]' => 'red',
             'luky_number[]'    => 2,
             'luky_number[]'    => 3,
@@ -168,6 +154,8 @@ subtest 'parameters' => sub {
             'item.0.name'      => 'aa',
             'item.1.name'      => 'bb',
             'item.2.name'      => 'cc',
+            'billing.line1'    => 'foo',
+            'billing.line2'    => 'bar',
             iligal_param       => 'attack',
         ]
     );

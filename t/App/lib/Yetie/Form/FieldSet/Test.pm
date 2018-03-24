@@ -65,6 +65,14 @@ has_field 'item.[].name' => (
     validations => [],
 );
 
+has_field 'billing.line1' => (
+    type     => 'text',
+);
+
+has_field 'billing.line2' => (
+    type     => 'text',
+);
+
 has_field 'burgers.[].name' => (
     type     => 'text',
     required => 0,
