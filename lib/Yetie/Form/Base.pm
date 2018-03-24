@@ -1,7 +1,7 @@
 package Yetie::Form::Base;
 use Mojo::Base -base;
 use Carp qw(croak);
-use CGI::Expand qw/expand_hash/;
+use CGI::Expand qw(expand_hash collapse_hash);
 use Scalar::Util qw(blessed);
 use Mojo::Collection qw(c);
 use Mojolicious::Controller;
@@ -51,18 +51,28 @@ sub do_validate {
 
 sub field { shift->fieldset->field(@_) }
 
-sub fill_in_scopes {
-    my $self = shift;
-    my %args = @_ > 1 ? @_ : %{ $_[0] };
-    $self->fill_in( $_, $args{$_} ) for keys %args;
-    return $self;
-}
-
 sub fill_in {
-    my $self = shift;
-    my ( $scope, $entity ) = @_ > 1 ? ( shift, shift ) : ( undef, shift );
+    my ( $self, $entity ) = @_;
 
-    $self->_fill_in( $scope, $entity );
+    my @names = $self->fieldset->field_keys;
+    my @keys;
+    foreach my $name (@names) {
+        push( @keys, $name ) and next unless $entity->can($name);
+
+        my $value = $entity->$name;
+        next unless defined $value;
+
+        $self->_fill_in( $name, $value );
+    }
+
+    # fill in scope parameter
+    my $flat_hash = collapse_hash( $entity->to_data );
+    foreach my $key (@keys) {
+        my $value = $flat_hash->{$key};
+        next unless defined $value;
+
+        $self->_fill_in( $key, $value );
+    }
     return $self;
 }
 
@@ -194,28 +204,18 @@ sub _fill_field {
 }
 
 sub _fill_in {
-    my ( $self, $scope, $entity ) = @_;
-    my @names = $self->fieldset->field_keys;
-    foreach my $name (@names) {
-        my $method = $name;
-        $method =~ s/$scope\.//g if $scope;
-        next unless $entity->can($method);
+    my ( $self, $name, $value ) = @_;
 
-        my $value = $entity->$method;
-        next unless defined $value;
-
-        my $field = $self->fieldset->field($name);
-        if ( ref $value eq 'ARRAY' ) {
-            _fill_field( $field, $_ ) for @{$value};
-        }
-        elsif ( !ref $value ) {
-            _fill_field( $field, $value );
-        }
-        else {
-            die 'Illegal type: ' . ref $value;
-        }
+    my $field = $self->fieldset->field($name);
+    if ( ref $value eq 'ARRAY' ) {
+        _fill_field( $field, $_ ) for @{$value};
     }
-    return $self;
+    elsif ( !ref $value ) {
+        _fill_field( $field, $value );
+    }
+    else {
+        die 'Illegal type: ' . ref $value;
+    }
 }
 
 1;

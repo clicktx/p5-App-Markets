@@ -35,18 +35,6 @@ subtest 'has_data' => sub {
     is $f->has_data, 1, 'right has data';
 };
 
-subtest 'fill_in_scopes' => sub {
-    my $c = $t->app->build_controller;
-    my $f = Yetie::Form::Base->new( 'test', controller => $c );
-    my $e = Yetie::Domain::Factory->new('test')->create_entity();
-
-    $e->line1('foo');
-    $e->line2('bar');
-    $f->fill_in_scopes( foo => $e, bar => $e, billing => $e );
-    is $f->field('billing.line1')->default_value, 'foo', 'right scope';
-    is $f->field('billing.line2')->default_value, 'bar', 'right scope';
-};
-
 subtest 'fill_in' => sub {
     my $c = $t->app->build_controller;
     my $f = Yetie::Form::Base->new( 'test', controller => $c );
@@ -146,6 +134,19 @@ subtest 'fill_in' => sub {
     $e->luky_number( c( 2, 3 ) );
     eval { $f->fill_in($e) };
     ok $@, 'right exception';
+};
+
+subtest 'fill_in for scope' => sub {
+    my $c = $t->app->build_controller;
+    my $f = Yetie::Form::Base->new( 'test', controller => $c );
+    my $e = Yetie::Domain::Factory->new('test')->create_entity();
+
+    # text
+    $e->billing->line1('foo');
+    $e->billing->line2('bar');
+    $f->fill_in($e);
+    is $f->field('billing.line1')->default_value, 'foo', 'right scope';
+    is $f->field('billing.line2')->default_value, 'bar', 'right scope';
 };
 
 subtest 'parameters' => sub {

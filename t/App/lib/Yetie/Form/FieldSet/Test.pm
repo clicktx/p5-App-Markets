@@ -30,16 +30,6 @@ has_field address => (
     validations => [],
 );
 
-has_field 'billing.line1' => (
-    type     => 'text',
-    required => 0,
-);
-
-has_field 'billing.line2' => (
-    type     => 'text',
-    required => 0,
-);
-
 has_field favorite_color => (
     type        => 'choice',
     multiple    => 1,
@@ -73,6 +63,18 @@ has_field 'item.[].name' => (
     label       => 'Item ',
     filters     => [qw/trim/],
     validations => [],
+);
+
+has_field 'burgers.[].name' => (
+    type     => 'text',
+    required => 0,
+);
+
+has_field 'burgers.[].toppings' => (
+    type     => 'choice',
+    multiple => 1,
+    expanded => 1,
+    choices  => [qw(a b c d e)],
 );
 
 1;
