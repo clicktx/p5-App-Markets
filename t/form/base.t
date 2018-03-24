@@ -137,6 +137,24 @@ subtest 'fill_in' => sub {
     ok $@, 'right exception';
 };
 
+subtest 'fill_in for scope' => sub {
+    my $c      = $t->app->build_controller;
+    my $f      = Yetie::Form::Base->new( 'test', controller => $c );
+    my $e      = Yetie::Domain::Factory->new('test')->create_entity();
+    my $burger = Yetie::Domain::Factory->new('burger')->create_entity(
+        {
+            name     => 'cheese',
+            toppings => collection(qw(a c d)),
+        }
+    );
+    $e->burgers( collection($burger) );
+    $f->fill_in($e);
+    is $f->field('burgers.0.name')->default_value, 'cheese', 'right text in scope';
+    is_deeply $f->field('burgers.0.toppings')->choices,
+      [ [ a => 'a', choiced => 1 ], 'b', [ c => 'c', choiced => 1 ], [ d => 'd', choiced => 1 ], 'e' ],
+      'right choice multiple in scope';
+};
+
 subtest 'parameters' => sub {
     my $c = $t->app->build_controller;
     my $f = Yetie::Form::Base->new( 'test', controller => $c );
@@ -291,10 +309,10 @@ subtest 'do_validate with filter' => sub {
     );
     $f->do_validate;
     my $v = $c->validation;
-    is $v->param('email'),       'a@b.c';
-    is $v->param('item.0.name'), 'aaa';
-    is $v->param('item.1.name'), 'bbb';
-    is $v->param('item.2.name'), 'ccc';
+    is $v->param('email'),       'a@b.c', 'right varidated parameter';
+    is $v->param('item.0.name'), 'aaa',   'right varidated parameter';
+    is $v->param('item.1.name'), 'bbb',   'right varidated parameter';
+    is $v->param('item.2.name'), 'ccc',   'right varidated parameter';
 
     # field value after render
     my $dom = Mojo::DOM->new( $f->render('email') );

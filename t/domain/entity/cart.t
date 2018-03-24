@@ -12,21 +12,25 @@ my $test_data = {
     shipments => [
         {
             shipping_address => {
-                level1      => '',
-                level2      => '',
-                line1       => 'Tokyo',
-                line2       => '',
-                postal_code => '',
+                level1        => '',
+                level2        => '',
+                line1         => 'Tokyo',
+                line2         => '',
+                postal_code   => '',
+                personal_name => '',
+                company_name  => '',
             },
             items => [ { product_id => 4, quantity => 4, price => 100 } ]
         },
         {
             shipping_address => {
-                level1      => '',
-                level2      => '',
-                line1       => 'Osaka',
-                line2       => '',
-                postal_code => '',
+                level1        => '',
+                level2        => '',
+                line1         => 'Osaka',
+                line2         => '',
+                postal_code   => '',
+                personal_name => '',
+                company_name  => '',
             },
             items => [
                 { product_id => 4, quantity => 4, price => 100 },
@@ -36,11 +40,13 @@ my $test_data = {
         },
     ],
     billing_address => {
-        level1      => '',
-        level2      => '',
-        line1       => 'Gunma',
-        line2       => '',
-        postal_code => '',
+        level1        => '',
+        level2        => '',
+        line1         => 'Gunma',
+        line2         => '',
+        postal_code   => '',
+        personal_name => '',
+        company_name  => '',
     },
 };
 
@@ -288,7 +294,6 @@ subtest 'order data' => sub {
     my $order_data = { %{ $cart->to_data } };
     delete $order_data->{cart_id};
     delete $order_data->{items};
-
     cmp_deeply $cart->to_order_data, $order_data, 'right order data';
 };
 

@@ -51,31 +51,6 @@ sub do_validate {
 
 sub field { shift->fieldset->field(@_) }
 
-sub fill_in {
-    my ( $self, $entity ) = @_;
-
-    my @names = $self->fieldset->field_keys;
-    my @keys;
-    foreach my $name (@names) {
-        push( @keys, $name ) and next unless $entity->can($name);
-
-        my $value = $entity->$name;
-        next unless defined $value;
-
-        $self->_fill_in( $name, $value );
-    }
-
-    # fill in scope parameter
-    my $flat_hash = collapse_hash( $entity->to_data );
-    foreach my $key (@keys) {
-        my $value = $flat_hash->{$key};
-        next unless defined $value;
-
-        $self->_fill_in( $key, $value );
-    }
-    return $self;
-}
-
 sub new {
     my ( $class, $ns ) = ( shift, shift );
 
@@ -194,6 +169,20 @@ sub _fill_choice_field {
     return $choices;
 }
 
+sub fill_in {
+    my ( $self, $entity ) = @_;
+
+    my $flat_hash = collapse_hash( $entity->to_data );
+    foreach my $key ( keys %{$flat_hash} ) {
+        $key =~ /(.+)\.(\d+)$|(.+)/;
+        my $field_name = $1 || $3;
+        my $value      = $flat_hash->{$key};
+        my $field      = $self->fieldset->field($field_name);
+        _fill_field( $field, $value ) if $field->type;
+    }
+    return $self;
+}
+
 sub _fill_field {
     my ( $field, $value ) = @_;
 
@@ -201,21 +190,6 @@ sub _fill_field {
         $field->choices( _fill_choice_field( $field->choices, $value ) );
     }
     else { $field->default_value($value) }
-}
-
-sub _fill_in {
-    my ( $self, $name, $value ) = @_;
-
-    my $field = $self->fieldset->field($name);
-    if ( ref $value eq 'ARRAY' ) {
-        _fill_field( $field, $_ ) for @{$value};
-    }
-    elsif ( !ref $value ) {
-        _fill_field( $field, $value );
-    }
-    else {
-        die 'Illegal type: ' . ref $value;
-    }
 }
 
 1;
@@ -289,19 +263,9 @@ Return boolean. success return true.
 
 Return L<Yetie::Form::Field> object.
 
-=head2 C<fill_in_scopes>
-
-    $form->fill_in( foo => $entity, bar => $entity );
-    $form->fill_in( { foo => $entity, bar => $entity } );
-
-Fill in form for scope parameter.
-
-See L</fill_in>.
-
 =head2 C<fill_in>
 
     $form->fill_in($entity);
-    $form->fill_in( scope_name => $entity );
 
     my $form = Yetie::Form::Base->new('foo')->fill_in($entity);
 
