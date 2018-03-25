@@ -94,13 +94,13 @@
     <div class="">
         Shipping Address
         <div class="">
-            <%= form_field '#shipping_address.line1' %>
+            <%= form_field '#shipments.0.shipping_address.line1' %>
             <%= form_label %>
             <%= form_widget %>
             <%= form_error %>
         </div>
         <div class="">
-            <%= form_field '#shipping_address.line2' %>
+            <%= form_field '#shipments.0.shipping_address.line2' %>
             <%= form_label %>
             <%= form_widget %>
             <%= form_error %>

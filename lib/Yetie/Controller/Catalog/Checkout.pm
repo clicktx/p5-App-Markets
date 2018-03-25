@@ -14,23 +14,21 @@ sub address {
     my $self = shift;
 
     my $form = $self->form('checkout-address');
-
-    # e.g.
-    $form->field('billing_address.line1')->default_value('ogikubo');
-    $form->field('shipping_address.line1')->default_value('kamiizumi');
+    $form->fill_in( $self->cart );
 
     return $self->render() unless $form->has_data;
 
     if ( $form->do_validate ) {
 
+        # NOTE: カート更新処理未完成
         # billing address
         my $billing_address = $form->scope_param('billing_address');
         $self->cart->billing_address->$_( $billing_address->{$_} ) for keys %{$billing_address};
 
         # shipping address
-        my $shipping_address = $form->param('shipping_address.line1');
-        my $shipments        = $self->cart->shipments;
-        $shipments->[0]->shipping_address->line1($shipping_address);
+        my $shipments = $self->cart->shipments;
+        $shipments->[0]->shipping_address->line1( $form->param('shipments.0.shipping_address.line1') );
+        $shipments->[0]->shipping_address->line2( $form->param('shipments.0.shipping_address.line2') );
 
         return $self->redirect_to('RN_checkout_shipping');
     }
