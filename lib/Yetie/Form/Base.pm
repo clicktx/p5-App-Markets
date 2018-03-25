@@ -51,6 +51,20 @@ sub do_validate {
 
 sub field { shift->fieldset->field(@_) }
 
+sub fill_in {
+    my ( $self, $entity ) = @_;
+
+    my $flat_hash = collapse_hash( $entity->to_data );
+    foreach my $key ( keys %{$flat_hash} ) {
+        $key =~ /(.+)\.(\d+)$|(.+)/;
+        my $field_name = $1 || $3;
+        my $value      = $flat_hash->{$key};
+        my $field      = $self->fieldset->field($field_name);
+        _fill_field( $field, $value ) if $field->type;
+    }
+    return $self;
+}
+
 sub new {
     my ( $class, $ns ) = ( shift, shift );
 
@@ -167,20 +181,6 @@ sub _fill_choice_field {
         }
     }
     return $choices;
-}
-
-sub fill_in {
-    my ( $self, $entity ) = @_;
-
-    my $flat_hash = collapse_hash( $entity->to_data );
-    foreach my $key ( keys %{$flat_hash} ) {
-        $key =~ /(.+)\.(\d+)$|(.+)/;
-        my $field_name = $1 || $3;
-        my $value      = $flat_hash->{$key};
-        my $field      = $self->fieldset->field($field_name);
-        _fill_field( $field, $value ) if $field->type;
-    }
-    return $self;
 }
 
 sub _fill_field {
