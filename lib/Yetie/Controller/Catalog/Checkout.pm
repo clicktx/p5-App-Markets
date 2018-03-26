@@ -22,7 +22,7 @@ sub address {
 
         # NOTE: カート更新処理未完成
         # billing address
-        my $billing_address = $form->scope_param('billing_address');
+        my $billing_address = $form->scope_param('billing_address')->[0];
         $self->cart->billing_address->$_( $billing_address->{$_} ) for keys %{$billing_address};
 
         # shipping address

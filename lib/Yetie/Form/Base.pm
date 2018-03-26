@@ -126,10 +126,7 @@ sub render {
     $self->tag_helpers->$method( $field, %attrs );
 }
 
-sub scope_param {
-    my $params = shift->params->every_param(shift);
-    @{$params} == 1 ? $params->[0] : $params;
-}
+sub scope_param { shift->params->every_param(shift) }
 
 sub validation { shift->controller->validation }
 
@@ -327,9 +324,11 @@ Rendering HTML form widget(field or fields).
 
     my $scope = $form->scope_param('user');
 
-Return hash refference or array refference.
+Return hash refference.
 The parameter is a validated values.
-This method should be called after the L</do_validate> method.
+
+NOTE: This method should be called after the L</do_validate> method.
+Only the top level scope can be acquired.
 
 Get expanded parameter. SEE L<CGI::Expand/expand_hash>
 
@@ -339,7 +338,7 @@ Get expanded parameter. SEE L<CGI::Expand/expand_hash>
     # [ 3, undef, 4 ]
 
     $args_b = $form->scope_param('b');
-    # { c => 'x', d => 'y' }
+    # [ { c => 'x', d => 'y' } ]
 
 =head2 C<validation>
 
