@@ -176,9 +176,9 @@ subtest 'parameters' => sub {
     $f->do_validate;
     is $f->param('email'), 'a@b.c', 'right parameter';
     is $f->param('name'), 'frank', 'right parameter';
-    is $f->param('address'), undef, 'right blank parameter';
+    is $f->param('address'), '', 'right blank parameter';
     is_deeply $f->param('favorite_color[]'), ['red'], 'right every param';
-    is $f->param('iligal_param'), undef, 'right iligal param';
+    is $f->param('iligal_param'), '', 'right iligal param';
 
     # to_hash
     my $params = $f->params->to_hash;
