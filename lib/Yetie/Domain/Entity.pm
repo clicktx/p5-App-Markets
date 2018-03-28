@@ -79,10 +79,13 @@ sub to_array {
 
 sub to_data {
     my $self = shift;
-    my $h    = $self->to_hash;
-    my %hash;
-    $hash{$_} = Scalar::Util::blessed $h->{$_} ? $h->{$_}->to_data : $h->{$_} for keys %{$h};
-    return \%hash;
+    my $hash = $self->to_hash;
+    my %data;
+    foreach my $key ( keys %{$hash} ) {
+        my $value = $hash->{$key};
+        $data{$key} = Scalar::Util::blessed $value ? $value->to_data : $value;
+    }
+    return \%data;
 }
 
 sub to_hash {
