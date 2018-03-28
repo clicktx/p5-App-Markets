@@ -130,11 +130,6 @@ subtest 'fill_in' => sub {
     $e->luky_number(2);
     $f->fill_in($e);
     is_deeply $f->field('luky_number')->choices, [ 1, [ 2 => 2, choiced => 1 ], 3 ], 'right checkbox';
-
-    # exception
-    $e->luky_number( c( 2, 3 ) );
-    eval { $f->fill_in($e) };
-    ok $@, 'right exception';
 };
 
 subtest 'fill_in for scope' => sub {
@@ -174,9 +169,9 @@ subtest 'parameters' => sub {
     ok $@, 'right before do_validate';
 
     $f->do_validate;
-    is $f->param('email'), 'a@b.c', 'right parameter';
-    is $f->param('name'), 'frank', 'right parameter';
-    is $f->param('address'), '', 'right blank parameter';
+    is $f->param('email'),   'a@b.c', 'right parameter';
+    is $f->param('name'),    'frank', 'right parameter';
+    is $f->param('address'), '',      'right blank parameter';
     is_deeply $f->param('favorite_color[]'), ['red'], 'right every param';
     is $f->param('iligal_param'), '', 'right iligal param';
 
