@@ -46,6 +46,36 @@ column postal_code => {
     comments    => 'Post Code/Zip Code',
 };
 
+column personal_name => {
+    data_type   => 'VARCHAR',
+    size        => 32,
+    is_nullable => 0,
+};
+
+column company_name => {
+    data_type   => 'VARCHAR',
+    size        => 32,
+    is_nullable => 0,
+};
+
+column phone => {
+    data_type   => 'VARCHAR',
+    size        => 32,
+    is_nullable => 0,
+};
+
+column fax => {
+    data_type   => 'VARCHAR',
+    size        => 32,
+    is_nullable => 0,
+};
+
+column mobile => {
+    data_type   => 'VARCHAR',
+    size        => 32,
+    is_nullable => 0,
+};
+
 # Index
 unique_constraint ui_hash => [qw/hash/];
 

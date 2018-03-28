@@ -51,6 +51,20 @@ sub do_validate {
 
 sub field { shift->fieldset->field(@_) }
 
+sub fill_in {
+    my ( $self, $entity ) = @_;
+
+    my $flat_hash = collapse_hash( $entity->to_data );
+    foreach my $key ( keys %{$flat_hash} ) {
+        $key =~ /(.+)\.(\d+)$|(.+)/;
+        my $field_name = $1 || $3;
+        my $value      = $flat_hash->{$key};
+        my $field      = $self->fieldset->field($field_name);
+        _fill_field( $field, $value ) if $field->type;
+    }
+    return $self;
+}
+
 sub new {
     my ( $class, $ns ) = ( shift, shift );
 
@@ -63,7 +77,10 @@ sub has_data { shift->validation->has_data }
 
 sub param {
     my ( $self, $key ) = @_;
-    $key =~ m/\[\]$/ ? $self->params->every_param($key) : $self->params->param($key);
+    my $param = $key =~ m/\[\]$/ ? $self->params->every_param($key) : $self->params->param($key);
+
+    # NOTE: "Mojolicious::Validator::Validation->output" does not hold parameters with empty strings ;(
+    defined $param ? $param : '';
 }
 
 sub params {
@@ -112,10 +129,7 @@ sub render {
     $self->tag_helpers->$method( $field, %attrs );
 }
 
-sub scope_param {
-    my $params = shift->params->every_param(shift);
-    @{$params} == 1 ? $params->[0] : $params;
-}
+sub scope_param { shift->params->every_param(shift) }
 
 sub validation { shift->controller->validation }
 
@@ -167,20 +181,6 @@ sub _fill_choice_field {
         }
     }
     return $choices;
-}
-
-sub fill_in {
-    my ( $self, $entity ) = @_;
-
-    my $flat_hash = collapse_hash( $entity->to_data );
-    foreach my $key ( keys %{$flat_hash} ) {
-        $key =~ /(.+)\.(\d+)$|(.+)/;
-        my $field_name = $1 || $3;
-        my $value      = $flat_hash->{$key};
-        my $field      = $self->fieldset->field($field_name);
-        _fill_field( $field, $value ) if $field->type;
-    }
-    return $self;
 }
 
 sub _fill_field {
@@ -327,9 +327,11 @@ Rendering HTML form widget(field or fields).
 
     my $scope = $form->scope_param('user');
 
-Return hash refference or array refference.
+Return hash refference.
 The parameter is a validated values.
-This method should be called after the L</do_validate> method.
+
+NOTE: This method should be called after the L</do_validate> method.
+Only the top level scope can be acquired.
 
 Get expanded parameter. SEE L<CGI::Expand/expand_hash>
 
@@ -339,7 +341,7 @@ Get expanded parameter. SEE L<CGI::Expand/expand_hash>
     # [ 3, undef, 4 ]
 
     $args_b = $form->scope_param('b');
-    # { c => 'x', d => 'y' }
+    # [ { c => 'x', d => 'y' } ]
 
 =head2 C<validation>
 

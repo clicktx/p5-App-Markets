@@ -79,10 +79,14 @@ sub to_array {
 
 sub to_data {
     my $self = shift;
-    my $h    = $self->to_hash;
-    my %hash;
-    $hash{$_} = Scalar::Util::blessed $h->{$_} ? $h->{$_}->to_data : $h->{$_} for keys %{$h};
-    return \%hash;
+    my $hash = $self->to_hash;
+    my %data;
+    foreach my $key ( keys %{$hash} ) {
+        my $value = $hash->{$key};
+        if ( Scalar::Util::blessed $value) { $data{$key} = $value->to_data if $value->can('to_data') }
+        else                               { $data{$key} = $value }
+    }
+    return \%data;
 }
 
 sub to_hash {
@@ -239,6 +243,21 @@ Note: All private attributes (e.g. "_xxx") and "id", "created_at", "updated_at" 
 Return hash reference. This method recursive call L</to_hash>.
 
 Note: All private attributes (e.g. "_xxx") and "id", "created_at", "updated_at" are removed.
+
+Objects that do not have method "to_data" are also deleted.
+
+    my $e = Yetie::Domain::Entity->new({
+        a => 1,
+        b => Yetie::Domain::Collection->new(1,2,3);
+        u => Mojo::URL->new,    # do not have method "to_data"
+    });
+    my $data = $e->to_data;
+
+    print Dumper $data;
+    $VAR1 = {
+        a => 1,
+        b => [1,2,3],
+    };
 
 =head2 C<to_hash>
 

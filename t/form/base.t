@@ -130,11 +130,6 @@ subtest 'fill_in' => sub {
     $e->luky_number(2);
     $f->fill_in($e);
     is_deeply $f->field('luky_number')->choices, [ 1, [ 2 => 2, choiced => 1 ], 3 ], 'right checkbox';
-
-    # exception
-    $e->luky_number( c( 2, 3 ) );
-    eval { $f->fill_in($e) };
-    ok $@, 'right exception';
 };
 
 subtest 'fill_in for scope' => sub {
@@ -162,18 +157,10 @@ subtest 'parameters' => sub {
         [
             email              => 'a@b.c',
             name               => 'frank',
-            address            => 'ny',
+            address            => '',
             'favorite_color[]' => 'red',
             'luky_number[]'    => 2,
             'luky_number[]'    => 3,
-            'item.0.id'        => 11,
-            'item.1.id'        => 22,
-            'item.2.id'        => 33,
-            'item.0.name'      => 'aa',
-            'item.1.name'      => 'bb',
-            'item.2.name'      => 'cc',
-            'billing.line1'    => 'foo',
-            'billing.line2'    => 'bar',
             iligal_param       => 'attack',
         ]
     );
@@ -182,35 +169,77 @@ subtest 'parameters' => sub {
     ok $@, 'right before do_validate';
 
     $f->do_validate;
-    is $f->param('email'), 'a@b.c', 'right param';
+    is $f->param('email'),   'a@b.c', 'right parameter';
+    is $f->param('name'),    'frank', 'right parameter';
+    is $f->param('address'), '',      'right blank parameter';
     is_deeply $f->param('favorite_color[]'), ['red'], 'right every param';
-    is_deeply $f->scope_param('item'),
-      [
-        {
-            id   => 11,
-            name => 'aa',
-        },
-        {
-            id   => 22,
-            name => 'bb',
-        },
-        {
-            id   => 33,
-            name => 'cc',
-        },
-      ],
-      'right scope params array';
-    is_deeply $f->scope_param('billing'),
-      {
-        line1 => 'foo',
-        line2 => 'bar',
-      },
-      'right scope params hash';
-    is $f->param('iligal_param'), undef, 'right iligal param';
+    is $f->param('iligal_param'), '', 'right iligal param';
 
     # to_hash
     my $params = $f->params->to_hash;
     is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
+
+    subtest 'scope_param' => sub {
+        my $c = $t->app->build_controller;
+        my $f = Yetie::Form::Base->new( 'test', controller => $c );
+        $c->req->params->pairs(
+            [
+                'item.0.id'     => 11,
+                'item.1.id'     => 22,
+                'item.2.id'     => 33,
+                'item.0.name'   => 'aa',
+                'item.1.name'   => 'bb',
+                'item.2.name'   => 'cc',
+                'billing.line1' => 'foo',
+                'billing.line2' => 'bar',
+            ]
+        );
+        $f->do_validate;
+        is_deeply $f->scope_param('item'),
+          [
+            {
+                id   => 11,
+                name => 'aa',
+            },
+            {
+                id   => 22,
+                name => 'bb',
+            },
+            {
+                id   => 33,
+                name => 'cc',
+            },
+          ],
+          'right scope params';
+        is_deeply $f->scope_param('billing'),
+          [
+            {
+                line1 => 'foo',
+                line2 => 'bar',
+            }
+          ],
+          'right scope params';
+
+        $c = $t->app->build_controller;
+        $f = Yetie::Form::Base->new( 'test', controller => $c );
+        $c->req->params->pairs( [] );
+        $f->do_validate;
+        is_deeply $f->scope_param('item'),    [], 'right params empty';
+        is_deeply $f->scope_param('billing'), [], 'right params empty';
+
+        $c = $t->app->build_controller;
+        $f = Yetie::Form::Base->new( 'test', controller => $c );
+        $c->req->params->pairs(
+            [
+                'item.0.id'     => 11,
+                'item.0.name'   => 'aa',
+                'billing.line1' => 'foo',
+            ]
+        );
+        $f->do_validate;
+        is_deeply $f->scope_param('item'), [ { id => 11, name => 'aa' } ], 'right params single';
+        is_deeply $f->scope_param('billing'), [ { line1 => 'foo' } ], 'right params single';
+    };
 };
 
 subtest 'render tags' => sub {

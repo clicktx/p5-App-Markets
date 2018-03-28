@@ -14,28 +14,36 @@ sub address {
     my $self = shift;
 
     my $form = $self->form('checkout-address');
-
-    # e.g.
-    $form->field('billing_address.line1')->default_value('ogikubo');
-    $form->field('shipping_address.line1')->default_value('kamiizumi');
+    $form->fill_in( $self->cart );
 
     return $self->render() unless $form->has_data;
+    return $self->render() unless $form->do_validate;
 
-    if ( $form->do_validate ) {
+    # Update Cart
+    my @attrs = qw(
+      line1 line2 level1 level2 postal_code
+      personal_name company_name phone fax mobile
+    );
 
-        # billing address
-        my $billing_address = $form->scope_param('billing_address');
-        $self->cart->billing_address->$_( $billing_address->{$_} ) for keys %{$billing_address};
-
-        # shipping address
-        my $shipping_address = $form->param('shipping_address.line1');
-        my $shipments        = $self->cart->shipments;
-        $shipments->[0]->shipping_address->line1($shipping_address);
-
-        return $self->redirect_to('RN_checkout_shipping');
+    # billing address
+    foreach my $attr (@attrs) {
+        my $value = $form->param("billing_address.$attr");
+        $self->cart->billing_address->$attr($value);
     }
 
-    $self->render();
+    # shipping address
+    my $shipments = $self->cart->shipments;
+    $shipments->each(
+        sub {
+            my ( $shipment, $i ) = ( shift, shift );
+            $i--;
+            foreach my $attr (@attrs) {
+                my $value = $form->param("shipments.$i.shipping_address.$attr");
+                $shipment->shipping_address->$attr($value);
+            }
+        }
+    );
+    return $self->redirect_to('RN_checkout_shipping');
 }
 
 sub shipping {
