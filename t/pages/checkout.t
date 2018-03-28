@@ -58,9 +58,14 @@ sub test_04_address_post : Tests() {
     my $t    = $self->t;
 
     my $post_data = {
-        csrf_token               => $self->csrf_token,
-        'billing_address.line1'  => 'Silicon Valley',
-        'shipping_address.line1' => 'San Francisco',
+        csrf_token                           => $self->csrf_token,
+        'billing_address.personal_name'      => 'ken',
+        'billing_address.line1'              => 'foo 2325',
+        'billing_address.level2'             => 'bar',
+        'billing_address.level1'             => 'CA',
+        'billing_address.postal_code'        => '55555',
+        'billing_address.phone'              => '012345678',
+        'shipments.0.shipping_address.line1' => 'baz',
     };
     $t->post_ok( '/checkout/address', form => $post_data )->status_is(200);
     my ($url) = map { $_->req->url->path } @{ $t->tx->redirects };
@@ -70,8 +75,13 @@ sub test_04_address_post : Tests() {
     $self->server_session->load( $self->sid );
 
     my $cart = $self->server_session->cart;
-    is $cart->data('billing_address')->{line1}, 'Silicon Valley', '';
-    is $cart->data('shipments')->[0]->{shipping_address}->{line1}, 'San Francisco', '';
+    is $cart->data('billing_address')->{personal_name}, 'ken',       'right personal name';
+    is $cart->data('billing_address')->{line1},         'foo 2325',  'right line1';
+    is $cart->data('billing_address')->{level2},        'bar',       'right level2';
+    is $cart->data('billing_address')->{level1},        'CA',        'right level1';
+    is $cart->data('billing_address')->{postal_code},   '55555',     'right postal code';
+    is $cart->data('billing_address')->{phone},         '012345678', 'right phone';
+    is $cart->data('shipments')->[0]->{shipping_address}->{line1}, 'baz', 'right line1';
 }
 
 sub test_05_shipping : Tests() {
@@ -115,10 +125,15 @@ sub test_20_complete : Tests() {
     # Entity order objectを使うとか
     my $last_order =
       $self->app->schema->resultset('Sales')->search( {}, { order_by => { -desc => 'id' } } )->first;
-    is $last_order->billing_address->line1, 'Silicon Valley', 'right billing address';
+    is $last_order->billing_address->personal_name, 'ken',       'right billing address personal name';
+    is $last_order->billing_address->line1,         'foo 2325',  'right billing address line1';
+    is $last_order->billing_address->level2,        'bar',       'right billing address level2';
+    is $last_order->billing_address->level1,        'CA',        'right billing address level1';
+    is $last_order->billing_address->postal_code,   '55555',     'right billing address postal code';
+    is $last_order->billing_address->phone,         '012345678', 'right billing address phone';
 
     my $shipment1 = $last_order->orders->first;
-    is $shipment1->shipping_address->line1, 'San Francisco', 'right shipping address';
+    is $shipment1->shipping_address->line1, 'baz', 'right shipping address';
 
     my $items = $shipment1->items;
     my $row   = $items->next;
