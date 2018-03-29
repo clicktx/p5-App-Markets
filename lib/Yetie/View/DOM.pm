@@ -16,7 +16,7 @@ use Yetie::View::DOM::HTML;
         if ( $type eq 'root' || $type eq 'tag' ) {
             return $self->_content( 0, 1, @_ ) if @_;
             my $html = Yetie::View::DOM::HTML->new( xml => $self->xml );
-            return join '', map { $html->tree($_)->render } Mojo::DOM::_nodes( $self->tree );
+            return join '', map { $html->tree($_)->render } @{Mojo::DOM::_nodes( $self->tree )};
         }
 
         return $self->tree->[1] unless @_;
