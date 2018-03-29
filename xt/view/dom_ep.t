@@ -70,6 +70,10 @@ is $dom->tree->[21][1], 'div',  'right tag';
 is $dom->tree->[21][2]->{'<%= class %>'}, undef, 'right attr';
 is $dom->tree->[21][2]->{'<%= style %>'}, undef, 'right attr';
 
+#############################################################
+# This test code from mojo/t/mojo/dom.t
+#############################################################
+
 # Empty
 is( Mojo::DOM->new,                     '',    'right result' );
 is( Mojo::DOM->new(''),                 '',    'right result' );
