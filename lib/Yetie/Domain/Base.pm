@@ -63,8 +63,7 @@ sub import {
 
     # Module
     elsif ( ( my $file = $flags[0] ) && !$flags[0]->can('new') ) {
-        $file =~ s!::|'!/!g;
-        require "$file.pm";
+        require( Mojo::Util::class_to_path( $flags[0] ) );
     }
 
     # "has" and possibly ISA
