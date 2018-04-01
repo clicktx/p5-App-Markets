@@ -1,4 +1,4 @@
-package Yetie::View::DOM::HTML; # based on Mojo::DOM::HTML
+package Yetie::View::DOM::HTML;    # based on Mojo::DOM::HTML
 use Mojo::Base -base;
 
 use Mojo::Util qw(html_attr_unescape html_unescape xml_escape);
@@ -68,8 +68,9 @@ my %END = ( body => 'head', optgroup => 'optgroup', option => 'option' );
 
 # HTML elements that break paragraphs
 map { $END{$_} = 'p' } (
-    qw(address article aside blockquote dir div dl fieldset footer form h1 h2),
-    qw(h3 h4 h5 h6 header hr main menu nav ol p pre section table ul)
+    qw(address article aside blockquote details div dl fieldset figcaption),
+    qw(figure footer form h1 h2 h3 h4 h5 h6 header hgroup hr main menu nav ol p),
+    qw(pre section table ul)
 );
 
 # HTML table elements with optional end tags
@@ -86,10 +87,8 @@ $CLOSE{$_} = [ { rp => 1, rt => 1 }, { ruby  => 1 } ] for qw(rp rt);
 $CLOSE{$_} = [ { th => 1, td => 1 }, { table => 1 } ] for qw(td th);
 
 # HTML elements without end tags
-my %EMPTY = map { $_ => 1 } (
-    qw(area base br col embed hr img input keygen link menuitem meta param),
-    qw(source track wbr)
-);
+my %EMPTY =
+  map { $_ => 1 } ( qw(area base br col embed hr img input keygen link menuitem meta param), qw(source track wbr) );
 
 # HTML elements categorized as phrasing content (and obsolete inline elements)
 my @PHRASING = (
@@ -119,10 +118,8 @@ sub parse {
     my $xml = $self->xml;
     my $current = my $tree = ['root'];
     while ( $html =~ /\G$TOKEN_RE/gcso ) {
-        my (
-            $text,  $ep_line, $ep_tag, $doctype, $comment,
-            $cdata, $pi,      $tag,    $runaway
-        ) = ( $1, $2, $3, $4, $5, $6, $7, $8, $13 );
+        my ( $text, $ep_line, $ep_tag, $doctype, $comment, $cdata, $pi, $tag, $runaway ) =
+          ( $1, $2, $3, $4, $5, $6, $7, $8, $13 );
 
         # Text (and runaway "<")
         $text .= '<' if defined $runaway;
@@ -148,8 +145,7 @@ sub parse {
                     # Empty tag
                     ++$closing and next if $key eq '/';
 
-                    $attrs{$key} =
-                      defined $value ? html_attr_unescape $value : $value;
+                    $attrs{$key} = defined $value ? html_attr_unescape $value : $value;
                 }
 
                 # "image" is an alias for "img"
@@ -164,8 +160,7 @@ sub parse {
                 # Raw text elements
                 next if $xml || !$RAW{$start} && !$RCDATA{$start};
                 next unless $html =~ m!\G(.*?)<\s*/\s*\Q$start\E\s*>!gcsi;
-                _node( $current, 'raw',
-                    $RCDATA{$start} ? html_unescape $1 : $1 );
+                _node( $current, 'raw', $RCDATA{$start} ? html_unescape $1 : $1 );
                 _end( $start, 0, \$current );
             }
         }
@@ -274,8 +269,7 @@ sub _render {
 
     # Children
     no warnings 'recursion';
-    $result .= '>' . join '',
-      map { _render( $_, $xml ) } @$tree[ 4 .. $#$tree ];
+    $result .= '>' . join '', map { _render( $_, $xml ) } @$tree[ 4 .. $#$tree ];
 
     # End tag
     return "$result</$tag>";
