@@ -17,40 +17,49 @@ sub attr {
         # Very performance-sensitive code with lots of micro-optimizations
         # NOTE: Automatic update of "_is_modified" in case of setter
         if ( ref $value ) {
-            Mojo::Util::monkey_patch $class, $attr, sub {
+            my $sub = sub {
                 return exists $_[0]{$attr} ? $_[0]{$attr} : ( $_[0]{$attr} = $value->( $_[0] ) )
                   if @_ == 1;
                 $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
                 $_[0]{$attr} = $_[1];
                 $_[0];
             };
+            Mojo::Util::monkey_patch( $class, $attr, $sub );
         }
         elsif ( defined $value ) {
-            Mojo::Util::monkey_patch $class, $attr, sub {
+            my $sub = sub {
                 return exists $_[0]{$attr} ? $_[0]{$attr} : ( $_[0]{$attr} = $value )
                   if @_ == 1;
                 $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
                 $_[0]{$attr} = $_[1];
                 $_[0];
             };
+            Mojo::Util::monkey_patch( $class, $attr, $sub );
         }
         else {
-            Mojo::Util::monkey_patch $class, $attr, sub {
+            my $sub = sub {
                 return $_[0]{$attr} if @_ == 1;
                 $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
                 $_[0]{$attr} = $_[1];
                 $_[0];
             };
+            Mojo::Util::monkey_patch( $class, $attr, $sub );
         }
     }
 }
 
 sub import {
-    my $class = shift;
+    my ( $class, $caller ) = ( shift, caller );
     my @flags = @_ ? @_ : ('');
 
     # Base
     if ( $flags[0] eq '-base' or !$flags[0] ) { $flags[0] = $class }
+
+    # Role
+    elsif ( $flags[0] eq '-role' ) {
+        Carp::croak 'Role::Tiny 2.000001+ is required for roles' unless Mojo::Base->ROLES;
+        eval "package $caller; use Role::Tiny; 1" or die $@;
+    }
 
     # Module
     elsif ( ( my $file = $flags[0] ) && !$flags[0]->can('new') ) {
@@ -58,11 +67,10 @@ sub import {
         require "$file.pm";
     }
 
-    # ISA
+    # "has" and possibly ISA
     {
-        my $caller = caller;
         no strict 'refs';
-        push @{"${caller}::ISA"}, $flags[0];
+        push @{"${caller}::ISA"}, $flags[0] unless $flags[0] eq '-role';
         Mojo::Util::monkey_patch $caller, 'has', sub { attr( $caller, @_ ) };
 
         # Add default attributes
@@ -77,8 +85,7 @@ sub import {
     if ( ( $flags[1] || '' ) eq '-signatures' ) {
         Carp::croak 'Subroutine signatures require Perl 5.20+' if $] < 5.020;
         require experimental;
-        @_ = ( 'warnings', 'signatures' );
-        goto &experimental::import;
+        experimental->import('signatures');
     }
 }
 
