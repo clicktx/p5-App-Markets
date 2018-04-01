@@ -56,25 +56,22 @@ sub import {
     if ( $flags[0] eq '-base' or !$flags[0] ) { $flags[0] = $class }
 
     # Role
-    elsif ( $flags[0] eq '-role' ) {
+    if ( $flags[0] eq '-role' ) {
         Carp::croak 'Role::Tiny 2.000001+ is required for roles' unless Mojo::Base->ROLES;
+        Mojo::Util::monkey_patch( $caller, 'has', sub { attr( $caller, @_ ) } );
         eval "package $caller; use Role::Tiny; 1" or die $@;
     }
 
-    # Module
-    elsif ( ( my $file = $flags[0] ) && !$flags[0]->can('new') ) {
-        require( Mojo::Util::class_to_path( $flags[0] ) );
-    }
-
-    # "has" and possibly ISA
-    {
+    # Module and not -strict
+    elsif ( $flags[0] !~ /^-/ ) {
         no strict 'refs';
-        push @{"${caller}::ISA"}, $flags[0] unless $flags[0] eq '-role';
-        Mojo::Util::monkey_patch $caller, 'has', sub { attr( $caller, @_ ) };
-
-        # Add default attributes
-        $caller->attr( _is_modified => 0 );
+        require( Mojo::Util::class_to_path( $flags[0] ) ) unless $flags[0]->can('new');
+        push @{"${caller}::ISA"}, $flags[0];
+        Mojo::Util::monkey_patch( $caller, 'has', sub { attr( $caller, @_ ) } );
     }
+
+    # Add default attributes
+    $caller->attr( _is_modified => 0 );
 
     # Mojo modules are strict!
     $_->import for qw(strict warnings utf8);
