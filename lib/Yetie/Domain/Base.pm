@@ -46,13 +46,14 @@ sub attr {
 }
 
 sub import {
-    my ( $class, $flag ) = ( shift, shift // '' );
+    my $class = shift;
+    my @flags = @_ ? @_ : ('');
 
     # Base
-    if ( $flag eq '-base' or !$flag ) { $flag = $class }
+    if ( $flags[0] eq '-base' or !$flags[0] ) { $flags[0] = $class }
 
     # Module
-    elsif ( ( my $file = $flag ) && !$flag->can('new') ) {
+    elsif ( ( my $file = $flags[0] ) && !$flags[0]->can('new') ) {
         $file =~ s!::|'!/!g;
         require "$file.pm";
     }
@@ -61,7 +62,7 @@ sub import {
     {
         my $caller = caller;
         no strict 'refs';
-        push @{"${caller}::ISA"}, $flag;
+        push @{"${caller}::ISA"}, $flags[0];
         Mojo::Util::monkey_patch $caller, 'has', sub { attr( $caller, @_ ) };
 
         # Add default attributes
@@ -71,6 +72,14 @@ sub import {
     # Mojo modules are strict!
     $_->import for qw(strict warnings utf8);
     feature->import(':5.10');
+
+    # Signatures (Perl 5.20+)
+    if ( ( $flags[1] || '' ) eq '-signatures' ) {
+        Carp::croak 'Subroutine signatures require Perl 5.20+' if $] < 5.020;
+        require experimental;
+        @_ = ( 'warnings', 'signatures' );
+        goto &experimental::import;
+    }
 }
 
 sub new {
