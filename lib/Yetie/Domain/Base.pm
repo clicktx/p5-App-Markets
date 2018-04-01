@@ -1,5 +1,5 @@
 package Yetie::Domain::Base;
-use Carp qw(croak);
+use Carp qw();
 use Mojo::Base -base;
 use Mojo::Util ();
 
@@ -82,7 +82,7 @@ sub new {
     my $params = {};
     foreach my $key ( keys %{$args} ) {
         if ( $class->can($key) ) { $params->{$key} = $args->{$key} }
-        else                     { croak "$class has not '$key' attribute" }
+        else                     { Carp::croak "$class has not '$key' attribute" }
     }
     bless $params, $class;
 }
