@@ -110,7 +110,8 @@ Using setter will automatically update "_is_modified" to true.
 
 =head1 FUNCTIONS
 
-=head2 C<has>
+L<Yetie::Domain::Base> inherits all functions from L<Mojo::Base> and implements
+the following new ones.
 
 =head1 ATTRIBUTES
 
@@ -122,14 +123,10 @@ the following new ones.
 L<Yetie::Domain::Base> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
 
-=head2 C<attr>
-
-=head2 C<new>
-
 =head1 AUTHOR
 
 Yetie authors.
 
 =head1 SEE ALSO
 
- L<Mojo::Base>
+L<Mojo::Base>
