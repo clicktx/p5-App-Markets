@@ -1,5 +1,5 @@
 package Yetie::Domain::Base;
-use Carp qw(croak);
+use Carp qw();
 use Mojo::Base -base;
 use Mojo::Util ();
 
@@ -17,60 +17,72 @@ sub attr {
         # Very performance-sensitive code with lots of micro-optimizations
         # NOTE: Automatic update of "_is_modified" in case of setter
         if ( ref $value ) {
-            Mojo::Util::monkey_patch $class, $attr, sub {
+            my $sub = sub {
                 return exists $_[0]{$attr} ? $_[0]{$attr} : ( $_[0]{$attr} = $value->( $_[0] ) )
                   if @_ == 1;
                 $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
                 $_[0]{$attr} = $_[1];
                 $_[0];
             };
+            Mojo::Util::monkey_patch( $class, $attr, $sub );
         }
         elsif ( defined $value ) {
-            Mojo::Util::monkey_patch $class, $attr, sub {
+            my $sub = sub {
                 return exists $_[0]{$attr} ? $_[0]{$attr} : ( $_[0]{$attr} = $value )
                   if @_ == 1;
                 $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
                 $_[0]{$attr} = $_[1];
                 $_[0];
             };
+            Mojo::Util::monkey_patch( $class, $attr, $sub );
         }
         else {
-            Mojo::Util::monkey_patch $class, $attr, sub {
+            my $sub = sub {
                 return $_[0]{$attr} if @_ == 1;
                 $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
                 $_[0]{$attr} = $_[1];
                 $_[0];
             };
+            Mojo::Util::monkey_patch( $class, $attr, $sub );
         }
     }
 }
 
 sub import {
-    my ( $class, $flag ) = ( shift, shift // '' );
+    my ( $class, $caller ) = ( shift, caller );
+    my @flags = @_ ? @_ : ('');
 
     # Base
-    if ( $flag eq '-base' or !$flag ) { $flag = $class }
+    if ( $flags[0] eq '-base' or !$flags[0] ) { $flags[0] = $class }
 
-    # Module
-    elsif ( ( my $file = $flag ) && !$flag->can('new') ) {
-        $file =~ s!::|'!/!g;
-        require "$file.pm";
+    # Role
+    if ( $flags[0] eq '-role' ) {
+        Carp::croak 'Role::Tiny 2.000001+ is required for roles' unless Mojo::Base->ROLES;
+        Mojo::Util::monkey_patch( $caller, 'has', sub { attr( $caller, @_ ) } );
+        eval "package $caller; use Role::Tiny; 1" or die $@;
     }
 
-    # ISA
-    {
-        my $caller = caller;
+    # Module and not -strict
+    elsif ( $flags[0] !~ /^-/ ) {
         no strict 'refs';
-        push @{"${caller}::ISA"}, $flag;
-        Mojo::Util::monkey_patch $caller, 'has', sub { attr( $caller, @_ ) };
-
-        # Add default attributes
-        $caller->attr( _is_modified => 0 );
+        require( Mojo::Util::class_to_path( $flags[0] ) ) unless $flags[0]->can('new');
+        push @{"${caller}::ISA"}, $flags[0];
+        Mojo::Util::monkey_patch( $caller, 'has', sub { attr( $caller, @_ ) } );
     }
+
+    # Add default attributes
+    $caller->attr( _is_modified => 0 );
 
     # Mojo modules are strict!
     $_->import for qw(strict warnings utf8);
     feature->import(':5.10');
+
+    # Signatures (Perl 5.20+)
+    if ( ( $flags[1] || '' ) eq '-signatures' ) {
+        Carp::croak 'Subroutine signatures require Perl 5.20+' if $] < 5.020;
+        require experimental;
+        experimental->import('signatures');
+    }
 }
 
 sub new {
@@ -82,7 +94,7 @@ sub new {
     my $params = {};
     foreach my $key ( keys %{$args} ) {
         if ( $class->can($key) ) { $params->{$key} = $args->{$key} }
-        else                     { croak "$class has not '$key' attribute" }
+        else                     { Carp::croak "$class has not '$key' attribute" }
     }
     bless $params, $class;
 }
@@ -110,7 +122,8 @@ Using setter will automatically update "_is_modified" to true.
 
 =head1 FUNCTIONS
 
-=head2 C<has>
+L<Yetie::Domain::Base> inherits all functions from L<Mojo::Base> and implements
+the following new ones.
 
 =head1 ATTRIBUTES
 
@@ -122,14 +135,10 @@ the following new ones.
 L<Yetie::Domain::Base> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
 
-=head2 C<attr>
-
-=head2 C<new>
-
 =head1 AUTHOR
 
 Yetie authors.
 
 =head1 SEE ALSO
 
- L<Mojo::Base>
+L<Mojo::Base>

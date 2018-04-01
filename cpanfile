@@ -14,7 +14,7 @@ requires 'DBIx::Class::Tree::NestedSet',            '0.10';
 requires 'File::Find::Rule',                        '0.34';
 requires 'FormValidator::Simple',                   '0.29';
 requires 'Gazelle',                                 '0.46';
-requires 'Mojolicious',                             '== 7.32';
+requires 'Mojolicious',                             '== 7.70';
 requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';
 requires 'Mojolicious::Plugin::Model',              '0.07';
 requires 'Mojolicious::Plugin::Scrypt',             '0.01';
