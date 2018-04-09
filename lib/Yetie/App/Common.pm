@@ -58,7 +58,7 @@ sub initialize_app {
     $self->log->path( $home->rel_file("var/log/$mode.log") )
       if -d $home->rel_file('var/log') && -w _;
 
-    my $config_path = $home->rel_file("config/$mode.conf");
+    my $config_path = $home->child( "config", "$mode.conf" );
     $self->plugin( Config => { file => $config_path } );
 
     # DBIC NestedSet
