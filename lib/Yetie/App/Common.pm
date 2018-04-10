@@ -65,7 +65,7 @@ sub initialize_app {
     _dbic_nestedset();
 
     # Load plugin
-    _load_plugin($self);
+    _load_plugins($self);
 
     # Preferences
     $self->service('preference')->load;
@@ -163,7 +163,7 @@ sub _dsn {
       : "DBI:$conf->{dbtype}:dbname=$conf->{dbname};host=$conf->{host};port=$conf->{port};";
 }
 
-sub _load_plugin {
+sub _load_plugins {
     my $app = shift;
 
     # Models
