@@ -44,9 +44,6 @@ sub initialize_app {
     my $home = $self->home;
     my $mode = $self->mode;
 
-    # Documentation browser under "/perldoc"
-    $self->plugin('PODRenderer') if $mode eq 'development';
-
     # SQL debug log
     # DBIx::QueryLog->threshold(0.1); # sec
     $DBIx::QueryLog::OUTPUT = sub {
@@ -54,60 +51,32 @@ sub initialize_app {
         $self->db_log->debug("[$param{time}] $param{sql}");
     };
 
-    # change log dir
-    $self->log->path( $home->rel_file("var/log/$mode.log") )
-      if -d $home->rel_file('var/log') && -w _;
-
+    # Load config
     my $config_path = $home->child( "config", "$mode.conf" );
     $self->plugin( Config => { file => $config_path } );
-
-    # DBIC NestedSet
-    _dbic_nestedset();
-
-    # Load plugin
-    _load_plugins($self);
-
-    # Preferences
-    $self->service('preference')->load;
-
-    # TimeZone
-    # my $time_zone = 'Asia/Tokyo';                 # from preference
-    # $self->schema->time_zone($time_zone);
 
     # default cookie
     $self->sessions->cookie_name('session');
     $self->secrets( ['aaabbbccc'] );    #           change this!
 
-    # locale
-    $ENV{MOJO_I18N_DEBUG} = 1 if $mode eq 'development';
-    $self->plugin(
-        'Yetie::I18N',
-        {
-            # file_type => 'po',    # or 'mo'. default: po
-            default   => $self->pref('default_language'),
-            languages => [qw( en ja de )],
+    # Load plugins
+    _load_plugins($self);
 
-            # Mojolicious::Plugin::I18N like options
-            no_header_detect  => 1,                   # option. default: false
-            support_url_langs => [qw( en ja de )],    # option
-        }
-    );
+    # DBIC NestedSet
+    # NOTE: Need before loading preferences
+    _dbic_nestedset();
 
-    # loading lexicon files
-    my $locale_dir = Mojo::File::path( $home, 'share', 'locale' );
-    $self->lexicon(
-        {
-            search_dirs => [$locale_dir],
+    # Preferences
+    $self->service('preference')->load;
 
-            # gettext_to_maketext => $boolean,                    # option
-            # decode              => $boolean,                    # option
-            data => [ '*::' => '*.po' ],
-        }
-    ) if -d $locale_dir;
+    # Default language
+    $self->language( $self->pref('default_language') );
+
+    # TimeZone
+    # my $time_zone = 'Asia/Tokyo';                 # from preference
+    # $self->schema->time_zone($time_zone);
 
     # Form Frameworks
-    # $self->plugin( 'Yetie::Form', methods => { valid => 'form_valid', errors => 'form_errors' } );
-    # $self->plugin('Yetie::FormExpand');
     $self->plugin('Yetie::Form');
 
     # Add before/after action hook
@@ -166,14 +135,47 @@ sub _dsn {
 sub _load_plugins {
     my $app = shift;
 
+    # Documentation browser under "/perldoc"
+    $app->plugin('PODRenderer') if $app->mode eq 'development';
+
+    # Logging
+    $app->plugin('Yetie::Log');
+
     # Default Helpers
     $app->plugin('Yetie::DefaultHelpers');
 
-    # password
+    # Password
     $app->plugin('Scrypt');
 
-    # session
+    # Session
     $app->plugin( 'Yetie::Session' => { expires_delta => 3600 } );
+
+    # Locale
+    $ENV{MOJO_I18N_DEBUG} = 1 if $app->mode eq 'development';
+    $app->plugin(
+        'Yetie::I18N',
+        {
+            # file_type => 'po',    # or 'mo'. default: po
+            # default   => $self->pref('default_language'),
+            languages => [qw( en ja de )],
+
+            # Mojolicious::Plugin::I18N like options
+            no_header_detect  => 1,                   # option. default: false
+            support_url_langs => [qw( en ja de )],    # option
+        }
+    );
+
+    # loading lexicon files
+    my $locale_dir = $app->home->child( 'share', 'locale' );
+    $app->lexicon(
+        {
+            search_dirs => [$locale_dir],
+
+            # gettext_to_maketext => $boolean,                    # option
+            # decode              => $boolean,                    # option
+            data => [ '*::' => '*.po' ],
+        }
+    ) if -d $locale_dir;
 }
 
 sub _log {
