@@ -166,9 +166,6 @@ sub _dsn {
 sub _load_plugins {
     my $app = shift;
 
-    # Models
-    $app->plugin( Model => { namespaces => ['Yetie::Model'] } );
-
     # Default Helpers
     $app->plugin('Yetie::DefaultHelpers');
 
