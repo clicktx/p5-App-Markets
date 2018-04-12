@@ -18,7 +18,7 @@ individually.
 
 =item C<directories>
 
-List all sub directories in a directory.
+List all subdirectories in the directory.
 
 B<options>
 
