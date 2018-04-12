@@ -5,11 +5,10 @@ use Yetie::Addons;
 use Scalar::Util qw/weaken/;
 use DBIx::QueryLog;
 
+# $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
 $ENV{DBIC_TRACE}            = 1;
 $ENV{DBIX_QUERYLOG_COMPACT} = 1;
 $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
-
-# $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
 
 has schema => sub {
     my $self = shift;
@@ -18,12 +17,14 @@ has schema => sub {
     my $schema_class = "Yetie::Schema";
     eval "require $schema_class" or die "Could not load Schema Class ($schema_class). $@\n";
 
-    say "      connecting db.";    # debug
     my $conf   = $self->config('db') or die "Missing configuration for db";
     my $dsn    = _dsn($conf);
-    my $schema = $schema_class->connect( $dsn, $conf->{user}, $conf->{password} )
-      or die "Could not connect to $schema_class using DSN ";
-
+    my $schema = $schema_class->connect( $dsn, $conf->{user}, $conf->{password} );
+    eval { say 'connected to DB' if $schema->storage->dbh };
+    do {
+        my $message = "Could not connect to $schema_class using DSN ";
+        $self->log->fatal($message) and die $message;
+    } if $@;
     $schema->{app} = $self;
     weaken $schema->{app};
     return $schema;
@@ -69,15 +70,12 @@ sub initialize_app {
     # Preferences
     $self->service('preference')->load;
 
-    # Default language
+    # Set default language
     $self->language( $self->pref('default_language') );
 
     # TimeZone
     # my $time_zone = 'Asia/Tokyo';                 # from preference
     # $self->schema->time_zone($time_zone);
-
-    # Form Frameworks
-    $self->plugin('Yetie::Form');
 
     # Add before/after action hook
     # MEMO: Mojoliciou::Controllerの挙動を変更

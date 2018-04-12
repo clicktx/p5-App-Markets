@@ -12,7 +12,9 @@ sub startup {
 
     # Original themes
     my $themes = directories( 'themes', { ignore => [ 'default', 'admin' ] } );
-    say $self->dumper($themes);    # debug
+
+    # unshift @{$self->renderer->paths}, 'themes/mytheme';
+    push @{ $self->renderer->paths }, 'themes';    # For template full path
 
     # [WIP]loading lexicon files from themes
     my $theme_locale_dir = Mojo::File::path( $self->home, 'themes', 'default', 'locale' );
@@ -37,12 +39,8 @@ sub startup {
         $instance->merge_lexicon( 'ja::', 'ja:theme:', 'ja::' );    # [WIP]
     };
 
-    # unshift @{$self->renderer->paths}, 'themes/mytheme';
-    push @{ $self->renderer->paths }, 'themes';                     # For template full path
-
     # Renderer
-    $self->plugin($_)
-      for qw(Yetie::View::EPRenderer Yetie::View::EPLRenderer Yetie::View::DOM);
+    $self->plugin($_) for qw(Yetie::View::EPRenderer Yetie::View::EPLRenderer Yetie::View::DOM);
 
     # Initialize all addons
     my $installed_addons = $self->schema->resultset('addon')->configure;
@@ -50,6 +48,9 @@ sub startup {
 
     # Routes
     $self->plugin($_) for qw(Yetie::Routes);
+
+    # Form Framework
+    $self->plugin('Yetie::Form');
 }
 
 1;
