@@ -13,9 +13,12 @@ $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
 has schema => sub {
     my $self = shift;
 
+    # DBIC NestedSet
+    _dbic_nestedset();
+
     say "+++++ DBIC +++++";    # debug
     my $schema_class = "Yetie::Schema";
-    eval "require $schema_class" or die "Could not load Schema Class ($schema_class). $@\n";
+    eval "require $schema_class" or die "Could not load Schema Class ($schema_class). $@\n";    ## no critic
 
     my $conf   = $self->config('db') or die "Missing configuration for db";
     my $dsn    = _dsn($conf);
@@ -60,15 +63,14 @@ sub initialize_app {
     $self->sessions->cookie_name('session');
     $self->secrets( $self->config('secrets') );
 
-    # Load plugins
-    _load_plugins($self);
-
-    # DBIC NestedSet
-    # NOTE: Need before loading preferences
-    _dbic_nestedset();
+    # Default Helpers
+    $self->plugin('Yetie::DefaultHelpers');
 
     # Preferences
     $self->service('preference')->load;
+
+    # Load plugins
+    _load_plugins($self);
 
     # Set default language
     $self->language( $self->pref('default_language') );
@@ -154,9 +156,6 @@ sub _load_plugins {
     # Logging
     # NOTE: Need after loading "Yetie::I18N"
     $app->plugin('Yetie::Log');
-
-    # Default Helpers
-    $app->plugin('Yetie::DefaultHelpers');
 
     # Password
     $app->plugin('Scrypt');
