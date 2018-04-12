@@ -54,11 +54,11 @@ sub initialize_app {
 
     # Load config
     my $config_path = $home->child( "config", "$mode.conf" );
-    $self->plugin( Config => { file => $config_path } );
+    $self->plugin( config => { file => $config_path } );
 
     # default cookie
     $self->sessions->cookie_name('session');
-    $self->secrets( ['aaabbbccc'] );    #           change this!
+    $self->secrets( $self->config('secrets') );
 
     # Load plugins
     _load_plugins($self);
