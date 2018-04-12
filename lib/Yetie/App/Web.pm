@@ -17,7 +17,7 @@ sub startup {
     push @{ $self->renderer->paths }, 'themes';    # For template full path
 
     # [WIP]loading lexicon files from themes
-    my $theme_locale_dir = Mojo::File::path( $self->home, 'themes', 'default', 'locale' );
+    my $theme_locale_dir = $self->home->child( 'themes', 'default', 'locale' );
     $self->lexicon(
         {
             search_dirs => [$theme_locale_dir],
