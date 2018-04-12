@@ -1,4 +1,4 @@
-package Yetie::App;
+package Yetie::App::Web;
 use Mojo::Base 'Yetie::App::Common';
 use Yetie::Util qw/directories/;
 
