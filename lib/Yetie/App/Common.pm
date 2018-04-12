@@ -136,18 +136,6 @@ sub _load_plugins {
     # Documentation browser under "/perldoc"
     $app->plugin('PODRenderer') if $app->mode eq 'development';
 
-    # Logging
-    $app->plugin('Yetie::Log');
-
-    # Default Helpers
-    $app->plugin('Yetie::DefaultHelpers');
-
-    # Password
-    $app->plugin('Scrypt');
-
-    # Session
-    $app->plugin( 'Yetie::Session' => { expires_delta => 3600 } );
-
     # Locale
     $ENV{MOJO_I18N_DEBUG} = 1 if $app->mode eq 'development';
     $app->plugin(
@@ -163,17 +151,18 @@ sub _load_plugins {
         }
     );
 
-    # loading lexicon files
-    my $locale_dir = $app->home->child( 'share', 'locale' );
-    $app->lexicon(
-        {
-            search_dirs => [$locale_dir],
+    # Logging
+    # NOTE: Need after loading "Yetie::I18N"
+    $app->plugin('Yetie::Log');
 
-            # gettext_to_maketext => $boolean,                    # option
-            # decode              => $boolean,                    # option
-            data => [ '*::' => '*.po' ],
-        }
-    ) if -d $locale_dir;
+    # Default Helpers
+    $app->plugin('Yetie::DefaultHelpers');
+
+    # Password
+    $app->plugin('Scrypt');
+
+    # Session
+    $app->plugin( 'Yetie::Session' => { expires_delta => 3600 } );
 }
 
 sub _log {
