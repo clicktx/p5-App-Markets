@@ -48,6 +48,10 @@ sub initialize_app {
     my $home = $self->home;
     my $mode = $self->mode;
 
+    # Change default log directory
+    $self->log->path( $home->child( 'var', 'log', "$mode.log" ) )
+      if -d $home->child( 'var', 'log' ) && -w _;
+
     # SQL debug log
     # DBIx::QueryLog->threshold(0.1); # sec
     $DBIx::QueryLog::OUTPUT = sub {

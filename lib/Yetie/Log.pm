@@ -5,13 +5,8 @@ use Yetie::Log::Logger;
 sub register {
     my ( $self, $app ) = @_;
 
-    # Change log dir
-    my $home = $app->home;
-    my $mode = $app->mode;
-    $app->log->path( $home->child( 'var', 'log', "$mode.log" ) )
-      if -d $home->child( 'var', 'log' ) && -w _;
-
     # Add attributes
+    my $mode = $app->mode;
     $app->attr(
         logger => sub {
             my $self = shift;
