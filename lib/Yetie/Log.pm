@@ -40,7 +40,9 @@ sub register {
 
 sub _logging {
     my ( $level, $c ) = ( shift, shift );
-    $c->logging->$level(@_);
+    my @args = @_;
+    push @args, ( staff_id => $c->server_session->staff_id ) if $c->logging->path =~ /admin\.log$/;
+    $c->logging->$level(@args);
 }
 
 1;
@@ -80,6 +82,8 @@ Return L<Yetie::Log::Logger> object.
 =head1 HELPERS
 
 L<Yetie::Log> implements the following helpers.
+
+NOTE: If the log file path contains C<"admin.log">, add C<"staff_id"> as an argument.
 
 =head2 C<logging>
 
