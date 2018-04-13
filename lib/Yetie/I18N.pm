@@ -10,7 +10,7 @@ sub register {
     my $locale_dir = $app->home->child( 'share', 'locale' );
     $app->lexicon(
         {
-            search_dirs => [$locale_dir],
+            search_dirs => [ $locale_dir, $locale_dir->child('messages') ],
 
             # gettext_to_maketext => $boolean,                    # option
             # decode              => $boolean,                    # option

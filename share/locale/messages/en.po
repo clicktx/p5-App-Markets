@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: yetie-lasted-version\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: yetie-lang-team <clicktx@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.8\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+# Log messages for admin
+msgid "admin.login.failed.not_found"
+msgstr "Login failed: account not found. login_id: {login_id}"
+
+msgid "admin.login.failed.password"
+msgstr "Login failed: password mismatch. login id: {login_id}"
+
+
+# Log messages for catalog
+msgid "login.failed.not_found"
+msgstr "Login failed: account not found. email: {email}"
+
+msgid "login.failed.password"
+msgstr "Login failed: password mismatch. email: {email}"
