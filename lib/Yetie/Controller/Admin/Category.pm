@@ -50,7 +50,7 @@ sub edit {
     $self->schema->resultset('Category')->update_category( $entity, [] );
 
     my $staff_id = $self->server_session->staff_id;
-    $self->app->admin_log->info("ID: $staff_id updated category_id: $category_id");
+    $self->logging_info( 'admin.category.edited', staff_id => $staff_id, category_id => $category_id );
 
     return $self->redirect_to( $self->current_route, category_id => $category_id );
 }
