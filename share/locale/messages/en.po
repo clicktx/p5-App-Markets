@@ -29,9 +29,12 @@ msgid "login.failed.password"
 msgstr "Login failed: password mismatch. email: {email}"
 
 
-# Log messages for DB
+# Log messages for App
 msgid "schema.rollback.failed"
 msgstr "Transaction rollback failed: {error}"
 
 msgid "schema.do.rollback"
 msgstr "Did rollback transaction: {error}"
+
+msgid "pref.update.failed"
+msgstr "Could not update preference"
