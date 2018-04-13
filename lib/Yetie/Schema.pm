@@ -62,14 +62,16 @@ sub txn_failed {
     if ( $err =~ /Rollback failed/ ) {
 
         # ロールバックに失敗した場合
-        $self->app->db_log->fatal($err);
-        $self->app->error_log->fatal($err);
+        my $msgid = 'schema.rollback.failed';
+        $self->app->logging('db')->fatal( $msgid, error => $err );
+        $self->app->logging('error')->fatal( $msgid, error => $err );
         croak $err;
     }
     else {
         # 何らかのエラーによりロールバックした
-        $self->app->db_log->fatal($err);
-        $self->app->error_log->fatal($err);
+        my $msgid = 'schema.do.rollback';
+        $self->app->logging('db')->fatal( $msgid, error => $err );
+        $self->app->logging('error')->fatal( $msgid, error => $err );
         croak $err;
     }
 }

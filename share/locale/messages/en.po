@@ -27,3 +27,11 @@ msgstr "Login failed: account not found. email: {email}"
 
 msgid "login.failed.password"
 msgstr "Login failed: password mismatch. email: {email}"
+
+
+# Log messages for DB
+msgid "schema.rollback.failed"
+msgstr "Transaction rollback failed: {error}"
+
+msgid "schema.do.rollback"
+msgstr "Did rollback transaction: {error}"
