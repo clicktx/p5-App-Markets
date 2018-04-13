@@ -20,8 +20,11 @@ msgstr "Login failed: account not found. login_id: {login_id}"
 msgid "admin.login.failed.password"
 msgstr "Login failed: password mismatch. login id: {login_id}"
 
+msgid "admin.category.created"
+msgstr "Created new category by Staff ID:{staff_id}"
+
 msgid "admin.category.edited"
-msgstr "Updated category ID:{category_id} by Staff ID:{staff_id} "
+msgstr "Updated category ID:{category_id} by Staff ID:{staff_id}"
 
 msgid "admin.product.duplicated"
 msgstr "Duplicate product from ID:{product_id} by Staff ID:{staff_id}"

@@ -27,6 +27,9 @@ sub index {
 
     # Create category
     $rs->create_category( $title, $parent_id );
+
+    # Logging
+    $self->logging_info('admin.category.created');
     $self->redirect_to('RN_admin_category');
 }
 
