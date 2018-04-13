@@ -23,6 +23,12 @@ msgstr "Login failed: password mismatch. login id: {login_id}"
 msgid "admin.category.edited"
 msgstr "Updated category ID:{category_id} by Staff ID:{staff_id} "
 
+msgid "admin.product.duplicated"
+msgstr "Duplicate product from ID:{product_id} by Staff ID:{staff_id}"
+
+msgid "admin.product.removed"
+msgstr "Removed product ID:{product_id} by Staff ID:{staff_id}"
+
 
 # Log messages for catalog
 msgid "login.failed.not_found"

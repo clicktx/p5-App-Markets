@@ -34,8 +34,7 @@ sub duplicate_product {
     my $result = $self->resultset->create($data);
 
     # Logging
-    $self->app->admin_log->info( 'Duplicate product from ID:' . $product_id ) if $result;
-
+    $self->logging_info( 'admin.product.duplicated', product_id => $product_id ) if $result;
     return $result;
 }
 
@@ -82,8 +81,7 @@ sub remove_product {
         my $result = $product->delete;
 
         # Logging
-        $self->app->admin_log->info( 'Removed product ID:' . $product_id ) if $result;
-
+        $self->logging_info( 'admin.product.removed', product_id => $product_id ) if $result;
         return $result;
     }
     return;
