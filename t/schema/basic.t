@@ -34,7 +34,7 @@ subtest 'txn_failed' => sub {
     $err = 'error Rollback failed error';
     eval { $schema->txn_failed($err) };
 
-    $history = $app->logging('error')->history->[0];
+    $history = $app->logging('error')->history->[-1];
     is $history->[1], 'fatal', 'right log level';
     is $history->[2], 'schema.rollback.failed', 'right log message';
     like $@, qr/$err/, 'right died';
