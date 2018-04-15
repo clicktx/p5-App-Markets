@@ -1,7 +1,7 @@
 package Yetie::Schema::Base::Result;
 use Mojo::Base 'DBIx::Class::Core';
 
-__PACKAGE__->load_components(qw/InflateColumn::DateTime AsFdat/);
+__PACKAGE__->load_components(qw/InflateColumn::DateTime/);
 
 has schema => sub { shift->result_source->schema };
 
