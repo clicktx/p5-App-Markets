@@ -10,8 +10,9 @@ sub startup {
     # Template paths
     $self->renderer->paths( [ 'themes/default', 'themes/admin' ] );
 
-    # Original themes
-    my $themes = directories( 'themes', { ignore => [ 'default', 'admin' ] } );
+    # debug User themes
+    my $themes = directories( 'themes', { ignore => [ 'admin', 'common', 'default' ] } );
+    say $self->dumper($themes);
 
     # unshift @{$self->renderer->paths}, 'themes/mytheme';
     push @{ $self->renderer->paths }, 'themes';    # For template full path
