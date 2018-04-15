@@ -37,9 +37,6 @@ has schema => sub {
 has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更する
 has addons      => sub { Yetie::Addons->new(@_) };
 
-# logging
-has db_log    => sub { shift->_log('db') };
-
 sub initialize_app {
     my $self = shift;
     my $home = $self->home;
@@ -53,7 +50,7 @@ sub initialize_app {
     # DBIx::QueryLog->threshold(0.1); # sec
     $DBIx::QueryLog::OUTPUT = sub {
         my %param = @_;
-        $self->db_log->debug("[$param{time}] $param{sql}");
+        $self->logging('db')->debug( 'log.message', message => "[$param{time}] $param{sql}" );
     };
 
     # Load config
@@ -64,14 +61,11 @@ sub initialize_app {
     $self->sessions->cookie_name('session');
     $self->secrets( $self->config('secrets') );
 
-    # Default Helpers
-    $self->plugin('Yetie::DefaultHelpers');
+    # Load plugins
+    _load_plugins($self);
 
     # Preferences
     $self->service('preference')->load;
-
-    # Load plugins
-    _load_plugins($self);
 
     # Set default language
     $self->language( $self->pref('default_language') );
@@ -81,7 +75,7 @@ sub initialize_app {
     # $self->schema->time_zone($time_zone);
 
     # Add before/after action hook
-    # MEMO: Mojoliciou::Controllerの挙動を変更
+    # NOTE: Mojoliciou::Controllerの挙動を変更
     _add_hooks($self);
 }
 
@@ -138,6 +132,9 @@ sub _load_plugins {
 
     # Documentation browser under "/perldoc"
     $app->plugin('PODRenderer') if $app->mode eq 'development';
+
+    # Default Helpers
+    $app->plugin('Yetie::DefaultHelpers');
 
     # Locale
     $ENV{MOJO_I18N_DEBUG} = 1 if $app->mode eq 'development';

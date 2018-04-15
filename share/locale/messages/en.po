@@ -13,6 +13,10 @@ msgstr ""
 "Language: en\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+msgid "log.message"
+msgstr "{message}"
+
+
 # Log messages for admin
 msgid "admin.login.failed.not_found"
 msgstr "Login failed: account not found. login_id: {login_id}"
