@@ -12,13 +12,13 @@ get '/' => sub {
     $c->render( json => {} );
 };
 
-get '/admin' => sub {
+get '/foo' => sub {
     my $c = shift;
 
     # Set controller name
-    $c->stash( controller => 'admin-foo' );
-    $c->logging->error('controller is admin');
-    $c->logging_fatal('admin fatal');
+    $c->stash( controller => 'foo-bar' );
+    $c->logging->error('controller is foo-bar');
+    $c->logging_fatal('foo fatal');
     $c->render( json => {} );
 };
 
@@ -37,12 +37,12 @@ my $path = Mojo::File->new($log_dir);
 $path->make_path;
 
 $t->get_ok('/')->status_is(200);
-$t->get_ok('/admin')->status_is(200);
+$t->get_ok('/foo')->status_is(200);
 
-like do { Mojo::File->new( $path->child('foo.log') )->slurp },   qr/\[warn] set log name/,         'right foo log';
-like do { Mojo::File->new( $path->child('test.log') )->slurp },  qr/\[info] not set log name/,     'right test log';
-like do { Mojo::File->new( $path->child('admin.log') )->slurp }, qr/\[error] controller is admin/, 'right admin log';
-like do { Mojo::File->new( $path->child('admin.log') )->slurp }, qr/\[fatal] admin fatal/,         'right admin log';
+like do { Mojo::File->new( $path->child('foo.log') )->slurp },  qr/\[warn] set log name/,       'right foo log';
+like do { Mojo::File->new( $path->child('test.log') )->slurp }, qr/\[info] not set log name/,   'right test log';
+like do { Mojo::File->new( $path->child('foo.log') )->slurp },  qr/\[error] controller is foo/, 'right foo log';
+like do { Mojo::File->new( $path->child('foo.log') )->slurp },  qr/\[fatal] foo fatal/,         'right foo log';
 
 # Remove log dir
 $path->remove_tree();
