@@ -5,6 +5,10 @@ use Yetie::Log::Logger;
 sub register {
     my ( $self, $app ) = @_;
 
+    # Create log directory
+    my $log_dir = $app->home->child( "var", "log" );
+    $log_dir->make_path unless -d $log_dir && -w _;
+
     # Add attributes
     my $mode = $app->mode;
     $app->attr(
