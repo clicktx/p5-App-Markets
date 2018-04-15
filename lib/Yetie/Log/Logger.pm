@@ -6,13 +6,13 @@ with 'Mojo::Log::Role::Clearable';
 
 has 'app';
 
-sub debug { shift->_message( debug => @_ ) }
-sub error { shift->_message( error => @_ ) }
-sub fatal { shift->_message( fatal => @_ ) }
-sub info  { shift->_message( info  => @_ ) }
-sub warn  { shift->_message( warn  => @_ ) }
+sub debug { shift->_convert_message( debug => @_ ) }
+sub error { shift->_convert_message( error => @_ ) }
+sub fatal { shift->_convert_message( fatal => @_ ) }
+sub info  { shift->_convert_message( info  => @_ ) }
+sub warn  { shift->_convert_message( warn  => @_ ) }
 
-sub _message {
+sub _convert_message {
     my ( $self, $level ) = ( shift, shift );
     my $message = $self->app->__x(@_);
     $self->_log( $level, $message );
