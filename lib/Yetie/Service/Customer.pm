@@ -52,13 +52,13 @@ sub load_history {
 sub login_process {
     my ( $self, $email, $password ) = @_;
 
+    # Find account
     my $customer = $self->find_customer($email);
-
-    # FIXME: log messageをハードコーティングしない
-    return $self->_login_failed( 'Login failed: not found account at email: ' . $email ) unless $customer->is_registerd;
+    return $self->_login_failed( 'login.failed.not_found', email => $email )
+      unless $customer->is_registerd;
 
     # Authentication
-    return $self->_login_failed( 'Login failed: password mismatch at email: ' . $email )
+    return $self->_login_failed( 'login.failed.password', email => $email )
       unless $customer->verify_password($password);
 
     return $self->_logged_in( $customer->id );
@@ -85,12 +85,11 @@ sub _logged_in {
 
 # NOTE: logging 未完成
 sub _login_failed {
-    my ( $self, $message, $error_code ) = @_;
+    my $self = shift;
     $self->controller->stash( status => 401 );
 
     # Logging
-    # my $message = $self->app->message($error_code);
-    $self->app->customer_log->warn($message);
+    $self->logging_warn(@_);
     return 0;
 }
 

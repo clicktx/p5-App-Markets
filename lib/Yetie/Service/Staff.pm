@@ -17,13 +17,12 @@ sub find_staff {
 sub login_process {
     my ( $self, $login_id, $password ) = @_;
 
+    # Find account
     my $staff = $self->find_staff($login_id);
-
-    # FIXME: log messageをハードコーティングしない
-    return $self->_login_failed( 'Login failed: not found account at login_id: ' . $login_id ) unless $staff->is_staff;
+    return $self->_login_failed( 'admin.login.failed.not_found', login_id => $login_id ) unless $staff->is_staff;
 
     # Authentication
-    return $self->_login_failed( 'Login failed: password mismatch at login id: ' . $login_id )
+    return $self->_login_failed( 'admin.login.failed.password', login_id => $login_id )
       unless $staff->verify_password($password);
 
     return $self->_logged_in($staff);
@@ -44,14 +43,12 @@ sub _logged_in {
     return 1;
 }
 
-# NOTE: logging 未完成
 sub _login_failed {
-    my ( $self, $message, $error_code ) = @_;
+    my $self = shift;
     $self->controller->stash( status => 401 );
 
     # Logging
-    # my $message = $self->app->message($error_code);
-    $self->app->admin_log->warn($message);
+    $self->logging_warn(@_);
     return 0;
 }
 

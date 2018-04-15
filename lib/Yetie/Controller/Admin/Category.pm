@@ -27,6 +27,9 @@ sub index {
 
     # Create category
     $rs->create_category( $title, $parent_id );
+
+    # Logging
+    $self->logging_info('admin.category.created');
     $self->redirect_to('RN_admin_category');
 }
 
@@ -49,8 +52,8 @@ sub edit {
     # update
     $self->schema->resultset('Category')->update_category( $entity, [] );
 
-    my $staff_id = $self->server_session->staff_id;
-    $self->app->admin_log->info("ID: $staff_id updated category_id: $category_id");
+    # Logging
+    $self->logging_info( 'admin.category.edited', category_id => $category_id );
 
     return $self->redirect_to( $self->current_route, category_id => $category_id );
 }

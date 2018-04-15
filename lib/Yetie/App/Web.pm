@@ -1,4 +1,4 @@
-package Yetie::App;
+package Yetie::App::Web;
 use Mojo::Base 'Yetie::App::Common';
 use Yetie::Util qw/directories/;
 
@@ -10,12 +10,15 @@ sub startup {
     # Template paths
     $self->renderer->paths( [ 'themes/default', 'themes/admin' ] );
 
-    # Original themes
-    my $themes = directories( 'themes', { ignore => [ 'default', 'admin' ] } );
-    say $self->dumper($themes);    # debug
+    # debug User themes
+    my $themes = directories( 'themes', { ignore => [ 'admin', 'common', 'default' ] } );
+    say $self->dumper($themes);
+
+    # unshift @{$self->renderer->paths}, 'themes/mytheme';
+    push @{ $self->renderer->paths }, 'themes';    # For template full path
 
     # [WIP]loading lexicon files from themes
-    my $theme_locale_dir = Mojo::File::path( $self->home, 'themes', 'default', 'locale' );
+    my $theme_locale_dir = $self->home->child( 'themes', 'default', 'locale' );
     $self->lexicon(
         {
             search_dirs => [$theme_locale_dir],
@@ -37,12 +40,8 @@ sub startup {
         $instance->merge_lexicon( 'ja::', 'ja:theme:', 'ja::' );    # [WIP]
     };
 
-    # unshift @{$self->renderer->paths}, 'themes/mytheme';
-    push @{ $self->renderer->paths }, 'themes';                     # For template full path
-
     # Renderer
-    $self->plugin($_)
-      for qw(Yetie::View::EPRenderer Yetie::View::EPLRenderer Yetie::View::DOM);
+    $self->plugin($_) for qw(Yetie::View::EPRenderer Yetie::View::EPLRenderer Yetie::View::DOM);
 
     # Initialize all addons
     my $installed_addons = $self->schema->resultset('addon')->configure;
@@ -50,6 +49,9 @@ sub startup {
 
     # Routes
     $self->plugin($_) for qw(Yetie::Routes);
+
+    # Form Framework
+    $self->plugin('Yetie::Form');
 }
 
 1;

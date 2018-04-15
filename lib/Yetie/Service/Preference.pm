@@ -31,7 +31,7 @@ sub store {
     };
 
     try { $self->schema->txn_do($cb) }
-    catch { $self->app->error_log->error("Don't update preference. "); return };
+    catch { $self->app->logging('error')->error('pref.update.failed'); return };
 
     $pref->reset_modified;
     return 1;
