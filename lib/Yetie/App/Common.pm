@@ -162,21 +162,6 @@ sub _load_plugins {
     $app->plugin( 'Yetie::Session' => { expires_delta => 3600 } );
 }
 
-sub _log {
-    my $app      = shift;
-    my $log_name = shift . ".log";
-
-    # Check if we have a log directory that is writable
-    my $log  = Mojo::Log->new;
-    my $home = $app->home;
-    my $mode = $app->mode;
-    $log->path( $home->child( 'var', 'log', $log_name ) )
-      if -d $home->child( 'var', 'log' ) && -w _;
-
-    # Reduced log output outside of development mode
-    return $mode eq 'development' ? $log : $log->level('info');
-}
-
 1;
 
 =encoding utf8
