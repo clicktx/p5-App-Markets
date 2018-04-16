@@ -22,6 +22,7 @@ my %args = (
     },
 
     requires => {
+        'CGI::Expand' => '2.05',
         'Class::C3::XS' => '0.14',
         'Cookie::Baker::XS' => '0.07',
         'Cpanel::JSON::XS' => '3.0227',
@@ -41,11 +42,10 @@ my %args = (
         'HTTP::Parser::XS' => '0.17',
         'JSON::XS' => '3.02',
         'List::Util::XS' => '1.47',
+        'Mojo::Log::Clearable' => '1.000',
         'MojoX::Session' => '0.33',
-        'Mojolicious' => '== 7.32',
-        'Mojolicious::Plugin::FormFields' => '0.05',
+        'Mojolicious' => '== 7.72',
         'Mojolicious::Plugin::LocaleTextDomainOO' => '0.04',
-        'Mojolicious::Plugin::Model' => '0.07',
         'Mojolicious::Plugin::Scrypt' => '0.01',
         'SQL::Translator' => '0.11021',
         'Scalar::Util' => '1.47',
@@ -92,7 +92,7 @@ my %args = (
     test_files           => ((-d '.git' || $ENV{RELEASE_TESTING}) && -d 'xt') ? 't/ xt/' : 't/',
     recursive_test_files => 1,
 
-    tap_harness_args => {"color" => "true","verbosity" => 1},
+    tap_harness_args => {"verbosity" => 1,"color" => "true"},
 
 );
 if (-d 'share') {
