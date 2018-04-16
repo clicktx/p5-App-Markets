@@ -63,9 +63,6 @@ sub duplicate {
     # p $order;
 
     # my $order = $self->schema->resultset('Sales::Order')->find_by_id($order_id);
-    # p $order->sales->as_fdat;
-    # p $order->as_fdat;
-    # $order->items->each( sub { p $_->as_fdat } );
 
     # return $self->redirect_to('RN_admin_orders');
     $self->stash( domain => $order );
