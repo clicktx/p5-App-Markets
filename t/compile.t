@@ -6,8 +6,8 @@ use_ok $_ for qw(
   Yetie
   MojoX::Session
   Yetie::Session::Store::Dbic
-  Mojolicious::Plugin::Model
   Mojolicious::Plugin::LocaleTextDomainOO
+  Mojolicious::Plugin::Scrypt
 );
 
 done_testing();
