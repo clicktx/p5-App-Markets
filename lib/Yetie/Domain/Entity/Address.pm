@@ -13,6 +13,19 @@ has phone         => '';
 has fax           => '';
 has mobile        => '';
 
+has collate_fields => sub {
+    {
+        us => [qw(personal_name company_name line1 line2 level1 level2 postal_code phone fax mobile)],
+        jp => [qw(personal_name company_name postal_code level1 level2 line1 line2 phone fax mobile)],
+    };
+};
+
+sub fields {
+    my $self = shift;
+    my $region = shift || 'us';
+    $self->collate_fields->{$region};
+}
+
 sub hash_code {
     my $self = shift;
 
@@ -51,6 +64,19 @@ the following new ones.
 
 L<Yetie::Domain::Entity::Address> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<fields>
+
+Get form field names.
+
+    my $fields = $e->fields($region);
+
+    # Country Japan
+    my $fields = $e->fields('jp');
+
+Return Array refference.
+
+Default region "us".
 
 =head1 AUTHOR
 
