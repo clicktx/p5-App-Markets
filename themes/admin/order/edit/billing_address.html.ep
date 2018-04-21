@@ -3,8 +3,7 @@
     <%= form_for '' => ( method => 'POST' ) => begin %>
         <%= csrf_field %>
         <% form 'billing_address'; %>
-        <% my $fields = [qw(name line1 line2 level2 level1 postal_code phone mobile fax email)]; %>
-        <%= include 'admin/form/fields', fields => $fields %>
+        <%= include 'admin/form/fields', fields => stash('fields') %>
         <div class="">
             <%= submit_button 'Save Billing Address' %>
         </div>

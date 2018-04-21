@@ -1,7 +1,8 @@
 % my $field_block = begin
     % my $field = shift;
+    % my $target = '#' . $field;
     <div class="">
-        %= form_field $field
+        %= form_field $target
         %= form_label
         %= form_widget
         %= form_help
