@@ -14,9 +14,16 @@ sub billing_address {
     return $self->reply->not_found if $order->is_empty;
 
     # Set default values
-    # $self->form_default_value( $form, $entity );
-    my $form = $self->form('billing_address');
-    $form->field($_)->default_value( $order->billing_address->$_ ) for qw(line1);
+    my $region = 'us';
+    my $fields = $order->billing_address->fields($region);
+    my $form   = $self->form('billing_address');
+    my @billing_address_fields;
+    do {
+        $form->field( "billing_address." . $_ )->default_value( $order->billing_address->$_ );
+        push @billing_address_fields, 'billing_address.' . $_;
+      }
+      for @{$fields};
+    $self->stash( fields => \@billing_address_fields );
 
     return $self->render() unless $form->has_data;
     return $self->render() unless $form->do_validate;
