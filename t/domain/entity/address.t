@@ -3,19 +3,14 @@ use Test::More;
 
 use_ok 'Yetie::Domain::Entity::Address';
 
-my $data = {
-    id            => 1,
-    line1         => '42 Pendergast St.',
-    line2         => '',
-    level1        => 'SC',
-    level2        => 'Piedmont',
-    postal_code   => '29673',
-    personal_name => 'Claire Underwood',
-    company_name  => '',
-    phone         => '123-4567',
-    fax           => '',
-    mobile        => '',
-};
+my $addrs = [
+    [qw(id line1 line2 level1 level2 postal_code personal_name company_name phone fax mobile)],
+    [ 1, '42 Pendergast St.', '', 'SC', 'Piedmont', '29673', 'Claire Underwood', '', '123-4567', '', '' ],
+];
+my $cols = shift @{$addrs};
+my $addr = shift @{$addrs};
+my $data;
+$data->{$_} = shift @{$addr} for @{$cols};
 
 subtest 'basic' => sub {
     my $address = Yetie::Domain::Entity::Address->new( {} );
