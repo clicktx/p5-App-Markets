@@ -35,7 +35,7 @@ subtest 'basic' => sub {
 subtest 'hash_code' => sub {
     my $address   = Yetie::Domain::Entity::Address->new($data);
     my $hash_code = $address->hash_code;
-    is $hash_code, '1e9f2a0d62fb60bb2cbdea2cb7ba55f98561a473', 'right hash code';
+    is $hash_code, 'ce13c4019b768f9b52cef27d3cd1d4ec5ef0d63f', 'right hash code';
 
     $address->phone('222-3333');
     is $address->hash_code, $hash_code, 'right change phone';

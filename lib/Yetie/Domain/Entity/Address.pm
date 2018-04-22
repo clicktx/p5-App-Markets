@@ -31,7 +31,7 @@ sub hash_code {
 
     my $bytes;
     $bytes .= $self->$_ || '' for qw(
-      line1 line2 level1 level2 postal_code personal_name company_name
+      line1 line2 postal_code personal_name company_name
     );
     $self->SUPER::hash_code($bytes);
 }
