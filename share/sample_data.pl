@@ -58,12 +58,12 @@
         [ 9, 'i@x.org', 0 ],
     ],
     'Address' => [
-        [qw/id line1 line2 level2 level1 postal_code hash/],
-        [ 1, '42 Pendergast St.', '', 'Piedmont', 'SC', '29673', 'ddd317d966c94506903100cf3f48afee955127c4' ],
-        [ 2, '7004 Tunnel St.', '', 'New Brunswick', 'NJ', '08901', '5bcd318a8e608b5d727edbe36dbdc6cc16491b8c' ],
-        [ 3, '803 Wild Rose St.', '', 'Woodstock', 'GA', '30188', '0484ec673cb6aa6b61e14791dfb791a389cec27b' ],
-        [ 4, '906 Pearl Ave.', '', 'Patchogue', 'NY', '11772', '62f2d8907cff247986fd732b96bc8c41fa1d996d' ],
-        [ 5, '67 Valley St.', '', 'Palmetto', 'FL', '34221', '1f5cfa154b71e8b1841be16086f1850c20d73fb2' ],
+        [qw/id line1 line2 level2 level1 postal_code personal_name company_name phone hash/],
+        [ 1, '42 Pendergast St.', '', 'Piedmont', 'SC', '29673', 'Elizabeth T. Peoples', 'Eli Moore Inc', '305-939-8498', '2cd6fbf9747c1f9d791942885eaebf2d4cd0d868' ],
+        [ 2, '7004 Tunnel St.', '', 'New Brunswick', 'NJ', '08901', 'Craig M. Hise', 'Big Apple', '803-767-1849', 'b253e84237954f37eafd4cd0bbfdaffa37e16859' ],
+        [ 3, '803 Wild Rose St.', '', 'Woodstock', 'GA', '30188', 'Mary R. Johnson', '', '804-744-1468', '72131e5f13601203c39023f020a3821c0b6ccc97' ],
+        [ 4, '906 Pearl Ave.', '', 'Patchogue', 'NY', '11772', 'Albert B. Hastings', 'Twin Food Stores', '708-987-1400', '49ba623a69d54b84773a710d743cd26c2b3d38ac' ],
+        [ 5, '67 Valley St.', '', 'Palmetto', 'FL', '34221', 'James T. Moss', 'Audio Aid', '330-631-6284', '83684109a0a79f39ca0b4acf80e112eec229af52' ],
     ],
 
     # Staffs
