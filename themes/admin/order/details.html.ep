@@ -20,8 +20,8 @@
     <% end =%>
 </div>
 <div class="">
+    <h3>Shipping Address</h3>
     <%= content shipping_address => begin =%>
-        <h3>Shipping Address</h3>
         <%= link_to 'RN_admin_order_edit_shipping_address' => begin %>
             Edit
         <% end %>
@@ -31,8 +31,8 @@
     <% end =%>
 </div>
 <div class="">
+    <h3>Items Ordered</h3>
     <%= content items_orderd => begin =%>
-        <h3>Items Ordered</h3>
         <%= link_to 'RN_admin_order_edit_items' => begin %>
             Edit
         <% end %>
