@@ -10,7 +10,7 @@ sub billing_address {
     my $order = $self->service('order')->find_order($order_id);
     $order->page_title( $order->page_title . '/' . 'Edit Billing Address' );
 
-    $self->stash( domain => $order );
+    $self->stash( entity => $order );
     return $self->reply->not_found if $order->is_empty;
 
     # Set default values

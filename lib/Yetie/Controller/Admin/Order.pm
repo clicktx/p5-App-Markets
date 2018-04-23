@@ -42,7 +42,7 @@ sub details {
     my $order = $self->_find_order;
     return $self->reply->not_found if $order->is_empty;
 
-    $self->stash( domain => $order );
+    $self->stash( entity => $order );
     $self->render();
 }
 
@@ -65,7 +65,7 @@ sub duplicate {
     # my $order = $self->schema->resultset('Sales::Order')->find_by_id($order_id);
 
     # return $self->redirect_to('RN_admin_orders');
-    $self->stash( domain => $order );
+    $self->stash( entity => $order );
     return $self->render('admin/order/edit');
 }
 
@@ -84,7 +84,7 @@ sub edit {
     use DDP;
     p $form;
 
-    $self->stash( domain => $order );
+    $self->stash( entity => $order );
     $self->render();
 
     return $self->render();
