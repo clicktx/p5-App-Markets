@@ -9,6 +9,10 @@ sub find_order {
     my $result = $self->resultset->find_by_id($order_id);
     my $data = $result ? $result->to_data : {};
 
+    # Set address type
+    do { $data->{$_}->{type} = $_ if $data->{$_} }
+      for qw(billing_address shipping_address);
+
     my $order_detail = $self->factory('entity-order_detail')->create($data);
     return $order_detail;
 }

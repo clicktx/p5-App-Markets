@@ -13,6 +13,7 @@ has phone         => '';
 has fax           => '';
 has mobile        => '';
 
+has type           => '';
 has collate_fields => sub {
     {
         us => [qw(personal_name company_name line1 line2 level1 level2 postal_code phone fax mobile)],
