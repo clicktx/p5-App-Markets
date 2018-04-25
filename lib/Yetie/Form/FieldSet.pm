@@ -163,7 +163,7 @@ Yetie::Form::FieldSet
 =head1 IMPORT OPTIONS
 
     # Your form field set base class
-    package Yetie::Form::FieldSet::Base;
+    package Yetie::Form::FieldSet::Foo;
     use Yetie::Form::FieldSet;
 
     has_field 'email' => ( ... );
@@ -171,9 +171,9 @@ Yetie::Form::FieldSet
     ...
     1;
 
-    # Import from base class
-    package Yetie::Form::FieldSet::Hoge;
-    use Yetie::Form::FieldSet::Base qw(email password);
+    # Import from 'Yetie::Form::FieldSet::Foo'
+    package Yetie::Form::FieldSet::Bar;
+    use Yetie::Form::FieldSet::Foo qw(email password);
     ...
     1;
 
@@ -181,8 +181,8 @@ Import fields 'email' and 'password'.
 
 =head2 C<-all>
 
-    package Yetie::Form::FieldSet::Hoge;
-    use Yetie::Form::FieldSet::Base -all;
+    package Yetie::Form::FieldSet::Bar;
+    use Yetie::Form::FieldSet::Foo -all;
     ...
     1;
 
