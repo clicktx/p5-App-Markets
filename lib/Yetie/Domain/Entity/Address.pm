@@ -24,7 +24,7 @@ has collate_fields => sub {
 sub fields {
     my $self = shift;
     my $region = shift || 'us';
-    $self->collate_fields->{$region};
+    $self->collate_fields->{$region} || $self->collate_fields->{us};
 }
 
 sub hash_code {
