@@ -1,5 +1,6 @@
 package Yetie::Domain::Entity::Address;
 use Yetie::Domain::Entity;
+use Mojo::Util qw(encode);
 
 has hash          => '';
 has line1         => '';
@@ -31,7 +32,7 @@ sub hash_code {
     my $self = shift;
 
     my $bytes;
-    $bytes .= $self->$_ || '' for qw(
+    $bytes .= encode( 'UTF-8', $self->$_ ) || '' for qw(
       line1 line2 postal_code personal_name company_name
     );
     $self->SUPER::hash_code($bytes);

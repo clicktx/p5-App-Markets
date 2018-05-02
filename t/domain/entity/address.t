@@ -31,6 +31,9 @@ subtest 'hash_code' => sub {
 
     $address->personal_name('foo');
     isnt $address->hash_code, $hash_code, 'right change personal_name';
+
+    $address->personal_name('ほげ');
+    is $address->hash_code, '4df37918575445bb8456b595282ec3f9d26171ab', 'right multibyte characters';
 };
 
 subtest 'fields' => sub {
