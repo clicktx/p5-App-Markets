@@ -8,8 +8,7 @@ use Mojolicious::Plugin::TagHelpers;
 
 our $error_class     = 'form-error-block';
 our $help_class      = 'form-help-block';
-our $required_class  = 'form-required-field-icon';
-our $required_icon   = '*';
+our $optional_class  = 'form-label-optional';
 our $wiget_id_prefix = 'form-widget';
 
 has controller => sub { Mojolicious::Controller->new };
@@ -247,10 +246,9 @@ sub _label {
     my %label_attrs;
     $label_attrs{class} = $attrs{class} if exists $attrs{class};
 
-    my $required_html =
-      exists $attrs{required}
-      ? $c->tag( 'span', class => $required_class, sub { $required_icon } )
-      : '';
+    # NOTE: 11. Mark optional fields instead of mandatory.
+    # https://uxplanet.org/the-18-must-do-principles-in-the-form-design-fe89d0127c92
+    my $required_html = exists $attrs{required} ? '' : $c->tag( 'span', class => $optional_class, '(OPTIONAL)' );
     my $content = $c->__( $attrs{label} ) . $required_html;
     _validation( $c, $attrs{name}, 'label', for => $attrs{id}, %label_attrs, sub { $content } );
 }
