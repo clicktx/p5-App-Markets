@@ -36,6 +36,7 @@ has schema => sub {
 # has restart_app => sub { system shift->home . "/script/appctl --restart" };
 has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更する
 has addons      => sub { Yetie::Addons->new(@_) };
+has region      => 'us';
 
 sub initialize_app {
     my $self = shift;
