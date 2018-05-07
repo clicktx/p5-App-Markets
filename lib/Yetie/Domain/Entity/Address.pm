@@ -3,6 +3,7 @@ use Yetie::Domain::Entity;
 use Mojo::Util qw(encode);
 
 has hash          => '';
+has country_code  => '';
 has line1         => '';
 has line2         => '';
 has level1        => '';
@@ -17,7 +18,7 @@ has mobile        => '';
 has type           => '';
 has collate_fields => sub {
     {
-        us => [qw(personal_name company_name line1 line2 level1 level2 postal_code phone fax mobile)],
+        us => [qw(personal_name company_name line1 line2 level2 level1 postal_code phone fax mobile)],
         jp => [qw(personal_name company_name postal_code level1 level2 line1 line2 phone fax mobile)],
     };
 };
