@@ -71,7 +71,7 @@ has_field country => (
     multiple => 1,
     choices  => [
         c( EU => [ [ Germany => 'de' ], [ England => 'en' ] ] ),
-        c( Asia => [ [ Chaina => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ),
+        c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ),
     ],
     filters     => [],
     validations => [],
@@ -86,7 +86,7 @@ has_field country2 => (
     multiple => 0,
     choices  => [
         c( EU => [ [ Germany => 'de' ], [ England => 'en' ] ] ),
-        c( Asia => [ [ Chaina => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ),
+        c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ),
     ],
     filters     => [],
     validations => [],
@@ -101,7 +101,7 @@ has_field country3 => (
     multiple => 1,
     choices  => [
         c( EU => [ [ Germany => 'de' ], [ England => 'en' ] ] ),
-        c( Asia => [ [ Chaina => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ),
+        c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ),
     ],
     filters     => [],
     validations => [],
