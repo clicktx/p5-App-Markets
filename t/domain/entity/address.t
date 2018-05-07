@@ -4,8 +4,8 @@ use Test::More;
 use_ok 'Yetie::Domain::Entity::Address';
 
 my $addrs = [
-    [qw(id line1 line2 level1 level2 postal_code personal_name company_name phone fax mobile)],
-    [ 1, '42 Pendergast St.', '', 'SC', 'Piedmont', '29673', 'Claire Underwood', '', '123-4567', '', '' ],
+    [qw(id country_code line1 line2 level1 level2 postal_code personal_name company_name phone fax mobile)],
+    [ 1, 'US', '42 Pendergast St.', '', 'SC', 'Piedmont', '29673', 'Claire Underwood', '', '123-4567', '', '' ],
 ];
 my $cols = shift @{$addrs};
 my $addr = shift @{$addrs};
