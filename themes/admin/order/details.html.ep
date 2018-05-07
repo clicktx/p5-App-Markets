@@ -14,9 +14,7 @@
         <%= link_to 'RN_admin_order_edit_billing_address' => begin %>
             Edit
         <% end %>
-        <ul>
-            <li>Line1: <%= $order->billing_address->line1 %></li>
-        </ul>
+        <%= include 'admin/order/detail/address', address => $order->billing_address %>
     <% end =%>
 </div>
 <div class="">
@@ -25,9 +23,7 @@
         <%= link_to 'RN_admin_order_edit_shipping_address' => begin %>
             Edit
         <% end %>
-        <ul>
-            <li>Line1: <%= $order->shipping_address->line1 %></li>
-        </ul>
+        <%= include 'admin/order/detail/address', address => $order->shipping_address %>
     <% end =%>
 </div>
 <div class="">
