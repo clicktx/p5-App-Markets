@@ -22,6 +22,31 @@ has collate_fields => sub {
         jp => [qw(personal_name company_name postal_code level1 level2 line1 line2 phone fax mobile)],
     };
 };
+has locale_notation => sub {
+    my $self = shift;
+
+    my $country_name = {
+        us => 'United States',
+        jp => 'Japan',
+    };
+    my $country = $country_name->{ $self->country_code };
+
+    my @contacts = ( "TEL: " . $self->phone );
+    push @contacts, "FAX: " . $self->fax       if $self->fax;
+    push @contacts, "MOBILE: " . $self->mobile if $self->mobile;
+
+    return {
+        us => [
+            $self->personal_name, $self->company_name, $self->line2, $self->line1,
+            [ $self->level2, ", ", $self->level1, " ", $self->postal_code ],
+            $country, @contacts
+        ],
+        jp => [
+            $self->postal_code, $self->level1 . $self->level2 . $self->line1,
+            $self->line2, $self->company_name, $self->personal_name, $country, @contacts
+        ],
+    };
+};
 
 sub fields {
     my $self = shift;
@@ -37,6 +62,13 @@ sub hash_code {
       line1 line2 postal_code personal_name company_name
     );
     $self->SUPER::hash_code($bytes);
+}
+
+sub notation {
+    my $self = shift;
+
+    my $country_code = $self->country_code;
+    $self->locale_notation->{$country_code} || $self->locale_notation->{us};
 }
 
 sub to_data {
@@ -80,6 +112,12 @@ Get form field names.
 Return Array refference.
 
 Default region "us".
+
+=head2 C<notation>
+
+    my $notation = $e->notation;
+
+Acquire notation method of address.
 
 =head1 AUTHOR
 
