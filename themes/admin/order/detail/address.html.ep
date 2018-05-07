@@ -1,7 +1,7 @@
 <dl class="address">
     <dt><%= $address->type %></dt>
-% my $notation = stash('notation')->{$address->type};
-% foreach my $row ( @${notation} ) {
+% my $notation = $address->notation;
+% foreach my $row ( @{$notation} ) {
     % next unless $row;
     % my $content;
     % if ( ref $row ){ $content .= $_ for @{$row} }
