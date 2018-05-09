@@ -16,7 +16,7 @@ has fax           => '';
 has mobile        => '';
 
 has type           => '';
-has collate_fields => sub {
+has locale_collate_fields => sub {
     {
         us => [qw(country_code personal_name company_name line1 line2 level2 level1 postal_code phone fax mobile)],
         jp => [qw(country_code personal_name company_name postal_code level1 level2 line1 line2 phone fax mobile)],
@@ -51,7 +51,7 @@ has locale_notation => sub {
 sub fields {
     my $self = shift;
     my $region = shift || 'us';
-    $self->collate_fields->{$region} || $self->collate_fields->{us};
+    $self->locale_collate_fields->{$region} || $self->locale_collate_fields->{us};
 }
 
 sub hash_code {
