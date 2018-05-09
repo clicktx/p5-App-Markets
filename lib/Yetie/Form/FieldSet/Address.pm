@@ -2,6 +2,21 @@ package Yetie::Form::FieldSet::Address;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
+has_field 'country_code' => (
+    label       => 'Country',
+    type        => 'choice',
+    filters     => [qw(trim)],
+    validations => [],
+    expanded    => 0,
+    multiple    => 0,
+    choices     => [
+        c( Americas       => [ [ Canada  => 'ca' ], [ 'United States' => 'us' ] ] ),
+        c( 'Asia Pacific' => [ [ China   => 'cn' ], [ Japan           => 'jp' ] ] ),
+        c( EU             => [ [ England => 'en' ], [ Germany         => 'de' ] ] ),
+        c( Africa         => [ [ Nigeria => 'ng' ], [ 'South Africa'  => 'za' ] ] ),
+    ],
+);
+
 has_field 'line1' => (
     label        => 'Address Line1',
     autocomplete => 'address-line1',
