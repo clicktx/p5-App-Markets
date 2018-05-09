@@ -58,7 +58,7 @@ sub hash_code {
     my $self = shift;
 
     my @attrs = qw(country_code line1 line2 postal_code personal_name company_name);
-    my $str;
+    my $str = '';
     foreach my $attr (@attrs) {
         my $w = encode( 'UTF-8', $self->$attr ) || '';
         $str .= "::$w" if $w;
