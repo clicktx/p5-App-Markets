@@ -85,10 +85,13 @@ subtest 'form_label' => sub {
     my $dom = Mojo::DOM->new( $c->form_label('test#email') );
     is_deeply $dom->at('*')->attr, { for => 'form-widget-email' }, 'right attr';
     is $dom->at('*')->text, 'E-mail', 'right text';
-    is $dom->at('*')->children->first->tag, 'span', 'right required mark';
+    is $dom->at('*')->children->first, undef, 'right required';
 
     $dom = Mojo::DOM->new( $c->form_label( 'test#email', class => 'my-label-class' ) );
     is $dom->at('*')->attr->{class}, 'my-label-class', 'right add class';
+
+    $dom = Mojo::DOM->new( $c->form_label('test#nickname') );
+    is $dom->at('*')->children->first->tag, 'span', 'right optional';
 };
 
 subtest 'form_widget' => sub {

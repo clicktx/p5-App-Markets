@@ -23,6 +23,12 @@ has_field name => (
     # validations => [],
 );
 
+has_field nickname => (
+    type     => 'text',
+    required => 0,
+    label    => 'nickname',
+);
+
 has_field address => (
     type        => 'text',
     required    => 1,
@@ -65,13 +71,9 @@ has_field 'item.[].name' => (
     validations => [],
 );
 
-has_field 'billing.line1' => (
-    type     => 'text',
-);
+has_field 'billing.line1' => ( type => 'text', );
 
-has_field 'billing.line2' => (
-    type     => 'text',
-);
+has_field 'billing.line2' => ( type => 'text', );
 
 has_field 'burgers.[].name' => (
     type     => 'text',
