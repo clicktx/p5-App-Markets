@@ -16,13 +16,13 @@ has phone         => '';
 has fax           => '';
 has mobile        => '';
 
-has locale_collate_fields => sub {
+has _locale_collate_fields => sub {
     {
         us => [qw(country_code personal_name company_name line1 line2 level2 level1 postal_code phone fax mobile)],
         jp => [qw(country_code personal_name company_name postal_code level1 level2 line1 line2 phone fax mobile)],
     };
 };
-has locale_notation => sub {
+has _locale_notation => sub {
     my $self = shift;
 
     my $country_name = {
@@ -51,14 +51,14 @@ has locale_notation => sub {
 sub fields {
     my $self = shift;
     my $region = shift || 'us';
-    $self->locale_collate_fields->{$region} || $self->locale_collate_fields->{us};
+    $self->_locale_collate_fields->{$region} || $self->_locale_collate_fields->{us};
 }
 
 sub hash_code {
     my $self = shift;
 
     my @attrs = qw(country_code line1 line2 postal_code personal_name company_name);
-    my $str = '';
+    my $str   = '';
     foreach my $attr (@attrs) {
         my $w = encode( 'UTF-8', $self->$attr ) || '';
         $str .= "::$w" if $w;
@@ -70,7 +70,7 @@ sub notation {
     my $self = shift;
 
     my $country_code = $self->country_code;
-    $self->locale_notation->{$country_code} || $self->locale_notation->{us};
+    $self->_locale_notation->{$country_code} || $self->_locale_notation->{us};
 }
 
 sub to_data {
