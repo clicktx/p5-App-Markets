@@ -24,8 +24,8 @@ subtest 'method find_by_id()' => sub {
 };
 
 subtest 'method find_by_email()' => sub {
-    my $res = $rs->find_by_email('c@x.org');
-
+    my $res = $rs->find_by_email('c@example.org');
+use DDP;p $res;
     is $res->id, 111, 'right id';
     cmp_deeply $res->{related_resultsets},
       {
@@ -34,7 +34,7 @@ subtest 'method find_by_email()' => sub {
       },
       'right related_resultsets';
 
-    $res = $rs->find_by_email('g@x.org');
+    $res = $rs->find_by_email('g@example.org');
     isnt $res->id, 111, 'right other customer';
 
     $res = $rs->find_by_email('xx@xx.org');
@@ -42,7 +42,7 @@ subtest 'method find_by_email()' => sub {
 };
 
 subtest 'method get_id_by_email' => sub {
-    my $customer_id = $rs->get_id_by_email('c@x.org');
+    my $customer_id = $rs->get_id_by_email('c@example.org');
     is $customer_id, 111, 'right get id';
 
     $customer_id = $rs->get_id_by_email('xx@xx.org');
@@ -58,7 +58,7 @@ subtest 'method search_by_id()' => sub {
 };
 
 subtest 'method search_by_email()' => sub {
-    my @res = $rs->search_by_email('c@x.org');
+    my @res = $rs->search_by_email('c@example.org');
     is @res, 1, 'right search by email';
 
     @res = $rs->search_by_email('xx@xx.org');
