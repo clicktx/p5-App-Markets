@@ -36,10 +36,10 @@ sub _edit_address {
     my $form = $self->_init_form( $args->{address_type} );
 
     # GET Request
-    return $self->render() if $self->req->method eq 'GET';
+    return $self->render('admin/order/edit/address') if $self->req->method eq 'GET';
 
     # update address
-    return $self->render() unless $form->do_validate;
+    return $self->render('admin/order/edit/address') unless $form->do_validate;
 
     return $self->redirect_to( 'RN_admin_order_details', order_id => $order_id );
 }

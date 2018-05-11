@@ -1,11 +1,12 @@
 <% extends 'admin/order/edit/base'; =%>
-<% content shipping_address => begin =%>
+<% my $action = stash('action'); =%>
+<% content $action => begin =%>
     <%= form_for '' => ( method => 'POST' ) => begin %>
+        <% form $action; =%>
         <%= csrf_field %>
-        <% form 'shipping_address'; %>
         <%= include 'admin/form/fields', field_names => stash('field_names') %>
         <div class="">
-            <%= submit_button 'Save Shipping Address' %>
+            <%= submit_button __("save.$action") %>
         </div>
-    <% end %>
+    <% end =%>
 <% end =%>
