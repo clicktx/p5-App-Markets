@@ -41,4 +41,9 @@ subtest 'field_names' => sub {
     isa_ok $address->field_names('no_country_code'), 'ARRAY', 'right field names';
 };
 
+subtest 'notation' => sub {
+    my $address = Yetie::Domain::Entity::Address->new($data);
+    isa_ok $address->notation('no_country_code'), 'ARRAY', 'right address notation';
+};
+
 done_testing();
