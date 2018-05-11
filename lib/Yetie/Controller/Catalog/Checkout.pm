@@ -20,15 +20,12 @@ sub address {
     return $self->render() unless $form->do_validate;
 
     # Update Cart
-    my @attrs = qw(
-      line1 line2 level1 level2 postal_code
-      personal_name company_name phone fax mobile
-    );
+    my $address_fields = $self->cart->billing_address->field_names;
 
     # billing address
-    foreach my $attr (@attrs) {
-        my $value = $form->param("billing_address.$attr");
-        $self->cart->billing_address->$attr($value);
+    foreach my $field ( @{$address_fields} ) {
+        my $value = $form->param("billing_address.$field");
+        $self->cart->billing_address->$field($value);
     }
 
     # shipping address
@@ -37,9 +34,9 @@ sub address {
         sub {
             my ( $shipment, $i ) = ( shift, shift );
             $i--;
-            foreach my $attr (@attrs) {
-                my $value = $form->param("shipments.$i.shipping_address.$attr");
-                $shipment->shipping_address->$attr($value);
+            foreach my $field ( @{$address_fields} ) {
+                my $value = $form->param("shipments.$i.shipping_address.$field");
+                $shipment->shipping_address->$field($value);
             }
         }
     );
