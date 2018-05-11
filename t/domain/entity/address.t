@@ -36,9 +36,9 @@ subtest 'hash_code' => sub {
     is $address->hash_code, 'b06e0458490e1dce77594138b31eabffc71944c8', 'right multibyte characters';
 };
 
-subtest 'fields' => sub {
+subtest 'field_names' => sub {
     my $address = Yetie::Domain::Entity::Address->new($data);
-    isa_ok $address->fields('no_country_code'), 'ARRAY', 'right not found country';
+    isa_ok $address->field_names('no_country_code'), 'ARRAY', 'right field names';
 };
 
 done_testing();

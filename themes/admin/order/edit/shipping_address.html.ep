@@ -3,7 +3,7 @@
     <%= form_for '' => ( method => 'POST' ) => begin %>
         <%= csrf_field %>
         <% form 'shipping_address'; %>
-        <%= include 'admin/form/fields', fields => stash('fields') %>
+        <%= include 'admin/form/fields', field_names => stash('field_names') %>
         <div class="">
             <%= submit_button 'Save Shipping Address' %>
         </div>

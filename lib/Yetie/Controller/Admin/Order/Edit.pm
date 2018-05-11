@@ -52,13 +52,13 @@ sub _init_form {
     my $order  = $self->stash('entity');
 
     # Set form default value
-    my $fields = $order->$address_type->fields($region);
-    my $params = $self->req->params;
-    $params->append( "$address_type.$_" => $order->$address_type->$_ ) for @{$fields};
+    my $field_names = $order->$address_type->field_names($region);
+    my $params      = $self->req->params;
+    $params->append( "$address_type.$_" => $order->$address_type->$_ ) for @{$field_names};
 
     # Collate field keys
-    my @field_keys = map { "$address_type.$_" } @{$fields};
-    $self->stash( fields => \@field_keys );
+    my @field_keys = map { "$address_type.$_" } @{$field_names};
+    $self->stash( field_names => \@field_keys );
 
     return $form;
 }

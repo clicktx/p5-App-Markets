@@ -16,7 +16,7 @@ has phone         => '';
 has fax           => '';
 has mobile        => '';
 
-has _locale_collate_fields => sub {
+has _locale_field_names => sub {
     {
         us => [qw(country_code personal_name company_name line1 line2 level2 level1 postal_code phone fax mobile)],
         jp => [qw(country_code personal_name company_name postal_code level1 level2 line1 line2 phone fax mobile)],
@@ -48,10 +48,10 @@ has _locale_notation => sub {
     };
 };
 
-sub fields {
+sub field_names {
     my $self = shift;
     my $region = shift || 'us';
-    $self->_locale_collate_fields->{$region} || $self->_locale_collate_fields->{us};
+    $self->_locale_field_names->{$region} || $self->_locale_field_names->{us};
 }
 
 sub hash_code {
@@ -102,14 +102,14 @@ the following new ones.
 L<Yetie::Domain::Entity::Address> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<fields>
+=head2 C<field_names>
 
 Get form field names.
 
-    my $fields = $e->fields($region);
+    my $field_names = $e->field_names($region);
 
     # Country Japan
-    my $fields = $e->fields('jp');
+    my $field_names = $e->field_names('jp');
 
 Return Array refference.
 

@@ -1,6 +1,6 @@
 % my $field_block = begin
-    % my $field = shift;
-    % my $target = '#' . $field;
+    % my $name = shift;
+    % my $target = '#' . $name;
     <div class="">
         %= form_field $target
         %= form_label
@@ -9,6 +9,6 @@
         %= form_error
     </div>
 % end
-% foreach ( @{$fields} ){
+% foreach ( @{$field_names} ){
     <%= $field_block->($_) =%>
 % }
