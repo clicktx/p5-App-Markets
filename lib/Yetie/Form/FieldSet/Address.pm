@@ -2,6 +2,13 @@ package Yetie::Form::FieldSet::Address;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
+has_field 'id' => (
+    type        => 'hidden',
+    required     => 0,
+    filters     => [qw(trim)],
+    validations => [qw(int)],
+);
+
 has_field 'country_code' => (
     label       => 'Country',
     type        => 'choice',

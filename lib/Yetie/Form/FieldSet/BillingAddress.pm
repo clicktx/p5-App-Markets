@@ -3,6 +3,8 @@ use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
 my $address = fieldset('address');
+has_field 'billing_address.id' => $address->field_info('id');
+
 has_field 'billing_address.country_code' => (
     $address->field_info('country_code'),
     autocomplete => 'off',
