@@ -2,20 +2,10 @@ package Yetie::Domain::Entity::Address;
 use Yetie::Domain::Entity;
 use Mojo::Util qw(encode);
 
-has type          => '';
-has hash          => '';
-has country_code  => '';
-has line1         => '';
-has line2         => '';
-has level1        => '';
-has level2        => '';
-has postal_code   => '';
-has personal_name => '';
-has company_name  => '';
-has phone         => '';
-has fax           => '';
-has mobile        => '';
+my $attrs = [qw(hash country_code line1 line2 level1 level2 postal_code personal_name company_name phone fax mobile)];
 
+has $attrs;
+has type => '';
 has _locale_field_names => sub {
     {
         us => [qw(country_code personal_name company_name line1 line2 level2 level1 postal_code phone fax mobile)],
@@ -75,7 +65,8 @@ sub notation {
 
 sub to_data {
     my $self = shift;
-    my $data = $self->SUPER::to_hash;
+    my $data = {};
+    $data->{$_} = $self->$_ // '' for @{$attrs};
 
     $data->{hash} = $self->hash_code;
     return $data;
