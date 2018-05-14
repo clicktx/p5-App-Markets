@@ -20,6 +20,9 @@ my $test_data = {
                 postal_code   => '',
                 personal_name => '',
                 company_name  => '',
+                phone         => '',
+                fax           => '',
+                mobile        => '',
             },
             items => [ { product_id => 4, quantity => 4, price => 100 } ]
         },
@@ -33,6 +36,9 @@ my $test_data = {
                 postal_code   => '',
                 personal_name => '',
                 company_name  => '',
+                phone         => '',
+                fax           => '',
+                mobile        => '',
             },
             items => [
                 { product_id => 4, quantity => 4, price => 100 },
@@ -50,6 +56,9 @@ my $test_data = {
         postal_code   => '',
         personal_name => '',
         company_name  => '',
+        phone         => '',
+        fax           => '',
+        mobile        => '',
     },
 };
 
@@ -246,6 +255,9 @@ subtest 'merge' => sub {
                     line1        => '',
                     line2        => '',
                     postal_code  => '',
+                    phone        => '',
+                    fax          => '',
+                    mobile       => '',
                 },
                 items => []
             }
@@ -266,13 +278,38 @@ subtest 'merge' => sub {
     my $cart_data = $cart->to_data;
     cmp_deeply $cart_data, $d, 'right non-destructive';
 
-    $d                                               = $stored_data;
-    $d->{cart_id}                                    = '99999';
-    $d->{billing_address}->{hash}                    = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
-    $d->{shipments}->[0]->{shipping_address}->{hash} = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
+    $d                    = $stored_data;
+    $d->{cart_id}         = '99999';
+    $d->{billing_address} = {
+        hash          => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+        country_code  => '',
+        level1        => '',
+        level2        => '',
+        line1         => '',
+        line2         => '',
+        postal_code   => '',
+        personal_name => '',
+        company_name  => '',
+        phone         => '',
+        fax           => '',
+        mobile        => '',
+    };
+    $d->{shipments}->[0]->{shipping_address} = {
+        hash          => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+        country_code  => '',
+        level1        => '',
+        level2        => '',
+        line1         => '',
+        line2         => '',
+        postal_code   => '',
+        personal_name => '',
+        company_name  => '',
+        phone         => '',
+        fax           => '',
+        mobile        => '',
+    };
     my $stored_cart_data = $stored_cart->to_data;
     cmp_deeply $stored_cart_data, $d, 'right stored';
-
     my $merged_cart      = $cart->merge($stored_cart);
     my $merged_cart_data = $merged_cart->to_data;
 

@@ -46,4 +46,24 @@ subtest 'notation' => sub {
     isa_ok $address->notation('no_country_code'), 'ARRAY', 'right address notation';
 };
 
+subtest 'to_data' => sub {
+    my $address = Yetie::Domain::Entity::Address->new($data);
+    is_deeply $address->to_data,
+      {
+        hash          => '915bbeaf59f081ea4aa03ccb7c9c7c4edef08e36',
+        country_code  => 'us',
+        line1         => '42 Pendergast St.',
+        line2         => '',
+        level1        => 'SC',
+        level2        => 'Piedmont',
+        postal_code   => '29673',
+        personal_name => 'Claire Underwood',
+        company_name  => '',
+        phone         => '123-4567',
+        fax           => '',
+        mobile        => '',
+      },
+      'right dump data';
+};
+
 done_testing();
