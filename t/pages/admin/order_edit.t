@@ -1,4 +1,4 @@
-package t::pages::admin::order;
+package t::pages::admin::order_edit;
 
 use Mojo::Base 't::pages::common';
 use t::Util;
