@@ -198,6 +198,7 @@ sub _error {
 
 sub _help {
     my ( $c, $help ) = @_;
+    return unless defined $help;
 
     my $text = ref $help ? $help->($c) : $c->__($help);
     return $c->tag( 'span', class => $help_class, sub { $text } );
