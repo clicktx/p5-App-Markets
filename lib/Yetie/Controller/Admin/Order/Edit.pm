@@ -38,8 +38,16 @@ sub _edit_address {
     # GET Request
     return $self->render('admin/order/edit/address') if $self->req->method eq 'GET';
 
-    # update address
+    # Validation form
     return $self->render('admin/order/edit/address') unless $form->do_validate;
+
+    # Update address
+    my $address_type = $self->stash('action');
+    my $address      = $self->factory('address')->create( $form->param($address_type) );
+
+    # FIXME: hashが同じaddressにする場合の処理が必要
+    # my $schema       = $self->schema->resultset('address')->find( { hash => $address->hash_code } );
+    $self->schema->resultset('address')->search( { id => $address->id } )->update( $address->to_data );
 
     return $self->redirect_to( 'RN_admin_order_details', order_id => $order_id );
 }
