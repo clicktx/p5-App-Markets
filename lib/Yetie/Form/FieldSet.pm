@@ -190,6 +190,8 @@ Import all fields.
 
 =head1 SCHEMA
 
+FieldSet schema examples.
+
     package Yetie::Form::FieldSet::Example;
     use Mojo::Base -strict;
     use Yetie::Form::FieldSet;
@@ -232,6 +234,14 @@ Import all fields.
             equal_to => 'The passwords you entered do not much.',
         },
     );
+
+List or Hash field.
+
+    # item.0.id, item.1.id and more
+    has_field 'item.[].id' => ( ... );
+
+    # order.#123.name, order.#456.name and more
+    has_field 'order.{}.name' => ( ... );
 
 Inherit Yetie::Form::FieldSet::Example class
 
