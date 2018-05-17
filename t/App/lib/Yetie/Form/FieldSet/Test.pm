@@ -56,6 +56,14 @@ has_field luky_number => (
     choices     => [qw(1 2 3 4 5 6 7 8 9)],
 );
 
+has_field 'order.{}.name' => (
+    type        => 'text',
+    label       => 'Order name',
+    required    => 1,
+    filters     => [],
+    validations => [],
+);
+
 has_field 'item.[].id' => (
     type        => 'text',
     label       => 'Item ',

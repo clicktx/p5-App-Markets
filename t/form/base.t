@@ -313,6 +313,7 @@ subtest 'do_validate' => sub {
             'favorite_color[]' => 'red',
             'luky_number[]'    => 2,
             'luky_number[]'    => 3,
+            'order.{}.name'    => 'foo',
             'item.0.id'        => 11,
             'item.1.id'        => 22,
             'item.2.id'        => 33,
