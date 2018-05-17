@@ -327,7 +327,7 @@ Rendering HTML form widget(field or fields).
 
     my $scope = $form->scope_param('user');
 
-Return hash refference.
+Return array refference.
 The parameter is a validated values.
 
 NOTE: This method should be called after the L</do_validate> method.
