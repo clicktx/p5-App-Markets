@@ -28,7 +28,7 @@
 </div>
 <div class="">
     <h3>Items Ordered</h3>
-    <%= content items_orderd => begin =%>
+    <%= content items_ordered => begin =%>
         <%= link_to 'RN_admin_order_edit_items' => begin %>
             Edit
         <% end %>
