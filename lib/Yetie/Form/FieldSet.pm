@@ -125,7 +125,7 @@ sub _get_data {
 
 sub _replace_key {
     my ( $self, $arg ) = @_;
-    $arg =~ s/\.\d/.[]/g;
+    $arg =~ s/\.\d+/.[]/g;
     return $arg;
 }
 

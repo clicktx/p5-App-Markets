@@ -184,12 +184,12 @@ subtest 'parameters' => sub {
         my $f = Yetie::Form::Base->new( 'test', controller => $c );
         $c->req->params->pairs(
             [
-                'item.0.id'     => 11,
-                'item.1.id'     => 22,
-                'item.2.id'     => 33,
+                'item.0.id'     => 1,
+                'item.1.id'     => 2,
+                'item.10.id'    => 11,
                 'item.0.name'   => 'aa',
                 'item.1.name'   => 'bb',
-                'item.2.name'   => 'cc',
+                'item.10.name'  => 'kk',
                 'billing.line1' => 'foo',
                 'billing.line2' => 'bar',
             ]
@@ -198,16 +198,17 @@ subtest 'parameters' => sub {
         is_deeply $f->scope_param('item'),
           [
             {
-                id   => 11,
+                id   => 1,
                 name => 'aa',
             },
             {
-                id   => 22,
+                id   => 2,
                 name => 'bb',
             },
+            '', '', '', '', '', '', '', '',
             {
-                id   => 33,
-                name => 'cc',
+                id   => 11,
+                name => 'kk',
             },
           ],
           'right scope params';
