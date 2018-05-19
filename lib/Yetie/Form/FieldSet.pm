@@ -125,6 +125,12 @@ sub _get_data {
 
 sub _replace_key {
     my ( $self, $arg ) = @_;
+
+    # e.g. "foo.#123.bar" to "foo.{}.bar"
+    # e.g. "foo.#a_b_c_123.bar" to "foo.{}.bar"
+    $arg =~ s/\.#\w+\./.{}./g;
+
+    # e.g. "foo.123.bar" to "foo.[].bar"
     $arg =~ s/\.\d+/.[]/g;
     return $arg;
 }
@@ -240,7 +246,7 @@ List or Hash field.
     # item.0.id, item.1.id and more
     has_field 'item.[].id' => ( ... );
 
-    # order.#123.name, order.#456.name and more
+    # order.#123.name, order.#abc.name, order.#1_a_2_b.name and more
     has_field 'order.{}.name' => ( ... );
 
 Inherit Yetie::Form::FieldSet::Example class
