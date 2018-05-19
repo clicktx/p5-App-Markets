@@ -30,8 +30,9 @@ sub do_validate {
         # multiple field: eg. parameter_name = "favorite_color[]"
         $field_key .= '[]' if $fieldset->schema($field_key)->{multiple};
 
-        # expanding field: e.g. field_key = "user.[].id" parameter_name = "user.0.id"
-        if ( $field_key =~ m/\.\[\]/ ) {
+        # NOTE: expanding field
+        # e.g. field_key = "user.[].id" expanding to parameter_name = "user.0.id"
+        if ( $field_key =~ m/\.\[\]|\.{}/ ) {
             my @match = grep { my $name = $fieldset->_replace_key($_); $field_key eq $name } @{$names};
             foreach my $key (@match) {
                 $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
