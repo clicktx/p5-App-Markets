@@ -1,4 +1,4 @@
-package Yetie::Form::FieldSet::Address;
+package Yetie::Form::FieldSet::Base::Address;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 

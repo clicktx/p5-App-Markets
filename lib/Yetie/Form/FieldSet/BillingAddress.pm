@@ -2,7 +2,7 @@ package Yetie::Form::FieldSet::BillingAddress;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
-my $address = fieldset('address');
+my $address = fieldset('base-address');
 has_field 'billing_address.id' => $address->field_info('id');
 
 has_field 'billing_address.country_code' => (

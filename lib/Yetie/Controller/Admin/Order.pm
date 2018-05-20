@@ -77,7 +77,7 @@ sub edit {
     my $order = $self->_find_order;
     return $self->reply->not_found if $order->is_empty;
 
-    my $form = $self->form('address');
+    my $form = $self->form('base-address');
 
     # $self->form_default_value( $form, $entity );
     $form->field($_)->default_value( $order->billing_address->$_ ) for qw(line1);
