@@ -1,11 +1,11 @@
 package Yetie::Form::FieldSet::Admin::Order::Edit::Item;
 use Mojo::Base -strict;
-use Yetie::Form::FieldSet::Base::Product;
+use Yetie::Form::FieldSet;
 
-my $base_class = 'Yetie::Form::FieldSet::Base::Product';
+my $product = fieldset('base-product');
 
-has_field 'item.{}.price' => $base_class->field_info('price');
+has_field 'item.{}.price' => $product->field_info('price');
 
-has_field 'item.{}.quantity' => $base_class->field_info('quantity');
+has_field 'item.{}.quantity' => $product->field_info('quantity');
 
 1;

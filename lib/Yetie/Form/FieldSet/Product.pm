@@ -1,11 +1,11 @@
 package Yetie::Form::FieldSet::Product;
 use Mojo::Base -strict;
-use Yetie::Form::FieldSet::Base::Product;
+use Yetie::Form::FieldSet;
 
-my $base_class = 'Yetie::Form::FieldSet::Base::Product';
+my $product = fieldset('base-product');
 
-has_field 'product_id' => $base_class->field_info('product_id');
+has_field 'product_id' => $product->field_info('product_id');
 
-has_field 'quantity' => $base_class->field_info('quantity');
+has_field 'quantity' => $product->field_info('quantity');
 
 1;
