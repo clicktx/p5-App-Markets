@@ -1,0 +1,52 @@
+<% extends 'admin/order/edit/base'; =%>
+<% my $action = stash('action'); =%>
+<% my $order = stash('entity'); =%>
+<% content 'items_ordered' => begin =%>
+    <%= form_for '' => ( method => 'POST' ) => begin %>
+        <%= csrf_field %>
+        <table>
+            <tr>
+                <th class="">ID</th>
+                <th class="">Product</th>
+                <th class="">Price</th>
+                <th class="">Qty</th>
+                <th class="">Subtotal</th>
+                <th class="">Discount</th>
+                <th class="">Row Subtotal</th>
+                <th class="">Action</th>
+            </tr>
+        % $order->items->each( sub {
+            <% my ( $item, $i ) = ( shift, shift ); =%>
+            <% my $item_id = $item->id; =%>
+            <tr>
+                <td class="">
+                    <div class="">
+                        ID:<%= $item_id %>
+                    </div>
+                    <div class="">
+                        ProductID:<%= $item->product_id %>
+                    </div>
+                </td>
+                <td class=""><%= $item->product_title %></td>
+                <td class="">
+                    <%= form_field "item.*$item_id.price" =%>
+                    <%= form_widget value => $item->price %>
+                    <%= form_error %>
+                </td>
+                <td class="">
+                    <%= form_field "item.*$item_id.quantity" =%>
+                    <%= form_widget value => $item->quantity %>
+                    <%= form_error %>
+                </td>
+                <td class=""><%= $item->subtotal %></td>
+                <td class="">a</td>
+                <td class="">b</td>
+                <td class="">c</td>
+            </tr>
+        % });
+        </table>
+        <div class="">
+            <%= submit_button __("save.items_ordered") %>
+        </div>
+    <% end =%>
+<% end =%>

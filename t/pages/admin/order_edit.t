@@ -23,4 +23,12 @@ sub t02_shipping_address : Tests() {
     $t->get_ok('/admin/order/999/edit/shipping_address')->status_is(404);
 }
 
+sub t03_items_orderd : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $t->get_ok('/admin/order/1/edit/items')->status_is(200);
+    $t->get_ok('/admin/order/999/edit/items')->status_is(404);
+}
+
 __PACKAGE__->runtests;

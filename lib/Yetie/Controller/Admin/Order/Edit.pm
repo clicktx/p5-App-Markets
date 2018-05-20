@@ -1,6 +1,34 @@
 package Yetie::Controller::Admin::Order::Edit;
 use Mojo::Base 'Yetie::Controller::Admin';
 
+sub items {
+    my $self = shift;
+
+    my $order_id = $self->stash('id');
+    my $order    = $self->service('order')->find_order($order_id);
+    $order->page_title( $order->page_title . '/' . 'Edit Items' );
+    $self->stash( entity => $order );
+    return $self->reply->not_found if $order->is_empty;
+
+    my $form = $self->form('admin-order-edit-item');
+
+    # GET Request
+    return $self->render() if $self->req->method eq 'GET';
+
+    # Validation form
+    return $self->render() unless $form->do_validate;
+
+    # Update
+    my $params = $form->param('item');
+    foreach my $key ( keys %{$params} ) {
+        my $id = $key;
+        $id =~ s/\*//g;
+        my $values = $params->{$key};
+        $self->resultset('sales-order-item')->search( { id => $id } )->update($values);
+    }
+    $self->render();
+}
+
 # NOTE: Catalog::Checkoutに関連する実装がある。
 # また、管理者注文も考慮する必要がある。
 sub billing_address {
