@@ -59,6 +59,7 @@ sub test_04_address_post : Tests() {
 
     my $post_data = {
         csrf_token                           => $self->csrf_token,
+        'billing_address.country_code'       => 'jp',
         'billing_address.personal_name'      => 'ken',
         'billing_address.line1'              => 'foo 2325',
         'billing_address.level2'             => 'bar',
@@ -75,6 +76,7 @@ sub test_04_address_post : Tests() {
     $self->server_session->load( $self->sid );
 
     my $cart = $self->server_session->cart;
+    is $cart->data('billing_address')->{country_code},  'jp',        'right country code';
     is $cart->data('billing_address')->{personal_name}, 'ken',       'right personal name';
     is $cart->data('billing_address')->{line1},         'foo 2325',  'right line1';
     is $cart->data('billing_address')->{level2},        'bar',       'right level2';
@@ -125,6 +127,7 @@ sub test_20_complete : Tests() {
     # Entity order objectを使うとか
     my $last_order =
       $self->app->schema->resultset('Sales')->search( {}, { order_by => { -desc => 'id' } } )->first;
+    is $last_order->billing_address->country_code,  'jp',        'right billing address country_code';
     is $last_order->billing_address->personal_name, 'ken',       'right billing address personal name';
     is $last_order->billing_address->line1,         'foo 2325',  'right billing address line1';
     is $last_order->billing_address->level2,        'bar',       'right billing address level2';

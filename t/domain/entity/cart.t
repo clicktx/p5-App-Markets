@@ -12,6 +12,7 @@ my $test_data = {
     shipments => [
         {
             shipping_address => {
+                country_code  => 'jp',
                 level1        => '',
                 level2        => '',
                 line1         => 'Tokyo',
@@ -19,11 +20,15 @@ my $test_data = {
                 postal_code   => '',
                 personal_name => '',
                 company_name  => '',
+                phone         => '',
+                fax           => '',
+                mobile        => '',
             },
             items => [ { product_id => 4, quantity => 4, price => 100 } ]
         },
         {
             shipping_address => {
+                country_code  => 'jp',
                 level1        => '',
                 level2        => '',
                 line1         => 'Osaka',
@@ -31,6 +36,9 @@ my $test_data = {
                 postal_code   => '',
                 personal_name => '',
                 company_name  => '',
+                phone         => '',
+                fax           => '',
+                mobile        => '',
             },
             items => [
                 { product_id => 4, quantity => 4, price => 100 },
@@ -40,6 +48,7 @@ my $test_data = {
         },
     ],
     billing_address => {
+        country_code  => 'jp',
         level1        => '',
         level2        => '',
         line1         => 'Gunma',
@@ -47,6 +56,9 @@ my $test_data = {
         postal_code   => '',
         personal_name => '',
         company_name  => '',
+        phone         => '',
+        fax           => '',
+        mobile        => '',
     },
 };
 
@@ -85,9 +97,9 @@ subtest 'methods' => sub {
     my $cart      = _create_entity;
     my $cart_data = $cart->to_data;
     my $d         = $test_data;
-    $d->{billing_address}->{hash}                    = 'a82fa13bc1bbb9eae4602e4c9c7e4c7c4f6d319b';
-    $d->{shipments}->[0]->{shipping_address}->{hash} = '963dd210cc93a4597038ceabe0fe93b258a362b9';
-    $d->{shipments}->[1]->{shipping_address}->{hash} = 'bd88cc6c2baf90656affa4162b5346eee01cc4e7';
+    $d->{billing_address}->{hash}                    = 'c8de1c2faee672f7565587b9d8bb82ff3e662085';
+    $d->{shipments}->[0]->{shipping_address}->{hash} = 'de7102e9e35896e9fad60c6195315a81e80d34d3';
+    $d->{shipments}->[1]->{shipping_address}->{hash} = '59cec4d51c3e106dc04c8a40ae3c1ca652ef4d66';
     cmp_deeply $cart_data, { cart_id => ignore(), %{$d} }, 'right data structure';
     is $cart->id,               '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->total_item_count, 7,                                          'right total item count';
@@ -237,11 +249,15 @@ subtest 'merge' => sub {
         shipments => [
             {
                 shipping_address => {
-                    level1      => '',
-                    level2      => '',
-                    line1       => '',
-                    line2       => '',
-                    postal_code => '',
+                    country_code => '',
+                    level1       => '',
+                    level2       => '',
+                    line1        => '',
+                    line2        => '',
+                    postal_code  => '',
+                    phone        => '',
+                    fax          => '',
+                    mobile       => '',
                 },
                 items => []
             }
@@ -256,19 +272,44 @@ subtest 'merge' => sub {
 
     my $d = $test_data;
     $d->{cart_id}                                    = '12345';
-    $d->{billing_address}->{hash}                    = 'a82fa13bc1bbb9eae4602e4c9c7e4c7c4f6d319b';
-    $d->{shipments}->[0]->{shipping_address}->{hash} = '963dd210cc93a4597038ceabe0fe93b258a362b9';
-    $d->{shipments}->[1]->{shipping_address}->{hash} = 'bd88cc6c2baf90656affa4162b5346eee01cc4e7';
+    $d->{billing_address}->{hash}                    = 'c8de1c2faee672f7565587b9d8bb82ff3e662085';
+    $d->{shipments}->[0]->{shipping_address}->{hash} = 'de7102e9e35896e9fad60c6195315a81e80d34d3';
+    $d->{shipments}->[1]->{shipping_address}->{hash} = '59cec4d51c3e106dc04c8a40ae3c1ca652ef4d66';
     my $cart_data = $cart->to_data;
     cmp_deeply $cart_data, $d, 'right non-destructive';
 
-    $d                                               = $stored_data;
-    $d->{cart_id}                                    = '99999';
-    $d->{billing_address}->{hash}                    = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
-    $d->{shipments}->[0]->{shipping_address}->{hash} = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
+    $d                    = $stored_data;
+    $d->{cart_id}         = '99999';
+    $d->{billing_address} = {
+        hash          => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+        country_code  => '',
+        level1        => '',
+        level2        => '',
+        line1         => '',
+        line2         => '',
+        postal_code   => '',
+        personal_name => '',
+        company_name  => '',
+        phone         => '',
+        fax           => '',
+        mobile        => '',
+    };
+    $d->{shipments}->[0]->{shipping_address} = {
+        hash          => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+        country_code  => '',
+        level1        => '',
+        level2        => '',
+        line1         => '',
+        line2         => '',
+        postal_code   => '',
+        personal_name => '',
+        company_name  => '',
+        phone         => '',
+        fax           => '',
+        mobile        => '',
+    };
     my $stored_cart_data = $stored_cart->to_data;
     cmp_deeply $stored_cart_data, $d, 'right stored';
-
     my $merged_cart      = $cart->merge($stored_cart);
     my $merged_cart_data = $merged_cart->to_data;
 

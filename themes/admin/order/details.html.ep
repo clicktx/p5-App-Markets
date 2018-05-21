@@ -1,4 +1,4 @@
-<% my $order = stash('domain'); =%>
+<% my $order = stash('entity'); =%>
 <% extends 'admin/layouts/default', title => $order->page_title; =%>
 <div class="">
     <%= content content_header => begin =%>
@@ -14,25 +14,21 @@
         <%= link_to 'RN_admin_order_edit_billing_address' => begin %>
             Edit
         <% end %>
-        <ul>
-            <li>Line1: <%= $order->billing_address->line1 %></li>
-        </ul>
+        <%= include 'admin/order/detail/address', address => $order->billing_address %>
     <% end =%>
 </div>
 <div class="">
+    <h3>Shipping Address</h3>
     <%= content shipping_address => begin =%>
-        <h3>Shipping Address</h3>
         <%= link_to 'RN_admin_order_edit_shipping_address' => begin %>
             Edit
         <% end %>
-        <ul>
-            <li>Line1: <%= $order->shipping_address->line1 %></li>
-        </ul>
+        <%= include 'admin/order/detail/address', address => $order->shipping_address %>
     <% end =%>
 </div>
 <div class="">
-    <%= content items_orderd => begin =%>
-        <h3>Items Ordered</h3>
+    <h3>Items Ordered</h3>
+    <%= content items_ordered => begin =%>
         <%= link_to 'RN_admin_order_edit_items' => begin %>
             Edit
         <% end %>

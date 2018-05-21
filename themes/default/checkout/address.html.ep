@@ -21,6 +21,13 @@
     <div class="">
         Billing Address
         <div class="">
+            <%= form_field '#billing_address.country_code' %>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_help %>
+            <%= form_error %>
+        </div>
+        <div class="">
             <%= form_field '#billing_address.personal_name' %>
             <%= form_label %>
             <%= form_widget %>

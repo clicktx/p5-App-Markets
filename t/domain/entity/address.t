@@ -3,45 +3,67 @@ use Test::More;
 
 use_ok 'Yetie::Domain::Entity::Address';
 
-my $data = {
-    id            => 1,
-    line1         => '42 Pendergast St.',
-    line2         => '',
-    level1        => 'SC',
-    level2        => 'Piedmont',
-    postal_code   => '29673',
-    personal_name => 'Claire Underwood',
-    company_name  => '',
-    phone         => '123-4567',
-    fax           => '',
-    mobile        => '',
-};
+my $addrs = [
+    [qw(id country_code line1 line2 level1 level2 postal_code personal_name company_name phone fax mobile)],
+    [ 1, 'us', '42 Pendergast St.', '', 'SC', 'Piedmont', '29673', 'Claire Underwood', '', '123-4567', '', '' ],
+];
+my $cols = shift @{$addrs};
+my $addr = shift @{$addrs};
+my $data;
+$data->{$_} = shift @{$addr} for @{$cols};
 
 subtest 'basic' => sub {
     my $address = Yetie::Domain::Entity::Address->new( {} );
     isa_ok $address, 'Yetie::Domain::Entity';
 
-    can_ok $address, 'line1';
-    can_ok $address, 'line2';
-    can_ok $address, 'level1';
-    can_ok $address, 'level2';
-    can_ok $address, 'personal_name';
-    can_ok $address, 'company_name';
-    can_ok $address, 'phone';
-    can_ok $address, 'fax';
-    can_ok $address, 'mobile';
+    can_ok $address, qw(
+      country_code line1 line2 level1 level2 personal_name company_name phone fax mobile
+    );
 };
 
 subtest 'hash_code' => sub {
     my $address   = Yetie::Domain::Entity::Address->new($data);
     my $hash_code = $address->hash_code;
-    is $hash_code, '1e9f2a0d62fb60bb2cbdea2cb7ba55f98561a473', 'right hash code';
+    is $hash_code, '915bbeaf59f081ea4aa03ccb7c9c7c4edef08e36', 'right hash code';
 
     $address->phone('222-3333');
     is $address->hash_code, $hash_code, 'right change phone';
 
     $address->personal_name('foo');
     isnt $address->hash_code, $hash_code, 'right change personal_name';
+
+    $address->personal_name('ほげ');
+    is $address->hash_code, 'b06e0458490e1dce77594138b31eabffc71944c8', 'right multibyte characters';
+};
+
+subtest 'field_names' => sub {
+    my $address = Yetie::Domain::Entity::Address->new($data);
+    isa_ok $address->field_names('no_country_code'), 'ARRAY', 'right field names';
+};
+
+subtest 'notation' => sub {
+    my $address = Yetie::Domain::Entity::Address->new($data);
+    isa_ok $address->notation('no_country_code'), 'ARRAY', 'right address notation';
+};
+
+subtest 'to_data' => sub {
+    my $address = Yetie::Domain::Entity::Address->new($data);
+    is_deeply $address->to_data,
+      {
+        hash          => '915bbeaf59f081ea4aa03ccb7c9c7c4edef08e36',
+        country_code  => 'us',
+        line1         => '42 Pendergast St.',
+        line2         => '',
+        level1        => 'SC',
+        level2        => 'Piedmont',
+        postal_code   => '29673',
+        personal_name => 'Claire Underwood',
+        company_name  => '',
+        phone         => '123-4567',
+        fax           => '',
+        mobile        => '',
+      },
+      'right dump data';
 };
 
 done_testing();

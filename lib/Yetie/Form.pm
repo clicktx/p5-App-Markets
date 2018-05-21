@@ -27,11 +27,7 @@ sub _form {
     my ( $stash_key, $c, $name ) = @_;
     die 'Arguments empty.' unless $name;
 
-    # my $name = shift || $c->stash('controller') . '-' . $c->stash('action');
-    # $name = camelize($name) if $name =~ /^[a-z]/;
-
     $c->stash( $stash_key . '.topic' => $name );
-
     $c->stash( $stash_key => {} ) unless ref $c->stash($stash_key) eq 'HASH';
     my $form = $c->stash($stash_key)->{$name};
     if ( !$form ) {

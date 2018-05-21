@@ -30,8 +30,9 @@ sub do_validate {
         # multiple field: eg. parameter_name = "favorite_color[]"
         $field_key .= '[]' if $fieldset->schema($field_key)->{multiple};
 
-        # expanding field: e.g. field_key = "user.[].id" parameter_name = "user.0.id"
-        if ( $field_key =~ m/\.\[\]/ ) {
+        # NOTE: expanding field
+        # e.g. field_key = "user.[].id" expanding to parameter_name = "user.0.id"
+        if ( $field_key =~ m/\.\[\]|\.{}/ ) {
             my @match = grep { my $name = $fieldset->_replace_key($_); $field_key eq $name } @{$names};
             foreach my $key (@match) {
                 $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
@@ -155,10 +156,10 @@ sub _do_check {
 
 sub _fieldset {
     my $self = shift;
-    my $ns = shift || 'Basic';
+    my $ns = shift || '';
     $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
 
-    my $class = $self->name_space . "::" . $ns;
+    my $class = $ns ? $self->name_space . "::" . $ns : $self->name_space;
     load_class($class);
     return $class->new;
 }
@@ -327,7 +328,7 @@ Rendering HTML form widget(field or fields).
 
     my $scope = $form->scope_param('user');
 
-Return hash refference.
+Return array refference.
 The parameter is a validated values.
 
 NOTE: This method should be called after the L</do_validate> method.

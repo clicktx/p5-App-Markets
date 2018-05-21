@@ -15,9 +15,6 @@ subtest 'basic' => sub {
     my $e = $pkg->new( id => 1, hoge => 1, fuga => 2 );
     cmp_deeply $e->to_hash, { hoge => 1, fuga => 2 }, 'right to_hash';
 
-    is $e->hash_code, sha1_sum(1), 'right hash code';
-    is $e->hash_code(2), sha1_sum(2), 'right hash code';
-
     $e->is_modified(3);
     is $e->is_modified, 1, 'right modified';
 
@@ -33,6 +30,12 @@ subtest 'basic' => sub {
     $e = $pkg->new( id => undef );
     is $e->hash_code, undef, 'right undefined id entity';
     is $e->hash_code(undef), undef, 'right undefined arg entity';
+};
+
+subtest 'hash_code' => sub {
+    my $e = $pkg->new( id => 1 );
+    is $e->hash_code, sha1_sum(1), 'right hash code';
+    is $e->hash_code(2), sha1_sum(2), 'right hash code';
 };
 
 subtest 'function' => sub {

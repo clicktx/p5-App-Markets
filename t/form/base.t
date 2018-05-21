@@ -184,12 +184,12 @@ subtest 'parameters' => sub {
         my $f = Yetie::Form::Base->new( 'test', controller => $c );
         $c->req->params->pairs(
             [
-                'item.0.id'     => 11,
-                'item.1.id'     => 22,
-                'item.2.id'     => 33,
+                'item.0.id'     => 1,
+                'item.1.id'     => 2,
+                'item.10.id'    => 11,
                 'item.0.name'   => 'aa',
                 'item.1.name'   => 'bb',
-                'item.2.name'   => 'cc',
+                'item.10.name'  => 'kk',
                 'billing.line1' => 'foo',
                 'billing.line2' => 'bar',
             ]
@@ -198,16 +198,17 @@ subtest 'parameters' => sub {
         is_deeply $f->scope_param('item'),
           [
             {
-                id   => 11,
+                id   => 1,
                 name => 'aa',
             },
             {
-                id   => 22,
+                id   => 2,
                 name => 'bb',
             },
+            '', '', '', '', '', '', '', '',
             {
-                id   => 33,
-                name => 'cc',
+                id   => 11,
+                name => 'kk',
             },
           ],
           'right scope params';
@@ -313,6 +314,8 @@ subtest 'do_validate' => sub {
             'favorite_color[]' => 'red',
             'luky_number[]'    => 2,
             'luky_number[]'    => 3,
+            'order.*123.name'  => 'foo',
+            'order.*bar.name'  => 'bar',
             'item.0.id'        => 11,
             'item.1.id'        => 22,
             'item.2.id'        => 33,
@@ -323,6 +326,14 @@ subtest 'do_validate' => sub {
     );
     $result = $f->do_validate;
     ok $result, 'right validation';
+
+    is_deeply $f->param('order'),
+      {
+        '*123' => { name => 'foo' },
+        '*bar' => { name => 'bar' },
+      },
+      'right expand field hash keys';
+    is_deeply $f->scope_param('item'), [ { id => 11 }, { id => 22 }, { id => 33 }, ], 'right expand field array keys';
 };
 
 subtest 'do_validate with filter' => sub {

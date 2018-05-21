@@ -1,31 +1,72 @@
 package Yetie::Domain::Entity::Address;
 use Yetie::Domain::Entity;
+use Mojo::Util qw(encode);
 
-has hash          => '';
-has line1         => '';
-has line2         => '';
-has level1        => '';
-has level2        => '';
-has postal_code   => '';
-has personal_name => '';
-has company_name  => '';
-has phone         => '';
-has fax           => '';
-has mobile        => '';
+my $attrs = [qw(hash country_code line1 line2 level1 level2 postal_code personal_name company_name phone fax mobile)];
+
+has $attrs;
+has type                => '';
+has _locale_field_names => sub {
+    {
+        us => [qw(country_code personal_name company_name line1 line2 level2 level1 postal_code phone fax mobile)],
+        jp => [qw(country_code personal_name company_name postal_code level1 level2 line1 line2 phone fax mobile)],
+    };
+};
+has _locale_notation => sub {
+    my $self = shift;
+
+    my $country_name = {
+        us => 'United States',
+        jp => 'Japan',
+    };
+    my $country = $country_name->{ $self->country_code };
+
+    my @contacts = ( "TEL: " . $self->phone );
+    push @contacts, "FAX: " . $self->fax       if $self->fax;
+    push @contacts, "MOBILE: " . $self->mobile if $self->mobile;
+
+    return {
+        us => [
+            $self->personal_name, $self->company_name, $self->line2, $self->line1,
+            [ $self->level2, ", ", $self->level1, " ", $self->postal_code ],
+            $country, @contacts
+        ],
+        jp => [
+            $self->postal_code, $self->level1 . $self->level2 . $self->line1,
+            $self->line2, $self->company_name, $self->personal_name, $country, @contacts
+        ],
+    };
+};
+
+sub field_names {
+    my $self = shift;
+    my $region = shift || 'us';
+    $self->_locale_field_names->{$region} || $self->_locale_field_names->{us};
+}
 
 sub hash_code {
     my $self = shift;
 
-    my $bytes;
-    $bytes .= $self->$_ || '' for qw(
-      line1 line2 level1 level2 postal_code personal_name company_name
-    );
-    $self->SUPER::hash_code($bytes);
+    my @attrs = qw(country_code line1 line2 postal_code personal_name company_name);
+    my $str   = '';
+    foreach my $attr (@attrs) {
+        my $value = $self->$attr // '';
+        $str .= $value ? '::' . encode( 'UTF-8', $value ) : '';
+    }
+    $self->SUPER::hash_code($str);
+}
+
+sub notation {
+    my $self = shift;
+
+    my $country_code = $self->country_code;
+    $self->_locale_notation->{$country_code} || $self->_locale_notation->{us};
 }
 
 sub to_data {
     my $self = shift;
-    my $data = $self->SUPER::to_hash;
+    my $data = {};
+    $data->{$_} = $self->$_ // '' for @{$attrs};
 
     $data->{hash} = $self->hash_code;
     return $data;
@@ -51,6 +92,25 @@ the following new ones.
 
 L<Yetie::Domain::Entity::Address> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<field_names>
+
+Get form field names.
+
+    my $field_names = $e->field_names($region);
+
+    # Country Japan
+    my $field_names = $e->field_names('jp');
+
+Return Array refference.
+
+Default region "us".
+
+=head2 C<notation>
+
+    my $notation = $e->notation;
+
+Acquire notation method of address.
 
 =head1 AUTHOR
 

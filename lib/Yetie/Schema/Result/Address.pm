@@ -13,6 +13,13 @@ column hash => {
     is_nullable => 0,
 };
 
+column country_code => {
+    data_type   => 'VARCHAR',
+    size        => 2,
+    is_nullable => 0,
+    comments    => 'ISO 3166-1 alpha-2',
+};
+
 column line1 => {
     data_type   => 'VARCHAR',
     size        => 128,

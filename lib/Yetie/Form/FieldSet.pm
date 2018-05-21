@@ -125,7 +125,13 @@ sub _get_data {
 
 sub _replace_key {
     my ( $self, $arg ) = @_;
-    $arg =~ s/\.\d/.[]/g;
+
+    # e.g. "foo.*123.bar" to "foo.{}.bar"
+    # e.g. "foo.*a_b_c_123.bar" to "foo.{}.bar"
+    $arg =~ s/\.\*\w+\./.{}./g;
+
+    # e.g. "foo.123.bar" to "foo.[].bar"
+    $arg =~ s/\.\d+/.[]/g;
     return $arg;
 }
 
@@ -163,7 +169,7 @@ Yetie::Form::FieldSet
 =head1 IMPORT OPTIONS
 
     # Your form field set base class
-    package Yetie::Form::FieldSet::Base;
+    package Yetie::Form::FieldSet::Foo;
     use Yetie::Form::FieldSet;
 
     has_field 'email' => ( ... );
@@ -171,9 +177,9 @@ Yetie::Form::FieldSet
     ...
     1;
 
-    # Import from base class
-    package Yetie::Form::FieldSet::Hoge;
-    use Yetie::Form::FieldSet::Base qw(email password);
+    # Import from 'Yetie::Form::FieldSet::Foo'
+    package Yetie::Form::FieldSet::Bar;
+    use Yetie::Form::FieldSet::Foo qw(email password);
     ...
     1;
 
@@ -181,14 +187,16 @@ Import fields 'email' and 'password'.
 
 =head2 C<-all>
 
-    package Yetie::Form::FieldSet::Hoge;
-    use Yetie::Form::FieldSet::Base -all;
+    package Yetie::Form::FieldSet::Bar;
+    use Yetie::Form::FieldSet::Foo -all;
     ...
     1;
 
 Import all fields.
 
 =head1 SCHEMA
+
+FieldSet schema examples.
 
     package Yetie::Form::FieldSet::Example;
     use Mojo::Base -strict;
@@ -232,6 +240,14 @@ Import all fields.
             equal_to => 'The passwords you entered do not much.',
         },
     );
+
+List or Hash field.
+
+    # item.0.id, item.1.id and more
+    has_field 'item.[].id' => ( ... );
+
+    # order.*123.name, order.*abc.name, order.*1_a_2_b.name and more
+    has_field 'order.{}.name' => ( ... );
 
 Inherit Yetie::Form::FieldSet::Example class
 

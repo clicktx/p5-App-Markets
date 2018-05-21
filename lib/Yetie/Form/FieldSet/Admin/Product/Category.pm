@@ -2,11 +2,8 @@ package Yetie::Form::FieldSet::Admin::Product::Category;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
-has_field 'categories' => (
-    type        => 'choice',
-    expanded    => 1,
-    multiple    => 1,
-    validations => ['uint'],
-);
+my $product = fieldset('base-product');
+
+has_field 'categories' => $product->field_info('categories');
 
 1;

@@ -20,7 +20,7 @@ subtest 'find_customer' => sub {
     isa_ok $entity, 'Yetie::Domain::Entity::Customer';
     is $entity->id, undef, 'right nonexists';
 
-    $entity = $s->find_customer('a@x.org');
+    $entity = $s->find_customer('a@example.org');
     is $entity->id, 111, 'right customer';
 };
 

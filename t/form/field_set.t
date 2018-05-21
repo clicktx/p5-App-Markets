@@ -30,9 +30,11 @@ subtest 'checks' => sub {
         no_attrs              => [],
         email                 => [ [ size => 2, 5 ], [ like => ignore() ] ],
         name                  => [],
+        nickname              => [],
         address               => [],
         favorite_color        => [],
         luky_number           => [],
+        'order.{}.name'       => [],
         'item.[].id'          => [],
         'item.[].name'        => [],
         'billing.line1'       => [],
@@ -61,8 +63,8 @@ subtest 'export_field' => sub {
     $fs->export_field();
     is_deeply \@{ __PACKAGE__->field_keys }, [
         qw(
-          item.[].id no_attrs email name address favorite_color luky_number
-          item.[].name billing.line1 billing.line2 burgers.[].name burgers.[].toppings
+          item.[].id no_attrs email name nickname address favorite_color luky_number order.{}.name item.[].name
+          billing.line1 billing.line2 burgers.[].name burgers.[].toppings
           )
       ],
       'right exported all';
@@ -124,7 +126,7 @@ subtest 'field_keys' => sub {
     my @field_keys = $fs->field_keys;
     is_deeply \@field_keys, [
         qw/
-          no_attrs email name address favorite_color luky_number item.[].id item.[].name
+          no_attrs email name nickname address favorite_color luky_number order.{}.name item.[].id item.[].name
           billing.line1 billing.line2 burgers.[].name burgers.[].toppings
           /
       ],
@@ -141,9 +143,11 @@ subtest 'filters' => sub {
         no_attrs              => [],
         email                 => [qw/trim/],
         name                  => [],
+        nickname              => [],
         address               => [],
         favorite_color        => [],
         luky_number           => [],
+        'order.{}.name'       => [],
         'item.[].id'          => [],
         'item.[].name'        => [qw/trim/],
         'billing.line1'       => [],
@@ -167,7 +171,7 @@ subtest 'append/remove' => sub {
     my @field_keys = $fs->field_keys;
     is_deeply \@field_keys, [
         qw/
-          no_attrs email name address favorite_color luky_number item.[].id item.[].name
+          no_attrs email name nickname address favorite_color luky_number order.{}.name item.[].id item.[].name
           billing.line1 billing.line2 burgers.[].name burgers.[].toppings
           aaa
           /
@@ -179,7 +183,7 @@ subtest 'append/remove' => sub {
     @field_keys = $fs->field_keys;
     is_deeply \@field_keys, [
         qw/
-          no_attrs email name address favorite_color luky_number item.[].id item.[].name
+          no_attrs email name nickname address favorite_color luky_number order.{}.name item.[].id item.[].name
           billing.line1 billing.line2 burgers.[].name burgers.[].toppings
           aaa bbb
           /
@@ -191,7 +195,7 @@ subtest 'append/remove' => sub {
     @field_keys = $fs->field_keys;
     is_deeply \@field_keys, [
         qw/
-          no_attrs email address favorite_color luky_number item.[].id item.[].name
+          no_attrs email nickname address favorite_color luky_number order.{}.name item.[].id item.[].name
           billing.line1 billing.line2 burgers.[].name burgers.[].toppings
           aaa bbb
           /
