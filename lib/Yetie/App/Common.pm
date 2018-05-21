@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious';
 use Mojo::Log;
 use Yetie::Addons;
 use Scalar::Util qw/weaken/;
+use DBIx::Sunny;
 use DBIx::QueryLog;
 
 # $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
@@ -22,7 +23,18 @@ has schema => sub {
 
     my $conf   = $self->config('db') or die "Missing configuration for db";
     my $dsn    = _dsn($conf);
-    my $schema = $schema_class->connect( $dsn, $conf->{user}, $conf->{password} );
+    my $schema = $schema_class->connect(
+        $dsn,
+        $conf->{user},
+        $conf->{password},
+        {
+            RootClass            => 'DBIx::Sunny',
+            mysql_enable_utf8mb4 => 1,
+            on_connect_do        => q{
+                SET NAMES utf8mb4
+            },
+        }
+    );
     eval { say 'connected to DB' if $schema->storage->dbh };
     do {
         my $message = "Could not connect to $schema_class using DSN ";
