@@ -12,24 +12,6 @@ has 'app';
 
 __PACKAGE__->load_namespaces( default_resultset_class => 'Base::ResultSet' );
 
-sub connect {
-    my ( $self, $dsn, $user, $password ) = @_;
-
-    my $dbi_attributes = {
-        mysql_enable_utf8mb4 => 1,
-        Callbacks            => {
-            connected => sub {
-                shift->do('SET NAMES utf8mb4');
-                return;
-            },
-        },
-    };
-    my $extra_attributes = {};
-    my @connect_info = ( $dsn, $user, $password, $dbi_attributes, $extra_attributes );
-
-    return $self->SUPER::connect(@connect_info);
-}
-
 sub now { DateTime->now( time_zone => shift->TZ ) }
 
 # This code is DBIx::Class::Schema::resultset
@@ -97,12 +79,6 @@ Yetie::Schema
 =head1 METHODS
 
 L<Yetie::Schema> inherits all methods from L<DBIx::Class::Schema>.
-
-=head2 C<connect>
-
-    my $schema = Yetie::Schema->connect( $dsn, $user, $password );
-
-Set true L<DBI:mysql> option C<mysql_enable_utf8mb4> and do C<SET NAMES utf8mb4>.
 
 =head2 C<now>
 
