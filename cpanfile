@@ -6,6 +6,7 @@ requires 'Data::Clone',                             '0.004';
 requires 'Data::Page::Navigation',                  '0.06';
 requires 'DBD::mysql',                              '4.033';
 requires 'DBI',                                     '1.636';
+requires 'DBIx::Sunny',                             '0.24';
 requires 'DBIx::Class',                             '0.082840';
 requires 'DBIx::Class::Candy',                      '0.005002';
 requires 'DBIx::Class::ResultSet::HashRef',         '1.002';
