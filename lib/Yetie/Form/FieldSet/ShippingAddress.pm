@@ -42,31 +42,31 @@ has_field 'shipping_address.postal_code' => (
 );
 
 has_field 'shipping_address.personal_name' => (
-    extends('name#personal_name'),
+    extends('base-name#personal_name'),
     autocomplete => 'section-sent shipping name',
     required     => 1,
 );
 
 has_field 'shipping_address.company_name' => (
-    extends('name#company_name'),
+    extends('base-name#company_name'),
     autocomplete => 'section-sent shipping organization',
     required     => 0,
 );
 
 has_field 'shipping_address.phone' => (
-    extends('phone#home'),
+    extends('base-phone#home'),
     autocomplete => 'section-sent shipping home tel',
     required     => 1,
 );
 
 has_field 'shipping_address.fax' => (
-    extends('phone#fax'),
+    extends('base-phone#fax'),
     autocomplete => 'section-sent shipping fax tel',
     required     => 0,
 );
 
 has_field 'shipping_address.mobile' => (
-    extends('phone#mobile'),
+    extends('base-phone#mobile'),
     autocomplete => 'section-sent shipping mobile tel',
     required     => 0,
 );

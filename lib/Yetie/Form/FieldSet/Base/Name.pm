@@ -1,11 +1,11 @@
-package Yetie::Form::FieldSet::Name;
+package Yetie::Form::FieldSet::Base::Name;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
 has_field 'personal_name' => (
+    type         => 'text',
     label        => 'Full Name',
     autocomplete => 'name',
-    type         => 'text',
     placeholder  => 'Christian Holst',
     filters      => [qw(trim)],
     validations  => [],
@@ -13,9 +13,9 @@ has_field 'personal_name' => (
 );
 
 has_field 'company_name' => (
+    type         => 'text',
     label        => 'Company Name',
     autocomplete => 'organization',
-    type         => 'text',
     placeholder  => '',
     filters      => [qw(trim)],
     validations  => [],
