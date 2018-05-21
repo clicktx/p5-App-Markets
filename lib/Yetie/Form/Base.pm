@@ -156,10 +156,10 @@ sub _do_check {
 
 sub _fieldset {
     my $self = shift;
-    my $ns = shift || 'Basic';
+    my $ns = shift || '';
     $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
 
-    my $class = $self->name_space . "::" . $ns;
+    my $class = $ns ? $self->name_space . "::" . $ns : $self->name_space;
     load_class($class);
     return $class->new;
 }
