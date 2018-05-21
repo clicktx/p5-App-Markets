@@ -26,7 +26,7 @@ sub items {
         my $values = $params->{$key};
         $self->resultset('sales-order-item')->search( { id => $id } )->update($values);
     }
-    $self->render();
+    return $self->redirect_to( 'RN_admin_order_details', order_id => $order_id );
 }
 
 # NOTE: Catalog::Checkoutに関連する実装がある。
