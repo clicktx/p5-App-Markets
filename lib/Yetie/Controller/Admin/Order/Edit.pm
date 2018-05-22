@@ -19,7 +19,7 @@ sub items {
     return $self->render() unless $form->do_validate;
 
     # Update
-    my $params = $form->param('item');
+    my $params = $form->param('item') || {};
     foreach my $key ( keys %{$params} ) {
         my $id = $key;
         $id =~ s/\*//g;
