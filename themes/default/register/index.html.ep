@@ -3,15 +3,15 @@
 
 <h2>Create account</h2>
 
-<p>
-    <%= form_for 'RN_customer_create_account' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+<div class="">
+    <%= form_for 'RN_customer_register' => (method => 'POST', style => 'border:1px solid gray') => begin %>
         <%= csrf_field %>
         E-mail <%= email_field email => 'i@hoge.com' %>
         Password <%= password_field 'password' %>
         <%= submit_button 'ok' %>
     <% end %>
-</p>
+</div>
 
-<p>
+<div class="">
     Already have an account? <%= link_to 'Sign in' => 'RN_customer_login' %>
-</p>
+</div>

@@ -103,8 +103,8 @@ sub add_catalog_routes {
     $checkout->get('/complete')->to('#complete')->name('RN_checkout_complete');
 
     # For Customers
-    $r->get('/register')->to('register#index')->name('RN_customer_create_account');
-    $r->post('/register')->to('register#index')->name('RN_customer_create_account');
+    $r->get('/register')->to('register#index')->name('RN_customer_register');
+    $r->post('/register')->to('register#index')->name('RN_customer_register');
 
     $r->any('/login')->to('account#login')->name('RN_customer_login');
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
