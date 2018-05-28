@@ -18,6 +18,7 @@ $ENV{TEST_MYSQL} ||= do {
             'skip-networking'        => '',
             'default-storage-engine' => 'innodb',
             'socket'                 => $conf->{db}->{socket},
+            'character-set-server'   => 'utf8mb4',
         }
     ) or die $Test::mysqld::errstr;
     $HARRIET_GUARDS::MYSQLD = $mysqld;
