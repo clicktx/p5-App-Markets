@@ -3,13 +3,14 @@ use Yetie::Domain::Entity;
 use Yetie::Form::Base;
 use Data::Page;
 
-has meta_title       => sub { shift->title };
-has meta_description => sub { shift->description };
+has meta_title => sub { shift->page_title };
+has meta_description => '';
 has meta_keywords    => '';
 has meta_robots      => '';
-has breadcrumbs => sub { Yetie::Domain::Collection->new };
-has form        => sub { Yetie::Form::Base->new };
-has pager       => sub { Data::Page->new };
+has page_title       => '';
+has breadcrumbs      => sub { Yetie::Domain::Collection->new };
+has form             => sub { Yetie::Form::Base->new };
+has pager            => sub { Data::Page->new };
 
 1;
 __END__
@@ -35,9 +36,14 @@ the following new ones.
 
 =head2 C<meta_robots>
 
+=head2 C<page_title>
+
+    # In templates
+    <%= $page->page_title %>
+
 =head2 C<breadcrumbs>
 
-    $content->breadcrumbs->each( sub { ... } );
+    $page->breadcrumbs->each( sub { ... } );
 
 has L<Yetie::Domain::Entity::Link> object in L<Yetie::Domain::Collection> object.
 

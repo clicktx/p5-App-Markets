@@ -12,6 +12,7 @@ subtest 'basic' => sub {
     can_ok $e, 'meta_description';
     can_ok $e, 'meta_keywords';
     can_ok $e, 'meta_robots';
+    can_ok $e, 'page_title';
     can_ok $e, 'breadcrumbs';
     can_ok $e, 'pager';
     can_ok $e, 'form';
