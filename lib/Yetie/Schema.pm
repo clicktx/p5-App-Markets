@@ -4,6 +4,7 @@ use Carp qw/croak/;
 use DateTime;
 use Mojo::Util 'camelize';
 use Data::Page::Navigation;
+use DBIx::Sunny;
 
 use version; our $VERSION = version->declare('v0.0.1');
 our $TIME_ZONE = 'UTC';
@@ -11,6 +12,17 @@ our $TIME_ZONE = 'UTC';
 has 'app';
 
 __PACKAGE__->load_namespaces( default_resultset_class => 'Base::ResultSet' );
+
+sub connect {
+    my ( $self, $dsn, $user, $password, $dbi_attributes, $extra_attributes ) = @_;
+
+    $dbi_attributes->{RootClass}            = 'DBIx::Sunny';
+    $dbi_attributes->{mysql_enable_utf8mb4} = 1;
+    $dbi_attributes->{on_connect_do}        = q{SET NAMES utf8mb4};
+
+    my @connect_info = ( $dsn, $user, $password, $dbi_attributes, $extra_attributes );
+    return $self->SUPER::connect(@connect_info);
+}
 
 sub now { DateTime->now( time_zone => shift->TZ ) }
 
