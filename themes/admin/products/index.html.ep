@@ -1,5 +1,5 @@
 % layout 'admin-default';
-% title __('Products');
+% title $entity->page_title;
 
 <h1><%= title %></h1>
 

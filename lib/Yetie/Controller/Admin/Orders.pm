@@ -13,6 +13,9 @@ sub index {
     my $orders = $self->service('orders')->search_orders($form);
     $self->stash( entity => $orders );
 
+    # Page Data
+    $orders->page_title('Orders');
+
     $self->render();
 }
 

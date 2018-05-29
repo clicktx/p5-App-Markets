@@ -18,6 +18,9 @@ sub index {
     my $product = $self->service('product')->find_product_with_breadcrumbs($product_id);
     $self->stash( entity => $product );
 
+    # Page data
+    $product->page_title( $product->title );
+
     # 404
     return $self->reply->not_found unless $product->has_data;
 

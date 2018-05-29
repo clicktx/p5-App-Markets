@@ -1,5 +1,5 @@
 % layout 'default';
-% title $entity->title;
+% title $entity->page_title;
 
 <h1>Breadcrumb list</h1>
 <%= include 'component/breadcrumbs', breadcrumbs => $entity->breadcrumbs %>
