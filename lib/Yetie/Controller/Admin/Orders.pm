@@ -11,7 +11,10 @@ sub index {
     return $self->render() unless $form->do_validate;
 
     my $orders = $self->service('orders')->search_orders($form);
-    $self->stash( content => $orders );
+    $self->stash( entity => $orders );
+
+    # Page Data
+    $orders->page_title('Orders');
 
     $self->render();
 }

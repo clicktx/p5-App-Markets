@@ -16,7 +16,10 @@ sub index {
     $self->init_form( $form, $product_id );
 
     my $product = $self->service('product')->find_product_with_breadcrumbs($product_id);
-    $self->stash( content => $product );
+    $self->stash( entity => $product );
+
+    # Page data
+    $product->page_title( $product->title );
 
     # 404
     return $self->reply->not_found unless $product->has_data;
