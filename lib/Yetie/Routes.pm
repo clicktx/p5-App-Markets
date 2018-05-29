@@ -77,6 +77,9 @@ sub add_admin_routes {
 
     # $order->any('/create')->to('#create')->name('RN_admin_order_create');
     $order->any('/:id/duplicate')->to('#duplicate')->name('RN_admin_order_duplicate');
+
+    # Customers
+    $r->any('/customers')->to('admin-customers#index')->name('RN_admin_customers');
 }
 
 # Routes for Catalog

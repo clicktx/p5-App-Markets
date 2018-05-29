@@ -1,8 +1,8 @@
 % layout 'default';
-% title $content->meta_title;
+% title $entity->meta_title;
 
 <h1>Breadcrumb list</h1>
-<%= include 'component/breadcrumbs', breadcrumbs => $content->breadcrumbs %>
+<%= include 'component/breadcrumbs', breadcrumbs => $entity->breadcrumbs %>
 
 <h1><%= stash 'title' %><%= stash 'product_id' %></h1>
 <ul>
@@ -11,12 +11,12 @@
     <li><%= link_to 'product3' => 'RN_product' => { product_id => 3} %></li>
 </ul>
 
-<h1><%= $content->title %></h1>
+<h1><%= $entity->title %></h1>
 <div class="">
-    <%= $content->description %>
+    <%= $entity->description %>
 </div>
 <div class="">
-    <%= $content->price %>
+    <%= $entity->price %>
 </div>
 
 <%= form_for 'RN_product' => ( method => 'POST' ) => begin %>

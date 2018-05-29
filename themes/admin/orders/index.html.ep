@@ -1,10 +1,10 @@
 % layout 'admin-default';
-% title __('Orders');
+% title $entity->page_title;
 
 <h1><%= title %></h1>
 
 <ul>
-% my $orders = $content->order_list;
+% my $orders = $entity->order_list;
 % $orders->each( sub {
     % my $order_summary = shift;
     <li>
@@ -26,7 +26,7 @@
 % });
 </ul>
 
-<%= include 'admin/component/pagination', pager => $content->pager, params => $content->form->params->to_hash %>
+<%= include 'admin/component/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>
 
 <h2><%= __('Orders') %></h2>
 
