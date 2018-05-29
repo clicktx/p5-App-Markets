@@ -66,6 +66,22 @@
         [ 5, 'jp', '北多久町 4-2-4', 'リバーサイド室瀬212', '多久市', '佐賀県', '8460001', '沢井 咲', '株式会社 フィーデザイン', '0954172962', '9e17dd6f9de2d5c1ecad75f70f8615f4c98050f0' ],
     ],
 
+    # Password
+    'Password' => [
+        [qw/id hash created_at updated_at/],
+        # Staff
+        # 12345678
+        [ 1, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
+        [ 2, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
+        # Customer
+        # 12345678
+        [ 3, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-06-06 19:50:05', '2017-06-06 19:50:05' ],
+        # 22334455
+        [ 4, 'SCRYPT:16384:8:1:VGcabum1/mW1UQ207AZL4Abdj96TtHYtFWJRjBIuYv8=:5lLK4OF1oG9mdI9G89hgh4kvcXJ8jVnCqIAy8QXwluE=', '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
+        # 44556677
+        [ 5, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY=', '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
+    ],
+
     # Staffs
     'Staff' => [
         [qw/id login_id created_at updated_at/],
@@ -73,10 +89,9 @@
         [ 223, 'staff',   '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
     ],
     'Staff::Password' => [
-        [qw/staff_id hash created_at updated_at/],
-        # 12345678
-        [ 222, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
-        [ 223, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
+        [qw/staff_id password_id/],
+        [ 222, 1 ],
+        [ 223, 2 ],
     ],
 
     # Customers
@@ -89,13 +104,10 @@
         [ 115, '2017-07-10 10:20:21', '2017-07-10 10:20:21' ],
     ],
     'Customer::Password' => [
-        [qw/customer_id hash created_at updated_at/],
-        # 12345678
-        [ 111, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-06-06 19:50:05', '2017-06-06 19:50:05' ],
-        # 22334455
-        [ 112, 'SCRYPT:16384:8:1:VGcabum1/mW1UQ207AZL4Abdj96TtHYtFWJRjBIuYv8=:5lLK4OF1oG9mdI9G89hgh4kvcXJ8jVnCqIAy8QXwluE=', '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
-        # 44556677
-        [ 113, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY=', '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
+        [qw/customer_id password_id/],
+        [ 111, 3 ],
+        [ 112, 4 ],
+        [ 113, 5 ],
     ],
     'Customer::Email' => [
         [qw/customer_id email_id is_primary/],
