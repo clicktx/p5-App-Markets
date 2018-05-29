@@ -19,7 +19,7 @@ sub index {
     my $category_tree = $service->get_cache || $service->search_all;
     $self->stash( 'yetie.widget.category_tree' => $category_tree );
 
-    $self->stash( content => $category );
+    $self->stash( entity => $category );
     return $self->render();
 }
 

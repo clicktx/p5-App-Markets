@@ -1,8 +1,8 @@
 % layout 'default';
-% title $content->title;
+% title $entity->title;
 
 <h1>Breadcrumb list</h1>
-<%= include 'component/breadcrumbs', breadcrumbs => $content->breadcrumbs %>
+<%= include 'component/breadcrumbs', breadcrumbs => $entity->breadcrumbs %>
 
 <h1><%= stash 'title' %></h1>
 category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name' %>
@@ -15,14 +15,14 @@ category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name'
 
 <h2>Products</h2>
 
-% if ( !$content->pager->total_entries ){
+% if ( !$entity->pager->total_entries ){
     Not Product.
 % } else {
-    Total: <%= $content->pager->total_entries %>
+    Total: <%= $entity->pager->total_entries %>
 % }
 
 <ul>
-    % $content->products->each( sub {
+    % $entity->products->each( sub {
         % my $product = shift;
         <li>
             <%= link_to $product->title => 'RN_product' => { product_id => $product->id } %>
@@ -30,4 +30,4 @@ category_id: <%= stash 'category_id' %> category_name: <%= stash 'category_name'
     % });
 </ul>
 
-<%= include 'component/pagination', pager => $content->pager, params => $content->form->params->to_hash %>
+<%= include 'component/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>

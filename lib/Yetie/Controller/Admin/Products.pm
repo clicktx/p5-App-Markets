@@ -13,7 +13,7 @@ sub index {
     # use service
     my $products = $self->service('products')->search_products($form);
 
-    $self->stash( content => $products );
+    $self->stash( entity => $products );
     $self->render();
 }
 
