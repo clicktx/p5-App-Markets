@@ -30,7 +30,6 @@ sub new {
     my $app = $c->app;
     my $self = $class->SUPER::new( app => $app, controller => $c );
 
-    Scalar::Util::weaken $self->{app};
     Scalar::Util::weaken $self->{controller};
     return $self;
 }
