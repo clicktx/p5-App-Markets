@@ -2,7 +2,6 @@ package Yetie::App::Common;
 use Mojo::Base 'Mojolicious';
 use Mojo::Log;
 use Yetie::Addons;
-use Scalar::Util qw/weaken/;
 use DBIx::QueryLog;
 
 # $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
@@ -29,7 +28,6 @@ has schema => sub {
         $self->log->fatal($message) and die $message;
     } if $@;
     $schema->{app} = $self;
-    weaken $schema->{app};
     return $schema;
 };
 

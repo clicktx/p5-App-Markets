@@ -6,11 +6,9 @@ use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
 use Mojo::File;
 use Mojo::Collection;
-use constant {
-    ADDON_NAME_SPACE => 'Yetie::Addon',
-};
+use constant { ADDON_NAME_SPACE => 'Yetie::Addon', };
 
-has dir => sub { shift->app->pref('addons_dir') };
+has dir     => sub { shift->app->pref('addons_dir') };
 has trigger => sub { Yetie::Trigger->new( shift->app ) };
 has [qw/app installed uploaded/];
 
@@ -49,9 +47,7 @@ sub init {
 
 sub new {
     my $self = shift;
-    $self = $self->SUPER::new( app => shift );
-    Scalar::Util::weaken $self->{app};
-    $self;
+    return $self->SUPER::new( app => shift );
 }
 
 sub load_addon {
