@@ -148,11 +148,6 @@ Construct a new index-hash-based L<Yetie::Domain::IxHash> object.
 L<Yetie::Domain::Entity> inherits all attributes from L<Yetie::Domain::Base> and implements
 the following new ones.
 
-=head2 C<entity_id>
-
-    has entity_id => 'identity';
-    has entity_id => sub { shift->more_id };
-
 =head1 METHODS
 
 L<Yetie::Domain::Entity> inherits all methods from L<Yetie::Domain::Base> and implements
