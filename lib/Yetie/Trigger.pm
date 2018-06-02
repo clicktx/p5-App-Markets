@@ -8,9 +8,7 @@ has [qw/app/];
 
 sub new {
     my $self = shift;
-    $self = $self->SUPER::new( app => shift );
-    Scalar::Util::weaken $self->{app};
-    $self;
+    return $self->SUPER::new( app => shift );
 }
 
 sub remove_triggers {
@@ -19,7 +17,7 @@ sub remove_triggers {
     return unless @{$array};
 
     foreach my $remove_trigger ( @{$array} ) {
-        my $trigger = $remove_trigger->{trigger};
+        my $trigger     = $remove_trigger->{trigger};
         my $subscribers = $self->subscribers($trigger);
         my $unsubscribers =
           [ grep { $_->{cb_sub_name} eq $remove_trigger->{cb_sub_name} } @{$subscribers} ];
