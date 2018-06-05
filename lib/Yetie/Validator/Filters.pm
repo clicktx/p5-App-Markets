@@ -1,17 +1,45 @@
 package Yetie::Validator::Filters;
 use Mojo::Base 'Mojolicious::Plugin';
 
+my @filters = qw(
+  hoge hyphen
+);
+
 sub register {
     my ( $self, $app ) = @_;
-
-    $app->validator->add_filter( $_ => \&{ '_' . $_ } ) for qw(hoge);
+    $app->validator->add_filter( $_ => \&{ '_' . $_ } ) for @filters;
 }
 
 sub _hoge {
 
     # my ( $validation, $name, $value ) = @_;
-    # return $value;
     'hoge';
+}
+
+# NOTE: [Unicodeにあるハイフン/マイナス/長音符/波線/チルダのコレクション | hydroculのメモ](https://hydrocul.github.io/wiki/blog/2014/1101-hyphen-minus-wave-tilde.html)
+# [ハイフンに似てる文字の文字コード - Qiita](https://qiita.com/ryounagaoka/items/4cf5191d1a2763667add)
+# [404 Blog Not Found:Unicode - 似た文字同士にご用心](http://blog.livedoor.jp/dankogai/archives/51043693.html)
+# U+02D7    ˗   MODIFIER LETTER MINUS SIGN
+# U+2010    ‐   HYPHEN
+# U+2011    ‑   NON-BREAKING HYPHEN
+# U+2012    ‒   FIGURE DASH
+# U+2013    –   EN DASH
+# U+2014    —   EM DASH
+# U+2015    ―   HORIZONTAL BAR
+# U+2500    ─   BOX DRAWINGS LIGHT HORIZONTAL
+# U+2501    ━   BOX DRAWINGS HEAVY HORIZONTAL
+# U+2212    −   MINUS SIGN
+# U+30FC    ー  KATAKANA-HIRAGANA PROLONGED SOUND MARK
+# U+FE58    ﹘  SMALL EM DASH
+# U+FE63    ﹣  SMALL HYPHEN-MINUS
+# U+FF0D    －  FULLWIDTH HYPHEN-MINUS
+# U+FF70    ｰ   HALFWIDTH KATAKANA-HIRAGANA PROLONGED SOUND MARK
+sub _hyphen {
+    my ( $validation, $name, $value ) = @_;
+    return unless defined($value);
+
+    $value =~ s/[\x{02D7}\x{2010}-\x{2015}\x{2212}\x{2500}-\x{2501}\x{30FC}\x{FE58}\x{FE63}\x{FF0D}\x{FF70}]/-/g;
+    return $value;
 }
 
 1;

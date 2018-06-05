@@ -76,10 +76,4 @@ subtest 'to_data' => sub {
       'right dump data';
 };
 
-subtest '_hyphen' => sub {
-    my $dash = 'ー˗‐‒–——−ｰ‑―﹘─━ー';
-    my $res  = Yetie::Domain::Entity::Address::_hyphen($dash);
-    is $res, '---------------', 'right convert to hypen';
-};
-
 done_testing();
