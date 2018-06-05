@@ -1,4 +1,4 @@
-package Yetie::Form::Filter;
+package Yetie::Validator::Filters;
 use Mojo::Base 'Mojolicious::Plugin';
 
 sub register {
