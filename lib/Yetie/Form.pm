@@ -10,7 +10,7 @@ sub register {
     my $stash_key = $conf->{stash_key} || $STASH_KEY;
 
     # Load filters and validators
-    $app->plugin($_) for qw(Yetie::Form::Filter Yetie::Form::Validator);
+    $app->plugin($_) for qw(Yetie::Validator::Filters Yetie::Form::Validator);
 
     # Helpers
     $app->helper( form => sub { _form( $stash_key, @_ ) } );
