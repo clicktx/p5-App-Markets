@@ -1,8 +1,9 @@
 package Yetie::Validator::Filters;
 use Mojo::Base 'Mojolicious::Plugin';
+use Lingua::JA::Regular::Unicode qw();
 
 my @filters = qw(
-  hoge hyphen
+  double_byte_char hyphen
 );
 
 sub register {
@@ -10,10 +11,11 @@ sub register {
     $app->validator->add_filter( $_ => \&{ '_' . $_ } ) for @filters;
 }
 
-sub _hoge {
+sub _double_byte_char {
+    my ( $validation, $name, $value ) = @_;
+    return unless defined($value);
 
-    # my ( $validation, $name, $value ) = @_;
-    'hoge';
+    return Lingua::JA::Regular::Unicode::alnum_z2h($value);
 }
 
 # NOTE: [Unicodeにあるハイフン/マイナス/長音符/波線/チルダのコレクション | hydroculのメモ](https://hydrocul.github.io/wiki/blog/2014/1101-hyphen-minus-wave-tilde.html)
