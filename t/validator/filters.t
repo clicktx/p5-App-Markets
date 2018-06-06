@@ -3,15 +3,7 @@ use Test::More;
 use Test::Mojo;
 use t::Util;
 
-# my $f = 'Yetie::Validator::Filters';
-# use_ok $f;
-#
-# subtest '_hyphen' => sub {
-#     my $dash = 'ー˗‐‒–——−ｰ‑―﹘─━ー';
-#     my $res = $f->_hyphen( undef, $dash );
-#     is $res, '---------------', 'right convert to hypen';
-# };
-
+use_ok 'Yetie::Validator::Filters';
 my $t = Test::Mojo->new('App');
 
 sub new_req {
@@ -33,6 +25,23 @@ subtest 'hyphen' => sub {
     $v->input( { foo => 'ー˗‐‒–——−ｰ‑―﹘─━ー' } );
     $v->optional( 'foo', 'hyphen' );
     is $v->param('foo'), '---------------', 'right convert hyphen';
+};
+
+subtest 'space' => sub {
+    my ( $c, $v ) = new_req();
+    $v->input(
+        {
+            foo => '  a  a  ',
+            bar => "\x{3000}\x{3000}a\x{3000}\x{3000}a\x{3000}\x{3000}",
+            baz => "\x{0009}\x{0009}a\x{0009}\x{0009}a\x{0009}\x{0009}",
+        }
+    );
+    $v->optional( 'foo', 'space' );
+    $v->optional( 'bar', 'space' );
+    $v->optional( 'baz', 'space' );
+    is $v->param('foo'), ' a a ', 'right space';
+    is $v->param('bar'), ' a a ', 'right ideographic space';
+    is $v->param('baz'), ' a a ', 'right tab';
 };
 
 done_testing();

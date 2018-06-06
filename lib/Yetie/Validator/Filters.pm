@@ -3,7 +3,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use Lingua::JA::Regular::Unicode qw();
 
 my @filters = qw(
-  double_byte_char hyphen
+  double_byte_char hyphen space
 );
 
 sub register {
@@ -41,6 +41,16 @@ sub _hyphen {
     return unless defined($value);
 
     $value =~ s/[\x{02D7}\x{2010}-\x{2015}\x{2212}\x{2500}-\x{2501}\x{30FC}\x{FE58}\x{FE63}\x{FF0D}\x{FF70}]/-/g;
+    return $value;
+}
+
+# U+3000    　   IDEOGRAPHIC SPACE
+sub _space {
+    my ( $validation, $name, $value ) = @_;
+    return unless defined($value);
+
+    $value = Lingua::JA::Regular::Unicode::space_z2h($value);
+    $value =~ s/\s+/ /g;
     return $value;
 }
 
