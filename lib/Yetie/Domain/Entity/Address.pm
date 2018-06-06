@@ -97,10 +97,10 @@ the following new ones.
 
 Get form field names.
 
-    my $field_names = $e->field_names($region);
+    my $field_names = $address->field_names($region);
 
     # Country Japan
-    my $field_names = $e->field_names('jp');
+    my $field_names = $address->field_names('jp');
 
 Return Array refference.
 
@@ -108,7 +108,7 @@ Default region "us".
 
 =head2 C<notation>
 
-    my $notation = $e->notation;
+    my $notation = $address->notation;
 
 Acquire notation method of address.
 
