@@ -74,6 +74,9 @@ subtest 'to_data' => sub {
         mobile        => '',
       },
       'right dump data';
+
+    $address->hash('foobar');
+    is $address->to_data->{hash}, '915bbeaf59f081ea4aa03ccb7c9c7c4edef08e36', 'right rewrite hash';
 };
 
 done_testing();

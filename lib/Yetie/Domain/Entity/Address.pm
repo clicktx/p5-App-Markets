@@ -66,8 +66,13 @@ sub notation {
 
 sub to_data {
     my $self = shift;
+
     my $data = {};
     $data->{$_} = $self->$_ // '' for @{$attrs};
+
+    # Regenerate hash
+    $data->{hash} = $self->hash_code;
+
     return $data;
 }
 
