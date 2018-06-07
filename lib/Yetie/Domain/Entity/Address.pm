@@ -5,7 +5,6 @@ use Mojo::Util qw(encode);
 my $attrs = [qw(hash country_code line1 line2 level1 level2 postal_code personal_name company_name phone fax mobile)];
 
 has $attrs;
-has hash => sub { shift->hash_code };
 has type => '';
 has _locale_field_names => sub {
     {
