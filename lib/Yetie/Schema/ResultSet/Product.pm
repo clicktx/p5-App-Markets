@@ -99,7 +99,7 @@ Yetie::Schema::ResultSet::Product
 
 =head1 SYNOPSIS
 
-    my $data = $schema->resultset('Product')->method();
+    my $result = $schema->resultset('Product')->method();
 
 =head1 DESCRIPTION
 

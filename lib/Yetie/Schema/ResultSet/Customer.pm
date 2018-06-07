@@ -44,7 +44,7 @@ Yetie::Schema::ResultSet::Customer
 
 =head1 SYNOPSIS
 
-    my $data = $schema->resultset('Customer')->method();
+    my $result = $schema->resultset('Customer')->method();
 
 =head1 DESCRIPTION
 

@@ -11,7 +11,7 @@ Yetie::Schema::ResultSet::Sales::Order::Item
 
 =head1 SYNOPSIS
 
-    my $data = $schema->resultset('Sales::Order::Item')->method();
+    my $result = $schema->resultset('Sales::Order::Item')->method();
 
 =head1 DESCRIPTION
 

@@ -100,7 +100,7 @@ Yetie::Schema::ResultSet::Category
 
 =head1 SYNOPSIS
 
-    my $data = $schema->resultset('Category')->method();
+    my $result = $schema->resultset('Category')->method();
 
 =head1 DESCRIPTION
 
