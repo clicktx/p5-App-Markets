@@ -5,7 +5,7 @@ use Mojo::Util qw(encode);
 my $attrs = [qw(hash country_code line1 line2 level1 level2 postal_code personal_name company_name phone fax mobile)];
 
 has $attrs;
-has type => '';
+has type                => '';
 has _locale_field_names => sub {
     {
         us => [qw(country_code personal_name company_name line1 line2 level2 level1 postal_code phone fax mobile)],
@@ -56,6 +56,13 @@ sub hash_code {
     $self->SUPER::hash_code($str);
 }
 
+sub new {
+    my $class = shift;
+    my $self  = $class->SUPER::new(@_);
+    $self->hash( $self->hash_code );
+    return $self;
+}
+
 sub notation {
     my $self = shift;
 
@@ -71,7 +78,6 @@ sub to_data {
 
     # Regenerate hash
     $data->{hash} = $self->hash_code;
-
     return $data;
 }
 
@@ -108,6 +114,12 @@ Get form field names.
 Return Array refference.
 
 Default region "us".
+
+=head2 C<new>
+
+    my $address = Yetie::Domain::Entity->new( \%arg );
+
+Generates a hash attribute at instance creation.
 
 =head2 C<notation>
 
