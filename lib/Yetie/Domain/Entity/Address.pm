@@ -59,7 +59,9 @@ sub hash_code {
 sub new {
     my $class = shift;
     my $self  = $class->SUPER::new(@_);
+
     $self->hash( $self->hash_code );
+    $self->is_modified(0);
     return $self;
 }
 
