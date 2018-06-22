@@ -9,7 +9,7 @@ use Data::Clone qw();
 
 has 'id';
 
-my @needless_attrs = (qw/id created_at updated_at/);
+my @not_dump_data_attrs = (qw/id created_at updated_at/);
 
 sub clone {
     my $self  = shift;
@@ -94,9 +94,9 @@ sub to_hash {
 
     # Remove needless data
     my @private = grep { $_ =~ /^_.*/ } keys %hash;
-    push @needless_attrs, @private;
+    push @not_dump_data_attrs, @private;
 
-    delete $hash{$_} for @needless_attrs;
+    delete $hash{$_} for @not_dump_data_attrs;
     return \%hash;
 }
 
@@ -147,11 +147,6 @@ Construct a new index-hash-based L<Yetie::Domain::IxHash> object.
 
 L<Yetie::Domain::Entity> inherits all attributes from L<Yetie::Domain::Base> and implements
 the following new ones.
-
-=head2 C<entity_id>
-
-    has entity_id => 'identity';
-    has entity_id => sub { shift->more_id };
 
 =head1 METHODS
 

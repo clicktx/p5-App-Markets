@@ -56,6 +56,15 @@ sub hash_code {
     $self->SUPER::hash_code($str);
 }
 
+sub new {
+    my $class = shift;
+    my $self  = $class->SUPER::new(@_);
+
+    $self->hash( $self->hash_code );
+    $self->is_modified(0);
+    return $self;
+}
+
 sub notation {
     my $self = shift;
 
@@ -65,9 +74,11 @@ sub notation {
 
 sub to_data {
     my $self = shift;
+
     my $data = {};
     $data->{$_} = $self->$_ // '' for @{$attrs};
 
+    # Regenerate hash
     $data->{hash} = $self->hash_code;
     return $data;
 }
@@ -97,18 +108,24 @@ the following new ones.
 
 Get form field names.
 
-    my $field_names = $e->field_names($region);
+    my $field_names = $address->field_names($region);
 
     # Country Japan
-    my $field_names = $e->field_names('jp');
+    my $field_names = $address->field_names('jp');
 
 Return Array refference.
 
 Default region "us".
 
+=head2 C<new>
+
+    my $address = Yetie::Domain::Entity->new( \%arg );
+
+Generates a hash attribute at instance creation.
+
 =head2 C<notation>
 
-    my $notation = $e->notation;
+    my $notation = $address->notation;
 
 Acquire notation method of address.
 

@@ -27,6 +27,7 @@ requires 'Struct::Diff',                            '0.86';
 requires 'Sub::Util',                               '1.47';
 requires 'Tie::IxHash',                             '1.23';
 requires 'Try::Tiny',                               '0.28';
+requires 'Lingua::JA::Regular::Unicode',            '0.13';
 
 # XS modules. it's a high performance!
 # See http://qiita.com/karupanerura/items/e765b23bd3bff806cc27

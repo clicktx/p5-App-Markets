@@ -1,51 +1,35 @@
 use Mojo::Base -strict;
 use Test::More;
-use Test::Deep;
-use Test::Mojo;
 
 my $pkg = 'Yetie::Domain::Factory';
 use_ok 'Yetie::Domain::Factory::Cart';
 
-my $shipments = bless [
-    bless {
-        shipping_address => ( bless {}, 'Yetie::Domain::Entity::Address' ),
-        items => ( bless [], 'Yetie::Domain::Collection' ),
-    },
-    'Yetie::Domain::Entity::Shipment'
-  ],
-  'Yetie::Domain::Collection';
-
 subtest 'argument empty' => sub {
     my $e = $pkg->new('entity-cart')->create_entity;
-    cmp_deeply $e,
-      bless {
-        items => ( bless [], 'Yetie::Domain::Collection' ),
-        shipments       => $shipments,
-        billing_address => ( bless {}, 'Yetie::Domain::Entity::Address' ),
-      },
-      'Yetie::Domain::Entity::Cart';
+    isa_ok $e->billing_address, 'Yetie::Domain::Entity::Address';
+    isa_ok $e->items,           'Yetie::Domain::Collection';
+    isa_ok $e->shipments,       'Yetie::Domain::Collection';
+    $e->shipments->each(
+        sub {
+            isa_ok $_->shipping_address, 'Yetie::Domain::Entity::Address';
+            isa_ok $_->items,            'Yetie::Domain::Collection';
+        }
+    );
 };
 
 subtest 'shipments empty hash ref' => sub {
     my $e = $pkg->new( 'entity-cart', { shipments => [] } )->create_entity;
-    cmp_deeply $e,
-      bless {
-        items           => ignore(),
-        shipments       => $shipments,
-        billing_address => ignore(),
-      },
-      'Yetie::Domain::Entity::Cart';
+    $e->shipments->each(
+        sub {
+            isa_ok $_->shipping_address, 'Yetie::Domain::Entity::Address';
+            isa_ok $_->items,            'Yetie::Domain::Collection';
+        }
+    );
 };
 
 subtest 'cart data empty' => sub {
     my $e = $pkg->new('entity-cart')->create_entity;
-    cmp_deeply $e,
-      bless {
-        items => ( bless [], 'Yetie::Domain::Collection' ),
-        shipments       => ignore(),
-        billing_address => ignore(),
-      },
-      'Yetie::Domain::Entity::Cart';
+    is $e->items->size, 0;
 };
 
 subtest 'argument items data only' => sub {
@@ -55,27 +39,16 @@ subtest 'argument items data only' => sub {
             items => [ {} ],
         }
     )->create_entity;
-    cmp_deeply $e,
-      bless {
-        items => ( bless [ ( bless {}, 'Yetie::Domain::Entity::Cart::Item' ) ], 'Yetie::Domain::Collection' ),
-        shipments       => ignore(),
-        billing_address => ignore(),
-      },
-      'Yetie::Domain::Entity::Cart';
+    isa_ok $e->items->first, 'Yetie::Domain::Entity::Cart::Item';
 };
 
 subtest 'argument shipments data only' => sub {
     my $e = $pkg->new( 'entity-cart', { shipments => [ { items => [ {}, {} ] } ] }, )->create_entity;
-    $shipments->[0]->{items} =
-      bless [ ( bless {}, 'Yetie::Domain::Entity::Cart::Item' ), ( bless {}, 'Yetie::Domain::Entity::Cart::Item' ) ],
-      'Yetie::Domain::Collection';
-    cmp_deeply $e,
-      bless {
-        items           => ignore(),
-        shipments       => $shipments,
-        billing_address => ignore(),
-      },
-      'Yetie::Domain::Entity::Cart';
+    $e->shipments->first->items->each(
+        sub {
+            isa_ok $_, 'Yetie::Domain::Entity::Cart::Item';
+        }
+    );
 };
 
 done_testing;

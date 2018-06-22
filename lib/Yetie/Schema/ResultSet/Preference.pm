@@ -25,7 +25,7 @@ Yetie::Schema::ResultSet::Preference
 
 =head1 SYNOPSIS
 
-    my $data = $schema->resultset('Preference')->method();
+    my $result = $schema->resultset('Preference')->method();
 
 =head1 DESCRIPTION
 

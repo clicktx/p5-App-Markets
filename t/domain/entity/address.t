@@ -5,20 +5,30 @@ use_ok 'Yetie::Domain::Entity::Address';
 
 my $addrs = [
     [qw(id country_code line1 line2 level1 level2 postal_code personal_name company_name phone fax mobile)],
-    [ 1, 'us', '42 Pendergast St.', '', 'SC', 'Piedmont', '29673', 'Claire Underwood', '', '123-4567', '', '' ],
+    [ 1, 'us', '42 Pendergast St.', '', 'SC', 'Piedmont', '29673', 'Claire Underwood', '', '(012)234-5678', '', '' ],
+    [
+        2, 'us', '４２　　Ｐｅｎｄｅｒｇａｓｔ　Ｓｔ．',
+        '', 'ＳＣ', 'Ｐｉｅｄｍｏｎｔ', '２９６７３', 'Claire  Underwood',
+        '', '（０１２）２３４ー５６７８',
+        '', ''
+    ],
 ];
 my $cols = shift @{$addrs};
 my $addr = shift @{$addrs};
 my $data;
 $data->{$_} = shift @{$addr} for @{$cols};
 
+my $data_zenkaku;
+$addr = shift @{$addrs};
+$data_zenkaku->{$_} = shift @{$addr} for @{$cols};
+
 subtest 'basic' => sub {
     my $address = Yetie::Domain::Entity::Address->new( {} );
     isa_ok $address, 'Yetie::Domain::Entity';
-
     can_ok $address, qw(
       country_code line1 line2 level1 level2 personal_name company_name phone fax mobile
     );
+    is $address->hash, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'right hash';
 };
 
 subtest 'hash_code' => sub {
@@ -59,11 +69,14 @@ subtest 'to_data' => sub {
         postal_code   => '29673',
         personal_name => 'Claire Underwood',
         company_name  => '',
-        phone         => '123-4567',
+        phone         => '(012)234-5678',
         fax           => '',
         mobile        => '',
       },
       'right dump data';
+
+    $address->hash('foobar');
+    is $address->to_data->{hash}, '915bbeaf59f081ea4aa03ccb7c9c7c4edef08e36', 'right rewrite hash';
 };
 
 done_testing();

@@ -11,7 +11,7 @@ Yetie::Schema::ResultSet::Product::Category
 
 =head1 SYNOPSIS
 
-    my $data = $schema->resultset('Product::Category')->method();
+    my $result = $schema->resultset('Product::Category')->method();
 
 =head1 DESCRIPTION
 

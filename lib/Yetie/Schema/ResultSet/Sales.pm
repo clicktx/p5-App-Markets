@@ -42,7 +42,7 @@ Yetie::Schema::ResultSet::Sales
 
 =head1 SYNOPSIS
 
-    my $data = $schema->resultset('Sales')->method();
+    my $result = $schema->resultset('Sales')->method();
 
 =head1 DESCRIPTION
 

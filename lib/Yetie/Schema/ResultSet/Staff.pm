@@ -24,7 +24,7 @@ Yetie::Schema::ResultSet::Staff
 
 =head1 SYNOPSIS
 
-    my $data = $schema->resultset('Staff')->method();
+    my $result = $schema->resultset('Staff')->method();
 
 =head1 DESCRIPTION
 

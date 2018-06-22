@@ -1,20 +1,16 @@
 use Mojo::Base -strict;
 use Test::More;
-use Test::Deep;
-use Test::Mojo;
 
 my $pkg = 'Yetie::Domain::Factory';
 use_ok 'Yetie::Domain::Factory::Shipment';
 
 subtest 'argument empty' => sub {
     my $factory = $pkg->new('entity-shipment');
-    my $entity  = $factory->create_entity();
-    cmp_deeply $entity,
-      bless {
-        shipping_address => ( bless {}, 'Yetie::Domain::Entity::Address' ),
-        items => ( bless [], 'Yetie::Domain::Collection' ),
-      },
-      'Yetie::Domain::Entity::Shipment';
+    my $e       = $factory->create_entity();
+
+    isa_ok $e, 'Yetie::Domain::Entity::Shipment';
+    isa_ok $e->shipping_address, 'Yetie::Domain::Entity::Address';
+    isa_ok $e->items,            'Yetie::Domain::Collection';
 };
 
 subtest 'data' => sub {
@@ -25,13 +21,9 @@ subtest 'data' => sub {
             items            => [       {} ],
         }
     );
-    my $entity = $factory->create_entity();
-    cmp_deeply $entity,
-      bless {
-        shipping_address => ( bless { line1 => 'Silicon Valley' }, 'Yetie::Domain::Entity::Address' ),
-        items => ( bless [ bless {}, 'Yetie::Domain::Entity::Cart::Item', ], 'Yetie::Domain::Collection' ),
-      },
-      'Yetie::Domain::Entity::Shipment';
+    my $e = $factory->create_entity();
+    is $e->shipping_address->line1, 'Silicon Valley', 'right data';
+    isa_ok $e->items->first, 'Yetie::Domain::Entity::Cart::Item';
 };
 
 done_testing;
