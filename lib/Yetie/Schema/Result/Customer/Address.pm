@@ -33,7 +33,7 @@ belongs_to
   { 'foreign.id' => 'self.address_id' };
 
 belongs_to
-  type => 'Yetie::Schema::Result::Address::Type',
+  type => 'Yetie::Schema::Result::Customer::Address::Type',
   { 'foreign.id' => 'self.address_type_id' };
 
 1;
