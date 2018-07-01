@@ -93,6 +93,11 @@ has_many
   { cascade_delete       => 0 };
 
 has_many
+  phones => 'Yetie::Schema::Result::Address::Phone',
+  { 'foreign.address_id' => 'self.id' },
+  { cascade_delete       => 0 };
+
+has_many
   sales => 'Yetie::Schema::Result::Sales',
   { 'foreign.address_id' => 'self.id' },
   { cascade_delete       => 0 };
