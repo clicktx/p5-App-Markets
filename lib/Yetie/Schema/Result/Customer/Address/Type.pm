@@ -9,7 +9,7 @@ primary_column id => {
 
 column name => {
     data_type   => 'VARCHAR',
-    size        => 50,
+    size        => 32,
     is_nullable => 0,
 };
 
