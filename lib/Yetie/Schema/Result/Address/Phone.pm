@@ -12,6 +12,11 @@ column address_id => {
     is_nullable => 0,
 };
 
+column phone_type_id => {
+    data_type   => 'INT',
+    is_nullable => 0,
+};
+
 column number => {
     data_type   => 'VARCHAR',
     size        => 32,
@@ -31,6 +36,10 @@ column number_only => {
 belongs_to
   address => 'Yetie::Schema::Result::Address',
   { 'foreign.id' => 'self.address_id' };
+
+belongs_to
+  type => 'Yetie::Schema::Result::Address::Phone::Type',
+  { 'foreign.id' => 'self.phone_type_id' };
 
 # Index
 sub sqlt_deploy_hook {
