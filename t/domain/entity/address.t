@@ -28,7 +28,8 @@ subtest 'basic' => sub {
     can_ok $address, qw(
       country_code line1 line2 level1 level2 personal_name company_name phone fax mobile
     );
-    is $address->hash, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'right hash';
+    isa_ok $address->phones, 'Yetie::Domain::Entity::Address::Phones',   'right phones';
+    is $address->hash,       'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'right hash';
 };
 
 subtest 'hash_code' => sub {
