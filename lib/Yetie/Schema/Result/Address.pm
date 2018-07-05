@@ -107,4 +107,12 @@ has_many
   { 'foreign.address_id' => 'self.id' },
   { cascade_delete       => 0 };
 
+sub to_data {
+    my $self = shift;
+
+    my $data = $self->SUPER::to_data || {};
+    $data->{phones} = $self->phones->to_data;
+    return $data;
+}
+
 1;

@@ -48,4 +48,14 @@ sub sqlt_deploy_hook {
     $sqlt_table->add_index( name => 'idx_number', fields => ['number'] );
 }
 
+sub to_data {
+    my $self = shift;
+
+    return {
+        id     => $self->id,
+        number => $self->number,
+        type   => $self->type->name,
+    };
+}
+
 1;
