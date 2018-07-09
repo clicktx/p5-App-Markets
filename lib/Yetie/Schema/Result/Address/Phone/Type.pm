@@ -16,6 +16,6 @@ column name => {
 has_many
   phones => 'Yetie::Schema::Result::Address::Phone',
   { 'foreign.phone_type_id' => 'self.id' },
-  { cascade_delete            => 0 };
+  { cascade_delete          => 0 };
 
 1;

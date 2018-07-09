@@ -44,8 +44,7 @@ belongs_to
 # Index
 sub sqlt_deploy_hook {
     my ( $self, $sqlt_table ) = @_;
-
-    $sqlt_table->add_index( name => 'idx_number', fields => ['number'] );
+    $sqlt_table->add_index( name => 'idx_number_only', fields => ['number_only'] );
 }
 
 sub to_data {
