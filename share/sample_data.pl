@@ -67,7 +67,7 @@
     ],
     'Address::Phone::Type' => [
         [qw(id name)],
-        [ 1, 'tel' ],
+        [ 1, 'phone' ],
         [ 2, 'fax' ],
         [ 3, 'mobile' ],
     ],
