@@ -65,24 +65,6 @@ column company_name => {
     is_nullable => 0,
 };
 
-column phone => {
-    data_type   => 'VARCHAR',
-    size        => 32,
-    is_nullable => 0,
-};
-
-column fax => {
-    data_type   => 'VARCHAR',
-    size        => 32,
-    is_nullable => 0,
-};
-
-column mobile => {
-    data_type   => 'VARCHAR',
-    size        => 32,
-    is_nullable => 0,
-};
-
 # Index
 unique_constraint ui_hash => [qw/hash/];
 
@@ -109,9 +91,14 @@ has_many
 
 sub to_data {
     my $self = shift;
+    my $data = {};
+    $data->{$_} = $self->$_ for qw(
+      id hash country_code line1 line2 level1 level2 postal_code personal_name company_name
+    );
 
-    my $data = $self->SUPER::to_data || {};
-    $data->{phones} = $self->phones->to_data;
+    # phone, fax, mobile
+    $self->phones->each( sub { $data->{ $_->type->name } = $_->number; } );
+
     return $data;
 }
 
