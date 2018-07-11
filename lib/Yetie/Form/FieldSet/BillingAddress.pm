@@ -54,7 +54,7 @@ has_field 'billing_address.company_name' => (
 );
 
 has_field 'billing_address.phone' => (
-    extends('base-phone#home'),
+    extends('base-phone#phone'),
     autocomplete => 'section-sent billing home tel',
     required     => 1,
 );

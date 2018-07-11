@@ -54,7 +54,7 @@ has_field 'shipping_address.company_name' => (
 );
 
 has_field 'shipping_address.phone' => (
-    extends('base-phone#home'),
+    extends('base-phone#phone'),
     autocomplete => 'section-sent shipping home tel',
     required     => 1,
 );
