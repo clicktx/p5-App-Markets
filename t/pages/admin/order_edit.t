@@ -32,7 +32,7 @@ sub t01_billing_address : Tests() {
         'billing_address.level1'        => 'SC',
         'billing_address.postal_code'   => '29673',
         'billing_address.personal_name' => 'Elizabeth T. Peoples',
-        'billing_address.company_name'  => 'Eli Moore Inc',
+        'billing_address.organization'  => 'Eli Moore Inc',
         'billing_address.phone'         => '305-939-8498',
     };
     $t->post_ok( '/admin/order/1/edit/billing_address', form => $post_data )

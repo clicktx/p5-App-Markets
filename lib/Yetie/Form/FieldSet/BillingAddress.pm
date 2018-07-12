@@ -47,8 +47,8 @@ has_field 'billing_address.personal_name' => (
     required     => 1,
 );
 
-has_field 'billing_address.company_name' => (
-    extends('base-name#company_name'),
+has_field 'billing_address.organization' => (
+    extends('base-name#organization'),
     autocomplete => 'section-sent billing organization',
     required     => 0,
 );

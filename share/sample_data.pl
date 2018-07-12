@@ -58,7 +58,7 @@
         [ 9, 'i@example.org', 0 ],
     ],
     'Address' => [
-        [qw/id country_code line1 line2 level2 level1 postal_code personal_name company_name hash/],
+        [qw/id country_code line1 line2 level2 level1 postal_code personal_name organization hash/],
         [ 1, 'us', '42 Pendergast St.', '', 'Piedmont', 'SC', '29673', 'Elizabeth T. Peoples', 'Eli Moore Inc', '2cd6fbf9747c1f9d791942885eaebf2d4cd0d868' ],
         [ 2, 'us', '7004 Tunnel St.', '', 'New Brunswick', 'NJ', '08901', 'Craig M. Hise', 'Big Apple', 'b253e84237954f37eafd4cd0bbfdaffa37e16859' ],
         [ 3, 'us', '803 Wild Rose St.', '', 'Woodstock', 'GA', '30188', 'Mary R. Johnson', '', '72131e5f13601203c39023f020a3821c0b6ccc97' ],

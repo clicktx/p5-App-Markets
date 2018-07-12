@@ -53,13 +53,13 @@ column postal_code => {
     comments    => 'Post Code/Zip Code',
 };
 
-column personal_name => {
+column organization => {
     data_type   => 'VARCHAR',
     size        => 32,
     is_nullable => 0,
 };
 
-column company_name => {
+column personal_name => {
     data_type   => 'VARCHAR',
     size        => 32,
     is_nullable => 0,
@@ -93,7 +93,7 @@ sub to_data {
     my $self = shift;
     my $data = {};
     $data->{$_} = $self->$_ for qw(
-      id hash country_code line1 line2 level1 level2 postal_code personal_name company_name
+      id hash country_code line1 line2 level1 level2 postal_code personal_name organization
     );
 
     # phone, fax, mobile
