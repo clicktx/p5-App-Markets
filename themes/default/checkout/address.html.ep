@@ -56,14 +56,14 @@
             <%= form_error %>
         </div>
         <div class="">
-            <%= form_field '#billing_address.level2' %>
+            <%= form_field '#billing_address.city' %>
             <%= form_label %>
             <%= form_widget %>
             <%= form_help %>
             <%= form_error %>
         </div>
         <div class="">
-            <%= form_field '#billing_address.level1' %>
+            <%= form_field '#billing_address.state' %>
             <%= form_label %>
             <%= form_widget %>
             <%= form_help %>

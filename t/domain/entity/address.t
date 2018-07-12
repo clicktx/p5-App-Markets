@@ -4,11 +4,11 @@ use Test::More;
 use_ok 'Yetie::Domain::Entity::Address';
 
 my $addrs = [
-    [qw(id country_code line1 line2 level1 level2 postal_code personal_name organization phone fax mobile)],
-    [ 1, 'us', '42 Pendergast St.', '', 'SC', 'Piedmont', '29673', 'Claire Underwood', '', '(012)234-5678', '', '' ],
+    [qw(id country_code line1 line2 city state postal_code personal_name organization phone fax mobile)],
+    [ 1, 'us', '42 Pendergast St.', '', 'Piedmont', 'SC', '29673', 'Claire Underwood', '', '(012)234-5678', '', '' ],
     [
         2, 'us', '４２　　Ｐｅｎｄｅｒｇａｓｔ　Ｓｔ．',
-        '', 'ＳＣ', 'Ｐｉｅｄｍｏｎｔ', '２９６７３', 'Claire  Underwood',
+        '', 'Ｐｉｅｄｍｏｎｔ', 'ＳＣ', '２９６７３', 'Claire  Underwood',
         '', '（０１２）２３４ー５６７８',
         '', ''
     ],
@@ -26,7 +26,7 @@ subtest 'basic' => sub {
     my $address = Yetie::Domain::Entity::Address->new( {} );
     isa_ok $address, 'Yetie::Domain::Entity';
     can_ok $address, qw(
-      country_code line1 line2 level1 level2 personal_name organization phone fax mobile
+      country_code line1 line2 city state personal_name organization phone fax mobile
     );
     isa_ok $address->phones, 'Yetie::Domain::Entity::Address::Phones',   'right phones';
     is $address->hash,       'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'right hash';
@@ -65,8 +65,8 @@ subtest 'to_data' => sub {
         country_code  => 'us',
         line1         => '42 Pendergast St.',
         line2         => '',
-        level1        => 'SC',
-        level2        => 'Piedmont',
+        city          => 'Piedmont',
+        state         => 'SC',
         postal_code   => '29673',
         personal_name => 'Claire Underwood',
         organization  => '',

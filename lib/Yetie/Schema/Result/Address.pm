@@ -32,18 +32,18 @@ column line2 => {
     is_nullable => 0,
 };
 
-column level1 => {
-    data_type   => 'VARCHAR',
-    size        => 32,
-    is_nullable => 0,
-    comments    => 'State/Province/Province/Region',
-};
-
-column level2 => {
+column city => {
     data_type   => 'VARCHAR',
     size        => 32,
     is_nullable => 0,
     comments    => 'City/Town',
+};
+
+column state => {
+    data_type   => 'VARCHAR',
+    size        => 32,
+    is_nullable => 0,
+    comments    => 'State/Province/Province/Region',
 };
 
 column postal_code => {
@@ -93,7 +93,7 @@ sub to_data {
     my $self = shift;
     my $data = {};
     $data->{$_} = $self->$_ for qw(
-      id hash country_code line1 line2 level1 level2 postal_code personal_name organization
+      id hash country_code line1 line2 city state postal_code personal_name organization
     );
 
     # phone, fax, mobile

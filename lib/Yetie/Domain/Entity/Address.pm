@@ -2,7 +2,7 @@ package Yetie::Domain::Entity::Address;
 use Yetie::Domain::Entity;
 use Mojo::Util qw(encode);
 
-my $attrs = [qw(hash country_code line1 line2 level1 level2 postal_code personal_name organization phone fax mobile)];
+my $attrs = [qw(hash country_code line1 line2 state city postal_code personal_name organization phone fax mobile)];
 
 has $attrs;
 has type => '';
@@ -10,8 +10,8 @@ has phones => sub { __PACKAGE__->factory('entity-address-phones') };
 
 has _locale_field_names => sub {
     {
-        us => [qw(country_code personal_name organization line1 line2 level2 level1 postal_code phone fax mobile)],
-        jp => [qw(country_code personal_name organization postal_code level1 level2 line1 line2 phone fax mobile)],
+        us => [qw(country_code personal_name organization line1 line2 city state postal_code phone fax mobile)],
+        jp => [qw(country_code personal_name organization postal_code state city line1 line2 phone fax mobile)],
     };
 };
 has _locale_notation => sub {
@@ -30,11 +30,11 @@ has _locale_notation => sub {
     return {
         us => [
             $self->personal_name, $self->organization, $self->line2, $self->line1,
-            [ $self->level2, ", ", $self->level1, " ", $self->postal_code ],
+            [ $self->city, ", ", $self->state, " ", $self->postal_code ],
             $country, @contacts
         ],
         jp => [
-            $self->postal_code, $self->level1 . $self->level2 . $self->line1,
+            $self->postal_code, $self->state . $self->city . $self->line1,
             $self->line2, $self->organization, $self->personal_name, $country, @contacts
         ],
     };

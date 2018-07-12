@@ -23,15 +23,15 @@ has_field 'shipping_address.line2' => (
     required     => 0,
 );
 
-has_field 'shipping_address.level1' => (
-    $address->field_info('level1'),
-    autocomplete => 'section-sent shipping address-level1',
+has_field 'shipping_address.city' => (
+    $address->field_info('city'),
+    autocomplete => 'section-sent shipping address-level2',
     required     => 1,
 );
 
-has_field 'shipping_address.level2' => (
-    $address->field_info('level2'),
-    autocomplete => 'section-sent shipping address-level2',
+has_field 'shipping_address.state' => (
+    $address->field_info('state'),
+    autocomplete => 'section-sent shipping address-level1',
     required     => 1,
 );
 
