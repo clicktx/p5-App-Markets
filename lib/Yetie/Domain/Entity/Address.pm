@@ -6,7 +6,6 @@ my $attrs = [qw(hash country_code line1 line2 state city postal_code personal_na
 
 has $attrs;
 has type => '';
-has phones => sub { __PACKAGE__->factory('entity-address-phones') };
 
 has _locale_field_names => sub {
     {

@@ -3,8 +3,6 @@ use Mojo::Base 'Yetie::Domain::Factory';
 
 sub cook {
     my $self = shift;
-
-    $self->aggregate( phones => 'entity-address-phones', { list => $self->param('phones') || [] } );
 }
 
 1;
