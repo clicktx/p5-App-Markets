@@ -47,9 +47,9 @@ sub aggregate_kvlist {
 
 sub cook { }
 
-sub create { shift->create_entity(@_) }
+sub create { shift->create_domain(@_) }
 
-sub create_entity {
+sub create_domain {
     my $self = shift;
 
     # my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
@@ -200,13 +200,13 @@ Create C<Yetie::Domain::IxHash> type aggregate.
 
 =head2 C<create>
 
-Alias for L</create_entity>.
+Alias for L</create_domain>.
 
-=head2 C<create_entity>
+=head2 C<create_domain>
 
-    my $entity = $factory->create_entity;
-    my $entity = $factory->create_entity( foo => 'bar' );
-    my $entity = $factory->create_entity( { foo => 'bar' } );
+    my $entity = $factory->create_domain;
+    my $entity = $factory->create_domain( foo => 'bar' );
+    my $entity = $factory->create_domain( { foo => 'bar' } );
 
 =head2 C<factory>
 
