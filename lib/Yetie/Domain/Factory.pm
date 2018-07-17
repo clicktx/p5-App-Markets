@@ -8,7 +8,7 @@ use Yetie::Domain::Collection qw/collection/;
 use Yetie::Domain::IxHash qw/ix_hash/;
 
 has 'app';
-has entity_class => sub {
+has domain_class => sub {
     my $class = ref shift;
     $class =~ s/::Factory//;
     $class;
@@ -66,11 +66,11 @@ sub create_entity {
     my $params = $self->params;
 
     # no need parameter
-    delete $params->{$_} for qw(app entity_class resultset);
+    delete $params->{$_} for qw(app domain_class resultset);
 
     # Create entity
-    Yetie::Util::load_class( $self->entity_class );
-    my $entity = $self->entity_class->new( %{$params} );
+    Yetie::Util::load_class( $self->domain_class );
+    my $entity = $self->domain_class->new( %{$params} );
 
     # NOTE: attributesは Yetie::Domain::Entity::XXX で明示する方が良い?
     # Add attributes
@@ -94,13 +94,13 @@ sub new {
 
     my $domain        = Mojo::Util::camelize($arg);
     my $factory_class = _factory_class($domain);
-    my $entity_class  = 'Yetie::Domain::' . $domain;
+    my $domain_class  = 'Yetie::Domain::' . $domain;
 
     my $e = Mojo::Loader::load_class($factory_class);
     die "Exception: $e" if ref $e;
 
     my $factory = $e ? __PACKAGE__->SUPER::new(@_) : $factory_class->SUPER::new(@_);
-    $factory->entity_class($entity_class);
+    $factory->domain_class($domain_class);
     return $factory;
 }
 
@@ -157,9 +157,9 @@ Yetie::Domain::Factory
 
 =head2 C<app>
 
-=head2 C<entity_class>
+=head2 C<domain_class>
 
-    my $entity_class = $factory->entity_class;
+    my $domain_class = $factory->domain_class;
 
 Get namespace as a construct entity class.
 

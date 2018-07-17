@@ -9,21 +9,21 @@ subtest 'basic' => sub {
 
     # params method
     my $p = $f->params;
-    is_deeply $p, { entity_class => $e_c }, 'right get params empty hash ref';
+    is_deeply $p, { domain_class => $e_c }, 'right get params empty hash ref';
     my %p = $f->params;
-    is_deeply \%p, { entity_class => $e_c }, 'right get params empty hash';
+    is_deeply \%p, { domain_class => $e_c }, 'right get params empty hash';
 
     $f->params( a => 1 );
     $f->params( b => 2 );
-    is_deeply $f, { a => 1, b => 2, entity_class => $e_c }, 'right set params';
+    is_deeply $f, { a => 1, b => 2, domain_class => $e_c }, 'right set params';
 
     $p = $f->params;
-    is_deeply $p, { a => 1, b => 2, entity_class => $e_c }, 'right get hash reference';
+    is_deeply $p, { a => 1, b => 2, domain_class => $e_c }, 'right get hash reference';
     my %params = $f->params;
-    is_deeply \%params, { a => 1, b => 2, entity_class => $e_c }, 'right get hash';
+    is_deeply \%params, { a => 1, b => 2, domain_class => $e_c }, 'right get hash';
 
     $f->params( { c => 3, d => 4 } );
-    is_deeply $f, { a => 1, b => 2, c => 3, d => 4, entity_class => $e_c }, 'right set params';
+    is_deeply $f, { a => 1, b => 2, c => 3, d => 4, domain_class => $e_c }, 'right set params';
 
     eval { $f->params('a') };
     ok $@, 'getter only one argument';
