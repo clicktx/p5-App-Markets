@@ -5,15 +5,13 @@ use overload
   q("")    => sub { shift->value },
   fallback => 1;
 
-has qw(_value);
+has value => '';
 
 sub new {
-    my ( $class, $value ) = ( shift, shift // '' );
-    my $self = $class->SUPER::new( _value => $value );
+    my $class = shift;
+    my $self  = $class->SUPER::new(@_);
     return $self;
 }
-
-sub value { shift->_value }
 
 1;
 
@@ -37,14 +35,14 @@ the following new ones.
 L<Yetie::Domain::Value> inherits all attributes from L<Mojo::Base> and implements
 the following new ones.
 
+=head2 C<value>
+
+    my $value = $obj->value;
+
 =head1 METHODS
 
 L<Yetie::Domain::Value> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
-
-=head2 C<value>
-
-    my $value = $obj->value;
 
 =head1 OPERATORS
 
