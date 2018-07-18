@@ -68,7 +68,7 @@ sub create_domain {
     # no need parameter
     delete $params->{$_} for qw(app domain_class resultset);
 
-    # Create entity
+    # Create domain object
     Yetie::Util::load_class( $self->domain_class );
     my $entity = $self->domain_class->new( %{$params} );
 
@@ -149,19 +149,27 @@ Yetie::Domain::Factory
 
 =head1 FUNCTIONS
 
+L<Yetie::Domain::Factory> inherits all functions from L<Mojo::Base> and implements
+the following new ones.
+
 =head2 C<new>
 
     my $factory = Yetie::Domain::Factory->new( 'entity-hoge', %data || \%data );
 
 =head1 ATTRIBUTES
 
+L<Yetie::Domain::Factory> inherits all attributes from L<Mojo::Base> and implements
+the following new ones.
+
 =head2 C<app>
+
+L<Yetie> application instance.
 
 =head2 C<domain_class>
 
     my $domain_class = $factory->domain_class;
 
-Get namespace as a construct entity class.
+Get namespace as a construct domain class.
 
 =head1 METHODS
 
@@ -171,8 +179,9 @@ the following new ones.
 =head2 C<aggregate>
 
     my $entity = $factory->aggregate( 'user', 'entity-user', \%data );
+    my $vo = $factory->aggregate( 'user', 'value-user-name', \%data );
 
-Create C<Yetie::Domain::Entity> type aggregate.
+Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
 
 =head2 C<aggregate_collection>
 
@@ -180,7 +189,7 @@ Create C<Yetie::Domain::Entity> type aggregate.
     my $entity = $factory->aggregate_collection( $accessor_name, $target_entity, \@data );
     my $entity = $factory->aggregate_collection( 'items', 'entity-xxx-item', \@data );
 
-Create C<Yetie::Domain::Collection> type aggregate.
+Create L<Yetie::Domain::Collection> type aggregate.
 
 =head2 C<aggregate_kvlist>
 
@@ -188,11 +197,11 @@ Create C<Yetie::Domain::Collection> type aggregate.
     my $entity = $factory->aggregate_kvlist( $accessor_name, $target_entity, \@data );
     my $entity = $factory->aggregate_kvlist( 'items', 'entity-xxx-item', \@data );
 
-Create C<Yetie::Domain::IxHash> type aggregate.
+Create L<Yetie::Domain::IxHash> type aggregate.
 
 =head2 C<cook>
 
-    # Yetie::Domain::Factory::YourEntity;
+    # Yetie::Domain::Factory::YourDomainClass;
     sub cook {
         # Overdide this method.
         # your factory codes here!
@@ -244,4 +253,5 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Mojo::Base>, L<Yetie::Domain::Collection>, L<Yetie::Domain::IxHash>
+L<Mojo::Base>, L<Yetie::Domain::Entity>, L<Yetie::Domain::Value>,
+L<Yetie::Domain::Collection>, L<Yetie::Domain::IxHash>
