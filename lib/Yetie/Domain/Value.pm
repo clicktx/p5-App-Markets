@@ -7,12 +7,6 @@ use overload
 
 has value => '';
 
-sub new {
-    my $class = shift;
-    my $self  = $class->SUPER::new(@_);
-    return $self;
-}
-
 1;
 
 =encoding utf8
