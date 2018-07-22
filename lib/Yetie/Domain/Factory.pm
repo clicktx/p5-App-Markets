@@ -15,31 +15,31 @@ has domain_class => sub {
 };
 
 sub aggregate {
-    my ( $self, $accessor, $entity, $data ) = @_;
+    my ( $self, $accessor, $domain, $data ) = @_;
     croak 'Data type is not Hash refference' if ref $data ne 'HASH';
 
-    $self->param( $accessor => $self->factory($entity)->create($data) );
+    $self->param( $accessor => $self->factory($domain)->create($data) );
     return $self;
 }
 
 sub aggregate_collection {
-    my ( $self, $accessor, $entity, $data ) = @_;
+    my ( $self, $accessor, $domain, $data ) = @_;
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @array;
-    push @array, $self->factory($entity)->create($_) for @{$data};
+    push @array, $self->factory($domain)->create($_) for @{$data};
     $self->param( $accessor => collection(@array) );
     return $self;
 }
 
 sub aggregate_kvlist {
-    my ( $self, $accessor, $entity, $data ) = @_;
+    my ( $self, $accessor, $domain, $data ) = @_;
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @kvlist;
     foreach my $kv ( @{$data} ) {
         my ( $key, $value ) = %{$kv};
-        push @kvlist, ( $key => $self->factory($entity)->create($value) );
+        push @kvlist, ( $key => $self->factory($domain)->create($value) );
     }
     $self->param( $accessor => ix_hash(@kvlist) );
     return $self;
@@ -70,14 +70,14 @@ sub create_domain {
 
     # Create domain object
     Yetie::Util::load_class( $self->domain_class );
-    my $entity = $self->domain_class->new( %{$params} );
+    my $domain = $self->domain_class->new( %{$params} );
 
     # NOTE: attributesは Yetie::Domain::Entity::XXX で明示する方が良い?
     # Add attributes
-    # my @keys = keys %{$entity};
-    # $entity->attr($_) for @keys;
+    # my @keys = keys %{$domain};
+    # $domain->attr($_) for @keys;
 
-    return $entity;
+    return $domain;
 }
 
 sub factory {
@@ -143,7 +143,7 @@ Yetie::Domain::Factory
 =head1 SYNOPSIS
 
     my $factory = Yetie::Domain::Factory->new( 'entity-hoge', %data1 || \%data1 );
-    my $entity = $factory->create( %data2 || \%data2 );
+    my $domain = $factory->create( %data2 || \%data2 );
 
 =head1 DESCRIPTION
 
@@ -178,7 +178,7 @@ the following new ones.
 
 =head2 C<aggregate>
 
-    my $entity = $factory->aggregate( 'user', 'entity-user', \%data );
+    my $domain = $factory->aggregate( 'user', 'entity-user', \%data );
     my $vo = $factory->aggregate( 'user', 'value-user-name', \%data );
 
 Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
@@ -186,16 +186,16 @@ Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
 =head2 C<aggregate_collection>
 
     my @data = (qw/a b c d e f/);
-    my $entity = $factory->aggregate_collection( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate_collection( 'items', 'entity-xxx-item', \@data );
+    my $domain = $factory->aggregate_collection( $accessor_name, $target_entity, \@data );
+    my $domain = $factory->aggregate_collection( 'items', 'entity-xxx-item', \@data );
 
 Create L<Yetie::Domain::Collection> type aggregate.
 
 =head2 C<aggregate_kvlist>
 
     my @data = ( { label => { key => 'value' } }, { label2 => { key2 => 'value2' } }, ... );
-    my $entity = $factory->aggregate_kvlist( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate_kvlist( 'items', 'entity-xxx-item', \@data );
+    my $domain = $factory->aggregate_kvlist( $accessor_name, $target_entity, \@data );
+    my $domain = $factory->aggregate_kvlist( 'items', 'entity-xxx-item', \@data );
 
 Create L<Yetie::Domain::IxHash> type aggregate.
 
@@ -213,9 +213,9 @@ Alias for L</create_domain>.
 
 =head2 C<create_domain>
 
-    my $entity = $factory->create_domain;
-    my $entity = $factory->create_domain( foo => 'bar' );
-    my $entity = $factory->create_domain( { foo => 'bar' } );
+    my $domain = $factory->create_domain;
+    my $domain = $factory->create_domain( foo => 'bar' );
+    my $domain = $factory->create_domain( { foo => 'bar' } );
 
 =head2 C<factory>
 
