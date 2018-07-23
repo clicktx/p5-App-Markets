@@ -76,7 +76,7 @@ sub _edit_address {
     # $self->service('address')->store( $form->param($address_type) );
     # die;
 
-    my $address = $self->factory('address')->create( $form->param($address_type) );
+    my $address = $self->factory('entity-address')->create( $form->param($address_type) );
 
     # FIXME: hashが同じaddressに対する場合の処理が必要
     # hashが同じ場合のみ特殊
