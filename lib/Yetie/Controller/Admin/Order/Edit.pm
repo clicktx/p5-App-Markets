@@ -76,7 +76,7 @@ sub _edit_address {
     # $self->service('address')->store( $form->param($address_type) );
     # die;
 
-    my $address = $self->factory('address')->create( $form->param($address_type) );
+    my $address = $self->factory('entity-address')->create( $form->param($address_type) );
 
     # FIXME: hashが同じaddressに対する場合の処理が必要
     # hashが同じ場合のみ特殊
@@ -121,7 +121,11 @@ sub _init_form {
     # Set form default value
     my $field_names = $order->$address_type->field_names($region);
     my $params      = $self->req->params;
-    $params->append( "$address_type.$_" => $order->$address_type->$_ ) for @{$field_names};
+    do {
+        my $value = $order->$address_type->$_;
+        $params->append( "$address_type.$_" => "$value" );
+      }
+      for @{$field_names};
 
     # Collate field keys
     my @field_keys = map { "$address_type.$_" } @{$field_names};
