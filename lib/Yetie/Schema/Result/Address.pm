@@ -87,11 +87,6 @@ has_many
   { cascade_delete       => 0 };
 
 has_many
-  phones => 'Yetie::Schema::Result::Address::Phone',
-  { 'foreign.address_id' => 'self.id' },
-  { cascade_delete       => 0 };
-
-has_many
   sales => 'Yetie::Schema::Result::Sales',
   { 'foreign.address_id' => 'self.id' },
   { cascade_delete       => 0 };
@@ -100,18 +95,5 @@ has_many
   orders => 'Yetie::Schema::Result::Sales::Order',
   { 'foreign.address_id' => 'self.id' },
   { cascade_delete       => 0 };
-
-sub to_data {
-    my $self = shift;
-    my $data = {};
-    $data->{$_} = $self->$_ for qw(
-      id hash country_code line1 line2 city state postal_code personal_name organization
-    );
-
-    # phone, fax, mobile
-    $self->phones->each( sub { $data->{ $_->type->name } = $_->number; } );
-
-    return $data;
-}
 
 1;
