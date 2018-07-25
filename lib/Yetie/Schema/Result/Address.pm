@@ -65,8 +65,20 @@ column personal_name => {
     is_nullable => 0,
 };
 
+column phone => {
+    data_type   => 'VARCHAR',
+    size        => 16,
+    is_nullable => 0,
+    comments    => 'Not include hyphen and symbols',
+};
+
 # Index
 unique_constraint ui_hash => [qw/hash/];
+
+sub sqlt_deploy_hook {
+    my ( $self, $table ) = @_;
+    $table->add_index( name => 'idx_phone', fields => ['phone'] );
+}
 
 # Relation
 has_many
