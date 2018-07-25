@@ -2,7 +2,7 @@ package Yetie::Domain::Value::Phone;
 use Mojo::Base 'Yetie::Domain::Value';
 
 sub number_only {
-    local $_ = shift->value;
+    local $_ = shift->value // '';
     s/\D//g;
     $_;
 }
