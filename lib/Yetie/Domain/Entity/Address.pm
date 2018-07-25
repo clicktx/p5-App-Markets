@@ -54,6 +54,7 @@ sub hash_code {
         $value = $value->number_only if ref $value;
         $str .= '::' . encode( 'UTF-8', $value );
     }
+    $str =~ s/\s//g;
     $self->SUPER::hash_code($str);
 }
 

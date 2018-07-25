@@ -39,13 +39,13 @@ subtest 'basic' => sub {
 subtest 'hash_code' => sub {
     my $address   = _create_entity();
     my $hash_code = $address->hash_code;
-    is $hash_code, '8c8b45451ed08b21d1c72e3ff702af6da73a3866', 'right hash code';
+    is $hash_code, '4011e7354a7e966e79c953465534760729e84cca', 'right hash code';
 
     $address->personal_name('foo');
     isnt $address->hash_code, $hash_code, 'right change personal_name';
 
     $address->personal_name('ほげ');
-    is $address->hash_code, '0266c02812544670d5794170d4aa1cd1902e9bba', 'right multibyte characters';
+    is $address->hash_code, '5534cdcdcc9041b356839bea89f9aaae3b5f8179', 'right multibyte characters';
 };
 
 subtest 'field_names' => sub {
@@ -62,7 +62,7 @@ subtest 'to_data' => sub {
     my $address = _create_entity();
     is_deeply $address->to_data,
       {
-        hash          => '8c8b45451ed08b21d1c72e3ff702af6da73a3866',
+        hash          => '4011e7354a7e966e79c953465534760729e84cca',
         country_code  => 'us',
         line1         => '42 Pendergast St.',
         line2         => '',
@@ -78,7 +78,7 @@ subtest 'to_data' => sub {
       'right dump data';
 
     $address->hash('foobar');
-    is $address->to_data->{hash}, '8c8b45451ed08b21d1c72e3ff702af6da73a3866', 'right rewrite hash';
+    is $address->to_data->{hash}, '4011e7354a7e966e79c953465534760729e84cca', 'right rewrite hash';
 };
 
 done_testing();
