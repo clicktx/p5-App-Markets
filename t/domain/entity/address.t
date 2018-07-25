@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Yetie::Domain::Factory;
 
 use_ok 'Yetie::Domain::Entity::Address';
 
@@ -22,45 +23,46 @@ my $data_zenkaku;
 $addr = shift @{$addrs};
 $data_zenkaku->{$_} = shift @{$addr} for @{$cols};
 
+sub _create_entity {
+    Yetie::Domain::Factory->new('entity-address')->create($data);
+}
+
 subtest 'basic' => sub {
     my $address = Yetie::Domain::Entity::Address->new( {} );
     isa_ok $address, 'Yetie::Domain::Entity';
     can_ok $address, qw(
-      country_code line1 line2 city state personal_name organization phone fax mobile
+      type hash country_code line1 line2 city state personal_name organization phone fax mobile
     );
-    is $address->hash, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'right hash';
+    is $address->hash, 'cd4f81b52fc788ff8b2e226926eab5f7e87e99ec', 'right hash';
 };
 
 subtest 'hash_code' => sub {
-    my $address   = Yetie::Domain::Entity::Address->new($data);
+    my $address   = _create_entity();
     my $hash_code = $address->hash_code;
-    is $hash_code, '915bbeaf59f081ea4aa03ccb7c9c7c4edef08e36', 'right hash code';
-
-    $address->phone('222-3333');
-    is $address->hash_code, $hash_code, 'right change phone';
+    is $hash_code, '8c8b45451ed08b21d1c72e3ff702af6da73a3866', 'right hash code';
 
     $address->personal_name('foo');
     isnt $address->hash_code, $hash_code, 'right change personal_name';
 
     $address->personal_name('ほげ');
-    is $address->hash_code, 'b06e0458490e1dce77594138b31eabffc71944c8', 'right multibyte characters';
+    is $address->hash_code, '0266c02812544670d5794170d4aa1cd1902e9bba', 'right multibyte characters';
 };
 
 subtest 'field_names' => sub {
-    my $address = Yetie::Domain::Entity::Address->new($data);
+    my $address = _create_entity();
     isa_ok $address->field_names('no_country_code'), 'ARRAY', 'right field names';
 };
 
 subtest 'notation' => sub {
-    my $address = Yetie::Domain::Entity::Address->new($data);
+    my $address = _create_entity();
     isa_ok $address->notation('no_country_code'), 'ARRAY', 'right address notation';
 };
 
 subtest 'to_data' => sub {
-    my $address = Yetie::Domain::Entity::Address->new($data);
+    my $address = _create_entity();
     is_deeply $address->to_data,
       {
-        hash          => '915bbeaf59f081ea4aa03ccb7c9c7c4edef08e36',
+        hash          => '8c8b45451ed08b21d1c72e3ff702af6da73a3866',
         country_code  => 'us',
         line1         => '42 Pendergast St.',
         line2         => '',
@@ -76,7 +78,7 @@ subtest 'to_data' => sub {
       'right dump data';
 
     $address->hash('foobar');
-    is $address->to_data->{hash}, '915bbeaf59f081ea4aa03ccb7c9c7c4edef08e36', 'right rewrite hash';
+    is $address->to_data->{hash}, '8c8b45451ed08b21d1c72e3ff702af6da73a3866', 'right rewrite hash';
 };
 
 done_testing();

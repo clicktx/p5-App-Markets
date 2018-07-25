@@ -2,9 +2,9 @@ package Yetie::Domain::Entity::Address;
 use Yetie::Domain::Entity;
 use Mojo::Util qw(encode);
 
-my $attrs = [qw(hash country_code line1 line2 state city postal_code personal_name organization phone fax mobile)];
-
+my $attrs = [qw(country_code line1 line2 state city postal_code personal_name organization phone fax mobile)];
 has $attrs;
+has hash => '';
 has type => '';
 
 has _locale_field_names => sub {
@@ -48,11 +48,11 @@ sub field_names {
 sub hash_code {
     my $self = shift;
 
-    my @attrs = qw(country_code line1 line2 postal_code personal_name organization);
-    my $str   = '';
-    foreach my $attr (@attrs) {
+    my $str = '';
+    foreach my $attr ( @{$attrs} ) {
         my $value = $self->$attr // '';
-        $str .= $value ? '::' . encode( 'UTF-8', $value ) : '';
+        $value = $value->number_only if ref $value;
+        $str .= '::' . encode( 'UTF-8', $value );
     }
     $self->SUPER::hash_code($str);
 }
@@ -79,7 +79,7 @@ sub to_data {
     my $data = {};
     $data->{$_} = $self->$_ // '' for @{$attrs};
 
-    # Regenerate hash
+    # Generate hash
     $data->{hash} = $self->hash_code;
     return $data;
 }
