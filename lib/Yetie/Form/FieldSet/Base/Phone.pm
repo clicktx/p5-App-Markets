@@ -12,24 +12,4 @@ has_field 'phone' => (
     validations  => [],
 );
 
-has_field 'fax' => (
-    type         => 'tel',
-    label        => 'FAX',
-    autocomplete => 'fax tel-national',
-    placeholder  => '(optional)',
-    help         => '',
-    filters      => [qw(trim)],
-    validations  => [],
-);
-
-has_field 'mobile' => (
-    type         => 'tel',
-    label        => 'Mobile Phone',
-    autocomplete => 'mobile tel-national',
-    placeholder  => '(optional)',
-    help         => '',
-    filters      => [qw(trim)],
-    validations  => [],
-);
-
 1;

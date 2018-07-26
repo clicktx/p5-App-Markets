@@ -59,16 +59,4 @@ has_field 'shipping_address.phone' => (
     required     => 1,
 );
 
-has_field 'shipping_address.fax' => (
-    extends('base-phone#fax'),
-    autocomplete => 'section-sent shipping fax tel',
-    required     => 0,
-);
-
-has_field 'shipping_address.mobile' => (
-    extends('base-phone#mobile'),
-    autocomplete => 'section-sent shipping mobile tel',
-    required     => 0,
-);
-
 1;

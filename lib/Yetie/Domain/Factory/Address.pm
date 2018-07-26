@@ -5,8 +5,6 @@ sub cook {
     my $self = shift;
 
     $self->aggregate( phone  => 'value-phone', { value => $self->param('phone') } );
-    $self->aggregate( fax    => 'value-phone', { value => $self->param('fax') } );
-    $self->aggregate( mobile => 'value-phone', { value => $self->param('mobile') } );
 }
 
 1;
