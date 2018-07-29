@@ -49,7 +49,6 @@ sub hash_code {
     my $str = '';
     foreach my $attr ( @{$attrs} ) {
         my $value = $self->$attr // '';
-        $value = $value->number_only if ref $value;
         $str .= '::' . encode( 'UTF-8', $value );
     }
     $str =~ s/\s//g;

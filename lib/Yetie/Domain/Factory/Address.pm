@@ -1,12 +1,6 @@
 package Yetie::Domain::Factory::Address;
 use Mojo::Base 'Yetie::Domain::Factory';
 
-sub cook {
-    my $self = shift;
-
-    $self->aggregate( phone  => 'value-phone', { value => $self->param('phone') } );
-}
-
 1;
 __END__
 
