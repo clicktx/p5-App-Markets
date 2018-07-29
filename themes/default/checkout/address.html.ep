@@ -19,7 +19,7 @@
 <%= form_for 'RN_checkout_address' => ( method => 'POST') => begin %>
     <%= csrf_field %>
     <div class="">
-        Billing Address
+        <h3>Billing Address</h3>
         <div class="">
             <%= form_field '#billing_address.country_code' %>
             <%= form_label %>
@@ -83,23 +83,9 @@
             <%= form_help %>
             <%= form_error %>
         </div>
-        <div class="">
-            <%= form_field '#billing_address.fax' %>
-            <%= form_label %>
-            <%= form_widget %>
-            <%= form_help %>
-            <%= form_error %>
-        </div>
-        <div class="">
-            <%= form_field '#billing_address.mobile' %>
-            <%= form_label %>
-            <%= form_widget %>
-            <%= form_help %>
-            <%= form_error %>
-        </div>
     </div>
     <div class="">
-        Shipping Address
+        <h3>Shipping Address</h3>
         <div class="">
             <%= form_field '#shipments.0.shipping_address.line1' %>
             <%= form_label %>

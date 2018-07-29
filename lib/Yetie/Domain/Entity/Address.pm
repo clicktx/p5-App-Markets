@@ -2,15 +2,15 @@ package Yetie::Domain::Entity::Address;
 use Yetie::Domain::Entity;
 use Mojo::Util qw(encode);
 
-my $attrs = [qw(country_code line1 line2 state city postal_code personal_name organization phone fax mobile)];
+my $attrs = [qw(country_code line1 line2 state city postal_code personal_name organization phone)];
 has $attrs;
 has hash => '';
 has type => '';
 
 has _locale_field_names => sub {
     {
-        us => [qw(country_code personal_name organization line1 line2 city state postal_code phone fax mobile)],
-        jp => [qw(country_code personal_name organization postal_code state city line1 line2 phone fax mobile)],
+        us => [qw(country_code personal_name organization line1 line2 city state postal_code phone)],
+        jp => [qw(country_code personal_name organization postal_code state city line1 line2 phone)],
     };
 };
 has _locale_notation => sub {
@@ -22,19 +22,17 @@ has _locale_notation => sub {
     };
     my $country = $country_name->{ $self->country_code };
 
-    my @contacts = ( "TEL: " . $self->phone );
-    push @contacts, "FAX: " . $self->fax       if $self->fax;
-    push @contacts, "MOBILE: " . $self->mobile if $self->mobile;
-
     return {
         us => [
             $self->personal_name, $self->organization, $self->line2, $self->line1,
             [ $self->city, ", ", $self->state, " ", $self->postal_code ],
-            $country, @contacts
+            $country, $self->phone
         ],
         jp => [
-            $self->postal_code, $self->state . $self->city . $self->line1,
-            $self->line2, $self->organization, $self->personal_name, $country, @contacts
+            $self->postal_code,   $self->state . $self->city . $self->line1,
+            $self->line2,         $self->organization,
+            $self->personal_name, $country,
+            $self->phone
         ],
     };
 };
@@ -51,7 +49,6 @@ sub hash_code {
     my $str = '';
     foreach my $attr ( @{$attrs} ) {
         my $value = $self->$attr // '';
-        $value = $value->number_only if ref $value;
         $str .= '::' . encode( 'UTF-8', $value );
     }
     $str =~ s/\s//g;

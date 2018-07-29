@@ -21,8 +21,6 @@ my $test_data = {
                 personal_name => '',
                 organization  => '',
                 phone         => '',
-                fax           => '',
-                mobile        => '',
             },
             items => [ { product_id => 4, quantity => 4, price => 100 } ]
         },
@@ -37,8 +35,6 @@ my $test_data = {
                 personal_name => '',
                 organization  => '',
                 phone         => '',
-                fax           => '',
-                mobile        => '',
             },
             items => [
                 { product_id => 4, quantity => 4, price => 100 },
@@ -57,8 +53,6 @@ my $test_data = {
         personal_name => '',
         organization  => '',
         phone         => '',
-        fax           => '',
-        mobile        => '',
     },
 };
 
@@ -97,9 +91,9 @@ subtest 'methods' => sub {
     my $cart      = _create_entity;
     my $cart_data = $cart->to_data;
     my $d         = $test_data;
-    $d->{billing_address}->{hash}                    = 'c8de1c2faee672f7565587b9d8bb82ff3e662085';
-    $d->{shipments}->[0]->{shipping_address}->{hash} = 'de7102e9e35896e9fad60c6195315a81e80d34d3';
-    $d->{shipments}->[1]->{shipping_address}->{hash} = '59cec4d51c3e106dc04c8a40ae3c1ca652ef4d66';
+    $d->{billing_address}->{hash}                    = 'f42001ccd9c7f10d05bfd8a9da91674635daba8c';
+    $d->{shipments}->[0]->{shipping_address}->{hash} = 'a38d44916394e4d5289b8e5e2cc7b66bcd3f1722';
+    $d->{shipments}->[1]->{shipping_address}->{hash} = 'e49e00abbdbcaa37c27e8af5ca11fe33c24703ce';
     cmp_deeply $cart_data, { cart_id => ignore(), %{$d} }, 'right data structure';
     is $cart->id,               '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->total_item_count, 7,                                          'right total item count';
@@ -256,8 +250,6 @@ subtest 'merge' => sub {
                     state        => '',
                     postal_code  => '',
                     phone        => '',
-                    fax          => '',
-                    mobile       => '',
                 },
                 items => []
             }
@@ -272,16 +264,16 @@ subtest 'merge' => sub {
 
     my $d = $test_data;
     $d->{cart_id}                                    = '12345';
-    $d->{billing_address}->{hash}                    = 'c8de1c2faee672f7565587b9d8bb82ff3e662085';
-    $d->{shipments}->[0]->{shipping_address}->{hash} = 'de7102e9e35896e9fad60c6195315a81e80d34d3';
-    $d->{shipments}->[1]->{shipping_address}->{hash} = '59cec4d51c3e106dc04c8a40ae3c1ca652ef4d66';
+    $d->{billing_address}->{hash}                    = 'f42001ccd9c7f10d05bfd8a9da91674635daba8c';
+    $d->{shipments}->[0]->{shipping_address}->{hash} = 'a38d44916394e4d5289b8e5e2cc7b66bcd3f1722';
+    $d->{shipments}->[1]->{shipping_address}->{hash} = 'e49e00abbdbcaa37c27e8af5ca11fe33c24703ce';
     my $cart_data = $cart->to_data;
     cmp_deeply $cart_data, $d, 'right non-destructive';
 
     $d                    = $stored_data;
     $d->{cart_id}         = '99999';
     $d->{billing_address} = {
-        hash          => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+        hash          => '20f551adf8c892c32845022b874e0763ecf68788',
         country_code  => '',
         line1         => '',
         line2         => '',
@@ -291,11 +283,9 @@ subtest 'merge' => sub {
         personal_name => '',
         organization  => '',
         phone         => '',
-        fax           => '',
-        mobile        => '',
     };
     $d->{shipments}->[0]->{shipping_address} = {
-        hash          => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+        hash          => '20f551adf8c892c32845022b874e0763ecf68788',
         country_code  => '',
         line1         => '',
         line2         => '',
@@ -305,8 +295,6 @@ subtest 'merge' => sub {
         personal_name => '',
         organization  => '',
         phone         => '',
-        fax           => '',
-        mobile        => '',
     };
     my $stored_cart_data = $stored_cart->to_data;
     cmp_deeply $stored_cart_data, $d, 'right stored';

@@ -65,17 +65,24 @@ column personal_name => {
     is_nullable => 0,
 };
 
+column phone => {
+    data_type   => 'VARCHAR',
+    size        => 16,
+    is_nullable => 0,
+    comments    => 'Not include hyphen and symbols',
+};
+
 # Index
 unique_constraint ui_hash => [qw/hash/];
+
+sub sqlt_deploy_hook {
+    my ( $self, $table ) = @_;
+    $table->add_index( name => 'idx_phone', fields => ['phone'] );
+}
 
 # Relation
 has_many
   customer_addresses => 'Yetie::Schema::Result::Customer::Address',
-  { 'foreign.address_id' => 'self.id' },
-  { cascade_delete       => 0 };
-
-has_many
-  phones => 'Yetie::Schema::Result::Address::Phone',
   { 'foreign.address_id' => 'self.id' },
   { cascade_delete       => 0 };
 
@@ -88,18 +95,5 @@ has_many
   orders => 'Yetie::Schema::Result::Sales::Order',
   { 'foreign.address_id' => 'self.id' },
   { cascade_delete       => 0 };
-
-sub to_data {
-    my $self = shift;
-    my $data = {};
-    $data->{$_} = $self->$_ for qw(
-      id hash country_code line1 line2 city state postal_code personal_name organization
-    );
-
-    # phone, fax, mobile
-    $self->phones->each( sub { $data->{ $_->type->name } = $_->number; } );
-
-    return $data;
-}
 
 1;

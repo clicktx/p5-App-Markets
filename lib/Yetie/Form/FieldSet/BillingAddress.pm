@@ -59,16 +59,4 @@ has_field 'billing_address.phone' => (
     required     => 1,
 );
 
-has_field 'billing_address.fax' => (
-    extends('base-phone#fax'),
-    autocomplete => 'section-sent billing fax tel',
-    required     => 0,
-);
-
-has_field 'billing_address.mobile' => (
-    extends('base-phone#mobile'),
-    autocomplete => 'section-sent billing mobile tel',
-    required     => 0,
-);
-
 1;
