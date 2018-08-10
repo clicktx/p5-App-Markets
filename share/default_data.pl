@@ -26,7 +26,7 @@
     ],
 
     # reference table
-    'Address::Type' => [
+    'Customer::Address::Type' => [
         [ qw/id name/ ],
         [ 1, 'postal' ],
         [ 2, 'billing' ],

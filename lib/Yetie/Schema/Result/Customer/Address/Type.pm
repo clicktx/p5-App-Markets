@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Address::Type;
+package Yetie::Schema::Result::Customer::Address::Type;
 use Mojo::Base 'Yetie::Schema::Base::Result';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -9,7 +9,7 @@ primary_column id => {
 
 column name => {
     data_type   => 'VARCHAR',
-    size        => 50,
+    size        => 32,
     is_nullable => 0,
 };
 

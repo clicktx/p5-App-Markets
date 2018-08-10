@@ -86,7 +86,6 @@ sub install {
 sub new {
     my $self = shift;
     $self = $self->SUPER::new(@_);
-    Scalar::Util::weaken $self->{app};
     return $self;
 }
 

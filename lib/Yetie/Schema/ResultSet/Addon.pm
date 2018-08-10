@@ -30,7 +30,7 @@ Yetie::Schema::ResultSet::Addon
 
 =head1 SYNOPSIS
 
-    my $data = $schema->resultset('Addon')->method();
+    my $result = $schema->resultset('Addon')->method();
 
 =head1 DESCRIPTION
 

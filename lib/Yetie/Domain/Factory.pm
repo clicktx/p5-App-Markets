@@ -1,7 +1,6 @@
 package Yetie::Domain::Factory;
 use Mojo::Base -base;
 use Carp 'croak';
-use Scalar::Util ();
 use Mojo::Util   ();
 use Mojo::Loader ();
 use Yetie::Util  ();
@@ -9,38 +8,38 @@ use Yetie::Domain::Collection qw/collection/;
 use Yetie::Domain::IxHash qw/ix_hash/;
 
 has 'app';
-has entity_class => sub {
+has domain_class => sub {
     my $class = ref shift;
     $class =~ s/::Factory//;
     $class;
 };
 
 sub aggregate {
-    my ( $self, $accessor, $entity, $data ) = @_;
+    my ( $self, $accessor, $domain, $data ) = @_;
     croak 'Data type is not Hash refference' if ref $data ne 'HASH';
 
-    $self->param( $accessor => $self->factory($entity)->create($data) );
+    $self->param( $accessor => $self->factory($domain)->create($data) );
     return $self;
 }
 
 sub aggregate_collection {
-    my ( $self, $accessor, $entity, $data ) = @_;
+    my ( $self, $accessor, $domain, $data ) = @_;
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @array;
-    push @array, $self->factory($entity)->create($_) for @{$data};
+    push @array, $self->factory($domain)->create($_) for @{$data};
     $self->param( $accessor => collection(@array) );
     return $self;
 }
 
 sub aggregate_kvlist {
-    my ( $self, $accessor, $entity, $data ) = @_;
+    my ( $self, $accessor, $domain, $data ) = @_;
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @kvlist;
     foreach my $kv ( @{$data} ) {
         my ( $key, $value ) = %{$kv};
-        push @kvlist, ( $key => $self->factory($entity)->create($value) );
+        push @kvlist, ( $key => $self->factory($domain)->create($value) );
     }
     $self->param( $accessor => ix_hash(@kvlist) );
     return $self;
@@ -48,9 +47,9 @@ sub aggregate_kvlist {
 
 sub cook { }
 
-sub create { shift->create_entity(@_) }
+sub create { shift->create_domain(@_) }
 
-sub create_entity {
+sub create_domain {
     my $self = shift;
 
     # my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
@@ -67,18 +66,18 @@ sub create_entity {
     my $params = $self->params;
 
     # no need parameter
-    delete $params->{$_} for qw(app entity_class resultset);
+    delete $params->{$_} for qw(app domain_class resultset);
 
-    # Create entity
-    Yetie::Util::load_class( $self->entity_class );
-    my $entity = $self->entity_class->new( %{$params} );
+    # Create domain object
+    Yetie::Util::load_class( $self->domain_class );
+    my $domain = $self->domain_class->new( %{$params} );
 
     # NOTE: attributesは Yetie::Domain::Entity::XXX で明示する方が良い?
     # Add attributes
-    # my @keys = keys %{$entity};
-    # $entity->attr($_) for @keys;
+    # my @keys = keys %{$domain};
+    # $domain->attr($_) for @keys;
 
-    return $entity;
+    return $domain;
 }
 
 sub factory {
@@ -86,7 +85,6 @@ sub factory {
 
     my $factory = $self->new(@_);
     $factory->app( $self->app );
-    Scalar::Util::weaken $factory->{app};
     return $factory;
 }
 
@@ -94,18 +92,15 @@ sub new {
     my ( $self, $arg ) = ( shift, shift );
     Carp::croak 'Argument empty' unless $arg;
 
-    my $entity_name = Mojo::Util::camelize($arg);
-    $entity_name =~ s/Entity:://;
-
-    my $factory_base_class = 'Yetie::Domain::Factory';
-    my $factory_class      = $factory_base_class . '::' . $entity_name;
-    my $entity_class       = 'Yetie::Domain::Entity::' . $entity_name;
+    my $domain        = Mojo::Util::camelize($arg);
+    my $factory_class = _factory_class($domain);
+    my $domain_class  = 'Yetie::Domain::' . $domain;
 
     my $e = Mojo::Loader::load_class($factory_class);
     die "Exception: $e" if ref $e;
 
-    my $factory = $e ? $factory_base_class->SUPER::new(@_) : $factory_class->SUPER::new(@_);
-    $factory->entity_class($entity_class);
+    my $factory = $e ? __PACKAGE__->SUPER::new(@_) : $factory_class->SUPER::new(@_);
+    $factory->domain_class($domain_class);
     return $factory;
 }
 
@@ -132,6 +127,12 @@ sub params {
     $self->{$_} = $args{$_} for keys %args;
 }
 
+sub _factory_class {
+    my $domain = shift;
+    $domain =~ s/Entity::|Value:://;
+    return 'Yetie::Domain::Factory::' . $domain;
+}
+
 1;
 __END__
 
@@ -142,11 +143,14 @@ Yetie::Domain::Factory
 =head1 SYNOPSIS
 
     my $factory = Yetie::Domain::Factory->new( 'entity-hoge', %data1 || \%data1 );
-    my $entity = $factory->create( %data2 || \%data2 );
+    my $domain = $factory->create( %data2 || \%data2 );
 
 =head1 DESCRIPTION
 
 =head1 FUNCTIONS
+
+L<Yetie::Domain::Factory> inherits all functions from L<Mojo::Base> and implements
+the following new ones.
 
 =head2 C<new>
 
@@ -154,13 +158,18 @@ Yetie::Domain::Factory
 
 =head1 ATTRIBUTES
 
+L<Yetie::Domain::Factory> inherits all attributes from L<Mojo::Base> and implements
+the following new ones.
+
 =head2 C<app>
 
-=head2 C<entity_class>
+L<Yetie> application instance.
 
-    my $entity_class = $factory->entity_class;
+=head2 C<domain_class>
 
-Get namespace as a construct entity class.
+    my $domain_class = $factory->domain_class;
+
+Get namespace as a construct domain class.
 
 =head1 METHODS
 
@@ -169,29 +178,30 @@ the following new ones.
 
 =head2 C<aggregate>
 
-    my $entity = $factory->aggregate( 'user', 'entity-user', \%data );
+    my $domain = $factory->aggregate( 'user', 'entity-user', \%data );
+    my $vo = $factory->aggregate( 'user', 'value-user-name', \%data );
 
-Create C<Yetie::Domain::Entity> type aggregate.
+Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
 
 =head2 C<aggregate_collection>
 
     my @data = (qw/a b c d e f/);
-    my $entity = $factory->aggregate_collection( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate_collection( 'items', 'entity-xxx-item', \@data );
+    my $domain = $factory->aggregate_collection( $accessor_name, $target_entity, \@data );
+    my $domain = $factory->aggregate_collection( 'items', 'entity-xxx-item', \@data );
 
-Create C<Yetie::Domain::Collection> type aggregate.
+Create L<Yetie::Domain::Collection> type aggregate.
 
 =head2 C<aggregate_kvlist>
 
     my @data = ( { label => { key => 'value' } }, { label2 => { key2 => 'value2' } }, ... );
-    my $entity = $factory->aggregate_kvlist( $accessor_name, $target_entity, \@data );
-    my $entity = $factory->aggregate_kvlist( 'items', 'entity-xxx-item', \@data );
+    my $domain = $factory->aggregate_kvlist( $accessor_name, $target_entity, \@data );
+    my $domain = $factory->aggregate_kvlist( 'items', 'entity-xxx-item', \@data );
 
-Create C<Yetie::Domain::IxHash> type aggregate.
+Create L<Yetie::Domain::IxHash> type aggregate.
 
 =head2 C<cook>
 
-    # Yetie::Domain::Factory::YourEntity;
+    # Yetie::Domain::Factory::YourDomainClass;
     sub cook {
         # Overdide this method.
         # your factory codes here!
@@ -199,13 +209,13 @@ Create C<Yetie::Domain::IxHash> type aggregate.
 
 =head2 C<create>
 
-Alias for L</create_entity>.
+Alias for L</create_domain>.
 
-=head2 C<create_entity>
+=head2 C<create_domain>
 
-    my $entity = $factory->create_entity;
-    my $entity = $factory->create_entity( foo => 'bar' );
-    my $entity = $factory->create_entity( { foo => 'bar' } );
+    my $domain = $factory->create_domain;
+    my $domain = $factory->create_domain( foo => 'bar' );
+    my $domain = $factory->create_domain( { foo => 'bar' } );
 
 =head2 C<factory>
 
@@ -243,4 +253,5 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Mojo::Base>, L<Yetie::Domain::Collection>, L<Yetie::Domain::IxHash>
+L<Mojo::Base>, L<Yetie::Domain::Entity>, L<Yetie::Domain::Value>,
+L<Yetie::Domain::Collection>, L<Yetie::Domain::IxHash>
