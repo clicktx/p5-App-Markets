@@ -51,4 +51,26 @@ subtest 'get registered id' => sub {
     is $id, 1, 'right found registered';
 };
 
+subtest 'store' => sub {
+    my ( $c, $s ) = _init();
+
+    subtest 'exception' => sub {
+        my %p = %params;
+        $p{id} = 2;
+        eval { $s->store( \%p ) };
+        ok $@, 'right exception';
+    };
+
+    subtest 'do update' => sub {
+        my %p = %params;
+        $p{personal_name} = 'Eli za beth T. Peoples';
+        $s->store( \%p );
+        my $res = $c->schema->resultset('Address')->find( $p{id} );
+        is $res->personal_name, $p{personal_name}, 'right update minor chages';
+
+        # Revert DB data
+        $s->store( \%params );
+    };
+};
+
 done_testing();

@@ -12,6 +12,24 @@ sub get_registered_id {
     return $registered->id;
 }
 
+sub store {
+    my ( $self, $params ) = @_;
+
+    my $address       = $self->factory('entity-address')->create($params);
+    my $registered_id = $self->get_registered_id($address);
+
+    if ($registered_id) {
+
+        # 登録済みの住所なのでchangeするか確認する
+        say 'Registered address';
+        die;
+    }
+    else {
+        # Update address
+        $self->resultset->search( { id => $address->id } )->update( $address->to_data );
+    }
+}
+
 1;
 __END__
 
@@ -39,6 +57,10 @@ the following new ones.
     my $address_id = $service->get_registered_id($address_entity);
 
 Return address ID or C<undefined>.
+
+=head2 C<store>
+
+    $service->store(\%form_params);
 
 =head1 AUTHOR
 
