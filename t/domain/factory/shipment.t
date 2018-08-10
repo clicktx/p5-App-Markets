@@ -6,7 +6,7 @@ use_ok 'Yetie::Domain::Factory::Shipment';
 
 subtest 'argument empty' => sub {
     my $factory = $pkg->new('entity-shipment');
-    my $e       = $factory->create_entity();
+    my $e       = $factory->create_domain();
 
     isa_ok $e, 'Yetie::Domain::Entity::Shipment';
     isa_ok $e->shipping_address, 'Yetie::Domain::Entity::Address';
@@ -21,7 +21,7 @@ subtest 'data' => sub {
             items            => [       {} ],
         }
     );
-    my $e = $factory->create_entity();
+    my $e = $factory->create_domain();
     is $e->shipping_address->line1, 'Silicon Valley', 'right data';
     isa_ok $e->items->first, 'Yetie::Domain::Entity::Cart::Item';
 };

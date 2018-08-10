@@ -71,42 +71,7 @@ sub _edit_address {
 
     # Update address
     my $address_type = $self->stash('action');
-
-    # use service
-    # $self->service('address')->store( $form->param($address_type) );
-    # die;
-
-    my $address = $self->factory('address')->create( $form->param($address_type) );
-
-    # FIXME: hashが同じaddressに対する場合の処理が必要
-    # hashが同じ場合のみ特殊
-    #     hashが同じ場合は修正ではなく配送先（または支払い住所）の変更
-    # 基本的にはupdate
-    #
-    # 同じhashになるシチュエーションがあるか？
-    # 業務
-    #     - staffが細かい誤りを修正
-
-    # 自身以外で同じhashのaddress
-    my $finded_address = $self->schema->resultset('address')->search(
-        {
-            hash => $address->hash,
-            id   => { '!=' => $address->id },
-        }
-    )->first;
-
-    if ($finded_address) {
-
-        # WIP: 別のaddress_idでhashが同じ場合の処理
-        # ある場合はそのaddress_idを使う？
-        # 登録済みのaddressがあるから使うか？とアラート
-        use DDP;
-        p $finded_address;
-        die $finded_address;
-    }
-    else {    # Update address
-        $self->schema->resultset('address')->search( { id => $address->id } )->update( $address->to_data );
-    }
+    $self->service('address')->store( $form->param($address_type) );
 
     return $self->redirect_to( 'RN_admin_order_details', order_id => $order_id );
 }
@@ -121,7 +86,11 @@ sub _init_form {
     # Set form default value
     my $field_names = $order->$address_type->field_names($region);
     my $params      = $self->req->params;
-    $params->append( "$address_type.$_" => $order->$address_type->$_ ) for @{$field_names};
+    do {
+        my $value = $order->$address_type->$_;
+        $params->append( "$address_type.$_" => "$value" );
+      }
+      for @{$field_names};
 
     # Collate field keys
     my @field_keys = map { "$address_type.$_" } @{$field_names};

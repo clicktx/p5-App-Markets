@@ -8,7 +8,7 @@ my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 
 subtest 'garbled characters' => sub {
-    my $str = $t->app->schema->resultset('address')->search( { id => 5 } )->first->level1;
+    my $str = $t->app->schema->resultset('address')->search( { id => 5 } )->first->state;
     is $str, '佐賀県', 'right not garbled';
 };
 

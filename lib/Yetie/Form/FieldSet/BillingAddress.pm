@@ -23,15 +23,15 @@ has_field 'billing_address.line2' => (
     required     => 0,
 );
 
-has_field 'billing_address.level1' => (
-    $address->field_info('level1'),
-    autocomplete => 'section-sent billing address-level1',
+has_field 'billing_address.city' => (
+    $address->field_info('city'),
+    autocomplete => 'section-sent billing address-level2',
     required     => 1,
 );
 
-has_field 'billing_address.level2' => (
-    $address->field_info('level2'),
-    autocomplete => 'section-sent billing address-level2',
+has_field 'billing_address.state' => (
+    $address->field_info('state'),
+    autocomplete => 'section-sent billing address-level1',
     required     => 1,
 );
 
@@ -47,28 +47,16 @@ has_field 'billing_address.personal_name' => (
     required     => 1,
 );
 
-has_field 'billing_address.company_name' => (
-    extends('base-name#company_name'),
+has_field 'billing_address.organization' => (
+    extends('base-name#organization'),
     autocomplete => 'section-sent billing organization',
     required     => 0,
 );
 
 has_field 'billing_address.phone' => (
-    extends('base-phone#home'),
+    extends('base-phone#phone'),
     autocomplete => 'section-sent billing home tel',
     required     => 1,
-);
-
-has_field 'billing_address.fax' => (
-    extends('base-phone#fax'),
-    autocomplete => 'section-sent billing fax tel',
-    required     => 0,
-);
-
-has_field 'billing_address.mobile' => (
-    extends('base-phone#mobile'),
-    autocomplete => 'section-sent billing mobile tel',
-    required     => 0,
 );
 
 1;

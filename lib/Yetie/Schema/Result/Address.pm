@@ -32,18 +32,18 @@ column line2 => {
     is_nullable => 0,
 };
 
-column level1 => {
-    data_type   => 'VARCHAR',
-    size        => 32,
-    is_nullable => 0,
-    comments    => 'State/Province/Province/Region',
-};
-
-column level2 => {
+column city => {
     data_type   => 'VARCHAR',
     size        => 32,
     is_nullable => 0,
     comments    => 'City/Town',
+};
+
+column state => {
+    data_type   => 'VARCHAR',
+    size        => 32,
+    is_nullable => 0,
+    comments    => 'State/Province/Province/Region',
 };
 
 column postal_code => {
@@ -53,13 +53,13 @@ column postal_code => {
     comments    => 'Post Code/Zip Code',
 };
 
-column personal_name => {
+column organization => {
     data_type   => 'VARCHAR',
     size        => 32,
     is_nullable => 0,
 };
 
-column company_name => {
+column personal_name => {
     data_type   => 'VARCHAR',
     size        => 32,
     is_nullable => 0,
@@ -67,33 +67,22 @@ column company_name => {
 
 column phone => {
     data_type   => 'VARCHAR',
-    size        => 32,
+    size        => 16,
     is_nullable => 0,
-};
-
-column fax => {
-    data_type   => 'VARCHAR',
-    size        => 32,
-    is_nullable => 0,
-};
-
-column mobile => {
-    data_type   => 'VARCHAR',
-    size        => 32,
-    is_nullable => 0,
+    comments    => 'Not include hyphen and symbols',
 };
 
 # Index
 unique_constraint ui_hash => [qw/hash/];
 
+sub sqlt_deploy_hook {
+    my ( $self, $table ) = @_;
+    $table->add_index( name => 'idx_phone', fields => ['phone'] );
+}
+
 # Relation
 has_many
   customer_addresses => 'Yetie::Schema::Result::Customer::Address',
-  { 'foreign.address_id' => 'self.id' },
-  { cascade_delete       => 0 };
-
-has_many
-  phones => 'Yetie::Schema::Result::Address::Phone',
   { 'foreign.address_id' => 'self.id' },
   { cascade_delete       => 0 };
 

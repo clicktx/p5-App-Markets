@@ -28,11 +28,11 @@ sub t01_billing_address : Tests() {
         csrf_token                      => $self->csrf_token,
         'billing_address.country_code'  => 'us',
         'billing_address.line1'         => '42 Pendergast St.',
-        'billing_address.level2'        => 'Piedmont',
-        'billing_address.level1'        => 'SC',
+        'billing_address.city'          => 'Piedmont',
+        'billing_address.state'         => 'SC',
         'billing_address.postal_code'   => '29673',
         'billing_address.personal_name' => 'Elizabeth T. Peoples',
-        'billing_address.company_name'  => 'Eli Moore Inc',
+        'billing_address.organization'  => 'Eli Moore Inc',
         'billing_address.phone'         => '305-939-8498',
     };
     $t->post_ok( '/admin/order/1/edit/billing_address', form => $post_data )

@@ -62,8 +62,8 @@ sub test_04_address_post : Tests() {
         'billing_address.country_code'       => 'jp',
         'billing_address.personal_name'      => 'ken',
         'billing_address.line1'              => 'foo 2325',
-        'billing_address.level2'             => 'bar',
-        'billing_address.level1'             => 'CA',
+        'billing_address.city'               => 'bar',
+        'billing_address.state'              => 'CA',
         'billing_address.postal_code'        => '55555',
         'billing_address.phone'              => '012345678',
         'shipments.0.shipping_address.line1' => 'baz',
@@ -79,8 +79,8 @@ sub test_04_address_post : Tests() {
     is $cart->data('billing_address')->{country_code},  'jp',        'right country code';
     is $cart->data('billing_address')->{personal_name}, 'ken',       'right personal name';
     is $cart->data('billing_address')->{line1},         'foo 2325',  'right line1';
-    is $cart->data('billing_address')->{level2},        'bar',       'right level2';
-    is $cart->data('billing_address')->{level1},        'CA',        'right level1';
+    is $cart->data('billing_address')->{city},          'bar',       'right city';
+    is $cart->data('billing_address')->{state},         'CA',        'right state';
     is $cart->data('billing_address')->{postal_code},   '55555',     'right postal code';
     is $cart->data('billing_address')->{phone},         '012345678', 'right phone';
     is $cart->data('shipments')->[0]->{shipping_address}->{line1}, 'baz', 'right line1';
@@ -130,8 +130,8 @@ sub test_20_complete : Tests() {
     is $last_order->billing_address->country_code,  'jp',        'right billing address country_code';
     is $last_order->billing_address->personal_name, 'ken',       'right billing address personal name';
     is $last_order->billing_address->line1,         'foo 2325',  'right billing address line1';
-    is $last_order->billing_address->level2,        'bar',       'right billing address level2';
-    is $last_order->billing_address->level1,        'CA',        'right billing address level1';
+    is $last_order->billing_address->city,          'bar',       'right billing address city';
+    is $last_order->billing_address->state,         'CA',        'right billing address state';
     is $last_order->billing_address->postal_code,   '55555',     'right billing address postal code';
     is $last_order->billing_address->phone,         '012345678', 'right billing address phone';
 

@@ -44,21 +44,21 @@ has_field 'line2' => (
     validations  => [],
 );
 
-has_field 'level1' => (
-    label        => 'State/Province/Region',
-    autocomplete => 'address-level1',
+has_field 'city' => (
+    label        => 'City',
+    autocomplete => 'address-level2',
     type         => 'text',
-    placeholder  => 'E.g. CA, WA',
+    placeholder  => 'City/Town',
     help         => '',
     filters      => [qw(trim)],
     validations  => [],
 );
 
-has_field 'level2' => (
-    label        => 'City',
-    autocomplete => 'address-level2',
+has_field 'state' => (
+    label        => 'State/Province/Region',
+    autocomplete => 'address-level1',
     type         => 'text',
-    placeholder  => 'City/Town',
+    placeholder  => 'E.g. CA, WA',
     help         => '',
     filters      => [qw(trim)],
     validations  => [],

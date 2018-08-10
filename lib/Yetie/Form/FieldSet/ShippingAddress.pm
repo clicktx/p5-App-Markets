@@ -23,15 +23,15 @@ has_field 'shipping_address.line2' => (
     required     => 0,
 );
 
-has_field 'shipping_address.level1' => (
-    $address->field_info('level1'),
-    autocomplete => 'section-sent shipping address-level1',
+has_field 'shipping_address.city' => (
+    $address->field_info('city'),
+    autocomplete => 'section-sent shipping address-level2',
     required     => 1,
 );
 
-has_field 'shipping_address.level2' => (
-    $address->field_info('level2'),
-    autocomplete => 'section-sent shipping address-level2',
+has_field 'shipping_address.state' => (
+    $address->field_info('state'),
+    autocomplete => 'section-sent shipping address-level1',
     required     => 1,
 );
 
@@ -47,28 +47,16 @@ has_field 'shipping_address.personal_name' => (
     required     => 1,
 );
 
-has_field 'shipping_address.company_name' => (
-    extends('base-name#company_name'),
+has_field 'shipping_address.organization' => (
+    extends('base-name#organization'),
     autocomplete => 'section-sent shipping organization',
     required     => 0,
 );
 
 has_field 'shipping_address.phone' => (
-    extends('base-phone#home'),
+    extends('base-phone#phone'),
     autocomplete => 'section-sent shipping home tel',
     required     => 1,
-);
-
-has_field 'shipping_address.fax' => (
-    extends('base-phone#fax'),
-    autocomplete => 'section-sent shipping fax tel',
-    required     => 0,
-);
-
-has_field 'shipping_address.mobile' => (
-    extends('base-phone#mobile'),
-    autocomplete => 'section-sent shipping mobile tel',
-    required     => 0,
 );
 
 1;
