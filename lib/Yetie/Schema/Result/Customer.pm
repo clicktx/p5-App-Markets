@@ -47,7 +47,7 @@ sub to_data {
         id         => $self->id,
         created_at => $self->created_at,
         updated_at => $self->updated_at,
-        password   => $self->password->to_data,
+        password   => $self->password ? $self->password->to_data : '',
         emails     => $self->emails->to_data,
     };
 }
