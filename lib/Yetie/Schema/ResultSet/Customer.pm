@@ -34,6 +34,25 @@ sub search_by_id {
     return $self->search( { 'me.id' => $customer_id }, { prefetch => $self->prefetch } );
 }
 
+sub search_customers {
+    my ( $self, $args ) = @_;
+
+    my $where = $args->{where} || {};
+    my $order_by = $args->{order_by} || { -desc => 'me.id' };
+    my $page = $args->{page_no};
+    my $rows = $args->{per_page};
+
+    return $self->search(
+        $where,
+        {
+            page     => $page,
+            rows     => $rows,
+            order_by => $order_by,
+            prefetch => $self->prefetch,
+        }
+    );
+}
+
 1;
 __END__
 =encoding utf8
@@ -72,11 +91,22 @@ the following new ones.
 
 =head2 C<search_by_email>
 
-    my $ire = $resultset->search_by_email($email);
+    my $itr = $resultset->search_by_email($email);
 
 =head2 C<search_by_id>
 
     my itr = $resultset->search_by_id($customer_id);
+
+=head2 C<search_customers>
+
+    my $itr = $resultset->search_customers(
+        {
+            where    => '',
+            order_by => '',
+            page_no  => 1,
+            per_page => 10,
+        }
+    );
 
 =head1 AUTHOR
 

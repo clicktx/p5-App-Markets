@@ -64,4 +64,18 @@ subtest 'search_by_email()' => sub {
     ok !@res, 'right not found';
 };
 
+subtest 'search_customers' => sub {
+    my $itr = $rs->search_customers(
+        {
+            where    => '',
+            order_by => '',
+            page_no  => 1,
+            per_page => 3,
+        }
+    );
+
+    isa_ok $itr, 'Yetie::Schema::ResultSet::Customer';
+    is $itr->count, 3, 'right per page';
+};
+
 done_testing();
