@@ -35,7 +35,7 @@ the following new ones.
 
     my $bool = $customer->logged_in;
 
-Returns C<true> if the staff is logged in.
+Returns C<true> if the customer is logged in.
 
 =head2 C<emails>
 
