@@ -3,6 +3,8 @@ use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
 has customer_list => sub { Yetie::Domain::Collection->new };
 
+sub each { shift->customer_list->each(@_) }
+
 1;
 __END__
 
@@ -29,6 +31,13 @@ Return L<Yetie::Domain::Collection> object.
 
 L<Yetie::Domain::Entity::Page::Customers> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
 the following new ones.
+
+=head2 C<each>
+
+    $customers->each(...);
+
+    # Longer version
+    $customers->customer_list->each(...);
 
 =head1 AUTHOR
 

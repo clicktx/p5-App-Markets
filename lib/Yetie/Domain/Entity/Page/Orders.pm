@@ -3,6 +3,8 @@ use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
 has order_list => sub { Yetie::Domain::Collection->new };
 
+sub each { shift->order_list->each(@_) }
+
 1;
 __END__
 
@@ -29,6 +31,13 @@ Return L<Yetie::Domain::Collection> object.
 
 L<Yetie::Domain::Entity::Page::Orders> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
 the following new ones.
+
+=head2 C<each>
+
+    $orders->each(...);
+
+    # Longer version
+    $orders->order_list->each(...);
 
 =head1 AUTHOR
 
