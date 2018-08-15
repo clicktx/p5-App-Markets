@@ -2,7 +2,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Yetie::Domain::Collection qw(c);
 
-my $pkg = 'Yetie::Domain::Entity::Products';
+my $pkg = 'Yetie::Domain::Entity::Page::Products';
 use_ok $pkg;
 
 subtest 'basic' => sub {

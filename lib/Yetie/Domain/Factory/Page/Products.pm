@@ -1,4 +1,4 @@
-package Yetie::Domain::Factory::Products;
+package Yetie::Domain::Factory::Page::Products;
 use Mojo::Base 'Yetie::Domain::Factory';
 
 sub cook {
@@ -20,7 +20,7 @@ Yetie::Domain::Factory::Products
     my $entity = Yetie::Domain::Factory::Products->new( %args )->create;
 
     # In controller
-    my $entity = $c->factory('entity-products')->create(%args);
+    my $entity = $c->factory('entity-page-products')->create(%args);
 
 =head1 DESCRIPTION
 
