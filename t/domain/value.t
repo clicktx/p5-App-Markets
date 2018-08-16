@@ -9,7 +9,13 @@ subtest 'basic' => sub {
     is $v->value, '', 'right not value';
 
     $v = $pkg->new( value => 'foo' );
-    is $v->value, 'foo', 'right value';
+    is $v->value, 'foo', 'right array arguments';
+
+    $v = $pkg->new( { value => 'bar' } );
+    is $v->value, 'bar', 'right hash refference argument';
+
+    $v = $pkg->new('baz');
+    is $v->value, 'baz', 'right scalar argument';
 };
 
 subtest 'operators' => sub {
