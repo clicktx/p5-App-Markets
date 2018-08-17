@@ -13,11 +13,11 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Factory::Products
+Yetie::Domain::Factory::Page::Products
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Products->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Page::Products->new( %args )->create;
 
     # In controller
     my $entity = $c->factory('entity-page-products')->create(%args);
@@ -26,12 +26,12 @@ Yetie::Domain::Factory::Products
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Factory::Products> inherits all attributes from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Page::Products> inherits all attributes from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Factory::Products> inherits all methods from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Page::Products> inherits all methods from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 AUTHOR
