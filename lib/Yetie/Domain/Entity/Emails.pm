@@ -5,6 +5,14 @@ has email_list => sub { Yetie::Domain::Collection->new };
 
 sub each { shift->email_list->each(@_) }
 
+sub primary {
+    my $self = shift;
+
+    my $primary;
+    $self->each( sub { $primary = $_ if $_->is_primary } );
+    return $primary;
+}
+
 1;
 __END__
 
@@ -23,11 +31,11 @@ the following new ones.
 
 =head2 C<email_list>
 
-    my $collection = $products->email_list;
+    my $collection = $emails->email_list;
 
 Return L<Yetie::Domain::Collection> object.
 
-Collection is an array composed of L<Yetie::Domain::Value>.
+Collection is an array composed of L<Yetie::Domain::Value::Email>.
 
 =head1 METHODS
 
@@ -36,10 +44,14 @@ the following new ones.
 
 =head2 C<each>
 
-    $products->each(...);
+    $emails->each(...);
 
     # Longer version
-    $products->email_list->each(...);
+    $emails->email_list->each(...);
+
+=head2 C<primary>
+
+    my $primary_email = $emails->primary;
 
 =head1 AUTHOR
 
