@@ -26,4 +26,14 @@ belongs_to
   email => 'Yetie::Schema::Result::Email',
   { 'foreign.id' => 'self.email_id' };
 
+sub to_data {
+    my $self = shift;
+
+    return {
+        email       => $self->email->address,
+        is_primary  => $self->is_primary,
+        is_verified => $self->email->is_verified,
+    };
+}
+
 1;
