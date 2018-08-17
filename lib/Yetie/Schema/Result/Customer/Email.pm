@@ -30,7 +30,7 @@ sub to_data {
     my $self = shift;
 
     return {
-        email       => $self->email->address,
+        value       => $self->email->address,
         is_primary  => $self->is_primary,
         is_verified => $self->email->is_verified,
     };
