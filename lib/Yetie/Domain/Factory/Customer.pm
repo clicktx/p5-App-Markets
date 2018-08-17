@@ -7,12 +7,8 @@ sub cook {
     # password
     $self->aggregate( password => 'entity-password', $self->{password} || {} );
 
-    # NOTE: Yetie::Domain::Entity::Emailを作る
     # emails
-    # my $emails = collection(qw/1 2 3/);
-    # $self->param( emails => $emails );
-
-    # billing_addresses
+    $self->aggregate( emails => 'entity-emails', { email_list => $self->param('emails') || [] } );
 }
 
 1;
