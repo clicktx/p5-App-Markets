@@ -10,7 +10,7 @@ subtest 'basic' => sub {
     isa_ok $staff, 'Yetie::Domain::Entity';
 
     is $staff->id, 1, 'right staff ID';
-    isa_ok $staff->password, 'Yetie::Domain::Entity::Password';
+    isa_ok $staff->password, 'Yetie::Domain::Value::Password';
 
     can_ok $staff, 'login_id';
     can_ok $staff, 'created_at';
@@ -25,12 +25,12 @@ subtest 'is_staff' => sub {
 };
 
 subtest 'verify_password' => sub {
-    my $staff = Yetie::Domain::Factory->new('entity-staff')->create( password => { hash => 'aaa' } );
+    my $staff = Yetie::Domain::Factory->new('entity-staff')->create( password => { value => 'aaa' } );
     is $staff->verify_password('123'), 0, 'right unverified';
 
     $staff = Yetie::Domain::Factory->new('entity-staff')->create(
         password => {
-            hash =>
+            value =>
 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='
         }
     );

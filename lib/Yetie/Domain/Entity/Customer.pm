@@ -1,18 +1,18 @@
 package Yetie::Domain::Entity::Customer;
 use Yetie::Domain::Entity;
-use Yetie::Domain::Entity::Password;
+use Yetie::Domain::Value::Password;
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
 has created_at => undef;
 has updated_at => undef;
-has password   => sub { __PACKAGE__->factory('entity-password') };
+has password   => sub { __PACKAGE__->factory('value-password') };
 has emails     => sub { Yetie::Domain::Collection->new };
 
-sub is_registerd { shift->password->hash ? 1 : 0 }
+sub is_registerd { shift->password->value ? 1 : 0 }
 
 sub verify_password {
     my ( $self, $password ) = @_;
-    return scrypt_hash_verify( $password, $self->password->hash ) ? 1 : 0;
+    return scrypt_hash_verify( $password, $self->password->value ) ? 1 : 0;
 }
 
 1;
@@ -49,7 +49,7 @@ Elements are L<Yetie::Domain::Entity::Email> object.
 
     my $password = $customer->password;
 
-Return L<Yetie::Domain::Entity::Password> object.
+Return L<Yetie::Domain::Value::Password> object.
 
 =head2 C<created_at>
 
@@ -78,4 +78,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity::Password>, L<Yetie::Domain::Entity::Email>, L<Yetie::Domain::Entity>
+L<Yetie::Domain::Value::Password>, L<Yetie::Domain::Entity::Email>, L<Yetie::Domain::Entity>

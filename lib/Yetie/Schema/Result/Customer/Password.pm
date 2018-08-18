@@ -19,8 +19,7 @@ sub to_data {
     my $self = shift;
 
     return {
-        id         => $self->customer_id,
-        hash       => $self->password->hash,
+        value       => $self->password->hash,
         created_at => $self->password->created_at,
         updated_at => $self->password->updated_at,
     };

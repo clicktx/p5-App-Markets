@@ -9,7 +9,9 @@ sub find_by_email {
     my ( $self, $email ) = @_;
 
     my $customer_id = $self->get_id_by_email($email);
-    return $self->find_by_id($customer_id);
+    return unless $customer_id;
+
+    $self->find_by_id($customer_id);
 }
 
 sub find_by_id {
