@@ -14,12 +14,12 @@ subtest 'basic' => sub {
     isa_ok $customer->emails,   'Yetie::Domain::Collection';
 };
 
-subtest 'is_registerd' => sub {
+subtest 'is_registered' => sub {
     my $customer = $pkg->new();
-    is $customer->is_registerd, 0, 'right not register';
+    is $customer->is_registered, 0, 'right not register';
 
     $customer = Yetie::Domain::Factory->new('entity-customer')->create( password => { value => 'hoo' } );
-    is $customer->is_registerd, 1, 'right register';
+    is $customer->is_registered, 1, 'right register';
 };
 
 subtest 'verify_password' => sub {

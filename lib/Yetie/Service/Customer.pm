@@ -55,7 +55,7 @@ sub login_process {
     # Find account
     my $customer = $self->find_customer($email);
     return $self->_login_failed( 'login.failed.not_found', email => $email )
-      unless $customer->is_registerd;
+      unless $customer->is_registered;
 
     # Authentication
     return $self->_login_failed( 'login.failed.password', email => $email )

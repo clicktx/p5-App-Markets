@@ -8,7 +8,7 @@ has updated_at => undef;
 has password   => sub { __PACKAGE__->factory('value-password') };
 has emails     => sub { Yetie::Domain::Collection->new };
 
-sub is_registerd { shift->password->value ? 1 : 0 }
+sub is_registered { shift->password->value ? 1 : 0 }
 
 sub verify_password {
     my ( $self, $password ) = @_;
@@ -60,9 +60,9 @@ Return L<Yetie::Domain::Value::Password> object.
 L<Yetie::Domain::Entity::Customer> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<is_registerd>
+=head2 C<is_registered>
 
-    my $bool = $customer->is_registerd;
+    my $bool = $customer->is_registered;
 
 Returns true if registered.
 
