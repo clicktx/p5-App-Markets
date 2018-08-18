@@ -1,7 +1,9 @@
 package Yetie::Schema::ResultSet::Customer;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 
-has prefetch => sub { [ 'password', { emails => 'email' } ] };
+has prefetch => sub {
+    [ { customer_password => 'password' }, { emails => 'email' } ];
+};
 
 sub find_by_email {
     my ( $self, $email ) = @_;

@@ -14,8 +14,8 @@ subtest 'find_by_id()' => sub {
     my $res = $rs->find_by_id(111);
     cmp_deeply $res->{related_resultsets},
       {
-        emails   => ignore(),
-        password => ignore(),
+        emails            => ignore(),
+        customer_password => ignore(),
       },
       'right related_resultsets';
 
@@ -28,8 +28,8 @@ subtest 'find_by_email()' => sub {
     is $res->id, 111, 'right id';
     cmp_deeply $res->{related_resultsets},
       {
-        emails   => ignore(),
-        password => ignore(),
+        emails            => ignore(),
+        customer_password => ignore(),
       },
       'right related_resultsets';
 
