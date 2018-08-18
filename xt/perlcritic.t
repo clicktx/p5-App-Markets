@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 use Test::More;
+use File::Spec;
+use File::Basename qw(dirname);
 
 eval {
     require Perl::Critic;
@@ -8,42 +10,10 @@ eval {
 
     require Test::Perl::Critic;
     Test::Perl::Critic->VERSION(1.02);
-    Test::Perl::Critic->import(
-        -profile => \(join q{}, <DATA>)
-    );
+    my $rcfile = File::Spec->catfile( dirname(__FILE__), '..', '.perlcriticrc' );
+    Test::Perl::Critic->import( -profile => $rcfile );
 };
 note $@ if $@;
 plan skip_all => "Perl::Critic 1.105+ or Test::Perl::Critic 1.02+ is not installed." if $@;
 
-all_critic_ok('lib', 'script', 'bin');
-
-__END__
-
-only=1
-
-# -------------------------------------------------------------------------
-# Not important.
-
-[BuiltinFunctions::ProhibitSleepViaSelect]
-[BuiltinFunctions::RequireGlobFunction]
-[ClassHierarchies::ProhibitOneArgBless]
-
-# -------------------------------------------------------------------------
-# Bug detection
-[InputOutput::ProhibitBarewordFileHandles]
-[Modules::RequireFilenameMatchesPackage]
-[Subroutines::ProhibitNestedSubs]
-[Subroutines::ProhibitReturnSort]
-[TestingAndDebugging::RequireUseStrict]
-equivalent_modules = Yetie::Domain::Base Yetie::Domain::Entity
-[Variables::ProhibitConditionalDeclarations]
-[Variables::RequireLexicalLoopIterators]
-
-[TestingAndDebugging::ProhibitNoStrict]
-allow=refs
-
-# -------------------------------------------------------------------------
-# Security issue detection
-[InputOutput::RequireEncodingWithUTF8Layer]
-[Modules::ProhibitEvilModules]
-[InputOutput::ProhibitTwoArgOpen]
+all_critic_ok( 'lib', 'script', 'bin' );
