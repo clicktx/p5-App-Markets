@@ -9,4 +9,4 @@ else
     TEST_DIR=$@
 fi
 
-carton exec -- prove -lvcr $TEST_DIR
+carton exec -- prove $TEST_DIR

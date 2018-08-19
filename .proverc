@@ -1,6 +1,10 @@
+--lib
 --color
+--failures
+--recurse
 --merge
 --timer
--l
+--trap
+-v
 -w
 -PHarriet=./t/harriet
