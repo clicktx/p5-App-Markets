@@ -9,7 +9,7 @@ sub find_by_login_id {
             'me.login_id' => $login_id
         },
         {
-            prefetch => 'password'
+            prefetch => { staff_password => 'password' }
         },
     );
 }

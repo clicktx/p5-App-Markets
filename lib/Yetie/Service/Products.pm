@@ -21,7 +21,7 @@ sub search_products {
         product_list => $products_rs->to_data( { no_relation => 1, no_breadcrumbs => 1 } ),
         pager        => $products_rs->pager,
     };
-    return $self->factory('entity-products')->create($data);
+    return $self->factory('entity-page-products')->create($data);
 }
 
 1;

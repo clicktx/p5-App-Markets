@@ -3,6 +3,20 @@
 
 <h1><%= title %></h1>
 
+<div class="">
+% $entity->each( sub {
+    <li>
+        <%= link_to 'Edit' => 'RN_admin_customer_detail' => { customer_id => $_->id } %>
+        <%= $_->id %>
+        Name: xxx
+        Primary Email: <%= $_->emails->primary %>
+        Register: <%= $_->is_registered ? 'Yse' : 'No' %>
+        <br>
+        Last Logged in: xxx
+    </li>
+% });
+</div>
+
 <%= include 'admin/component/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>
 
 <ul>

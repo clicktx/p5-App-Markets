@@ -1,11 +1,28 @@
-# Always `use strict'.
+only=1
+
+# -------------------------------------------------------------------------
+# Not important.
+
+[BuiltinFunctions::ProhibitSleepViaSelect]
+[BuiltinFunctions::RequireGlobFunction]
+[ClassHierarchies::ProhibitOneArgBless]
+
+# -------------------------------------------------------------------------
+# Bug detection
+[InputOutput::ProhibitBarewordFileHandles]
+[Modules::RequireFilenameMatchesPackage]
+[Subroutines::ProhibitNestedSubs]
+[Subroutines::ProhibitReturnSort]
 [TestingAndDebugging::RequireUseStrict]
+equivalent_modules = Yetie::Domain::Base Yetie::Domain::Entity Yetie::Domain::Value
+[Variables::ProhibitConditionalDeclarations]
+[Variables::RequireLexicalLoopIterators]
 
-# set_themes                         = bugs certrec certrule core pbp
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = 1
+[TestingAndDebugging::ProhibitNoStrict]
+allow=refs
 
-# The additional modules to treat as equivalent to "strict".
-# Values that are always included: Any::Moose, Dancer, Dancer2, Mo, Modern::Perl, Mojo::Base, Mojolicious::Lite, Moo, Moo::Role, Moos, Moose, Moose::Exporter, Moose::Role, Moose::Util::TypeConstraints, MooseX::NonMoose, MooseX::Role::Parameterized, MooseX::Singleton, Mouse, Mouse::Exporter, Mouse::Role, Mouse::Util, Mouse::Util::TypeConstraints, Mousse, sane, shit, strict, strictures.
-equivalent_modules = Yetie::Domain::Base Yetie::Domain::Entity
+# -------------------------------------------------------------------------
+# Security issue detection
+[InputOutput::RequireEncodingWithUTF8Layer]
+[Modules::ProhibitEvilModules]
+[InputOutput::ProhibitTwoArgOpen]

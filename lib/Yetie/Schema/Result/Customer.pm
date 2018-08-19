@@ -21,7 +21,7 @@ column updated_at => {
 
 # Relation
 might_have
-  password => 'Yetie::Schema::Result::Customer::Password',
+  customer_password => 'Yetie::Schema::Result::Customer::Password',
   { 'foreign.customer_id' => 'self.id' },
   { cascade_delete        => 0 };
 
@@ -47,7 +47,7 @@ sub to_data {
         id         => $self->id,
         created_at => $self->created_at,
         updated_at => $self->updated_at,
-        password   => $self->password->to_data,
+        password   => $self->customer_password ? $self->customer_password->to_data : '',
         emails     => $self->emails->to_data,
     };
 }

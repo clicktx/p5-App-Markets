@@ -1,13 +1,17 @@
 package Yetie::Schema::ResultSet::Customer;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 
-has prefetch => sub { [ 'password', { emails => 'email' } ] };
+has prefetch => sub {
+    [ { customer_password => 'password' }, { emails => 'email' } ];
+};
 
 sub find_by_email {
     my ( $self, $email ) = @_;
 
     my $customer_id = $self->get_id_by_email($email);
-    return $self->find_by_id($customer_id);
+    return unless $customer_id;
+
+    $self->find_by_id($customer_id);
 }
 
 sub find_by_id {
@@ -32,6 +36,25 @@ sub search_by_email {
 sub search_by_id {
     my ( $self, $customer_id ) = @_;
     return $self->search( { 'me.id' => $customer_id }, { prefetch => $self->prefetch } );
+}
+
+sub search_customers {
+    my ( $self, $args ) = @_;
+
+    my $where = $args->{where} || {};
+    my $order_by = $args->{order_by} || { -desc => 'me.id' };
+    my $page = $args->{page_no};
+    my $rows = $args->{per_page};
+
+    return $self->search(
+        $where,
+        {
+            page     => $page,
+            rows     => $rows,
+            order_by => $order_by,
+            prefetch => $self->prefetch,
+        }
+    );
 }
 
 1;
@@ -72,11 +95,22 @@ the following new ones.
 
 =head2 C<search_by_email>
 
-    my $ire = $resultset->search_by_email($email);
+    my $itr = $resultset->search_by_email($email);
 
 =head2 C<search_by_id>
 
     my itr = $resultset->search_by_id($customer_id);
+
+=head2 C<search_customers>
+
+    my $itr = $resultset->search_customers(
+        {
+            where    => '',
+            order_by => '',
+            page_no  => 1,
+            per_page => 10,
+        }
+    );
 
 =head1 AUTHOR
 

@@ -8,8 +8,7 @@ sub index {
     $self->init_form();    # hook point
     return $self->render() unless $form->do_validate;
 
-    # my $orders = $self->service('orders')->search_orders($form);
-    my $customers = $self->factory('customers')->create( { form => $form } );
+    my $customers = $self->service('customers')->search_customers($form);
     $self->stash( entity => $customers );
 
     # Page data

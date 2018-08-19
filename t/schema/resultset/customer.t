@@ -10,12 +10,12 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('Customer');
 
-subtest 'method find_by_id()' => sub {
+subtest 'find_by_id()' => sub {
     my $res = $rs->find_by_id(111);
     cmp_deeply $res->{related_resultsets},
       {
-        emails   => ignore(),
-        password => ignore(),
+        emails            => ignore(),
+        customer_password => ignore(),
       },
       'right related_resultsets';
 
@@ -23,14 +23,13 @@ subtest 'method find_by_id()' => sub {
     ok !$res;
 };
 
-subtest 'method find_by_email()' => sub {
+subtest 'find_by_email()' => sub {
     my $res = $rs->find_by_email('c@example.org');
-use DDP;p $res;
     is $res->id, 111, 'right id';
     cmp_deeply $res->{related_resultsets},
       {
-        emails   => ignore(),
-        password => ignore(),
+        emails            => ignore(),
+        customer_password => ignore(),
       },
       'right related_resultsets';
 
@@ -41,7 +40,7 @@ use DDP;p $res;
     ok !$res, 'right not found';
 };
 
-subtest 'method get_id_by_email' => sub {
+subtest 'get_id_by_email' => sub {
     my $customer_id = $rs->get_id_by_email('c@example.org');
     is $customer_id, 111, 'right get id';
 
@@ -49,7 +48,7 @@ subtest 'method get_id_by_email' => sub {
     is $customer_id, undef, 'right no found';
 };
 
-subtest 'method search_by_id()' => sub {
+subtest 'search_by_id()' => sub {
     my @res = $rs->search_by_id(111);
     is @res, 1, 'right search by id';
 
@@ -57,12 +56,26 @@ subtest 'method search_by_id()' => sub {
     ok !@res, 'right not found';
 };
 
-subtest 'method search_by_email()' => sub {
+subtest 'search_by_email()' => sub {
     my @res = $rs->search_by_email('c@example.org');
     is @res, 1, 'right search by email';
 
     @res = $rs->search_by_email('xx@xx.org');
     ok !@res, 'right not found';
+};
+
+subtest 'search_customers' => sub {
+    my $itr = $rs->search_customers(
+        {
+            where    => '',
+            order_by => '',
+            page_no  => 1,
+            per_page => 3,
+        }
+    );
+
+    isa_ok $itr, 'Yetie::Schema::ResultSet::Customer';
+    is $itr->count, 3, 'right per page';
 };
 
 done_testing();

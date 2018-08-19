@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::Customers;
+package Yetie::Domain::Entity::Page::Customers;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
 has customer_list => sub { Yetie::Domain::Collection->new };
@@ -10,7 +10,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Customers
+Yetie::Domain::Entity::Page::Customers
 
 =head1 SYNOPSIS
 
@@ -18,18 +18,18 @@ Yetie::Domain::Entity::Customers
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Customers> inherits all attributes from L<Yetie::Domain::Entity::Page> and implements
+L<Yetie::Domain::Entity::Page::Customers> inherits all attributes from L<Yetie::Domain::Entity::Page> and implements
 the following new ones.
 
 =head2 C<customer_list>
 
-    my $collection = $customers->customer_list;
+    my $collection = $entity->customer_list;
 
 Return L<Yetie::Domain::Collection> object.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Customers> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
+L<Yetie::Domain::Entity::Page::Customers> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
 the following new ones.
 
 =head2 C<each>

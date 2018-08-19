@@ -5,14 +5,9 @@ use Crypt::ScryptKDF qw(scrypt_hash_verify);
 has login_id   => undef;
 has created_at => undef;
 has updated_at => undef;
-has password   => sub { __PACKAGE__->factory('entity-password') };
+has password   => sub { __PACKAGE__->factory('value-password') };
 
 sub is_staff { shift->id ? 1 : 0 }
-
-sub verify_password {
-    my ( $self, $password ) = @_;
-    return scrypt_hash_verify( $password, $self->password->hash ) ? 1 : 0;
-}
 
 1;
 __END__
@@ -44,7 +39,7 @@ Return LoginID.
 
     my $password = $customer->password;
 
-Return L<Yetie::Domain::Entity::Password> object.
+Return L<Yetie::Domain::Value::Password> object.
 
 =head2 C<created_at>
 
@@ -73,4 +68,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity::Password>, L<Yetie::Domain::Entity>
+L<Yetie::Domain::Value::Password>, L<Yetie::Domain::Entity>
