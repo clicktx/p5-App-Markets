@@ -10,11 +10,6 @@ has emails     => sub { Yetie::Domain::Collection->new };
 
 sub is_registered { shift->password->value ? 1 : 0 }
 
-sub verify_password {
-    my ( $self, $password ) = @_;
-    return scrypt_hash_verify( $password, $self->password->value ) ? 1 : 0;
-}
-
 1;
 __END__
 
