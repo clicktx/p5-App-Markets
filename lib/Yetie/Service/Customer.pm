@@ -50,7 +50,7 @@ sub load_history {
 }
 
 sub login_process {
-    my ( $self, $email, $password ) = @_;
+    my ( $self, $email, $raw_password ) = @_;
 
     # Find account
     my $customer = $self->find_customer($email);
@@ -59,7 +59,7 @@ sub login_process {
 
     # Authentication
     return $self->_login_failed( 'login.failed.password', email => $email )
-      unless $customer->verify_password($password);
+      unless $customer->verify_password($raw_password);
 
     return $self->_logged_in( $customer->id );
 }

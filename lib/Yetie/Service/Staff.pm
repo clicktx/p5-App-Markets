@@ -15,7 +15,7 @@ sub find_staff {
 
 # NOTE: scenario(story) class?
 sub login_process {
-    my ( $self, $login_id, $password ) = @_;
+    my ( $self, $login_id, $raw_password ) = @_;
 
     # Find account
     my $staff = $self->find_staff($login_id);
@@ -23,7 +23,7 @@ sub login_process {
 
     # Authentication
     return $self->_login_failed( 'admin.login.failed.password', login_id => $login_id )
-      unless $staff->verify_password($password);
+      unless $staff->verify_password($raw_password);
 
     return $self->_logged_in($staff);
 }
@@ -81,7 +81,7 @@ Return L<Yetie::Domain::Entity::Staff> object.
 
 =head2 C<login_process>
 
-    my $bool = $service->login_process( $login_id, $password );
+    my $bool = $service->login_process( $login_id, $raw_password );
 
 Return boolean value.
 Returns true if login succeeded.
