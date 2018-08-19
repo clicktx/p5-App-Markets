@@ -59,7 +59,7 @@ sub login_process {
 
     # Authentication
     return $self->_login_failed( 'login.failed.password', email => $email )
-      unless $customer->verify_password($raw_password);
+      unless $customer->password->is_verify($raw_password);
 
     return $self->_logged_in( $customer->id );
 }

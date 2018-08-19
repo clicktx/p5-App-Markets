@@ -24,18 +24,4 @@ subtest 'is_staff' => sub {
     ok $staff->is_staff;
 };
 
-subtest 'verify_password' => sub {
-    my $staff = Yetie::Domain::Factory->new('entity-staff')->create( password => { value => 'aaa' } );
-    is $staff->verify_password('123'), 0, 'right unverified';
-
-    $staff = Yetie::Domain::Factory->new('entity-staff')->create(
-        password => {
-            value =>
-'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4='
-        }
-    );
-    ok !$staff->verify_password('123'), 'right unverified';
-    ok $staff->verify_password('12345678'), 'right verified';
-};
-
 done_testing();

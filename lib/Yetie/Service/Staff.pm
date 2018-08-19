@@ -23,7 +23,7 @@ sub login_process {
 
     # Authentication
     return $self->_login_failed( 'admin.login.failed.password', login_id => $login_id )
-      unless $staff->verify_password($raw_password);
+      unless $staff->password->is_verify($raw_password);
 
     return $self->_logged_in($staff);
 }
