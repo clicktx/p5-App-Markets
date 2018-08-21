@@ -89,7 +89,7 @@ sub add_catalog_routes {
 
     # Route Examples
     $r->get('/')->to('example#welcome')->name('RN_top');
-    $r->any('/login_example')->to('login_example#index');
+    $r->any('/login-example')->to('login_example#index');
 
     # Cart
     $r->any('/cart')->to('cart#index')->name('RN_cart');
