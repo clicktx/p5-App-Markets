@@ -89,7 +89,6 @@ sub add_catalog_routes {
 
     # Route Examples
     $r->get('/')->to('example#welcome')->name('RN_top');
-    $r->get('/regenerate_sid')->to('example#regenerate_sid');
     $r->any('/login_example')->to('login_example#index');
 
     # Cart
@@ -100,6 +99,7 @@ sub add_catalog_routes {
     # Checkout
     my $checkout = $r->any('/checkout')->to( controller => 'checkout' );
     $checkout->any('/')->to('#index')->name('RN_checkout');
+    $checkout->any('/shipping-address')->to('#shipping_address')->name('RN_checkout_shipping_address');
     $checkout->any('/address')->to('#address')->name('RN_checkout_address');
     $checkout->any('/shipping')->to('#shipping')->name('RN_checkout_shipping');
     $checkout->any('/confirm')->to('#confirm')->name('RN_checkout_confirm');
