@@ -10,6 +10,7 @@ my $c = $t->app->build_controller;
 
 sub f {
     return Yetie::Form::Field->new(
+        _fieldset     => 'Foo::Bar',
         field_key     => 'item.[].name',
         name          => 'item.0.name',
         label         => 'label text',
@@ -21,6 +22,7 @@ sub f {
 
 sub f2 {
     return Yetie::Form::Field->new(
+        _fieldset      => 'Foo::Bar::Baz',
         field_key      => 'title',
         name           => 'title',
         label          => 'label text',
