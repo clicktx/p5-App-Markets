@@ -65,15 +65,15 @@ sub _create_entity {
     );
 }
 
+use_ok 'Yetie::Domain::Entity::Cart';
 use_ok 'Yetie::Domain::Entity::Cart::Item';
 
 subtest 'basic' => sub {
-    my $cart = Yetie::Domain::Factory->new('entity-cart')->create();
-    isa_ok $cart, 'Yetie::Domain::Entity';
-
+    my $cart = Yetie::Domain::Entity::Cart->new;
     ok $cart->id;
-    isa_ok $cart->items,     'Yetie::Domain::Collection';
-    isa_ok $cart->shipments, 'Yetie::Domain::Collection';
+    isa_ok $cart->items,           'Yetie::Domain::Collection';
+    isa_ok $cart->shipments,       'Yetie::Domain::Collection';
+    isa_ok $cart->billing_address, 'Yetie::Domain::Entity::Address';
 };
 
 subtest 'attributes' => sub {
