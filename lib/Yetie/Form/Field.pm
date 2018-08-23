@@ -1,7 +1,10 @@
 package Yetie::Form::Field;
 use Mojo::Base -base;
+use Mojo::Util qw(decamelize);
 
 has error_messages => sub { +{} };
+has id             => sub { shift->_id };
+has _fieldset      => '';
 has [qw(field_key default_value choices help label multiple expanded required)];
 has [qw(name type value placeholder checked selected choiced)];
 
@@ -29,6 +32,17 @@ sub error_message {
     my %messages = %{ $self->error_messages };
     $messages{$_} = $args{$_} for keys %args;
     $self->error_messages( \%messages );
+}
+
+sub _id {
+    my $self = shift;
+
+    my $fieldset = $self->_fieldset;
+    $fieldset = decamelize($fieldset) . '-' if $fieldset;
+    my $name = $self->name;
+    $name =~ s/\./-/g;
+
+    return $fieldset . $name;
 }
 
 1;

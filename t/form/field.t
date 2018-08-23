@@ -84,4 +84,12 @@ subtest 'error_message' => sub {
       'right setter using hashref';
 };
 
+subtest 'id' => sub {
+    my $f = f();
+    is $f->id, 'foo-bar-item-0-name', 'right id';
+
+    my $f2 = f2();
+    is $f2->id, 'foo-bar-baz-title', 'right id';
+};
+
 done_testing();
