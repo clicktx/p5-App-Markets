@@ -20,7 +20,10 @@ sub AUTOLOAD {
     my $c     = $self->controller;
     my %attrs = %{$field};
 
-    $attrs{id} = _id( $field->name );
+    # Set field id
+    delete $attrs{_fieldset};
+    $attrs{id} = $wiget_id_prefix . '-' . $field->id;
+
     $attrs{required} ? $attrs{required} = undef : delete $attrs{required};
     delete $attrs{$_} for qw(filters validations);
     my $help           = delete $attrs{help};
@@ -214,12 +217,6 @@ sub _hidden {
     return $c->hidden_field( $attrs{name} => $value, %attrs );
 }
 
-sub _id {
-    my $name = shift;
-    $name =~ s/\./-/g;
-    return $wiget_id_prefix . '-' . $name;
-}
-
 sub _input {
     my $c      = shift;
     my $method = shift;
@@ -358,7 +355,7 @@ All methods is L<Mojolicious::Plugin::TagHelpers> wrapper methods.
     say $tag_helpers->checkbox($f);
 
     # HTML
-    <label><input checked name="agreed" type="checkbox" value="yes">I agreed</label>
+    <label><input checked name=" agreed " type=" checkbox " value=" yes ">I agreed</label>
 
 =head2 C<choice>
 
@@ -370,14 +367,14 @@ All methods is L<Mojolicious::Plugin::TagHelpers> wrapper methods.
     say $tag_helpers->choice($f);
 
     # HTML
-    <select id="country" name="country">
-        <optgroup label="EU">
-            <option value="de">de</option>
-            <option value="en">en</option>
+    <select id=" country " name=" country ">
+        <optgroup label=" EU ">
+            <option value=" de ">de</option>
+            <option value=" en ">en</option>
         </optgroup>
-        <optgroup label="Asia">
-            <option value="cn">China</option>
-            <option selected="selected" value="jp">Japan</option>
+        <optgroup label=" Asia ">
+            <option value=" cn ">China</option>
+            <option selected=" selected " value=" jp ">Japan</option>
         </optgroup>
     </select>
 
@@ -389,14 +386,14 @@ All methods is L<Mojolicious::Plugin::TagHelpers> wrapper methods.
     say $tag_helpers->choice($f);
 
     # HTML
-    <select id="country" multiple name="country[]">
-        <optgroup label="EU">
-            <option value="de">de</option>
-            <option value="en">en</option>
+    <select id=" country " multiple name=" country [] ">
+        <optgroup label=" EU ">
+            <option value=" de ">de</option>
+            <option value=" en ">en</option>
         </optgroup>
-        <optgroup label="Asia">
-            <option value="cn">China</option>
-            <option selected="selected" value="jp">Japan</option>
+        <optgroup label=" Asia ">
+            <option value=" cn ">China</option>
+            <option selected=" selected " value=" jp ">Japan</option>
         </optgroup>
     </select>
 
@@ -411,15 +408,15 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     say $tag_helpers->choice($f);
 
     # HTML
-    <fieldset class="form-choice-group">
-        <div class="form-choice-item">
-            <label><input name="country" type="radio" value="jp">Japan</label>
+    <fieldset class=" form-choice-group ">
+        <div class=" form-choice-item ">
+            <label><input name=" country " type=" radio " value=" jp ">Japan</label>
         </div>
-        <div class="form-choice-item">
-            <label><input name="country" type="radio" value="de">Germany</label>
+        <div class=" form-choice-item ">
+            <label><input name=" country " type=" radio " value=" de ">Germany</label>
         </div>
-        <div class="form-choice-item">
-            <label><input name="country" type="radio" value="cn">cn</label>
+        <div class=" form-choice-item ">
+            <label><input name=" country " type=" radio " value=" cn ">cn</label>
         </div>
     </fieldset>
 
@@ -431,15 +428,15 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     say $tag_helpers->choice($f);
 
     # HTML
-    <fieldset class="form-choice-group">
-        <div class="form-choice-item">
-            <label><input name="country[]" type="checkbox" value="jp">Japan</label>
+    <fieldset class=" form-choice-group ">
+        <div class=" form-choice-item ">
+            <label><input name=" country [] " type=" checkbox " value=" jp ">Japan</label>
         </div>
-        <div class="form-choice-item">
-            <label><input name="country[]" type="checkbox" value="de">Germany</label>
+        <div class=" form-choice-item ">
+            <label><input name=" country [] " type=" checkbox " value=" de ">Germany</label>
         </div>
-        <div class="form-choice-item">
-            <label><input name="country[]" type="checkbox" value="cn">cn</label>
+        <div class=" form-choice-item ">
+            <label><input name=" country [] " type=" checkbox " value=" cn ">cn</label>
         </div>
     </fieldset>
 
@@ -448,23 +445,23 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     say $tag_helpers->choice($f);
 
     # HTML
-    <fieldset class="form-choice-groups">
-        <fieldset class="form-choice-group">
+    <fieldset class=" form-choice-groups ">
+        <fieldset class=" form-choice-group ">
             <legend>EU</legend>
-            <div class="form-choice-item">
-                <label><input name="country[]" type="checkbox" value="de">de</label>
+            <div class=" form-choice-item ">
+                <label><input name=" country [] " type=" checkbox " value=" de ">de</label>
             </div>
-            <div class="form-choice-item">
-                <label><input name="country[]" type="checkbox" value="en">en</label>
+            <div class=" form-choice-item ">
+                <label><input name=" country [] " type=" checkbox " value=" en ">en</label>
             </div>
         </fieldset>
-        <fieldset class="form-choice-group">
+        <fieldset class=" form-choice-group ">
             <legend>Asia</legend>
-            <div class="form-choice-item">
-                <label><input name="country[]" type="checkbox" value="cn">China</label>
+            <div class=" form-choice-item ">
+                <label><input name=" country [] " type=" checkbox " value=" cn ">China</label>
             </div>
-            <div class="form-choice-item">
-                <label><input checked name="country[]" type="checkbox" value="jp">Japan</label>
+            <div class=" form-choice-item ">
+                <label><input checked name=" country [] " type=" checkbox " value=" jp ">Japan</label>
             </div>
         </fieldset>
     </fieldset>
@@ -534,7 +531,7 @@ See L<Mojolicious::Plugin::LocaleTextDomainOO>
     say $tag_helpers->radio($f);
 
     # HTML
-    <label><input checked name="agreed" type="radio" value="yes">I agreed</label>
+    <label><input checked name=" agreed " type=" radio " value=" yes ">I agreed</label>
 
 =head2 C<range>
 
@@ -557,15 +554,15 @@ See L<Mojolicious::Plugin::LocaleTextDomainOO>
     say $tag_helpers->textarea($f);
 
     # HTML
-    <textarea name="description" cols="40">default text</textarea>
+    <textarea name=" description " cols=" 40 ">default text</textarea>
 
     $f->value('text text text');
     say $tag_helpers->textarea($f);
 
     # HTML
-    <textarea name="description" cols="40">text text text</textarea>
+    <textarea name=" description " cols=" 40 ">text text text</textarea>
 
-In textarea, "default_value" and "value" is treated as content text.
+In textarea, " default_value " and " value " is treated as content text.
 
 =head2 C<time>
 
