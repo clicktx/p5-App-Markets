@@ -2,7 +2,6 @@ package Yetie::Form::TagHelpers;
 use Mojo::Base -base;
 use Carp qw(croak);
 use Scalar::Util qw(blessed weaken);
-use Mojo::Util qw(decamelize);
 use Mojo::Collection qw(c);
 use Mojolicious::Controller;
 use Mojolicious::Plugin::TagHelpers;
@@ -21,7 +20,10 @@ sub AUTOLOAD {
     my $c     = $self->controller;
     my %attrs = %{$field};
 
-    $attrs{id} = _create_id( delete $attrs{_fieldset}, $field->name );
+    # Set field id
+    delete $attrs{_fieldset};
+    $attrs{id} = $wiget_id_prefix . '-' . $field->id;
+
     $attrs{required} ? $attrs{required} = undef : delete $attrs{required};
     delete $attrs{$_} for qw(filters validations);
     my $help           = delete $attrs{help};
@@ -176,14 +178,6 @@ sub _choices_for_select {
         }
     }
     return $choices;
-}
-
-sub _create_id {
-    my ( $fieldset, $name ) = ( shift // '', shift );
-
-    $fieldset = decamelize($fieldset) . '-' if $fieldset;
-    $name =~ s/\./-/g;
-    return $wiget_id_prefix . '-' . $fieldset . $name;
 }
 
 sub _error {
