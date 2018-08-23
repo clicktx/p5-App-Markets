@@ -95,8 +95,9 @@ subtest 'field' => sub {
     ok !$fs->{_field}->{email}, 'right not cached';
 
     my $f = $fs->field('email');
-    isa_ok $f, 'Yetie::Form::Field';
     ok $fs->{_field}->{email}, 'right cached';
+    isa_ok $f, 'Yetie::Form::Field';
+    is $f->_fieldset, 'Test', 'right field set name';
 };
 
 subtest 'fieldset' => sub {
