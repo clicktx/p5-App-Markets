@@ -95,7 +95,7 @@ subtest 'factory method using' => sub {
 };
 
 subtest 'aggregate method' => sub {
-    Yetie::Domain::Entity::Agg->attr( [qw(hoge foos bars)] );
+    Yetie::Domain::Entity::Agg->attr( [qw(hoge fuga foos bars)] );
     my $f = Yetie::Domain::Factory->new('entity-agg');
 
     eval { $f->aggregate_collection( 'foos', 'entity-foo', 'abc' ) };
@@ -104,12 +104,16 @@ subtest 'aggregate method' => sub {
     ok $@, 'bad data type';
 
     $f->aggregate( 'hoge', 'entity-hoge', {} );
+    $f->aggregate( 'fuga', 'value-fuga',  {} );
     $f->aggregate_collection( 'foos', 'entity-foo', [ {} ] );
     $f->aggregate_kvlist( 'bars', 'entity-bar', [ { a => {} } ] );
 
     my $entity = $f->create;
     isa_ok $entity->hoge, 'Yetie::Domain::Entity';
-    is_deeply $entity->hoge->to_data, {}, 'right aggregate';
+    is_deeply $entity->hoge->to_data, {}, 'right aggregate entity object';
+
+    isa_ok $entity->fuga, 'Yetie::Domain::Value';
+    is_deeply $entity->fuga->value, '', 'right aggregate value object';
 
     isa_ok $entity->foos, 'Yetie::Domain::Collection';
     is_deeply $entity->foos->to_data, [ { a => 1, b => 2, f => 'fuga', h => 'hoge' } ], 'right aggregate array';
@@ -127,6 +131,9 @@ done_testing();
 
     package Yetie::Domain::Entity::Hoge;
     use Mojo::Base 'Yetie::Domain::Entity';
+
+    package Yetie::Domain::Value::Fuga;
+    use Mojo::Base 'Yetie::Domain::Value';
 }
 
 {
