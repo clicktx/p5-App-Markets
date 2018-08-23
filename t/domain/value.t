@@ -24,4 +24,9 @@ subtest 'operators' => sub {
     is "$v", 'foo', 'right stringify';
 };
 
+subtest 'to_data' => sub {
+    my $v = $pkg->new( value => 'foo' );
+    is $v->to_data, 'foo', 'right to_data';
+};
+
 done_testing();

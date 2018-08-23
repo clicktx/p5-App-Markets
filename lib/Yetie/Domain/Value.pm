@@ -14,6 +14,8 @@ sub new {
     return $class->SUPER::new($args);
 }
 
+sub to_data { shift->value }
+
 1;
 
 =encoding utf8
@@ -48,6 +50,12 @@ the following new ones.
 
 L<Yetie::Domain::Value> inherits all methods from L<Yetie::Domain::Base> and implements
 the following new ones.
+
+=head2 C<to_data>
+
+    my $value = $obj->to_data;
+
+L</value> alias method.
 
 =head1 OPERATORS
 

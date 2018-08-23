@@ -4,6 +4,7 @@ use Test::Deep;
 use Mojo::Util qw/sha1_sum/;
 use Yetie::Domain::Collection qw/collection/;
 use Yetie::Domain::IxHash qw/ix_hash/;
+use Yetie::Domain::Value;
 use Mojo::URL;
 
 my $pkg = 'Yetie::Domain::Entity';
@@ -108,7 +109,7 @@ subtest 'Entity object base' => sub {
 };
 
 subtest 'to_data method' => sub {
-    $pkg->attr( [qw(a b h h1 h2 url)] );
+    $pkg->attr( [qw(a b h h1 h2 url v)] );
 
     my $e = $pkg->new(
         a  => 1,
@@ -118,7 +119,8 @@ subtest 'to_data method' => sub {
             a => 1,
             h => $pkg->new( a => 1, b => 2 ),
         ),
-        url => Mojo::URL->new,    # has not "to_data" method.
+        url => Mojo::URL->new,                     # has not "to_data" method.
+        v   => Yetie::Domain::Value->new('foo'),
     );
 
     cmp_deeply $e->to_data,
@@ -133,6 +135,7 @@ subtest 'to_data method' => sub {
                 b => 2
             },
         },
+        v => 'foo',
       },
       'right dump data';
 };
