@@ -1,0 +1,19 @@
+% layout 'default';
+% title 'Shipping Address';
+
+<h1><%= title %></h1>
+
+<%= link_to 'Edit Cart' => 'RN_cart' %>
+
+<h3>ORDER SUMMARY</h3>
+
+<h3>Secure checkout</h3>
+<ol>
+    <li>Please sign in</li>
+    <li><strong>Shipping Address</strong></li>
+    <li>Shipping Options</li>
+    <li>Billing Options</li>
+    <li>Order Confirmation</li>
+</ol>
+
+<%= link_to 'Back to page' => 'RN_cart' %>
