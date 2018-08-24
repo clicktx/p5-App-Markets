@@ -1,6 +1,7 @@
 package Yetie::Domain::Entity::Cart;
 use Yetie::Domain::Entity;
 use Yetie::Domain::Entity::Address;
+use Yetie::Domain::Value::Email;
 use Carp qw/croak/;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
@@ -8,6 +9,7 @@ has cart_id         => '';
 has items           => sub { Yetie::Domain::Collection->new };
 has shipments       => sub { Yetie::Domain::Collection->new };
 has billing_address => sub { Yetie::Domain::Entity::Address->new };
+has email           => sub { Yetie::Domain::Value::Email->new };
 
 my @needless_attrs = (qw/cart_id items/);
 

@@ -3,7 +3,8 @@ use Test::More;
 use Test::Deep;
 use Yetie::Domain::Factory;
 
-my $test_data = {
+my %test_data = (
+    email => 'a@example.org',
     items => [
         { product_id => 1, quantity => 1, price => 100 },
         { product_id => 2, quantity => 2, price => 100 },
@@ -54,13 +55,13 @@ my $test_data = {
         organization  => '',
         phone         => '',
     },
-};
+);
 
 sub _create_entity {
     Yetie::Domain::Factory->new('entity-cart')->create(
         {
             cart_id => '12345',
-            %{$test_data},
+            %test_data,
         }
     );
 }
@@ -74,6 +75,7 @@ subtest 'basic' => sub {
     isa_ok $cart->items,           'Yetie::Domain::Collection';
     isa_ok $cart->shipments,       'Yetie::Domain::Collection';
     isa_ok $cart->billing_address, 'Yetie::Domain::Entity::Address';
+    isa_ok $cart->email,           'Yetie::Domain::Value::Email';
 };
 
 subtest 'attributes' => sub {
@@ -90,7 +92,8 @@ subtest 'attributes' => sub {
 subtest 'methods' => sub {
     my $cart      = _create_entity;
     my $cart_data = $cart->to_data;
-    my $d         = $test_data;
+    my %d         = %test_data;
+    my $d         = \%d;
     $d->{billing_address}->{hash}                    = 'f42001ccd9c7f10d05bfd8a9da91674635daba8c';
     $d->{shipments}->[0]->{shipping_address}->{hash} = 'a38d44916394e4d5289b8e5e2cc7b66bcd3f1722';
     $d->{shipments}->[1]->{shipping_address}->{hash} = 'e49e00abbdbcaa37c27e8af5ca11fe33c24703ce';
@@ -102,7 +105,7 @@ subtest 'methods' => sub {
     my $cart2 = Yetie::Domain::Factory->new('entity-cart')->create(
         {
             cart_id => '54321',
-            %{$test_data},
+            %test_data,
         }
     );
 
@@ -234,7 +237,8 @@ subtest 'subtotal' => sub {
 
 subtest 'merge' => sub {
     my $cart        = _create_entity;
-    my $stored_data = {
+    my %stored_data = (
+        email => '',
         items => [
             { product_id => 4, quantity => 4, price => 100 },
             { product_id => 1, quantity => 1, price => 100 },
@@ -254,15 +258,16 @@ subtest 'merge' => sub {
                 items => []
             }
         ],
-    };
+    );
     my $stored_cart = Yetie::Domain::Factory->new('entity-cart')->create(
         {
             cart_id => '99999',
-            %{$stored_data},
+            %stored_data,
         }
     );
 
-    my $d = $test_data;
+    my %d = %test_data;
+    my $d = \%d;
     $d->{cart_id}                                    = '12345';
     $d->{billing_address}->{hash}                    = 'f42001ccd9c7f10d05bfd8a9da91674635daba8c';
     $d->{shipments}->[0]->{shipping_address}->{hash} = 'a38d44916394e4d5289b8e5e2cc7b66bcd3f1722';
@@ -270,7 +275,8 @@ subtest 'merge' => sub {
     my $cart_data = $cart->to_data;
     cmp_deeply $cart_data, $d, 'right non-destructive';
 
-    $d                    = $stored_data;
+    %d                    = %stored_data;
+    $d                    = \%d;
     $d->{cart_id}         = '99999';
     $d->{billing_address} = {
         hash          => '20f551adf8c892c32845022b874e0763ecf68788',
@@ -304,6 +310,7 @@ subtest 'merge' => sub {
     cmp_deeply $merged_cart_data,
       {
         cart_id         => '99999',
+        email           => '',
         billing_address => ignore(),
         items           => [
             { product_id => 4, quantity => 4, price => 100 },
