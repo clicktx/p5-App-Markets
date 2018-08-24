@@ -16,6 +16,7 @@ has domain_class => sub {
 
 sub aggregate {
     my ( $self, $accessor, $domain, $data ) = @_;
+    if ( $domain =~ /^value/ and ref $data ne 'HASH' ) { $data = { value => $data } }
     croak 'Data type is not Hash refference' if ref $data ne 'HASH';
 
     $self->param( $accessor => $self->factory($domain)->create($data) );
@@ -178,8 +179,14 @@ the following new ones.
 
 =head2 C<aggregate>
 
-    my $domain = $factory->aggregate( 'user', 'entity-user', \%data );
-    my $vo = $factory->aggregate( 'user', 'value-user-name', \%data );
+    my $obj = $factory->aggregate( $attribure_name => $domain_class, \%data );
+
+    # Entity Object
+    my $entity = $factory->aggregate( user => 'entity-user', { id => 1, name => 'foo', age => 22, ... } );
+
+    # Value Object
+    my $value = $factory->aggregate( email => 'value-email', { value => 'a@example.org', ... } );
+    my $value = $factory->aggregate( email => 'value-email', 'a@example.org' );
 
 Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
 

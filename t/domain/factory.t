@@ -104,7 +104,7 @@ subtest 'aggregate method' => sub {
     ok $@, 'bad data type';
 
     $f->aggregate( 'hoge', 'entity-hoge', {} );
-    $f->aggregate( 'fuga', 'value-fuga',  {} );
+    $f->aggregate( 'fuga', 'value-fuga', '' );
     $f->aggregate_collection( 'foos', 'entity-foo', [ {} ] );
     $f->aggregate_kvlist( 'bars', 'entity-bar', [ { a => {} } ] );
 
