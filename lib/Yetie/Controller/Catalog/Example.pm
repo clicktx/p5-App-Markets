@@ -4,14 +4,14 @@ use Data::Dumper;
 
 # This action will render a template
 sub welcome {
-    my $self = shift;
+    my $c = shift;
     say "!!! start action !!!";
 
     # emit hook
-    $self->app->plugins->emit_hook( before_welcome => $self );
+    $c->app->plugins->emit_hook( before_welcome => $c );
 
     # session
-    my $session = $self->server_session;
+    my $session = $c->server_session;
     my $counter = $session->data('counter');
     $counter++;
     $session->data( counter => $counter );
@@ -19,28 +19,28 @@ sub welcome {
     say "counter: " . $counter;      # debug
 
     # Render template "example/welcome.html.ep" with message
-    $self->render( msg => 'Welcome to the Mojolicious real-time web framework!' );
+    $c->render( msg => 'Welcome to the Mojolicious real-time web framework!' );
 
     say "!!! end action !!!";
 }
 
 sub regenerate_sid {
-    my $self = shift;
+    my $c = shift;
     say "regenerate_sid";
 
-    my $session = $self->server_session;
+    my $session = $c->server_session;
     my $sid     = $session->regenerate_sid;
     say "  .. regenerate_sid: " . $sid;
-    $self->render(
+    $c->render(
         msg      => 'update sid!',
         template => 'example/welcome'
     );
 }
 
 sub signin {
-    my $self = shift;
+    my $c = shift;
 
-    $self->render(
+    $c->render(
         msg      => 'signin!',
         template => 'example/welcome'
     );

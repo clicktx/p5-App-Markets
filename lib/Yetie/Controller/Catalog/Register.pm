@@ -2,17 +2,17 @@ package Yetie::Controller::Catalog::Register;
 use Mojo::Base 'Yetie::Controller::Catalog';
 
 sub index {
-    my $self = shift;
+    my $c = shift;
 
-    my $form = $self->form('catalog-register');
-    return $self->render() unless $form->has_data;
+    my $form = $c->form('catalog-register');
+    return $c->render() unless $form->has_data;
 
     # Validation form
-    return $self->render() unless $form->do_validate;
+    return $c->render() unless $form->do_validate;
 
     # Registration customer data
     # Create login session
-    $self->redirect_to('RN_customer_register_done');
+    $c->redirect_to('RN_customer_register_done');
 
     #Registration – Activate a New Account by Email
     # Verification Token
@@ -29,8 +29,8 @@ sub index {
 }
 
 sub done {
-    my $self = shift;
-    return $self->render();
+    my $c = shift;
+    return $c->render();
 }
 
 1;

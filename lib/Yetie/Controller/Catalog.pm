@@ -2,25 +2,25 @@ package Yetie::Controller::Catalog;
 use Mojo::Base 'Yetie::Controller';
 
 sub init {
-    my $self = shift;
+    my $c = shift;
 
-    my $cart   = $self->server_session->cart;
+    my $cart   = $c->server_session->cart;
     my $data   = $cart->data;
-    my $entity = $self->factory('entity-cart')->create( cart_id => $cart->cart_id, %{$data} );
-    $self->stash( 'yetie.entity.cart' => $entity );
+    my $entity = $c->factory('entity-cart')->create( cart_id => $cart->cart_id, %{$data} );
+    $c->stash( 'yetie.entity.cart' => $entity );
 
-    $self->SUPER::init();
-    return $self;
+    $c->SUPER::init();
+    return $c;
 }
 
 sub finalize {
-    my $self = shift;
+    my $c = shift;
 
     # cartが変更されていた場合はセッションカートのデータを変更
-    $self->cart_session->data( $self->cart->to_data ) if $self->cart->is_modified;
+    $c->cart_session->data( $c->cart->to_data ) if $c->cart->is_modified;
 
-    $self->SUPER::finalize();
-    return $self;
+    $c->SUPER::finalize();
+    return $c;
 }
 
 1;
