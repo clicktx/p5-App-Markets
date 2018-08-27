@@ -4,10 +4,27 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 sub index {
     my $self = shift;
 
+    # Redirect logged-in customer
+    return $self->redirect_to('RN_checkout_shipping_address') if $self->is_logged_in;
+
+    # Guest or a customer not logged in
     my $form = $self->form('checkout-index');
+    $self->flash( ref => 'RN_checkout' );
     return $self->render() unless $form->has_data;
 
-    $self->redirect_to('RN_checkout_address');
+    # Check guest email
+    # NOTE: 登録済みの顧客ではないか？
+    # 認証済みのメールアドレスか？
+    $form->do_validate;
+    my $email = $self->factory('value-email')->create( value => $form->param('guest-email') );
+    $self->cart->email($email);
+
+    return $self->render();
+}
+
+sub shipping_address {
+    my $c = shift;
+    $c->render();
 }
 
 sub address {
