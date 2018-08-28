@@ -54,5 +54,5 @@
     <li><%= link_to 'Continue Shopping' => $ref %></li>
     <li>Clear Cart</li>
     <li><%= link_to 'Edit Cart' => 'RN_cart' %></li>
-    <li><%= link_to 'Check Out' => 'RN_checkout' %></li>
+    <li><%= link_to 'Proceed to Checkout' => 'RN_checkout', ( class => 'btn btn-primary' ) %></li>
 </ul>
