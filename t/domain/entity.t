@@ -39,6 +39,12 @@ subtest 'hash_code' => sub {
     is $e->hash_code(2), sha1_sum(2), 'right hash code';
 };
 
+subtest 'factory' => sub {
+    my $e = $pkg->new();
+    my $f = $pkg->factory('entity-foo');
+    isa_ok $f, 'Yetie::Domain::Factory';
+};
+
 subtest 'function' => sub {
     my $c = collection( 1, 2, 3 );
     isa_ok $c, 'Yetie::Domain::Collection';

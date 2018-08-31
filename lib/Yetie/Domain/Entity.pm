@@ -27,10 +27,7 @@ sub clone {
 
 sub equal { shift->id eq shift->id ? 1 : 0 }
 
-sub factory {
-    my ( $class, $entity_name ) = @_;
-    Yetie::Domain::Factory->new($entity_name)->create();
-}
+sub factory { Yetie::Domain::Factory->new( $_[1] ) }
 
 sub has_data { return shift->id ? 1 : 0 }
 
@@ -169,7 +166,7 @@ Return boolean value.
 
     __PACKAGE__->factory('entity-foo');
 
-Return Yetie::Domain::Entity object.
+Return Yetie::Domain::Factory object.
 
 =head2 C<has_data>
 
