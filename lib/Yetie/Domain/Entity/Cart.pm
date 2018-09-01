@@ -156,6 +156,24 @@ sub total_quantity {
       $_[0]->shipments->reduce( sub { $a + $b->subtotal_quantity }, 0 );
 }
 
+sub update_shipping_address {
+    my $self = shift;
+    die 'Argument is missing.' unless @_;
+
+    # Convert array reference
+    if ( ref $_[0] eq 'ARRAY' ) {
+        @_ = map { $_ => $_[0]->[$_] } 0 .. scalar @{ $_[0] } - 1;
+    }
+    my $arg = @_ > 1 ? +{@_} : { 0 => $_[0] };
+
+    my $updated = 0;
+    foreach my $key ( keys %{$arg} ) {
+        $self->_update_shipping_address( $key, $arg->{$key} );
+        $updated++;
+    }
+    return $updated;
+}
+
 sub _add_item {
     my $collection = shift;
     my $item       = shift;
@@ -176,6 +194,12 @@ sub _remove_item {
     my $removed;
     my $new_collection = $collection->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
     return ( $removed, $new_collection );
+}
+
+sub _update_shipping_address {
+    my ( $self, $index, $address ) = @_;
+    my $shipping_address = $self->factory('entity-address')->create($address);
+    $self->shipments->[$index]->shipping_address($shipping_address);
 }
 
 1;
@@ -298,6 +322,17 @@ Return number of items types.
     my $total_qty = $cart->total_quantity;
 
 Return all items quantity.
+
+=head2 C<update_shipping_address>
+
+    # Update first element
+    $cart->update_shipping_address( \%address );
+
+    # Update multiple elements
+    $cart->update_shipping_address( 1 => \%address, 3 => \%address, ... );
+    $cart->update_shipping_address( [ \%address, \%address, ... ] );
+
+Update shipping address.
 
 =head1 AUTHOR
 
