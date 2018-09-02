@@ -2,7 +2,7 @@ use Mojo::Base -strict;
 use Test::More;
 
 my $pkg = 'Yetie::Domain::Factory';
-use_ok 'Yetie::Domain::Factory::Shipment';
+use_ok 'Yetie::Domain::Factory::Entity::Shipment';
 
 subtest 'argument empty' => sub {
     my $factory = $pkg->new('entity-shipment');

@@ -1,4 +1,4 @@
-package Yetie::Domain::Factory::Cart;
+package Yetie::Domain::Factory::Entity::Cart;
 use Mojo::Base 'Yetie::Domain::Factory';
 
 sub cook {
@@ -24,11 +24,11 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Factory::Cart
+Yetie::Domain::Factory::Entity::Cart
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Cart->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Cart->new( %args )->create;
 
     # In controller
     my $entity = $c->factory('entity-cart')->create(%args);
@@ -37,12 +37,12 @@ Yetie::Domain::Factory::Cart
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Factory::Cart> inherits all attributes from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Entity::Cart> inherits all attributes from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Factory::Cart> inherits all methods from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Entity::Cart> inherits all methods from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 AUTHOR

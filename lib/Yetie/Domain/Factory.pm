@@ -93,8 +93,8 @@ sub new {
     my ( $self, $arg ) = ( shift, shift );
     Carp::croak 'Argument empty' unless $arg;
 
-    my $domain        = Mojo::Util::camelize($arg);
-    my $factory_class = _factory_class($domain);
+    my $domain = Mojo::Util::camelize($arg);
+    my $factory_class = 'Yetie::Domain::Factory::' . $domain;
     my $domain_class  = 'Yetie::Domain::' . $domain;
 
     my $e = Mojo::Loader::load_class($factory_class);
@@ -126,12 +126,6 @@ sub params {
     # Setter
     my %args = @_ > 1 ? @_ : %{ $_[0] };
     $self->{$_} = $args{$_} for keys %args;
-}
-
-sub _factory_class {
-    my $domain = shift;
-    $domain =~ s/Entity::|Value:://;
-    return 'Yetie::Domain::Factory::' . $domain;
 }
 
 1;

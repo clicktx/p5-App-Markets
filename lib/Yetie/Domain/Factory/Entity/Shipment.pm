@@ -1,4 +1,4 @@
-package Yetie::Domain::Factory::Shipment;
+package Yetie::Domain::Factory::Entity::Shipment;
 use Mojo::Base 'Yetie::Domain::Factory';
 use Yetie::Domain::Collection qw/collection/;
 
@@ -21,11 +21,11 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Factory::Shipment
+Yetie::Domain::Factory::Entity::Shipment
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Shipment->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Shipment->new( %args )->create;
 
     # In controller
     my $entity = $c->factory('entity-shipment')->create(%args);
@@ -34,12 +34,12 @@ Yetie::Domain::Factory::Shipment
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Factory::Shipment> inherits all attributes from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Entity::Shipment> inherits all attributes from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Factory::Shipment> inherits all methods from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Entity::Shipment> inherits all methods from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 AUTHOR

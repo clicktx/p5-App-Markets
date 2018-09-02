@@ -53,7 +53,7 @@ subtest 'factory' => sub {
 
 subtest 'has not cook' => sub {
     my $f = Yetie::Domain::Factory->new('entity-hoge');
-    is ref $f, 'Yetie::Domain::Factory::Hoge', 'right namespace';
+    is ref $f, 'Yetie::Domain::Factory::Entity::Hoge', 'right namespace';
 
     my $entity = $f->create_domain();
     is ref $entity, 'Yetie::Domain::Entity::Hoge', 'right namespace';
@@ -72,7 +72,7 @@ subtest 'has not cook' => sub {
 subtest 'has cook' => sub {
     Yetie::Domain::Entity::Foo->attr( [qw(a b f h)] );
     my $f = Yetie::Domain::Factory->new('entity-foo');
-    is ref $f, 'Yetie::Domain::Factory::Foo', 'right namespace';
+    is ref $f, 'Yetie::Domain::Factory::Entity::Foo', 'right namespace';
 
     my $entity = $f->create_domain();
     is ref $entity, 'Yetie::Domain::Entity::Foo', 'right namespace';
@@ -126,7 +126,7 @@ done_testing();
 
 {
 
-    package Yetie::Domain::Factory::Hoge;
+    package Yetie::Domain::Factory::Entity::Hoge;
     use Mojo::Base 'Yetie::Domain::Factory';
 
     package Yetie::Domain::Entity::Hoge;
@@ -138,7 +138,7 @@ done_testing();
 
 {
 
-    package Yetie::Domain::Factory::Foo;
+    package Yetie::Domain::Factory::Entity::Foo;
     use Mojo::Base 'Yetie::Domain::Factory';
 
     sub cook {
@@ -160,7 +160,7 @@ done_testing();
 
 {
 
-    package Yetie::Domain::Factory::Bar;
+    package Yetie::Domain::Factory::Entity::Bar;
     use Mojo::Base 'Yetie::Domain::Factory';
 
     sub cook {
@@ -174,7 +174,7 @@ done_testing();
 
 {
 
-    package Yetie::Domain::Factory::Agg;
+    package Yetie::Domain::Factory::Entity::Agg;
     use Mojo::Base 'Yetie::Domain::Factory';
 
     package Yetie::Domain::Entity::Agg;

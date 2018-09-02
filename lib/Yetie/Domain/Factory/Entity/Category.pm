@@ -1,4 +1,4 @@
-package Yetie::Domain::Factory::Category;
+package Yetie::Domain::Factory::Entity::Category;
 use Mojo::Base 'Yetie::Domain::Factory';
 
 sub cook {
@@ -18,11 +18,11 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Factory::Category
+Yetie::Domain::Factory::Entity::Category
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Category->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Category->new( %args )->create;
 
     # In controller
     my $entity = $c->factory('entity-category')->create(%args);
@@ -31,12 +31,12 @@ Yetie::Domain::Factory::Category
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Factory::Category> inherits all attributes from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Entity::Category> inherits all attributes from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Factory::Category> inherits all methods from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Entity::Category> inherits all methods from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 AUTHOR

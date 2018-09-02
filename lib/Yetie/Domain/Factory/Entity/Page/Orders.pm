@@ -1,4 +1,4 @@
-package Yetie::Domain::Factory::Page::Orders;
+package Yetie::Domain::Factory::Entity::Page::Orders;
 use Mojo::Base 'Yetie::Domain::Factory';
 
 sub cook {
@@ -12,11 +12,11 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Factory::Page::Orders
+Yetie::Domain::Factory::Entity::Page::Orders
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Page::Orders->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Page::Orders->new( %args )->create;
 
     # In controller
     my $entity = $c->factory('entity-page-orders')->create(%args);
@@ -25,12 +25,12 @@ Yetie::Domain::Factory::Page::Orders
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Factory::Page::Orders> inherits all attributes from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Entity::Page::Orders> inherits all attributes from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Factory::Page::Orders> inherits all methods from L<Yetie::Domain::Factory> and implements
+L<Yetie::Domain::Factory::Entity::Page::Orders> inherits all methods from L<Yetie::Domain::Factory> and implements
 the following new ones.
 
 =head1 AUTHOR
