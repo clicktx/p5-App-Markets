@@ -198,7 +198,12 @@ sub _remove_item {
 
 sub _update_shipping_address {
     my ( $self, $index, $address ) = @_;
-    my $shipping_address = $self->factory('entity-address')->create($address);
+
+    my $shipping_address =
+      eval { $address->isa('Yetie::Domain::Entity::Address') }
+      ? $address
+      : $self->factory('entity-address')->create($address);
+
     $self->shipments->[$index]->shipping_address($shipping_address);
 }
 
@@ -327,10 +332,11 @@ Return all items quantity.
 
     # Update first element
     $cart->update_shipping_address( \%address );
+    $cart->update_shipping_address( $address_obj );
 
     # Update multiple elements
-    $cart->update_shipping_address( 1 => \%address, 3 => \%address, ... );
-    $cart->update_shipping_address( [ \%address, \%address, ... ] );
+    $cart->update_shipping_address( 1 => \%address, 3 => $address_obj, ... );
+    $cart->update_shipping_address( [ \%address, $address_obj, ... ] );
 
 Update shipping address.
 

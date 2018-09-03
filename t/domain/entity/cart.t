@@ -360,6 +360,12 @@ subtest 'update_shipping_address' => sub {
     is $i, 1, 'right update quantity';
 
     $cart = _create_entity;
+    my $obj = $cart->factory('entity-address')->create(%address);
+    $i = $cart->update_shipping_address($obj);
+    cmp_deeply $cart->shipments->first->shipping_address->to_data, $valid_data, 'right single update, data is object';
+    is $i, 1, 'right update quantity';
+
+    $cart = _create_entity;
     $i = $cart->update_shipping_address( 0 => \%address, 1 => \%address );
     cmp_deeply $cart->shipments->[0]->shipping_address->to_data, $valid_data, 'right multi update';
     cmp_deeply $cart->shipments->[1]->shipping_address->to_data, $valid_data, 'right multi update';
