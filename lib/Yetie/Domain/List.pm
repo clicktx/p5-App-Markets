@@ -42,4 +42,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>
+L<Yetie::Domain::Collection>, L<Yetie::Domain::Entity>

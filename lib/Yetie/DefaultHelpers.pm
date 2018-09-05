@@ -60,7 +60,7 @@ sub _factory {
 
 sub _pref {
     my $self = shift;
-    my $pref = $self->stash('yetie.entity.preference');
+    my $pref = $self->domain_cache('preferences');
     return @_ ? $pref->value(@_) : $pref;
 }
 
