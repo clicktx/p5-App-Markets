@@ -3,10 +3,10 @@ use Test::More;
 use Test::Deep;
 use Yetie::Domain::Factory;
 
-use_ok 'Yetie::Domain::Entity::Preference';
+use_ok 'Yetie::Domain::Entity::Preferences';
 
 subtest 'default attributes' => sub {
-    my $p = Yetie::Domain::Entity::Preference->new;
+    my $p = Yetie::Domain::Entity::Preferences->new;
     isa_ok $p->properties, 'Yetie::Domain::IxHash', 'right propeties';
 };
 
@@ -51,7 +51,7 @@ my $data = {
     ],
 };
 
-my $pref = Yetie::Domain::Factory->new('entity-preference')->create($data);
+my $pref = Yetie::Domain::Factory->new('entity-preferences')->create($data);
 
 subtest 'basic' => sub {
     isa_ok $pref, 'Yetie::Domain::Entity';

@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::Preference;
+package Yetie::Domain::Entity::Preferences;
 use Yetie::Domain::Entity;
 use Carp qw/croak/;
 
@@ -31,7 +31,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Preference
+Yetie::Domain::Entity::Preferences
 
 =head1 SYNOPSIS
 
@@ -58,14 +58,14 @@ Yetie::Domain::Entity::Preference
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Preference> inherits all attributes from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::Preferences> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<properties>
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Preference> inherits all methods from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::Preferences> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<value>
