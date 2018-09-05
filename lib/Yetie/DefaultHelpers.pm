@@ -42,10 +42,10 @@ sub __x_default_lang {
 sub _entity_cache {
     my $self = shift;
 
-    my $cache = $self->app->defaults('yetie.entity.cache');
+    my $cache = $self->app->defaults('yetie.domain.cache');
     if ( !$cache ) {
         $cache = Mojo::Cache->new();
-        $self->app->defaults( 'yetie.entity.cache' => $cache );
+        $self->app->defaults( 'yetie.domain.cache' => $cache );
     }
     return @_ ? @_ > 1 ? $cache->set( $_[0] => $_[1] ) : $cache->get( $_[0] ) : $cache;
 }
