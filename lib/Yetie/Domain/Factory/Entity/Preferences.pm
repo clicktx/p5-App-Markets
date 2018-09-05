@@ -5,7 +5,7 @@ sub cook {
     my $self = shift;
 
     # Aggregate properties
-    $self->aggregate_kvlist( properties => 'entity-preference-property', $self->param('properties') || [] );
+    $self->aggregate_kvlist( hash_set => 'entity-preference-property', $self->param('hash_set') || [] );
 }
 
 1;

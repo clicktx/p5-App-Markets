@@ -7,11 +7,11 @@ use_ok 'Yetie::Domain::Entity::Preferences';
 
 subtest 'default attributes' => sub {
     my $p = Yetie::Domain::Entity::Preferences->new;
-    isa_ok $p->properties, 'Yetie::Domain::IxHash', 'right propeties';
+    isa_ok $p->hash_set, 'Yetie::Domain::IxHash', 'right properties';
 };
 
 my $data = {
-    properties => [
+    hash_set => [
         {
             hoge => {
                 id            => 3,
@@ -51,17 +51,24 @@ my $data = {
     ],
 };
 
-my $pref = Yetie::Domain::Factory->new('entity-preferences')->create($data);
+my $construct = sub { Yetie::Domain::Factory->new('entity-preferences')->create($data) };
 
 subtest 'basic' => sub {
+    my $pref = $construct->();
     isa_ok $pref, 'Yetie::Domain::Entity';
 };
 
-subtest 'attributes' => sub {
+subtest 'properties' => sub {
+    my $pref = $construct->();
     can_ok $pref, 'properties';
+    isa_ok $pref->properties, 'Yetie::Domain::IxHash';
+
+    $pref->properties(undef);
+    is $pref->properties, undef, 'right set properties';
 };
 
-subtest 'value()' => sub {
+subtest 'value' => sub {
+    my $pref = $construct->();
     can_ok $pref, 'value';
 
     is $pref->value('pref1'), 11, 'right default value';
