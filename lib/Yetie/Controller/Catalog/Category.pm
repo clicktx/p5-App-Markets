@@ -22,8 +22,7 @@ sub index {
 
     # widget category tree
     my $service = $c->service('category_tree');
-    my $category_tree = $service->get_cache || $service->search_all;
-    $c->stash( 'yetie.widget.category_tree' => $category_tree );
+    $c->stash( 'yetie.widget.category_tree' => $service->search_all );
 
     return $c->render();
 }

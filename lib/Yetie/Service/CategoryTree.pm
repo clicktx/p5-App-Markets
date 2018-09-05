@@ -7,6 +7,7 @@ sub get_cache { shift->app->entity_cache('category_tree') }
 
 sub search_all {
     my $self = shift;
+    return $self->get_cache if $self->get_cache;
 
     my $root = $self->resultset->search( { level => 0 } );
     my $tree = _create_tree($root) || [];
