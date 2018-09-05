@@ -18,7 +18,7 @@ sub register {
     $app->helper( addons           => sub { shift->app->addons(@_) } );
     $app->helper( cookie_session   => sub { shift->session(@_) } );
     $app->helper( cart             => sub { _cart(@_) } );
-    $app->helper( entity_cache     => sub { _entity_cache(@_) } );
+    $app->helper( domain_cache     => sub { _domain_cache(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
     $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
@@ -39,13 +39,13 @@ sub __x_default_lang {
     return $word;
 }
 
-sub _entity_cache {
+sub _domain_cache {
     my $self = shift;
 
-    my $cache = $self->app->defaults('yetie.entity.cache');
+    my $cache = $self->app->defaults('yetie.domain.cache');
     if ( !$cache ) {
         $cache = Mojo::Cache->new();
-        $self->app->defaults( 'yetie.entity.cache' => $cache );
+        $self->app->defaults( 'yetie.domain.cache' => $cache );
     }
     return @_ ? @_ > 1 ? $cache->set( $_[0] => $_[1] ) : $cache->get( $_[0] ) : $cache;
 }
@@ -127,16 +127,16 @@ Alias for $c->session;
     my $cart = $c->cart;
     $c->cart($cart);
 
-=head2 C<entity_cache>
+=head2 C<domain_cache>
 
     # Return L<Mojo::Cache> object.
-    my $mojo_cache = $c->entity_cache;
+    my $mojo_cache = $c->domain_cache;
 
     # Getter
-    my $entity = $c->entity_cache('foo_entity');
+    my $entity = $c->domain_cache('foo_entity');
 
     # Setter
-    $c->entity_cache( foo_entity => $entity );
+    $c->domain_cache( foo_entity => $entity );
 
 Get/Set entity cache.
 
