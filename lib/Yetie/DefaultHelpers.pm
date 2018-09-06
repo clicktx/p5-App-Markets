@@ -19,9 +19,9 @@ sub register {
 
     $app->helper( __x_default_lang => sub { __x_default_lang(@_) } );
     $app->helper( addons           => sub { shift->app->addons(@_) } );
-    $app->helper( cookie_session   => sub { shift->session(@_) } );
-    $app->helper( cart             => sub { _cart(@_) } );
     $app->helper( cache            => sub { _cache(@_) } );
+    $app->helper( cart             => sub { _cart(@_) } );
+    $app->helper( cookie_session   => sub { shift->session(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
     $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
@@ -29,8 +29,6 @@ sub register {
     $app->helper( service          => sub { _service(@_) } );
     $app->helper( template         => sub { _template(@_) } );
 }
-
-sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.entity.cart' => $_[1] ) : $_[0]->stash('yetie.entity.cart') }
 
 sub __x_default_lang {
     my $c = shift;
@@ -48,6 +46,8 @@ sub _cache {
     my $caches = $self->app->caches;
     return @_ ? @_ > 1 ? $caches->set( $_[0] => $_[1] ) : $caches->get( $_[0] ) : $caches;
 }
+
+sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.entity.cart' => $_[1] ) : $_[0]->stash('yetie.entity.cart') }
 
 sub _factory {
     my $self = shift;
@@ -137,6 +137,11 @@ Return L<Yetie::Cache> object.
 
 SEE L<Yetie::Cache>
 
+=head2 C<cart>
+
+    my $cart = $c->cart;
+    $c->cart($cart);
+
 =head2 C<cookie_session>
 
     $c->cookie_session( key => 'value' );
@@ -144,16 +149,18 @@ SEE L<Yetie::Cache>
 
 Alias for $c->session;
 
-=head2 C<cart>
-
-    my $cart = $c->cart;
-    $c->cart($cart);
-
 =head2 C<factory>
 
     my $factory = $c->factory('entity-something');
 
 Return L<Yetie::Domain::Factory> Object.
+
+=head2 C<resultset>
+
+    my $resultset = $c->resultset('Foo::Bar');
+    my $resultset = $c->resultset('foo-bar');
+
+Return L<Yetie::Schema::ResultSet> object.
 
 =head2 C<pref>
 
@@ -167,13 +174,6 @@ Return L<Yetie::Domain::Factory> Object.
     $c->pref( hoge => 'fizz', fuga => 'bazz' );
 
 Get/Set preference.
-
-=head2 C<resultset>
-
-    my $resultset = $c->resultset('Foo::Bar');
-    my $resultset = $c->resultset('foo-bar');
-
-Return L<Yetie::Schema::ResultSet> object.
 
 =head2 C<schema>
 
