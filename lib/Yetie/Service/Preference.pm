@@ -9,7 +9,7 @@ sub load {
 
     my $properties = $self->resultset->search( {} )->to_data;
     my $pref = $self->factory('entity-preferences')->create( hash_set => $properties );
-    $self->app->domain_cache( preferences => $pref );
+    $self->app->cache( preferences => $pref );
 
     $self->app->log->debug( 'Loading preferences from DB via ' . __PACKAGE__ );
     return $pref;
@@ -18,7 +18,7 @@ sub load {
 sub store {
     my $self = shift;
 
-    my $pref = $self->app->domain_cache('preferences');
+    my $pref = $self->app->cache('preferences');
     return unless $pref->is_modified;
 
     my $cb = sub {
