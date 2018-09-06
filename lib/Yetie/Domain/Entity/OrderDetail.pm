@@ -1,13 +1,13 @@
 package Yetie::Domain::Entity::OrderDetail;
 use Yetie::Domain::Entity;
 
-has page_title => 'Order Details';
+has page_title       => 'Order Details';
 has created_at       => undef;
 has updated_at       => undef;
-has customer         => sub { __PACKAGE__->factory('entity-customer') };
-has billing_address  => sub { __PACKAGE__->factory('entity-address') };
-has shipping_address => sub { __PACKAGE__->factory('entity-address') };
-has items            => sub { __PACKAGE__->factory('entity-order-items') };
+has customer         => sub { __PACKAGE__->factory('entity-customer')->create() };
+has billing_address  => sub { __PACKAGE__->factory('entity-address')->create() };
+has shipping_address => sub { __PACKAGE__->factory('entity-address')->create() };
+has items            => sub { __PACKAGE__->factory('entity-order-items')->create() };
 
 has purchased_on => '';
 has order_status => '';

@@ -5,7 +5,7 @@ use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
 has created_at => undef;
 has updated_at => undef;
-has password   => sub { __PACKAGE__->factory('value-password') };
+has password   => sub { __PACKAGE__->factory('value-password')->create() };
 has emails     => sub { Yetie::Domain::Collection->new };
 
 sub is_registered { shift->password->value ? 1 : 0 }
