@@ -9,13 +9,18 @@ $ENV{DBIC_TRACE}            = 1;
 $ENV{DBIX_QUERYLOG_COMPACT} = 1;
 $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
 
+has addons => sub { Yetie::Addons->new(@_) };
+has region => 'us';
+
+# has restart_app => sub { system shift->home . "/script/appctl --restart" };
+has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更する
 has schema => sub {
     my $self = shift;
 
     # DBIC NestedSet
     _dbic_nestedset();
 
-    say "+++++ DBIC +++++";    # debug
+    say "+++++ DBIC +++++";                               # debug
     my $schema_class = "Yetie::Schema";
     eval "require $schema_class" or die "Could not load Schema Class ($schema_class). $@\n";    ## no critic
 
@@ -30,11 +35,6 @@ has schema => sub {
     $schema->{app} = $self;
     return $schema;
 };
-
-# has restart_app => sub { system shift->home . "/script/appctl --restart" };
-has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更する
-has addons      => sub { Yetie::Addons->new(@_) };
-has region      => 'us';
 
 sub initialize_app {
     my $self = shift;
