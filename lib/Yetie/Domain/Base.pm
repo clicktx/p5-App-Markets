@@ -55,6 +55,13 @@ sub import {
     # Base
     if ( $flags[0] eq '-base' or !$flags[0] ) { $flags[0] = $class }
 
+    # Read Only
+    my $readonly;
+    if ( $flags[0] eq '-readonly' ) {
+        $flags[0] = $class;
+        $readonly = 1;
+    }
+
     # Role
     if ( $flags[0] eq '-role' ) {
         Carp::croak 'Role::Tiny 2.000001+ is required for roles' unless Mojo::Base->ROLES;
@@ -68,10 +75,11 @@ sub import {
         require( Mojo::Util::class_to_path( $flags[0] ) ) unless $flags[0]->can('new');
         push @{"${caller}::ISA"}, $flags[0];
         Mojo::Util::monkey_patch( $caller, 'has', sub { attr( $caller, @_ ) } );
-    }
 
-    # Add default attributes
-    $caller->attr( _is_modified => 0 );
+        # Add default attributes
+        $caller->attr( _is_modified => 0 );
+        $readonly ? $caller->attr( _readonly => 1 ) : $caller->attr( _readonly => 0 );
+    }
 
     # Mojo modules are strict!
     $_->import for qw(strict warnings utf8);
@@ -101,6 +109,8 @@ sub new {
 
 sub _is_changed {
     my ( $attr, $obj, $value ) = ( shift, shift, shift // '' );
+
+    die 'Value can not be set.This object is immutable.' if $obj->_readonly;
     $obj->{$attr} = '' unless defined $obj->{$attr};    # undef to ''
     return exists $obj->{$attr} ? $obj->{$attr} eq $value ? 0 : 1 : 1;
 }
