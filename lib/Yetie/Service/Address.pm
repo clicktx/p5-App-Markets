@@ -3,6 +3,17 @@ use Mojo::Base 'Yetie::Service';
 
 has resultset => sub { shift->schema->resultset('Address') };
 
+sub get_address_types {
+    my $self = shift;
+
+    return $self->cache('address_types') if $self->cache('address_types');
+
+    my $rs = $self->schema->resultset('Address::Type')->search();
+    my $address_types = $self->factory('entity-address_types')->create( list => $rs->to_data );
+    $self->cache( address_types => $address_types );
+    return $address_types;
+}
+
 sub get_registered_id {
     my ( $self, $address ) = @_;
 

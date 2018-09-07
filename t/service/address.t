@@ -26,7 +26,18 @@ my %params = (
     phone         => '3059398498'
 );
 
-subtest 'get registered id' => sub {
+subtest 'get_address_types' => sub {
+    my ( $c, $s ) = _init();
+
+    is $c->cache('address_types'), undef, 'right uncached';
+
+    my $types = $s->get_address_types;
+    isa_ok $types, 'Yetie::Domain::Entity::AddressTypes';
+
+    is $c->cache('address_types'), $types, 'right cached';
+};
+
+subtest 'get_registered_id' => sub {
     my ( $c, $s ) = _init();
     my %p = %params;
 
