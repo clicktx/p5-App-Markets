@@ -29,4 +29,10 @@ subtest 'to_data' => sub {
     is $v->to_data, 'foo', 'right to_data';
 };
 
+subtest 'immutable' => sub {
+    my $v = $pkg->new( value => 'foo' );
+    eval { $v->value('bar') };
+    like $@, qr/immutable/, 'right immutable';
+};
+
 done_testing();

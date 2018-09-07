@@ -1,5 +1,5 @@
 package Yetie::Domain::Value;
-use Yetie::Domain::Base;
+use Yetie::Domain::Base -readonly;
 use overload
   q(bool)  => sub { 1 },
   q("")    => sub { shift->value },
@@ -32,6 +32,8 @@ Yetie::Domain::Value
 
 =head1 DESCRIPTION
 
+Immutable value object base class.
+
 =head1 FUNCTIONS
 
 L<Yetie::Domain::Value> inherits all functions from L<Yetie::Domain::Base> and implements
@@ -41,6 +43,8 @@ the following new ones.
 
 L<Yetie::Domain::Value> inherits all attributes from L<Yetie::Domain::Base> and implements
 the following new ones.
+
+The value can not be set.This object is immutable.
 
 =head2 C<value>
 
