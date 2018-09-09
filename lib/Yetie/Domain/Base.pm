@@ -110,7 +110,7 @@ sub new {
 sub _is_changed {
     my ( $attr, $obj, $value ) = ( shift, shift, shift // '' );
 
-    die 'Value can not be set.This object is immutable.' if $obj->_readonly;
+    Carp::croak 'Value can not be set.This object is immutable.' if $obj->_readonly;
     $obj->{$attr} = '' unless defined $obj->{$attr};    # undef to ''
     return exists $obj->{$attr} ? $obj->{$attr} eq $value ? 0 : 1 : 1;
 }
