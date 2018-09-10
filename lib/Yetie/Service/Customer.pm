@@ -43,6 +43,26 @@ sub find_customer {
     return $self->factory('entity-customer')->create($data);
 }
 
+sub get_addresses {
+    my ( $self, $customer_id, $type_name ) = @_;
+
+    my $address_types   = $self->service('address')->get_address_types;
+    my $address_type_id = $address_types->get_id_by_name($type_name);
+
+    my $rs = $self->schema->resultset('Address')->search(
+        {
+            'customer_addresses.customer_id'     => $customer_id,
+            'customer_addresses.address_type_id' => $address_type_id,
+        },
+        { prefetch => 'customer_addresses' }
+    );
+    return $self->factory('entity-addresses')->create( list => $rs->to_data );
+}
+
+sub get_billing_addresses { shift->get_addresses( shift, 'billing' ) }
+
+sub get_shipping_addresses { shift->get_addresses( shift, 'shipping' ) }
+
 sub load_history {
     my $self = shift;
     my $c    = $self->controller;
@@ -127,6 +147,32 @@ the following new ones.
     my $entity = $service->find_customer($email);
 
 Return L<Yetie::Domain::Entity::Customer> object.
+
+=head2 C<get_addresses>
+
+    my $addresses = $service->get_addresses( $customer_id, $address_type_name );
+
+Return L<Yetie::Domain::Entity::Addresses> object.
+
+=head2 C<get_billing_addresses>
+
+    my $addresses = $service->get_billing_addresses($customer_id);
+
+    # Alias method
+    my $addresses = $service->get_addresses( $customer_id, 'billing' );
+
+Return L<Yetie::Domain::Entity::Addresses> object.
+See L</get_addresses>
+
+=head2 C<get_shipping_addresses>
+
+    my $addresses = $service->get_shipping_addresses($customer_id);
+
+    # Alias method
+    my $addresses = $service->get_addresses( $customer_id, 'shipping' );
+
+Return L<Yetie::Domain::Entity::Addresses> object.
+See L</get_addresses>
 
 =head2 C<load_history>
 

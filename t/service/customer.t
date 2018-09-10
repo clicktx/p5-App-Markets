@@ -24,4 +24,18 @@ subtest 'find_customer' => sub {
     is $entity->id, 111, 'right customer';
 };
 
+subtest 'get_addresses' => sub {
+    my ( $c, $s ) = _init();
+
+    my $e = $s->get_addresses( 111, 'shipping' );
+    isa_ok $e, 'Yetie::Domain::Entity::Addresses';
+    is $e->list->size, 2, 'right shipping addresses';
+
+    $e = $s->get_addresses( 111, 'billing' );
+    is $e->list->size, 1, 'right billing addresses';
+
+    $e = $s->get_addresses( 111, 'foo' );
+    is $e->list->size, 0, 'right bad address type name';
+};
+
 done_testing();
