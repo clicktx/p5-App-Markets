@@ -2,12 +2,10 @@ package Yetie::Service::Preference;
 use Mojo::Base 'Yetie::Service';
 use Try::Tiny;
 
-has resultset => sub { shift->schema->resultset('Preference') };
-
 sub load {
     my $self = shift;
 
-    my $properties = $self->resultset->search( {} )->to_data;
+    my $properties = $self->resultset('Preference')->search( {} )->to_data;
     my $pref = $self->factory('entity-preferences')->create( hash_set => $properties );
     $self->app->cache( preferences => $pref );
 
@@ -24,7 +22,7 @@ sub store {
     my $cb = sub {
         $pref->properties->each(
             sub {
-                $self->resultset->find( $b->id )->update( { value => $b->value } ) if $b->is_modified;
+                $self->resultset('Preference')->find( $b->id )->update( { value => $b->value } ) if $b->is_modified;
             }
         );
     };

@@ -2,12 +2,10 @@ package Yetie::Service::Staff;
 use Mojo::Base 'Yetie::Service';
 use Carp qw/croak/;
 
-has resultset => sub { shift->schema->resultset('Staff') };
-
 sub find_staff {
     my ( $self, $login_id ) = @_;
 
-    my $result = $self->resultset->find_by_login_id($login_id);
+    my $result = $self->resultset('Staff')->find_by_login_id($login_id);
     my $data = $result ? $result->to_data : {};
 
     return $self->factory('entity-staff')->create($data);

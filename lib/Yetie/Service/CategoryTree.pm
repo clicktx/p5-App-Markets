@@ -1,15 +1,13 @@
 package Yetie::Service::CategoryTree;
 use Mojo::Base 'Yetie::Service';
 
-has resultset => sub { shift->app->schema->resultset('Category') };
-
 sub get_cache { shift->app->cache('category_tree') }
 
 sub search_all {
     my $self = shift;
     return $self->get_cache if $self->get_cache;
 
-    my $root = $self->resultset->search( { level => 0 } );
+    my $root = $self->resultset('Category')->search( { level => 0 } );
     my $tree = _create_tree($root) || [];
     my $entity = $self->app->factory('entity-category_tree')->create( children => $tree );
     $self->app->cache( category_tree => $entity );

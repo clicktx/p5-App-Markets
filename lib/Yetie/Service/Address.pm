@@ -1,14 +1,12 @@
 package Yetie::Service::Address;
 use Mojo::Base 'Yetie::Service';
 
-has resultset => sub { shift->schema->resultset('Address') };
-
 sub get_address_types {
     my $self = shift;
 
     return $self->cache('address_types') if $self->cache('address_types');
 
-    my $rs = $self->schema->resultset('Address::Type')->search();
+    my $rs = $self->resultset('Address::Type')->search();
     my $address_types = $self->factory('entity-address_types')->create( list => $rs->to_data );
     $self->cache( address_types => $address_types );
     return $address_types;
@@ -17,7 +15,7 @@ sub get_address_types {
 sub get_registered_id {
     my ( $self, $address ) = @_;
 
-    my $registered = $self->resultset->search( { hash => $address->hash } )->first;
+    my $registered = $self->resultset('Address')->search( { hash => $address->hash } )->first;
     return if !$registered or $registered->id == $address->id;
 
     return $registered->id;
@@ -37,7 +35,7 @@ sub store {
     }
     else {
         # Update address
-        $self->resultset->search( { id => $address->id } )->update( $address->to_data );
+        $self->resultset('Address')->search( { id => $address->id } )->update( $address->to_data );
     }
 }
 

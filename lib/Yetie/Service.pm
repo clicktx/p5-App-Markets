@@ -20,6 +20,8 @@ sub AUTOLOAD {
 
 sub factory { shift->app->factory(@_) }
 
+sub resultset { shift->app->schema->resultset(@_) }
+
 sub service { shift->controller->service(@_) }
 
 sub schema { shift->app->schema(@_) }
@@ -76,6 +78,13 @@ the following new ones.
     my $factory = $service->factory('entity-foo');
 
 Alias $app->factory().
+
+=head2 C<resultset>
+
+    my $result_set = $service->resultset('Foo::Bar');
+
+    # Longer version
+    my $result_set = $service->schema->resultset('Foo::Bar');
 
 =head2 C<service>
 

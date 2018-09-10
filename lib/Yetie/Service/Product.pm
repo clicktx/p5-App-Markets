@@ -1,15 +1,13 @@
 package Yetie::Service::Product;
 use Mojo::Base 'Yetie::Service';
 
-has resultset => sub { shift->schema->resultset('Product') };
-
 sub choices_primary_category {
     my ( $self, $entity ) = @_;
 
     my @categories;
     $entity->product_categories->each(
         sub {
-            my $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $_->id );
+            my $ancestors = $self->resultset('Category')->get_ancestors_arrayref( $_->id );
             my $title;
             foreach my $ancestor ( @{$ancestors} ) { $title .= $ancestor->{title} . ' > ' }
             $title .= $_->title;
@@ -26,12 +24,13 @@ sub duplicate_product {
     return unless $entity->has_data;
 
     my $title = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
-    my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count + 1;
+    my $rs    = $self->resultset('Product');
+    my $i     = $rs->search( { title => { like => $title . '%' } } )->count + 1;
     $entity->title( $title . $i );
 
     my $data = $entity->to_data;
     delete $data->{breadcrumbs};
-    my $result = $self->resultset->create($data);
+    my $result = $rs->create($data);
 
     # Logging
     $self->logging_info( 'admin.product.duplicated', product_id => $product_id ) if $result;
@@ -41,7 +40,7 @@ sub duplicate_product {
 sub find_product_with_breadcrumbs {
     my ( $self, $product_id ) = @_;
 
-    my $product = $self->resultset->find_product($product_id);
+    my $product = $self->resultset('Product')->find_product($product_id);
     my $data = $product ? $product->to_data : {};
     return $self->factory('entity-product')->create($data);
 }
@@ -49,7 +48,7 @@ sub find_product_with_breadcrumbs {
 sub find_product {
     my ( $self, $product_id ) = @_;
 
-    my $product = $self->resultset->find_product($product_id);
+    my $product = $self->resultset('Product')->find_product($product_id);
     my $data = $product ? $product->to_data( { no_breadcrumbs => 1 } ) : {};
     return $self->factory('entity-product')->create($data);
 }
@@ -57,7 +56,7 @@ sub find_product {
 sub is_sold {
     my ( $self, $product_id ) = @_;
 
-    my $cnt = $self->schema->resultset('Sales::Order::Item')->search( { product_id => $product_id } )->count;
+    my $cnt = $self->resultset('Sales::Order::Item')->search( { product_id => $product_id } )->count;
     return $cnt ? 1 : 0;
 }
 
@@ -65,10 +64,11 @@ sub new_product {
     my $self = shift;
 
     my $title = $self->controller->__x_default_lang('New Product');
-    my $i = $self->resultset->search( { title => { like => $title . '%' } } )->count;
+    my $rs    = $self->resultset('Product');
+    my $i     = $rs->search( { title => { like => $title . '%' } } )->count;
     $title .= $i + 1;
 
-    return $self->resultset->create( { title => $title } );
+    return $rs->create( { title => $title } );
 }
 
 # NOTE: 実際の動作がdelete相当となっている。method名変更するか論理削除にするか。
@@ -76,7 +76,7 @@ sub new_product {
 sub remove_product {
     my ( $self, $product_id ) = @_;
 
-    my $product = $self->resultset->find($product_id);
+    my $product = $self->resultset('Product')->find($product_id);
     if ($product) {
         my $result = $product->delete;
 
@@ -87,9 +87,9 @@ sub remove_product {
     return;
 }
 
-sub update_product_categories { shift->resultset->update_product_categories(@_) }
+sub update_product_categories { shift->resultset('Product')->update_product_categories(@_) }
 
-sub update_product { shift->resultset->update_product(@_) }
+sub update_product { shift->resultset('Product')->update_product(@_) }
 
 1;
 __END__
