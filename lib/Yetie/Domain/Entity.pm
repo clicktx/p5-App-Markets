@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity;
-use Yetie::Domain::Base;
+use Yetie::Domain::Base -base;
 use Yetie::Domain::Factory;
 use Yetie::Domain::Collection qw();
 use Yetie::Domain::IxHash qw();

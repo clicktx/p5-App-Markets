@@ -17,10 +17,6 @@ Yetie::Domain::Entity::Order::Items
 L<Yetie::Domain::Entity::Order::Items> inherits all attributes from L<Yetie::Domain::Entity::SellingItems> and implements
 the following new ones.
 
-=head2 C<item_list>
-
-Return C<Yetie::Domain::Collection> object.
-
 =head1 METHODS
 
 L<Yetie::Domain::Entity::Order::Items> inherits all methods from L<Yetie::Domain::Entity::SellingItems> and implements

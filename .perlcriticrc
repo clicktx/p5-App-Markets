@@ -14,7 +14,7 @@ only=1
 [Subroutines::ProhibitNestedSubs]
 [Subroutines::ProhibitReturnSort]
 [TestingAndDebugging::RequireUseStrict]
-equivalent_modules = Yetie::Domain::Base Yetie::Domain::Entity Yetie::Domain::List Yetie::Domain::Set Yetie::Domain::Value Yetie::Form::FieldSet
+equivalent_modules = Yetie::Domain::Base Yetie::Form::FieldSet
 [Variables::ProhibitConditionalDeclarations]
 [Variables::RequireLexicalLoopIterators]
 

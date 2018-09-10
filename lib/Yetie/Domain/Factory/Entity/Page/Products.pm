@@ -5,7 +5,7 @@ sub cook {
     my $self = shift;
 
     my $product_list = $self->param('product_list');
-    $self->aggregate_collection( product_list => 'entity-product', $product_list || [] );
+    $self->aggregate_collection( product_list => 'entity-page-product', $product_list || [] );
 }
 
 1;

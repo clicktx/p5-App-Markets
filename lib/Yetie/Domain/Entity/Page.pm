@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Page;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Yetie::Form::Base;
 use Data::Page;
 

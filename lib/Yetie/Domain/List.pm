@@ -1,5 +1,5 @@
 package Yetie::Domain::List;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has list => sub { Yetie::Domain::Collection->new };
 

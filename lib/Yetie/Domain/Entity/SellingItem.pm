@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::SellingItem;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has product_id    => '';
 has product_title => '';

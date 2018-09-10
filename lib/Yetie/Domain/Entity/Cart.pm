@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Cart;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Yetie::Domain::Entity::Address;
 use Yetie::Domain::Value::Email;
 use Carp qw/croak/;

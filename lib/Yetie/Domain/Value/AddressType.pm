@@ -1,5 +1,5 @@
 package Yetie::Domain::Value::AddressType;
-use Yetie::Domain::Value;
+use Yetie::Domain::Base 'Yetie::Domain::Value';
 
 has [qw(id name label)];
 has value => sub { shift->id };

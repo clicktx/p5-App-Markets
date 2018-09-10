@@ -42,7 +42,7 @@ sub find_product_with_breadcrumbs {
 
     my $product = $self->resultset('Product')->find_product($product_id);
     my $data = $product ? $product->to_data : {};
-    return $self->factory('entity-product')->create($data);
+    return $self->factory('entity-page-product')->create($data);
 }
 
 sub find_product {
@@ -50,7 +50,7 @@ sub find_product {
 
     my $product = $self->resultset('Product')->find_product($product_id);
     my $data = $product ? $product->to_data( { no_breadcrumbs => 1 } ) : {};
-    return $self->factory('entity-product')->create($data);
+    return $self->factory('entity-page-product')->create($data);
 }
 
 sub is_sold {
@@ -117,7 +117,7 @@ the following new ones.
     my $product_categories = $service->choices_primary_category($entity);
     my @product_categories = $service->choices_primary_category($entity);
 
-Argument: L<Yetie::Domain::Entity::Product> object.
+Argument: L<Yetie::Domain::Entity::Page::Product> object.
 
 Return: Array ou Array refference.
 
@@ -133,7 +133,7 @@ Return L<Yetie::Schema::Result::Product> object or C<undefined>.
 
     my $product = $service->find_product($product_id);
 
-Return L<Yetie::Domain::Entity::Product> object.
+Return L<Yetie::Domain::Entity::Page::Product> object.
 
 Data does include C<breadcrumbs>.
 
@@ -141,7 +141,7 @@ Data does include C<breadcrumbs>.
 
     my $product = $service->find_product($product_id);
 
-Return L<Yetie::Domain::Entity::Product> object.
+Return L<Yetie::Domain::Entity::Page::Product> object.
 
 =head2 C<new_product>
 

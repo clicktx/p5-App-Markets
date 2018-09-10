@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Customer;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Yetie::Domain::Value::Password;
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
