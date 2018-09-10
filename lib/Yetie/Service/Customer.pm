@@ -2,8 +2,6 @@ package Yetie::Service::Customer;
 use Mojo::Base 'Yetie::Service';
 use Try::Tiny;
 
-has resultset => sub { shift->app->schema->resultset('Customer') };
-
 # getアクセスのみ履歴として保存する
 sub add_history {
     my $self = shift;
@@ -37,7 +35,7 @@ sub add_history {
 sub find_customer {
     my ( $self, $email ) = @_;
 
-    my $result = $self->resultset->find_by_email($email);
+    my $result = $self->resultset('Customer')->find_by_email($email);
     my $data = $result ? $result->to_data : {};
 
     return $self->factory('entity-customer')->create($data);
@@ -49,7 +47,7 @@ sub get_addresses {
     my $address_types   = $self->service('address')->get_address_types;
     my $address_type_id = $address_types->get_id_by_name($type_name);
 
-    my $rs = $self->schema->resultset('Address')->search(
+    my $rs = $self->resultset('Address')->search(
         {
             'customer_addresses.customer_id'     => $customer_id,
             'customer_addresses.address_type_id' => $address_type_id,

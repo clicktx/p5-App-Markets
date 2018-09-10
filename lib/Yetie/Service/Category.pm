@@ -1,15 +1,13 @@
 package Yetie::Service::Category;
 use Mojo::Base 'Yetie::Service';
 
-has resultset => sub { shift->schema->resultset('Category') };
-
 sub find_category_with_products { shift->_find_category( @_, 1 ) }
 
 sub find_category { shift->_find_category( @_, undef ) }
 
 sub _find_category {
     my ( $self, $category_id, $form, $with_products ) = @_;
-    my $category = $self->resultset->find($category_id);
+    my $category = $self->resultset('Category')->find($category_id);
     return $self->factory('entity-category')->create( {} ) unless $category;
 
     my $products_rs = $with_products ? _append_products( $form, $category ) : undef;

@@ -1,8 +1,6 @@
 package Yetie::Service::Customers;
 use Mojo::Base 'Yetie::Service';
 
-has resultset => sub { shift->app->resultset('Customer') };
-
 sub search_customers {
     my ( $self, $form ) = @_;
 
@@ -12,7 +10,7 @@ sub search_customers {
         page_no  => $form->param('page') || 1,
         per_page => $form->param('per_page') || 5,
     };
-    my $rs = $self->resultset->search_customers($conditions);
+    my $rs = $self->resultset('Customer')->search_customers($conditions);
 
     my $data = {
         meta_title    => 'Customers',
