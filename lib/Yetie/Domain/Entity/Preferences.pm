@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Preferences;
-use Yetie::Domain::Set;
+use Yetie::Domain::Base 'Yetie::Domain::Set';
 use Carp qw/croak/;
 
 sub properties { shift->hash_set(@_) }
