@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Addresses;
-use Yetie::Domain::List;
+use Yetie::Domain::Base 'Yetie::Domain::List';
 
 1;
 __END__
@@ -16,10 +16,6 @@ Yetie::Domain::Entity::Addresses
 
 L<Yetie::Domain::Entity::Addresses> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
-
-=head2 C<item_list>
-
-Return C<Yetie::Domain::Collection> object.
 
 =head1 METHODS
 
