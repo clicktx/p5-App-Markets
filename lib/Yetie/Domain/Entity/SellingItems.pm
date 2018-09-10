@@ -1,15 +1,11 @@
 package Yetie::Domain::Entity::SellingItems;
-use Yetie::Domain::Entity;
-
-has item_list => sub { Yetie::Domain::Collection->new };
-
-sub each { shift->item_list->each(@_) }
+use Yetie::Domain::Base 'Yetie::Domain::List';
 
 sub total_amount {
     my $self = shift;
 
     my $total_amount = 0;
-    $self->item_list->each( sub { $total_amount += $_->subtotal } );
+    $self->each( sub { $total_amount += $_->subtotal } );
     return $total_amount;
 }
 
@@ -26,23 +22,13 @@ Yetie::Domain::Entity::SellingItems
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::SellingItems> inherits all attributes from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::SellingItems> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
-
-=head2 C<item_list>
-
-Return C<Yetie::Domain::Collection> object.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::SellingItems> inherits all methods from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::SellingItems> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
-
-=head2 C<each>
-
-    $items->each( sub{ ... } );
-
-alias method $items->item_list->each()
 
 =head2 C<total_amount>
 
@@ -54,4 +40,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>
+L<Yetie::Domain::List>
