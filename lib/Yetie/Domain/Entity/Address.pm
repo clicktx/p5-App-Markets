@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Address;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Mojo::Util qw(encode);
 
 my $attrs = [qw(country_code line1 line2 state city postal_code personal_name organization phone)];

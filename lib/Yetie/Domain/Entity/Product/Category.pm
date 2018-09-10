@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Product::Category;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has id => sub { shift->category_id };
 has category_id => 0;

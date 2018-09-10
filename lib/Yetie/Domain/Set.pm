@@ -1,5 +1,5 @@
 package Yetie::Domain::Set;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has hash_set => sub { Yetie::Domain::IxHash->new };
 

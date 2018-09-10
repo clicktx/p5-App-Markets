@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Staff;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
 has login_id   => undef;
