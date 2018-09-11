@@ -22,10 +22,10 @@ Yetie::Domain::Factory::Entity::Page::Product
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Page::Product->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Page::Product->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-page-product')->create(%args);
+    my $entity = $c->factory('entity-page-product')->construct(%args);
 
 =head1 DESCRIPTION
 

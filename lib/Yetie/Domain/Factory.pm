@@ -19,7 +19,7 @@ sub aggregate {
     if ( $domain =~ /^value/ and ref $data ne 'HASH' ) { $data = { value => $data } }
     croak 'Data type is not Hash refference' if ref $data ne 'HASH';
 
-    $self->param( $accessor => $self->factory($domain)->create($data) );
+    $self->param( $accessor => $self->factory($domain)->construct($data) );
     return $self;
 }
 
@@ -28,7 +28,7 @@ sub aggregate_collection {
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @array;
-    push @array, $self->factory($domain)->create($_) for @{$data};
+    push @array, $self->factory($domain)->construct($_) for @{$data};
     $self->param( $accessor => collection(@array) );
     return $self;
 }
@@ -40,15 +40,13 @@ sub aggregate_kvlist {
     my @kvlist;
     foreach my $kv ( @{$data} ) {
         my ( $key, $value ) = %{$kv};
-        push @kvlist, ( $key => $self->factory($domain)->create($value) );
+        push @kvlist, ( $key => $self->factory($domain)->construct($value) );
     }
     $self->param( $accessor => ix_hash(@kvlist) );
     return $self;
 }
 
 sub cook { }
-
-sub create { warn 'Deprecated!! create method'; shift->construct(@_) }
 
 sub construct {
     my $self = shift;
@@ -138,7 +136,7 @@ Yetie::Domain::Factory
 =head1 SYNOPSIS
 
     my $factory = Yetie::Domain::Factory->new( 'entity-hoge', %data1 || \%data1 );
-    my $domain = $factory->create( %data2 || \%data2 );
+    my $domain = $factory->construct( %data2 || \%data2 );
 
 =head1 DESCRIPTION
 
@@ -213,10 +211,6 @@ Create L<Yetie::Domain::IxHash> type aggregate.
     my $domain = $factory->construct;
     my $domain = $factory->construct( foo => 'bar' );
     my $domain = $factory->construct( { foo => 'bar' } );
-
-=head2 C<create>
-
-Alias for L</construct>.
 
 =head2 C<factory>
 

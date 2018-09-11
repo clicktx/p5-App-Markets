@@ -16,10 +16,10 @@ Yetie::Domain::Factory::Entity::AddressTypes
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::AddressTypes->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::AddressTypes->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-address_types')->create(%args);
+    my $entity = $c->factory('entity-address_types')->construct(%args);
 
 =head1 DESCRIPTION
 

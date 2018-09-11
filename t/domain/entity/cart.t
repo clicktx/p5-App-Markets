@@ -58,7 +58,7 @@ my %test_data = (
 );
 
 sub _create_entity {
-    Yetie::Domain::Factory->new('entity-cart')->create(
+    Yetie::Domain::Factory->new('entity-cart')->construct(
         {
             cart_id => '12345',
             %test_data,
@@ -102,7 +102,7 @@ subtest 'methods' => sub {
     is $cart->total_item_count, 7,                                          'right total item count';
     is $cart->total_quantity,   25,                                         'right total quantity count';
 
-    my $cart2 = Yetie::Domain::Factory->new('entity-cart')->create(
+    my $cart2 = Yetie::Domain::Factory->new('entity-cart')->construct(
         {
             cart_id => '54321',
             %test_data,
@@ -259,7 +259,7 @@ subtest 'merge' => sub {
             }
         ],
     );
-    my $stored_cart = Yetie::Domain::Factory->new('entity-cart')->create(
+    my $stored_cart = Yetie::Domain::Factory->new('entity-cart')->construct(
         {
             cart_id => '99999',
             %stored_data,
@@ -360,7 +360,7 @@ subtest 'update_shipping_address' => sub {
     is $i, 1, 'right update quantity';
 
     $cart = _create_entity;
-    my $obj = $cart->factory('entity-address')->create(%address);
+    my $obj = $cart->factory('entity-address')->construct(%address);
     $i = $cart->update_shipping_address($obj);
     cmp_deeply $cart->shipments->first->shipping_address->to_data, $valid_data, 'right single update, data is object';
     is $i, 1, 'right update quantity';

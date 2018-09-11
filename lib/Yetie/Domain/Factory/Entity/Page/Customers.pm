@@ -16,10 +16,10 @@ Yetie::Domain::Factory::Entity::Page::Customers
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Page::Customers->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Page::Customers->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-page-customers')->create(%args);
+    my $entity = $c->factory('entity-page-customers')->construct(%args);
 
 =head1 DESCRIPTION
 

@@ -55,17 +55,17 @@ subtest 'has not cook' => sub {
     my $f = Yetie::Domain::Factory->new('entity-hoge');
     is ref $f, 'Yetie::Domain::Factory::Entity::Hoge', 'right namespace';
 
-    my $entity = $f->create();
+    my $entity = $f->construct();
     is ref $entity, 'Yetie::Domain::Entity::Hoge', 'right namespace';
     cmp_deeply { %{$entity} }, {}, 'right argument empty';
 
     Yetie::Domain::Entity::Hoge->attr( [qw(hoge fuga)] );
     $f = Yetie::Domain::Factory->new( 'entity-hoge', hoge => 1 );
-    $entity = $f->create( fuga => 2 );
+    $entity = $f->construct( fuga => 2 );
     cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash';
 
     $f = Yetie::Domain::Factory->new( 'entity-hoge', { hoge => 1 } );
-    $entity = $f->create( { fuga => 2 } );
+    $entity = $f->construct( { fuga => 2 } );
     cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash reference';
 };
 
@@ -74,13 +74,13 @@ subtest 'has cook' => sub {
     my $f = Yetie::Domain::Factory->new('entity-foo');
     is ref $f, 'Yetie::Domain::Factory::Entity::Foo', 'right namespace';
 
-    my $entity = $f->create();
+    my $entity = $f->construct();
     is ref $entity, 'Yetie::Domain::Entity::Foo', 'right namespace';
     cmp_deeply { %{$entity} }, { a => 1, b => 2, f => 'fuga', h => 'hoge' }, 'right parameter';
 };
 
 subtest 'no factory' => sub {
-    my $entity = Yetie::Domain::Factory->new('entity-nofactory')->create;
+    my $entity = Yetie::Domain::Factory->new('entity-nofactory')->construct();
     is ref $entity, 'Yetie::Domain::Entity::Nofactory', 'right namespace';
     cmp_deeply { %{$entity} }, {}, 'right parameter';
     is $entity->text, 'no factory', 'right method';
@@ -89,7 +89,7 @@ subtest 'no factory' => sub {
 subtest 'factory method using' => sub {
     Yetie::Domain::Entity::Bar->attr('hoge');
     my $f      = Yetie::Domain::Factory->new('entity-bar');
-    my $entity = $f->create();
+    my $entity = $f->construct();
     is ref $entity, 'Yetie::Domain::Entity::Bar', 'right namespace';
     cmp_deeply { %{$entity} }, { hoge => isa('Yetie::Domain::Entity::Hoge'), }, 'right parameter';
 };
@@ -108,7 +108,7 @@ subtest 'aggregate method' => sub {
     $f->aggregate_collection( 'foos', 'entity-foo', [ {} ] );
     $f->aggregate_kvlist( 'bars', 'entity-bar', [ { a => {} } ] );
 
-    my $entity = $f->create;
+    my $entity = $f->construct();
     isa_ok $entity->hoge, 'Yetie::Domain::Entity';
     is_deeply $entity->hoge->to_data, {}, 'right aggregate entity object';
 

@@ -22,10 +22,10 @@ Yetie::Domain::Factory::Entity::Page::Category
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Page::Category->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Page::Category->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-page-category')->create(%args);
+    my $entity = $c->factory('entity-page-category')->construct(%args);
 
 =head1 DESCRIPTION
 

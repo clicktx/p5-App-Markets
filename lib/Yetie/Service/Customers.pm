@@ -19,7 +19,7 @@ sub search_customers {
         customer_list => $rs->to_data,
         pager         => $rs->pager,
     };
-    return $self->factory('entity-page-customers')->create($data);
+    return $self->factory('entity-page-customers')->construct($data);
 }
 
 1;

@@ -18,10 +18,10 @@ Yetie::Domain::Factory::Entity::OrderDetail
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::OrderDetail->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::OrderDetail->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-order_detail')->create(%args);
+    my $entity = $c->factory('entity-order_detail')->construct(%args);
 
 =head1 DESCRIPTION
 

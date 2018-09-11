@@ -19,7 +19,7 @@ sub search_orders {
         order_list  => $result->to_data,
         pager       => $result->pager,
     };
-    return $self->factory('entity-page-orders')->create($data);
+    return $self->factory('entity-page-orders')->construct($data);
 }
 
 1;

@@ -42,7 +42,7 @@ sub find_product_with_breadcrumbs {
 
     my $product = $self->resultset('Product')->find_product($product_id);
     my $data = $product ? $product->to_data : {};
-    return $self->factory('entity-page-product')->create($data);
+    return $self->factory('entity-page-product')->construct($data);
 }
 
 sub find_product {
@@ -50,7 +50,7 @@ sub find_product {
 
     my $product = $self->resultset('Product')->find_product($product_id);
     my $data = $product ? $product->to_data( { no_breadcrumbs => 1 } ) : {};
-    return $self->factory('entity-page-product')->create($data);
+    return $self->factory('entity-page-product')->construct($data);
 }
 
 sub is_sold {

@@ -23,7 +23,7 @@ $addr = shift @{$addrs};
 $data_zenkaku->{$_} = shift @{$addr} for @{$cols};
 
 sub _create_entity {
-    Yetie::Domain::Factory->new('entity-address')->create($data);
+    Yetie::Domain::Factory->new('entity-address')->construct($data);
 }
 
 subtest 'basic' => sub {

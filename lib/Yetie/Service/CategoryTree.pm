@@ -9,7 +9,7 @@ sub search_all {
 
     my $root = $self->resultset('Category')->search( { level => 0 } );
     my $tree = _create_tree($root) || [];
-    my $entity = $self->app->factory('entity-category_tree')->create( children => $tree );
+    my $entity = $self->app->factory('entity-category_tree')->construct( children => $tree );
     $self->app->cache( category_tree => $entity );
     return $entity;
 }

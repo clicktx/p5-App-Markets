@@ -17,10 +17,10 @@ Yetie::Domain::Factory::Entity::CategoryTree
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::CategoryTree->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::CategoryTree->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-category_tree')->create(%args);
+    my $entity = $c->factory('entity-category_tree')->construct(%args);
 
 =head1 DESCRIPTION
 

@@ -5,7 +5,7 @@ use Yetie::Domain::Factory;
 my $pkg = 'Yetie::Domain::Entity::AddressTypes';
 use_ok $pkg;
 
-my $construct = sub { Yetie::Domain::Factory->new('entity-address_types')->create(shift) };
+my $construct = sub { Yetie::Domain::Factory->new('entity-address_types')->construct(shift) };
 my $data = {
     list => [
         { id => 1, name => 'foo' },

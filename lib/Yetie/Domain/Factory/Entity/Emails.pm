@@ -16,10 +16,10 @@ Yetie::Domain::Factory::Entity::Emails
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Emails->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Emails->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-emails')->create(%args);
+    my $entity = $c->factory('entity-emails')->construct(%args);
 
 =head1 DESCRIPTION
 

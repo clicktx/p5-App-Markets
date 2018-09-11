@@ -17,10 +17,10 @@ Yetie::Domain::Factory::Entity::Preferences
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Preferences->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Preferences->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-preferences')->create(%args);
+    my $entity = $c->factory('entity-preferences')->construct(%args);
 
 =head1 DESCRIPTION
 
