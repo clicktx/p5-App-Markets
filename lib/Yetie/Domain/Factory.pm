@@ -59,24 +59,20 @@ sub construct {
     }
     $self->params($args);
 
-    # cooking entity
+    # Convert parameter for Yetie::Domain::List and Yetie::Domain::Set
+    $self->_convert_param( list => $self->param('list') )     if $self->domain_class =~ /::List/;
+    $self->_convert_param( set  => $self->param('hash_set') ) if $self->domain_class =~ /::Set/;
+
+    # Cooking parameter
     $self->cook();
 
-    my $params = $self->params;
-
     # no need parameter
+    my $params = $self->params;
     delete $params->{$_} for qw(app domain_class resultset);
 
-    # Create domain object
+    # Construct domain object
     Yetie::Util::load_class( $self->domain_class );
-    my $domain = $self->domain_class->new( %{$params} );
-
-    # NOTE: attributesは Yetie::Domain::Entity::XXX で明示する方が良い?
-    # Add attributes
-    # my @keys = keys %{$domain};
-    # $domain->attr($_) for @keys;
-
-    return $domain;
+    return $self->domain_class->new( %{$params} );
 }
 
 sub factory {
@@ -124,6 +120,22 @@ sub params {
     # Setter
     my %args = @_ > 1 ? @_ : %{ $_[0] };
     $self->{$_} = $args{$_} for keys %args;
+}
+
+sub _convert_param {
+    my ( $self, $key, $value ) = @_;
+
+    my $converter = {
+        list => sub {
+            my $value = shift || [];
+            $self->param( list => collection( @{$value} ) );
+        },
+        set => sub {
+            my $value = shift || {};
+            $self->param( hash_set => ix_hash( %{$value} ) );
+        },
+    };
+    $converter->{$key}->($value);
 }
 
 1;
