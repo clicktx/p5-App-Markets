@@ -5,6 +5,8 @@ has list => sub { Yetie::Domain::Collection->new };
 
 sub each { shift->list->each(@_) }
 
+sub get { shift->list->[ +shift ] }
+
 1;
 __END__
 
@@ -32,9 +34,15 @@ the following new ones.
 
 =head2 C<each>
 
-    $items->each( sub{ ... } );
+    $domain->each( sub{ ... } );
 
-alias method $items->list->each()
+alias method $domain->list->each()
+
+=head2 C<get>
+
+    my $element = $domain->get($int);
+
+Return $element or undef.
 
 =head1 AUTHOR
 
