@@ -32,9 +32,10 @@ the following new ones.
 
 =head2 C<each>
 
-    $items->each( sub{ ... } );
+    $domain->each( sub{ ... } );
 
-alias method $items->hash_set->each()
+    # Longer version
+    $domain->hash_set->each( sub{ ... } );
 
 =head1 AUTHOR
 
