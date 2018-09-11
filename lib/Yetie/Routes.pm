@@ -103,6 +103,10 @@ sub add_catalog_routes {
         my $authorize = $r->under('/checkout')->to('account#authorize')->name('RN_checkout_bridge');
         my $checkout  = $authorize->any('/')->to('checkout#');
         $checkout->any('/shipping-address')->to('#shipping_address')->name('RN_checkout_shipping_address');
+        $checkout->any('/delivery-options')->to('#delivery_option')->name('RN_checkout_delivery_option');
+        $checkout->any('/payment-option')->to('#payment_method')->name('RN_checkout_payment_method');
+        $checkout->any('/billing-address')->to('#billing_address')->name('RN_checkout_billing_address');
+
         $checkout->any('/address')->to('#address')->name('RN_checkout_address');
         $checkout->any('/shipping')->to('#shipping')->name('RN_checkout_shipping');
         $checkout->any('/confirm')->to('#confirm')->name('RN_checkout_confirm');
