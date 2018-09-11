@@ -6,7 +6,7 @@ sub init {
 
     my $cart   = $c->server_session->cart;
     my $data   = $cart->data;
-    my $entity = $c->factory('entity-cart')->create( cart_id => $cart->cart_id, %{$data} );
+    my $entity = $c->factory('entity-cart')->construct( cart_id => $cart->cart_id, %{$data} );
     $c->stash( 'yetie.entity.cart' => $entity );
 
     $c->SUPER::init();

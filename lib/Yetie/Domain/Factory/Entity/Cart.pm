@@ -28,10 +28,10 @@ Yetie::Domain::Factory::Entity::Cart
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Cart->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Cart->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-cart')->create(%args);
+    my $entity = $c->factory('entity-cart')->construct(%args);
 
 =head1 DESCRIPTION
 

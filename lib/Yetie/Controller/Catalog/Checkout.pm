@@ -16,7 +16,7 @@ sub index {
     # NOTE: 登録済みの顧客ではないか？
     # 認証済みのメールアドレスか？
     $form->do_validate;
-    my $email = $c->factory('value-email')->create( value => $form->param('guest-email') );
+    my $email = $c->factory('value-email')->construct( value => $form->param('guest-email') );
     $c->cart->email($email);
 
     return $c->render();
@@ -189,7 +189,7 @@ sub complete_validate {
 
     # cart sessionクリア
     # cartクリア（再生成）
-    my $newcart = $c->factory('entity-cart')->create( {} );
+    my $newcart = $c->factory('entity-cart')->construct( {} );
     $c->cart_session->data( $newcart->to_data );
 
     # redirect_to thank you page

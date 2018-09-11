@@ -38,7 +38,7 @@ sub find_customer {
     my $result = $self->resultset('Customer')->find_by_email($email);
     my $data = $result ? $result->to_data : {};
 
-    return $self->factory('entity-customer')->create($data);
+    return $self->factory('entity-customer')->construct($data);
 }
 
 sub get_addresses {
@@ -54,7 +54,7 @@ sub get_addresses {
         },
         { prefetch => 'customer_addresses' }
     );
-    return $self->factory('entity-addresses')->create( list => $rs->to_data );
+    return $self->factory('entity-addresses')->construct( list => $rs->to_data );
 }
 
 sub get_billing_addresses { shift->get_addresses( shift, 'billing' ) }

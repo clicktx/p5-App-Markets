@@ -4,10 +4,10 @@ use Yetie::Domain::Base 'Yetie::Domain::Entity';
 has page_title       => 'Order Details';
 has created_at       => undef;
 has updated_at       => undef;
-has customer         => sub { __PACKAGE__->factory('entity-customer')->create() };
-has billing_address  => sub { __PACKAGE__->factory('entity-address')->create() };
-has shipping_address => sub { __PACKAGE__->factory('entity-address')->create() };
-has items            => sub { __PACKAGE__->factory('entity-order-items')->create() };
+has customer         => sub { __PACKAGE__->factory('entity-customer')->construct() };
+has billing_address  => sub { __PACKAGE__->factory('entity-address')->construct() };
+has shipping_address => sub { __PACKAGE__->factory('entity-address')->construct() };
+has items            => sub { __PACKAGE__->factory('entity-order-items')->construct() };
 
 has purchased_on => '';
 has order_status => '';

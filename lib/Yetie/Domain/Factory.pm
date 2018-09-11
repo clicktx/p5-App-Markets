@@ -19,7 +19,7 @@ sub aggregate {
     if ( $domain =~ /^value/ and ref $data ne 'HASH' ) { $data = { value => $data } }
     croak 'Data type is not Hash refference' if ref $data ne 'HASH';
 
-    $self->param( $accessor => $self->factory($domain)->create($data) );
+    $self->param( $accessor => $self->factory($domain)->construct($data) );
     return $self;
 }
 
@@ -28,7 +28,7 @@ sub aggregate_collection {
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @array;
-    push @array, $self->factory($domain)->create($_) for @{$data};
+    push @array, $self->factory($domain)->construct($_) for @{$data};
     $self->param( $accessor => collection(@array) );
     return $self;
 }
@@ -40,7 +40,7 @@ sub aggregate_kvlist {
     my @kvlist;
     foreach my $kv ( @{$data} ) {
         my ( $key, $value ) = %{$kv};
-        push @kvlist, ( $key => $self->factory($domain)->create($value) );
+        push @kvlist, ( $key => $self->factory($domain)->construct($value) );
     }
     $self->param( $accessor => ix_hash(@kvlist) );
     return $self;
@@ -48,9 +48,7 @@ sub aggregate_kvlist {
 
 sub cook { }
 
-sub create { shift->create_domain(@_) }
-
-sub create_domain {
+sub construct {
     my $self = shift;
 
     # my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
@@ -93,7 +91,7 @@ sub new {
     my ( $self, $arg ) = ( shift, shift );
     Carp::croak 'Argument empty' unless $arg;
 
-    my $domain = Mojo::Util::camelize($arg);
+    my $domain        = Mojo::Util::camelize($arg);
     my $factory_class = 'Yetie::Domain::Factory::' . $domain;
     my $domain_class  = 'Yetie::Domain::' . $domain;
 
@@ -138,7 +136,7 @@ Yetie::Domain::Factory
 =head1 SYNOPSIS
 
     my $factory = Yetie::Domain::Factory->new( 'entity-hoge', %data1 || \%data1 );
-    my $domain = $factory->create( %data2 || \%data2 );
+    my $domain = $factory->construct( %data2 || \%data2 );
 
 =head1 DESCRIPTION
 
@@ -208,15 +206,11 @@ Create L<Yetie::Domain::IxHash> type aggregate.
         # your factory codes here!
     }
 
-=head2 C<create>
+=head2 C<construct>
 
-Alias for L</create_domain>.
-
-=head2 C<create_domain>
-
-    my $domain = $factory->create_domain;
-    my $domain = $factory->create_domain( foo => 'bar' );
-    my $domain = $factory->create_domain( { foo => 'bar' } );
+    my $domain = $factory->construct;
+    my $domain = $factory->construct( foo => 'bar' );
+    my $domain = $factory->construct( { foo => 'bar' } );
 
 =head2 C<factory>
 

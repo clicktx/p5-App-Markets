@@ -11,7 +11,7 @@ sub find_order {
     do { $data->{$_}->{type} = $_ if $data->{$_} }
       for qw(billing_address shipping_address);
 
-    my $order_detail = $self->factory('entity-order_detail')->create($data);
+    my $order_detail = $self->factory('entity-order_detail')->construct($data);
     return $order_detail;
 }
 

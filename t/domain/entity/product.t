@@ -24,7 +24,7 @@ my $test_data = {
 };
 
 sub _create_entity {
-    Yetie::Domain::Factory->new('entity-page-product')->create($test_data);
+    Yetie::Domain::Factory->new('entity-page-product')->construct($test_data);
 }
 
 use_ok 'Yetie::Domain::Entity::Page::Product';

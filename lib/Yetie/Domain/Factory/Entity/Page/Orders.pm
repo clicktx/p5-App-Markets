@@ -16,10 +16,10 @@ Yetie::Domain::Factory::Entity::Page::Orders
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Page::Orders->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Page::Orders->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-page-orders')->create(%args);
+    my $entity = $c->factory('entity-page-orders')->construct(%args);
 
 =head1 DESCRIPTION
 

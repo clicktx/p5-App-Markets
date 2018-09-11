@@ -16,10 +16,10 @@ Yetie::Domain::Factory::Entity::Order::Items
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Order::Items->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Order::Items->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-order-items')->create(%args);
+    my $entity = $c->factory('entity-order-items')->construct(%args);
 
 =head1 DESCRIPTION
 

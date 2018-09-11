@@ -15,7 +15,7 @@ sub add_item {
     $form_params->{product_title} = $product->title;
     $form_params->{price}         = $product->price;
 
-    my $item = $self->factory('entity-cart-item')->create($form_params);
+    my $item = $self->factory('entity-cart-item')->construct($form_params);
     return $self->controller->cart->add_item($item);
 }
 
@@ -24,7 +24,7 @@ sub find_cart {
 
     my $session = $self->controller->server_session;
     my $data = $session->store->load_cart_data($cart_id) || {};
-    return $self->factory('entity-cart')->create($data);
+    return $self->factory('entity-cart')->construct($data);
 }
 
 sub merge_cart {

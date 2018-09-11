@@ -8,7 +8,7 @@ sub cook {
     # items
     my @items;
     foreach my $item ( @{ $self->{items} } ) {
-        push @items, $self->factory('entity-cart-item')->create($item);
+        push @items, $self->factory('entity-cart-item')->construct($item);
     }
     $self->param( items => collection(@items) );
 
@@ -25,10 +25,10 @@ Yetie::Domain::Factory::Entity::Shipment
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Shipment->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Shipment->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-shipment')->create(%args);
+    my $entity = $c->factory('entity-shipment')->construct(%args);
 
 =head1 DESCRIPTION
 

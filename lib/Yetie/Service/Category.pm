@@ -8,11 +8,11 @@ sub find_category { shift->_find_category( @_, undef ) }
 sub _find_category {
     my ( $self, $category_id, $form, $with_products ) = @_;
     my $category = $self->resultset('Category')->find($category_id);
-    return $self->factory('entity-page-category')->create( {} ) unless $category;
+    return $self->factory('entity-page-category')->construct( {} ) unless $category;
 
     my $products_rs = $with_products ? _append_products( $form, $category ) : undef;
     my $data = _to_data( $form, $category, $products_rs );
-    return $self->factory('entity-page-category')->create($data);
+    return $self->factory('entity-page-category')->construct($data);
 }
 
 sub _append_products {

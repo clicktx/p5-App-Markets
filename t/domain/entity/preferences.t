@@ -51,7 +51,7 @@ my $data = {
     ],
 };
 
-my $construct = sub { Yetie::Domain::Factory->new('entity-preferences')->create($data) };
+my $construct = sub { Yetie::Domain::Factory->new('entity-preferences')->construct($data) };
 
 subtest 'basic' => sub {
     my $pref = $construct->();

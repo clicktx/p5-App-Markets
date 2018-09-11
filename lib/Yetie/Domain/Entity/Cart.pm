@@ -202,7 +202,7 @@ sub _update_shipping_address {
     my $shipping_address =
       eval { $address->isa('Yetie::Domain::Entity::Address') }
       ? $address
-      : $self->factory('entity-address')->create($address);
+      : $self->factory('entity-address')->construct($address);
 
     $self->shipments->[$index]->shipping_address($shipping_address);
 }

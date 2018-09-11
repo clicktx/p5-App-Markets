@@ -17,10 +17,10 @@ Yetie::Domain::Factory::Entity::Staff
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Domain::Factory::Entity::Staff->new( %args )->create;
+    my $entity = Yetie::Domain::Factory::Entity::Staff->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-staff')->create(%args);
+    my $entity = $c->factory('entity-staff')->construct(%args);
 
 =head1 DESCRIPTION
 

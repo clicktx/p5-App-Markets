@@ -6,7 +6,7 @@ sub load {
     my $self = shift;
 
     my $properties = $self->resultset('Preference')->search( {} )->to_data;
-    my $pref = $self->factory('entity-preferences')->create( hash_set => $properties );
+    my $pref = $self->factory('entity-preferences')->construct( hash_set => $properties );
     $self->app->cache( preferences => $pref );
 
     $self->app->log->debug( 'Loading preferences from DB via ' . __PACKAGE__ );
