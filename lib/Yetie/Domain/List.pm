@@ -7,6 +7,8 @@ sub each { shift->list->each(@_) }
 
 sub get { shift->list->[ +shift ] }
 
+sub to_data { shift->list->to_data }
+
 1;
 __END__
 
@@ -36,13 +38,25 @@ the following new ones.
 
     $domain->each( sub{ ... } );
 
-alias method $domain->list->each()
+    # Longer version
+    $domain->list->each( sub{ ... } );
 
 =head2 C<get>
 
     my $element = $domain->get($int);
 
 Return $element or undef.
+
+=head2 C<to_data>
+
+Dump the data of collection.
+
+    my $data = $domain->to_data;
+
+    # Longer version
+    my $data = $domain->list->to_data;
+
+Return Array reference.
 
 =head1 AUTHOR
 

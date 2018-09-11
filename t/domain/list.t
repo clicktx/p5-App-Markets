@@ -22,4 +22,9 @@ subtest 'get' => sub {
     is $v->get(4), undef, 'right has not element';
 };
 
+subtest 'to_data' => sub {
+    my $v = $construct->( 1, 2, 3 );
+    is_deeply $v->to_data, [ 1, 2, 3 ], 'right dump data';
+};
+
 done_testing();
