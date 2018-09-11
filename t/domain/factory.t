@@ -55,17 +55,17 @@ subtest 'has not cook' => sub {
     my $f = Yetie::Domain::Factory->new('entity-hoge');
     is ref $f, 'Yetie::Domain::Factory::Entity::Hoge', 'right namespace';
 
-    my $entity = $f->create_domain();
+    my $entity = $f->create();
     is ref $entity, 'Yetie::Domain::Entity::Hoge', 'right namespace';
     cmp_deeply { %{$entity} }, {}, 'right argument empty';
 
     Yetie::Domain::Entity::Hoge->attr( [qw(hoge fuga)] );
     $f = Yetie::Domain::Factory->new( 'entity-hoge', hoge => 1 );
-    $entity = $f->create_domain( fuga => 2 );
+    $entity = $f->create( fuga => 2 );
     cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash';
 
     $f = Yetie::Domain::Factory->new( 'entity-hoge', { hoge => 1 } );
-    $entity = $f->create_domain( { fuga => 2 } );
+    $entity = $f->create( { fuga => 2 } );
     cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash reference';
 };
 
@@ -74,7 +74,7 @@ subtest 'has cook' => sub {
     my $f = Yetie::Domain::Factory->new('entity-foo');
     is ref $f, 'Yetie::Domain::Factory::Entity::Foo', 'right namespace';
 
-    my $entity = $f->create_domain();
+    my $entity = $f->create();
     is ref $entity, 'Yetie::Domain::Entity::Foo', 'right namespace';
     cmp_deeply { %{$entity} }, { a => 1, b => 2, f => 'fuga', h => 'hoge' }, 'right parameter';
 };
@@ -89,7 +89,7 @@ subtest 'no factory' => sub {
 subtest 'factory method using' => sub {
     Yetie::Domain::Entity::Bar->attr('hoge');
     my $f      = Yetie::Domain::Factory->new('entity-bar');
-    my $entity = $f->create_domain();
+    my $entity = $f->create();
     is ref $entity, 'Yetie::Domain::Entity::Bar', 'right namespace';
     cmp_deeply { %{$entity} }, { hoge => isa('Yetie::Domain::Entity::Hoge'), }, 'right parameter';
 };
