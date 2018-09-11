@@ -48,9 +48,9 @@ sub aggregate_kvlist {
 
 sub cook { }
 
-sub create { shift->create_domain(@_) }
+sub create { warn 'Deprecated!! create method'; shift->construct(@_) }
 
-sub create_domain {
+sub construct {
     my $self = shift;
 
     # my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
@@ -93,7 +93,7 @@ sub new {
     my ( $self, $arg ) = ( shift, shift );
     Carp::croak 'Argument empty' unless $arg;
 
-    my $domain = Mojo::Util::camelize($arg);
+    my $domain        = Mojo::Util::camelize($arg);
     my $factory_class = 'Yetie::Domain::Factory::' . $domain;
     my $domain_class  = 'Yetie::Domain::' . $domain;
 
@@ -208,15 +208,15 @@ Create L<Yetie::Domain::IxHash> type aggregate.
         # your factory codes here!
     }
 
+=head2 C<construct>
+
+    my $domain = $factory->construct;
+    my $domain = $factory->construct( foo => 'bar' );
+    my $domain = $factory->construct( { foo => 'bar' } );
+
 =head2 C<create>
 
-Alias for L</create_domain>.
-
-=head2 C<create_domain>
-
-    my $domain = $factory->create_domain;
-    my $domain = $factory->create_domain( foo => 'bar' );
-    my $domain = $factory->create_domain( { foo => 'bar' } );
+Alias for L</construct>.
 
 =head2 C<factory>
 
