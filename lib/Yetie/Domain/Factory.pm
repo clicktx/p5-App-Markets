@@ -5,7 +5,7 @@ use Mojo::Util   ();
 use Mojo::Loader ();
 use Yetie::Util  ();
 use Yetie::Domain::Collection qw/collection/;
-use Yetie::Domain::IxHash qw/ix_hash/;
+use Yetie::Domain::IxHash qw/ixhash/;
 
 has 'app';
 has domain_class => sub {
@@ -42,7 +42,7 @@ sub aggregate_kvlist {
         my ( $key, $value ) = %{$kv};
         push @kvlist, ( $key => $self->factory($domain)->construct($value) );
     }
-    $self->param( $accessor => ix_hash(@kvlist) );
+    $self->param( $accessor => ixhash(@kvlist) );
     return $self;
 }
 
@@ -132,7 +132,7 @@ sub _convert_param {
         },
         set => sub {
             my $value = shift || {};
-            $self->param( hash_set => ix_hash( %{$value} ) );
+            $self->param( hash_set => ixhash( %{$value} ) );
         },
     };
     $converter->{$key}->($value);

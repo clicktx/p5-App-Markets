@@ -132,9 +132,9 @@ subtest 'to_hash' => sub {
 };
 
 subtest 'to_data' => sub {
-    use Yetie::Domain::IxHash qw/ix_hash/;
-    my $h = ix_hash(
-        a => ix_hash( a1 => ix_hash( a2 => 1 ) ),
+    use Yetie::Domain::IxHash qw/ixhash/;
+    my $h = ixhash(
+        a => ixhash( a1 => ixhash( a2 => 1 ) ),
         b => { b1        => 2 },
         c => 3
     );

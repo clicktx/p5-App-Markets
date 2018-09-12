@@ -1,12 +1,12 @@
 use Mojo::Base -strict;
 use Test::More;
-use Yetie::Domain::IxHash qw(ix_hash);
+use Yetie::Domain::IxHash qw(ixhash);
 
 my $pkg = 'Yetie::Domain::Set';
 use_ok $pkg;
 
 my $construct = sub {
-    my $hash_set = ix_hash(@_);
+    my $hash_set = ixhash(@_);
     $pkg->new( hash_set => $hash_set );
 };
 

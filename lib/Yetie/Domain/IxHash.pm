@@ -6,9 +6,9 @@ use List::Util;
 use Scalar::Util 'blessed';
 use Tie::IxHash;
 
-our @EXPORT_OK = ('ix_hash');
+our @EXPORT_OK = ('ixhash');
 
-sub ix_hash { __PACKAGE__->new(@_) }
+sub ixhash { __PACKAGE__->new(@_) }
 
 sub each {
     my ( $self, $cb ) = @_;
@@ -125,7 +125,7 @@ Yetie::Domain::IxHash
 
 =head1 SYNOPSIS
 
-    my $hash = ix_hash( foo => 1, bar => 2, baz => 3 );
+    my $hash = ixhash( foo => 1, bar => 2, baz => 3 );
 
     # foo1 bar2 baz3
     $hash->each( sub { say $a, $b } );
@@ -136,9 +136,9 @@ Yetie::Domain::IxHash
 
 =head1 FUNCTIONS
 
-=head2 C<ix_hash>
+=head2 C<ixhash>
 
-    my $hash = ix_hash( foo => 1, bar => 2, baz => 3 );
+    my $hash = ixhash( foo => 1, bar => 2, baz => 3 );
 
 Construct a new index-hash-based L<Yetie::Domain::IxHash> object.
 
@@ -149,22 +149,22 @@ the following new ones.
 
 =head2 C<each>
 
-    my %key_value = $ix_hash->each;
-    $ix_hash  = $ix_hash->each(sub {...});
+    my %key_value = $ixhash->each;
+    $ixhash  = $ixhash->each(sub {...});
 
     # Make a numbered key value pair
-    $ix_hash->each( sub { say "num:$_[2] $a => $b" } );
+    $ixhash->each( sub { say "num:$_[2] $a => $b" } );
 
-    $ix_hash->each( sub {
+    $ixhash->each( sub {
       my ($key, $value, $num) = @_;
       say "$num: $key => $value";
     });
 
 =head2 C<first>
 
-    my ( $key, $value ) = $ix_hash->first;
-    my ( $key, $value ) = $ix_hash->first( [ qr//, qr// ] );
-    my ( $key, $value ) = $ix_hash->first( sub {...} );
+    my ( $key, $value ) = $ixhash->first;
+    my ( $key, $value ) = $ixhash->first( [ qr//, qr// ] );
+    my ( $key, $value ) = $ixhash->first( sub {...} );
 
     # Find first key-value pair that "key" contains the word "mojo"
     my ( $key, $value ) = $collection->first([ qr/mojo/i ]);
@@ -174,62 +174,62 @@ the following new ones.
     my ( $key, $value ) = $collection->first([ qr/mo/i, qr/jo/i ]);
 
     # Find first key-value pair that key is 'hoge'
-    my ( $key, $value ) = $ix_hash->first( sub { $a eq 'hoge' } );
-    my ( $key, $value ) = $ix_hash->first( sub { my ( $key, $value ) = @_; $key eq 'hoge' } );
+    my ( $key, $value ) = $ixhash->first( sub { $a eq 'hoge' } );
+    my ( $key, $value ) = $ixhash->first( sub { my ( $key, $value ) = @_; $key eq 'hoge' } );
 
     # Find first key-value pair that value is greater than 5
-    my ( $key, $value ) = $ix_hash->first( sub { $b > 5 } );
-    my ( $key, $value ) = $ix_hash->first( sub { my ( $key, $value ) = @_; $value > 5 } );
+    my ( $key, $value ) = $ixhash->first( sub { $b > 5 } );
+    my ( $key, $value ) = $ixhash->first( sub { my ( $key, $value ) = @_; $value > 5 } );
 
 =head2 C<grep>
 
-    my $new = $ix_hash->grep( [ qr//, qr// ] );
-    my $new = $ix_hash->grep( sub {...} );
+    my $new = $ixhash->grep( [ qr//, qr// ] );
+    my $new = $ixhash->grep( sub {...} );
 
 
 
-    my $new = $ix_hash->grep( sub { $a eq 'hoge' } );
-    my $new = $ix_hash->grep( sub { my ($key, $value) = @_; $key eq 'hoge' } );
+    my $new = $ixhash->grep( sub { $a eq 'hoge' } );
+    my $new = $ixhash->grep( sub { my ($key, $value) = @_; $key eq 'hoge' } );
 
-    my $new = $ix_hash->grep( sub { $b > 100 } );
-    my $new = $ix_hash->grep( sub { my ($key, $value) = @_; $value > 100 } );
+    my $new = $ixhash->grep( sub { $b > 100 } );
+    my $new = $ixhash->grep( sub { my ($key, $value) = @_; $value > 100 } );
 
 =head2 C<keys>
 
-    my @keys = $ix_hash->keys;
-    my $keys = $ix_hash->keys;
+    my @keys = $ixhash->keys;
+    my $keys = $ixhash->keys;
 
 =head2 C<last>
 
-    my ( $key, $value ) = $ix_hash->last;
+    my ( $key, $value ) = $ixhash->last;
 
 Return the last key-value pair.
 
 =head2 C<map>
 
-    my $new = $ix_hash->map( sub {...} );
+    my $new = $ixhash->map( sub {...} );
 
-    my $new = $ix_hash->map( sub { $a => $b + 1 } );
-    my $new = $ix_hash->map( sub { my ( $key, $value ) = @_; $key => $value + 1 } );
+    my $new = $ixhash->map( sub { $a => $b + 1 } );
+    my $new = $ixhash->map( sub { my ( $key, $value ) = @_; $key => $value + 1 } );
 
 =head2 C<pairs>
 
-    my $array = $ix_hash->pairs;
-    my @array = $ix_hash->pairs;
+    my $array = $ixhash->pairs;
+    my @array = $ixhash->pairs;
 
 =head2 C<size>
 
-    my $size = $ix_hash->size;
+    my $size = $ixhash->size;
 
 Number of key-value pair in IxHash.
 
 =head2 C<to_data>
 
-    my $hash_ref = $ix_hash->to_data;
+    my $hash_ref = $ixhash->to_data;
 
 =head2 C<to_hash>
 
-    my $hash = $ix_hash->to_hash;
+    my $hash = $ixhash->to_hash;
 
 Turn IxHash into hash reference.
 

@@ -134,9 +134,9 @@ Yetie::Domain::Entity - Entity Object Base Class
 
 Construct a new index-hash-based L<Yetie::Domain::Collection> object.
 
-=head2 C<ix_hash>
+=head2 C<ixhash>
 
-    my $ix_hash = ix_hash( foo => 1, bar => 2, baz => 3 );
+    my $ixhash = ixhash( foo => 1, bar => 2, baz => 3 );
 
 Construct a new index-hash-based L<Yetie::Domain::IxHash> object.
 
