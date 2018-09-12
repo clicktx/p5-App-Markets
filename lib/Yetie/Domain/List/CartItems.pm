@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::Cart::Items;
+package Yetie::Domain::List::CartItems;
 use Yetie::Domain::Base 'Yetie::Domain::List';
 
 1;
@@ -6,7 +6,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Cart::Items
+Yetie::Domain::List::CartItems
 
 =head1 SYNOPSIS
 
@@ -14,12 +14,12 @@ Yetie::Domain::Entity::Cart::Items
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Cart::Items> inherits all attributes from L<Yetie::Domain::List> and implements
+L<Yetie::Domain::List::CartItems> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Cart::Items> inherits all methods from L<Yetie::Domain::List> and implements
+L<Yetie::Domain::List::CartItems> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
 
 =head1 AUTHOR

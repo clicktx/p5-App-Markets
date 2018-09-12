@@ -40,6 +40,22 @@ subtest 'basic' => sub {
     ok $@, 'too many arguments';
     eval { $f->param( { g => 7, h => 8 } ) };
     ok $@, 'too many arguments';
+
+    subtest 'list domain' => sub {
+        my $f = Yetie::Domain::Factory->new('list-items');
+        my $e = $f->construct( list => [ 1, 2, 3 ] );
+
+        isa_ok $e->list, 'Yetie::Domain::Collection';
+        is_deeply $e->list->to_data, [ 1, 2, 3 ], 'right list data';
+    };
+
+    subtest 'set domain' => sub {
+        my $f = Yetie::Domain::Factory->new('set-pref');
+        my $e = $f->construct( hash_set => { a => 1, b => 2, c => 3 } );
+
+        isa_ok $e->hash_set, 'Yetie::Domain::IxHash';
+        is_deeply $e->hash_set->to_data, { a => 1, b => 2, c => 3 }, 'right set data';
+    };
 };
 
 subtest 'factory' => sub {
@@ -179,4 +195,13 @@ done_testing();
 
     package Yetie::Domain::Entity::Agg;
     use Mojo::Base 'Yetie::Domain::Entity';
+}
+
+{
+
+    package Yetie::Domain::List::Items;
+    use Yetie::Domain::Base 'Yetie::Domain::List';
+
+    package Yetie::Domain::Set::Pref;
+    use Yetie::Domain::Base 'Yetie::Domain::Set';
 }
