@@ -16,7 +16,7 @@ sub cook {
     # Aggregate shipments
     my $param = $self->param('shipments') || [ {} ];
     push @{$param}, {} unless @{$param};    # NOTE: At the time of "$param eq []"
-    $self->aggregate_collection( 'shipments', 'entity-shipment', $param );
+    $self->aggregate( 'shipments', 'list-shipments', $param );
 }
 
 1;

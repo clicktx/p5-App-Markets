@@ -73,7 +73,7 @@ subtest 'basic' => sub {
     my $cart = Yetie::Domain::Entity::Cart->new;
     ok $cart->id;
     isa_ok $cart->items,           'Yetie::Domain::List::CartItems';
-    isa_ok $cart->shipments,       'Yetie::Domain::Collection';
+    isa_ok $cart->shipments,       'Yetie::Domain::List::Shipments';
     isa_ok $cart->billing_address, 'Yetie::Domain::Entity::Address';
     isa_ok $cart->email,           'Yetie::Domain::Value::Email';
 };
@@ -85,7 +85,7 @@ subtest 'attributes' => sub {
     isa_ok $cart->items, 'Yetie::Domain::List::CartItems', 'right items';
     isa_ok $cart->items->first, 'Yetie::Domain::Entity::Cart::Item', 'right items';
 
-    isa_ok $cart->shipments, 'Yetie::Domain::Collection', 'right shipments';
+    isa_ok $cart->shipments, 'Yetie::Domain::List::Shipments', 'right shipments';
     isa_ok $cart->shipments->first, 'Yetie::Domain::Entity::Shipment', 'right shipments';
 };
 

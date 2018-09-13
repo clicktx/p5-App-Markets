@@ -8,7 +8,7 @@ subtest 'argument empty' => sub {
     my $e = $pkg->new('entity-cart')->construct();
     isa_ok $e->billing_address, 'Yetie::Domain::Entity::Address';
     isa_ok $e->items,           'Yetie::Domain::List::CartItems';
-    isa_ok $e->shipments,       'Yetie::Domain::Collection';
+    isa_ok $e->shipments,       'Yetie::Domain::List::Shipments';
     $e->shipments->each(
         sub {
             isa_ok $_->shipping_address, 'Yetie::Domain::Entity::Address';
