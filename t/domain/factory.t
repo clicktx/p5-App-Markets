@@ -116,13 +116,13 @@ subtest 'aggregate method' => sub {
 
     eval { $f->aggregate_collection( 'foos', 'entity-foo', 'abc' ) };
     ok $@, 'bad data type';
-    eval { $f->aggregate_kvlist( 'bars', 'entity-bar', 'abc' ) };
+    eval { $f->aggregate_ixhash( 'bars', 'entity-bar', 'abc' ) };
     ok $@, 'bad data type';
 
     $f->aggregate( 'hoge', 'entity-hoge', {} );
     $f->aggregate( 'fuga', 'value-fuga', '' );
     $f->aggregate_collection( 'foos', 'entity-foo', [ {} ] );
-    $f->aggregate_kvlist( 'bars', 'entity-bar', [ { a => {} } ] );
+    $f->aggregate_ixhash( 'bars', 'entity-bar', [ { a => {} } ] );
 
     my $entity = $f->construct();
     isa_ok $entity->hoge, 'Yetie::Domain::Entity';

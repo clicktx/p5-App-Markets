@@ -33,7 +33,7 @@ sub aggregate_collection {
     return $self;
 }
 
-sub aggregate_kvlist {
+sub aggregate_ixhash {
     my ( $self, $accessor, $domain, $data ) = @_;
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
@@ -202,11 +202,11 @@ Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
 
 Create L<Yetie::Domain::Collection> type aggregate.
 
-=head2 C<aggregate_kvlist>
+=head2 C<aggregate_ixhash>
 
     my @data = ( { label => { key => 'value' } }, { label2 => { key2 => 'value2' } }, ... );
-    my $domain = $factory->aggregate_kvlist( $accessor_name, $target_entity, \@data );
-    my $domain = $factory->aggregate_kvlist( 'items', 'entity-xxx-item', \@data );
+    my $domain = $factory->aggregate_ixhash( $accessor_name, $target_entity, \@data );
+    my $domain = $factory->aggregate_ixhash( 'items', 'entity-xxx-item', \@data );
 
 Create L<Yetie::Domain::IxHash> type aggregate.
 
