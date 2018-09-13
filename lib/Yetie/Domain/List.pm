@@ -5,11 +5,15 @@ has list => sub { Yetie::Domain::Collection->new };
 
 sub each { shift->list->each(@_) }
 
+sub find { shift->list->find(@_) }
+
 sub first { shift->list->first(@_) }
 
 sub get { shift->list->[ +shift ] }
 
 sub last { shift->list->last }
+
+sub push { shift->list->push(@_) }
 
 sub to_data { shift->list->to_data }
 
@@ -51,6 +55,15 @@ the following new ones.
 
 See L<Mojo::Collection/each>.
 
+=head2 C<find>
+
+    my $element = $domain->find($id);
+
+    # Longer version
+    my $element = $domain->list->find($id);
+
+See L<Yetie::Domain::Collection/find>.
+
 =head2 C<first>
 
     my $first = $domain->first();
@@ -75,6 +88,16 @@ Return $element or undef.
     my $last = $domain->list->last;
 
 See L<Mojo::Collection/last>.
+
+=head2 C<push>
+
+    $domain->push($element);
+    $domain->push(@elements);
+
+    # Longer version
+    $domain->list->push($element);
+
+See L<Yetie::Domain::Collection/push>.
 
 =head2 C<to_data>
 
