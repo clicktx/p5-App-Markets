@@ -15,17 +15,18 @@ has domain_class => sub {
 };
 
 sub aggregate {
-    my ( $self, $accessor, $domain, $data ) = @_;
-    if ( $domain =~ /^value/ and ref $data ne 'HASH' ) { $data = { value => $data } }
+    my ( $self, $accessor, $domain, $arg ) = @_;
+    my $data = $self->_convert_data( $domain, $arg );
     croak 'Data type is not Hash refference' if ref $data ne 'HASH';
 
     $self->param( $accessor => $self->factory($domain)->construct($data) );
     return $self;
 }
 
+# NOTE: $data is Array reference or Yetie::Domain::Collection object
 sub aggregate_collection {
     my ( $self, $accessor, $domain, $data ) = @_;
-    croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
+    # croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @array;
     push @array, $self->factory($domain)->construct($_) for @{$data};
@@ -120,6 +121,17 @@ sub params {
     # Setter
     my %args = @_ > 1 ? @_ : %{ $_[0] };
     $self->{$_} = $args{$_} for keys %args;
+}
+
+sub _convert_data {
+    my ( $self, $domain, $data ) = @_;
+    return $data if ref $data eq 'HASH';
+
+    return { value => $data } if $domain =~ /^value/;
+    return { list => collection( @{$data} ) } if $domain =~ /^list/;
+
+    # Not convert
+    return $data;
 }
 
 sub _convert_param {
