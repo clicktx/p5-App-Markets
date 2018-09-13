@@ -14,6 +14,11 @@ sub find {
     $self->first( sub { $_->id eq $str } ) or undef;
 }
 
+sub push {
+    my $self = shift;
+    push @{$self}, @_;
+}
+
 sub to_data {
     my $self = shift;
     my @array;
@@ -68,6 +73,13 @@ See L<Mojo::Collection/each>.
     my $entity = $collection->find($entity_id);
 
 Return L<Yetie::Domain::Entity> object or undef.
+
+=head2 C<push>
+
+    $collection->push($str);
+    $collection->push(@array);
+
+Append elements.
 
 =head2 C<to_data>
 

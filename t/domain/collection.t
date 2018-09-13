@@ -33,6 +33,16 @@ subtest 'find' => sub {
     is $c->find(1), undef, 'right empty collection';
 };
 
+subtest 'push' => sub {
+    my $c = $pkg->new;
+
+    $c->push(1);
+    $c->push( ( 2, 3 ) );
+    is $c->size,  3, 'right size';
+    is $c->first, 1, 'right first element';
+    is $c->last,  3, 'right last element';
+};
+
 subtest 'to_data' => sub {
     use Yetie::Domain::Collection qw/collection/;
     my $c = $pkg->new( collection(), 1, collection( collection(), collection( 1, 2 ) ), 2 );
