@@ -5,9 +5,17 @@ has list => sub { Yetie::Domain::Collection->new };
 
 sub each { shift->list->each(@_) }
 
+sub first { shift->list->first(@_) }
+
 sub get { shift->list->[ +shift ] }
 
+sub last { shift->list->last }
+
 sub to_data { shift->list->to_data }
+
+sub reduce { shift->list->reduce(@_) }
+
+sub size { shift->list->size }
 
 1;
 __END__
@@ -41,11 +49,32 @@ the following new ones.
     # Longer version
     $domain->list->each( sub{ ... } );
 
+See L<Mojo::Collection/each>.
+
+=head2 C<first>
+
+    my $first = $domain->first();
+    my $first = $domain->first( sub {...} );
+
+    # Longer version
+    my $first = $domain->list->first();
+
+See L<Mojo::Collection/first>.
+
 =head2 C<get>
 
     my $element = $domain->get($int);
 
 Return $element or undef.
+
+=head2 C<last>
+
+    my $last = $domain->last;
+
+    # Longer version
+    my $last = $domain->list->last;
+
+See L<Mojo::Collection/last>.
 
 =head2 C<to_data>
 
@@ -58,10 +87,29 @@ Dump the data of collection.
 
 Return Array reference.
 
+=head2 C<reduce>
+
+    my $result = $domain->reduce( sub {...} );
+    my $result = $domain->reduce( sub {...}, $initial );
+
+    # Longer version
+    my $result = $domain->list->reduce();
+
+See L<Mojo::Collection/reduce>.
+
+=head2 C<size>
+
+    my $size = $domain->size;
+
+    # Longer version
+    my $size = $domain->list->size;
+
+See L<Mojo::Collection/size>.
+
 =head1 AUTHOR
 
 Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Collection>, L<Yetie::Domain::Entity>
+L<Yetie::Domain::Collection>, L<Mojo::Collection>, L<Yetie::Domain::Entity>
