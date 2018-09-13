@@ -11,7 +11,7 @@ sub cook {
     $self->aggregate( billing_address => 'entity-address', $self->{billing_address} || {} );
 
     # Aggregate items
-    $self->aggregate_collection( 'items', 'entity-cart-item', $self->param('items') || [] );
+    $self->aggregate( 'items', 'list-cart_items', $self->param('items') || [] );
 
     # Aggregate shipments
     my $param = $self->param('shipments') || [ {} ];

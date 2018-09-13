@@ -1,12 +1,13 @@
 package Yetie::Domain::Entity::Cart;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use Yetie::Domain::List::CartItems;
 use Yetie::Domain::Entity::Address;
 use Yetie::Domain::Value::Email;
 use Carp qw/croak/;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 has cart_id         => '';
-has items           => sub { Yetie::Domain::Collection->new };
+has items           => sub { Yetie::Domain::List::CartItems->new };
 has shipments       => sub { Yetie::Domain::Collection->new };
 has billing_address => sub { Yetie::Domain::Entity::Address->new };
 has email           => sub { Yetie::Domain::Value::Email->new };
@@ -78,19 +79,19 @@ sub merge {
     my ( $clone, $stored ) = ( $self->clone, $target->clone );
 
     # items
-    foreach my $item ( @{ $stored->items } ) {
+    foreach my $item ( @{ $stored->items->list } ) {
         $clone->items->each(
             sub {
                 my ( $e, $num ) = @_;
                 if ( $e->equal($item) ) {
                     $item->quantity( $e->quantity + $item->quantity );
                     my $i = $num - 1;
-                    splice @{ $clone->items }, $i, 1;
+                    splice @{ $clone->items->list }, $i, 1;
                 }
             }
         );
     }
-    push @{ $stored->items }, @{ $clone->items };
+    push @{ $stored->items->list }, @{ $clone->items->list };
 
     # shipments
     # NOTE: [WIP]
@@ -175,17 +176,13 @@ sub update_shipping_address {
 }
 
 sub _add_item {
-    my $collection = shift;
-    my $item       = shift;
+    my ( $collection, $item ) = @_;
 
     my $exsist_item = $collection->find( $item->id );
-    if ($exsist_item) {
-        my $qty = $exsist_item->quantity + $item->quantity;
-        $exsist_item->quantity($qty);
-    }
-    else {
-        push @{$collection}, $item;
-    }
+    return $collection->push($item) unless $exsist_item;
+
+    my $qty = $exsist_item->quantity + $item->quantity;
+    $exsist_item->quantity($qty);
 }
 
 sub _remove_item {
@@ -234,8 +231,8 @@ the following new ones.
     my $items = $cart->items;
     $items->each( sub { ... } );
 
-Return L<Yetie::Domain::Collection> object.
-Elements is L<Yetie::Domain::Entity::Item> object.
+Return L<Yetie::Domain::List::CartItems> object.
+Elements is L<Yetie::Domain::Entity::Cart::Item> object.
 
 =head2 C<shipments>
 
@@ -346,4 +343,5 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::Entity::Shipment>, L<Yetie::Domain::Entity::Cart::Item>
+L<Yetie::Domain::Entity>, L<Yetie::Domain::List::CartItems>, L<Yetie::Domain::Entity::Cart::Item>,
+L<Yetie::Domain::Entity::Shipment>

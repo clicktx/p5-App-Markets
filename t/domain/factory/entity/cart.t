@@ -7,7 +7,7 @@ use_ok 'Yetie::Domain::Factory::Entity::Cart';
 subtest 'argument empty' => sub {
     my $e = $pkg->new('entity-cart')->construct();
     isa_ok $e->billing_address, 'Yetie::Domain::Entity::Address';
-    isa_ok $e->items,           'Yetie::Domain::Collection';
+    isa_ok $e->items,           'Yetie::Domain::List::CartItems';
     isa_ok $e->shipments,       'Yetie::Domain::Collection';
     $e->shipments->each(
         sub {

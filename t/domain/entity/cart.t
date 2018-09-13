@@ -72,7 +72,7 @@ use_ok 'Yetie::Domain::Entity::Cart::Item';
 subtest 'basic' => sub {
     my $cart = Yetie::Domain::Entity::Cart->new;
     ok $cart->id;
-    isa_ok $cart->items,           'Yetie::Domain::Collection';
+    isa_ok $cart->items,           'Yetie::Domain::List::CartItems';
     isa_ok $cart->shipments,       'Yetie::Domain::Collection';
     isa_ok $cart->billing_address, 'Yetie::Domain::Entity::Address';
     isa_ok $cart->email,           'Yetie::Domain::Value::Email';
@@ -82,7 +82,7 @@ subtest 'attributes' => sub {
     my $cart = _create_entity;
     is $cart->cart_id, '12345', 'right cart_id';
 
-    isa_ok $cart->items, 'Yetie::Domain::Collection', 'right items';
+    isa_ok $cart->items, 'Yetie::Domain::List::CartItems', 'right items';
     isa_ok $cart->items->first, 'Yetie::Domain::Entity::Cart::Item', 'right items';
 
     isa_ok $cart->shipments, 'Yetie::Domain::Collection', 'right shipments';
@@ -157,8 +157,8 @@ subtest 'clone' => sub {
     cmp_deeply $cart->to_data, $clone->to_data, 'right all data';
 
     # items
-    isnt $cart->items->[0], $clone->items->[0], 'right cart reference';
-    cmp_deeply $cart->items->[0]->to_data, $clone->items->[0]->to_data, 'right cart data';
+    isnt $cart->items->list->[0], $clone->items->list->[0], 'right cart reference';
+    cmp_deeply $cart->items->list->[0]->to_data, $clone->items->list->[0]->to_data, 'right cart data';
 
     # shipments
     isnt $cart->shipments->[0], $clone->shipments->[0], 'right shipment reference';
