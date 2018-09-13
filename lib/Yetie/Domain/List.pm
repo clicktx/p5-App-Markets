@@ -12,6 +12,8 @@ sub first { shift->list->first(@_) }
 
 sub get { shift->list->[ +shift ] }
 
+sub grep { shift->list->grep(@_) }
+
 sub last { shift->list->last }
 
 sub push { shift->list->push(@_) }
@@ -85,6 +87,15 @@ See L<Mojo::Collection/first>.
     my $element = $domain->get($int);
 
 Return $element or undef.
+
+=head2 C<grep>
+
+    my $new = $domain->grep(...);
+
+    # Longer version
+    my $new = $domain->list->grep(...);
+
+See L<Mojo::Collection/grep>.
 
 =head2 C<last>
 
