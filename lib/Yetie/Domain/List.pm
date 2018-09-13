@@ -1,5 +1,6 @@
 package Yetie::Domain::List;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use List::Util;
 
 has list => sub { Yetie::Domain::Collection->new };
 
@@ -17,7 +18,12 @@ sub push { shift->list->push(@_) }
 
 sub to_data { shift->list->to_data }
 
-sub reduce { shift->list->reduce(@_) }
+# Code by Mojo::Collection
+sub reduce {
+    my $self = shift;
+    @_ = ( @_, @{ $self->list } );
+    goto &List::Util::reduce;
+}
 
 sub size { shift->list->size }
 
