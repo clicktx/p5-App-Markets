@@ -98,9 +98,9 @@ subtest 'methods' => sub {
     $d->{shipments}->[0]->{shipping_address}->{hash} = 'a38d44916394e4d5289b8e5e2cc7b66bcd3f1722';
     $d->{shipments}->[1]->{shipping_address}->{hash} = 'e49e00abbdbcaa37c27e8af5ca11fe33c24703ce';
     cmp_deeply $cart_data, { cart_id => ignore(), %{$d} }, 'right data structure';
-    is $cart->id,               '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
+    is $cart->id,              '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->total_item_size, 7,                                          'right total item count';
-    is $cart->total_quantity,   25,                                         'right total quantity count';
+    is $cart->total_quantity,  25,                                         'right total quantity count';
 
     my $cart2 = Yetie::Domain::Factory->new('entity-cart')->construct(
         {
@@ -161,12 +161,13 @@ subtest 'clone' => sub {
     cmp_deeply $cart->items->list->[0]->to_data, $clone->items->list->[0]->to_data, 'right cart data';
 
     # shipments
-    isnt $cart->shipments->[0], $clone->shipments->[0], 'right shipment reference';
-    cmp_deeply $cart->shipments->[0]->to_data, $clone->shipments->[0]->to_data, 'right shipment data';
+    isnt $cart->shipments->list->[0], $clone->shipments->list->[0], 'right shipment reference';
+    cmp_deeply $cart->shipments->list->[0]->to_data, $clone->shipments->list->[0]->to_data, 'right shipment data';
 
-    isnt $cart->shipments->[0]->items->[0], $clone->shipments->[0]->items->[0], 'right shipment item reference';
-    cmp_deeply $cart->shipments->[0]->items->[0]->to_data,
-      $clone->shipments->[0]->items->[0]->to_data,
+    isnt $cart->shipments->list->[0]->items->[0], $clone->shipments->list->[0]->items->[0],
+      'right shipment item reference';
+    cmp_deeply $cart->shipments->list->[0]->items->[0]->to_data,
+      $clone->shipments->list->[0]->items->[0]->to_data,
       'right shipment item data';
 };
 
@@ -367,14 +368,14 @@ subtest 'update_shipping_address' => sub {
 
     $cart = _create_entity;
     $i = $cart->update_shipping_address( 0 => \%address, 1 => \%address );
-    cmp_deeply $cart->shipments->[0]->shipping_address->to_data, $valid_data, 'right multi update';
-    cmp_deeply $cart->shipments->[1]->shipping_address->to_data, $valid_data, 'right multi update';
+    cmp_deeply $cart->shipments->list->[0]->shipping_address->to_data, $valid_data, 'right multi update';
+    cmp_deeply $cart->shipments->list->[1]->shipping_address->to_data, $valid_data, 'right multi update';
     is $i, 2, 'right update quantity';
 
     $cart = _create_entity;
     $i = $cart->update_shipping_address( [ \%address, \%address ] );
-    cmp_deeply $cart->shipments->[0]->shipping_address->to_data, $valid_data, 'right single update';
-    cmp_deeply $cart->shipments->[1]->shipping_address->to_data, $valid_data, 'right single update';
+    cmp_deeply $cart->shipments->list->[0]->shipping_address->to_data, $valid_data, 'right single update';
+    cmp_deeply $cart->shipments->list->[1]->shipping_address->to_data, $valid_data, 'right single update';
     is $i, 2, 'right update quantity';
 };
 
