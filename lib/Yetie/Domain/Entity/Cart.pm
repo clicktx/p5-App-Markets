@@ -30,7 +30,7 @@ sub add_shipping_item {
     croak 'First argument was not a Digit'   if $index =~ /\D/;
     croak 'Second argument was not a Object' if ref $item =~ /::/;
 
-    my $shipment = $self->shipments->[$index];
+    my $shipment = $self->shipments->get($index);
     _add_item( $shipment->items, $item );
 
     $self->_is_modified(1);
