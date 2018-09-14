@@ -15,20 +15,6 @@ has shipments       => sub { Yetie::Domain::List::Shipments->new };
 
 my @needless_attrs = (qw/cart_id items/);
 
-# has 'items';
-# has item_count       => sub { shift->items->flatten->size };
-# has original_total_price => 0;
-# has total_price          => 0;
-# has total_weight         => 0;
-
-# cart.attributes
-# cart.item_count
-# cart.items
-# cart.note
-# cart.original_total_price
-# cart.total_price
-# cart.total_weight
-
 sub add_item {
     my ( $self, $item ) = @_;
     croak 'Argument was not a Object' if ref $item =~ /::/;
@@ -51,19 +37,10 @@ sub add_shipping_item {
     return $self;
 }
 
-sub all_shipping_items {
-    shift->shipments->map( sub { $_->items->each } );
-}
-
 # NOTE: shipment.itemsにあるitemsも削除するべきか？
 sub clear {
     my $self = shift;
     $self->items->each( sub { $self->remove_item( $_->id ) } );
-}
-
-sub count {
-    my ( $self, $attr ) = @_;
-    return $self->$attr->size;
 }
 
 sub grand_total {
@@ -147,10 +124,9 @@ sub to_order_data {
     return $data;
 }
 
-sub total_item_count {
-
-    # $_[0]->items->size + $_[0]->shipments->reduce( sub { $a + $b->item_count }, 0 );
-    $_[0]->count('items') + $_[0]->count('all_shipping_items');
+sub total_item_size {
+    my $self = shift;
+    return $self->items->size + $self->shipments->total_item_size;
 }
 
 sub total_quantity {
@@ -264,12 +240,6 @@ Return L<Yetie::Domain::Entity::Cart> Object.
 C<$shipment_object> is option argument.
 default $shipments->first
 
-=head2 C<all_shipping_items>
-
-    my $all_shipping_items = $cart->all_shipping_items;
-
-All items in shipments.
-
 =head2 C<clear>
 
     $cart->clear;
@@ -277,8 +247,6 @@ All items in shipments.
 Remove all items.
 
 =head2 C<clone>
-
-=head2 C<count>
 
 =head2 C<grand_total>
 
@@ -314,9 +282,9 @@ Return L<Yetie::Domain::Entity::Cart::Item> object or undef.
 
     my $order = $self->to_order_data;
 
-=head2 C<total_item_count>
+=head2 C<total_item_size>
 
-    my $item_count = $cart->total_item_count;
+    my $item_size = $cart->total_item_size;
 
 Return number of items types.
 

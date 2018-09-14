@@ -1,6 +1,10 @@
 package Yetie::Domain::List::Shipments;
 use Yetie::Domain::Base 'Yetie::Domain::List';
 
+sub total_item_size {
+    shift->list->map( sub { $_->items->each } )->size;
+}
+
 1;
 __END__
 
