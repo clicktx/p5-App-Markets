@@ -98,7 +98,7 @@ sub remove_shipping_item {
     croak 'First argument was not a Digit'   if $index =~ /\D/;
     croak 'Second argument was not a Scalar' if ref \$item_id ne 'SCALAR';
 
-    my $shipment = $self->shipments->[$index];
+    my $shipment = $self->shipments->get($index);
     my ( $removed, $collection ) = _remove_item( $shipment->items, $item_id );
 
     $shipment->items($collection) if $removed;
@@ -178,7 +178,7 @@ sub _update_shipping_address {
       ? $address
       : $self->factory('entity-address')->construct($address);
 
-    $self->shipments->[$index]->shipping_address($shipping_address);
+    $self->shipments->get($index)->shipping_address($shipping_address);
 }
 
 1;
