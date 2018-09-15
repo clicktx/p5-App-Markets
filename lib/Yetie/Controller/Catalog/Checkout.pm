@@ -5,7 +5,8 @@ sub index {
     my $c = shift;
 
     # Redirect logged-in customer
-    return $c->redirect_to('RN_checkout_shipping_address') if $c->is_logged_in;
+    # return $c->redirect_to('RN_checkout_shipping_address') if $c->is_logged_in;
+    return $c->review_handler if $c->is_logged_in;
 
     # Guest or a customer not logged in
     my $form = $c->form('checkout-index');
@@ -22,9 +23,70 @@ sub index {
     return $c->render();
 }
 
+# handler?
+# - Select a shipping address
+# - (Choose where to ship each item)
+#   - Choose your delivery options
+# - Select a payment method
+# - Choose a billing address
+# - Review your order
+sub review_handler {
+    my $c = shift;
+
+    return $c->redirect_to('RN_checkout_shipping_address')
+      # unless $c->cart->shipments->has_shipping_address;
+      # unless $c->cart->has_shipping_address;
+      unless 0;
+
+    return $c->redirect_to('RN_checkout_confirm');
+}
+
 sub shipping_address {
     my $c = shift;
-    $c->render();
+use DDP;p $c->cart->to_data;
+    my $form        = $c->form('checkout-shipping_address');
+    my $customer_id = $c->server_session->customer_id;
+
+    my $addresses = $c->service('customer')->get_shipping_addresses($customer_id);
+    $c->stash( addresses => $addresses );
+
+    return $c->render() unless $form->has_data;
+    return $c->render() unless $form->do_validate;
+
+    my $no       = $form->param('select_shipping_address');
+    my $selected = $addresses->get($no);
+
+    # 正規に選択されなかった
+    return $c->render() unless $selected;
+
+    # NOTE: 1箇所のみに配送の場合
+    # 複数配送の場合は先に配送先を複数登録しておく？別コントローラが良い？
+    # shipment objectを生成して配列にpushする必要がある。
+    # my $shipment = $c->factory('entity-shipment')->create( shipping_address => $selected->address->to_data );
+    # $cart->add_shipment($shipment);
+    my $cart = $c->cart;
+    $cart->update_shipping_address($selected);
+
+    use DDP;
+    $cart->shipments->each( sub { p $_->shipping_address } );
+
+    # return $c->redirect_to('RN_checkout_delivery_option');
+    return $c->redirect_to('RN_checkout_billing_address');
+}
+
+sub delivery_option {
+    my $c = shift;
+    return $c->redirect_to('RN_checkout_payment_method');
+}
+
+sub payment_method {
+    my $c = shift;
+    return $c->redirect_to('RN_checkout_billing_address');
+}
+
+sub billing_address {
+    my $c = shift;
+    return $c->render();
 }
 
 sub address {
