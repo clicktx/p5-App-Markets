@@ -40,8 +40,6 @@ subtest 'item_count' => sub {
     is $shipment->item_count, 3, 'right item_count';
 };
 
-# subtest 'subtotal_quantity' => sub {};
-
 subtest 'subtotal' => sub {
     my $shipment = Yetie::Domain::Entity::Shipment->new( { id => 1 } );
     $shipment->{items} = Yetie::Domain::Collection->new(

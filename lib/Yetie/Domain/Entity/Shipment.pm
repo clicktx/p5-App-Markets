@@ -17,10 +17,6 @@ sub clone {
 
 sub item_count { shift->items->size }
 
-sub subtotal_quantity {
-    shift->items->reduce( sub { $a + $b->quantity }, 0 );
-}
-
 sub subtotal {
     shift->items->reduce( sub { $a + $b->subtotal }, 0 );
 }
@@ -57,8 +53,6 @@ the following new ones.
 =head2 C<clone>
 
 =head2 C<item_count>
-
-=head2 C<subtotal_quantity>
 
 =head2 C<subtotal>
 
