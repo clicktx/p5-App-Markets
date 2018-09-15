@@ -161,13 +161,12 @@ subtest 'clone' => sub {
     cmp_deeply $cart->items->list->[0]->to_data, $clone->items->list->[0]->to_data, 'right cart data';
 
     # shipments
-    isnt $cart->shipments->list->[0], $clone->shipments->list->[0], 'right shipment reference';
-    cmp_deeply $cart->shipments->list->[0]->to_data, $clone->shipments->list->[0]->to_data, 'right shipment data';
+    isnt $cart->shipments->get(0), $clone->shipments->get(0), 'right shipment reference';
+    cmp_deeply $cart->shipments->get(0)->to_data, $clone->shipments->get(0)->to_data, 'right shipment data';
 
-    isnt $cart->shipments->list->[0]->items->[0], $clone->shipments->list->[0]->items->[0],
-      'right shipment item reference';
-    cmp_deeply $cart->shipments->list->[0]->items->[0]->to_data,
-      $clone->shipments->list->[0]->items->[0]->to_data,
+    isnt $cart->shipments->get(0)->items->[0], $clone->shipments->get(0)->items->[0], 'right shipment item reference';
+    cmp_deeply $cart->shipments->get(0)->items->[0]->to_data,
+      $clone->shipments->get(0)->items->[0]->to_data,
       'right shipment item data';
 };
 
@@ -368,14 +367,14 @@ subtest 'update_shipping_address' => sub {
 
     $cart = _create_entity;
     $i = $cart->update_shipping_address( 0 => \%address, 1 => \%address );
-    cmp_deeply $cart->shipments->list->[0]->shipping_address->to_data, $valid_data, 'right multi update';
-    cmp_deeply $cart->shipments->list->[1]->shipping_address->to_data, $valid_data, 'right multi update';
+    cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $valid_data, 'right multi update';
+    cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $valid_data, 'right multi update';
     is $i, 2, 'right update quantity';
 
     $cart = _create_entity;
     $i = $cart->update_shipping_address( [ \%address, \%address ] );
-    cmp_deeply $cart->shipments->list->[0]->shipping_address->to_data, $valid_data, 'right single update';
-    cmp_deeply $cart->shipments->list->[1]->shipping_address->to_data, $valid_data, 'right single update';
+    cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $valid_data, 'right single update';
+    cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $valid_data, 'right single update';
     is $i, 2, 'right update quantity';
 };
 
