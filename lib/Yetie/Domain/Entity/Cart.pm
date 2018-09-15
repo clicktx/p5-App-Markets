@@ -130,8 +130,8 @@ sub total_item_size {
 }
 
 sub total_quantity {
-    $_[0]->items->reduce( sub { $a + $b->quantity }, 0 ) +
-      $_[0]->shipments->reduce( sub { $a + $b->subtotal_quantity }, 0 );
+    my $self = shift;
+    $self->items->total_quantity + $self->shipments->total_quantity;
 }
 
 sub update_shipping_address {

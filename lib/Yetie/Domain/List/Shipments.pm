@@ -5,6 +5,10 @@ sub total_item_size {
     shift->list->map( sub { $_->items->each } )->size;
 }
 
+sub total_quantity {
+    shift->list->reduce( sub { $a + $b->items->total_quantity }, 0 );
+}
+
 1;
 __END__
 
@@ -25,6 +29,14 @@ the following new ones.
 
 L<Yetie::Domain::List::Shipments> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
+
+=head2 C<total_item_size>
+
+    my $size = $list->total_item_size;
+
+=head2 C<total_quantity>
+
+    my $qty = $list->total_quantity;
 
 =head1 AUTHOR
 

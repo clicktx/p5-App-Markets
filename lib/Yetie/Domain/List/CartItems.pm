@@ -1,6 +1,10 @@
 package Yetie::Domain::List::CartItems;
 use Yetie::Domain::Base 'Yetie::Domain::List';
 
+sub total_quantity {
+    shift->list->reduce( sub { $a + $b->quantity }, 0 );
+}
+
 1;
 __END__
 
@@ -21,6 +25,10 @@ the following new ones.
 
 L<Yetie::Domain::List::CartItems> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
+
+head2 C<total_quantity>
+
+    my $quantity = $items->total_quantity;
 
 =head1 AUTHOR
 
