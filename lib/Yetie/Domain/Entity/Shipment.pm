@@ -1,9 +1,10 @@
 package Yetie::Domain::Entity::Shipment;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Data::Clone qw/data_clone/;
+use Yetie::Domain::List::CartItems;
 
 has shipping_address => sub { __PACKAGE__->factory('entity-address')->construct() };
-has items            => sub { Yetie::Domain::Collection->new };
+has items            => sub { Yetie::Domain::List::CartItems->new };
 
 sub clone {
     my $self  = shift;
