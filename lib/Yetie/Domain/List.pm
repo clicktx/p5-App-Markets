@@ -4,6 +4,8 @@ use List::Util;
 
 has list => sub { Yetie::Domain::Collection->new };
 
+sub append { shift->list->append(@_) }
+
 sub each { shift->list->each(@_) }
 
 sub find { shift->list->find(@_) }
@@ -15,8 +17,6 @@ sub get { shift->list->[ +shift ] }
 sub grep { shift->list->grep(@_) }
 
 sub last { shift->list->last }
-
-sub push { shift->list->push(@_) }
 
 sub to_data { shift->list->to_data }
 
@@ -53,6 +53,16 @@ Return C<Yetie::Domain::Collection> object.
 
 L<Yetie::Domain::List> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<append>
+
+    $domain->append($element);
+    $domain->append(@elements);
+
+    # Longer version
+    $domain->list->append($element);
+
+See L<Yetie::Domain::Collection/append>.
 
 =head2 C<each>
 
@@ -105,16 +115,6 @@ See L<Mojo::Collection/grep>.
     my $last = $domain->list->last;
 
 See L<Mojo::Collection/last>.
-
-=head2 C<push>
-
-    $domain->push($element);
-    $domain->push(@elements);
-
-    # Longer version
-    $domain->list->push($element);
-
-See L<Yetie::Domain::Collection/push>.
 
 =head2 C<to_data>
 

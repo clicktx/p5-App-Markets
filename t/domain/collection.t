@@ -19,6 +19,16 @@ subtest 'basic' => sub {
     is_deeply $c, [ 1, 2, 3 ], 'right collection()';
 };
 
+subtest 'append' => sub {
+    my $c = $pkg->new;
+
+    $c->append(1);
+    $c->append( ( 2, 3 ) );
+    is $c->size,  3, 'right size';
+    is $c->first, 1, 'right first element';
+    is $c->last,  3, 'right last element';
+};
+
 subtest 'find' => sub {
     my @entities;
     Yetie::Domain::Entity->attr( [qw(hoge)] );
@@ -31,16 +41,6 @@ subtest 'find' => sub {
     # Empty array
     $c = $pkg->new();
     is $c->find(1), undef, 'right empty collection';
-};
-
-subtest 'push' => sub {
-    my $c = $pkg->new;
-
-    $c->push(1);
-    $c->push( ( 2, 3 ) );
-    is $c->size,  3, 'right size';
-    is $c->first, 1, 'right first element';
-    is $c->last,  3, 'right last element';
 };
 
 subtest 'to_data' => sub {

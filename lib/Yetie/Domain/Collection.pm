@@ -4,6 +4,11 @@ use Scalar::Util qw/blessed/;
 
 our @EXPORT_OK = qw(c collection);
 
+sub append {
+    my $self = shift;
+    push @{$self}, @_;
+}
+
 sub c { collection(@_) }
 
 sub collection { __PACKAGE__->new(@_) }
@@ -12,11 +17,6 @@ sub collection { __PACKAGE__->new(@_) }
 sub find {
     my ( $self, $str ) = @_;
     $self->first( sub { $_->id eq $str } ) or undef;
-}
-
-sub push {
-    my $self = shift;
-    push @{$self}, @_;
 }
 
 sub to_data {
@@ -59,6 +59,13 @@ Construct a new array-based L<Yetie::Domain::Collection> object.
 L<Yetie::Domain::Collection> inherits all methods from L<Mojo::Collection> and implements
 the following new ones.
 
+=head2 C<append>
+
+    $collection->append($str);
+    $collection->append(@array);
+
+Append elements.
+
 =head2 C<each>
 
     $collection->each( sub {
@@ -73,13 +80,6 @@ See L<Mojo::Collection/each>.
     my $entity = $collection->find($entity_id);
 
 Return L<Yetie::Domain::Entity> object or undef.
-
-=head2 C<push>
-
-    $collection->push($str);
-    $collection->push(@array);
-
-Append elements.
 
 =head2 C<to_data>
 

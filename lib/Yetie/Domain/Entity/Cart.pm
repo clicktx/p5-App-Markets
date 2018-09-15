@@ -156,7 +156,7 @@ sub _add_item {
     my ( $collection, $item ) = @_;
 
     my $exsist_item = $collection->find( $item->id );
-    return $collection->push($item) unless $exsist_item;
+    return $collection->append($item) unless $exsist_item;
 
     my $qty = $exsist_item->quantity + $item->quantity;
     $exsist_item->quantity($qty);
