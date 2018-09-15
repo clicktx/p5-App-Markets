@@ -5,7 +5,7 @@ use Mojo::Util   ();
 use Mojo::Loader ();
 use Yetie::Util  ();
 use Yetie::Domain::Collection qw/collection/;
-use Yetie::Domain::IxHash qw/ix_hash/;
+use Yetie::Domain::IxHash qw/ixhash/;
 
 has 'app';
 has domain_class => sub {
@@ -15,17 +15,18 @@ has domain_class => sub {
 };
 
 sub aggregate {
-    my ( $self, $accessor, $domain, $data ) = @_;
-    if ( $domain =~ /^value/ and ref $data ne 'HASH' ) { $data = { value => $data } }
+    my ( $self, $accessor, $domain, $arg ) = @_;
+    my $data = $self->_convert_data( $domain, $arg );
     croak 'Data type is not Hash refference' if ref $data ne 'HASH';
 
     $self->param( $accessor => $self->factory($domain)->construct($data) );
     return $self;
 }
 
+# NOTE: $data is Array reference or Yetie::Domain::Collection object
 sub aggregate_collection {
     my ( $self, $accessor, $domain, $data ) = @_;
-    croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
+    # croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @array;
     push @array, $self->factory($domain)->construct($_) for @{$data};
@@ -33,7 +34,7 @@ sub aggregate_collection {
     return $self;
 }
 
-sub aggregate_kvlist {
+sub aggregate_ixhash {
     my ( $self, $accessor, $domain, $data ) = @_;
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
@@ -42,7 +43,7 @@ sub aggregate_kvlist {
         my ( $key, $value ) = %{$kv};
         push @kvlist, ( $key => $self->factory($domain)->construct($value) );
     }
-    $self->param( $accessor => ix_hash(@kvlist) );
+    $self->param( $accessor => ixhash(@kvlist) );
     return $self;
 }
 
@@ -122,6 +123,17 @@ sub params {
     $self->{$_} = $args{$_} for keys %args;
 }
 
+sub _convert_data {
+    my ( $self, $domain, $data ) = @_;
+    return $data if ref $data eq 'HASH';
+
+    return { value => $data } if $domain =~ /^value/;
+    return { list => collection( @{$data} ) } if $domain =~ /^list/;
+
+    # Not convert
+    return $data;
+}
+
 sub _convert_param {
     my ( $self, $key, $value ) = @_;
 
@@ -132,7 +144,7 @@ sub _convert_param {
         },
         set => sub {
             my $value = shift || {};
-            $self->param( hash_set => ix_hash( %{$value} ) );
+            $self->param( hash_set => ixhash( %{$value} ) );
         },
     };
     $converter->{$key}->($value);
@@ -202,11 +214,11 @@ Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
 
 Create L<Yetie::Domain::Collection> type aggregate.
 
-=head2 C<aggregate_kvlist>
+=head2 C<aggregate_ixhash>
 
     my @data = ( { label => { key => 'value' } }, { label2 => { key2 => 'value2' } }, ... );
-    my $domain = $factory->aggregate_kvlist( $accessor_name, $target_entity, \@data );
-    my $domain = $factory->aggregate_kvlist( 'items', 'entity-xxx-item', \@data );
+    my $domain = $factory->aggregate_ixhash( $accessor_name, $target_entity, \@data );
+    my $domain = $factory->aggregate_ixhash( 'items', 'entity-xxx-item', \@data );
 
 Create L<Yetie::Domain::IxHash> type aggregate.
 

@@ -10,7 +10,7 @@ subtest 'argument empty' => sub {
 
     isa_ok $e, 'Yetie::Domain::Entity::Shipment';
     isa_ok $e->shipping_address, 'Yetie::Domain::Entity::Address';
-    isa_ok $e->items,            'Yetie::Domain::Collection';
+    isa_ok $e->items,            'Yetie::Domain::List::CartItems';
 };
 
 subtest 'data' => sub {

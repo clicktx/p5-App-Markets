@@ -5,12 +5,8 @@ use Yetie::Domain::Collection qw/collection/;
 sub cook {
     my $self = shift;
 
-    # items
-    my @items;
-    foreach my $item ( @{ $self->{items} } ) {
-        push @items, $self->factory('entity-cart-item')->construct($item);
-    }
-    $self->param( items => collection(@items) );
+    # Aggregate items
+    $self->aggregate( 'items', 'list-cart_items', $self->param('items') || [] );
 
     # shipping_address
     $self->aggregate( shipping_address => 'entity-address', $self->{shipping_address} || {} );

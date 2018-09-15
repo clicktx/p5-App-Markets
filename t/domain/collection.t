@@ -3,12 +3,14 @@ use Test::More;
 use Test::Deep;
 
 use_ok 'Yetie::Domain::Entity';
-use_ok 'Yetie::Domain::Collection';
+
+my $pkg = 'Yetie::Domain::Collection';
+use_ok $pkg;
 
 my @data = ( { id => 1, hoge => 1 }, { id => 2, hoge => 2 }, { id => 3, hoge => 3 }, );
 
 subtest 'basic' => sub {
-    isa_ok Yetie::Domain::Collection->new(), 'Mojo::Collection';
+    isa_ok $pkg->new(), 'Mojo::Collection';
 
     my $c = Yetie::Domain::Collection::c( 1, 2, 3 );
     is_deeply $c, [ 1, 2, 3 ], 'right c()';
@@ -17,23 +19,33 @@ subtest 'basic' => sub {
     is_deeply $c, [ 1, 2, 3 ], 'right collection()';
 };
 
+subtest 'append' => sub {
+    my $c = $pkg->new;
+
+    $c->append(1);
+    $c->append( ( 2, 3 ) );
+    is $c->size,  3, 'right size';
+    is $c->first, 1, 'right first element';
+    is $c->last,  3, 'right last element';
+};
+
 subtest 'find' => sub {
     my @entities;
     Yetie::Domain::Entity->attr( [qw(hoge)] );
     push @entities, Yetie::Domain::Entity->new($_) for @data;
 
-    my $c = Yetie::Domain::Collection->new(@entities);
+    my $c = $pkg->new(@entities);
     is $c->find(2)->{hoge}, 2, 'right found entity';
     is $c->find(5), undef, 'right not found entity';
 
     # Empty array
-    $c = Yetie::Domain::Collection->new();
+    $c = $pkg->new();
     is $c->find(1), undef, 'right empty collection';
 };
 
 subtest 'to_data' => sub {
     use Yetie::Domain::Collection qw/collection/;
-    my $c = Yetie::Domain::Collection->new( collection(), 1, collection( collection(), collection( 1, 2 ) ), 2 );
+    my $c = $pkg->new( collection(), 1, collection( collection(), collection( 1, 2 ) ), 2 );
     cmp_deeply $c->to_data, [ [], 1, [ [], [ 1, 2 ] ], 2 ], 'right dump data';
 };
 

@@ -4,6 +4,11 @@ use Scalar::Util qw/blessed/;
 
 our @EXPORT_OK = qw(c collection);
 
+sub append {
+    my $self = shift;
+    push @{$self}, @_;
+}
+
 sub c { collection(@_) }
 
 sub collection { __PACKAGE__->new(@_) }
@@ -53,6 +58,13 @@ Construct a new array-based L<Yetie::Domain::Collection> object.
 
 L<Yetie::Domain::Collection> inherits all methods from L<Mojo::Collection> and implements
 the following new ones.
+
+=head2 C<append>
+
+    $collection->append($str);
+    $collection->append(@array);
+
+Append elements.
 
 =head2 C<each>
 

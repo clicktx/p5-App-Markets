@@ -3,7 +3,7 @@ use Test::More;
 use Test::Deep;
 use Mojo::Util qw/sha1_sum/;
 use Yetie::Domain::Collection qw/collection/;
-use Yetie::Domain::IxHash qw/ix_hash/;
+use Yetie::Domain::IxHash qw/ixhash/;
 use Yetie::Domain::Value;
 use Mojo::URL;
 
@@ -50,7 +50,7 @@ subtest 'function' => sub {
     isa_ok $c, 'Yetie::Domain::Collection';
     is_deeply $c, [ 1, 2, 3 ], 'right deeply';
 
-    my $h = ix_hash( a => 1, b => 2 );
+    my $h = ixhash( a => 1, b => 2 );
     isa_ok $h, 'Yetie::Domain::IxHash';
     is_deeply $h, { a => 1, b => 2 }, 'right deeply';
 };
@@ -155,7 +155,7 @@ subtest 'is_modified' => sub {
             b => 1,
             e => $pkg->new( x => 1 ),
             c => collection( $pkg->new( y => 1 ), $pkg->new( e => $pkg->new( z => 1 ) ) ),
-            d => ix_hash( aa => $pkg->new( f => 1, g => 1 ) ),
+            d => ixhash( aa => $pkg->new( f => 1, g => 1 ) ),
         );
         return $e;
     };

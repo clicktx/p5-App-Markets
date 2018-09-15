@@ -17,7 +17,7 @@ subtest 'basic' => sub {
     can_ok $shipment, 'item_count';
 
     isa_ok $shipment->shipping_address, 'Yetie::Domain::Entity::Address';
-    isa_ok $shipment->items,            'Yetie::Domain::Collection';
+    isa_ok $shipment->items,            'Yetie::Domain::List::CartItems';
 
     is $shipment->hash_code, '356a192b7913b04c54574d18c28d46e6395428ab', 'right hash_code';
     is $shipment->id, 1, 'right id';
@@ -39,8 +39,6 @@ subtest 'item_count' => sub {
     $shipment->{items} = Yetie::Domain::Collection->new( 1, 2, 3 );
     is $shipment->item_count, 3, 'right item_count';
 };
-
-# subtest 'subtotal_quantity' => sub {};
 
 subtest 'subtotal' => sub {
     my $shipment = Yetie::Domain::Entity::Shipment->new( { id => 1 } );

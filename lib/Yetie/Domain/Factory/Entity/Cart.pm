@@ -11,12 +11,12 @@ sub cook {
     $self->aggregate( billing_address => 'entity-address', $self->{billing_address} || {} );
 
     # Aggregate items
-    $self->aggregate_collection( 'items', 'entity-cart-item', $self->param('items') || [] );
+    $self->aggregate( 'items', 'list-cart_items', $self->param('items') || [] );
 
     # Aggregate shipments
     my $param = $self->param('shipments') || [ {} ];
     push @{$param}, {} unless @{$param};    # NOTE: At the time of "$param eq []"
-    $self->aggregate_collection( 'shipments', 'entity-shipment', $param );
+    $self->aggregate( 'shipments', 'list-shipments', $param );
 }
 
 1;
