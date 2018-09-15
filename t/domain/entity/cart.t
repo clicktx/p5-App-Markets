@@ -164,9 +164,10 @@ subtest 'clone' => sub {
     isnt $cart->shipments->get(0), $clone->shipments->get(0), 'right shipment reference';
     cmp_deeply $cart->shipments->get(0)->to_data, $clone->shipments->get(0)->to_data, 'right shipment data';
 
-    isnt $cart->shipments->get(0)->items->[0], $clone->shipments->get(0)->items->[0], 'right shipment item reference';
-    cmp_deeply $cart->shipments->get(0)->items->[0]->to_data,
-      $clone->shipments->get(0)->items->[0]->to_data,
+    isnt $cart->shipments->get(0)->items->get(0), $clone->shipments->get(0)->items->get(0),
+      'right shipment item reference';
+    cmp_deeply $cart->shipments->get(0)->items->get(0)->to_data,
+      $clone->shipments->get(0)->items->get(0)->to_data,
       'right shipment item data';
 };
 

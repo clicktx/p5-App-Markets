@@ -12,7 +12,7 @@ subtest 'argument empty' => sub {
     $e->shipments->each(
         sub {
             isa_ok $_->shipping_address, 'Yetie::Domain::Entity::Address';
-            isa_ok $_->items,            'Yetie::Domain::Collection';
+            isa_ok $_->items,            'Yetie::Domain::List::CartItems';
         }
     );
 };
@@ -22,7 +22,7 @@ subtest 'shipments empty hash ref' => sub {
     $e->shipments->each(
         sub {
             isa_ok $_->shipping_address, 'Yetie::Domain::Entity::Address';
-            isa_ok $_->items,            'Yetie::Domain::Collection';
+            isa_ok $_->items,            'Yetie::Domain::List::CartItems';
         }
     );
 };
