@@ -27,6 +27,19 @@ sub admin_loged_in {
     ok $self->server_session->staff_id, 'right staff loged in';
 }
 
+sub customer_loged_in {
+    my $self = shift;
+
+    my $post_data = {
+        email      => 'c@example.org',
+        password   => '12345678',
+        csrf_token => $self->csrf_token,
+    };
+
+    $self->t->post_ok( $self->app->url_for('RN_customer_login'), form => $post_data );
+    is $self->server_session->customer_id, 111, 'right customer loged in';
+}
+
 sub make_path {
     my ( $self, $route, $args ) = @_;
     return $route->is_endpoint ? $route->render($args) : $self->make_path( $route->children );
