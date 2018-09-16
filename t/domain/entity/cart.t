@@ -335,7 +335,6 @@ subtest 'order data' => sub {
 };
 
 subtest 'update_shipping_address' => sub {
-    my $cart    = _create_entity;
     my %address = (
         country_code => 'jp',
         line1        => 'Shimane',
@@ -353,6 +352,7 @@ subtest 'update_shipping_address' => sub {
         phone         => '',
     };
 
+    my $cart = _create_entity;
     eval { $cart->update_shipping_address() };
     ok $@, 'right not arguments';
 
@@ -377,6 +377,37 @@ subtest 'update_shipping_address' => sub {
     cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $valid_data, 'right single update';
     cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $valid_data, 'right single update';
     is $i, 2, 'right update quantity';
+};
+
+subtest 'update_billing_address' => sub {
+    my %address = (
+        country_code => 'jp',
+        line1        => 'Tokyo',
+    );
+    my $valid_data = {
+        hash          => ignore(),
+        country_code  => 'jp',
+        city          => '',
+        state         => '',
+        line1         => 'Tokyo',
+        line2         => '',
+        postal_code   => '',
+        personal_name => '',
+        organization  => '',
+        phone         => '',
+    };
+
+    my $cart = _create_entity;
+    eval { $cart->update_billing_address() };
+    ok $@, 'right not arguments';
+
+    $cart->update_billing_address( \%address );
+    cmp_deeply $cart->billing_address->to_data, $valid_data, 'right update';
+
+    $cart = _create_entity;
+    my $obj = $cart->factory('entity-address')->construct(%address);
+    $cart->update_billing_address($obj);
+    cmp_deeply $cart->billing_address->to_data, $valid_data, 'right update, data is object';
 };
 
 done_testing();

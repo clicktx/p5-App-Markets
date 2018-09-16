@@ -134,9 +134,17 @@ sub total_quantity {
     $self->items->total_quantity + $self->shipments->total_quantity;
 }
 
+sub update_billing_address {
+    my ( $self, $address ) = @_;
+    croak 'Argument is missing.' unless $address;
+
+    my $billing_address = $self->_address($address);
+    $self->billing_address($billing_address);
+}
+
 sub update_shipping_address {
     my $self = shift;
-    die 'Argument is missing.' unless @_;
+    croak 'Argument is missing.' unless @_;
 
     # Convert array reference
     if ( ref $_[0] eq 'ARRAY' ) {
@@ -288,6 +296,11 @@ Return number of items types.
     my $total_qty = $cart->total_quantity;
 
 Return all items quantity.
+
+=head2 C<update_billing_address>
+
+    $cart->update_billing_address( %address );
+    $cart->update_billing_address( $address_obj );
 
 =head2 C<update_shipping_address>
 
