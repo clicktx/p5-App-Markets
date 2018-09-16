@@ -6,7 +6,13 @@ has list => sub { Yetie::Domain::Collection->new };
 
 sub append { shift->list->append(@_) }
 
-sub each { shift->list->each(@_) }
+sub each {
+    my ( $self, $cb ) = @_;
+    return @{ $self->list } unless $cb;
+
+    $self->list->each($cb);
+    return $self;
+}
 
 sub find { shift->list->find(@_) }
 
@@ -14,9 +20,17 @@ sub first { shift->list->first(@_) }
 
 sub get { shift->list->[ +shift ] }
 
-sub grep { shift->list->grep(@_) }
+sub grep {
+    my $self = shift;
+    return $self->new( list => $self->list->grep(@_) );
+}
 
 sub last { shift->list->last }
+
+sub map {
+    my $self = shift;
+    return $self->new( list => $self->list->map(@_) );
+}
 
 sub to_data { shift->list->to_data }
 
@@ -105,6 +119,8 @@ Return $element or undef.
     # Longer version
     my $new = $domain->list->grep(...);
 
+Return L<Yetie::Domain::List> object.
+
 See L<Mojo::Collection/grep>.
 
 =head2 C<last>
@@ -115,6 +131,14 @@ See L<Mojo::Collection/grep>.
     my $last = $domain->list->last;
 
 See L<Mojo::Collection/last>.
+
+=head2 C<map>
+
+    my $new = $list->map( sub{...} );
+
+Return L<Yetie::Domain::List> object.
+
+See L<Mojo::Collection/map>.
 
 =head2 C<to_data>
 

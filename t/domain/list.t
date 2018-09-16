@@ -13,13 +13,40 @@ my $construct = sub {
 subtest 'basic' => sub {
     my $v = $pkg->new();
     isa_ok $v->list, 'Yetie::Domain::Collection', 'right attribute list';
-    can_ok $v, (qw(append each find first grep last size));
+    can_ok $v, (qw(append each find first last size));
+};
+
+subtest 'each' => sub {
+    my $v = $construct->( 1, 2, 3 );
+    my @elements = $v->each;
+    is_deeply \@elements, [ 1, 2, 3 ], 'right elements';
+    my $int = $v->each;
+    is $int, 3, 'right count elements';
+
+    my @array;
+    my $list = $v->each( sub { push @array, $_ } );
+    isa_ok $list, $pkg;
+    is_deeply \@array, [ 1, 2, 3 ], 'right function in each';
 };
 
 subtest 'get' => sub {
     my $v = $construct->( 1, 2, 3 );
     is $v->get(1), 2,     'right get element';
     is $v->get(4), undef, 'right has not element';
+};
+
+subtest 'grep' => sub {
+    my $v   = $construct->(qw(a 1 2 b 3));
+    my $new = $v->grep(qr/\d/);
+    isa_ok $new, $pkg;
+    is_deeply $new->to_data, [ 1, 2, 3 ], 'right grep';
+};
+
+subtest 'map' => sub {
+    my $v = $construct->( 1, 2, 3 );
+    my $new = $v->map( sub { $_ + 1 } );
+    isa_ok $new, $pkg;
+    is_deeply $new->to_data, [ 2, 3, 4 ], 'right grep';
 };
 
 subtest 'reduce' => sub {
