@@ -151,7 +151,7 @@ sub complete_validate {
 
     # NOTE: itemsに商品がある場合 or shipment.itemsが1つも無い場合はcomplete出来ない。
     my $cart = $c->cart;
-    return $c->redirect_to('RN_cart') if $cart->count('items') or !$cart->count('all_shipping_items');
+    return $c->redirect_to('RN_cart') unless $cart->total_quantity;
 
     # Make order data
     my $order = $cart->to_order_data;
