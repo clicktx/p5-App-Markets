@@ -29,15 +29,23 @@ sub startup : Test(startup) {
     $server_session->flush;
 }
 
-sub test_01_01_index_no_loged_in : Tests() {
+# NOTE: カートが空の場合のtestも必要
+sub test_01_01_no_loged_in : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
     $t->get_ok('/checkout')->status_is(200);
     is_deeply $t->tx->redirects, [], 'right no redirects';
+
+    $t->get_ok($_)->status_is(200)->content_like(qr/login/)
+      for (
+        qw(
+        /checkout/shipping-address
+        )
+      );
 }
 
-sub test_01_02_index_loged_in : Tests() {
+sub test_01_02_index_after_loged_in : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -46,6 +54,13 @@ sub test_01_02_index_loged_in : Tests() {
     $t->get_ok('/checkout')->status_is(200);
     my ($url) = map { $_->req->url->path } @{ $t->tx->redirects };
     is $url, $self->app->url_for('RN_checkout'), 'right redirect';
+}
+
+sub test_02_shipping_address : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $t->get_ok('/checkout/shipping-address')->status_is(200)->content_like(qr/shipping address/);
 }
 
 __PACKAGE__->runtests;
