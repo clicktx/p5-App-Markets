@@ -1,6 +1,6 @@
 package Yetie::Domain::Entity::Cart;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
-use Carp qw/croak/;
+use Carp qw(croak);
 use Yetie::Domain::Value::Email;
 use Yetie::Domain::Entity::Address;
 use Yetie::Domain::List::CartItems;
@@ -145,8 +145,9 @@ sub update_shipping_address {
     my $arg = @_ > 1 ? +{@_} : { 0 => $_[0] };
 
     my $updated = 0;
-    foreach my $key ( keys %{$arg} ) {
-        $self->_update_shipping_address( $key, $arg->{$key} );
+    foreach my $index ( keys %{$arg} ) {
+        my $shipping_address = $self->_address( $arg->{$index} );
+        $self->shipments->get($index)->shipping_address($shipping_address);
         $updated++;
     }
     return $updated;
@@ -162,23 +163,17 @@ sub _add_item {
     $exsist_item->quantity($qty);
 }
 
+sub _address {
+    my ( $self, $args ) = @_;
+    return ref $args eq 'HASH' ? $self->factory('entity-address')->construct($args) : $args;
+}
+
 sub _remove_item {
     my ( $collection, $item_id ) = @_;
 
     my $removed;
     my $new_collection = $collection->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
     return ( $removed, $new_collection );
-}
-
-sub _update_shipping_address {
-    my ( $self, $index, $address ) = @_;
-
-    my $shipping_address =
-      eval { $address->isa('Yetie::Domain::Entity::Address') }
-      ? $address
-      : $self->factory('entity-address')->construct($address);
-
-    $self->shipments->get($index)->shipping_address($shipping_address);
 }
 
 1;
