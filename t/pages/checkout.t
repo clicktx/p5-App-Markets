@@ -29,13 +29,27 @@ sub startup : Test(startup) {
     $server_session->flush;
 }
 
-sub test_01_01_index : Tests() {
+sub test_01_01_index_no_loged_in : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
     $t->get_ok('/checkout')->status_is(200);
+    is_deeply $t->tx->redirects, [], 'right no redirects';
 }
 
+sub test_01_02_index_loged_in : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $self->customer_loged_in;
+
+    $t->get_ok('/checkout')->status_is(200);
+    my ($url) = map { $_->req->url->path } @{ $t->tx->redirects };
+    is $url, $self->app->url_for('RN_checkout'), 'right redirect';
+}
+
+__PACKAGE__->runtests;
+__END__
 sub test_01_02_index_post : Tests() {
     my $self = shift;
     my $t    = $self->t;

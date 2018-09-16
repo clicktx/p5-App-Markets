@@ -34,6 +34,7 @@ sub review_handler {
     my $c = shift;
 
     return $c->redirect_to('RN_checkout_shipping_address')
+
       # unless $c->cart->shipments->has_shipping_address;
       # unless $c->cart->has_shipping_address;
       unless 0;
@@ -43,7 +44,7 @@ sub review_handler {
 
 sub shipping_address {
     my $c = shift;
-use DDP;p $c->cart->to_data;
+
     my $form        = $c->form('checkout-shipping_address');
     my $customer_id = $c->server_session->customer_id;
 
@@ -66,9 +67,6 @@ use DDP;p $c->cart->to_data;
     # $cart->add_shipment($shipment);
     my $cart = $c->cart;
     $cart->update_shipping_address($selected);
-
-    use DDP;
-    $cart->shipments->each( sub { p $_->shipping_address } );
 
     # return $c->redirect_to('RN_checkout_delivery_option');
     return $c->redirect_to('RN_checkout_billing_address');
