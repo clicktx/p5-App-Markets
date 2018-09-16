@@ -31,7 +31,7 @@
                     <li><%= $content %></li>
                 % }
             </ul>
-            <%= link_to 'Ship to this address' => '', ( class => 'submit-post btn btn-primary', 'data-name' => 'select_shipping_address', 'data-value' => $n - 1 ) %>
+            <%= link_to 'Ship to this address' => '', ( class => 'submit-post btn btn-primary', 'data-name' => 'select_address', 'data-value' => $n - 1 ) %>
             <%= link_to 'Edit' => '', ( class => 'btn btn-light' ) %>
             <%= link_to 'Remove' => '', ( class => 'btn btn-light' ) %>
         </li>

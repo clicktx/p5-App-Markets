@@ -45,7 +45,7 @@ sub review_handler {
 sub shipping_address {
     my $c = shift;
 
-    my $form        = $c->form('checkout-shipping_address');
+    my $form        = $c->form('checkout-select_address');
     my $customer_id = $c->server_session->customer_id;
 
     my $addresses = $c->service('customer')->get_shipping_addresses($customer_id);
@@ -54,7 +54,7 @@ sub shipping_address {
     return $c->render() unless $form->has_data;
     return $c->render() unless $form->do_validate;
 
-    my $no       = $form->param('select_shipping_address');
+    my $no       = $form->param('select_address');
     my $selected = $addresses->get($no);
 
     # 正規に選択されなかった
