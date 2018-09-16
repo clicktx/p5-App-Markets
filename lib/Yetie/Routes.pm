@@ -106,9 +106,6 @@ sub add_catalog_routes {
         $checkout->any('/delivery-options')->to('#delivery_option')->name('RN_checkout_delivery_option');
         $checkout->any('/payment-option')->to('#payment_method')->name('RN_checkout_payment_method');
         $checkout->any('/billing-address')->to('#billing_address')->name('RN_checkout_billing_address');
-
-        $checkout->any('/address')->to('#address')->name('RN_checkout_address');
-        $checkout->any('/shipping')->to('#shipping')->name('RN_checkout_shipping');
         $checkout->any('/confirm')->to('#confirm')->name('RN_checkout_confirm');
     }
     my $guest_checkout = $r->any('/checkout/guest')->to('checkout#');

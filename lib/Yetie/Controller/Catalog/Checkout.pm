@@ -68,6 +68,34 @@ sub shipping_address {
     my $cart = $c->cart;
     $cart->update_shipping_address($selected);
 
+    # NOTE: 複数配送を使うかのpreference
+    if ( $c->pref('can_multiple_shipments') ) {
+        say 'multiple shipment is true';
+    }
+    else {
+        say 'multiple shipment is false';
+    }
+
+    # shipping address
+    # 商品をshipmentに移動
+    # cart.itemsからitemを減らす。shipment.itemsを増やす
+    # 本来は数量を考慮しなくてはならない
+    # $item.quantityが0になった場合の動作はどうする？
+    my $cart = $c->cart;
+    $cart->items->each(
+        sub {
+            # カートitemsから削除
+            my $item = $cart->remove_item( $_->id );
+
+            # 配送itemsに追加
+            $cart->add_shipping_item( 0, $item );
+        }
+    );
+
+    # NOTE: 移動や追加をした際にis_modifiedをどのobjectに行うか
+    # $cart->is_modified(1)? しか使わなければ実行時間は早く出来る。
+    # Entity::Cart::is_modifiedも考慮して実装しよう
+
     # return $c->redirect_to('RN_checkout_delivery_option');
     return $c->redirect_to('RN_checkout_billing_address');
 }
@@ -105,84 +133,6 @@ sub billing_address {
 
     return $c->redirect_to('RN_checkout_confirm');
 }
-
-sub address {
-    my $c = shift;
-
-    my $form = $c->form('checkout-address');
-    $form->fill_in( $c->cart );
-
-    return $c->render() unless $form->has_data;
-    return $c->render() unless $form->do_validate;
-
-    # Update Cart
-    my $address_fields = $c->cart->billing_address->field_names;
-
-    # billing address
-    foreach my $field ( @{$address_fields} ) {
-        my $value = $form->param("billing_address.$field");
-        $c->cart->billing_address->$field($value);
-    }
-
-    # shipping address
-    my $shipments = $c->cart->shipments;
-    $shipments->each(
-        sub {
-            my ( $shipment, $i ) = ( shift, shift );
-            $i--;
-            foreach my $field ( @{$address_fields} ) {
-                my $value = $form->param("shipments.$i.shipping_address.$field");
-                $shipment->shipping_address->$field($value);
-            }
-        }
-    );
-    return $c->redirect_to('RN_checkout_shipping');
-}
-
-sub shipping {
-    my $c = shift;
-
-    my $form = $c->form('checkout-shipping');
-    return $c->render() unless $form->has_data;
-
-    return $c->render() unless $form->do_validate;
-
-    # 複数配送を使うか
-    if ( $c->pref('can_multiple_shipments') ) {
-        say 'multiple shipment is true';
-    }
-    else {
-        say 'multiple shipment is false';
-    }
-
-    # shipping address
-    # 商品をshipmentに移動
-    # cart.itemsからitemを減らす。shipment.itemsを増やす
-    # 本来は数量を考慮しなくてはならない
-    # $item.quantityが0になった場合の動作はどうする？
-    my $cart = $c->cart;
-    $cart->items->each(
-        sub {
-            # カートitemsから削除
-            my $item = $cart->remove_item( $_->id );
-
-            # 配送itemsに追加
-            $cart->add_shipping_item( 0, $item );
-        }
-    );
-
-    # NOTE: 移動や追加をした際にis_modifiedをどのobjectに行うか
-    # $cart->is_modified(1)? しか使わなければ実行時間は早く出来る。
-    # Entity::Cart::is_modifiedも考慮して実装しよう
-
-    return $c->redirect_to('RN_checkout_confirm');
-}
-
-#sub payment { }
-# sub billing {
-#     my $c = shift;
-#     $c->render();
-# }
 
 sub confirm {
     my $c = shift;
