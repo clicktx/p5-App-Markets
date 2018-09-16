@@ -23,8 +23,8 @@ sub admin_loged_in {
         csrf_token => $self->csrf_token,
     };
 
-    $self->t->post_ok( '/admin/login', form => $post_data );
-    ok $self->server_session->staff_id, 'right staff loged in';
+    $self->t->post_ok( $self->app->url_for('RN_admin_login'), form => $post_data );
+    is $self->server_session->staff_id, 223, 'right staff loged in';
 }
 
 sub customer_loged_in {
