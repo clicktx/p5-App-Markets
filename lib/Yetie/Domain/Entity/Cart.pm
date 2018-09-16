@@ -8,13 +8,6 @@ use Yetie::Domain::List::Shipments;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 has cart_id         => '';
-<<<<<<< Updated upstream
-=======
-has items           => sub { Yetie::Domain::Collection->new };
-has items2          => sub { Yetie::Domain::Entity::Cart::Items->new };
-has shipments       => sub { Yetie::Domain::Collection->new };
-has billing_address => sub { Yetie::Domain::Entity::Address->new };
->>>>>>> Stashed changes
 has email           => sub { Yetie::Domain::Value::Email->new };
 has billing_address => sub { Yetie::Domain::Entity::Address->new };
 has items           => sub { Yetie::Domain::List::CartItems->new };
