@@ -84,7 +84,26 @@ sub payment_method {
 
 sub billing_address {
     my $c = shift;
-    return $c->render();
+
+    my $form        = $c->form('checkout-select_address');
+    my $customer_id = $c->server_session->customer_id;
+
+    my $addresses = $c->service('customer')->get_billing_addresses($customer_id);
+    $c->stash( addresses => $addresses );
+
+    return $c->render() unless $form->has_data;
+    return $c->render() unless $form->do_validate;
+
+    my $no       = $form->param('select_address');
+    my $selected = $addresses->get($no);
+
+    # 正規に選択されなかった
+    return $c->render() unless $selected;
+
+    my $cart = $c->cart;
+    $cart->update_billing_address($selected);
+
+    return $c->redirect_to('RN_checkout_confirm');
 }
 
 sub address {

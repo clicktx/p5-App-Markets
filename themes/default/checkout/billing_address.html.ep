@@ -1,1 +1,48 @@
-billing_address
+% layout 'default';
+% title 'Select a billing address';
+
+<h1><%= title %></h1>
+
+<%= link_to 'Edit Cart' => 'RN_cart' %>
+
+<h3>ORDER SUMMARY</h3>
+
+<h3>Secure checkout</h3>
+<ol>
+    <li>Please sign in</li>
+    <li>Shipping Address</li>
+    <li>Shipping Options</li>
+    <li><strong>Billing Address</strong></li>
+    <li>Billing Options</li>
+    <li>Order Confirmation</li>
+</ol>
+
+<h3>Select a billing address</h3>
+<ul>
+    % $addresses->each( sub {
+        % my ($address, $n) = @_;
+        <li>
+            <ul>
+                % my $notation = $address->notation;
+                % foreach my $row ( @{$notation} ) {
+                    % next unless $row;
+                    % my $content;
+                    % if ( ref $row eq 'ARRAY' ){ $content .= $_ for @{$row} }
+                    % else { $content = $row }
+                    <li><%= $content %></li>
+                % }
+            </ul>
+            <%= link_to 'Use this address' => '', ( class => 'submit-post btn btn-primary', 'data-name' => 'select_address', 'data-value' => $n - 1 ) %>
+            <%= link_to 'Edit' => '', ( class => 'btn btn-light' ) %>
+            <%= link_to 'Remove' => '', ( class => 'btn btn-light' ) %>
+        </li>
+    % });
+</ul>
+
+<h3>Add a new address</h3>
+<div class="">
+    form
+    <%= link_to 'Use this address' => '', ( class => 'btn btn-primary' ) %>
+</div>
+
+<%= link_to 'Back to page' => 'RN_cart' %>
