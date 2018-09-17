@@ -4,7 +4,10 @@ use List::Util;
 
 has list => sub { Yetie::Domain::Collection->new };
 
-sub append { shift->list->append(@_) }
+sub append {
+    my $self = shift;
+    return $self->new( list => $self->list->append(@_) );
+}
 
 sub each {
     my ( $self, $cb ) = @_;
@@ -70,11 +73,12 @@ the following new ones.
 
 =head2 C<append>
 
-    $domain->append($element);
-    $domain->append(@elements);
+    my $new = $domain->append($element);
+    my $new = $domain->append(@elements);
 
-    # Longer version
-    $domain->list->append($element);
+Create a new object with append elements.
+
+Return L<Yetie::Domain::List> object.
 
 See L<Yetie::Domain::Collection/append>.
 
@@ -116,8 +120,7 @@ Return $element or undef.
 
     my $new = $domain->grep(...);
 
-    # Longer version
-    my $new = $domain->list->grep(...);
+Create a new object with grep elements.
 
 Return L<Yetie::Domain::List> object.
 
@@ -135,6 +138,8 @@ See L<Mojo::Collection/last>.
 =head2 C<map>
 
     my $new = $list->map( sub{...} );
+
+Create a new object with map elements.
 
 Return L<Yetie::Domain::List> object.
 

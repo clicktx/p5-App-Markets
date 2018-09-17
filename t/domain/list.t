@@ -13,7 +13,15 @@ my $construct = sub {
 subtest 'basic' => sub {
     my $v = $pkg->new();
     isa_ok $v->list, 'Yetie::Domain::Collection', 'right attribute list';
-    can_ok $v, (qw(append each find first last size));
+    can_ok $v, (qw(each find first last size));
+};
+
+subtest 'append' => sub {
+    my $v = $construct->( 1, 2, 3 );
+    my $new = $v->append(4);
+    isa_ok $new, $pkg;
+    is_deeply $new->to_data, [ 1, 2, 3, 4 ], 'right append';
+    is_deeply $v->to_data, [ 1, 2, 3 ], 'right immutable';
 };
 
 subtest 'each' => sub {
@@ -40,6 +48,7 @@ subtest 'grep' => sub {
     my $new = $v->grep(qr/\d/);
     isa_ok $new, $pkg;
     is_deeply $new->to_data, [ 1, 2, 3 ], 'right grep';
+    is_deeply $v->to_data, [ 'a', 1, 2, 'b', 3 ], 'right immutable';
 };
 
 subtest 'map' => sub {
@@ -47,6 +56,7 @@ subtest 'map' => sub {
     my $new = $v->map( sub { $_ + 1 } );
     isa_ok $new, $pkg;
     is_deeply $new->to_data, [ 2, 3, 4 ], 'right grep';
+    is_deeply $v->to_data,   [ 1, 2, 3 ], 'right immutable';
 };
 
 subtest 'reduce' => sub {
