@@ -4,10 +4,7 @@ use Scalar::Util qw/blessed/;
 
 our @EXPORT_OK = qw(c collection);
 
-sub append {
-    my $self = shift;
-    push @{$self}, @_;
-}
+sub append { c( @{ shift->to_array }, @_ ) }
 
 sub c { collection(@_) }
 
@@ -61,10 +58,12 @@ the following new ones.
 
 =head2 C<append>
 
-    $collection->append($str);
-    $collection->append(@array);
+    my $new = $collection->append($str);
+    my $new = $collection->append(@array);
 
-Append elements.
+Create a new collection with append elements.
+
+Return L<Yetie::Domain::Collection> object.
 
 =head2 C<each>
 

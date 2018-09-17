@@ -20,13 +20,14 @@ subtest 'basic' => sub {
 };
 
 subtest 'append' => sub {
-    my $c = $pkg->new;
+    my $c = $pkg->new();
 
-    $c->append(1);
-    $c->append( ( 2, 3 ) );
-    is $c->size,  3, 'right size';
-    is $c->first, 1, 'right first element';
-    is $c->last,  3, 'right last element';
+    my $new = $c->append(1);
+    is_deeply $c->to_array, [], 'immutable';
+    is_deeply $new->to_array, [1], 'right append element';
+
+    $new = $new->append( 2, 3 );
+    is_deeply $new->to_array, [ 1, 2, 3 ], 'right append elements';
 };
 
 subtest 'find' => sub {
