@@ -18,10 +18,9 @@ subtest 'basic' => sub {
 
 subtest 'append' => sub {
     my $v = $construct->( 1, 2, 3 );
-    my $new = $v->append(4);
-    isa_ok $new, $pkg;
-    is_deeply $new->to_data, [ 1, 2, 3, 4 ], 'right append';
-    is_deeply $v->to_data, [ 1, 2, 3 ], 'right immutable';
+    $v->append(4);
+    is_deeply $v->to_data, [ 1, 2, 3, 4 ], 'right append';
+    is $v->is_modified, 1, 'right modified';
 };
 
 subtest 'each' => sub {

@@ -6,7 +6,8 @@ has list => sub { Yetie::Domain::Collection->new };
 
 sub append {
     my $self = shift;
-    return $self->new( list => $self->list->append(@_) );
+    my $new  = $self->list->append(@_);
+    $self->list($new);
 }
 
 sub each {
@@ -73,12 +74,8 @@ the following new ones.
 
 =head2 C<append>
 
-    my $new = $domain->append($element);
-    my $new = $domain->append(@elements);
-
-Create a new object with append elements.
-
-Return L<Yetie::Domain::List> object.
+    $domain->append($element);
+    $domain->append(@elements);
 
 See L<Yetie::Domain::Collection/append>.
 
