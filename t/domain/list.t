@@ -13,7 +13,7 @@ my $construct = sub {
 subtest 'basic' => sub {
     my $v = $pkg->new();
     isa_ok $v->list, 'Yetie::Domain::Collection', 'right attribute list';
-    can_ok $v, (qw(each get_by_id first last size));
+    can_ok $v, (qw(each get get_by_id first last size));
 };
 
 subtest 'append' => sub {
@@ -35,12 +35,6 @@ subtest 'each' => sub {
     my $list = $v->each( sub { push @array, $_ } );
     isa_ok $list, $pkg;
     is_deeply \@array, [ 1, 2, 3 ], 'right function in each';
-};
-
-subtest 'get' => sub {
-    my $v = $construct->( 1, 2, 3 );
-    is $v->get(1), 2,     'right get element';
-    is $v->get(4), undef, 'right has not element';
 };
 
 subtest 'grep' => sub {

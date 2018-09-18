@@ -19,7 +19,7 @@ sub each {
 
 sub first { shift->list->first(@_) }
 
-sub get { shift->list->[ +shift ] }
+sub get { shift->list->get(@_) }
 
 sub get_by_id { shift->list->get_by_id(@_) }
 
@@ -103,9 +103,11 @@ See L<Mojo::Collection/first>.
 
 =head2 C<get>
 
-    my $element = $domain->get($int);
+    my $element = $domain->get($index);
 
 Return $element or undef.
+
+See L<Yetie::Domain::Collection/get>.
 
 =head2 C<get_by_id>
 

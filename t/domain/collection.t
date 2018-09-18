@@ -30,6 +30,12 @@ subtest 'append' => sub {
     is_deeply $new->to_array, [ 1, 2, 3 ], 'right append elements';
 };
 
+subtest 'get' => sub {
+    my $c = $pkg->new( 1, 2, 3 );
+    is $c->get(1), 2,     'right get element';
+    is $c->get(4), undef, 'right has not element';
+};
+
 subtest 'get_by_id' => sub {
     my @entities;
     Yetie::Domain::Entity->attr( [qw(hoge)] );

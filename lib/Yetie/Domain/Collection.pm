@@ -10,6 +10,8 @@ sub c { collection(@_) }
 
 sub collection { __PACKAGE__->new(@_) }
 
+sub get { shift->[ +shift ] }
+
 # NOTE: 同じcollectionに同一のidを持つ要素は存在しないはずなのでsearchメソッドは不要？
 sub get_by_id {
     my ( $self, $str ) = @_;
@@ -73,6 +75,15 @@ Return L<Yetie::Domain::Collection> object.
     });
 
 See L<Mojo::Collection/each>.
+
+=head2 C<get>
+
+    my $element = $collection->get($index);
+
+    # Equivalent behavior
+    my $element = $collection->[$index];
+
+Return $element or undef.
 
 =head2 C<get_by_id>
 
