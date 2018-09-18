@@ -17,11 +17,11 @@ sub each {
     return $self;
 }
 
-sub find { shift->list->find(@_) }
-
 sub first { shift->list->first(@_) }
 
 sub get { shift->list->[ +shift ] }
+
+sub get_by_id { shift->list->get_by_id(@_) }
 
 sub grep {
     my $self = shift;
@@ -91,15 +91,6 @@ See L<Yetie::Domain::Collection/append>.
 
 See L<Mojo::Collection/each>.
 
-=head2 C<find>
-
-    my $element = $domain->find($id);
-
-    # Longer version
-    my $element = $domain->list->find($id);
-
-See L<Yetie::Domain::Collection/find>.
-
 =head2 C<first>
 
     my $first = $domain->first();
@@ -115,6 +106,15 @@ See L<Mojo::Collection/first>.
     my $element = $domain->get($int);
 
 Return $element or undef.
+
+=head2 C<get_by_id>
+
+    my $element = $domain->get_by_id($id);
+
+    # Longer version
+    my $element = $domain->list->get_by_id($id);
+
+See L<Yetie::Domain::Collection/get_by_id>.
 
 =head2 C<grep>
 

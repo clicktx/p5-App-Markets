@@ -164,7 +164,7 @@ sub update_shipping_address {
 sub _add_item {
     my ( $collection, $item ) = @_;
 
-    my $exsist_item = $collection->find( $item->id );
+    my $exsist_item = $collection->get_by_id( $item->id );
     return $collection->append($item) unless $exsist_item;
 
     my $qty = $exsist_item->quantity + $item->quantity;

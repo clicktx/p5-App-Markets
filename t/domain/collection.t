@@ -30,18 +30,18 @@ subtest 'append' => sub {
     is_deeply $new->to_array, [ 1, 2, 3 ], 'right append elements';
 };
 
-subtest 'find' => sub {
+subtest 'get_by_id' => sub {
     my @entities;
     Yetie::Domain::Entity->attr( [qw(hoge)] );
     push @entities, Yetie::Domain::Entity->new($_) for @data;
 
     my $c = $pkg->new(@entities);
-    is $c->find(2)->{hoge}, 2, 'right found entity';
-    is $c->find(5), undef, 'right not found entity';
+    is $c->get_by_id(2)->{hoge}, 2, 'right found entity';
+    is $c->get_by_id(5), undef, 'right not found entity';
 
     # Empty array
     $c = $pkg->new();
-    is $c->find(1), undef, 'right empty collection';
+    is $c->get_by_id(1), undef, 'right empty collection';
 };
 
 subtest 'to_data' => sub {

@@ -11,7 +11,7 @@ sub c { collection(@_) }
 sub collection { __PACKAGE__->new(@_) }
 
 # NOTE: 同じcollectionに同一のidを持つ要素は存在しないはずなのでsearchメソッドは不要？
-sub find {
+sub get_by_id {
     my ( $self, $str ) = @_;
     $self->first( sub { $_->id eq $str } ) or undef;
 }
@@ -74,9 +74,9 @@ Return L<Yetie::Domain::Collection> object.
 
 See L<Mojo::Collection/each>.
 
-=head2 C<find>
+=head2 C<get_by_id>
 
-    my $entity = $collection->find($entity_id);
+    my $entity = $collection->get_by_id($entity_id);
 
 Return L<Yetie::Domain::Entity> object or undef.
 
