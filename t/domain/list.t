@@ -36,30 +36,6 @@ subtest 'each' => sub {
     is_deeply \@array, [ 1, 2, 3 ], 'right function in each';
 };
 
-subtest 'grep' => sub {
-    my $v   = $construct->(qw(a 1 2 b 3));
-    my $new = $v->grep(qr/\d/);
-    isa_ok $new, $pkg;
-    is_deeply $new->to_data, [ 1, 2, 3 ], 'right grep';
-    is_deeply $v->to_data, [ 'a', 1, 2, 'b', 3 ], 'right immutable';
-};
-
-subtest 'map' => sub {
-    my $v = $construct->( 1, 2, 3 );
-    my $new = $v->map( sub { $_ + 1 } );
-    isa_ok $new, $pkg;
-    is_deeply $new->to_data, [ 2, 3, 4 ], 'right grep';
-    is_deeply $v->to_data,   [ 1, 2, 3 ], 'right immutable';
-};
-
-subtest 'reduce' => sub {
-    my $v = $construct->( 1, 2, 3 );
-    is $v->reduce( sub { $a + $b } ), 6, 'right sum';
-
-    my $hash = $v->reduce( sub { $a->{$b}++; $a }, {} );
-    is_deeply $hash, { 1 => 1, 2 => 1, 3 => 1 };
-};
-
 subtest 'to_data' => sub {
     my $v = $construct->( 1, 2, 3 );
     is_deeply $v->to_data, [ 1, 2, 3 ], 'right dump data';

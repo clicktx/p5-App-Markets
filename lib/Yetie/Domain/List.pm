@@ -24,26 +24,9 @@ sub get { shift->list->get(@_) }
 
 sub get_by_id { shift->list->get_by_id(@_) }
 
-sub grep {
-    my $self = shift;
-    return $self->new( list => $self->list->grep(@_) );
-}
-
 sub last { shift->list->last }
 
-sub map {
-    my $self = shift;
-    return $self->new( list => $self->list->map(@_) );
-}
-
 sub to_data { shift->list->to_data }
-
-# Code by Mojo::Collection
-sub reduce {
-    my $self = shift;
-    @_ = ( @_, @{ $self->list } );
-    goto &List::Util::reduce;
-}
 
 sub size { shift->list->size }
 
@@ -115,16 +98,6 @@ See L<Yetie::Domain::Collection/get>.
 
 See L<Yetie::Domain::Collection/get_by_id>.
 
-=head2 C<grep>
-
-    my $new = $domain->grep(...);
-
-Create a new object with grep elements.
-
-Return L<Yetie::Domain::List> object.
-
-See L<Mojo::Collection/grep>.
-
 =head2 C<last>
 
     my $last = $domain->last;
@@ -133,16 +106,6 @@ See L<Mojo::Collection/grep>.
     my $last = $domain->list->last;
 
 See L<Mojo::Collection/last>.
-
-=head2 C<map>
-
-    my $new = $list->map( sub{...} );
-
-Create a new object with map elements.
-
-Return L<Yetie::Domain::List> object.
-
-See L<Mojo::Collection/map>.
 
 =head2 C<to_data>
 
@@ -154,16 +117,6 @@ Dump the data of collection.
     my $data = $domain->list->to_data;
 
 Return Array reference.
-
-=head2 C<reduce>
-
-    my $result = $domain->reduce( sub {...} );
-    my $result = $domain->reduce( sub {...}, $initial );
-
-    # Longer version
-    my $result = $domain->list->reduce();
-
-See L<Mojo::Collection/reduce>.
 
 =head2 C<size>
 
