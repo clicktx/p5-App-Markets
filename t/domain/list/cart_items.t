@@ -64,4 +64,10 @@ subtest 'remove' => sub {
     is $list->is_modified, 0, 'right not modified';
 };
 
+subtest 'subtotal' => sub {
+    my $data = [ { quantity => 1, price => 1 }, { quantity => 2, price => 2 }, { quantity => 3, price => 3 } ];
+    my $list = $construct->( list => $data );
+    is $list->subtotal, 14, 'right subtotal';
+};
+
 done_testing();

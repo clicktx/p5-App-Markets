@@ -9,6 +9,10 @@ sub total_quantity {
     shift->list->reduce( sub { $a + $b->items->total_quantity }, 0 );
 }
 
+sub subtotal {
+    shift->list->reduce( sub { $a + $b->items->subtotal }, 0 );
+}
+
 1;
 __END__
 
@@ -37,6 +41,10 @@ the following new ones.
 =head2 C<total_quantity>
 
     my $qty = $list->total_quantity;
+
+=head2 C<subtotal>
+
+    my $subtotal = $list->subtotal;
 
 =head1 AUTHOR
 

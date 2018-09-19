@@ -248,7 +248,11 @@ subtest 'remove_shipping_item' => sub {
 
 subtest 'subtotal' => sub {
     my $cart = _create_entity;
-    is $cart->subtotal, 2500, 'right grand total';
+    is $cart->subtotal, 2500, 'right subtotal';
+
+    # no items
+    $cart = Yetie::Domain::Factory->new('entity-cart')->construct( cart_id => '12345' );
+    $cart->subtotal, 0, 'right no items';
 };
 
 subtest 'merge' => sub {

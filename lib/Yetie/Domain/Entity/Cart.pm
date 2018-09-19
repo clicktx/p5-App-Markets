@@ -101,13 +101,8 @@ sub remove_shipping_item {
 }
 
 sub subtotal {
-    my $self     = shift;
-    my $subtotal = 0;
-
-    $subtotal += $self->items->reduce( sub { $a + $b->subtotal }, 0 );
-    $subtotal += $self->shipments->reduce( sub { $a + $b->subtotal }, 0 );
-
-    return $subtotal;
+    my $self = shift;
+    return $self->items->subtotal + $self->shipments->subtotal;
 }
 
 sub to_order_data {

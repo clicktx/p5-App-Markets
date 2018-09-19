@@ -18,6 +18,11 @@ sub remove {
     $self->list($new);
 }
 
+sub subtotal {
+    my $self=shift;
+    $self->list->reduce( sub { $a + $b->subtotal }, 0 );
+}
+
 sub _append_item {
     my ( $self, $item ) = @_;
     my $new = $self->list->append($item);
