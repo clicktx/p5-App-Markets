@@ -19,10 +19,7 @@ sub add_item {
     my ( $self, $item ) = @_;
     croak 'Argument was not a Object' if ref $item =~ /::/;
 
-    _add_item( $self->items, $item );
-
-    $self->_is_modified(1);
-    return $self;
+    $self->items->append($item);
 }
 
 sub add_shipping_item {
@@ -31,10 +28,7 @@ sub add_shipping_item {
     croak 'Second argument was not a Object' if ref $item =~ /::/;
 
     my $shipment = $self->shipments->get($index);
-    _add_item( $shipment->items, $item );
-
-    $self->_is_modified(1);
-    return $self;
+    $shipment->items->append($item);
 }
 
 sub clear_items {
@@ -149,16 +143,6 @@ sub update_shipping_address {
         $updated++;
     }
     return $updated;
-}
-
-sub _add_item {
-    my ( $collection, $item ) = @_;
-
-    my $exsist_item = $collection->get_by_id( $item->id );
-    return $collection->append($item) unless $exsist_item;
-
-    my $qty = $exsist_item->quantity + $item->quantity;
-    $exsist_item->quantity($qty);
 }
 
 sub _address {

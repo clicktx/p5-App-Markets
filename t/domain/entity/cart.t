@@ -139,7 +139,7 @@ subtest 'add_item' => sub {
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
-    $cart->add_item( Yetie::Domain::Entity::Cart::Item->new( product_id => 1, quantity => 1 ) );
+    $cart->add_item( Yetie::Domain::Entity::Cart::Item->new( product_id => 1, quantity => 1, price => 100 ) );
     cmp_deeply $cart->items->first->to_data, { product_id => 1, quantity => 2, price => 100 }, 'right item';
     is $cart->is_modified, 1, 'right modified';
 };
