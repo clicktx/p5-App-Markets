@@ -56,6 +56,12 @@ subtest 'remove' => sub {
     $list->remove($id);
     is_deeply $list->to_data, [ { product_id => 1 }, { product_id => 3 } ], 'right remove item';
     is $list->is_modified, 1, 'right modified';
+
+    # Unremove. not found item.
+    $list = $construct->( list => $data );
+    $list->remove('foo');
+    is_deeply $list->to_data, [ @{$data} ], 'right not remove item';
+    is $list->is_modified, 0, 'right not modified';
 };
 
 done_testing();

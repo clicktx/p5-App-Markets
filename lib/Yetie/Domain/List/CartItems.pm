@@ -12,6 +12,8 @@ sub total_quantity {
 
 sub remove {
     my ( $self, $item_id ) = @_;
+    return unless $self->list->has($item_id);
+
     my $new = $self->list->grep( sub { $_->id ne $item_id } );
     $self->list($new);
 }
