@@ -87,9 +87,7 @@ sub remove_item {
     my ( $self, $item_id ) = @_;
     croak 'Argument was not a Scalar' if ref \$item_id ne 'SCALAR';
 
-    my ( $removed, $collection ) = _remove_item( $self->items, $item_id );
-    $self->items($collection) if $removed;
-    return $removed;
+    $self->items->remove($item_id);
 }
 
 # NOTE: 数量は未考慮
@@ -99,10 +97,7 @@ sub remove_shipping_item {
     croak 'Second argument was not a Scalar' if ref \$item_id ne 'SCALAR';
 
     my $shipment = $self->shipments->get($index);
-    my ( $removed, $collection ) = _remove_item( $shipment->items, $item_id );
-
-    $shipment->items($collection) if $removed;
-    return $removed;
+    $shipment->items->remove($item_id);
 }
 
 sub subtotal {
@@ -267,15 +262,11 @@ Return Entity Cart Object.
 
 =head2 C<remove_item>
 
-    my $removed_item = $cart->remove_item($item_id);
-
-Return L<Yetie::Domain::Entity::Cart::Item> object or undef.
+    $cart->remove_item($item_id);
 
 =head2 C<remove_shipping_item>
 
-    my $removed_item = $cart->remove_shipping_item($index, $item_id);
-
-Return L<Yetie::Domain::Entity::Cart::Item> object or undef.
+    $cart->remove_shipping_item($shipment_index, $item_id);
 
 =head2 C<subtotal>
 

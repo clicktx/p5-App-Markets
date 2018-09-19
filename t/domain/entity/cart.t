@@ -69,6 +69,25 @@ sub _create_entity {
 use_ok 'Yetie::Domain::Entity::Cart';
 use_ok 'Yetie::Domain::Entity::Cart::Item';
 
+# subtest 'revert_shipping_items' => sub {
+#     my $cart = _create_entity;
+#     $cart->revert_shipping_items;
+#     is_deeply $cart->items->to_data,
+#       [
+#         { product_id => 1, quantity => 1, price => 100 },
+#         { product_id => 2, quantity => 2, price => 100 },
+#         { product_id => 3, quantity => 3, price => 100 },
+#         { product_id => 4, quantity => 8, price => 100 },
+#         { product_id => 5, quantity => 5, price => 100 },
+#         { product_id => 6, quantity => 6, price => 100 },
+#       ],
+#       'right rivert shipping items';
+#       use DDP;p $cart->items->to_data;
+# };
+
+# done_testing();
+# __END__
+
 subtest 'basic' => sub {
     my $cart = Yetie::Domain::Entity::Cart->new;
     ok $cart->id;
@@ -176,8 +195,7 @@ subtest 'remove_item' => sub {
     my $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 2, quantity => 1 );
     my $id   = $item->id;
 
-    my $removed_item = $cart->remove_item($id);
-    is $removed_item->equal($item), 1, 'right return value';
+    $cart->remove_item($id);
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{items},
       [ { product_id => 1, quantity => 1, price => 100 }, { product_id => 3, quantity => 3, price => 100 }, ],
@@ -188,8 +206,7 @@ subtest 'remove_item' => sub {
     $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 123, quantity => 1 );
     $id   = $item->id;
 
-    $removed_item = $cart->remove_item($id);
-    is $removed_item, undef, 'right return value';
+    $cart->remove_item($id);
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{items},
       [
@@ -205,8 +222,7 @@ subtest 'remove_shipping_item' => sub {
     my $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 4 );
     my $id   = $item->id;
 
-    my $removed_item = $cart->remove_shipping_item( 1, $id );
-    is $removed_item->equal($item), 1, 'right return value';
+    $cart->remove_shipping_item( 1, $id );
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [ { product_id => 5, quantity => 5, price => 100 }, { product_id => 6, quantity => 6, price => 100 }, ],
@@ -217,8 +233,7 @@ subtest 'remove_shipping_item' => sub {
     $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 123 );
     $id   = $item->id;
 
-    $removed_item = $cart->remove_shipping_item( 1, $id );
-    is $removed_item, undef, 'right return value';
+    $cart->remove_shipping_item( 1, $id );
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
