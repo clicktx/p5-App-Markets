@@ -158,13 +158,12 @@ subtest 'add_shipping_item' => sub {
     is $cart->is_modified, 1, 'right modified';
 };
 
-subtest 'clear' => sub {
+subtest 'clear_items' => sub {
     my $cart = _create_entity;
-    $cart->clear;
+    $cart->clear_items;
     is $cart->items->size, 0;
-
-    # NOTE: itemsは削除するべきか？
-    # is $cart->total_item_size, 0;
+    is $cart->total_item_size, 0;
+    is $cart->is_modified, 1, 'right modified';
 };
 
 subtest 'clone' => sub {

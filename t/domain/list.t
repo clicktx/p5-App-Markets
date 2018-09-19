@@ -23,6 +23,13 @@ subtest 'append' => sub {
     is $v->is_modified, 1, 'right modified';
 };
 
+subtest 'clear' => sub {
+    my $v = $construct->( 1, 2, 3 );
+    $v->clear;
+    is_deeply $v->to_data, [], 'right clear';
+    is $v->is_modified, 1, 'right modified';
+};
+
 subtest 'each' => sub {
     my $v = $construct->( 1, 2, 3 );
     my @elements = $v->each;

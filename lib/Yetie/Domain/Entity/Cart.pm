@@ -37,10 +37,10 @@ sub add_shipping_item {
     return $self;
 }
 
-# NOTE: shipment.itemsにあるitemsも削除するべきか？
-sub clear {
+sub clear_items {
     my $self = shift;
-    $self->items->each( sub { $self->remove_item( $_->id ) } );
+    $self->items->clear;
+    $self->shipments->clear_items;
 }
 
 sub grand_total {
@@ -233,9 +233,9 @@ Return L<Yetie::Domain::Entity::Cart> Object.
 C<$shipment_object> is option argument.
 default $shipments->first
 
-=head2 C<clear>
+=head2 C<clear_items>
 
-    $cart->clear;
+    $cart->clear_items;
 
 Remove all items.
 

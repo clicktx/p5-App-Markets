@@ -10,6 +10,8 @@ sub append {
     $self->list($new);
 }
 
+sub clear { shift->list( Yetie::Domain::Collection->new ) }
+
 sub each {
     my ( $self, $cb ) = @_;
     return @{ $self->list } unless $cb;

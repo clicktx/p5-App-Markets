@@ -1,6 +1,10 @@
 package Yetie::Domain::List::Shipments;
 use Yetie::Domain::Base 'Yetie::Domain::List';
 
+sub clear_items {
+    shift->each( sub { $_->items->clear } );
+}
+
 sub total_item_size {
     shift->list->map( sub { $_->items->each } )->size;
 }
@@ -33,6 +37,10 @@ the following new ones.
 
 L<Yetie::Domain::List::Shipments> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
+
+=head2 C<clear_items>
+
+    my $list->clear_items;
 
 =head2 C<total_item_size>
 

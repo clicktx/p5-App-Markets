@@ -46,7 +46,7 @@ sub index {
 
 sub clear {
     my $c = shift;
-    $c->cart->clear;
+    $c->cart->clear_items;
     return $c->redirect_to('RN_cart');
 }
 
