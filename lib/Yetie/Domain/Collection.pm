@@ -12,11 +12,12 @@ sub collection { __PACKAGE__->new(@_) }
 
 sub get { shift->[ +shift ] }
 
-# NOTE: 同じcollectionに同一のidを持つ要素は存在しないはずなのでsearchメソッドは不要？
 sub get_by_id {
     my ( $self, $str ) = @_;
     $self->first( sub { $_->id eq $str } ) or undef;
 }
+
+sub has { shift->get_by_id(shift) ? 1 : 0 }
 
 sub to_data {
     my $self = shift;
@@ -90,6 +91,12 @@ Return $element or undef.
     my $entity = $collection->get_by_id($entity_id);
 
 Return L<Yetie::Domain::Entity> object or undef.
+
+=head2 C<has>
+
+    my $bool = $collection->has($entity_id);
+
+Return boolean value.
 
 =head2 C<to_data>
 
