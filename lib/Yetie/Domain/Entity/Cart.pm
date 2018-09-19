@@ -118,37 +118,37 @@ sub total_quantity {
     $self->items->total_quantity + $self->shipments->total_quantity;
 }
 
-sub update_billing_address {
-    my ( $self, $address ) = @_;
-    croak 'Argument is missing.' unless $address;
-
-    my $billing_address = $self->_address($address);
-    $self->billing_address($billing_address);
-}
-
-sub update_shipping_address {
-    my $self = shift;
-    croak 'Argument is missing.' unless @_;
-
-    # Convert array reference
-    if ( ref $_[0] eq 'ARRAY' ) {
-        @_ = map { $_ => $_[0]->[$_] } 0 .. scalar @{ $_[0] } - 1;
-    }
-    my $arg = @_ > 1 ? +{@_} : { 0 => $_[0] };
-
-    my $updated = 0;
-    foreach my $index ( keys %{$arg} ) {
-        my $shipping_address = $self->_address( $arg->{$index} );
-        $self->shipments->get($index)->shipping_address($shipping_address);
-        $updated++;
-    }
-    return $updated;
-}
-
-sub _address {
-    my ( $self, $args ) = @_;
-    return ref $args eq 'HASH' ? $self->factory('entity-address')->construct($args) : $args;
-}
+# sub update_billing_address {
+#     my ( $self, $address ) = @_;
+#     croak 'Argument is missing.' unless $address;
+#
+#     my $billing_address = $self->_address($address);
+#     $self->billing_address($billing_address);
+# }
+#
+# sub update_shipping_address {
+#     my $self = shift;
+#     croak 'Argument is missing.' unless @_;
+#
+#     # Convert array reference
+#     if ( ref $_[0] eq 'ARRAY' ) {
+#         @_ = map { $_ => $_[0]->[$_] } 0 .. scalar @{ $_[0] } - 1;
+#     }
+#     my $arg = @_ > 1 ? +{@_} : { 0 => $_[0] };
+#
+#     my $updated = 0;
+#     foreach my $index ( keys %{$arg} ) {
+#         my $shipping_address = $self->_address( $arg->{$index} );
+#         $self->shipments->get($index)->shipping_address($shipping_address);
+#         $updated++;
+#     }
+#     return $updated;
+# }
+#
+# sub _address {
+#     my ( $self, $args ) = @_;
+#     return ref $args eq 'HASH' ? $self->factory('entity-address')->construct($args) : $args;
+# }
 
 1;
 __END__
