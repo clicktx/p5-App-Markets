@@ -20,9 +20,9 @@ sub each {
 
 sub first { shift->list->first(@_) }
 
-sub get { shift->list->get(@_) }
+sub get { shift->list->get(shift) }
 
-sub get_by_id { shift->list->get_by_id(@_) }
+sub get_by_id { shift->list->get_by_id(shift) }
 
 sub last { shift->list->last }
 
@@ -91,10 +91,10 @@ See L<Yetie::Domain::Collection/get>.
 
 =head2 C<get_by_id>
 
-    my $element = $domain->get_by_id($id);
+    my $element = $domain->get_by_id($element_id);
 
     # Longer version
-    my $element = $domain->list->get_by_id($id);
+    my $element = $domain->list->get_by_id($element_id);
 
 See L<Yetie::Domain::Collection/get_by_id>.
 
