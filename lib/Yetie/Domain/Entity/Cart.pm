@@ -150,14 +150,6 @@ sub _address {
     return ref $args eq 'HASH' ? $self->factory('entity-address')->construct($args) : $args;
 }
 
-sub _remove_item {
-    my ( $collection, $item_id ) = @_;
-
-    my $removed;
-    my $new_collection = $collection->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
-    return ( $removed, $new_collection );
-}
-
 1;
 __END__
 
