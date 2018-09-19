@@ -1,13 +1,37 @@
 package Yetie::Domain::List::CartItems;
 use Yetie::Domain::Base 'Yetie::Domain::List';
 
+sub append {
+    my $self = shift;
+    $self->get_by_id( $_->id ) ? $self->_update_quantity($_) : $self->_append_item($_) for @_;
+}
+
 sub total_quantity {
     shift->list->reduce( sub { $a + $b->quantity }, 0 );
 }
 
 sub remove {
     my ( $self, $item_id ) = @_;
-    return $self->grep( sub { $_->id ne $item_id } );
+    my $new = $self->list->grep( sub { $_->id ne $item_id } );
+    $self->list($new);
+}
+
+sub _append_item {
+    my ( $self, $item ) = @_;
+    my $new = $self->list->append($item);
+    $self->list($new);
+}
+
+sub _update_quantity {
+    my ( $self, $item ) = @_;
+    my $new = $self->list->map(
+        sub {
+            $item->id eq $_->id
+              ? $item->quantity( $item->quantity + $_->quantity )
+              : $_;
+        }
+    );
+    $self->list($new);
 }
 
 1;
@@ -31,15 +55,18 @@ the following new ones.
 L<Yetie::Domain::List::CartItems> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
 
+=head2 C<append>
+
+    $items->append($item);
+    $items->append( $item, $item, ... );
+
 =head2 C<total_quantity>
 
     my $quantity = $items->total_quantity;
 
 =head2 C<remove>
 
-    my $new = $items->remove($item_id);
-
-Return L<Yetie::Domain::List::CartItems> object.
+    $items->remove($item_id);
 
 =head1 AUTHOR
 
