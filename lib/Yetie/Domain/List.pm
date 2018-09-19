@@ -1,6 +1,6 @@
 package Yetie::Domain::List;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
-use List::Util;
+use Yetie::Domain::Collection;
 
 has list => sub { Yetie::Domain::Collection->new };
 
