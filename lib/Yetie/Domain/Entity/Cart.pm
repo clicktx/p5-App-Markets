@@ -1,6 +1,7 @@
 package Yetie::Domain::Entity::Cart;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Carp qw(croak);
+use Yetie::Util;
 use Yetie::Domain::Value::Email;
 use Yetie::Domain::Entity::Address;
 use Yetie::Domain::List::CartItems;
@@ -118,37 +119,33 @@ sub total_quantity {
     $self->items->total_quantity + $self->shipments->total_quantity;
 }
 
-# sub update_billing_address {
-#     my ( $self, $address ) = @_;
-#     croak 'Argument is missing.' unless $address;
-#
-#     my $billing_address = $self->_address($address);
-#     $self->billing_address($billing_address);
-# }
-#
-# sub update_shipping_address {
-#     my $self = shift;
-#     croak 'Argument is missing.' unless @_;
-#
-#     # Convert array reference
-#     if ( ref $_[0] eq 'ARRAY' ) {
-#         @_ = map { $_ => $_[0]->[$_] } 0 .. scalar @{ $_[0] } - 1;
-#     }
-#     my $arg = @_ > 1 ? +{@_} : { 0 => $_[0] };
-#
-#     my $updated = 0;
-#     foreach my $index ( keys %{$arg} ) {
-#         my $shipping_address = $self->_address( $arg->{$index} );
-#         $self->shipments->get($index)->shipping_address($shipping_address);
-#         $updated++;
-#     }
-#     return $updated;
-# }
-#
-# sub _address {
-#     my ( $self, $args ) = @_;
-#     return ref $args eq 'HASH' ? $self->factory('entity-address')->construct($args) : $args;
-# }
+sub update_billing_address {
+    my ( $self, $address ) = @_;
+    croak 'Argument is missing.' unless $address;
+    return if $self->billing_address->equal($address);
+
+    $self->billing_address($address);
+}
+
+sub update_shipping_address {
+    my $self = shift;
+    croak 'Argument is missing.' unless @_;
+
+    # Convert arguments
+    my $addresses = @_ > 1 ? +{@_} : Yetie::Util::array_to_hash(@_);
+
+    my $cnt = 0;
+    foreach my $index ( keys %{$addresses} ) {
+        my $address  = $addresses->{$index};
+        my $shipment = $self->shipments->get($index);
+
+        next if $shipment->shipping_address->equal($address);
+        $shipment->shipping_address($address);
+        $cnt++;
+    }
+    $self->_is_modified(1) if $cnt;
+    return $cnt;
+}
 
 1;
 __END__
@@ -261,18 +258,16 @@ Return all items quantity.
 
 =head2 C<update_billing_address>
 
-    $cart->update_billing_address( %address );
     $cart->update_billing_address( $address_obj );
 
 =head2 C<update_shipping_address>
 
     # Update first element
-    $cart->update_shipping_address( \%address );
     $cart->update_shipping_address( $address_obj );
 
     # Update multiple elements
-    $cart->update_shipping_address( 1 => \%address, 3 => $address_obj, ... );
-    $cart->update_shipping_address( [ \%address, $address_obj, ... ] );
+    $cart->update_shipping_address( 1 => $address_obj, 3 => $address_obj, ... );
+    $cart->update_shipping_address( [ $address_obj, $address_obj, ... ] );
 
 Update shipping address.
 
