@@ -35,6 +35,15 @@ subtest 'basic' => sub {
     is $address->hash, '20f551adf8c892c32845022b874e0763ecf68788', 'right hash';
 };
 
+subtest 'equal' => sub {
+    my $address1 = _create_entity();
+    my $address2 = _create_entity();
+    is $address1->equal($address2), 1, 'right equal';
+
+    $address1->personal_name('foo bar');
+    is $address1->equal($address2), 0, 'right not equal';
+};
+
 subtest 'field_names' => sub {
     my $address = _create_entity();
     isa_ok $address->field_names('no_country_code'), 'ARRAY', 'right field names';

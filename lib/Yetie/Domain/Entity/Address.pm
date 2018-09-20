@@ -37,6 +37,11 @@ has _locale_notation => sub {
     };
 };
 
+sub equal {
+    my ( $self, $address ) = @_;
+    return $self->hash_code eq $address->hash_code ? 1 : 0;
+}
+
 sub field_names {
     my $self = shift;
     my $region = shift || 'us';
@@ -98,10 +103,22 @@ Yetie::Domain::Entity::Address
 L<Yetie::Domain::Entity::Address> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<hash>
+
+=head2 C<type>
+
 =head1 METHODS
 
 L<Yetie::Domain::Entity::Address> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<equal>
+
+    my $bool = $address->equal($other_address);
+
+Compare L</hash_code>.
+
+Return boolean value.
 
 =head2 C<field_names>
 
@@ -115,6 +132,12 @@ Get form field names.
 Return Array refference.
 
 Default region "us".
+
+=head2 C<hash_code>
+
+    my $hash_code = $address->hash_code;
+
+Generate unique hash code from address infomation.
 
 =head2 C<new>
 
