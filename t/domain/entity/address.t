@@ -35,6 +35,11 @@ subtest 'basic' => sub {
     is $address->hash, '20f551adf8c892c32845022b874e0763ecf68788', 'right hash';
 };
 
+subtest 'field_names' => sub {
+    my $address = _create_entity();
+    isa_ok $address->field_names('no_country_code'), 'ARRAY', 'right field names';
+};
+
 subtest 'hash_code' => sub {
     my $address   = _create_entity();
     my $hash_code = $address->hash_code;
@@ -45,11 +50,6 @@ subtest 'hash_code' => sub {
 
     $address->personal_name('ほげ');
     is $address->hash_code, '29f476a4d05499095ff5ed2ec45e86951683951a', 'right multibyte characters';
-};
-
-subtest 'field_names' => sub {
-    my $address = _create_entity();
-    isa_ok $address->field_names('no_country_code'), 'ARRAY', 'right field names';
 };
 
 subtest 'notation' => sub {
