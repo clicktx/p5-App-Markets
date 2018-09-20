@@ -341,7 +341,7 @@ subtest 'merge' => sub {
         shipments => [ { shipping_address => ignore(), items => [] } ],
       },
       'right merge data';
-    is $merged_cart->_is_modified, 1, 'right modified';
+    is $merged_cart->is_modified, 1, 'right modified';
 };
 
 subtest 'to_order_data' => sub {
@@ -378,13 +378,13 @@ subtest 'update_billing_address' => sub {
     my $obj = $cart->factory('entity-address')->construct(%address);
     $cart->update_billing_address($obj);
     cmp_deeply $cart->billing_address->to_data, $valid_data, 'right update, data is object';
-    is $cart->_is_modified, 1, 'right modified';
+    is $cart->is_modified, 1, 'right modified';
 
     # not update
     $cart = _create_entity;
     $obj  = $cart->factory('entity-address')->construct( $test_data{billing_address} );
     $cart->update_billing_address($obj);
-    is $cart->_is_modified, 0, 'right not modified';
+    is $cart->is_modified, 0, 'right not modified';
 };
 
 subtest 'update_shipping_address' => sub {
@@ -413,7 +413,7 @@ subtest 'update_shipping_address' => sub {
     my $i   = $cart->update_shipping_address($obj);
     cmp_deeply $cart->shipments->first->shipping_address->to_data, $valid_data, 'right single update';
     is $i, 1, 'right update quantity';
-    is $cart->_is_modified, 1, 'right modified';
+    is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
     my $shipment_addr = $cart->shipments->get(0)->shipping_address->to_data;
@@ -421,20 +421,20 @@ subtest 'update_shipping_address' => sub {
     cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $shipment_addr, 'right not update';
     cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $valid_data,    'right specify update';
     is $i, 1, 'right update quantity';
-    is $cart->_is_modified, 1, 'right modified';
+    is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
     $i = $cart->update_shipping_address( [ $obj, $obj ] );
     cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $valid_data, 'right multi update';
     cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $valid_data, 'right multi update';
     is $i, 2, 'right update quantity';
-    is $cart->_is_modified, 1, 'right modified';
+    is $cart->is_modified, 1, 'right modified';
 
     # not update
     $cart = _create_entity;
     $obj  = $cart->factory('entity-address')->construct( $test_data{shipments}->[0]->{shipping_address} );
     $cart->update_shipping_address($obj);
-    is $cart->_is_modified, 0, 'right not modified';
+    is $cart->is_modified, 0, 'right not modified';
 };
 
 done_testing();

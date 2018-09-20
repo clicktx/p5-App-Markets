@@ -143,7 +143,6 @@ sub update_shipping_address {
         $shipment->shipping_address($address);
         $cnt++;
     }
-    $self->_is_modified(1) if $cnt;
     return $cnt;
 }
 
