@@ -3,6 +3,7 @@
 
 <h1><%= title %></h1>
 
+<% my $cart = $self->cart; %>
 <%= __nx('{cnt :num} item', '{cnt :num} items', $cart->total_item_size, cnt => $cart->total_item_size) %>
 (Total QTY: <%= $cart->total_quantity %>) in your cart.
 

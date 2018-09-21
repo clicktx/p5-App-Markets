@@ -16,31 +16,26 @@ sub init_form {
 }
 
 sub index {
-    my $c = shift;
-
+    my $c    = shift;
     my $cart = $c->cart;
-    $c->stash( cart => $cart );    # for templates
 
-    # 配送先が1箇所の場合は配送商品をカートに戻す
-    $c->service('cart')->revert_shipping_item() if $cart->shipments->size == 1;
+    # Revert cart
+    $cart->revert;
 
     # Initialize form
     my $form = $c->form('cart');
     $c->init_form( $form, $cart );
-
     return $c->render() unless $form->has_data;
+    return $c->render() unless $form->do_validate;
 
-    if ( $form->do_validate ) {
-
-        # Edit cart
-        $cart->items->each(
-            sub {
-                my ( $item, $num ) = @_;
-                my $i = $num - 1;
-                $item->quantity( $form->scope_param('quantity')->[$i] );
-            }
-        );
-    }
+    # Edit cart
+    $cart->items->each(
+        sub {
+            my ( $item, $num ) = @_;
+            my $i = $num - 1;
+            $item->quantity( $form->scope_param('quantity')->[$i] );
+        }
+    );
     $c->render();
 }
 
