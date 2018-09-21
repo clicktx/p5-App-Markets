@@ -40,28 +40,6 @@ sub merge_cart {
     return $merged_cart;
 }
 
-# NOTE: とりあえず全てのshipment itemsを戻すlogicのみ実装
-sub revert_shipping_item {
-    my $self = shift;
-
-    # 全てのshipment itemsをカートに戻す
-    my $cart = $self->controller->cart;
-    $cart->shipments->each(
-        sub {
-            my ( $shipment, $index ) = @_;
-            $_->items->each(
-                sub {
-                    # 配送itemsから削除
-                    my $item = $cart->remove_shipping_item( $index, $_->id );
-
-                    # カートitemsに追加
-                    $cart->add_item($item);
-                }
-            );
-        }
-    );
-}
-
 1;
 __END__
 
@@ -102,14 +80,6 @@ Return L<Yetie::Domain::Entity::Cart> object.
 Return L<Yetie::Domain::Entity::Cart> object.
 
 Merge with saved customer cart.
-
-=head2 C<revert_shipping_item>
-
-    $service->revert_shipping_item();
-
-Return void.
-
-Revert all shipping items to the cart.
 
 =head1 AUTHOR
 
