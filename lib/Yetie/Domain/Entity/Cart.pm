@@ -95,6 +95,8 @@ sub remove_shipping_item {
     $shipment->items->remove($item_id);
 }
 
+sub revert { shift->shipments->revert }
+
 sub subtotal {
     my $self = shift;
     return $self->items->subtotal + $self->shipments->subtotal;
@@ -234,6 +236,14 @@ Return Entity Cart Object.
 =head2 C<remove_shipping_item>
 
     $cart->remove_shipping_item($shipment_index, $item_id);
+
+=head2 C<revert>
+
+    $cart->revert;
+
+Delete except the first shipping-information. Also delete all shipping-items of the first shipping-information.
+
+See L<Yetie::Domain::List::Shipments/revert>.
 
 =head2 C<subtotal>
 

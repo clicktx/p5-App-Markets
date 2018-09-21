@@ -69,25 +69,6 @@ sub _create_entity {
 use_ok 'Yetie::Domain::Entity::Cart';
 use_ok 'Yetie::Domain::Entity::Cart::Item';
 
-# subtest 'revert_shipping_items' => sub {
-#     my $cart = _create_entity;
-#     $cart->revert_shipping_items;
-#     is_deeply $cart->items->to_data,
-#       [
-#         { product_id => 1, quantity => 1, price => 100 },
-#         { product_id => 2, quantity => 2, price => 100 },
-#         { product_id => 3, quantity => 3, price => 100 },
-#         { product_id => 4, quantity => 8, price => 100 },
-#         { product_id => 5, quantity => 5, price => 100 },
-#         { product_id => 6, quantity => 6, price => 100 },
-#       ],
-#       'right rivert shipping items';
-#       use DDP;p $cart->items->to_data;
-# };
-
-# done_testing();
-# __END__
-
 subtest 'basic' => sub {
     my $cart = Yetie::Domain::Entity::Cart->new;
     ok $cart->id;
@@ -189,71 +170,6 @@ subtest 'clone' => sub {
       'right shipment item data';
 };
 
-subtest 'remove_item' => sub {
-    my $cart = _create_entity;
-    my $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 2, quantity => 1 );
-    my $id   = $item->id;
-
-    $cart->remove_item($id);
-    is $cart->is_modified, 1, 'right modified';
-    cmp_deeply $cart->to_data->{items},
-      [ { product_id => 1, quantity => 1, price => 100 }, { product_id => 3, quantity => 3, price => 100 }, ],
-      'right remove item';
-
-    # Unremove. not found item.
-    $cart = _create_entity;
-    $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 123, quantity => 1 );
-    $id   = $item->id;
-
-    $cart->remove_item($id);
-    is $cart->is_modified, 0, 'right not modified';
-    cmp_deeply $cart->to_data->{items},
-      [
-        { product_id => 1, quantity => 1, price => 100 },
-        { product_id => 2, quantity => 2, price => 100 },
-        { product_id => 3, quantity => 3, price => 100 },
-      ],
-      'right not removed';
-};
-
-subtest 'remove_shipping_item' => sub {
-    my $cart = _create_entity;
-    my $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 4 );
-    my $id   = $item->id;
-
-    $cart->remove_shipping_item( 1, $id );
-    is $cart->is_modified, 1, 'right modified';
-    cmp_deeply $cart->to_data->{shipments}->[1]->{items},
-      [ { product_id => 5, quantity => 5, price => 100 }, { product_id => 6, quantity => 6, price => 100 }, ],
-      'right remove shipping item';
-
-    # Unremove. not found item.
-    $cart = _create_entity;
-    $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 123 );
-    $id   = $item->id;
-
-    $cart->remove_shipping_item( 1, $id );
-    is $cart->is_modified, 0, 'right not modified';
-    cmp_deeply $cart->to_data->{shipments}->[1]->{items},
-      [
-        { product_id => 4, quantity => 4, price => 100 },
-        { product_id => 5, quantity => 5, price => 100 },
-        { product_id => 6, quantity => 6, price => 100 },
-      ],
-      'right not removed';
-};
-
-# subtest 'grand_total' => sub {};
-
-subtest 'subtotal' => sub {
-    my $cart = _create_entity;
-    is $cart->subtotal, 2500, 'right subtotal';
-
-    # no items
-    $cart = Yetie::Domain::Factory->new('entity-cart')->construct( cart_id => '12345' );
-    $cart->subtotal, 0, 'right no items';
-};
-
 subtest 'merge' => sub {
     my $cart        = _create_entity;
     my %stored_data = (
@@ -342,6 +258,103 @@ subtest 'merge' => sub {
       },
       'right merge data';
     is $merged_cart->is_modified, 1, 'right modified';
+};
+
+subtest 'remove_item' => sub {
+    my $cart = _create_entity;
+    my $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 2, quantity => 1 );
+    my $id   = $item->id;
+
+    $cart->remove_item($id);
+    is $cart->is_modified, 1, 'right modified';
+    cmp_deeply $cart->to_data->{items},
+      [ { product_id => 1, quantity => 1, price => 100 }, { product_id => 3, quantity => 3, price => 100 }, ],
+      'right remove item';
+
+    # Unremove. not found item.
+    $cart = _create_entity;
+    $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 123, quantity => 1 );
+    $id   = $item->id;
+
+    $cart->remove_item($id);
+    is $cart->is_modified, 0, 'right not modified';
+    cmp_deeply $cart->to_data->{items},
+      [
+        { product_id => 1, quantity => 1, price => 100 },
+        { product_id => 2, quantity => 2, price => 100 },
+        { product_id => 3, quantity => 3, price => 100 },
+      ],
+      'right not removed';
+};
+
+subtest 'remove_shipping_item' => sub {
+    my $cart = _create_entity;
+    my $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 4 );
+    my $id   = $item->id;
+
+    $cart->remove_shipping_item( 1, $id );
+    is $cart->is_modified, 1, 'right modified';
+    cmp_deeply $cart->to_data->{shipments}->[1]->{items},
+      [ { product_id => 5, quantity => 5, price => 100 }, { product_id => 6, quantity => 6, price => 100 }, ],
+      'right remove shipping item';
+
+    # Unremove. not found item.
+    $cart = _create_entity;
+    $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 123 );
+    $id   = $item->id;
+
+    $cart->remove_shipping_item( 1, $id );
+    is $cart->is_modified, 0, 'right not modified';
+    cmp_deeply $cart->to_data->{shipments}->[1]->{items},
+      [
+        { product_id => 4, quantity => 4, price => 100 },
+        { product_id => 5, quantity => 5, price => 100 },
+        { product_id => 6, quantity => 6, price => 100 },
+      ],
+      'right not removed';
+};
+
+# subtest 'grand_total' => sub {};
+
+subtest 'revert' => sub {
+    my $cart = _create_entity;
+    $cart->revert;
+    is_deeply $cart->items->to_data,
+      [
+        { product_id => 1, quantity => 1, price => 100 },
+        { product_id => 2, quantity => 2, price => 100 },
+        { product_id => 3, quantity => 3, price => 100 },
+      ],
+      'right items';
+
+    is $cart->shipments->size, 1, 'right shipments';
+    cmp_deeply $cart->shipments->first->to_data,
+      {
+        items            => [],
+        shipping_address => {
+            hash          => ignore(),
+            country_code  => 'jp',
+            city          => '',
+            state         => '',
+            line1         => 'Tokyo',
+            line2         => '',
+            postal_code   => '',
+            personal_name => '',
+            organization  => '',
+            phone         => '',
+        },
+      },
+      'right shipment';
+    is $cart->is_modified, 1, 'right modified';
+};
+
+subtest 'subtotal' => sub {
+    my $cart = _create_entity;
+    is $cart->subtotal, 2500, 'right subtotal';
+
+    # no items
+    $cart = Yetie::Domain::Factory->new('entity-cart')->construct( cart_id => '12345' );
+    $cart->subtotal, 0, 'right no items';
 };
 
 subtest 'to_order_data' => sub {

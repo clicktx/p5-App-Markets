@@ -13,6 +13,16 @@ sub total_quantity {
     shift->list->reduce( sub { $a + $b->items->total_quantity }, 0 );
 }
 
+sub revert {
+    my $self = shift;
+
+    my $shipment_first = $self->first;
+    $shipment_first->items->clear;
+
+    my $shipments = $self->list->new($shipment_first);
+    $self->list($shipments);
+}
+
 sub subtotal {
     shift->list->reduce( sub { $a + $b->items->subtotal }, 0 );
 }
@@ -49,6 +59,12 @@ the following new ones.
 =head2 C<total_quantity>
 
     my $qty = $list->total_quantity;
+
+=head2 C<revert>
+
+    $list->revert;
+
+Delete except the first element. Also delete all items of the first element.
 
 =head2 C<subtotal>
 
