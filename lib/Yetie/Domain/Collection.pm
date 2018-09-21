@@ -17,6 +17,7 @@ sub get_by_id {
     $self->first( sub { $_->id eq $str } ) or undef;
 }
 
+no warnings 'redefine';
 sub has { shift->get_by_id(shift) ? 1 : 0 }
 
 sub to_data {
