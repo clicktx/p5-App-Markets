@@ -28,6 +28,8 @@ sub get_by_id { shift->list->get_by_id(shift) }
 
 sub last { shift->list->last }
 
+sub to_array { shift->list->to_array }
+
 sub to_data { shift->list->to_data }
 
 sub size { shift->list->size }
@@ -109,6 +111,17 @@ See L<Yetie::Domain::Collection/get_by_id>.
 
 See L<Mojo::Collection/last>.
 
+=head2 C<to_array>
+
+    my $arrayref = $domain->to_array;
+
+    # Longer version
+    my $arrayref = $domain->list->to_array;
+
+Return Array reference.
+
+See L<Mojo::Collection/to_array>.
+
 =head2 C<to_data>
 
 Dump the data of collection.
@@ -119,6 +132,8 @@ Dump the data of collection.
     my $data = $domain->list->to_data;
 
 Return Array reference.
+
+NOTE: Dump all object recursively.
 
 =head2 C<size>
 
