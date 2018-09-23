@@ -5,6 +5,8 @@ sub clear_items {
     shift->each( sub { $_->items->clear } );
 }
 
+sub has_shipment { shift->size ? 1 : 0 }
+
 sub total_item_size {
     shift->list->map( sub { $_->items->each } )->size;
 }
@@ -51,6 +53,12 @@ the following new ones.
 =head2 C<clear_items>
 
     my $list->clear_items;
+
+=head2 C<has_shipment>
+
+    my $bool = $list->has_shipment;
+
+Return boolean.
 
 =head2 C<total_item_size>
 
