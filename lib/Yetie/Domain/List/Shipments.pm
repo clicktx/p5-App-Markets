@@ -54,37 +54,37 @@ the following new ones.
 
 =head2 C<clear_items>
 
-    my $list->clear_items;
+    my $shipments->clear_items;
 
 =head2 C<has_shipment>
 
-    my $bool = $list->has_shipment;
+    my $bool = $shipments->has_shipment;
 
 Return boolean value.
 
 =head2 C<is_multiple>
 
-    my $bool = $list->is_multiple;
+    my $bool = $shipments->is_multiple;
 
 Return boolean value.
 
 =head2 C<total_item_size>
 
-    my $size = $list->total_item_size;
+    my $size = $shipments->total_item_size;
 
 =head2 C<total_quantity>
 
-    my $qty = $list->total_quantity;
+    my $qty = $shipments->total_quantity;
 
 =head2 C<revert>
 
-    $list->revert;
+    $shipments->revert;
 
 Delete except the first element. Also delete all items of the first element.
 
 =head2 C<subtotal>
 
-    my $subtotal = $list->subtotal;
+    my $subtotal = $shipments->subtotal;
 
 =head1 AUTHOR
 
