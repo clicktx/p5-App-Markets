@@ -7,6 +7,8 @@ sub clear_items {
 
 sub has_shipment { shift->size ? 1 : 0 }
 
+sub is_multiple { shift->size > 1 ? 1 : 0 }
+
 sub total_item_size {
     shift->list->map( sub { $_->items->each } )->size;
 }
@@ -58,7 +60,13 @@ the following new ones.
 
     my $bool = $list->has_shipment;
 
-Return boolean.
+Return boolean value.
+
+=head2 C<is_multiple>
+
+    my $bool = $list->is_multiple;
+
+Return boolean value.
 
 =head2 C<total_item_size>
 
