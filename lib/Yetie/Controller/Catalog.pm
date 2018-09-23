@@ -7,7 +7,7 @@ sub init {
     my $cart   = $c->server_session->cart;
     my $data   = $cart->data;
     my $entity = $c->factory('entity-cart')->construct( cart_id => $cart->cart_id, %{$data} );
-    $c->stash( 'yetie.entity.cart' => $entity );
+    $c->stash( 'yetie.cart' => $entity );
 
     $c->SUPER::init();
     return $c;
@@ -44,7 +44,7 @@ implements the following new ones.
     my $cart = $c->cart;
     $c->cart($entity_cart);
 
-Get/Set entity cart object for stash `yetie.entity.cart`
+Get/Set entity cart object for stash `yetie.cart`
 
 =head1 METHODS
 

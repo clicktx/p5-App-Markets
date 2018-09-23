@@ -47,7 +47,7 @@ sub _cache {
     return @_ ? @_ > 1 ? $caches->set( $_[0] => $_[1] ) : $caches->get( $_[0] ) : $caches;
 }
 
-sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.entity.cart' => $_[1] ) : $_[0]->stash('yetie.entity.cart') }
+sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
 
 sub _factory {
     my $self = shift;
