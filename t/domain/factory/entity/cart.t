@@ -19,12 +19,7 @@ subtest 'argument empty' => sub {
 
 subtest 'shipments empty hash ref' => sub {
     my $e = $pkg->new( 'entity-cart', { shipments => [] } )->construct();
-    $e->shipments->each(
-        sub {
-            isa_ok $_->shipping_address, 'Yetie::Domain::Entity::Address';
-            isa_ok $_->items,            'Yetie::Domain::List::CartItems';
-        }
-    );
+    is_deeply $e->shipments->list->to_data, [], 'right empty';
 };
 
 subtest 'cart data empty' => sub {
