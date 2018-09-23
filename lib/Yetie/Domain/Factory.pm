@@ -23,10 +23,11 @@ sub aggregate {
     return $self;
 }
 
-# NOTE: $data is Array reference or Yetie::Domain::Collection object
 sub aggregate_collection {
     my ( $self, $accessor, $domain, $data ) = @_;
+
     # croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
+    # NOTE: $data is Array reference or Yetie::Domain::Collection object
 
     my @array;
     push @array, $self->factory($domain)->construct($_) for @{$data};
