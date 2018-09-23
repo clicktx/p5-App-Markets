@@ -2,17 +2,13 @@ package Yetie::Domain::Entity::Cart;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Carp qw(croak);
 use Yetie::Util;
-use Yetie::Domain::Value::Email;
-use Yetie::Domain::Entity::Address;
-use Yetie::Domain::List::CartItems;
-use Yetie::Domain::List::Shipments;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
-has cart_id         => '';
-has email           => sub { Yetie::Domain::Value::Email->new };
-has billing_address => sub { Yetie::Domain::Entity::Address->new };
-has items           => sub { Yetie::Domain::List::CartItems->new };
-has shipments       => sub { Yetie::Domain::List::Shipments->new };
+has cart_id => '';
+has email           => sub { __PACKAGE__->factory('value-email')->construct() };
+has billing_address => sub { __PACKAGE__->factory('entity-address')->construct() };
+has items           => sub { __PACKAGE__->factory('list-cart_items')->construct() };
+has shipments       => sub { __PACKAGE__->factory('list-shipments')->construct() };
 
 my @needless_attrs = (qw/cart_id items/);
 
