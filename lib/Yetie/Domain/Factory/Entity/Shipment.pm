@@ -1,15 +1,14 @@
 package Yetie::Domain::Factory::Entity::Shipment;
 use Mojo::Base 'Yetie::Domain::Factory';
-use Yetie::Domain::Collection qw/collection/;
 
 sub cook {
     my $self = shift;
 
     # Aggregate items
-    $self->aggregate( 'items', 'list-cart_items', $self->param('items') || [] );
+    $self->aggregate( items => ( 'list-cart_items', $self->param('items') || [] ) );
 
     # shipping_address
-    $self->aggregate( shipping_address => 'entity-address', $self->{shipping_address} || {} );
+    $self->aggregate( shipping_address => ( 'entity-address', $self->{shipping_address} || {} ) );
 }
 
 1;

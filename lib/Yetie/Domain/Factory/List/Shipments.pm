@@ -5,7 +5,7 @@ sub cook {
     my $self = shift;
 
     # Aggregate shipments
-    $self->aggregate_collection( 'list', 'entity-shipment', $self->param('list') );
+    $self->aggregate_collection( list => ( 'entity-shipment', $self->param('list') ) );
 }
 
 1;

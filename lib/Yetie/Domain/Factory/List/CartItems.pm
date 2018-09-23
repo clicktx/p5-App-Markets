@@ -4,12 +4,8 @@ use Mojo::Base 'Yetie::Domain::Factory';
 sub cook {
     my $self = shift;
 
-    # my $list = $self->param('list');
-    # my $new = $list->map( sub { $self->factory('entity-cart-item')->construct($_) } );
-    # $self->param( list => $new );
-
     # Aggregate items
-    $self->aggregate_collection( 'list', 'entity-cart-item', $self->param('list') );
+    $self->aggregate_collection( list => ( 'entity-cart-item', $self->param('list') ) );
 }
 
 1;

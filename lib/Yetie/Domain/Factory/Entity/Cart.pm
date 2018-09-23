@@ -5,16 +5,16 @@ sub cook {
     my $self = shift;
 
     # email
-    $self->aggregate( email => 'value-email', $self->{email} || '' );
+    $self->aggregate( email => ( 'value-email', $self->{email} || '' ) );
 
     # billing_address
-    $self->aggregate( billing_address => 'entity-address', $self->{billing_address} || {} );
+    $self->aggregate( billing_address => ( 'entity-address', $self->{billing_address} || {} ) );
 
     # Aggregate items
-    $self->aggregate( 'items', 'list-cart_items', $self->param('items') || [] );
+    $self->aggregate( items => ( 'list-cart_items', $self->param('items') || [] ) );
 
     # Aggregate shipments
-    $self->aggregate( 'shipments' => ( 'list-shipments', $self->param('shipments') || [] ) );
+    $self->aggregate( shipments => ( 'list-shipments', $self->param('shipments') || [] ) );
 }
 
 1;
