@@ -73,6 +73,13 @@ sub merge {
     return $stored;
 }
 
+sub move_items_to_first_shipment {
+    my $self = shift;
+
+    my $items = $self->items->to_array;
+    $self->shipments->first->items->append( @{$items} );
+}
+
 # NOTE: 数量は未考慮
 sub remove_item {
     my ( $self, $item_id ) = @_;
@@ -224,6 +231,12 @@ Return boolean value.
     my $merged = $cart->merge($stored_cart);
 
 Return Entity Cart Object.
+
+=head2 C<move_items_to_first_shipment>
+
+    $cart->move_items_to_first_shipment;
+
+Move all items to the first element of C<Yetie::Domain::List::Shipments>.
 
 =head2 C<remove_item>
 
