@@ -365,7 +365,7 @@ subtest 'to_order_data' => sub {
     cmp_deeply $cart->to_order_data, $order_data, 'right order data';
 };
 
-subtest 'update_billing_address' => sub {
+subtest 'set_billing_address' => sub {
     my %address = (
         country_code => 'jp',
         line1        => 'Tokyo',
@@ -384,19 +384,19 @@ subtest 'update_billing_address' => sub {
     };
 
     my $cart = _create_entity;
-    eval { $cart->update_billing_address() };
+    eval { $cart->set_billing_address() };
     ok $@, 'right no arguments';
 
     $cart = _create_entity;
     my $obj = $cart->factory('entity-address')->construct(%address);
-    $cart->update_billing_address($obj);
+    $cart->set_billing_address($obj);
     cmp_deeply $cart->billing_address->to_data, $valid_data, 'right update, data is object';
     is $cart->is_modified, 1, 'right modified';
 
     # not update
     $cart = _create_entity;
     $obj  = $cart->factory('entity-address')->construct( $test_data{billing_address} );
-    $cart->update_billing_address($obj);
+    $cart->set_billing_address($obj);
     is $cart->is_modified, 0, 'right not modified';
 };
 

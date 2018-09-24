@@ -124,7 +124,7 @@ sub total_quantity {
     $self->items->total_quantity + $self->shipments->total_quantity;
 }
 
-sub update_billing_address {
+sub set_billing_address {
     my ( $self, $address ) = @_;
     croak 'Argument is missing.' unless $address;
     return if $self->billing_address->equal($address);
@@ -274,9 +274,9 @@ Return number of items types.
 
 Return all items quantity.
 
-=head2 C<update_billing_address>
+=head2 C<set_billing_address>
 
-    $cart->update_billing_address( $address_obj );
+    $cart->set_billing_address( $address_obj );
 
 =head2 C<update_shipping_address>
 
