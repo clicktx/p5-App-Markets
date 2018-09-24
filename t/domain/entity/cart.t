@@ -425,6 +425,12 @@ subtest 'set_shipping_address' => sub {
     is $i, 2, 'right update quantity';
     is $cart->is_modified, 1, 'right modified';
 
+    # first set(create and set)
+    $cart = Yetie::Domain::Factory->new('entity-cart')->construct();
+    $cart->set_shipping_address($obj);
+    cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $valid_data,
+      'right create shipment and set shipping_address';
+
     # not update
     $cart = _create_entity;
     $obj  = $cart->factory('entity-address')->construct( $test_data{shipments}->[0]->{shipping_address} );
