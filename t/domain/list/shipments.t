@@ -15,6 +15,18 @@ subtest 'basic' => sub {
     isa_ok $v, 'Yetie::Domain::List';
 };
 
+subtest 'create_shipment' => sub {
+    my $v        = construct();
+    my $shipment = $v->create_shipment;
+    is $v->size, 1, 'right create shipment';
+    isa_ok $shipment, 'Yetie::Domain::Entity::Shipment';
+    isa_ok $v->first, 'Yetie::Domain::Entity::Shipment';
+
+    my $shipment2 = $v->create_shipment;
+    is $v->size, 2, 'right recreate shipment';
+    isnt $shipment, $shipment2, 'right compare object';
+};
+
 subtest 'has_shipment' => sub {
     my $v    = construct();
     my $bool = $v->has_shipment;

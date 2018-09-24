@@ -5,6 +5,14 @@ sub clear_items {
     shift->each( sub { $_->items->clear } );
 }
 
+sub create_shipment {
+    my $self = shift;
+
+    my $shipment = $self->factory('entity-shipment')->construct();
+    $self->append($shipment);
+    return $shipment;
+}
+
 sub has_shipment { shift->size ? 1 : 0 }
 
 sub is_multiple { shift->size > 1 ? 1 : 0 }
@@ -56,6 +64,14 @@ the following new ones.
 =head2 C<clear_items>
 
     my $shipments->clear_items;
+
+=head2 C<create_shipment>
+
+    my $shipment = $shipments->create_shipment;
+
+Create L<Yetie::Domain::Entity::Shipment> object and add it to the collection.
+
+Return L<Yetie::Domain::Entity::Shipment> object.
 
 =head2 C<has_shipment>
 
