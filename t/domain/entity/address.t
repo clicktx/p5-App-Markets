@@ -22,7 +22,7 @@ my $data_zenkaku;
 $addr = shift @{$addrs};
 $data_zenkaku->{$_} = shift @{$addr} for @{$cols};
 
-sub _create_entity {
+sub construct {
     Yetie::Domain::Factory->new('entity-address')->construct($data);
 }
 
@@ -36,8 +36,8 @@ subtest 'basic' => sub {
 };
 
 subtest 'equal' => sub {
-    my $address1 = _create_entity();
-    my $address2 = _create_entity();
+    my $address1 = construct();
+    my $address2 = construct();
     is $address1->equal($address2), 1, 'right equal';
 
     $address1->personal_name('foo bar');
@@ -45,12 +45,12 @@ subtest 'equal' => sub {
 };
 
 subtest 'field_names' => sub {
-    my $address = _create_entity();
+    my $address = construct();
     isa_ok $address->field_names('no_country_code'), 'ARRAY', 'right field names';
 };
 
 subtest 'hash_code' => sub {
-    my $address   = _create_entity();
+    my $address   = construct();
     my $hash_code = $address->hash_code;
     is $hash_code, '83fdfb97f5ec0b93d486606da8a032af87235ccc', 'right hash code';
 
@@ -62,12 +62,12 @@ subtest 'hash_code' => sub {
 };
 
 subtest 'notation' => sub {
-    my $address = _create_entity();
+    my $address = construct();
     isa_ok $address->notation('no_country_code'), 'ARRAY', 'right address notation';
 };
 
 subtest 'to_data' => sub {
-    my $address = _create_entity();
+    my $address = construct();
     is_deeply $address->to_data,
       {
         hash          => '83fdfb97f5ec0b93d486606da8a032af87235ccc',
