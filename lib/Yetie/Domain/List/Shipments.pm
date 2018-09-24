@@ -21,8 +21,9 @@ sub revert {
     my $self = shift;
 
     my $shipment_first = $self->first;
-    $shipment_first->items->clear;
+    return unless $shipment_first;
 
+    $shipment_first->items->clear;
     my $shipments = $self->list->new($shipment_first);
     $self->list($shipments);
 }

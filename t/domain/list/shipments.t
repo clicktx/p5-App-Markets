@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Deep;
 use Yetie::Domain::Factory;
 
 my $pkg = 'Yetie::Domain::List::Shipments';
@@ -41,6 +42,17 @@ subtest 'is_multiple' => sub {
 subtest 'total_quantity' => sub {
     my $v = $construct->( list => [ { items => [ { quantity => 1 }, { quantity => 2 } ] } ] );
     is $v->total_quantity, 3, 'right total quantity';
+};
+
+subtest 'revert' => sub {
+    my $v = $construct->();
+    is $v->revert, undef, 'right not has shipment';
+
+    $v = $construct->( list => [ { shipping_address => { postal_code => 12345 }, items => [ { quantity => 1 } ] } ] );
+    $v->revert;
+    my $data = $v->to_data;
+    is $data->[0]->{shipping_address}->{postal_code}, 12345, 'right shipping_address in first element';
+    cmp_deeply $data, [ { shipping_address => ignore(), items => [] } ], 'right revert';
 };
 
 done_testing();
