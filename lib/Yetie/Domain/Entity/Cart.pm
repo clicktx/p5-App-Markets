@@ -132,7 +132,7 @@ sub set_billing_address {
     $self->billing_address($address);
 }
 
-sub update_shipping_address {
+sub set_shipping_address {
     my $self = shift;
     croak 'Argument is missing.' unless @_;
 
@@ -278,14 +278,14 @@ Return all items quantity.
 
     $cart->set_billing_address( $address_obj );
 
-=head2 C<update_shipping_address>
+=head2 C<set_shipping_address>
 
     # Update first element
-    $cart->update_shipping_address( $address_obj );
+    $cart->set_shipping_address( $address_obj );
 
     # Update multiple elements
-    $cart->update_shipping_address( 1 => $address_obj, 3 => $address_obj, ... );
-    $cart->update_shipping_address( [ $address_obj, $address_obj, ... ] );
+    $cart->set_shipping_address( 1 => $address_obj, 3 => $address_obj, ... );
+    $cart->set_shipping_address( [ $address_obj, $address_obj, ... ] );
 
 Update shipping address.
 

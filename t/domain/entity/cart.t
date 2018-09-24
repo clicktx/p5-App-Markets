@@ -400,7 +400,7 @@ subtest 'set_billing_address' => sub {
     is $cart->is_modified, 0, 'right not modified';
 };
 
-subtest 'update_shipping_address' => sub {
+subtest 'set_shipping_address' => sub {
     my %address = (
         country_code => 'jp',
         line1        => 'Shimane',
@@ -419,25 +419,25 @@ subtest 'update_shipping_address' => sub {
     };
 
     my $cart = _create_entity;
-    eval { $cart->update_shipping_address() };
+    eval { $cart->set_shipping_address() };
     ok $@, 'right not arguments';
 
     my $obj = $cart->factory('entity-address')->construct(%address);
-    my $i   = $cart->update_shipping_address($obj);
+    my $i   = $cart->set_shipping_address($obj);
     cmp_deeply $cart->shipments->first->shipping_address->to_data, $valid_data, 'right single update';
     is $i, 1, 'right update quantity';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
     my $shipment_addr = $cart->shipments->get(0)->shipping_address->to_data;
-    $i = $cart->update_shipping_address( 1 => $obj );
+    $i = $cart->set_shipping_address( 1 => $obj );
     cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $shipment_addr, 'right not update';
     cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $valid_data,    'right specify update';
     is $i, 1, 'right update quantity';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
-    $i = $cart->update_shipping_address( [ $obj, $obj ] );
+    $i = $cart->set_shipping_address( [ $obj, $obj ] );
     cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $valid_data, 'right multi update';
     cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $valid_data, 'right multi update';
     is $i, 2, 'right update quantity';
@@ -446,7 +446,7 @@ subtest 'update_shipping_address' => sub {
     # not update
     $cart = _create_entity;
     $obj  = $cart->factory('entity-address')->construct( $test_data{shipments}->[0]->{shipping_address} );
-    $cart->update_shipping_address($obj);
+    $cart->set_shipping_address($obj);
     is $cart->is_modified, 0, 'right not modified';
 };
 
