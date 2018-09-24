@@ -347,24 +347,6 @@ subtest 'revert' => sub {
       'right shipment';
     is $cart->is_modified, 1, 'right modified';
 };
-
-subtest 'subtotal' => sub {
-    my $cart = _create_entity;
-    is $cart->subtotal, 2500, 'right subtotal';
-
-    # no items
-    $cart = Yetie::Domain::Factory->new('entity-cart')->construct( cart_id => '12345' );
-    $cart->subtotal, 0, 'right no items';
-};
-
-subtest 'to_order_data' => sub {
-    my $cart       = _create_entity;
-    my $order_data = { %{ $cart->to_data } };
-    delete $order_data->{cart_id};
-    delete $order_data->{items};
-    cmp_deeply $cart->to_order_data, $order_data, 'right order data';
-};
-
 subtest 'set_billing_address' => sub {
     my %address = (
         country_code => 'jp',
@@ -448,6 +430,23 @@ subtest 'set_shipping_address' => sub {
     $obj  = $cart->factory('entity-address')->construct( $test_data{shipments}->[0]->{shipping_address} );
     $cart->set_shipping_address($obj);
     is $cart->is_modified, 0, 'right not modified';
+};
+
+subtest 'subtotal' => sub {
+    my $cart = _create_entity;
+    is $cart->subtotal, 2500, 'right subtotal';
+
+    # no items
+    $cart = Yetie::Domain::Factory->new('entity-cart')->construct( cart_id => '12345' );
+    $cart->subtotal, 0, 'right no items';
+};
+
+subtest 'to_order_data' => sub {
+    my $cart       = _create_entity;
+    my $order_data = { %{ $cart->to_data } };
+    delete $order_data->{cart_id};
+    delete $order_data->{items};
+    cmp_deeply $cart->to_order_data, $order_data, 'right order data';
 };
 
 done_testing();

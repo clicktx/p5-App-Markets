@@ -4,7 +4,7 @@ use Carp qw(croak);
 use Yetie::Util;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
-has cart_id => '';
+has cart_id         => '';
 has email           => sub { __PACKAGE__->factory('value-email')->construct() };
 has billing_address => sub { __PACKAGE__->factory('entity-address')->construct() };
 has items           => sub { __PACKAGE__->factory('list-cart_items')->construct() };
@@ -100,30 +100,6 @@ sub remove_shipping_item {
 
 sub revert { shift->shipments->revert }
 
-sub subtotal {
-    my $self = shift;
-    return $self->items->subtotal + $self->shipments->subtotal;
-}
-
-sub to_order_data {
-    my $self = shift;
-    my $data = $self->to_data;
-
-    # Remove needless data
-    delete $data->{$_} for @needless_attrs;
-    return $data;
-}
-
-sub total_item_size {
-    my $self = shift;
-    return $self->items->size + $self->shipments->total_item_size;
-}
-
-sub total_quantity {
-    my $self = shift;
-    $self->items->total_quantity + $self->shipments->total_quantity;
-}
-
 sub set_billing_address {
     my ( $self, $address ) = @_;
     croak 'Argument is missing.' unless $address;
@@ -149,6 +125,30 @@ sub set_shipping_address {
         $cnt++;
     }
     return $cnt;
+}
+
+sub subtotal {
+    my $self = shift;
+    return $self->items->subtotal + $self->shipments->subtotal;
+}
+
+sub to_order_data {
+    my $self = shift;
+    my $data = $self->to_data;
+
+    # Remove needless data
+    delete $data->{$_} for @needless_attrs;
+    return $data;
+}
+
+sub total_item_size {
+    my $self = shift;
+    return $self->items->size + $self->shipments->total_item_size;
+}
+
+sub total_quantity {
+    my $self = shift;
+    $self->items->total_quantity + $self->shipments->total_quantity;
 }
 
 1;
