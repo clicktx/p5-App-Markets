@@ -34,8 +34,6 @@ sub to_array { shift->list->to_array }
 
 sub to_data { shift->list->to_data }
 
-sub size { warn 'DEPRECATED' . caller; shift->list->size }
-
 1;
 __END__
 
@@ -155,15 +153,6 @@ Dump the data of collection.
 Return Array reference.
 
 NOTE: Dump all object recursively.
-
-=head2 C<size>
-
-    my $size = $domain->size;
-
-    # Longer version
-    my $size = $domain->list->size;
-
-See L<Mojo::Collection/size>.
 
 =head1 AUTHOR
 

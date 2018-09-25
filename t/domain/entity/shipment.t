@@ -40,7 +40,8 @@ subtest 'equal' => sub {
 subtest 'item_count' => sub {
     my $shipment = construct( id => 1 );
     is $shipment->item_count, 0, 'right item_count';
-    $shipment->{items} = Yetie::Domain::Collection->new( 1, 2, 3 );
+
+    $shipment = construct( id => 1, items => [ {}, {}, {} ] );
     is $shipment->item_count, 3, 'right item_count';
 };
 

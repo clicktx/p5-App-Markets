@@ -153,9 +153,9 @@ sub to_order_data {
     return $data;
 }
 
-sub total_item_size {
+sub total_item_count {
     my $self = shift;
-    return $self->items->size + $self->shipments->total_item_size;
+    return $self->items->count + $self->shipments->total_item_count;
 }
 
 sub total_quantity {
@@ -280,9 +280,9 @@ See L<Yetie::Domain::List::Shipments/revert>.
 
     my $order = $self->to_order_data;
 
-=head2 C<total_item_size>
+=head2 C<total_item_count>
 
-    my $item_size = $cart->total_item_size;
+    my $item_count = $cart->total_item_count;
 
 Return number of items types.
 

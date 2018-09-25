@@ -14,7 +14,7 @@ sub clone {
     return $clone;
 }
 
-sub item_count { shift->items->size }
+sub item_count { shift->items->count }
 
 sub subtotal {
     shift->items->reduce( sub { $a + $b->subtotal }, 0 );

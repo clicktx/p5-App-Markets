@@ -18,12 +18,12 @@ subtest 'basic' => sub {
 subtest 'create_shipment' => sub {
     my $v        = construct();
     my $shipment = $v->create_shipment;
-    is $v->size, 1, 'right create shipment';
+    is $v->count, 1, 'right create shipment';
     isa_ok $shipment, 'Yetie::Domain::Entity::Shipment';
     isa_ok $v->first, 'Yetie::Domain::Entity::Shipment';
 
     my $shipment2 = $v->create_shipment;
-    is $v->size, 2, 'right recreate shipment';
+    is $v->count, 2, 'right recreate shipment';
     isnt $shipment, $shipment2, 'right compare object';
 };
 

@@ -13,7 +13,7 @@ sub construct {
 subtest 'basic' => sub {
     my $l = $pkg->new();
     isa_ok $l->list, 'Yetie::Domain::Collection', 'right attribute list';
-    can_ok $l, (qw(each get get_by_id first last size to_array));
+    can_ok $l, (qw(each get get_by_id first last to_array));
 };
 
 subtest 'append' => sub {
