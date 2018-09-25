@@ -37,6 +37,8 @@ has _locale_notation => sub {
     };
 };
 
+sub empty_hash_code { shift->hash_code('empty') }
+
 sub equal {
     my ( $self, $address ) = @_;
     return $self->hash_code eq $address->hash_code ? 1 : 0;
@@ -49,15 +51,20 @@ sub field_names {
 }
 
 sub hash_code {
-    my $self = shift;
+    my ( $self, $mode ) = ( shift, shift || '' );
 
     my $str = '';
     foreach my $attr ( @{$attrs} ) {
-        my $value = $self->$attr // '';
+        my $value = $mode eq 'empty' ? '' : $self->$attr // '';
         $str .= '::' . encode( 'UTF-8', $value );
     }
     $str =~ s/\s//g;
     $self->SUPER::hash_code($str);
+}
+
+sub is_empty {
+    my $self = shift;
+    $self->hash_code eq $self->empty_hash_code ? 1 : 0;
 }
 
 sub new {
@@ -112,6 +119,12 @@ the following new ones.
 L<Yetie::Domain::Entity::Address> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<empty_hash_code>
+
+    my $hash_code = $address->empty_hash_code;
+
+All data empty L</hash_code>.
+
 =head2 C<equal>
 
     my $bool = $address->equal($other_address);
@@ -138,6 +151,12 @@ Default region "us".
     my $hash_code = $address->hash_code;
 
 Generate unique hash code from address infomation.
+
+=head2 C<is_empty>
+
+    my $bool = $address->is_empty;
+
+Return boolean value.
 
 =head2 C<new>
 

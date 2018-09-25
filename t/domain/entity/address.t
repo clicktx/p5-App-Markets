@@ -23,7 +23,7 @@ $addr = shift @{$addrs};
 $data_zenkaku->{$_} = shift @{$addr} for @{$cols};
 
 sub construct {
-    Yetie::Domain::Factory->new('entity-address')->construct($data);
+    Yetie::Domain::Factory->new('entity-address')->construct(@_);
 }
 
 subtest 'basic' => sub {
@@ -36,8 +36,8 @@ subtest 'basic' => sub {
 };
 
 subtest 'equal' => sub {
-    my $address1 = construct();
-    my $address2 = construct();
+    my $address1 = construct($data);
+    my $address2 = construct($data);
     is $address1->equal($address2), 1, 'right equal';
 
     $address1->personal_name('foo bar');
@@ -45,12 +45,12 @@ subtest 'equal' => sub {
 };
 
 subtest 'field_names' => sub {
-    my $address = construct();
+    my $address = construct($data);
     isa_ok $address->field_names('no_country_code'), 'ARRAY', 'right field names';
 };
 
 subtest 'hash_code' => sub {
-    my $address   = construct();
+    my $address   = construct($data);
     my $hash_code = $address->hash_code;
     is $hash_code, '83fdfb97f5ec0b93d486606da8a032af87235ccc', 'right hash code';
 
@@ -61,13 +61,21 @@ subtest 'hash_code' => sub {
     is $address->hash_code, '29f476a4d05499095ff5ed2ec45e86951683951a', 'right multibyte characters';
 };
 
-subtest 'notation' => sub {
+subtest 'is_empty' => sub {
     my $address = construct();
+    is $address->is_empty, 1, 'right data empty';
+
+    $address->country_code('us');
+    is $address->is_empty, 0, 'right not empty';
+};
+
+subtest 'notation' => sub {
+    my $address = construct($data);
     isa_ok $address->notation('no_country_code'), 'ARRAY', 'right address notation';
 };
 
 subtest 'to_data' => sub {
-    my $address = construct();
+    my $address = construct($data);
     is_deeply $address->to_data,
       {
         hash          => '83fdfb97f5ec0b93d486606da8a032af87235ccc',
