@@ -52,6 +52,8 @@ sub has_shipping_address {
     return $self->shipments->first->shipping_address->is_empty ? 0 : 1;
 }
 
+sub has_shipping_item { shift->shipments->has_item }
+
 sub merge {
     my ( $self, $target ) = @_;
     my ( $clone, $stored ) = ( $self->clone, $target->clone );
@@ -240,6 +242,12 @@ Remove all items.
 =head2 C<has_billing_address>
 
     my $bool = $cart->has_billing_address;
+
+Return boolean value.
+
+=head2 C<has_shipping_item>
+
+    my $bool = $cart->has_shipping_item;
 
 Return boolean value.
 
