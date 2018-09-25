@@ -12,6 +12,8 @@ sub append {
 
 sub clear { shift->list( Yetie::Domain::Collection->new ) }
 
+sub count { shift->list->size }
+
 sub each {
     my ( $self, $cb ) = @_;
     return @{ $self->list } unless $cb;
@@ -32,7 +34,7 @@ sub to_array { shift->list->to_array }
 
 sub to_data { shift->list->to_data }
 
-sub size { shift->list->size }
+sub size { warn 'DEPRECATED' . caller; shift->list->size }
 
 1;
 __END__
@@ -65,6 +67,25 @@ the following new ones.
     $domain->append(@elements);
 
 See L<Yetie::Domain::Collection/append>.
+
+=head2 C<clear>
+
+    $domain->clear;
+
+Clear collection.
+
+Create empty collection in L</list>.
+
+=head2 C<count>
+
+    my $int = $domain->count;
+
+    # Longer version
+    my $int = $domain->list->size;
+
+Count elements.
+
+See L<Mojo::Collection/size>.
 
 =head2 C<each>
 
