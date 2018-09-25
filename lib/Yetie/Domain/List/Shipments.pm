@@ -13,6 +13,8 @@ sub create_shipment {
     return $shipment;
 }
 
+sub has_item { shift->total_item_count ? 1 : 0 }
+
 sub has_shipment { shift->count ? 1 : 0 }
 
 sub is_multiple { shift->count > 1 ? 1 : 0 }
@@ -72,6 +74,12 @@ the following new ones.
 Create L<Yetie::Domain::Entity::Shipment> object and add it to the collection.
 
 Return L<Yetie::Domain::Entity::Shipment> object.
+
+=head2 C<has_item>
+
+    my $bool = $shipments->has_item;
+
+Return boolean value.
 
 =head2 C<has_shipment>
 
