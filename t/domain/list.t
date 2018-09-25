@@ -5,47 +5,47 @@ use Yetie::Domain::Collection qw(c);
 my $pkg = 'Yetie::Domain::List';
 use_ok $pkg;
 
-my $construct = sub {
+sub construct {
     my $list = c(@_);
     $pkg->new( list => $list );
-};
+}
 
 subtest 'basic' => sub {
-    my $v = $pkg->new();
-    isa_ok $v->list, 'Yetie::Domain::Collection', 'right attribute list';
-    can_ok $v, (qw(each get get_by_id first last size to_array));
+    my $l = $pkg->new();
+    isa_ok $l->list, 'Yetie::Domain::Collection', 'right attribute list';
+    can_ok $l, (qw(each get get_by_id first last size to_array));
 };
 
 subtest 'append' => sub {
-    my $v = $construct->( 1, 2, 3 );
-    $v->append(4);
-    is_deeply $v->to_data, [ 1, 2, 3, 4 ], 'right append';
-    is $v->is_modified, 1, 'right modified';
+    my $l = construct( 1, 2, 3 );
+    $l->append(4);
+    is_deeply $l->to_data, [ 1, 2, 3, 4 ], 'right append';
+    is $l->is_modified, 1, 'right modified';
 };
 
 subtest 'clear' => sub {
-    my $v = $construct->( 1, 2, 3 );
-    $v->clear;
-    is_deeply $v->to_data, [], 'right clear';
-    is $v->is_modified, 1, 'right modified';
+    my $l = construct( 1, 2, 3 );
+    $l->clear;
+    is_deeply $l->to_data, [], 'right clear';
+    is $l->is_modified, 1, 'right modified';
 };
 
 subtest 'each' => sub {
-    my $v = $construct->( 1, 2, 3 );
-    my @elements = $v->each;
+    my $l = construct( 1, 2, 3 );
+    my @elements = $l->each;
     is_deeply \@elements, [ 1, 2, 3 ], 'right elements';
-    my $int = $v->each;
+    my $int = $l->each;
     is $int, 3, 'right count elements';
 
     my @array;
-    my $list = $v->each( sub { push @array, $_ } );
+    my $list = $l->each( sub { push @array, $_ } );
     isa_ok $list, $pkg;
     is_deeply \@array, [ 1, 2, 3 ], 'right function in each';
 };
 
 subtest 'to_data' => sub {
-    my $v = $construct->( 1, 2, 3 );
-    is_deeply $v->to_data, [ 1, 2, 3 ], 'right dump data';
+    my $l = construct( 1, 2, 3 );
+    is_deeply $l->to_data, [ 1, 2, 3 ], 'right dump data';
 };
 
 done_testing();
