@@ -58,10 +58,13 @@ my %test_data = (
 );
 
 sub _create_entity {
+    my %args = @_;
+    %args = %test_data unless @_;
+
     Yetie::Domain::Factory->new('entity-cart')->construct(
         {
             cart_id => '12345',
-            %test_data,
+            %args,
         }
     );
 }
@@ -337,7 +340,7 @@ subtest 'remove_shipping_item' => sub {
 
 subtest 'revert' => sub {
     my $cart = _create_entity;
-    $cart->revert;
+    ok $cart->revert, 'right cart revert';
     is_deeply $cart->items->to_data,
       [
         { product_id => 1, quantity => 1, price => 100 },
@@ -365,7 +368,13 @@ subtest 'revert' => sub {
       },
       'right shipment';
     is $cart->is_modified, 1, 'right modified';
+
+    # Without items
+    $cart = _create_entity( shipments => [ { items => [] }, { items => [] } ] );
+    ok !$cart->revert, 'right without item';
+    is $cart->is_modified, 0, 'right not modified';
 };
+
 subtest 'set_billing_address' => sub {
     my %address = (
         country_code => 'jp',

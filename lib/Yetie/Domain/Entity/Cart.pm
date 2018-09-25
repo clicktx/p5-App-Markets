@@ -107,7 +107,12 @@ sub remove_shipping_item {
     $shipment->items->remove($item_id);
 }
 
-sub revert { shift->shipments->revert }
+sub revert {
+    my $self = shift;
+    return unless $self->shipments->has_item;
+
+    $self->shipments->revert;
+}
 
 sub set_billing_address {
     my ( $self, $address ) = @_;
