@@ -45,6 +45,13 @@ sub grand_total {
 
 sub has_billing_address { shift->billing_address->is_empty ? 0 : 1 }
 
+sub has_shipping_address {
+    my $self = shift;
+
+    return 0 unless $self->shipments->has_shipment;
+    return $self->shipments->first->shipping_address->is_empty ? 0 : 1;
+}
+
 sub merge {
     my ( $self, $target ) = @_;
     my ( $clone, $stored ) = ( $self->clone, $target->clone );
