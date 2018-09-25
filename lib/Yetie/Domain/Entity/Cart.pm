@@ -43,6 +43,8 @@ sub grand_total {
     return $grand_total;
 }
 
+sub has_billing_address { shift->billing_address->is_empty ? 0 : 1 }
+
 sub merge {
     my ( $self, $target ) = @_;
     my ( $clone, $stored ) = ( $self->clone, $target->clone );
@@ -222,6 +224,12 @@ Remove all items.
 =head2 C<clone>
 
 =head2 C<grand_total>
+
+=head2 C<has_billing_address>
+
+    my $bool = $cart->has_billing_address;
+
+Return boolean value.
 
 =head2 C<is_modified>
 

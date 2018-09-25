@@ -170,6 +170,14 @@ subtest 'clone' => sub {
       'right shipment item data';
 };
 
+subtest 'has_billing_address' => sub {
+    my $cart = Yetie::Domain::Factory->new('entity-cart')->construct();
+    is $cart->has_billing_address, 0, 'right no address info';
+
+    $cart = _create_entity;
+    is $cart->has_billing_address, 1, 'right has address info';
+};
+
 subtest 'merge' => sub {
     my $cart        = _create_entity;
     my %stored_data = (
