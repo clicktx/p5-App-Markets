@@ -51,6 +51,11 @@ subtest 'is_multiple' => sub {
     is $bool, 1, 'right multiple shipments';
 };
 
+subtest 'total_item_count' => sub {
+    my $v = construct( list => [ { items => [ {}, {} ] }, { items => [ {}, {} ] } ] );
+    is $v->total_item_count, 4, 'right total items';
+};
+
 subtest 'total_quantity' => sub {
     my $v = construct( list => [ { items => [ { quantity => 1 }, { quantity => 2 } ] } ] );
     is $v->total_quantity, 3, 'right total quantity';
