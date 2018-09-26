@@ -1,7 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 
 use_ok 'Yetie::Domain::Entity::Preferences';
 
@@ -51,7 +51,7 @@ my $data = {
     ],
 };
 
-my $construct = sub { Yetie::Domain::Factory->new('entity-preferences')->construct($data) };
+my $construct = sub { Yetie::Factory->new('entity-preferences')->construct($data) };
 
 subtest 'basic' => sub {
     my $pref = $construct->();

@@ -2,12 +2,12 @@ use Mojo::Base -strict;
 use Test::More;
 use Yetie::Domain::Collection;
 use Yetie::Domain::Entity::Cart::Item;
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 
 my $pkg = 'Yetie::Domain::Entity::Shipment';
 use_ok $pkg;
 
-sub construct { Yetie::Domain::Factory->new('entity-shipment')->construct(@_) }
+sub construct { Yetie::Factory->new('entity-shipment')->construct(@_) }
 
 subtest 'basic' => sub {
     my $shipment = construct( id => 1 );

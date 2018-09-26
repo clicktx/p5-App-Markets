@@ -1,4 +1,4 @@
-package Yetie::Domain::Factory;
+package Yetie::Factory;
 use Mojo::Base -base;
 use Carp 'croak';
 use Mojo::Util   ();
@@ -10,7 +10,7 @@ use Yetie::Domain::IxHash qw/ixhash/;
 has 'app';
 has domain_class => sub {
     my $class = ref shift;
-    $class =~ s/::Factory//;
+    $class =~ s/Factory/Domain/;
     $class;
 };
 
@@ -90,7 +90,7 @@ sub new {
     Carp::croak 'Argument empty' unless $arg;
 
     my $domain        = Mojo::Util::camelize($arg);
-    my $factory_class = 'Yetie::Domain::Factory::' . $domain;
+    my $factory_class = 'Yetie::Factory::' . $domain;
     my $domain_class  = 'Yetie::Domain::' . $domain;
 
     my $e = Mojo::Loader::load_class($factory_class);
@@ -156,27 +156,27 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Factory
+Yetie::Factory
 
 =head1 SYNOPSIS
 
-    my $factory = Yetie::Domain::Factory->new( 'entity-hoge', %data1 || \%data1 );
+    my $factory = Yetie::Factory->new( 'entity-hoge', %data1 || \%data1 );
     my $domain = $factory->construct( %data2 || \%data2 );
 
 =head1 DESCRIPTION
 
 =head1 FUNCTIONS
 
-L<Yetie::Domain::Factory> inherits all functions from L<Mojo::Base> and implements
+L<Yetie::Factory> inherits all functions from L<Mojo::Base> and implements
 the following new ones.
 
 =head2 C<new>
 
-    my $factory = Yetie::Domain::Factory->new( 'entity-hoge', %data || \%data );
+    my $factory = Yetie::Factory->new( 'entity-hoge', %data || \%data );
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Factory> inherits all attributes from L<Mojo::Base> and implements
+L<Yetie::Factory> inherits all attributes from L<Mojo::Base> and implements
 the following new ones.
 
 =head2 C<app>
@@ -191,7 +191,7 @@ Get namespace as a construct domain class.
 
 =head1 METHODS
 
-L<Yetie::Domain::Factory> inherits all methods from L<Mojo::Base> and implements
+L<Yetie::Factory> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
 
 =head2 C<aggregate>
@@ -225,7 +225,7 @@ Create L<Yetie::Domain::IxHash> type aggregate.
 
 =head2 C<cook>
 
-    # Yetie::Domain::Factory::YourDomainClass;
+    # Yetie::Factory::YourDomainClass;
     sub cook {
         # Overdide this method.
         # your factory codes here!

@@ -6,7 +6,7 @@ use Scalar::Util ();
 use Mojo::Util   ();
 use Yetie::Util  ();
 use Yetie::Cache ();
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 
 sub register {
     my ( $self, $app ) = @_;
@@ -52,7 +52,7 @@ sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie
 sub _factory {
     my $self = shift;
 
-    my $factory = Yetie::Domain::Factory->new(@_);
+    my $factory = Yetie::Factory->new(@_);
     $factory->app( $self->app );
     return $factory;
 }
@@ -153,7 +153,7 @@ Alias for $c->session;
 
     my $factory = $c->factory('entity-something');
 
-Return L<Yetie::Domain::Factory> Object.
+Return L<Yetie::Factory> Object.
 
 =head2 C<resultset>
 

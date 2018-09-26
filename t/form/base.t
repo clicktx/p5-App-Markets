@@ -39,7 +39,7 @@ subtest 'has_data' => sub {
 subtest 'fill_in' => sub {
     my $c = $t->app->build_controller;
     my $f = Yetie::Form::Base->new( 'test', controller => $c );
-    my $e = Yetie::Domain::Factory->new('entity-test')->construct();
+    my $e = Yetie::Factory->new('entity-test')->construct();
 
     # choice singular
     $f->field('favorite_color')->type('choice');
@@ -135,8 +135,8 @@ subtest 'fill_in' => sub {
 subtest 'fill_in for scope' => sub {
     my $c      = $t->app->build_controller;
     my $f      = Yetie::Form::Base->new( 'test', controller => $c );
-    my $e      = Yetie::Domain::Factory->new('entity-test')->construct();
-    my $burger = Yetie::Domain::Factory->new('entity-burger')->construct(
+    my $e      = Yetie::Factory->new('entity-test')->construct();
+    my $burger = Yetie::Factory->new('entity-burger')->construct(
         {
             name     => 'cheese',
             toppings => collection(qw(a c d)),

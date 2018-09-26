@@ -1,11 +1,11 @@
 use Mojo::Base -strict;
 use Test::More;
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 
 my $pkg = 'Yetie::Domain::List::CartItems';
 use_ok $pkg;
 
-my $construct = sub { Yetie::Domain::Factory->new('list-cart_items')->construct(@_) };
+my $construct = sub { Yetie::Factory->new('list-cart_items')->construct(@_) };
 
 subtest 'basic' => sub {
     my $list = $construct->();
@@ -13,7 +13,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'append' => sub {
-    my $f = Yetie::Domain::Factory->new('entity-cart-item');
+    my $f = Yetie::Factory->new('entity-cart-item');
     my $data = [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 } ];
     my ( $list, $item, $item2 );
 

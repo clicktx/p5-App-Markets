@@ -1,11 +1,11 @@
 use Mojo::Base -strict;
 use Test::More;
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 
 my $pkg = 'Yetie::Domain::Entity::AddressTypes';
 use_ok $pkg;
 
-my $construct = sub { Yetie::Domain::Factory->new('entity-address_types')->construct(shift) };
+my $construct = sub { Yetie::Factory->new('entity-address_types')->construct(shift) };
 my $data = {
     list => [
         { id => 1, name => 'foo' },

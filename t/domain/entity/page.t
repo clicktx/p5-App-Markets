@@ -1,6 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 
 use_ok 'Yetie::Domain::Entity::Page';
 

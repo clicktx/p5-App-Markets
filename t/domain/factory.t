@@ -3,8 +3,8 @@ use Test::More;
 use Test::Deep;
 
 subtest 'basic' => sub {
-    use_ok 'Yetie::Domain::Factory';
-    my $f   = Yetie::Domain::Factory->new('entity-hoge');
+    use_ok 'Yetie::Factory';
+    my $f   = Yetie::Factory->new('entity-hoge');
     my $e_c = 'Yetie::Domain::Entity::Hoge';
 
     # params method
@@ -42,7 +42,7 @@ subtest 'basic' => sub {
     ok $@, 'too many arguments';
 
     subtest 'list domain' => sub {
-        my $f = Yetie::Domain::Factory->new('list-items');
+        my $f = Yetie::Factory->new('list-items');
         my $e = $f->construct( list => [ 1, 2, 3 ] );
 
         isa_ok $e->list, 'Yetie::Domain::Collection';
@@ -50,7 +50,7 @@ subtest 'basic' => sub {
     };
 
     subtest 'set domain' => sub {
-        my $f = Yetie::Domain::Factory->new('set-pref');
+        my $f = Yetie::Factory->new('set-pref');
         my $e = $f->construct( hash_set => { a => 1, b => 2, c => 3 } );
 
         isa_ok $e->hash_set, 'Yetie::Domain::IxHash';
@@ -60,7 +60,7 @@ subtest 'basic' => sub {
 
 subtest 'factory' => sub {
     my $app = bless {}, 'Test::App';
-    my $f = Yetie::Domain::Factory->new('entity-hoge');
+    my $f = Yetie::Factory->new('entity-hoge');
     $f->app($app);
 
     my $ff = $f->factory('entity-hoge');
@@ -68,27 +68,27 @@ subtest 'factory' => sub {
 };
 
 subtest 'has not cook' => sub {
-    my $f = Yetie::Domain::Factory->new('entity-hoge');
-    is ref $f, 'Yetie::Domain::Factory::Entity::Hoge', 'right namespace';
+    my $f = Yetie::Factory->new('entity-hoge');
+    is ref $f, 'Yetie::Factory::Entity::Hoge', 'right namespace';
 
     my $entity = $f->construct();
     is ref $entity, 'Yetie::Domain::Entity::Hoge', 'right namespace';
     cmp_deeply { %{$entity} }, {}, 'right argument empty';
 
     Yetie::Domain::Entity::Hoge->attr( [qw(hoge fuga)] );
-    $f = Yetie::Domain::Factory->new( 'entity-hoge', hoge => 1 );
+    $f = Yetie::Factory->new( 'entity-hoge', hoge => 1 );
     $entity = $f->construct( fuga => 2 );
     cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash';
 
-    $f = Yetie::Domain::Factory->new( 'entity-hoge', { hoge => 1 } );
+    $f = Yetie::Factory->new( 'entity-hoge', { hoge => 1 } );
     $entity = $f->construct( { fuga => 2 } );
     cmp_deeply { %{$entity} }, { hoge => 1, fuga => 2 }, 'right argument Hash reference';
 };
 
 subtest 'has cook' => sub {
     Yetie::Domain::Entity::Foo->attr( [qw(a b f h)] );
-    my $f = Yetie::Domain::Factory->new('entity-foo');
-    is ref $f, 'Yetie::Domain::Factory::Entity::Foo', 'right namespace';
+    my $f = Yetie::Factory->new('entity-foo');
+    is ref $f, 'Yetie::Factory::Entity::Foo', 'right namespace';
 
     my $entity = $f->construct();
     is ref $entity, 'Yetie::Domain::Entity::Foo', 'right namespace';
@@ -96,7 +96,7 @@ subtest 'has cook' => sub {
 };
 
 subtest 'no factory' => sub {
-    my $entity = Yetie::Domain::Factory->new('entity-nofactory')->construct();
+    my $entity = Yetie::Factory->new('entity-nofactory')->construct();
     is ref $entity, 'Yetie::Domain::Entity::Nofactory', 'right namespace';
     cmp_deeply { %{$entity} }, {}, 'right parameter';
     is $entity->text, 'no factory', 'right method';
@@ -104,7 +104,7 @@ subtest 'no factory' => sub {
 
 subtest 'factory method using' => sub {
     Yetie::Domain::Entity::Bar->attr('hoge');
-    my $f      = Yetie::Domain::Factory->new('entity-bar');
+    my $f      = Yetie::Factory->new('entity-bar');
     my $entity = $f->construct();
     is ref $entity, 'Yetie::Domain::Entity::Bar', 'right namespace';
     cmp_deeply { %{$entity} }, { hoge => isa('Yetie::Domain::Entity::Hoge'), }, 'right parameter';
@@ -112,7 +112,7 @@ subtest 'factory method using' => sub {
 
 subtest 'aggregate method' => sub {
     Yetie::Domain::Entity::Agg->attr( [qw(hoge fuga foos bars)] );
-    my $f = Yetie::Domain::Factory->new('entity-agg');
+    my $f = Yetie::Factory->new('entity-agg');
 
     eval { $f->aggregate_collection( 'foos', 'entity-foo', 'abc' ) };
     ok $@, 'bad data type';
@@ -142,8 +142,8 @@ done_testing();
 
 {
 
-    package Yetie::Domain::Factory::Entity::Hoge;
-    use Mojo::Base 'Yetie::Domain::Factory';
+    package Yetie::Factory::Entity::Hoge;
+    use Mojo::Base 'Yetie::Factory';
 
     package Yetie::Domain::Entity::Hoge;
     use Mojo::Base 'Yetie::Domain::Entity';
@@ -154,8 +154,8 @@ done_testing();
 
 {
 
-    package Yetie::Domain::Factory::Entity::Foo;
-    use Mojo::Base 'Yetie::Domain::Factory';
+    package Yetie::Factory::Entity::Foo;
+    use Mojo::Base 'Yetie::Factory';
 
     sub cook {
         my $self = shift;
@@ -176,8 +176,8 @@ done_testing();
 
 {
 
-    package Yetie::Domain::Factory::Entity::Bar;
-    use Mojo::Base 'Yetie::Domain::Factory';
+    package Yetie::Factory::Entity::Bar;
+    use Mojo::Base 'Yetie::Factory';
 
     sub cook {
         my $self = shift;
@@ -190,8 +190,8 @@ done_testing();
 
 {
 
-    package Yetie::Domain::Factory::Entity::Agg;
-    use Mojo::Base 'Yetie::Domain::Factory';
+    package Yetie::Factory::Entity::Agg;
+    use Mojo::Base 'Yetie::Factory';
 
     package Yetie::Domain::Entity::Agg;
     use Mojo::Base 'Yetie::Domain::Entity';
