@@ -5,14 +5,14 @@ use Carp         ();
 use Scalar::Util ();
 use Mojo::Util   ();
 use Yetie::Util  ();
-use Yetie::Cache ();
+use Yetie::App::Core::Cache ();
 use Yetie::Factory;
 
 sub register {
     my ( $self, $app ) = @_;
 
     # Add attributes to App
-    $app->attr( caches => sub { Yetie::Cache->new } );
+    $app->attr( caches => sub { Yetie::App::Core::Cache->new } );
 
     # TagHelpers more
     $app->plugin('Yetie::TagHelpers');
@@ -118,7 +118,7 @@ Alias for $app->addons;
 
     my $cache = $c->cache;
 
-Return L<Yetie::Cache> object.
+Return L<Yetie::App::Core::Cache> object.
 
     # Get cache
         my $foo = $c->cache('foo');
@@ -135,7 +135,7 @@ Return L<Yetie::Cache> object.
     # Clear all caches
     $c->cache->clear_all;
 
-SEE L<Yetie::Cache>
+SEE L<Yetie::App::Core::Cache>
 
 =head2 C<cart>
 

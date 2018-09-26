@@ -245,7 +245,7 @@ Meant to be overloaded in a subclass.
 
     $addon->rm_trigger( 'trigger_name', 'subroutine_name');
 
-Remove L<Yetie::Trigger> trigger event.
+Remove L<Yetie::App::Core::Trigger> trigger event.
 
 =head2 C<setup>
 
@@ -264,11 +264,11 @@ This method will be called by L<Yetie::Addon> at startup time.
 
     sub fizz { say "trigger" }
 
-Extend L<Yetie::Trigger> trigger event.
+Extend L<Yetie::App::Core::Trigger> trigger event.
 
 =head1 SEE ALSO
 
-L<Yetie::Addons> L<Yetie::Trigger> L<Mojolicious::Plugin>
+L<Yetie::Addons> L<Yetie::App::Core::Trigger> L<Mojolicious::Plugin>
 
 =cut
 

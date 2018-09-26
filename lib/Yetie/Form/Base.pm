@@ -6,7 +6,7 @@ use Scalar::Util qw(blessed);
 use Mojo::Collection qw(c);
 use Mojolicious::Controller;
 use Yetie::Util qw(load_class);
-use Yetie::Parameters;
+use Yetie::App::Core::Parameters;
 use Yetie::Form::TagHelpers;
 
 has controller => sub { Mojolicious::Controller->new };
@@ -97,7 +97,7 @@ sub params {
     my $expand_hash = expand_hash( \%output );
     %output = ( %output, %{$expand_hash} );
 
-    $self->{_validated_parameters} = Yetie::Parameters->new(%output);
+    $self->{_validated_parameters} = Yetie::App::Core::Parameters->new(%output);
     return $self->{_validated_parameters};
 }
 

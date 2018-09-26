@@ -1,5 +1,5 @@
-package Yetie::View::EPRenderer;
-use Mojo::Base 'Yetie::View::EPLRenderer';
+package Yetie::App::Core::View::EPRenderer;
+use Mojo::Base 'Yetie::App::Core::View::EPLRenderer';
 
 use Mojo::Template;
 use Mojo::Util qw(encode md5_sum monkey_patch);
@@ -38,7 +38,7 @@ sub register {
             no strict 'refs';
             no warnings 'redefine';
             local *{"${ns}::_C"} = sub { $c };
-            Yetie::View::EPLRenderer::_render( $renderer, $c,
+            Yetie::App::Core::View::EPLRenderer::_render( $renderer, $c,
                 $output, $options, $mt, $c->stash );
         }
     );

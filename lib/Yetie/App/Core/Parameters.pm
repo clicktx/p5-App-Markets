@@ -1,4 +1,4 @@
-package Yetie::Parameters;
+package Yetie::App::Core::Parameters;
 use Mojo::Base 'Mojo::Parameters';
 
 sub to_hash {
@@ -31,7 +31,7 @@ sub to_hash {
 
 =head1 NAME
 
-Yetie::Parameters
+Yetie::App::Core::Parameters
 
 =head1 SYNOPSIS
 
@@ -41,12 +41,12 @@ This module is L<Mojo::Parameters> Based.
 
 =head1 ATTRIBUTES
 
-L<Yetie::Parameters> inherits all attribures from L<Mojo::Parameters> and implements the
+L<Yetie::App::Core::Parameters> inherits all attribures from L<Mojo::Parameters> and implements the
 following new ones.
 
 =head1 METHODS
 
-L<Yetie::Parameters> inherits all methods from L<Mojo::Parameters> and implements the
+L<Yetie::App::Core::Parameters> inherits all methods from L<Mojo::Parameters> and implements the
 following new ones.
 
 =head2 C<to_hash>

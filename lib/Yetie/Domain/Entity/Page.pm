@@ -49,7 +49,7 @@ has L<Yetie::Domain::Entity::Link> object in L<Yetie::Domain::Collection> object
 
 =head2 C<form_params>
 
-Return L<Yetie::Parameters> object.
+Return L<Yetie::App::Core::Parameters> object.
 
 NOTE: These values are validated form parameters.
 

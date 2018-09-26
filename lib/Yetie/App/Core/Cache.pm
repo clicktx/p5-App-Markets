@@ -1,4 +1,4 @@
-package Yetie::Cache;
+package Yetie::App::Core::Cache;
 use Mojo::Base 'Mojo::Cache';
 
 sub clear_all {
@@ -15,7 +15,7 @@ sub clear_all {
 
 =head1 NAME
 
-Yetie::Cache
+Yetie::App::Core::Cache
 
 =head1 SYNOPSIS
 
@@ -23,12 +23,12 @@ Yetie::Cache
 
 =head1 ATTRIBUTES
 
-L<Yetie::Cache> inherits all attribures from L<Mojo::Cache> and implements the
+L<Yetie::App::Core::Cache> inherits all attribures from L<Mojo::Cache> and implements the
 following new ones.
 
 =head1 METHODS
 
-L<Yetie::Cache> inherits all methods from L<Mojo::Cache> and implements the
+L<Yetie::App::Core::Cache> inherits all methods from L<Mojo::Cache> and implements the
 following new ones.
 
 =head2 C<clear_all>
