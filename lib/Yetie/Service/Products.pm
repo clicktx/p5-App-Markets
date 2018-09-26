@@ -1,8 +1,6 @@
 package Yetie::Service::Products;
 use Mojo::Base 'Yetie::Service';
 
-has resultset => sub { shift->schema->resultset('Product') };
-
 sub search_products {
     my ( $self, $form ) = @_;
 
@@ -13,7 +11,7 @@ sub search_products {
         per_page => $form->param('per_page') || 5,
     };
 
-    my $products_rs = $self->resultset->search_products( $conditions );
+    my $products_rs = $self->resultset('Product')->search_products( $conditions );
     my $data = {
         meta_title   => '',
         breadcrumbs  => [],
@@ -21,7 +19,7 @@ sub search_products {
         product_list => $products_rs->to_data( { no_relation => 1, no_breadcrumbs => 1 } ),
         pager        => $products_rs->pager,
     };
-    return $self->factory('entity-page-products')->create($data);
+    return $self->factory('entity-page-products')->construct($data);
 }
 
 1;

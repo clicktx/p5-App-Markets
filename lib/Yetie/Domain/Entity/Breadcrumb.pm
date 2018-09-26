@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Breadcrumb;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Mojo::URL;
 
 has class => '';

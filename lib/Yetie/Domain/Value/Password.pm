@@ -1,5 +1,5 @@
 package Yetie::Domain::Value::Password;
-use Yetie::Domain::Value;
+use Yetie::Domain::Base 'Yetie::Domain::Value';
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
 has created_at => undef;

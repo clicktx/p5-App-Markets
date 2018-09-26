@@ -2,54 +2,54 @@ package Yetie::Controller::Catalog::Account;
 use Mojo::Base 'Yetie::Controller::Catalog';
 
 sub authorize {
-    my $self = shift;
-    return 1 if $self->is_logged_in;
+    my $c = shift;
+    return 1 if $c->is_logged_in;
 
-    $self->flash( ref => $self->req->url->to_string );
-    $self->redirect_to( $self->url_for('RN_customer_login') );
+    $c->flash( ref => $c->req->url->to_string );
+    $c->redirect_to( $c->url_for('RN_customer_login') );
     return 0;
 }
 
 sub login {
-    my $self = shift;
-    $self->flash( ref => $self->flash('ref') );
+    my $c = shift;
+    $c->flash( ref => $c->flash('ref') );
 
     # Initialize form
-    my $form = $self->form('account-login');
-    return $self->render() unless $form->has_data;
-    return $self->render() unless $form->do_validate;
+    my $form = $c->form('account-login');
+    return $c->render() unless $form->has_data;
+    return $c->render() unless $form->do_validate;
 
     my $email    = $form->param('email');
     my $password = $form->param('password');
-    my $route    = $self->flash('ref') || 'RN_customer_home';
-    return $self->redirect_to($route) if $self->service('customer')->login_process( $email, $password );
+    my $route    = $c->flash('ref') || 'RN_customer_home';
+    return $c->redirect_to($route) if $c->service('customer')->login_process( $email, $password );
 
     # Login failure
     $form->field($_)->append_error_class for qw(email password);
-    return $self->render( login_failure => 1 );
+    return $c->render( login_failure => 1 );
 }
 
 sub logout {
-    my $self = shift;
+    my $c = shift;
 
-    my $session = $self->server_session;
+    my $session = $c->server_session;
     $session->remove_session;
-    $self->render();
+    $c->render();
 }
 
 sub home {
-    my $self = shift;
-    $self->render();
+    my $c = shift;
+    $c->render();
 }
 
 sub orders {
-    my $self = shift;
-    $self->render();
+    my $c = shift;
+    $c->render();
 }
 
 sub wishlist {
-    my $self = shift;
-    $self->render();
+    my $c = shift;
+    $c->render();
 }
 
 1;

@@ -20,13 +20,4 @@ subtest 'admin page' => sub {
     $t->get_ok('/admin')->status_is(302);
 };
 
-subtest 'utility' => sub {
-    use_ok 'Yetie::Util';
-    my $themes = Yetie::Util::directories( 'themes', { ignore => [ 'admin', 'common', 'default' ] } );
-    is_deeply $themes, ['mytheme'], 'loading mytheme';
-
-    my $addons = Yetie::Util::directories('addons');
-    is ref $addons, 'ARRAY', 'loading addons';
-};
-
 done_testing();

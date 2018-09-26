@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity;
-use Yetie::Domain::Base;
+use Yetie::Domain::Base -base;
 use Yetie::Domain::Factory;
 use Yetie::Domain::Collection qw();
 use Yetie::Domain::IxHash qw();
@@ -27,10 +27,7 @@ sub clone {
 
 sub equal { shift->id eq shift->id ? 1 : 0 }
 
-sub factory {
-    my ( $class, $entity_name ) = @_;
-    Yetie::Domain::Factory->new($entity_name)->create();
-}
+sub factory { Yetie::Domain::Factory->new( $_[1] ) }
 
 sub has_data { return shift->id ? 1 : 0 }
 
@@ -137,9 +134,9 @@ Yetie::Domain::Entity - Entity Object Base Class
 
 Construct a new index-hash-based L<Yetie::Domain::Collection> object.
 
-=head2 C<ix_hash>
+=head2 C<ixhash>
 
-    my $ix_hash = ix_hash( foo => 1, bar => 2, baz => 3 );
+    my $ixhash = ixhash( foo => 1, bar => 2, baz => 3 );
 
 Construct a new index-hash-based L<Yetie::Domain::IxHash> object.
 
@@ -169,7 +166,7 @@ Return boolean value.
 
     __PACKAGE__->factory('entity-foo');
 
-Return Yetie::Domain::Entity object.
+Return Yetie::Domain::Factory object.
 
 =head2 C<has_data>
 

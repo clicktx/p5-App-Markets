@@ -89,8 +89,7 @@ sub add_catalog_routes {
 
     # Route Examples
     $r->get('/')->to('example#welcome')->name('RN_top');
-    $r->get('/regenerate_sid')->to('example#regenerate_sid');
-    $r->any('/login_example')->to('login_example#index');
+    $r->any('/login-example')->to('login_example#index');
 
     # Cart
     $r->any('/cart')->to('cart#index')->name('RN_cart');
@@ -98,12 +97,19 @@ sub add_catalog_routes {
     $r->post('/cart/delete')->to('cart#delete')->name('RN_cart_delete');
 
     # Checkout
-    my $checkout = $r->any('/checkout')->to( controller => 'checkout' );
-    $checkout->any('/')->to('#index')->name('RN_checkout');
-    $checkout->any('/address')->to('#address')->name('RN_checkout_address');
-    $checkout->any('/shipping')->to('#shipping')->name('RN_checkout_shipping');
-    $checkout->any('/confirm')->to('#confirm')->name('RN_checkout_confirm');
-    $checkout->get('/complete')->to('#complete')->name('RN_checkout_complete');
+    $r->any('/checkout')->to('checkout#index')->name('RN_checkout');
+    $r->get('/checkout/complete')->to('checkout#complete')->name('RN_checkout_complete');
+    {
+        my $authorize = $r->under('/checkout')->to('account#authorize')->name('RN_checkout_bridge');
+        my $checkout  = $authorize->any('/')->to('checkout#');
+        $checkout->any('/shipping-address')->to('#shipping_address')->name('RN_checkout_shipping_address');
+        $checkout->any('/delivery-options')->to('#delivery_option')->name('RN_checkout_delivery_option');
+        $checkout->any('/payment-option')->to('#payment_method')->name('RN_checkout_payment_method');
+        $checkout->any('/billing-address')->to('#billing_address')->name('RN_checkout_billing_address');
+        $checkout->any('/confirm')->to('#confirm')->name('RN_checkout_confirm');
+    }
+    my $guest_checkout = $r->any('/checkout/guest')->to('checkout#');
+    $guest_checkout->any('/shipping-address')->to('#shipping_address')->name('RN_guest_checkout_shipping_address');
 
     # For Customers
     my $register = $r->any('/register')->to( controller => 'register' );

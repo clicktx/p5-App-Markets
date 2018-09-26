@@ -3,7 +3,8 @@ use Test::More;
 use Test::Deep;
 use Mojo::Util qw/sha1_sum/;
 use Yetie::Domain::Collection qw/collection/;
-use Yetie::Domain::IxHash qw/ix_hash/;
+use Yetie::Domain::IxHash qw/ixhash/;
+use Yetie::Domain::Value;
 use Mojo::URL;
 
 my $pkg = 'Yetie::Domain::Entity';
@@ -38,12 +39,18 @@ subtest 'hash_code' => sub {
     is $e->hash_code(2), sha1_sum(2), 'right hash code';
 };
 
+subtest 'factory' => sub {
+    my $e = $pkg->new();
+    my $f = $pkg->factory('entity-foo');
+    isa_ok $f, 'Yetie::Domain::Factory';
+};
+
 subtest 'function' => sub {
     my $c = collection( 1, 2, 3 );
     isa_ok $c, 'Yetie::Domain::Collection';
     is_deeply $c, [ 1, 2, 3 ], 'right deeply';
 
-    my $h = ix_hash( a => 1, b => 2 );
+    my $h = ixhash( a => 1, b => 2 );
     isa_ok $h, 'Yetie::Domain::IxHash';
     is_deeply $h, { a => 1, b => 2 }, 'right deeply';
 };
@@ -108,7 +115,7 @@ subtest 'Entity object base' => sub {
 };
 
 subtest 'to_data method' => sub {
-    $pkg->attr( [qw(a b h h1 h2 url)] );
+    $pkg->attr( [qw(a b h h1 h2 url v)] );
 
     my $e = $pkg->new(
         a  => 1,
@@ -118,7 +125,8 @@ subtest 'to_data method' => sub {
             a => 1,
             h => $pkg->new( a => 1, b => 2 ),
         ),
-        url => Mojo::URL->new,    # has not "to_data" method.
+        url => Mojo::URL->new,                     # has not "to_data" method.
+        v   => Yetie::Domain::Value->new('foo'),
     );
 
     cmp_deeply $e->to_data,
@@ -133,6 +141,7 @@ subtest 'to_data method' => sub {
                 b => 2
             },
         },
+        v => 'foo',
       },
       'right dump data';
 };
@@ -146,7 +155,7 @@ subtest 'is_modified' => sub {
             b => 1,
             e => $pkg->new( x => 1 ),
             c => collection( $pkg->new( y => 1 ), $pkg->new( e => $pkg->new( z => 1 ) ) ),
-            d => ix_hash( aa => $pkg->new( f => 1, g => 1 ) ),
+            d => ixhash( aa => $pkg->new( f => 1, g => 1 ) ),
         );
         return $e;
     };

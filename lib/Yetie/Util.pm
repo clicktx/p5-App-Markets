@@ -4,15 +4,42 @@ use Mojo::Base -strict;
 use Exporter 'import';
 use Carp qw(croak);
 use File::Find::Rule;
+use List::Util qw/reduce/;
 use Session::Token;
 use Mojo::Loader;
 
-our @EXPORT_OK = ( qw(directories generate_token load_class), );
+our @EXPORT_OK = ( qw(array_to_hash directories generate_token load_class), );
 
 =head1 FUNCTIONS
 
 L<Yetie::Util> implements the following functions, which can be imported
 individually.
+
+=over
+
+=item C<array_to_hash>
+
+    # { 0 => 'a', 1 => 'b', 2 => 'c' }
+    my %hash = array_to_hash( 'a', 'b', 'c' );
+    my %hash = array_to_hash( [ 'a', 'b', 'c' ] );
+    my $hash = array_to_hash( 'a', 'b', 'c' );
+    my $hash = array_to_hash( [ 'a', 'b', 'c' ] );
+
+Convert array to hash.
+
+Return C<Hash> or C<Hash reference>.
+
+=back
+
+=cut
+
+sub array_to_hash {
+    my @array = @_ > 1 ? @_ : ref $_[0] eq 'ARRAY' ? @{ $_[0] } : @_;
+
+    my $hashref = {};
+    reduce { $hashref->{$a} = $b; ++$a } 0, @array;
+    return wantarray ? %{$hashref} : $hashref;
+}
 
 =over
 
@@ -39,8 +66,7 @@ sub directories {
     my $ignore_dir = $options->{ignore} // '';
 
     my $rule = File::Find::Rule->new;
-    if ($ignore_dir)
-    {    # Hack the `Use of uninitialized value $regex in regexp compilation at Text/Glob.pm`
+    if ($ignore_dir) {    # Hack the `Use of uninitialized value $regex in regexp compilation at Text/Glob.pm`
         $rule->not( File::Find::Rule->name($ignore_dir) );
     }
     $rule->maxdepth(1)->directory->start($dir);

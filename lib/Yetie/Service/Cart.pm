@@ -15,7 +15,7 @@ sub add_item {
     $form_params->{product_title} = $product->title;
     $form_params->{price}         = $product->price;
 
-    my $item = $self->factory('entity-cart-item')->create($form_params);
+    my $item = $self->factory('entity-cart-item')->construct($form_params);
     return $self->controller->cart->add_item($item);
 }
 
@@ -24,7 +24,7 @@ sub find_cart {
 
     my $session = $self->controller->server_session;
     my $data = $session->store->load_cart_data($cart_id) || {};
-    return $self->factory('entity-cart')->create($data);
+    return $self->factory('entity-cart')->construct($data);
 }
 
 sub merge_cart {
@@ -38,28 +38,6 @@ sub merge_cart {
     # Remove previous cart from DB
     $session->remove_cart( $session->cart_id );
     return $merged_cart;
-}
-
-# NOTE: とりあえず全てのshipment itemsを戻すlogicのみ実装
-sub revert_shipping_item {
-    my $self = shift;
-
-    # 全てのshipment itemsをカートに戻す
-    my $cart = $self->controller->cart;
-    $cart->shipments->each(
-        sub {
-            my ( $shipment, $index ) = @_;
-            $_->items->each(
-                sub {
-                    # 配送itemsから削除
-                    my $item = $cart->remove_shipping_item( $index, $_->id );
-
-                    # カートitemsに追加
-                    $cart->add_item($item);
-                }
-            );
-        }
-    );
 }
 
 1;
@@ -102,14 +80,6 @@ Return L<Yetie::Domain::Entity::Cart> object.
 Return L<Yetie::Domain::Entity::Cart> object.
 
 Merge with saved customer cart.
-
-=head2 C<revert_shipping_item>
-
-    $service->revert_shipping_item();
-
-Return void.
-
-Revert all shipping items to the cart.
 
 =head1 AUTHOR
 

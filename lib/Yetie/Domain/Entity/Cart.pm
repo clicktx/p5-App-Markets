@@ -1,37 +1,22 @@
 package Yetie::Domain::Entity::Cart;
-use Yetie::Domain::Entity;
-use Carp qw/croak/;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use Carp qw(croak);
+use Yetie::Util;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
-has cart_id   => '';
-has items     => sub { Yetie::Domain::Collection->new };
-has shipments => sub { Yetie::Domain::Collection->new };
-has [qw/billing_address/];
+has cart_id         => '';
+has email           => sub { __PACKAGE__->factory('value-email')->construct() };
+has billing_address => sub { __PACKAGE__->factory('entity-address')->construct() };
+has items           => sub { __PACKAGE__->factory('list-cart_items')->construct() };
+has shipments       => sub { __PACKAGE__->factory('list-shipments')->construct() };
 
 my @needless_attrs = (qw/cart_id items/);
-
-# has 'items';
-# has item_count       => sub { shift->items->flatten->size };
-# has original_total_price => 0;
-# has total_price          => 0;
-# has total_weight         => 0;
-
-# cart.attributes
-# cart.item_count
-# cart.items
-# cart.note
-# cart.original_total_price
-# cart.total_price
-# cart.total_weight
 
 sub add_item {
     my ( $self, $item ) = @_;
     croak 'Argument was not a Object' if ref $item =~ /::/;
 
-    _add_item( $self->items, $item );
-
-    $self->_is_modified(1);
-    return $self;
+    $self->items->append($item);
 }
 
 sub add_shipping_item {
@@ -39,26 +24,14 @@ sub add_shipping_item {
     croak 'First argument was not a Digit'   if $index =~ /\D/;
     croak 'Second argument was not a Object' if ref $item =~ /::/;
 
-    my $shipment = $self->shipments->[$index];
-    _add_item( $shipment->items, $item );
-
-    $self->_is_modified(1);
-    return $self;
+    my $shipment = $self->shipments->get($index);
+    $shipment->items->append($item);
 }
 
-sub all_shipping_items {
-    shift->shipments->map( sub { $_->items->each } );
-}
-
-# NOTE: shipment.itemsにあるitemsも削除するべきか？
-sub clear {
+sub clear_items {
     my $self = shift;
-    $self->items->each( sub { $self->remove_item( $_->id ) } );
-}
-
-sub count {
-    my ( $self, $attr ) = @_;
-    return $self->$attr->size;
+    $self->items->clear;
+    $self->shipments->clear_items;
 }
 
 sub grand_total {
@@ -70,24 +43,37 @@ sub grand_total {
     return $grand_total;
 }
 
+sub has_billing_address { shift->billing_address->is_empty ? 0 : 1 }
+
+sub has_item { shift->items->count ? 1 : 0 }
+
+sub has_shipping_address {
+    my $self = shift;
+
+    return 0 unless $self->shipments->has_shipment;
+    return $self->shipments->first->shipping_address->is_empty ? 0 : 1;
+}
+
+sub has_shipping_item { shift->shipments->has_item }
+
 sub merge {
     my ( $self, $target ) = @_;
     my ( $clone, $stored ) = ( $self->clone, $target->clone );
 
     # items
-    foreach my $item ( @{ $stored->items } ) {
+    foreach my $item ( @{ $stored->items->list } ) {
         $clone->items->each(
             sub {
                 my ( $e, $num ) = @_;
                 if ( $e->equal($item) ) {
                     $item->quantity( $e->quantity + $item->quantity );
                     my $i = $num - 1;
-                    splice @{ $clone->items }, $i, 1;
+                    splice @{ $clone->items->list }, $i, 1;
                 }
             }
         );
     }
-    push @{ $stored->items }, @{ $clone->items };
+    push @{ $stored->items->list }, @{ $clone->items->list };
 
     # shipments
     # NOTE: [WIP]
@@ -100,14 +86,19 @@ sub merge {
     return $stored;
 }
 
+sub move_items_to_first_shipment {
+    my $self = shift;
+
+    my $items = $self->items->to_array;
+    $self->shipments->first->items->append( @{$items} );
+}
+
 # NOTE: 数量は未考慮
 sub remove_item {
     my ( $self, $item_id ) = @_;
     croak 'Argument was not a Scalar' if ref \$item_id ne 'SCALAR';
 
-    my ( $removed, $collection ) = _remove_item( $self->items, $item_id );
-    $self->items($collection) if $removed;
-    return $removed;
+    $self->items->remove($item_id);
 }
 
 # NOTE: 数量は未考慮
@@ -116,21 +107,50 @@ sub remove_shipping_item {
     croak 'First argument was not a Digit'   if $index =~ /\D/;
     croak 'Second argument was not a Scalar' if ref \$item_id ne 'SCALAR';
 
-    my $shipment = $self->shipments->[$index];
-    my ( $removed, $collection ) = _remove_item( $shipment->items, $item_id );
+    my $shipment = $self->shipments->get($index);
+    $shipment->items->remove($item_id);
+}
 
-    $shipment->items($collection) if $removed;
-    return $removed;
+sub revert {
+    my $self = shift;
+    return unless $self->shipments->has_item;
+
+    $self->shipments->revert;
+}
+
+sub set_billing_address {
+    my ( $self, $address ) = @_;
+    croak 'Argument is missing.' unless $address;
+    return if $self->billing_address->equal($address);
+
+    $self->billing_address($address);
+}
+
+sub set_shipping_address {
+    my $self = shift;
+    croak 'Argument is missing.' unless @_;
+
+    # Convert arguments
+    my $addresses = @_ > 1 ? +{@_} : Yetie::Util::array_to_hash(@_);
+
+    # Has not shipment in shipments
+    $self->shipments->create_shipment unless $self->shipments->has_shipment;
+
+    my $cnt = 0;
+    foreach my $index ( keys %{$addresses} ) {
+        my $address  = $addresses->{$index};
+        my $shipment = $self->shipments->get($index);
+
+        next if $shipment->shipping_address->equal($address);
+        $shipment->shipping_address($address);
+        $cnt++;
+    }
+    return $cnt;
 }
 
 sub subtotal {
-    my $self     = shift;
-    my $subtotal = 0;
-
-    $subtotal += $self->items->reduce( sub { $a + $b->subtotal }, 0 );
-    $subtotal += $self->shipments->reduce( sub { $a + $b->subtotal }, 0 );
-
-    return $subtotal;
+    my $self = shift;
+    return $self->items->subtotal + $self->shipments->subtotal;
 }
 
 sub to_order_data {
@@ -143,36 +163,13 @@ sub to_order_data {
 }
 
 sub total_item_count {
-
-    # $_[0]->items->size + $_[0]->shipments->reduce( sub { $a + $b->item_count }, 0 );
-    $_[0]->count('items') + $_[0]->count('all_shipping_items');
+    my $self = shift;
+    return $self->items->count + $self->shipments->total_item_count;
 }
 
 sub total_quantity {
-    $_[0]->items->reduce( sub { $a + $b->quantity }, 0 ) +
-      $_[0]->shipments->reduce( sub { $a + $b->subtotal_quantity }, 0 );
-}
-
-sub _add_item {
-    my $collection = shift;
-    my $item       = shift;
-
-    my $exsist_item = $collection->find( $item->id );
-    if ($exsist_item) {
-        my $qty = $exsist_item->quantity + $item->quantity;
-        $exsist_item->quantity($qty);
-    }
-    else {
-        push @{$collection}, $item;
-    }
-}
-
-sub _remove_item {
-    my ( $collection, $item_id ) = @_;
-
-    my $removed;
-    my $new_collection = $collection->grep( sub { $_->id eq $item_id ? ( $removed = $_ and 0 ) : 1 } );
-    return ( $removed, $new_collection );
+    my $self = shift;
+    $self->items->total_quantity + $self->shipments->total_quantity;
 }
 
 1;
@@ -202,8 +199,8 @@ the following new ones.
     my $items = $cart->items;
     $items->each( sub { ... } );
 
-Return L<Yetie::Domain::Collection> object.
-Elements is L<Yetie::Domain::Entity::Item> object.
+Return L<Yetie::Domain::List::CartItems> object.
+Elements is L<Yetie::Domain::Entity::Cart::Item> object.
 
 =head2 C<shipments>
 
@@ -234,23 +231,39 @@ Return L<Yetie::Domain::Entity::Cart> Object.
 C<$shipment_object> is option argument.
 default $shipments->first
 
-=head2 C<all_shipping_items>
+=head2 C<clear_items>
 
-    my $all_shipping_items = $cart->all_shipping_items;
-
-All items in shipments.
-
-=head2 C<clear>
-
-    $cart->clear;
+    $cart->clear_items;
 
 Remove all items.
 
 =head2 C<clone>
 
-=head2 C<count>
-
 =head2 C<grand_total>
+
+=head2 C<has_billing_address>
+
+    my $bool = $cart->has_billing_address;
+
+Return boolean value.
+
+=head2 C<has_item>
+
+    my $bool = $cart->has_item;
+
+Return boolean value.
+
+=head2 C<has_shipping_address>
+
+    my $bool = $cart->has_shipping_address;
+
+Return boolean value.
+
+=head2 C<has_shipping_item>
+
+    my $bool = $cart->has_shipping_item;
+
+Return boolean value.
 
 =head2 C<is_modified>
 
@@ -264,17 +277,42 @@ Return boolean value.
 
 Return Entity Cart Object.
 
+=head2 C<move_items_to_first_shipment>
+
+    $cart->move_items_to_first_shipment;
+
+Move all items to the first element of C<Yetie::Domain::List::Shipments>.
+
 =head2 C<remove_item>
 
-    my $removed_item = $cart->remove_item($item_id);
-
-Return L<Yetie::Domain::Entity::Cart::Item> object or undef.
+    $cart->remove_item($item_id);
 
 =head2 C<remove_shipping_item>
 
-    my $removed_item = $cart->remove_shipping_item($index, $item_id);
+    $cart->remove_shipping_item($shipment_index, $item_id);
 
-Return L<Yetie::Domain::Entity::Cart::Item> object or undef.
+=head2 C<revert>
+
+    $cart->revert;
+
+Delete except the first shipping-information. Also delete all shipping-items of the first shipping-information.
+
+See L<Yetie::Domain::List::Shipments/revert>.
+
+=head2 C<set_billing_address>
+
+    $cart->set_billing_address( $address_obj );
+
+=head2 C<set_shipping_address>
+
+    # Update first element
+    $cart->set_shipping_address( $address_obj );
+
+    # Update multiple elements
+    $cart->set_shipping_address( 1 => $address_obj, 3 => $address_obj, ... );
+    $cart->set_shipping_address( [ $address_obj, $address_obj, ... ] );
+
+Update shipping address.
 
 =head2 C<subtotal>
 
@@ -302,4 +340,5 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::Entity::Shipment>, L<Yetie::Domain::Entity::Cart::Item>
+L<Yetie::Domain::Entity>, L<Yetie::Domain::List::CartItems>, L<Yetie::Domain::Entity::Cart::Item>,
+L<Yetie::Domain::Entity::Shipment>

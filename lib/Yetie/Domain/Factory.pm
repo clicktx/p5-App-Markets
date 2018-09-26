@@ -5,7 +5,7 @@ use Mojo::Util   ();
 use Mojo::Loader ();
 use Yetie::Util  ();
 use Yetie::Domain::Collection qw/collection/;
-use Yetie::Domain::IxHash qw/ix_hash/;
+use Yetie::Domain::IxHash qw/ixhash/;
 
 has 'app';
 has domain_class => sub {
@@ -15,41 +15,42 @@ has domain_class => sub {
 };
 
 sub aggregate {
-    my ( $self, $accessor, $domain, $data ) = @_;
+    my ( $self, $accessor, $domain, $arg ) = @_;
+    my $data = $self->_convert_data( $domain, $arg );
     croak 'Data type is not Hash refference' if ref $data ne 'HASH';
 
-    $self->param( $accessor => $self->factory($domain)->create($data) );
+    $self->param( $accessor => $self->factory($domain)->construct($data) );
     return $self;
 }
 
 sub aggregate_collection {
     my ( $self, $accessor, $domain, $data ) = @_;
-    croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
+
+    # croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
+    # NOTE: $data is Array reference or Yetie::Domain::Collection object
 
     my @array;
-    push @array, $self->factory($domain)->create($_) for @{$data};
+    push @array, $self->factory($domain)->construct($_) for @{$data};
     $self->param( $accessor => collection(@array) );
     return $self;
 }
 
-sub aggregate_kvlist {
+sub aggregate_ixhash {
     my ( $self, $accessor, $domain, $data ) = @_;
     croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
 
     my @kvlist;
     foreach my $kv ( @{$data} ) {
         my ( $key, $value ) = %{$kv};
-        push @kvlist, ( $key => $self->factory($domain)->create($value) );
+        push @kvlist, ( $key => $self->factory($domain)->construct($value) );
     }
-    $self->param( $accessor => ix_hash(@kvlist) );
+    $self->param( $accessor => ixhash(@kvlist) );
     return $self;
 }
 
 sub cook { }
 
-sub create { shift->create_domain(@_) }
-
-sub create_domain {
+sub construct {
     my $self = shift;
 
     # my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
@@ -60,24 +61,20 @@ sub create_domain {
     }
     $self->params($args);
 
-    # cooking entity
+    # Convert parameter for Yetie::Domain::List and Yetie::Domain::Set
+    $self->_convert_param( list => $self->param('list') )     if $self->domain_class =~ /::List/;
+    $self->_convert_param( set  => $self->param('hash_set') ) if $self->domain_class =~ /::Set/;
+
+    # Cooking parameter
     $self->cook();
 
-    my $params = $self->params;
-
     # no need parameter
+    my $params = $self->params;
     delete $params->{$_} for qw(app domain_class resultset);
 
-    # Create domain object
+    # Construct domain object
     Yetie::Util::load_class( $self->domain_class );
-    my $domain = $self->domain_class->new( %{$params} );
-
-    # NOTE: attributesは Yetie::Domain::Entity::XXX で明示する方が良い?
-    # Add attributes
-    # my @keys = keys %{$domain};
-    # $domain->attr($_) for @keys;
-
-    return $domain;
+    return $self->domain_class->new( %{$params} );
 }
 
 sub factory {
@@ -93,7 +90,7 @@ sub new {
     Carp::croak 'Argument empty' unless $arg;
 
     my $domain        = Mojo::Util::camelize($arg);
-    my $factory_class = _factory_class($domain);
+    my $factory_class = 'Yetie::Domain::Factory::' . $domain;
     my $domain_class  = 'Yetie::Domain::' . $domain;
 
     my $e = Mojo::Loader::load_class($factory_class);
@@ -127,10 +124,31 @@ sub params {
     $self->{$_} = $args{$_} for keys %args;
 }
 
-sub _factory_class {
-    my $domain = shift;
-    $domain =~ s/Entity::|Value:://;
-    return 'Yetie::Domain::Factory::' . $domain;
+sub _convert_data {
+    my ( $self, $domain, $data ) = @_;
+    return $data if ref $data eq 'HASH';
+
+    return { value => $data } if $domain =~ /^value/;
+    return { list => collection( @{$data} ) } if $domain =~ /^list/;
+
+    # Not convert
+    return $data;
+}
+
+sub _convert_param {
+    my ( $self, $key, $value ) = @_;
+
+    my $converter = {
+        list => sub {
+            my $value = shift || [];
+            $self->param( list => collection( @{$value} ) );
+        },
+        set => sub {
+            my $value = shift || {};
+            $self->param( hash_set => ixhash( %{$value} ) );
+        },
+    };
+    $converter->{$key}->($value);
 }
 
 1;
@@ -143,7 +161,7 @@ Yetie::Domain::Factory
 =head1 SYNOPSIS
 
     my $factory = Yetie::Domain::Factory->new( 'entity-hoge', %data1 || \%data1 );
-    my $domain = $factory->create( %data2 || \%data2 );
+    my $domain = $factory->construct( %data2 || \%data2 );
 
 =head1 DESCRIPTION
 
@@ -178,8 +196,14 @@ the following new ones.
 
 =head2 C<aggregate>
 
-    my $domain = $factory->aggregate( 'user', 'entity-user', \%data );
-    my $vo = $factory->aggregate( 'user', 'value-user-name', \%data );
+    my $obj = $factory->aggregate( $attribure_name => $domain_class, \%data );
+
+    # Entity Object
+    my $entity = $factory->aggregate( user => 'entity-user', { id => 1, name => 'foo', age => 22, ... } );
+
+    # Value Object
+    my $value = $factory->aggregate( email => 'value-email', { value => 'a@example.org', ... } );
+    my $value = $factory->aggregate( email => 'value-email', 'a@example.org' );
 
 Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
 
@@ -191,11 +215,11 @@ Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
 
 Create L<Yetie::Domain::Collection> type aggregate.
 
-=head2 C<aggregate_kvlist>
+=head2 C<aggregate_ixhash>
 
     my @data = ( { label => { key => 'value' } }, { label2 => { key2 => 'value2' } }, ... );
-    my $domain = $factory->aggregate_kvlist( $accessor_name, $target_entity, \@data );
-    my $domain = $factory->aggregate_kvlist( 'items', 'entity-xxx-item', \@data );
+    my $domain = $factory->aggregate_ixhash( $accessor_name, $target_entity, \@data );
+    my $domain = $factory->aggregate_ixhash( 'items', 'entity-xxx-item', \@data );
 
 Create L<Yetie::Domain::IxHash> type aggregate.
 
@@ -207,15 +231,11 @@ Create L<Yetie::Domain::IxHash> type aggregate.
         # your factory codes here!
     }
 
-=head2 C<create>
+=head2 C<construct>
 
-Alias for L</create_domain>.
-
-=head2 C<create_domain>
-
-    my $domain = $factory->create_domain;
-    my $domain = $factory->create_domain( foo => 'bar' );
-    my $domain = $factory->create_domain( { foo => 'bar' } );
+    my $domain = $factory->construct;
+    my $domain = $factory->construct( foo => 'bar' );
+    my $domain = $factory->construct( { foo => 'bar' } );
 
 =head2 C<factory>
 

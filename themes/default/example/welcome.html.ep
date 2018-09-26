@@ -16,7 +16,7 @@
 
 <h1>Login</h1>
 <p>
-    <%= link_to 'login example' => '/login_example' %>
+    <%= link_to 'login example' => '/login-example' %>
 </p>
 <p>
     <%= link_to __('login') => 'RN_customer_login' %>
@@ -25,7 +25,7 @@
 <p>
     <%= form_for 'RN_customer_login' => ( method => 'POST', style => 'border:1px solid gray' ) => begin %>
         <h5><%= __('login') %> Form</h5>
-        <%= form_widget 'account-login#email', default_value => 'c@x.org' %>
+        <%= form_widget 'account-login#email' %>
         <%= form_widget 'account-login#password' %>
         <%= csrf_field %>
         <%= submit_button __('Login') %>

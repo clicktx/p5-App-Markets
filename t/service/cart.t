@@ -1,21 +1,28 @@
-use Mojo::Base -strict;
+package t::service::cart;
 
+use Mojo::Base 't::pages::common';
 use t::Util;
 use Test::More;
 use Test::Mojo;
 
-my $t   = Test::Mojo->new('App');
-my $app = $t->app;
-$app->routes->any('/:controller/:action')->to();
+sub t00_startup : Tests(startup) { shift->app->routes->any('/:controller/:action')->to() }
 
-# Requests
-$t->get_ok('/test/get_csrf_token')->status_is(200);
-my $csrf_token = $t->tx->res->content->get_body_chunk;
-my $params = { product_id => 1, quantity => 1, csrf_token => $csrf_token };
-$t->post_ok( '/test/add_item', form => $params )->status_is(200);
-$t->get_ok('/test/find_cart')->status_is(200);
+sub t01_add_item : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
 
-done_testing();
+    my $params = { product_id => 1, quantity => 1, csrf_token => $self->csrf_token };
+    $t->post_ok( '/test/add_item', form => $params )->status_is(200);
+}
+
+sub t02_find_cart : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $t->get_ok('/test/find_cart')->status_is(200);
+}
+
+__PACKAGE__->runtests;
 
 {
 
@@ -32,8 +39,8 @@ done_testing();
         my $c = shift;
 
         subtest 'items' => sub {
-            my $result = $c->service('cart')->add_item( { product_id => 1, quantity => 1 } );
-            is_deeply $result->items->last->to_data,
+            $c->service('cart')->add_item( { product_id => 1, quantity => 1 } );
+            is_deeply $c->cart->items->last->to_data,
               { product_id => 1, product_title => 'test product1', quantity => 1, price => '100.00' },
               'right add cart';
         };

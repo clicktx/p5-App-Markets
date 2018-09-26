@@ -4,15 +4,21 @@ use Scalar::Util qw/blessed/;
 
 our @EXPORT_OK = qw(c collection);
 
+sub append { c( @{ shift->to_array }, @_ ) }
+
 sub c { collection(@_) }
 
 sub collection { __PACKAGE__->new(@_) }
 
-# NOTE: 同じcollectionに同一のidを持つ要素は存在しないはずなのでsearchメソッドは不要？
-sub find {
+sub get { shift->[ +shift ] }
+
+sub get_by_id {
     my ( $self, $str ) = @_;
     $self->first( sub { $_->id eq $str } ) or undef;
 }
+
+no warnings 'redefine';
+sub has { shift->get_by_id(shift) ? 1 : 0 }
 
 sub to_data {
     my $self = shift;
@@ -54,6 +60,15 @@ Construct a new array-based L<Yetie::Domain::Collection> object.
 L<Yetie::Domain::Collection> inherits all methods from L<Mojo::Collection> and implements
 the following new ones.
 
+=head2 C<append>
+
+    my $new = $collection->append($str);
+    my $new = $collection->append(@array);
+
+Create a new collection with append elements.
+
+Return L<Yetie::Domain::Collection> object.
+
 =head2 C<each>
 
     $collection->each( sub {
@@ -63,11 +78,26 @@ the following new ones.
 
 See L<Mojo::Collection/each>.
 
-=head2 C<find>
+=head2 C<get>
 
-    my $entity = $collection->find($entity_id);
+    my $element = $collection->get($index);
+
+    # Equivalent behavior
+    my $element = $collection->[$index];
+
+Return $element or undef.
+
+=head2 C<get_by_id>
+
+    my $entity = $collection->get_by_id($entity_id);
 
 Return L<Yetie::Domain::Entity> object or undef.
+
+=head2 C<has>
+
+    my $bool = $collection->has($entity_id);
+
+Return boolean value.
 
 =head2 C<to_data>
 

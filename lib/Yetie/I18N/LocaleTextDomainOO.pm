@@ -94,7 +94,7 @@ use Carp qw(confess);
                     ),
                     {
                         object => $self,
-                        type   => 'warn',
+                        type   => 'debug',
                         event  => 'translation,fallback',
                     },
                   );
@@ -156,7 +156,7 @@ use Carp qw(confess);
                 ),
                 {
                     object => $self,
-                    type   => 'warn',
+                    type   => 'debug',
                     event  => 'translation,fallback',
                 },
               );

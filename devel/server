@@ -1,6 +1,6 @@
 # Development Server
 
-MOJO_EVENTEMITTER_DEBUG=1 \
+# MOJO_EVENTEMITTER_DEBUG=1 \
 carton exec -- \
 start_server \
 --port=3000 \

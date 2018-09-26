@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Preference::Property;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has [qw/name value default_value title summary position group_id/];
 

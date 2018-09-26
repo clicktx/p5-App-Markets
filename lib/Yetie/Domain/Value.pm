@@ -1,5 +1,5 @@
 package Yetie::Domain::Value;
-use Yetie::Domain::Base;
+use Yetie::Domain::Base -readonly;
 use overload
   q(bool)  => sub { 1 },
   q("")    => sub { shift->value },
@@ -13,6 +13,8 @@ sub new {
     my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : { value => $_[0] // '' };
     return $class->SUPER::new($args);
 }
+
+sub to_data { shift->value }
 
 1;
 
@@ -30,6 +32,8 @@ Yetie::Domain::Value
 
 =head1 DESCRIPTION
 
+Immutable value object base class.
+
 =head1 FUNCTIONS
 
 L<Yetie::Domain::Value> inherits all functions from L<Yetie::Domain::Base> and implements
@@ -40,6 +44,8 @@ the following new ones.
 L<Yetie::Domain::Value> inherits all attributes from L<Yetie::Domain::Base> and implements
 the following new ones.
 
+The value can not be set.This object is immutable.
+
 =head2 C<value>
 
     my $value = $obj->value;
@@ -48,6 +54,12 @@ the following new ones.
 
 L<Yetie::Domain::Value> inherits all methods from L<Yetie::Domain::Base> and implements
 the following new ones.
+
+=head2 C<to_data>
+
+    my $value = $obj->to_data;
+
+L</value> alias method.
 
 =head1 OPERATORS
 

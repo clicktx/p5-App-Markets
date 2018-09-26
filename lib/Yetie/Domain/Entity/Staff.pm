@@ -1,11 +1,11 @@
 package Yetie::Domain::Entity::Staff;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
 has login_id   => undef;
 has created_at => undef;
 has updated_at => undef;
-has password   => sub { __PACKAGE__->factory('value-password') };
+has password   => sub { __PACKAGE__->factory('value-password')->construct() };
 
 sub is_staff { shift->id ? 1 : 0 }
 

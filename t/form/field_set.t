@@ -92,8 +92,12 @@ subtest 'export_field' => sub {
 };
 
 subtest 'field' => sub {
+    ok !$fs->{_field}->{email}, 'right not cached';
+
     my $f = $fs->field('email');
+    ok $fs->{_field}->{email}, 'right cached';
     isa_ok $f, 'Yetie::Form::Field';
+    is $f->_fieldset, 'Test', 'right field set name';
 };
 
 subtest 'fieldset' => sub {

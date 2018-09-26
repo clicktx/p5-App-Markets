@@ -1,12 +1,21 @@
 package Yetie::Service::Address;
 use Mojo::Base 'Yetie::Service';
 
-has resultset => sub { shift->schema->resultset('Address') };
+sub get_address_types {
+    my $self = shift;
+
+    return $self->cache('address_types') if $self->cache('address_types');
+
+    my $rs = $self->resultset('Address::Type')->search();
+    my $address_types = $self->factory('entity-address_types')->construct( list => $rs->to_data );
+    $self->cache( address_types => $address_types );
+    return $address_types;
+}
 
 sub get_registered_id {
     my ( $self, $address ) = @_;
 
-    my $registered = $self->resultset->search( { hash => $address->hash } )->first;
+    my $registered = $self->resultset('Address')->search( { hash => $address->hash } )->first;
     return if !$registered or $registered->id == $address->id;
 
     return $registered->id;
@@ -15,7 +24,7 @@ sub get_registered_id {
 sub store {
     my ( $self, $params ) = @_;
 
-    my $address       = $self->factory('entity-address')->create($params);
+    my $address       = $self->factory('entity-address')->construct($params);
     my $registered_id = $self->get_registered_id($address);
 
     if ($registered_id) {
@@ -26,7 +35,7 @@ sub store {
     }
     else {
         # Update address
-        $self->resultset->search( { id => $address->id } )->update( $address->to_data );
+        $self->resultset('Address')->search( { id => $address->id } )->update( $address->to_data );
     }
 }
 
@@ -53,7 +62,7 @@ the following new ones.
 
 =head2 C<get_registered_id>
 
-    my $address_entity = $c->factory('entity-address')->create($form_params);
+    my $address_entity = $c->factory('entity-address')->construct($form_params);
     my $address_id = $service->get_registered_id($address_entity);
 
 Return address ID or C<undefined>.

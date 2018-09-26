@@ -13,7 +13,7 @@ subtest 'find_category' => sub {
     my $form    = $c->form('search');
 
     my $e = $service->find_category( 1, $form );
-    isa_ok $e, 'Yetie::Domain::Entity::Category';
+    isa_ok $e, 'Yetie::Domain::Entity::Page::Category';
     is $e->id,    1,        'right ID';
     is $e->title, 'Sports', 'right title';
     isa_ok $e->form,        'Yetie::Form::Base';
@@ -30,7 +30,7 @@ subtest 'find_category_with_products' => sub {
     $form->do_validate;
 
     my $e = $service->find_category_with_products( 1, $form );
-    isa_ok $e, 'Yetie::Domain::Entity::Category';
+    isa_ok $e, 'Yetie::Domain::Entity::Page::Category';
     is $e->id,    1,        'right ID';
     is $e->title, 'Sports', 'right title';
     isa_ok $e->form,        'Yetie::Form::Base';

@@ -1,8 +1,6 @@
 package Yetie::Service::Orders;
 use Mojo::Base 'Yetie::Service';
 
-has resultset => sub { shift->app->resultset('Sales::Order') };
-
 sub search_orders {
     my ( $self, $form ) = @_;
 
@@ -12,7 +10,7 @@ sub search_orders {
         page_no  => $form->param('page') || 1,
         per_page => $form->param('per_page') || 5,
     };
-    my $result = $self->resultset->search_sales_orders($conditions);
+    my $result = $self->resultset('Sales::Order')->search_sales_orders($conditions);
 
     my $data = {
         meta_title  => 'Orders',
@@ -21,7 +19,7 @@ sub search_orders {
         order_list  => $result->to_data,
         pager       => $result->pager,
     };
-    return $self->factory('entity-page-orders')->create($data);
+    return $self->factory('entity-page-orders')->construct($data);
 }
 
 1;
