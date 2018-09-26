@@ -1,4 +1,4 @@
-package Yetie::View::DOM::HTML;    # based on Mojo::DOM::HTML
+package Yetie::App::Core::View::DOM::HTML;    # based on Mojo::DOM::HTML
 use Mojo::Base -base;
 
 use Mojo::Util qw(html_attr_unescape html_unescape xml_escape);
@@ -306,28 +306,28 @@ sub _start {
 
 =head1 NAME
 
-Yetie::View::DOM::HTML - HTML/XML/EP Tenmplate engine
+Yetie::App::Core::View::DOM::HTML - HTML/XML/EP Tenmplate engine
 
 =head1 SYNOPSIS
 
-  use Yetie::View::DOM::HTML;
+  use Yetie::App::Core::View::DOM::HTML;
 
   # Turn HTML into DOM tree
-  my $html = Yetie::View::DOM::HTML->new;
+  my $html = Yetie::App::Core::View::DOM::HTML->new;
   $html->parse('<div><p id="a">Test</p><p id="b">123</p></div>');
   my $tree = $html->tree;
 
 =head1 DESCRIPTION
 
-L<Yetie::View::DOM::HTML> is forked by L<Mojo::DOM::HTML> (Mojolicious v7.29)
+L<Yetie::App::Core::View::DOM::HTML> is forked by L<Mojo::DOM::HTML> (Mojolicious v7.29)
 
-L<Yetie::View::DOM::HTML> is the HTML/XML engine used by L<Mojo::DOM>, based on the
+L<Yetie::App::Core::View::DOM::HTML> is the HTML/XML engine used by L<Mojo::DOM>, based on the
 L<HTML Living Standard|https://html.spec.whatwg.org> and the
 L<Extensible Markup Language (XML) 1.0|http://www.w3.org/TR/xml/>.
 
 =head1 ATTRIBUTES
 
-L<Yetie::View::DOM::HTML> implements the following attributes.
+L<Yetie::App::Core::View::DOM::HTML> implements the following attributes.
 
 =head2 C<tree>
 
@@ -347,7 +347,7 @@ auto-detection based on XML declarations.
 
 =head1 METHODS
 
-L<Yetie::View::DOM::HTML> inherits all methods from L<Mojo::Base> and implements the
+L<Yetie::App::Core::View::DOM::HTML> inherits all methods from L<Mojo::Base> and implements the
 following new ones.
 
 =head2 C<parse>

@@ -1,4 +1,4 @@
-package Yetie::View::EPLRenderer;
+package Yetie::App::Core::View::EPLRenderer;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use Mojo::Template;

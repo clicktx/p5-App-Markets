@@ -2,7 +2,7 @@ use Mojo::Base -strict;
 
 use Test::More;
 use Mojo::DOM;
-use Yetie::View::DOM;
+use Yetie::App::Core::View::DOM;
 
 #############################################################
 # This test code from mojo/t/mojo/dom.t
