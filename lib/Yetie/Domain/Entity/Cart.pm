@@ -45,6 +45,8 @@ sub grand_total {
 
 sub has_billing_address { shift->billing_address->is_empty ? 0 : 1 }
 
+sub has_item { shift->items->count ? 1 : 0 }
+
 sub has_shipping_address {
     my $self = shift;
 
@@ -242,6 +244,12 @@ Remove all items.
 =head2 C<has_billing_address>
 
     my $bool = $cart->has_billing_address;
+
+Return boolean value.
+
+=head2 C<has_item>
+
+    my $bool = $cart->has_item;
 
 Return boolean value.
 
