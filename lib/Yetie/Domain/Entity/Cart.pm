@@ -245,6 +245,12 @@ Remove all items.
 
 Return boolean value.
 
+=head2 C<has_shipping_address>
+
+    my $bool = $cart->has_shipping_address;
+
+Return boolean value.
+
 =head2 C<has_shipping_item>
 
     my $bool = $cart->has_shipping_item;
@@ -285,6 +291,21 @@ Delete except the first shipping-information. Also delete all shipping-items of 
 
 See L<Yetie::Domain::List::Shipments/revert>.
 
+=head2 C<set_billing_address>
+
+    $cart->set_billing_address( $address_obj );
+
+=head2 C<set_shipping_address>
+
+    # Update first element
+    $cart->set_shipping_address( $address_obj );
+
+    # Update multiple elements
+    $cart->set_shipping_address( 1 => $address_obj, 3 => $address_obj, ... );
+    $cart->set_shipping_address( [ $address_obj, $address_obj, ... ] );
+
+Update shipping address.
+
 =head2 C<subtotal>
 
     my $subtotal = $cart->subtotal;
@@ -304,21 +325,6 @@ Return number of items types.
     my $total_qty = $cart->total_quantity;
 
 Return all items quantity.
-
-=head2 C<set_billing_address>
-
-    $cart->set_billing_address( $address_obj );
-
-=head2 C<set_shipping_address>
-
-    # Update first element
-    $cart->set_shipping_address( $address_obj );
-
-    # Update multiple elements
-    $cart->set_shipping_address( 1 => $address_obj, 3 => $address_obj, ... );
-    $cart->set_shipping_address( [ $address_obj, $address_obj, ... ] );
-
-Update shipping address.
 
 =head1 AUTHOR
 
