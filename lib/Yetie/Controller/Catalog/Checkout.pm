@@ -5,8 +5,7 @@ sub index {
     my $c = shift;
 
     # Redirect logged-in customer
-    # return $c->redirect_to('RN_checkout_shipping_address') if $c->is_logged_in;
-    return $c->review_handler if $c->is_logged_in;
+    return $c->confirm_handler if $c->is_logged_in;
 
     # Guest or a customer not logged in
     my $form = $c->form('checkout-index');
@@ -21,25 +20,6 @@ sub index {
     $c->cart->email($email);
 
     return $c->render();
-}
-
-# handler?
-# - Select a shipping address
-# - (Choose where to ship each item)
-#   - Choose your delivery options
-# - Select a payment method
-# - Choose a billing address
-# - Review your order
-sub review_handler {
-    my $c = shift;
-
-    return $c->redirect_to('RN_checkout_shipping_address')
-
-      # unless $c->cart->shipments->has_shipping_address;
-      # unless $c->cart->has_shipping_address;
-      unless 0;
-
-    return $c->redirect_to('RN_checkout_confirm');
 }
 
 sub shipping_address {
@@ -65,8 +45,9 @@ sub shipping_address {
     # shipment objectを生成して配列にpushする必要がある。
     # my $shipment = $c->factory('entity-shipment')->create( shipping_address => $selected->address->to_data );
     # $cart->add_shipment($shipment);
+
     my $cart = $c->cart;
-    $cart->update_shipping_address($selected);
+    $cart->set_shipping_address($selected);
 
     # NOTE: 複数配送を使うかのpreference
     if ( $c->pref('can_multiple_shipments') ) {
@@ -76,28 +57,7 @@ sub shipping_address {
         say 'multiple shipment is false';
     }
 
-    # shipping address
-    # 商品をshipmentに移動
-    # cart.itemsからitemを減らす。shipment.itemsを増やす
-    # 本来は数量を考慮しなくてはならない
-    # $item.quantityが0になった場合の動作はどうする？
-    my $cart = $c->cart;
-    $cart->items->each(
-        sub {
-            # カートitemsから削除
-            my $item = $cart->remove_item( $_->id );
-
-            # 配送itemsに追加
-            $cart->add_shipping_item( 0, $item );
-        }
-    );
-
-    # NOTE: 移動や追加をした際にis_modifiedをどのobjectに行うか
-    # $cart->is_modified(1)? しか使わなければ実行時間は早く出来る。
-    # Entity::Cart::is_modifiedも考慮して実装しよう
-
-    # return $c->redirect_to('RN_checkout_delivery_option');
-    return $c->redirect_to('RN_checkout_billing_address');
+    return $c->confirm_handler;
 }
 
 sub delivery_option {
@@ -129,24 +89,57 @@ sub billing_address {
     return $c->render() unless $selected;
 
     my $cart = $c->cart;
-    $cart->update_billing_address($selected);
+    $cart->set_billing_address($selected);
 
-    return $c->redirect_to('RN_checkout_confirm');
+    return $c->confirm_handler;
 }
 
 sub confirm {
     my $c = shift;
 
+    $c->confirm_handler;
+
     my $form = $c->form('checkout-confirm');
     return $c->render() unless $form->has_data;
-
     return $c->render() unless $form->do_validate;
 
     # checkout complete
-    $c->complete_validate;
+    $c->complete_handler;
 }
 
-sub complete_validate {
+sub complete {
+    my $c = shift;
+    $c->render();
+}
+
+# handler?
+# - Select a shipping address
+# - (Choose where to ship each item)
+#   - Choose your delivery options
+# - Select a payment method
+# - Choose a billing address
+# - Review your order
+sub confirm_handler {
+    my $c    = shift;
+    my $cart = $c->cart;
+
+    # No items
+    return $c->redirect_to('RN_cart') unless $cart->has_item;
+
+    # Shipping address
+    return $c->redirect_to('RN_checkout_shipping_address') unless $cart->has_shipping_address;
+
+    # ship items to one place
+    $cart->move_items_to_first_shipment if !$cart->has_shipping_item and !$cart->shipments->is_multiple;
+
+    # Billing address
+    return $c->redirect_to('RN_checkout_billing_address') unless $cart->has_billing_address;
+
+    # Redirect confirm
+    return $c->redirect_to('RN_checkout_confirm') if $c->stash('action') ne 'confirm';
+}
+
+sub complete_handler {
     my $c = shift;
 
     # NOTE: itemsに商品がある場合 or shipment.itemsが1つも無い場合はcomplete出来ない。
@@ -167,6 +160,9 @@ sub complete_validate {
         # emailからcustomer_idを算出？新規顧客の場合はcustomer作成
         $order->{customer} = {};
     }
+
+    # NOTE: WIP ゲスト購入
+    delete $order->{email};
 
     # Address正規化
     my $schema_address = $c->app->schema->resultset('Address');
@@ -218,17 +214,12 @@ sub complete_validate {
 
     # cart sessionクリア
     # cartクリア（再生成）
-    my $newcart = $c->factory('entity-cart')->construct( {} );
-    $c->cart_session->data( $newcart->to_data );
+    # my $newcart = $c->factory('entity-cart')->construct();
+    # $c->cart_session->data( $newcart->to_data );
+    $cart->clear_items;
 
     # redirect_to thank you page
-    # $c->render();
     $c->redirect_to('RN_checkout_complete');
-}
-
-sub complete {
-    my $c = shift;
-    $c->render();
 }
 
 1;

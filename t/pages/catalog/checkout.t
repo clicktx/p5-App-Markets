@@ -13,7 +13,7 @@ my $CART_DATA = {
         { product_id => 1, quantity => 1, price => 100 },
         { product_id => 3, quantity => 3, price => 300 },
     ],
-    shipments => [ { items => [] } ],
+    shipments => [],
 };
 
 sub startup : Test(startup) {
@@ -61,6 +61,40 @@ sub test_02_shipping_address : Tests() {
     my $t    = $self->t;
 
     $t->get_ok('/checkout/shipping-address')->status_is(200)->content_like(qr/shipping address/);
+
+    my $post_data = {
+        csrf_token     => $self->csrf_token,
+        select_address => 1,
+    };
+    $t->post_ok( '/checkout/shipping-address', form => $post_data )->status_is(200);
+}
+
+sub test_03_billing_address : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $t->get_ok('/checkout/billing-address')->status_is(200)->content_like(qr/billing address/);
+
+    my $post_data = {
+        csrf_token     => $self->csrf_token,
+        select_address => 0,
+    };
+    $t->post_ok( '/checkout/billing-address', form => $post_data )->status_is(200);
+}
+
+sub test_10_confirm : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $t->get_ok('/checkout/confirm')->status_is(200)->content_like(qr/confirm/);
+}
+
+sub test_20_complete : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    my $post_data = { csrf_token => $self->csrf_token, };
+    $t->post_ok( '/checkout/confirm', form => $post_data )->status_is(200);
 }
 
 __PACKAGE__->runtests;
