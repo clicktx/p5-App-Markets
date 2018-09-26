@@ -1,4 +1,4 @@
-requires 'perl',                                    '5.018';
+requires 'perl',                                    '5.010';
 requires 'CGI::Expand',                             '2.05';
 requires 'DateTime',                                '1.42';
 requires 'DateTime::Format::Strptime',              '1.73';
