@@ -1,6 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 
 use_ok 'Yetie::Domain::Entity::Address';
 
@@ -23,7 +23,7 @@ $addr = shift @{$addrs};
 $data_zenkaku->{$_} = shift @{$addr} for @{$cols};
 
 sub construct {
-    Yetie::Domain::Factory->new('entity-address')->construct(@_);
+    Yetie::Factory->new('entity-address')->construct(@_);
 }
 
 subtest 'basic' => sub {

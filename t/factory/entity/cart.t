@@ -1,8 +1,8 @@
 use Mojo::Base -strict;
 use Test::More;
 
-my $pkg = 'Yetie::Domain::Factory';
-use_ok 'Yetie::Domain::Factory::Entity::Cart';
+my $pkg = 'Yetie::Factory';
+use_ok 'Yetie::Factory::Entity::Cart';
 
 subtest 'argument empty' => sub {
     my $e = $pkg->new('entity-cart')->construct();

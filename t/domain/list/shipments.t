@@ -1,13 +1,13 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 
 my $pkg = 'Yetie::Domain::List::Shipments';
 use_ok $pkg;
 
 sub construct {
-    Yetie::Domain::Factory->new('list-shipments')->construct(@_);
+    Yetie::Factory->new('list-shipments')->construct(@_);
 }
 
 subtest 'basic' => sub {

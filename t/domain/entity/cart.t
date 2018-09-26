@@ -1,7 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 
 my %test_data = (
     email => 'a@example.org',
@@ -61,7 +61,7 @@ sub _create_entity {
     my %args = @_;
     %args = %test_data unless @_;
 
-    Yetie::Domain::Factory->new('entity-cart')->construct(
+    Yetie::Factory->new('entity-cart')->construct(
         {
             cart_id => '12345',
             %args,
@@ -105,7 +105,7 @@ subtest 'methods' => sub {
     is $cart->total_item_count, 7,                                          'right total item count';
     is $cart->total_quantity,   25,                                         'right total quantity count';
 
-    my $cart2 = Yetie::Domain::Factory->new('entity-cart')->construct(
+    my $cart2 = Yetie::Factory->new('entity-cart')->construct(
         {
             cart_id => '54321',
             %test_data,
@@ -174,7 +174,7 @@ subtest 'clone' => sub {
 };
 
 subtest 'has_billing_address' => sub {
-    my $cart = Yetie::Domain::Factory->new('entity-cart')->construct();
+    my $cart = Yetie::Factory->new('entity-cart')->construct();
     is $cart->has_billing_address, 0, 'right no address info';
 
     $cart = _create_entity;
@@ -182,7 +182,7 @@ subtest 'has_billing_address' => sub {
 };
 
 subtest 'has_shipping_address' => sub {
-    my $cart = Yetie::Domain::Factory->new('entity-cart')->construct();
+    my $cart = Yetie::Factory->new('entity-cart')->construct();
     is $cart->has_shipping_address, 0, 'right has not shipment';
 
     $cart->shipments->create_shipment;
@@ -216,7 +216,7 @@ subtest 'merge' => sub {
             }
         ],
     );
-    my $stored_cart = Yetie::Domain::Factory->new('entity-cart')->construct(
+    my $stored_cart = Yetie::Factory->new('entity-cart')->construct(
         {
             cart_id => '99999',
             %stored_data,
@@ -454,7 +454,7 @@ subtest 'set_shipping_address' => sub {
     is $cart->is_modified, 1, 'right modified';
 
     # first set(create and set)
-    $cart = Yetie::Domain::Factory->new('entity-cart')->construct();
+    $cart = Yetie::Factory->new('entity-cart')->construct();
     $cart->set_shipping_address($obj);
     cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $valid_data,
       'right create shipment and set shipping_address';
@@ -471,7 +471,7 @@ subtest 'subtotal' => sub {
     is $cart->subtotal, 2500, 'right subtotal';
 
     # no items
-    $cart = Yetie::Domain::Factory->new('entity-cart')->construct( cart_id => '12345' );
+    $cart = Yetie::Factory->new('entity-cart')->construct( cart_id => '12345' );
     $cart->subtotal, 0, 'right no items';
 };
 

@@ -1,6 +1,6 @@
 package Yetie::Domain::Entity;
 use Yetie::Domain::Base -base;
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 use Yetie::Domain::Collection qw();
 use Yetie::Domain::IxHash qw();
 use Mojo::Util qw();
@@ -27,7 +27,7 @@ sub clone {
 
 sub equal { shift->id eq shift->id ? 1 : 0 }
 
-sub factory { Yetie::Domain::Factory->new( $_[1] ) }
+sub factory { Yetie::Factory->new( $_[1] ) }
 
 sub has_data { return shift->id ? 1 : 0 }
 
@@ -166,7 +166,7 @@ Return boolean value.
 
     __PACKAGE__->factory('entity-foo');
 
-Return Yetie::Domain::Factory object.
+Return Yetie::Factory object.
 
 =head2 C<has_data>
 

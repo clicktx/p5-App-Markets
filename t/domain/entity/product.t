@@ -1,6 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 
 my $test_data = {
     title       => 'product title',
@@ -24,7 +24,7 @@ my $test_data = {
 };
 
 sub _create_entity {
-    Yetie::Domain::Factory->new('entity-page-product')->construct($test_data);
+    Yetie::Factory->new('entity-page-product')->construct($test_data);
 }
 
 use_ok 'Yetie::Domain::Entity::Page::Product';

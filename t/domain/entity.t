@@ -42,7 +42,7 @@ subtest 'hash_code' => sub {
 subtest 'factory' => sub {
     my $e = $pkg->new();
     my $f = $pkg->factory('entity-foo');
-    isa_ok $f, 'Yetie::Domain::Factory';
+    isa_ok $f, 'Yetie::Factory';
 };
 
 subtest 'function' => sub {
