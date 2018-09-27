@@ -22,6 +22,24 @@ has _locale_notation => sub {
     };
     my $country = $country_name->{ $self->country_code };
 
+    # NOTE: templateでclass を追加できるようにしたい
+    # Address::ViewFormat
+    # $address->view('attr')  $address->attr
+    # $address->view( \$scalar ) $scalar
+    # $address->view( { class => [ 'attr1', 'attr2' ] } ) $address->attr1 . $address->attr2
+    # <li class="<%=  %>"><%= $address->view($_) %></li>
+    my $lines = {
+        us => [
+            qw(personal_name organization line2 line1),
+            { main => [ 'city', \', ', 'state', \' ', 'postal_code' ] },
+            qw(country_name phone)
+        ],
+        jp => [ qw(postal_code), [qw(state city line1)], qw(line2 organization personal_name country_name phone) ],
+    };
+
+    # use DDP;
+    # p $lines->{us};
+
     return {
         us => [
             $self->personal_name, $self->organization, $self->line2, $self->line1,
