@@ -1,0 +1,12 @@
+<div class="display-address-div">
+    <ul class="display-address-ul">
+    % my $notation = $address->notation;
+    % foreach my $row ( @{$notation} ) {
+        % next unless $row;
+        % my $content;
+        % if ( ref $row eq 'ARRAY' ){ $content .= $_ for @{$row} }
+        % else { $content = $row }
+        <li class="display-address-li"><%= $content %></li>
+    % }
+    </ul>
+</div>
