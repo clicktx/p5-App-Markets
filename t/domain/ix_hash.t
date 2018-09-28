@@ -34,21 +34,24 @@ subtest 'first' => sub {
     is $key,   'a';
     is $value, 10;
 
+    my $pair = $h->first;
+    is_deeply $pair, { a => 10 };
+
     # Regex
-    ( $key, $value ) = $h->first( [qr/b/] );
+    ( $key, $value ) = $h->first( { key => qr/b/ } );
     is $key,   'b';
     is $value, '20';
-    ( $key, $value ) = $h->first( [ undef, qr/2/ ] );
+    ( $key, $value ) = $h->first( { value => qr/2/ } );
     is $key,   'b';
     is $value, '20';
-    ( $key, $value ) = $h->first( [ qr/c/, qr/3/ ] );
+    ( $key, $value ) = $h->first( { key => qr/c/, value => qr/3/ } );
     is $key,   'c';
     is $value, '30';
-    ( $key, $value ) = $h->first( [ qr/a/, qr/2/ ] );
+    ( $key, $value ) = $h->first( { key => qr/a/, value => qr/2/ } );
     is $key,   undef;
     is $value, undef;
 
-    # Function
+    # Code reference
     ( $key, $value ) = $h->first( sub { my ( $key, $value ) = @_; $value > 30 } );
     is $key,   'd';
     is $value, '40';
@@ -64,17 +67,17 @@ subtest 'grep' => sub {
     my $new;
 
     # Regex
-    $new = $h->grep( [ qr//, qr// ] );
+    $new = $h->grep( { key => qr//, value => qr// } );
     isa_ok $new, 'Yetie::Domain::IxHash';
     is_deeply \@{ $new->pairs }, [qw/a 10 b 20 c 30 d 40 e 50/];
-    $new = $h->grep( [ qr/c|e/, qr// ] );
+    $new = $h->grep( { key => qr/c|e/ } );
     is_deeply \@{ $new->pairs }, [qw/c 30 e 50/];
-    $new = $h->grep( [ undef, qr/3|5/ ] );
+    $new = $h->grep( { value => qr/3|5/ } );
     is_deeply \@{ $new->pairs }, [qw/c 30 e 50/];
-    $new = $h->grep( [ qr/c/, qr/3|5/ ] );
+    $new = $h->grep( { key => qr/c/, value => qr/3|5/ } );
     is_deeply \@{ $new->pairs }, [qw/c 30/];
 
-    # Function
+    # Code reference
     $new = $h->grep( sub { } );
     is_deeply \@{ $new->pairs }, [];
     $new = $h->grep( sub { 1 } );
@@ -101,6 +104,9 @@ subtest 'last' => sub {
     my ( $key, $value ) = $h->last;
     is $key,   'e';
     is $value, 50;
+
+    my $pair = $h->last;
+    is_deeply $pair, { e => 50 };
 };
 
 subtest 'map' => sub {
@@ -135,7 +141,7 @@ subtest 'to_data' => sub {
     use Yetie::Domain::IxHash qw/ixhash/;
     my $h = ixhash(
         a => ixhash( a1 => ixhash( a2 => 1 ) ),
-        b => { b1        => 2 },
+        b => { b1       => 2 },
         c => 3
     );
     my $data = $h->to_data;

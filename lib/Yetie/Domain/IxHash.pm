@@ -14,7 +14,7 @@ sub each {
     my ( $self, $cb ) = @_;
     return %{$self} unless $cb;
 
-    my $i = 1;
+    my $i      = 1;
     my $caller = caller;
     foreach my $a ( @{ $self->keys } ) {
         my $b = $self->{$a};
@@ -27,25 +27,32 @@ sub each {
 
 sub first {
     my ( $self, $cb ) = ( shift, shift );
-    my @keys = $self->keys;
-    return $keys[0] => $self->{ $keys[0] } unless $cb;
-    return ( List::Util::pairfirst { $a =~ ( $cb->[0] || qr// ) && $b =~ ( $cb->[1] || qr// ) } %{$self} )
-      if ref $cb eq 'ARRAY';
 
-    my $caller = caller;
-    no strict 'refs';
-    my @list = List::Util::pairfirst {
-        local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
-        $a->$cb($b)
+    my @keys = $self->keys;
+    my %pair = ();
+
+    if ( !$cb ) { %pair = ( $keys[0] => $self->{ $keys[0] } ) }
+    elsif ( ref $cb eq 'HASH' ) {    # Regex
+        %pair = List::Util::pairfirst { $a =~ ( $cb->{key} || qr/.*/ ) && $b =~ ( $cb->{value} || qr/.*/ ) } %{$self};
     }
-    %{$self};
-    return @list;
+    else {                           # Code reference
+        my $caller = caller;
+        no strict 'refs';
+        %pair = List::Util::pairfirst {
+            local ( *{"${caller}::a"}, *{"${caller}::b"} ) = ( \$a, \$b );
+            $a->$cb($b)
+        }
+        %{$self};
+    }
+    return wantarray ? %pair : \%pair;
 }
 
 sub grep {
     my ( $self, $cb ) = ( shift, shift );
-    return $self->new( List::Util::pairgrep { $a =~ ( $cb->[0] || qr// ) && $b =~ ( $cb->[1] || qr// ) } %{$self} )
-      if ref $cb eq 'ARRAY';
+    return $self->new(
+        List::Util::pairgrep { $a =~ ( $cb->{key} || qr/.*/ ) && $b =~ ( $cb->{value} || qr/.*/ ) }
+        %{$self}
+    ) if ref $cb eq 'HASH';
 
     my $caller = caller;
     no strict 'refs';
@@ -62,7 +69,10 @@ sub keys {
     return wantarray ? @keys : \@keys;
 }
 
-sub last { ( @{ $_[0]->keys }[-1], @{ $_[0]->values }[-1] ) }
+sub last {
+    my %pair = ( @{ $_[0]->keys }[-1], @{ $_[0]->values }[-1] );
+    wantarray ? %pair : \%pair;
+}
 
 sub map {
     my ( $self, $cb ) = ( shift, shift );
@@ -163,15 +173,18 @@ the following new ones.
 =head2 C<first>
 
     my ( $key, $value ) = $ixhash->first;
-    my ( $key, $value ) = $ixhash->first( [ qr//, qr// ] );
+    my ( $key, $value ) = $ixhash->first( { key => qr//, value => qr// } );
     my ( $key, $value ) = $ixhash->first( sub {...} );
+    my $pair = $ixhash->first;      # Return hash reference
 
     # Find first key-value pair that "key" contains the word "mojo"
-    my ( $key, $value ) = $collection->first([ qr/mojo/i ]);
+    my ( $key, $value ) = $collection->first( { key => qr/mojo/i } );
+
     # Find first key-value pair that "value" contains the word "jo"
-    my ( $key, $value ) = $collection->first([ undef, qr/jo/i ]);
+    my ( $key, $value ) = $collection->first( { value => qr/jo/i } );
+
     # Find first key-value pair that "key" contains the word "mo" and "value" contains the word "jo"
-    my ( $key, $value ) = $collection->first([ qr/mo/i, qr/jo/i ]);
+    my ( $key, $value ) = $collection->first( { key => qr/mo/i, value => qr/jo/i } );
 
     # Find first key-value pair that key is 'hoge'
     my ( $key, $value ) = $ixhash->first( sub { $a eq 'hoge' } );
@@ -183,7 +196,7 @@ the following new ones.
 
 =head2 C<grep>
 
-    my $new = $ixhash->grep( [ qr//, qr// ] );
+    my $new = $ixhash->grep( { key => qr//, value => qr// } );
     my $new = $ixhash->grep( sub {...} );
 
 
@@ -202,6 +215,7 @@ the following new ones.
 =head2 C<last>
 
     my ( $key, $value ) = $ixhash->last;
+    my $pair = $ixhash->last;
 
 Return the last key-value pair.
 
