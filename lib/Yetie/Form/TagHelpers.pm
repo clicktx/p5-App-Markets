@@ -3,6 +3,7 @@ use Mojo::Base -base;
 use Carp qw(croak);
 use Scalar::Util qw(blessed weaken);
 use Mojo::Collection qw(c);
+use Yetie::Util qw(array_to_hash);
 use Mojolicious::Controller;
 use Mojolicious::Plugin::TagHelpers;
 
@@ -192,10 +193,8 @@ sub _error {
     # Default error message
     if ( !$message ) { $message = $c->validation->error_message($name) || 'This field is invalid.' }
 
-    my %args;
-    while ( my ( $i, $v ) = each @args ) { $args{$i} = $v }
-
-    my $text = ref $message ? $message->($c) : $c->__x( $message, \%args );
+    my $args = array_to_hash(@args);
+    my $text = ref $message ? $message->($c) : $c->__x( $message, $args );
     return $c->tag( 'span', class => $error_class, sub { $text } );
 }
 
