@@ -4,7 +4,7 @@
     <%= form_for '' => ( method => 'POST' ) => begin %>
         <% form $action; =%>
         <%= csrf_field %>
-        <%= hidden_field "$action.id" => $entity->$action->id %>
+        <%= hidden_field "id" => $entity->$action->id %>
         <%= include 'admin/form/fields', field_names => stash('field_names') %>
         <div class="">
             <%= submit_button __("save.$action") %>
