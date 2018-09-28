@@ -104,6 +104,9 @@ subtest 'last' => sub {
     my ( $key, $value ) = $h->last;
     is $key,   'e';
     is $value, 50;
+
+    my $pair = $h->last;
+    is_deeply $pair, { e => 50 };
 };
 
 subtest 'map' => sub {
@@ -153,11 +156,3 @@ subtest 'values' => sub {
 };
 
 done_testing();
-
-package IxHash::First;
-use Mojo::Base 'Yetie::Domain::IxHash';
-
-sub first_function {
-    my ( $key, $value ) = @_;
-    $value > 30;
-}

@@ -69,7 +69,10 @@ sub keys {
     return wantarray ? @keys : \@keys;
 }
 
-sub last { ( @{ $_[0]->keys }[-1], @{ $_[0]->values }[-1] ) }
+sub last {
+    my %pair = ( @{ $_[0]->keys }[-1], @{ $_[0]->values }[-1] );
+    wantarray ? %pair : \%pair;
+}
 
 sub map {
     my ( $self, $cb ) = ( shift, shift );
@@ -212,6 +215,7 @@ the following new ones.
 =head2 C<last>
 
     my ( $key, $value ) = $ixhash->last;
+    my $pair = $ixhash->last;
 
 Return the last key-value pair.
 
