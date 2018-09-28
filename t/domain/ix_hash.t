@@ -34,21 +34,24 @@ subtest 'first' => sub {
     is $key,   'a';
     is $value, 10;
 
+    my $pair = $h->first;
+    is_deeply $pair, { a => 10 };
+
     # Regex
-    ( $key, $value ) = $h->first( [qr/b/] );
+    ( $key, $value ) = $h->first( { key => qr/b/ } );
     is $key,   'b';
     is $value, '20';
-    ( $key, $value ) = $h->first( [ undef, qr/2/ ] );
+    ( $key, $value ) = $h->first( { value => qr/2/ } );
     is $key,   'b';
     is $value, '20';
-    ( $key, $value ) = $h->first( [ qr/c/, qr/3/ ] );
+    ( $key, $value ) = $h->first( { key => qr/c/, value => qr/3/ } );
     is $key,   'c';
     is $value, '30';
-    ( $key, $value ) = $h->first( [ qr/a/, qr/2/ ] );
+    ( $key, $value ) = $h->first( { key => qr/a/, value => qr/2/ } );
     is $key,   undef;
     is $value, undef;
 
-    # Function
+    # Code reference
     ( $key, $value ) = $h->first( sub { my ( $key, $value ) = @_; $value > 30 } );
     is $key,   'd';
     is $value, '40';
@@ -135,7 +138,7 @@ subtest 'to_data' => sub {
     use Yetie::Domain::IxHash qw/ixhash/;
     my $h = ixhash(
         a => ixhash( a1 => ixhash( a2 => 1 ) ),
-        b => { b1        => 2 },
+        b => { b1       => 2 },
         c => 3
     );
     my $data = $h->to_data;
@@ -150,3 +153,11 @@ subtest 'values' => sub {
 };
 
 done_testing();
+
+package IxHash::First;
+use Mojo::Base 'Yetie::Domain::IxHash';
+
+sub first_function {
+    my ( $key, $value ) = @_;
+    $value > 30;
+}
