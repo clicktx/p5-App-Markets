@@ -17,7 +17,7 @@
 % });
 </ul>
 
-<%= include 'admin/component/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>
+<%= include 'admin/components/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>
 
 <ul>
     <li><%= link_to __('Create New Customer') => 'RN_admin_customer_create' %></li>

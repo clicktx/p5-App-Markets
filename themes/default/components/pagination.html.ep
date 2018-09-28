@@ -1,0 +1,2 @@
+default pagination from
+<%= include 'common/components/pagination' =%>

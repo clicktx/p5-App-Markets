@@ -1,0 +1,2 @@
+admin/components/pagination from
+<%= include 'common/components/pagination' =%>
