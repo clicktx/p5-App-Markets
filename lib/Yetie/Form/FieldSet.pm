@@ -55,7 +55,17 @@ sub field {
 
     no strict 'refs';
     my $attrs = $field_key ? ${"${class}::schema"}{$field_key} : {};
-    my $field = Yetie::Form::Field->new( field_key => $field_key, name => $name, %{$attrs}, %{$args} );
+
+    my $pkg      = __PACKAGE__;
+    my $fieldset = ref $self;
+    $fieldset =~ s/$pkg\:://;
+
+    my $field = Yetie::Form::Field->new(
+        _fieldset => $fieldset,
+        field_key => $field_key,
+        name      => $name,
+        %{$attrs}, %{$args}
+    );
     $self->{_field}->{$cache_key} = $field;
     return $field;
 }

@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Page;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Yetie::Form::Base;
 use Data::Page;
 
@@ -49,7 +49,7 @@ has L<Yetie::Domain::Entity::Link> object in L<Yetie::Domain::Collection> object
 
 =head2 C<form_params>
 
-Return L<Yetie::Parameters> object.
+Return L<Yetie::App::Core::Parameters> object.
 
 NOTE: These values are validated form parameters.
 

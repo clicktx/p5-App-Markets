@@ -2,21 +2,21 @@ package Yetie::Controller::Admin::Orders;
 use Mojo::Base 'Yetie::Controller::Admin';
 
 sub index {
-    my $self = shift;
+    my $c = shift;
 
-    my $form = $self->form('search');
-    $self->init_form();
+    my $form = $c->form('search');
+    $c->init_form();
 
-    # return $self->render() unless $form->has_data;
-    return $self->render() unless $form->do_validate;
+    # return $c->render() unless $form->has_data;
+    return $c->render() unless $form->do_validate;
 
-    my $orders = $self->service('orders')->search_orders($form);
-    $self->stash( entity => $orders );
+    my $orders = $c->service('orders')->search_orders($form);
+    $c->stash( entity => $orders );
 
     # Page Data
     $orders->page_title('Orders');
 
-    $self->render();
+    $c->render();
 }
 
-1;
+1

@@ -1,6 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
-use Yetie::Domain::Factory;
+use Yetie::Factory;
 
 my $pkg = 'Yetie::Domain::Entity::Customer';
 use_ok $pkg;
@@ -18,7 +18,7 @@ subtest 'is_registered' => sub {
     my $customer = $pkg->new();
     is $customer->is_registered, 0, 'right not register';
 
-    $customer = Yetie::Domain::Factory->new('entity-customer')->create( password => { value => 'hoo' } );
+    $customer = Yetie::Factory->new('entity-customer')->construct( password => { value => 'hoo' } );
     is $customer->is_registered, 1, 'right register';
 };
 

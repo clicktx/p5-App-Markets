@@ -2,30 +2,29 @@ package Yetie::Controller::Catalog::Category;
 use Mojo::Base 'Yetie::Controller::Catalog';
 
 sub index {
-    my $self = shift;
+    my $c = shift;
 
-    my $form = $self->form('search');
-    $self->init_form();
+    my $form = $c->form('search');
+    $c->init_form();
 
-    # return $self->render() unless $form->has_data;
+    # return $c->render() unless $form->has_data;
     $form->do_validate;
 
-    my $category_id = $self->stash('category_id');
-    my $category = $self->service('category')->find_category_with_products( $category_id, $form );
-    $self->stash( entity => $category );
+    my $category_id = $c->stash('category_id');
+    my $category = $c->service('category')->find_category_with_products( $category_id, $form );
+    $c->stash( entity => $category );
 
     # 404
-    return $self->reply->not_found() unless $category->has_data;
+    return $c->reply->not_found() unless $category->has_data;
 
     # Page Data
     $category->page_title( $category->title );
 
     # widget category tree
-    my $service = $self->service('category_tree');
-    my $category_tree = $service->get_cache || $service->search_all;
-    $self->stash( 'yetie.widget.category_tree' => $category_tree );
+    my $service = $c->service('category_tree');
+    $c->stash( 'yetie.widget.category_tree' => $service->search_all );
 
-    return $self->render();
+    return $c->render();
 }
 
 1;

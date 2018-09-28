@@ -5,6 +5,9 @@ use Yetie::Log::Logger;
 sub register {
     my ( $self, $app ) = @_;
 
+    # Signal warn
+    $SIG{'__WARN__'} = sub { my $err = shift; warn $err; chomp $err; $app->log->warn($err); };
+
     # Create log directory
     my $log_dir = $app->home->child( "var", "log" );
     $log_dir->make_path unless -d $log_dir && -w _;

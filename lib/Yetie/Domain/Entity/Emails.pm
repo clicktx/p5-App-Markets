@@ -1,9 +1,5 @@
 package Yetie::Domain::Entity::Emails;
-use Yetie::Domain::Entity;
-
-has email_list => sub { Yetie::Domain::Collection->new };
-
-sub each { shift->email_list->each(@_) }
+use Yetie::Domain::Base 'Yetie::Domain::List';
 
 sub primary {
     my $self = shift;
@@ -26,12 +22,12 @@ Yetie::Domain::Entity::Emails
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Emails> inherits all attributes from L<Yetie::Domain::Entity::Page> and implements
+L<Yetie::Domain::Entity::Emails> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
 
-=head2 C<email_list>
+=head2 C<list>
 
-    my $collection = $emails->email_list;
+    my $collection = $emails->list;
 
 Return L<Yetie::Domain::Collection> object.
 
@@ -39,15 +35,8 @@ Collection is an array composed of L<Yetie::Domain::Value::Email>.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Emails> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
+L<Yetie::Domain::Entity::Emails> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
-
-=head2 C<each>
-
-    $emails->each(...);
-
-    # Longer version
-    $emails->email_list->each(...);
 
 =head2 C<primary>
 
@@ -59,4 +48,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Value::Email>, L<Yetie::Domain::Entity>
+L<Yetie::Domain::List>, L<Yetie::Domain::Value::Email>

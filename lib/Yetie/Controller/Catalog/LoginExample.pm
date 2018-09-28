@@ -10,15 +10,15 @@ my @data = (
 my $item = [ { id => 0, name => 'aa' }, { id => 1, name => 'bb' }, { id => 2, name => 'cc' }, ];
 
 sub index {
-    my $self = shift;
+    my $c = shift;
 
-    $self->stash( item => $item );
+    $c->stash( item => $item );
 
-    my $form = $self->form('example');
-    return $self->render() unless $form->has_data;
+    my $form = $c->form('example');
+    return $c->render() unless $form->has_data;
 
     use DDP;
-    my $validation = $self->validation;
+    my $validation = $c->validation;
     if ( $form->do_validate ) {
 
         # NOTE :
@@ -35,7 +35,7 @@ sub index {
         p $validation;
     }
 
-    $self->render();
+    $c->render();
 }
 
 package Yetie::Controller::Catalog::LoginExample::Before;
@@ -51,7 +51,7 @@ use DDP {
 };
 
 sub init_form {
-    my ( $self, $form ) = @_;
+    my ( $c, $form ) = @_;
 
     $form->add_field( 'name', [], ['is_example'] );
     $form->add_field( 'password', [ 'trim', 'only_digits' ], [ 'required', { range_length => [ 4, 8 ] }, ] );
@@ -67,11 +67,11 @@ sub init_form {
 }
 
 sub index {
-    my $self = shift;
+    my $c = shift;
 
-    my $form = $self->form('login');    #or
-                                        # my $form = $self->form->fields('login');
-    $self->init_form($form);
+    my $form = $c->form('login');    #or
+                                        # my $form = $c->form->fields('login');
+    $c->init_form($form);
 
     # Set default value
     $form->default_value( 'name',      'default_value' );
@@ -83,36 +83,36 @@ sub index {
     $form->default_value( 'opt.color', 'red' );
     p($form);
 
-    # $self->render( login => $form );
-    # $self->render( $form->default_value );
-    $self->render( $form->expand_hash );
+    # $c->render( login => $form );
+    # $c->render( $form->default_value );
+    $c->render( $form->expand_hash );
 }
 
 sub attempt {
-    my $self = shift;
+    my $c = shift;
 
-    my $form = $self->form('login');
-    $self->init_form($form);
+    my $form = $c->form('login');
+    $c->init_form($form);
 
     if ( $form->valid ) {
         say "ok";
         p( $form->params );
 
-        # return $self->redirect_to('/');
+        # return $c->redirect_to('/');
     }
     else {
         say "!!!!!!!!!!!!!!!!!!!error!!!!!!!!!!!!!!";
-        p( $self->form_errors );
+        p( $c->form_errors );
         p( $form->errors );
 
-        my $params = $self->param('login');
+        my $params = $c->param('login');
         p($params);
-        p( $self->req->params->to_hash );
+        p( $c->req->params->to_hash );
         p( $form->params );
         p( CGI::Expand->collapse_hash( $form->params ) );
     }
 
-    $self->render(
+    $c->render(
         template => 'login_example/index',
 
         # login    => $form,

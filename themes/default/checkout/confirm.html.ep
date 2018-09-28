@@ -7,10 +7,6 @@
 
 <h3>ORDER SUMMARY</h3>
 
-<pre>
-<%= dumper $self->cart->to_data %>
-</pre>
-
 <h3>Secure checkout</h3>
 <ol>
     <li>Please sign in</li>
@@ -20,9 +16,58 @@
     <li><strong>Order Confirmation</strong></li>
 </ol>
 
+% my $cart = $self->cart;
+<div class="">
+    <h3>Shipping Address</h3>
+    <%= content shipping_address => begin =%>
+        <%= link_to 'RN_checkout_shipping_address' => begin %>
+            Change
+        <% end %>
+        <!-- NOTE: とりあえず通常配送のみ -->
+        <%= include 'common/components/address', address => $cart->shipments->first->shipping_address %>
+    <% end =%>
+</div>
+
+<div class="">
+    <h3>Billing Address</h3>
+    <%= content billing_address => begin =%>
+        <%= link_to 'RN_checkout_billing_address' => begin %>
+            Change
+        <% end %>
+        <%= include 'common/components/address', address => $cart->billing_address %>
+    <% end =%>
+</div>
+
+<div class="">
+    <h3>Items Ordered</h3>
+    <%= content items_ordered => begin =%>
+        <%= link_to 'RN_cart' => begin %>
+            Change
+        <% end %>
+        <ol>
+            % $cart->shipments->first->items->each( sub {
+                <li>
+                    ID: <%= $_->id %> | PRODUCT ID: <%= $_->product_id %>
+                    | product_title: <%= $_->product_title %>
+                    | QTY: <%= $_->quantity %>
+                    <%= link_to 'RN_check_out_change_item_quantity' => begin %>
+                        Change
+                    <% end %>
+                    | price: <%= $_->price %>
+                    | line total: <%= $_->subtotal %>
+                </li>
+            % });
+        </ol>
+    <% end =%>
+</div>
+
 <%= form_for 'RN_checkout_confirm' => ( method => 'post' ) => begin %>
     <%= csrf_field %>
     <%= submit_button 'BUY NOW' %>
 <% end %>
 
-<%= link_to 'Back to page' => 'RN_checkout_shipping' %>
+<pre>
+<%= dumper $cart->to_data %>
+</pre>
+
+<%= link_to 'Back to page' => 'RN_cart' %>

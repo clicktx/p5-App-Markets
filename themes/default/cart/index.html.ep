@@ -3,6 +3,7 @@
 
 <h1><%= title %></h1>
 
+<% my $cart = $self->cart; %>
 <%= __nx('{cnt :num} item', '{cnt :num} items', $cart->total_item_count, cnt => $cart->total_item_count) %>
 (Total QTY: <%= $cart->total_quantity %>) in your cart.
 
@@ -54,5 +55,9 @@
     <li><%= link_to 'Continue Shopping' => $ref %></li>
     <li>Clear Cart</li>
     <li><%= link_to 'Edit Cart' => 'RN_cart' %></li>
-    <li><%= link_to 'Check Out' => 'RN_checkout' %></li>
+    <li><%= link_to 'Proceed to Checkout' => 'RN_checkout', ( class => 'btn btn-primary' ) %></li>
 </ul>
+
+<pre>
+<%= dumper $self->cart->to_data %>
+</pre>

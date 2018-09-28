@@ -1,14 +1,22 @@
 use Mojo::Base -strict;
 use Test::More;
 
-use_ok 'Yetie::Domain::Base';
+my $pkg = 'Yetie::Domain::Base';
+use_ok $pkg;
 
-# new
-eval { Yetie::Domain::Base->new( foo => 1 ) };
-like $@, qr/has not 'foo' attribute/, '';
-
-# Role
-
-# Signatures
+subtest 'base' => sub {
+    eval { $pkg->new( foo => 1 ) };
+    like $@, qr/has not 'foo' attribute/, '';
+};
 
 done_testing();
+
+# Strict
+package Foo::Strict;
+use Yetie::Domain::Base -strict;
+
+# Role
+package Foo::Role;
+use Yetie::Domain::Base -role;
+
+# Signatures

@@ -1,9 +1,9 @@
 package Yetie::Domain::Entity::Shipment;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Data::Clone qw/data_clone/;
 
-has shipping_address => sub { __PACKAGE__->factory('entity-address') };
-has items            => sub { Yetie::Domain::Collection->new };
+has items            => sub { __PACKAGE__->factory('list-cart_items')->construct() };
+has shipping_address => sub { __PACKAGE__->factory('entity-address')->construct() };
 
 sub clone {
     my $self  = shift;
@@ -14,11 +14,7 @@ sub clone {
     return $clone;
 }
 
-sub item_count { shift->items->size }
-
-sub subtotal_quantity {
-    shift->items->reduce( sub { $a + $b->quantity }, 0 );
-}
+sub item_count { shift->items->count }
 
 sub subtotal {
     shift->items->reduce( sub { $a + $b->subtotal }, 0 );
@@ -56,8 +52,6 @@ the following new ones.
 =head2 C<clone>
 
 =head2 C<item_count>
-
-=head2 C<subtotal_quantity>
 
 =head2 C<subtotal>
 

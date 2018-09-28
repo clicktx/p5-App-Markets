@@ -41,7 +41,7 @@ sub startup {
     };
 
     # Renderer
-    $self->plugin($_) for qw(Yetie::View::EPRenderer Yetie::View::EPLRenderer Yetie::View::DOM);
+    $self->plugin($_) for qw(Yetie::App::Core::View::EPRenderer Yetie::App::Core::View::EPLRenderer Yetie::App::Core::View::DOM);
 
     # Initialize all addons
     my $installed_addons = $self->schema->resultset('addon')->configure;

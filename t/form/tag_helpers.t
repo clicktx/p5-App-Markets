@@ -18,6 +18,7 @@ sub init {
 
 sub f {
     return Yetie::Form::Field->new(
+        _fieldset     => 'Foo::Bar',
         field_key     => 'item.[].name',
         name          => 'item.0.name',
         label         => 'label text',
@@ -216,14 +217,18 @@ subtest 'help_block' => sub {
 
 subtest 'hidden' => sub {
     my ( $c, $h ) = init();
-    my $f = Yetie::Form::Field->new( name => 'item.0.name', class => 'foo' );
+    my $f = Yetie::Form::Field->new(
+        _fieldset => 'Foo::Bar',
+        name      => 'item.0.name',
+        class     => 'foo'
+    );
 
     $f->default_value('default');
     my $dom = Mojo::DOM->new( $h->hidden($f) );
     is_deeply $dom->at('*')->attr,
       {
         type  => 'hidden',
-        id    => 'form-widget-item-0-name',
+        id    => 'form-widget-foo-bar-item-0-name',
         name  => 'item.0.name',
         value => 'default',
         class => 'foo'
@@ -235,7 +240,7 @@ subtest 'hidden' => sub {
     is_deeply $dom->at('*')->attr,
       {
         type  => 'hidden',
-        id    => 'form-widget-item-0-name',
+        id    => 'form-widget-foo-bar-item-0-name',
         name  => 'item.0.name',
         value => 'abc',
         class => 'foo'
@@ -247,7 +252,7 @@ subtest 'hidden' => sub {
     is_deeply $dom->at('*')->attr,
       {
         type  => 'hidden',
-        id    => 'form-widget-item-0-name',
+        id    => 'form-widget-foo-bar-item-0-name',
         name  => 'item.0.name',
         value => '0',
         class => 'foo'
@@ -274,7 +279,7 @@ subtest 'input basic' => sub {
         is_deeply $dom->at('*')->attr,
           {
             type        => $type,
-            id          => 'form-widget-item-0-name',
+            id          => 'form-widget-foo-bar-item-0-name',
             name        => 'item.0.name',
             placeholder => 'example',
             required    => undef,
@@ -288,7 +293,7 @@ subtest 'input basic' => sub {
     is_deeply $dom->at('*')->attr,
       {
         type        => 'password',
-        id          => 'form-widget-item-0-name',
+        id          => 'form-widget-foo-bar-item-0-name',
         name        => 'item.0.name',
         placeholder => 'example',
         required    => undef,
@@ -306,7 +311,7 @@ subtest 'input other' => sub {
         is_deeply $dom->at('*')->attr,
           {
             type     => $type,
-            id       => 'form-widget-item-0-name',
+            id       => 'form-widget-foo-bar-item-0-name',
             name     => 'item.0.name',
             required => undef,
             value    => 'sss',
@@ -319,7 +324,7 @@ subtest 'input other' => sub {
     is_deeply $dom->at('*')->attr,
       {
         type     => 'datetime-local',
-        id       => 'form-widget-item-0-name',
+        id       => 'form-widget-foo-bar-item-0-name',
         name     => 'item.0.name',
         required => undef,
         value    => 'sss',
@@ -331,7 +336,7 @@ subtest 'input other' => sub {
     is_deeply $dom->at('*')->attr,
       {
         type     => 'file',
-        id       => 'form-widget-item-0-name',
+        id       => 'form-widget-foo-bar-item-0-name',
         name     => 'item.0.name',
         required => undef,
       },
@@ -342,13 +347,14 @@ subtest 'label' => sub {
     my ( $c, $h ) = init();
     my $f   = f();
     my $dom = Mojo::DOM->new( $h->label_for($f) );
-    is_deeply $dom->at('*')->attr, { for => 'form-widget-item-0-name' }, 'right attr';
+    is_deeply $dom->at('*')->attr, { for => 'form-widget-foo-bar-item-0-name' }, 'right attr';
     is $dom->at('*')->text, 'label text', 'right text';
 };
 
 subtest 'select' => sub {
     my ( $c, $h ) = init();
     my $f = Yetie::Form::Field->new(
+        _fieldset => 'Foo::Bar',
         field_key => 'country',
         name      => 'country',
     );
@@ -356,12 +362,12 @@ subtest 'select' => sub {
     my $dom;
     $dom = Mojo::DOM->new( $h->select($f) );
     is $dom->at('*')->tag, 'select', 'right tag';
-    is_deeply $dom->at('*')->attr, { id => 'form-widget-country', name => 'country' }, 'right attr';
+    is_deeply $dom->at('*')->attr, { id => 'form-widget-foo-bar-country', name => 'country' }, 'right attr';
 
     my $child;
     $f->choices( [ 'de', 'en' ] );
     $dom = Mojo::DOM->new( $h->select($f) );
-    is_deeply $dom->at('select')->attr, { id => 'form-widget-country', name => 'country' }, 'right attr';
+    is_deeply $dom->at('select')->attr, { id => 'form-widget-foo-bar-country', name => 'country' }, 'right attr';
     $child = $dom->at('select')->child_nodes;
     is @{$child}[0]->text, 'de', 'right text';
     is_deeply @{$child}[0]->attr, { value => 'de' }, 'right attr';
@@ -420,6 +426,7 @@ subtest 'select' => sub {
 subtest 'textarea' => sub {
     my ( $c, $h ) = init();
     my $f = Yetie::Form::Field->new(
+        _fieldset     => 'Foo::Bar',
         field_key     => 'order.note',
         name          => 'order.note',
         type          => 'textarea',
@@ -430,7 +437,7 @@ subtest 'textarea' => sub {
     my $dom = Mojo::DOM->new( $h->textarea($f) );
     is $dom->at('*')->tag, 'textarea', 'right tag';
     is_deeply $dom->at('*')->attr,
-      { id => 'form-widget-order-note', name => 'order.note', cols => 40 },
+      { id => 'form-widget-foo-bar-order-note', name => 'order.note', cols => 40 },
       'right textarea';
     is $dom->at('*')->text, 'default text', 'right text';
 

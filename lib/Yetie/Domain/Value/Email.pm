@@ -1,5 +1,5 @@
 package Yetie::Domain::Value::Email;
-use Yetie::Domain::Value;
+use Yetie::Domain::Base 'Yetie::Domain::Value';
 
 has is_primary  => 0;
 has is_verified => 0;

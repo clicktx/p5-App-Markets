@@ -26,27 +26,38 @@ my %params = (
     phone         => '3059398498'
 );
 
-subtest 'get registered id' => sub {
+subtest 'get_address_types' => sub {
+    my ( $c, $s ) = _init();
+
+    is $c->cache('address_types'), undef, 'right uncached';
+
+    my $types = $s->get_address_types;
+    isa_ok $types, 'Yetie::Domain::Entity::AddressTypes';
+
+    is $c->cache('address_types'), $types, 'right cached';
+};
+
+subtest 'get_registered_id' => sub {
     my ( $c, $s ) = _init();
     my %p = %params;
 
-    my $address = $c->factory('entity-address')->create(%p);
+    my $address = $c->factory('entity-address')->construct(%p);
     my $id      = $s->get_registered_id($address);
     is $id, undef, 'right found registered, but self it';
 
     $p{personal_name} = 'Eli za beth T. Peoples';
-    $address          = $c->factory('entity-address')->create(%p);
+    $address          = $c->factory('entity-address')->construct(%p);
     $id               = $s->get_registered_id($address);
     is $id, undef, 'right found registered, but self it(minor changes)';
 
     $p{personal_name} = 'Becky T. Peoples';
-    $address          = $c->factory('entity-address')->create(%p);
+    $address          = $c->factory('entity-address')->construct(%p);
     $id               = $s->get_registered_id($address);
     is $id, undef, 'right not found registered';
 
     %p       = %params;
     $p{id}   = 2;
-    $address = $c->factory('entity-address')->create(%p);
+    $address = $c->factory('entity-address')->construct(%p);
     $id      = $s->get_registered_id($address);
     is $id, 1, 'right found registered';
 };

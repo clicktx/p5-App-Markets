@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::CategoryTree;
-use Yetie::Domain::Entity;
+use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has level     => 0;
 has root_id   => 0;

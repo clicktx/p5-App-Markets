@@ -2,41 +2,41 @@ package Yetie::Controller::Catalog::Product;
 use Mojo::Base 'Yetie::Controller::Catalog';
 
 sub init_form {
-    my ( $self, $form, $product_id ) = @_;
+    my ( $c, $form, $product_id ) = @_;
 
     $form->field('product_id')->value($product_id);
-    return $self->SUPER::init_form();
+    return $c->SUPER::init_form();
 }
 
 sub index {
-    my $self = shift;
+    my $c = shift;
 
-    my $form       = $self->form('product');
-    my $product_id = $self->stash('product_id');
-    $self->init_form( $form, $product_id );
+    my $form       = $c->form('product');
+    my $product_id = $c->stash('product_id');
+    $c->init_form( $form, $product_id );
 
-    my $product = $self->service('product')->find_product_with_breadcrumbs($product_id);
-    $self->stash( entity => $product );
+    my $product = $c->service('product')->find_product_with_breadcrumbs($product_id);
+    $c->stash( entity => $product );
 
     # Page data
     $product->page_title( $product->title );
 
     # 404
-    return $self->reply->not_found unless $product->has_data;
+    return $c->reply->not_found unless $product->has_data;
 
-    my $validation = $self->validation;
-    return $self->render() unless $validation->has_data;
+    my $validation = $c->validation;
+    return $c->render() unless $validation->has_data;
 
     # Add to cart
     if ( $form->do_validate ) {
-        $self->service('cart')->add_item( $form->params->to_hash );
+        $c->service('cart')->add_item( $form->params->to_hash );
 
-        $self->flash( ref => $self->req->url->to_string );
-        return $self->redirect_to('RN_cart');
+        $c->flash( ref => $c->req->url->to_string );
+        return $c->redirect_to('RN_cart');
     }
 
     # Invalid
-    $self->render();
+    $c->render();
 }
 
 1;

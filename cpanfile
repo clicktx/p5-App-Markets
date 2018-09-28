@@ -1,4 +1,4 @@
-requires 'perl',                                    '5.018';
+requires 'perl',                                    '5.010';
 requires 'CGI::Expand',                             '2.05';
 requires 'DateTime',                                '1.42';
 requires 'DateTime::Format::Strptime',              '1.73';
@@ -35,11 +35,20 @@ requires 'Lingua::JA::Regular::Unicode',            '0.13';
 requires 'Class::C3::XS',             '0.14';
 requires 'Cookie::Baker::XS',         '0.07';
 requires 'Cpanel::JSON::XS',          '3.0227';
+requires 'Date::Calc::XS',            '6.4';
 requires 'HTTP::Parser::XS',          '0.17';
 requires 'JSON::XS',                  '3.02';
 requires 'List::Util::XS',            '1.47';
 requires 'Time::TZOffset',            '0.04';
 requires 'WWW::Form::UrlEncoded::XS', '0.24';
+
+# NOTE: Mojolicious optional
+# OPTIONAL
+#   EV 4.0+                 (n/a)
+#   IO::Socket::Socks 0.64+ (n/a)
+#   IO::Socket::SSL 1.94+   (2.059)
+#   Net::DNS::Native 0.15+  (n/a)
+#   Role::Tiny 2.000001+    (2.000005)
 
 on configure => sub {
     requires 'Module::Build',    '0.38';

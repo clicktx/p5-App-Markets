@@ -4,21 +4,24 @@ use Mojo::Base 'Mojolicious::Plugin';
 use Carp         ();
 use Scalar::Util ();
 use Mojo::Util   ();
-use Mojo::Cache;
-use Yetie::Util ();
-use Yetie::Domain::Factory;
+use Yetie::Util  ();
+use Yetie::App::Core::Cache ();
+use Yetie::Factory;
 
 sub register {
     my ( $self, $app ) = @_;
+
+    # Add attributes to App
+    $app->attr( caches => sub { Yetie::App::Core::Cache->new } );
 
     # TagHelpers more
     $app->plugin('Yetie::TagHelpers');
 
     $app->helper( __x_default_lang => sub { __x_default_lang(@_) } );
     $app->helper( addons           => sub { shift->app->addons(@_) } );
-    $app->helper( cookie_session   => sub { shift->session(@_) } );
+    $app->helper( cache            => sub { _cache(@_) } );
     $app->helper( cart             => sub { _cart(@_) } );
-    $app->helper( entity_cache     => sub { _entity_cache(@_) } );
+    $app->helper( cookie_session   => sub { shift->session(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
     $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
@@ -26,8 +29,6 @@ sub register {
     $app->helper( service          => sub { _service(@_) } );
     $app->helper( template         => sub { _template(@_) } );
 }
-
-sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.entity.cart' => $_[1] ) : $_[0]->stash('yetie.entity.cart') }
 
 sub __x_default_lang {
     my $c = shift;
@@ -39,28 +40,26 @@ sub __x_default_lang {
     return $word;
 }
 
-sub _entity_cache {
+sub _cache {
     my $self = shift;
 
-    my $cache = $self->app->defaults('yetie.entity.cache');
-    if ( !$cache ) {
-        $cache = Mojo::Cache->new();
-        $self->app->defaults( 'yetie.entity.cache' => $cache );
-    }
-    return @_ ? @_ > 1 ? $cache->set( $_[0] => $_[1] ) : $cache->get( $_[0] ) : $cache;
+    my $caches = $self->app->caches;
+    return @_ ? @_ > 1 ? $caches->set( $_[0] => $_[1] ) : $caches->get( $_[0] ) : $caches;
 }
+
+sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
 
 sub _factory {
     my $self = shift;
 
-    my $factory = Yetie::Domain::Factory->new(@_);
+    my $factory = Yetie::Factory->new(@_);
     $factory->app( $self->app );
     return $factory;
 }
 
 sub _pref {
     my $self = shift;
-    my $pref = $self->stash('yetie.entity.preference');
+    my $pref = $self->cache('preferences');
     return @_ ? $pref->value(@_) : $pref;
 }
 
@@ -115,6 +114,34 @@ The default language uses C<default_language> preference.
 
 Alias for $app->addons;
 
+=head2 C<cache>
+
+    my $cache = $c->cache;
+
+Return L<Yetie::App::Core::Cache> object.
+
+    # Get cache
+        my $foo = $c->cache('foo');
+
+        # Longer version
+        my $foo = $c->cache->get('foo');
+
+    # Set cache
+        $c->cache( foo => 'bar' );
+
+        # Longer version
+        $c->cache->set( foo => 'bar' );
+
+    # Clear all caches
+    $c->cache->clear_all;
+
+SEE L<Yetie::App::Core::Cache>
+
+=head2 C<cart>
+
+    my $cart = $c->cart;
+    $c->cart($cart);
+
 =head2 C<cookie_session>
 
     $c->cookie_session( key => 'value' );
@@ -122,29 +149,18 @@ Alias for $app->addons;
 
 Alias for $c->session;
 
-=head2 C<cart>
-
-    my $cart = $c->cart;
-    $c->cart($cart);
-
-=head2 C<entity_cache>
-
-    # Return L<Mojo::Cache> object.
-    my $mojo_cache = $c->entity_cache;
-
-    # Getter
-    my $entity = $c->entity_cache('foo_entity');
-
-    # Setter
-    $c->entity_cache( foo_entity => $entity );
-
-Get/Set entity cache.
-
 =head2 C<factory>
 
     my $factory = $c->factory('entity-something');
 
-Return L<Yetie::Domain::Factory> Object.
+Return L<Yetie::Factory> Object.
+
+=head2 C<resultset>
+
+    my $resultset = $c->resultset('Foo::Bar');
+    my $resultset = $c->resultset('foo-bar');
+
+Return L<Yetie::Schema::ResultSet> object.
 
 =head2 C<pref>
 
@@ -158,13 +174,6 @@ Return L<Yetie::Domain::Factory> Object.
     $c->pref( hoge => 'fizz', fuga => 'bazz' );
 
 Get/Set preference.
-
-=head2 C<resultset>
-
-    my $resultset = $c->resultset('Foo::Bar');
-    my $resultset = $c->resultset('foo-bar');
-
-Return L<Yetie::Schema::ResultSet> object.
 
 =head2 C<schema>
 

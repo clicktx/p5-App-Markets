@@ -2,117 +2,156 @@ package Yetie::Controller::Catalog::Checkout;
 use Mojo::Base 'Yetie::Controller::Catalog';
 
 sub index {
-    my $self = shift;
+    my $c = shift;
 
-    my $form = $self->form('checkout-index');
-    return $self->render() unless $form->has_data;
+    # Redirect logged-in customer
+    return $c->confirm_handler if $c->is_logged_in;
 
-    $self->redirect_to('RN_checkout_address');
+    # Guest or a customer not logged in
+    my $form = $c->form('checkout-index');
+    $c->flash( ref => 'RN_checkout' );
+    return $c->render() unless $form->has_data;
+
+    # Check guest email
+    # NOTE: 登録済みの顧客ではないか？
+    # 認証済みのメールアドレスか？
+    $form->do_validate;
+    my $email = $c->factory('value-email')->construct( value => $form->param('guest-email') );
+    $c->cart->email($email);
+
+    return $c->render();
 }
 
-sub address {
-    my $self = shift;
+sub shipping_address {
+    my $c = shift;
 
-    my $form = $self->form('checkout-address');
-    $form->fill_in( $self->cart );
+    my $form        = $c->form('checkout-select_address');
+    my $customer_id = $c->server_session->customer_id;
 
-    return $self->render() unless $form->has_data;
-    return $self->render() unless $form->do_validate;
+    my $addresses = $c->service('customer')->get_shipping_addresses($customer_id);
+    $c->stash( addresses => $addresses );
 
-    # Update Cart
-    my $address_fields = $self->cart->billing_address->field_names;
+    return $c->render() unless $form->has_data;
+    return $c->render() unless $form->do_validate;
 
-    # billing address
-    foreach my $field ( @{$address_fields} ) {
-        my $value = $form->param("billing_address.$field");
-        $self->cart->billing_address->$field($value);
-    }
+    my $no       = $form->param('select_address');
+    my $selected = $addresses->get($no);
 
-    # shipping address
-    my $shipments = $self->cart->shipments;
-    $shipments->each(
-        sub {
-            my ( $shipment, $i ) = ( shift, shift );
-            $i--;
-            foreach my $field ( @{$address_fields} ) {
-                my $value = $form->param("shipments.$i.shipping_address.$field");
-                $shipment->shipping_address->$field($value);
-            }
-        }
-    );
-    return $self->redirect_to('RN_checkout_shipping');
-}
+    # 正規に選択されなかった
+    return $c->render() unless $selected;
 
-sub shipping {
-    my $self = shift;
+    # NOTE: 1箇所のみに配送の場合
+    # 複数配送の場合は先に配送先を複数登録しておく？別コントローラが良い？
+    # shipment objectを生成して配列にpushする必要がある。
+    # my $shipment = $c->factory('entity-shipment')->create( shipping_address => $selected->address->to_data );
+    # $cart->add_shipment($shipment);
 
-    my $form = $self->form('checkout-shipping');
-    return $self->render() unless $form->has_data;
+    my $cart = $c->cart;
+    $cart->set_shipping_address($selected);
 
-    return $self->render() unless $form->do_validate;
-
-    # 複数配送を使うか
-    if ( $self->pref('can_multiple_shipments') ) {
+    # NOTE: 複数配送を使うかのpreference
+    if ( $c->pref('can_multiple_shipments') ) {
         say 'multiple shipment is true';
     }
     else {
         say 'multiple shipment is false';
     }
 
-    # shipping address
-    # 商品をshipmentに移動
-    # cart.itemsからitemを減らす。shipment.itemsを増やす
-    # 本来は数量を考慮しなくてはならない
-    # $item.quantityが0になった場合の動作はどうする？
-    my $cart = $self->cart;
-    $cart->items->each(
-        sub {
-            # カートitemsから削除
-            my $item = $cart->remove_item( $_->id );
-
-            # 配送itemsに追加
-            $cart->add_shipping_item( 0, $item );
-        }
-    );
-
-    # NOTE: 移動や追加をした際にis_modifiedをどのobjectに行うか
-    # $cart->is_modified(1)? しか使わなければ実行時間は早く出来る。
-    # Entity::Cart::is_modifiedも考慮して実装しよう
-
-    return $self->redirect_to('RN_checkout_confirm');
+    return $c->confirm_handler;
 }
 
-#sub payment { }
-# sub billing {
-#     my $self = shift;
-#     $self->render();
-# }
+sub delivery_option {
+    my $c = shift;
+    return $c->redirect_to('RN_checkout_payment_method');
+}
+
+sub payment_method {
+    my $c = shift;
+    return $c->redirect_to('RN_checkout_billing_address');
+}
+
+sub billing_address {
+    my $c = shift;
+
+    my $form        = $c->form('checkout-select_address');
+    my $customer_id = $c->server_session->customer_id;
+
+    my $addresses = $c->service('customer')->get_billing_addresses($customer_id);
+    $c->stash( addresses => $addresses );
+
+    return $c->render() unless $form->has_data;
+    return $c->render() unless $form->do_validate;
+
+    my $no       = $form->param('select_address');
+    my $selected = $addresses->get($no);
+
+    # 正規に選択されなかった
+    return $c->render() unless $selected;
+
+    my $cart = $c->cart;
+    $cart->set_billing_address($selected);
+
+    return $c->confirm_handler;
+}
 
 sub confirm {
-    my $self = shift;
+    my $c = shift;
 
-    my $form = $self->form('checkout-confirm');
-    return $self->render() unless $form->has_data;
+    $c->confirm_handler;
 
-    return $self->render() unless $form->do_validate;
+    my $form = $c->form('checkout-confirm');
+    return $c->render() unless $form->has_data;
+    return $c->render() unless $form->do_validate;
 
     # checkout complete
-    $self->complete_validate;
+    $c->complete_handler;
 }
 
-sub complete_validate {
-    my $self = shift;
+sub complete {
+    my $c = shift;
+    $c->render();
+}
+
+# handler?
+# - Select a shipping address
+# - (Choose where to ship each item)
+#   - Choose your delivery options
+# - Select a payment method
+# - Choose a billing address
+# - Review your order
+sub confirm_handler {
+    my $c    = shift;
+    my $cart = $c->cart;
+
+    # No items
+    return $c->redirect_to('RN_cart') unless $cart->has_item;
+
+    # Shipping address
+    return $c->redirect_to('RN_checkout_shipping_address') unless $cart->has_shipping_address;
+
+    # ship items to one place
+    $cart->move_items_to_first_shipment if !$cart->has_shipping_item and !$cart->shipments->is_multiple;
+
+    # Billing address
+    return $c->redirect_to('RN_checkout_billing_address') unless $cart->has_billing_address;
+
+    # Redirect confirm
+    return $c->redirect_to('RN_checkout_confirm') if $c->stash('action') ne 'confirm';
+}
+
+sub complete_handler {
+    my $c = shift;
 
     # NOTE: itemsに商品がある場合 or shipment.itemsが1つも無い場合はcomplete出来ない。
-    my $cart = $self->cart;
-    return $self->redirect_to('RN_cart') if $cart->count('items') or !$cart->count('all_shipping_items');
+    my $cart = $c->cart;
+    return $c->redirect_to('RN_cart') unless $cart->total_quantity;
 
     # Make order data
     my $order = $cart->to_order_data;
 
     # Customer id
     # ログイン購入
-    my $customer_id = $self->server_session->data('customer_id');
+    my $customer_id = $c->server_session->data('customer_id');
     if ($customer_id) {
         $order->{customer} = { id => $customer_id };
     }
@@ -122,8 +161,11 @@ sub complete_validate {
         $order->{customer} = {};
     }
 
+    # NOTE: WIP ゲスト購入
+    delete $order->{email};
+
     # Address正規化
-    my $schema_address = $self->app->schema->resultset('Address');
+    my $schema_address = $c->app->schema->resultset('Address');
 
     # billing_address
     my $billing_address = $schema_address->find( { line1 => $order->{billing_address}->{line1} } );
@@ -142,7 +184,7 @@ sub complete_validate {
     p $order;    # debug
 
     # Store order
-    my $schema = $self->app->schema;
+    my $schema = $c->app->schema;
     my $cb     = sub {
 
         # Order
@@ -158,7 +200,7 @@ sub complete_validate {
         # bulk insert
         # my $items = $cart->items->first->to_array;
         # my $order_id = $schema->storage->last_insert_id;
-        # my $data = $self->model('item')->to_array( $order_id, $items );
+        # my $data = $c->model('item')->to_array( $order_id, $items );
         # $schema->resultset('Order::Item')->populate($data);
     };
 
@@ -172,17 +214,12 @@ sub complete_validate {
 
     # cart sessionクリア
     # cartクリア（再生成）
-    my $newcart = $self->factory('entity-cart')->create( {} );
-    $self->cart_session->data( $newcart->to_data );
+    # my $newcart = $c->factory('entity-cart')->construct();
+    # $c->cart_session->data( $newcart->to_data );
+    $cart->clear_items;
 
     # redirect_to thank you page
-    # $self->render();
-    $self->redirect_to('RN_checkout_complete');
-}
-
-sub complete {
-    my $self = shift;
-    $self->render();
+    $c->redirect_to('RN_checkout_complete');
 }
 
 1;

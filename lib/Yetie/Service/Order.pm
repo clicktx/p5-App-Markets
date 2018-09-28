@@ -1,19 +1,17 @@
 package Yetie::Service::Order;
 use Mojo::Base 'Yetie::Service';
 
-has resultset => sub { shift->schema->resultset('Sales::Order') };
-
 sub find_order {
     my ( $self, $order_id ) = @_;
 
-    my $result = $self->resultset->find_by_id($order_id);
+    my $result = $self->resultset('Sales::Order')->find_by_id($order_id);
     my $data = $result ? $result->to_data : {};
 
     # Set address type
     do { $data->{$_}->{type} = $_ if $data->{$_} }
       for qw(billing_address shipping_address);
 
-    my $order_detail = $self->factory('entity-order_detail')->create($data);
+    my $order_detail = $self->factory('entity-order_detail')->construct($data);
     return $order_detail;
 }
 

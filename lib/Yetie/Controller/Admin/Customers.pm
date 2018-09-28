@@ -2,19 +2,19 @@ package Yetie::Controller::Admin::Customers;
 use Mojo::Base 'Yetie::Controller::Admin';
 
 sub index {
-    my $self = shift;
+    my $c = shift;
 
-    my $form = $self->form('search');
-    $self->init_form();    # hook point
-    return $self->render() unless $form->do_validate;
+    my $form = $c->form('search');
+    $c->init_form();    # hook point
+    return $c->render() unless $form->do_validate;
 
-    my $customers = $self->service('customers')->search_customers($form);
-    $self->stash( entity => $customers );
+    my $customers = $c->service('customers')->search_customers($form);
+    $c->stash( entity => $customers );
 
     # Page data
     $customers->page_title('Customers');
 
-    $self->render();
+    $c->render();
 }
 
 1;

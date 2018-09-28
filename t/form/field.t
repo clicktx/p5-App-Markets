@@ -10,6 +10,7 @@ my $c = $t->app->build_controller;
 
 sub f {
     return Yetie::Form::Field->new(
+        _fieldset     => 'Foo::Bar',
         field_key     => 'item.[].name',
         name          => 'item.0.name',
         label         => 'label text',
@@ -21,6 +22,7 @@ sub f {
 
 sub f2 {
     return Yetie::Form::Field->new(
+        _fieldset      => 'Foo::Bar::Baz',
         field_key      => 'title',
         name           => 'title',
         label          => 'label text',
@@ -80,6 +82,14 @@ subtest 'error_message' => sub {
         qux => 'qux'
       },
       'right setter using hashref';
+};
+
+subtest 'id' => sub {
+    my $f = f();
+    is $f->id, 'foo-bar-item-0-name', 'right id';
+
+    my $f2 = f2();
+    is $f2->id, 'foo-bar-baz-title', 'right id';
 };
 
 done_testing();
