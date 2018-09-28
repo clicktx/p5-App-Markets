@@ -29,7 +29,7 @@ has_field 'line1' => (
     autocomplete => 'address-line1',
     type         => 'text',
     placeholder  => '2125 Chestnut st',
-    help         => 'Street address, P.O. box, company name, c/o',
+    help         => 'Street address, P.O. box, c/o',
     filters      => [qw(trim)],
     validations  => [],
 );
