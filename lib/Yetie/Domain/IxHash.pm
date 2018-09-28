@@ -49,8 +49,10 @@ sub first {
 
 sub grep {
     my ( $self, $cb ) = ( shift, shift );
-    return $self->new( List::Util::pairgrep { $a =~ ( $cb->[0] || qr// ) && $b =~ ( $cb->[1] || qr// ) } %{$self} )
-      if ref $cb eq 'ARRAY';
+    return $self->new(
+        List::Util::pairgrep { $a =~ ( $cb->{key} || qr/.*/ ) && $b =~ ( $cb->{value} || qr/.*/ ) }
+        %{$self}
+    ) if ref $cb eq 'HASH';
 
     my $caller = caller;
     no strict 'refs';
@@ -191,7 +193,7 @@ the following new ones.
 
 =head2 C<grep>
 
-    my $new = $ixhash->grep( [ qr//, qr// ] );
+    my $new = $ixhash->grep( { key => qr//, value => qr// } );
     my $new = $ixhash->grep( sub {...} );
 
 

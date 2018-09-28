@@ -67,17 +67,17 @@ subtest 'grep' => sub {
     my $new;
 
     # Regex
-    $new = $h->grep( [ qr//, qr// ] );
+    $new = $h->grep( { key => qr//, value => qr// } );
     isa_ok $new, 'Yetie::Domain::IxHash';
     is_deeply \@{ $new->pairs }, [qw/a 10 b 20 c 30 d 40 e 50/];
-    $new = $h->grep( [ qr/c|e/, qr// ] );
+    $new = $h->grep( { key => qr/c|e/ } );
     is_deeply \@{ $new->pairs }, [qw/c 30 e 50/];
-    $new = $h->grep( [ undef, qr/3|5/ ] );
+    $new = $h->grep( { value => qr/3|5/ } );
     is_deeply \@{ $new->pairs }, [qw/c 30 e 50/];
-    $new = $h->grep( [ qr/c/, qr/3|5/ ] );
+    $new = $h->grep( { key => qr/c/, value => qr/3|5/ } );
     is_deeply \@{ $new->pairs }, [qw/c 30/];
 
-    # Function
+    # Code reference
     $new = $h->grep( sub { } );
     is_deeply \@{ $new->pairs }, [];
     $new = $h->grep( sub { 1 } );
