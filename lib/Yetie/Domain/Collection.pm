@@ -10,7 +10,11 @@ sub c { collection(@_) }
 
 sub collection { __PACKAGE__->new(@_) }
 
-sub get { shift->[ +shift ] }
+sub get {
+    my ( $self, $index ) = ( shift, shift // '' );
+    return if $index eq '';
+    $self->[$index];
+}
 
 sub get_by_id {
     my ( $self, $str ) = @_;
