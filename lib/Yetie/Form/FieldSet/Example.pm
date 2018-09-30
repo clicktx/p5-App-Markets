@@ -1,5 +1,6 @@
 package Yetie::Form::FieldSet::Example;
 use Mojo::Base -strict;
+
 # use Yetie::Form::FieldSet::Basic -all;
 use Yetie::Form::FieldSet::Base::Address -all;
 
@@ -63,10 +64,25 @@ has_field agreed => (
     validations => [],
 );
 
-has_field country => (
+has_field country1 => (
+
+    # type    => 'select',
+    label    => 'Country1 select',
+    type     => 'choice',
+    expanded => 0,
+    multiple => 0,
+    choices  => [
+        c( EU => [ [ Germany => 'de' ], [ England => 'en' ] ] ),
+        c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ),
+    ],
+    filters     => [],
+    validations => [],
+);
+
+has_field country2 => (
 
     # type    => 'select_multiple',
-    label    => 'Country',
+    label    => 'Country2 select multiple',
     type     => 'choice',
     expanded => 0,
     multiple => 1,
@@ -78,10 +94,10 @@ has_field country => (
     validations => [],
 );
 
-has_field country2 => (
+has_field country3 => (
 
     # type    => 'radio_list',
-    label    => 'Country2',
+    label    => 'Country3 radio list',
     type     => 'choice',
     expanded => 1,
     multiple => 0,
@@ -93,10 +109,10 @@ has_field country2 => (
     validations => [],
 );
 
-has_field country3 => (
+has_field country4 => (
 
     # type    => 'checkbox_list',
-    label    => 'Country3',
+    label    => 'Country4 checkbox list',
     type     => 'choice',
     expanded => 1,
     multiple => 1,
