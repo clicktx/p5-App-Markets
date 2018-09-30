@@ -1,6 +1,7 @@
 package Yetie::Form::FieldSet::Example;
 use Mojo::Base -strict;
-use Yetie::Form::FieldSet::Basic -all;
+# use Yetie::Form::FieldSet::Basic -all;
+use Yetie::Form::FieldSet::Base::Address -all;
 
 # use Yetie::Form::FieldSet::Basic -export_field;
 # use Yetie::Form::FieldSet::Basic -export_field => [qw(email password password_again)];

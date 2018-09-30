@@ -9,7 +9,7 @@
 }
 % end
 
-<%= form_for '/login_example' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+<%= form_for '' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
     <h4>longer version(example)</h4>
