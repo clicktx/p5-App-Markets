@@ -15,32 +15,13 @@
     <h4>longer version(example)</h4>
     <div class="">
         <%= form('example')->render_label("email") %>
-        <%= form('example')->render("email") %>
+        <%= form('example')->render( "email", value => 'a@c.com' ) %>
     </div>
 
+    <h4>nomal select tag</h4>
+    %= select_field country0 => [c(EU => ['de', 'en']), c(Asia => ['cn', 'jp'])], multiple => undef
 
     <h4>smart version</h4>
-    <div class="">
-        <%= form_label('example#email') %>
-        <%= form_widget('example#email') %>
-    </div>
-    <div class=""><%= form_field('example#password') %>
-        <%= form_label %>
-        <%= form_widget %>
-        <%= form_help %>
-        <%= form_error %>
-    </div>
-    <div class="">
-        <%= form_label('example#password_again') %>
-        <%= form_widget('example#password_again') %>
-        <%= form_help('example#password_again') %>
-        <%= form_error('example#password_again') %>
-    </div>
-
-    <div class="">
-        <%= form_label('example#address') %>
-        <%= form_widget('example#address') %>
-    </div>
     <div class="">
         <%= form_label('example#agreed') %>
         <%= form_widget('example#agreed') %>
