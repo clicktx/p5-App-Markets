@@ -63,11 +63,11 @@ When the suffix of the key is "[]", the value always returns an array reference.
 
 e.g. C<key_name[]>
 
-    # "[ 1, 2 ]"
-    Mojo::Parameters->new('foo[]=1&foo[]=2')->to_hash->{'foo[]'};
+    # { 'foo[]' => [ 1 ] }
+    Mojo::Parameters->new('foo[]=1')->to_hash;
 
-    # "[ 1 ]"
-    Mojo::Parameters->new('foo[]=1')->to_hash->{'foo[]'};
+    # { foo => 1 }
+    Mojo::Parameters->new('foo=1')->to_hash;
 
 =head1 SEE ALSO
 
