@@ -151,10 +151,9 @@ subtest 'fill_in for scope' => sub {
 };
 
 subtest 'parameters' => sub {
-    my $c = $t->app->build_controller;
-    my $f = Yetie::Form::Base->new( 'test', controller => $c );
-    $c->req->params->pairs(
-        [
+    my $construct = sub {
+        my $pairs = shift
+          || [
             email              => 'a@b.c',
             name               => 'frank',
             address            => '',
@@ -162,27 +161,36 @@ subtest 'parameters' => sub {
             'luky_number[]'    => 2,
             'luky_number[]'    => 3,
             iligal_param       => 'attack',
-        ]
-    );
+          ];
 
-    eval { my $name = $f->param('name') };
-    ok $@, 'right before do_validate';
+        my $c = $t->app->build_controller;
+        $c->req->params->pairs($pairs);
+        return Yetie::Form::Base->new( 'test', controller => $c );
+    };
 
-    $f->do_validate;
-    is $f->param('email'),   'a@b.c', 'right parameter';
-    is $f->param('name'),    'frank', 'right parameter';
-    is $f->param('address'), '',      'right blank parameter';
-    is_deeply $f->param('favorite_color[]'), ['red'], 'right every param';
-    is $f->param('iligal_param'), '', 'right iligal param';
+    subtest 'param' => sub {
+        my $f = $construct->();
+        eval { my $name = $f->param('name') };
+        ok $@, 'right before do_validate';
 
-    # to_hash
-    my $params = $f->params->to_hash;
-    is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
+        $f->do_validate;
+        is $f->param('email'),   'a@b.c', 'right parameter';
+        is $f->param('name'),    'frank', 'right parameter';
+        is $f->param('address'), '',      'right blank parameter';
+        is_deeply $f->param('favorite_color[]'), ['red'], 'right every param';
+        is $f->param('iligal_param'), '', 'right iligal param';
+    };
+
+    subtest 'to_hash' => sub {
+        my $f = $construct->();
+        $f->do_validate;
+
+        my $params = $f->params->to_hash;
+        is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
+    };
 
     subtest 'scope_param' => sub {
-        my $c = $t->app->build_controller;
-        my $f = Yetie::Form::Base->new( 'test', controller => $c );
-        $c->req->params->pairs(
+        my $f = $construct->(
             [
                 'item.0.id'     => 1,
                 'item.1.id'     => 2,
@@ -221,16 +229,12 @@ subtest 'parameters' => sub {
           ],
           'right scope params';
 
-        $c = $t->app->build_controller;
-        $f = Yetie::Form::Base->new( 'test', controller => $c );
-        $c->req->params->pairs( [] );
+        $f = $construct->( [] );
         $f->do_validate;
         is_deeply $f->scope_param('item'),    [], 'right params empty';
         is_deeply $f->scope_param('billing'), [], 'right params empty';
 
-        $c = $t->app->build_controller;
-        $f = Yetie::Form::Base->new( 'test', controller => $c );
-        $c->req->params->pairs(
+        $f = $construct->(
             [
                 'item.0.id'     => 11,
                 'item.0.name'   => 'aa',
