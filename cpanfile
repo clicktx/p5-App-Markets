@@ -66,6 +66,8 @@ on test => sub {
     requires 'Test::mysqld';
     requires 'Test::Perl::Critic';
     requires 'Test::Spellunker';
+    requires 'Test::Pod';
+    requires 'Test::Pod::Coverage';
 };
 
 on develop => sub {
