@@ -65,9 +65,10 @@ on test => sub {
     requires 'Test::More',              '1.302140';
     requires 'Test::mysqld',            '1.0012';
     requires 'Test::Perl::Critic',      '1.04';
-    requires 'Test::Spellunker',        '0.4.0';
     requires 'Test::Pod',               '1.52';
     requires 'Test::Pod::Coverage',     '1.10';
+    requires 'Test::Requires',          '0.10';
+    requires 'Test::Spellunker',        '0.4.0';
 };
 
 on develop => sub {
