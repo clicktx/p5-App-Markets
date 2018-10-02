@@ -65,6 +65,7 @@ on test => sub {
     requires 'Test::More';
     requires 'Test::mysqld';
     requires 'Test::Perl::Critic';
+    requires 'Test::Spellunker';
 };
 
 on develop => sub {
