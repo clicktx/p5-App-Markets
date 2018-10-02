@@ -22,7 +22,7 @@ my @modules = all_modules;
 @modules = sort { $a cmp $b } @modules;
 
 foreach my $module (@modules) {
-    next if $module =~ qr/(?:
+    say "skip ... $module" and next if $module =~ qr/(?:
         Yetie::Controller::         |
         Yetie::Factory::Entity::    |
         Yetie::Form::FieldSet::     |
