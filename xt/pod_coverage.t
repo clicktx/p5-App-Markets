@@ -25,6 +25,9 @@ foreach my $module (@modules) {
     next if $module =~ qr/(?:
         Yetie::Controller::         |
         Yetie::Factory::Entity::    |
+        Yetie::Form::FieldSet::     |
+        Yetie::Schema::Result::     |
+        Yetie::Routes               |
         Yetie::Dummy::Dummey
     )/x;
     check($module);
