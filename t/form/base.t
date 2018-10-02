@@ -168,6 +168,28 @@ subtest 'parameters' => sub {
         return Yetie::Form::Base->new( 'test', controller => $c );
     };
 
+    subtest 'every_param' => sub {
+        my $f = $construct->(
+            [
+                email              => '',
+                name               => 'frank',
+                'favorite_color[]' => 'red',
+                'favorite_color[]' => 'blue',
+                luky_number        => 3,
+                luky_number        => 7,
+                iligal_param       => 'attack',
+            ]
+        );
+        $f->do_validate;
+
+        is_deeply $f->every_param('address'), [''],      'right has not parameter';
+        is_deeply $f->every_param('email'),   [''],      'right empty character';
+        is_deeply $f->every_param('name'),    ['frank'], 'right single parameter';
+        is_deeply $f->every_param('favorite_color[]'), [ 'red', 'blue' ], 'right multiple parameters';
+        is_deeply $f->every_param('luky_number'),      [ 3,     7 ],      'right multiple parameters';
+        is_deeply $f->every_param('iligal_param'), [''], 'right iligal parameter';
+    };
+
     subtest 'param' => sub {
         my $f = $construct->();
         eval { my $name = $f->param('name') };

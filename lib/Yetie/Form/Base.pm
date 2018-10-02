@@ -50,6 +50,14 @@ sub do_validate {
     return $v->has_error ? undef : 1;
 }
 
+sub every_param {
+    my ( $self, $key ) = @_;
+    my $param = $self->params->every_param($key);
+
+    # NOTE: "Mojolicious::Validator::Validation->output" does not hold parameters with empty strings ;(
+    @{$param} ? $param : [''];
+}
+
 sub field { shift->fieldset->field(@_) }
 
 sub fill_in {
@@ -254,6 +262,18 @@ L<Yetie::Form::Base> inherits all methods from L<Mojo::Base> and implements the 
     say 'Validation failure!' unless $bool;
 
 Return boolean. success return true.
+
+=head2 C<every_param>
+
+    my $params = $form->every_param;
+
+Return Array reference.
+
+    # Get first value
+    say $form->every_param('foo')->[0];
+
+The parameter is a validated values.
+This method should be called after the L</do_validate> method.
 
 =head2 C<field>
 
