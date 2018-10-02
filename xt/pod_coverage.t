@@ -8,9 +8,12 @@ sub check {
         {
             also_private => [
                 qr/(?:
+                attr            |
                 cook            |
                 new             |
                 register        |
+                to_data         |
+                to_hash         |
                 dummy_dummy
             )/x
             ]
