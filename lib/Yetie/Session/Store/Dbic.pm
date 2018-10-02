@@ -243,7 +243,7 @@ Get and set L<DBIx::Class::Schema> object.
 
 =head2 C<sid_column>
 
-Session id column name. Default is 'sid'.
+Session id column name. Default is C<sid>.
 
 =head2 C<expires_column>
 
@@ -272,7 +272,7 @@ Update session in database.
 
 =head2 C<update_sid>
 
-Update sid in database.
+Update C<sid> in database.
 
 =head2 C<load_cart_data>
 

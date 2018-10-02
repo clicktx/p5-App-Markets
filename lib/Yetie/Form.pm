@@ -203,7 +203,7 @@ The default class for this block is "form-help-block".
     %= form_label('example#email')
     %= form_label('example#email', class => 'foo')
 
-Rendering <label> tag.
+Rendering C<E<lt>labelE<gt>> tag.
 
 Only "class" attribute can be added.
 
@@ -217,7 +217,7 @@ Only "class" attribute can be added.
     # Change type
     %= form_widget('example#email', type => 'text')
 
-Rendering <input>, <textarea>, <select>, <radio>, <checkbox>, <hidden> tag.
+Rendering C<E<lt>inputE<gt>>, C<E<lt>textareaE<gt>>, C<E<lt>selectE<gt>>, C<E<lt>radioE<gt>>, C<E<lt>checkboxE<gt>>, C<E<lt>hiddenE<gt>> tag.
 
 Can add arbitrary attributes.
 

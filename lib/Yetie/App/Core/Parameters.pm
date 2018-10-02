@@ -41,7 +41,7 @@ This module is L<Mojo::Parameters> Based.
 
 =head1 ATTRIBUTES
 
-L<Yetie::App::Core::Parameters> inherits all attribures from L<Mojo::Parameters> and implements the
+L<Yetie::App::Core::Parameters> inherits all attributes from L<Mojo::Parameters> and implements the
 following new ones.
 
 =head1 METHODS

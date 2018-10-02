@@ -190,13 +190,13 @@ Return the application object.
 
     my $class_name = $addon->class_name;
 
-Return the class name of addon.
+Return the class name of add-on.
 
 =head2 C<name>
 
     my $addon_name = $addon->name;
 
-Return the addon name.
+Return the add-on name.
 
 =head2 C<is_enabled>
 
@@ -232,9 +232,11 @@ Get home path for YourAddon.
 
     my $content = $class->get_template('dir/template_name');
 
-Get content for addon template file or DATA section.
+Get content for add-on template file or DATA section.
 
-format C<html> and handler C<ep> onry. ex) template_name.html.ep
+format C<html> and handler C<ep> only.
+
+I<e.g.) template.html.ep>
 
 =head2 C<register>
 

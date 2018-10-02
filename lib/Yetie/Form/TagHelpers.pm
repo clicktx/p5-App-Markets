@@ -341,7 +341,7 @@ L<Yetie::Form::TagHelpers> inherits all methods from L<Mojo::Base> and implement
 
 =head1 TAG HELPER METHODS
 
-Return code refference.
+Return code reference.
 All methods is L<Mojolicious::Plugin::TagHelpers> wrapper methods.
 
 =head2 C<checkbox>
@@ -488,7 +488,7 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     # HTML
     <span class="">Your name.</span>
 
-    # code refference
+    # code reference
     my $f = Yetie::Form::Field->new(
         name    => 'password',
         help   => sub {
@@ -507,7 +507,7 @@ Render help block.
 
 C<I18N>
 
-Default $c->__($text) or code refference $code($c)
+Default $c->__($text) or code reference $code($c)
 See L<Mojolicious::Plugin::LocaleTextDomainOO>
 
 =head2 C<label_for>
@@ -562,7 +562,7 @@ See L<Mojolicious::Plugin::LocaleTextDomainOO>
     # HTML
     <textarea name=" description " cols=" 40 ">text text text</textarea>
 
-In textarea, " default_value " and " value " is treated as content text.
+In text-area, " default_value " and " value " is treated as content text.
 
 =head2 C<time>
 

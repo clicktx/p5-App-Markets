@@ -33,7 +33,7 @@ the following new ones.
 
     my $login_id = $staff->login_id;
 
-Return LoginID.
+Return C<LoginID>.
 
 =head2 C<password>
 

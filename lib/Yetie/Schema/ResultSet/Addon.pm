@@ -49,7 +49,7 @@ the following new ones.
     # Loading indtalled Addons
     my $addon_config = $schema->resultset('addon')->configure;
 
-load addon preferences from DB.
+load add-on preferences from DB.
 
 =head1 AUTHOR
 

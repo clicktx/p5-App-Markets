@@ -69,7 +69,7 @@ And set application defaults 'yetie.entity.preference' into C<Yetie::Domain::Ent
 
     $app->service('preference')->store();
 
-Store the data into database, if C<is_modified> is ture.
+Store the data into database, if C<is_modified> is true.
 Updates are modified data only.
 
 =head1 AUTHOR

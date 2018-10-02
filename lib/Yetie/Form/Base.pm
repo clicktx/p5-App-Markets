@@ -149,7 +149,7 @@ sub _do_check {
     my ( $check, @args ) = ref $_[0] eq 'ARRAY' ? @{ $_[0] } : $_[0];
     return $v->$check unless @args;
 
-    # scalar refference to preference value
+    # scalar reference to preference value
     @args = map { ref $_ eq 'SCALAR' ? $c->pref( ${$_} ) : $_ } @args;
     return $v->$check(@args);
 }
@@ -284,7 +284,7 @@ L<Mojolicious::Validator::Validation/has_data>
     # Return scalar
     my $param = $form->param('name');
 
-    # Return array refference
+    # Return array reference
     my $param = $form->param('favorite[]')
 
 The parameter is a validated values.
@@ -328,7 +328,7 @@ Rendering HTML form widget(field or fields).
 
     my $scope = $form->scope_param('user');
 
-Return array refference.
+Return array reference.
 The parameter is a validated values.
 
 NOTE: This method should be called after the L</do_validate> method.

@@ -119,7 +119,7 @@ the following new ones.
 
 Argument: L<Yetie::Domain::Entity::Page::Product> object.
 
-Return: Array ou Array refference.
+Return: Array or Array reference.
 
 =head2 C<duplicate_product>
 
