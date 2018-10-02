@@ -131,6 +131,32 @@ Yetie::Controller - Controller base class
 
 =head1 DESCRIPTION
 
+=head1 PROSESS
+
+Controller process.
+
+C<before_init> hook
+
+=head3 C<init>
+
+C<after_init> hook
+
+=head3 C<init_form>
+
+C<after_init_form> hook
+
+C<before_action> hook
+
+=head3 C<action_before>
+
+C<controller action>
+
+=head3 C<action_after>
+
+C<after_action> hook
+
+=head3 C<finalize>
+
 =head1 ATTRIBUTES
 
 L<Yetie::Controller> inherits all attributes from L<Mojolicious::Controller> and
@@ -154,6 +180,15 @@ Request method 'POST' requires CSRF token.
     else { say "Not loged in" }
 
 Return boolean value.
+
+=head2 C<redirect_to>
+
+
+
+=head2 C<process>
+
+
+See L</PROSESS>
 
 =head1 SEE ALSO
 

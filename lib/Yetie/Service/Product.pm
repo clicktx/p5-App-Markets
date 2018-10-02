@@ -143,6 +143,12 @@ Data does include C<breadcrumbs>.
 
 Return L<Yetie::Domain::Entity::Page::Product> object.
 
+=head2 C<is_sold>
+
+    my $bool = $servece->is_sold($product_id);
+
+Return boolean value.
+
 =head2 C<new_product>
 
     my $result = $service->new_product();

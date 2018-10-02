@@ -68,6 +68,10 @@ L<Yetie::App::Core::EventEmitter> inherits all events from L<Mojo::EventEmitter>
 
 =head1 METHODS
 
+=head2 C<catch>
+
+
+
 =head2 C<emit>
 
     $e = $e->emit('name');
@@ -89,6 +93,10 @@ Emit event.
 
 Subscribe to event.
 Sort the Events in order of priority.
+
+=head2 C<once>
+
+"once" not supported.
 
 =head2 C<unsubscribe>
 

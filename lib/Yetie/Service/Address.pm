@@ -60,6 +60,12 @@ the following new ones.
 L<Yetie::Service::Address> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
+=head2 C<get_address_types>
+
+    my $address_types = $servece->get_address_types;
+
+Return L<Yetie::Domain::Entity::AddressTypes> object.
+
 =head2 C<get_registered_id>
 
     my $address_entity = $c->factory('entity-address')->construct($form_params);

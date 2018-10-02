@@ -146,6 +146,10 @@ Get/Set customer id.
 This method override L<MojoX::Session/flush>.
 Stored session data.
 
+=head2 C<load>
+
+    my $sid = $session->load;
+
 =head2 C<regenerate_sid>
 
     my $sid = $session->regenerate_sid;

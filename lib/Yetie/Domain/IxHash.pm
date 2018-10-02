@@ -14,7 +14,7 @@ sub each {
     my ( $self, $cb ) = @_;
     return %{$self} unless $cb;
 
-    my $i = 1;
+    my $i      = 1;
     my $caller = caller;
     foreach my $a ( @{ $self->keys } ) {
         my $b = $self->{$a};
@@ -232,6 +232,13 @@ Number of key-value pair in IxHash.
     my $hash = $ixhash->to_hash;
 
 Turn IxHash into hash reference.
+
+=head2 C<values>
+
+    my @values = $ixhash->values;
+    my $values = $ixhash->values;
+
+Return array or array reference.
 
 =head1 AUTHOR
 

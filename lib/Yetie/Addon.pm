@@ -228,6 +228,13 @@ implements the following new ones.
 
 Get home path for YourAddon.
 
+=head2 C<disable>
+
+
+=head2 C<enable>
+
+
+
 =head2 C<get_template>
 
     my $content = $class->get_template('dir/template_name');
@@ -237,6 +244,10 @@ Get content for add-on template file or DATA section.
 format C<html> and handler C<ep> only.
 
 I<e.g.) template.html.ep>
+
+=head2 C<install>
+
+
 
 =head2 C<register>
 
@@ -267,6 +278,13 @@ This method will be called by L<Yetie::Addon> at startup time.
     sub fizz { say "trigger" }
 
 Extend L<Yetie::App::Core::Trigger> trigger event.
+
+=head2 C<uninstall>
+
+
+=head2 C<update>
+
+
 
 =head1 SEE ALSO
 

@@ -96,3 +96,34 @@ our %FILTERS = (
 
 
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+Yetie::Validator::Filters
+
+=head1 SYNOPSIS
+
+    # Mojolicious
+    $app->plugin('Yetie::Validator::Filters');
+
+    # Mojolicious::Lite
+    plugin 'Yetie::Validator::Filters';
+
+
+=head1 DESCRIPTION
+
+
+
+=head1 METHODS
+
+L<Yetie::Validator::Filters> inherits all methods from L<Mojolicious::Plugin> and implements
+the following new ones.
+
+=head1 SEE ALSO
+
+L<Yetie::Validator>, L<Lingua::JA::Regular::Unicode>, L<Mojolicious::Plugin>
+
+=cut

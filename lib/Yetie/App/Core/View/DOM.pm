@@ -32,3 +32,38 @@ sub register {
 }
 
 1;
+__END__
+=encoding utf8
+
+=head1 NAME
+
+Yetie::App::Core::View::DOM
+
+=head1 SYNOPSIS
+
+    # Mojolicious
+    $app->plugin('Yetie::App::Core::View::DOM');
+
+    # Mojolicious::Lite
+    plugin 'Yetie::App::Core::View::DOM';
+
+
+=head1 DESCRIPTION
+
+
+
+=head1 ATTRIBUTES
+
+L<Yetie::App::Core::View::DOM> inherits all attributes from L<Mojolicious::Plugin> and implements
+the following new ones.
+
+=head1 METHODS
+
+L<Yetie::App::Core::View::DOM> inherits all methods from L<Mojolicious::Plugin> and implements
+the following new ones.
+
+=head1 SEE ALSO
+
+L<Yetie::App::Core::View::DOM::HTML>, L<Mojolicious::Plugin>
+
+=cut

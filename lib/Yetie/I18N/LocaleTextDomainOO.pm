@@ -167,3 +167,39 @@ use Carp qw(confess);
 }
 
 1;
+
+__END__
+=encoding utf8
+
+=head1 NAME
+
+Yetie::I18N::LocaleTextDomainOO
+
+=head1 SYNOPSIS
+
+    # Mojolicious
+    $app->plugin('Yetie::I18N::LocaleTextDomainOO');
+
+    # Mojolicious::Lite
+    plugin 'Yetie::I18N::LocaleTextDomainOO';
+
+
+=head1 DESCRIPTION
+
+
+
+=head1 ATTRIBUTES
+
+L<Yetie::I18N::LocaleTextDomainOO> inherits all attributes from L<Mojolicious::Plugin::LocaleTextDomainOO> and implements
+the following new ones.
+
+=head1 METHODS
+
+L<Yetie::I18N::LocaleTextDomainOO> inherits all methods from L<Mojolicious::Plugin::LocaleTextDomainOO> and implements
+the following new ones.
+
+=head1 SEE ALSO
+
+L<Mojolicious::Plugin::LocaleTextDomainOO>, L<Mojolicious::Plugin>
+
+=cut
