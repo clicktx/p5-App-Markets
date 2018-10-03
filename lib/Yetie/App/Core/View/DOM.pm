@@ -1,6 +1,8 @@
 package Yetie::App::Core::View::DOM;
 use Mojo::Base 'Mojolicious::Plugin';
 use Mojo::Util qw(monkey_patch);
+use Scalar::Util qw(blessed);
+use Storable 'dclone';
 use Yetie::App::Core::View::DOM::HTML;
 
 {
@@ -16,14 +18,20 @@ use Yetie::App::Core::View::DOM::HTML;
         if ( $type eq 'root' || $type eq 'tag' ) {
             return $self->_content( 0, 1, @_ ) if @_;
             my $html = Yetie::App::Core::View::DOM::HTML->new( xml => $self->xml );
-            return join '', map { $html->tree($_)->render } @{Mojo::DOM::_nodes( $self->tree )};
+            return join '', map { $html->tree($_)->render } @{ Mojo::DOM::_nodes( $self->tree ) };
         }
 
         return $self->tree->[1] unless @_;
         $self->tree->[1] = shift;
         return $self;
       },
-      _parse => sub { Yetie::App::Core::View::DOM::HTML->new( xml => shift->xml )->parse(shift)->tree };
+      _parse => sub {
+        my ( $self, $input ) = @_;
+        return Yetie::App::Core::View::DOM::HTML->new( xml => $self->xml )->parse($input)->tree
+          unless blessed $input && $input->isa('Mojo::DOM');
+        my $tree = dclone $input->tree;
+        return $tree->[0] eq 'root' ? $tree : Mojo::DOM::_fragment($tree);
+      };
 }
 
 sub register {
