@@ -114,23 +114,23 @@ sub _choice_list_widget {
     my $choices = delete $args{choices} || [];
     my $multiple = delete $args{multiple} ? 1 : 0;
     my $expanded = delete $args{expanded} ? 1 : 0;
-    my $flag     = $multiple . $expanded;
+    my $field_type = $multiple . $expanded;
 
     # radio
-    if ( $flag == 1 ) {
+    if ( $field_type == 1 ) {
         $args{type} = 'radio';
         return _list_field( $c, $choices, %args );
     }
 
     # select-multiple
-    elsif ( $flag == 10 ) {
+    elsif ( $field_type == 10 ) {
         $args{multiple} = undef;
         my $name = delete $args{name};
         return $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
     }
 
     # checkbox
-    elsif ( $flag == 11 ) {
+    elsif ( $field_type == 11 ) {
         $args{type} = 'checkbox';
         return _list_field( $c, $choices, %args );
     }
