@@ -140,9 +140,9 @@ subtest 'choice' => sub {
     $f->expanded(1);
     $dom   = Mojo::DOM->new( $h->choice($f) );
     $input = $dom->find('input');
-    is_deeply $input->[0]->attr, { name => 'country[]', type => 'checkbox', value => 'de' }, 'right type is checkbox';
+    is_deeply $input->[0]->attr, { name => 'country', type => 'checkbox', value => 'de' }, 'right type is checkbox';
     is_deeply $input->[3]->attr,
-      { checked => undef, name => 'country[]', type => 'checkbox', value => 'jp' },
+      { checked => undef, name => 'country', type => 'checkbox', value => 'jp' },
       'right checked';
 };
 

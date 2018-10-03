@@ -107,7 +107,6 @@ sub _choice_field {
     return $c->tag( 'label', sub { $tag . $label_text } );
 }
 
-# NOTE: multipleの場合はname属性を xxx[] に変更する？
 sub _choice_list_widget {
     my $c    = shift;
     my %args = @_;
@@ -116,9 +115,6 @@ sub _choice_list_widget {
     my $multiple = delete $args{multiple} ? 1 : 0;
     my $expanded = delete $args{expanded} ? 1 : 0;
     my $flag     = $multiple . $expanded;
-
-    # Add suffix for multiple
-    $args{name} .= '[]' if $multiple;
 
     # radio
     if ( $flag == 1 ) {

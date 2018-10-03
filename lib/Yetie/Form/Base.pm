@@ -27,9 +27,6 @@ sub do_validate {
         my $filters  = $fieldset->filters($field_key);
         my $checks   = $fieldset->checks($field_key);
 
-        # multiple field: eg. parameter_name = "favorite_color[]"
-        $field_key .= '[]' if $fieldset->schema($field_key)->{multiple};
-
         # NOTE: expanding field
         # e.g. field_key = "user.[].id" expanding to parameter_name = "user.0.id"
         if ( $field_key =~ m/\.\[]|\.\{}/ ) {
@@ -86,7 +83,7 @@ sub has_data { shift->validation->has_data }
 
 sub param {
     my ( $self, $key ) = @_;
-    my $param = $key =~ m/\[\]$/ ? $self->params->every_param($key) : $self->params->param($key);
+    my $param = $self->params->param($key);
 
     # NOTE: "Mojolicious::Validator::Validation->output" does not hold parameters with empty strings ;(
     defined $param ? $param : '';
@@ -304,7 +301,7 @@ L<Mojolicious::Validator::Validation/has_data>
     # Return scalar
     my $param = $form->param('name');
 
-    # Return array reference
+    # Return last parameter in parameters
     my $param = $form->param('favorite[]')
 
 The parameter is a validated values.

@@ -154,12 +154,11 @@ subtest 'parameters' => sub {
     my $construct = sub {
         my $pairs = shift
           || [
-            email              => 'a@b.c',
+            email              => '',
             name               => 'frank',
-            address            => '',
             'favorite_color[]' => 'red',
-            'luky_number[]'    => 2,
-            'luky_number[]'    => 3,
+            luky_number        => 2,
+            luky_number        => 3,
             iligal_param       => 'attack',
           ];
 
@@ -169,24 +168,14 @@ subtest 'parameters' => sub {
     };
 
     subtest 'every_param' => sub {
-        my $f = $construct->(
-            [
-                email              => '',
-                name               => 'frank',
-                'favorite_color[]' => 'red',
-                'favorite_color[]' => 'blue',
-                luky_number        => 3,
-                luky_number        => 7,
-                iligal_param       => 'attack',
-            ]
-        );
+        my $f = $construct->();
         $f->do_validate;
 
-        is_deeply $f->every_param('address'), [''],      'right has not parameter';
-        is_deeply $f->every_param('email'),   [''],      'right empty character';
-        is_deeply $f->every_param('name'),    ['frank'], 'right single parameter';
-        is_deeply $f->every_param('favorite_color[]'), [ 'red', 'blue' ], 'right multiple parameters';
-        is_deeply $f->every_param('luky_number'),      [ 3,     7 ],      'right multiple parameters';
+        is_deeply $f->every_param('address'),          [''],      'right has not parameter';
+        is_deeply $f->every_param('email'),            [''],      'right empty character';
+        is_deeply $f->every_param('name'),             ['frank'], 'right single parameter';
+        is_deeply $f->every_param('favorite_color[]'), ['red'],   'right multiple parameters';
+        is_deeply $f->every_param('luky_number'), [ 2, 3 ], 'right multiple parameters';
         is_deeply $f->every_param('iligal_param'), [''], 'right iligal parameter';
     };
 
@@ -196,11 +185,12 @@ subtest 'parameters' => sub {
         ok $@, 'right before do_validate';
 
         $f->do_validate;
-        is $f->param('email'),   'a@b.c', 'right parameter';
-        is $f->param('name'),    'frank', 'right parameter';
-        is $f->param('address'), '',      'right blank parameter';
-        is_deeply $f->param('favorite_color[]'), ['red'], 'right every param';
-        is $f->param('iligal_param'), '', 'right iligal param';
+        is $f->param('email'),            '',      'right empty character';
+        is $f->param('name'),             'frank', 'right parameter';
+        is $f->param('address'),          '',      'right blank parameter';
+        is $f->param('favorite_color[]'), 'red',   'right param in multiple param';
+        is $f->param('luky_number'),      3,       'right param in multiple param';
+        is $f->param('iligal_param'),     '',      'right iligal param';
     };
 
     subtest 'to_hash' => sub {
@@ -338,8 +328,8 @@ subtest 'do_validate' => sub {
             name               => 'frank',
             address            => 'ny',
             'favorite_color[]' => 'red',
-            'luky_number[]'    => 2,
-            'luky_number[]'    => 3,
+            luky_number        => 2,
+            luky_number        => 3,
             'order.*123.name'  => 'foo',
             'order.*bar.name'  => 'bar',
             'item.0.id'        => 11,
