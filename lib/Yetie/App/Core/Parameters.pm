@@ -16,7 +16,7 @@ sub to_hash {
         }
 
         # Key suffix is "[]"
-        elsif ( $name =~ m/\[\]$/ ) { $hash{$name} = [$value] }
+        elsif ( $name =~ m/\[]$/ ) { $hash{$name} = [$value] }
 
         # String
         else { $hash{$name} = $value }
