@@ -152,13 +152,13 @@ sub _choices_for_select {
 
         # optgroup
         if ( blessed $group && $group->isa('Mojo::Collection') ) {
-            my ( $label, $values, %attrs ) = @{$group};
+            my ( $label, $fields, %attrs ) = @{$group};
             $label  = $c->__($label);
-            $values = _choices_for_select( $c, $name, $values );
-            $group  = c( $label => $values, %attrs );
+            $fields = _choices_for_select( $c, $name, $fields );
+            $group  = c( $label => $fields, %attrs );
         }
         else {
-            my ( $label, $value ) = @{$group};
+            my ( $label, $field ) = @{$group};
             $label = $c->__($label);
 
             # true to "selected"
@@ -169,7 +169,7 @@ sub _choices_for_select {
             if ($choiced) { $attrs{selected} = $choiced }
 
             $attrs{selected} ? $attrs{selected} = 'selected' : delete $attrs{selected};
-            $group = [ $label, $value, %attrs ];
+            $group = [ $label, $field, %attrs ];
         }
     }
     return $choices;
