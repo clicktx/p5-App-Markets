@@ -41,15 +41,14 @@ sub AUTOLOAD {
     delete $attrs{$_} for qw(field_key type label);
 
     # choice
-    return _choice_list_widget( $c, %attrs, @_ ) if $method eq 'choice';
+    my $params = $c->req->every_param( $attrs{name} );
+    return _choice_list_widget( $c, $params, %attrs, @_ ) if $method eq 'choice';
 
     # checkbox/radio
     if ( $method eq 'checkbox' || $method eq 'radio' ) {
         delete $attrs{id};
         $attrs{type} = $method;
-
-        my $values = $c->req->every_param( $attrs{name} );
-        return _choice_field( $c, $values, $field->label, %attrs, @_ );
+        return _choice_field( $c, $params, $field->label, %attrs, @_ );
     }
 
     # hidden
@@ -84,7 +83,7 @@ sub new {
 
 # check_box or radio_button into the label
 sub _choice_field {
-    my ( $c, $values, $pair ) = ( shift, shift, shift );
+    my ( $c, $params, $pair ) = ( shift, shift, shift );
 
     $pair = [ $pair, $pair ] unless ref $pair eq 'ARRAY';
     my %attrs = ( value => $pair->[1], @$pair[ 2 .. $#$pair ], @_ );
@@ -93,13 +92,13 @@ sub _choice_field {
     my $choiced = delete $attrs{choiced};
     if ($choiced) { $attrs{checked} = $choiced }
 
-    if ( @{$values} ) { delete $attrs{checked} }
+    if ( @{$params} ) { delete $attrs{checked} }
     else {    # default checked(bool)
         $attrs{checked} ? $attrs{checked} = undef : delete $attrs{checked};
     }
 
     my $value = $attrs{value} // 'on';
-    $attrs{checked} = undef if grep { $_ eq $value } @{$values};
+    $attrs{checked} = undef if grep { $_ eq $value } @{$params};
     my $name = delete $attrs{name};
 
     my $tag = _validation( $c, $name, 'input', name => $name, %attrs );
@@ -108,7 +107,7 @@ sub _choice_field {
 }
 
 sub _choice_list_widget {
-    my $c    = shift;
+    my ( $c, $params ) = ( shift, shift );
     my %args = @_;
 
     my $choices = delete $args{choices} || [];
@@ -119,7 +118,7 @@ sub _choice_list_widget {
     # radio
     if ( $field_type == 1 ) {
         $args{type} = 'radio';
-        return _list_field( $c, $choices, %args );
+        return _list_field( $c, $params, $choices, %args );
     }
 
     # select-multiple
@@ -132,7 +131,7 @@ sub _choice_list_widget {
     # checkbox
     elsif ( $field_type == 11 ) {
         $args{type} = 'checkbox';
-        return _list_field( $c, $choices, %args );
+        return _list_field( $c, $params, $choices, %args );
     }
 
     # select
@@ -248,12 +247,10 @@ sub _label {
 
 # checkbox list or radio button list
 sub _list_field {
-    my $c       = shift;
-    my $choices = shift;
-    my %args    = @_;
+    my ( $c, $params, $choices ) = ( shift, shift, shift );
+    my %args = @_;
 
     delete $args{$_} for qw(value id);
-    my @values = @{ $c->req->every_param( $args{name} ) };
 
     my $root_class;
     my $groups = '';
@@ -265,12 +262,12 @@ sub _list_field {
             $label = $c->__($label);
             my $legend = $c->tag( 'legend', $label );
             my $items = join '',
-              map { $c->tag( 'div', class => 'form-choice-item', _choice_field( $c, \@values, $_, %args ) ) } @$v;
+              map { $c->tag( 'div', class => 'form-choice-item', _choice_field( $c, $params, $_, %args ) ) } @$v;
             $groups .= $c->tag( 'fieldset', class => 'form-choice-group', %attrs, sub { $legend . $items } );
         }
         else {
             $root_class = 'form-choice-group' unless $root_class;
-            my $row = _choice_field( $c, \@values, $group, %args );
+            my $row = _choice_field( $c, $params, $group, %args );
             $groups .= $c->tag( 'div', class => 'form-choice-item', sub { $row } );
         }
     }
