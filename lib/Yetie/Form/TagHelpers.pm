@@ -126,7 +126,7 @@ sub _choice_list_widget {
     elsif ( $field_type == 10 ) {
         $args{multiple} = undef;
         my $name = delete $args{name};
-        return $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
+        return $c->select_field( $name => _choices_for_select( $c, $name, $choices ), %args );
     }
 
     # checkbox
@@ -138,15 +138,14 @@ sub _choice_list_widget {
     # select
     else {
         my $name = delete $args{name};
-        return $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
+        return $c->select_field( $name => _choices_for_select( $c, $name, $choices ), %args );
     }
 }
 
 # I18N and bool selected
 # NOTE: This function is used only for "$c->select_field" helper
 sub _choices_for_select {
-    my $c       = shift;
-    my $choices = shift;
+    my ( $c, $name, $choices ) = ( shift, shift, shift );
 
     for my $group ( @{$choices} ) {
         next unless ref $group;
@@ -155,7 +154,7 @@ sub _choices_for_select {
         if ( blessed $group && $group->isa('Mojo::Collection') ) {
             my ( $label, $values, %attrs ) = @{$group};
             $label  = $c->__($label);
-            $values = _choices_for_select( $c, $values );
+            $values = _choices_for_select( $c, $name, $values );
             $group  = c( $label => $values, %attrs );
         }
         else {
@@ -284,7 +283,7 @@ sub _select {
 
     my $choices = delete $attrs{choices} || [];
     my $name = delete $attrs{name};
-    return $c->select_field( $name => _choices_for_select( $c, $choices ), %attrs );
+    return $c->select_field( $name => _choices_for_select( $c, $name, $choices ), %attrs );
 }
 
 sub _textarea {
