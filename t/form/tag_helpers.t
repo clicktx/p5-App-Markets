@@ -83,17 +83,16 @@ subtest 'checkbox and radio' => sub {
 };
 
 subtest 'choice' => sub {
-    my ( $c, $h ) = init();
     my $f = Yetie::Form::Field->new(
         field_key => 'country',
         name      => 'country',
     );
     $f->choices( [ c( EU => [ 'de', 'en' ] ), c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', selected => 1 ] ] ) ] );
 
-    my $dom;
-
     # select
+    my $dom;
     subtest 'select box' => sub {
+        my ( $c, $h ) = init();
         $f->multiple(0);
         $f->expanded(0);
         $dom = Mojo::DOM->new( $h->choice($f) );
@@ -102,14 +101,28 @@ subtest 'choice' => sub {
 
     # select (multiple)
     subtest 'multiple select box' => sub {
+        my ( $c, $h ) = init();
         $f->multiple(1);
         $f->expanded(0);
         $dom = Mojo::DOM->new( $h->choice($f) );
         is $dom->at('*')->attr->{multiple}, undef, 'right multiple';
+
+        $c->req->params->append( country => [qw(en cn)] );
+        $dom = Mojo::DOM->new( $h->choice($f) );
+
+        $dom->find('option')->each(
+            sub {
+                my $attr = $_->attr;
+                my $v    = $attr->{value};
+                ok !exists $attr->{selected}, "right not selected $v" if $v eq 'de' or $v eq 'jp';
+                ok exists $attr->{selected},  "right selected $v"     if $v eq 'en' or $v eq 'cn';
+            }
+        );
     };
 
     # radio list
     subtest 'radio button list' => sub {
+        my ( $c, $h ) = init();
         my $input;
         $f->multiple(0);
         $f->expanded(1);
@@ -146,6 +159,7 @@ subtest 'choice' => sub {
 
     # checkbox list (multiple)
     subtest 'checkbox list(multiple)' => sub {
+        my ( $c, $h ) = init();
         my $input;
         $f->multiple(1);
         $f->expanded(1);
