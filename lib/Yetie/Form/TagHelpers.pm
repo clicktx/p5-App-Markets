@@ -48,8 +48,8 @@ sub AUTOLOAD {
         delete $attrs{id};
         $attrs{type} = $method;
 
-        my @values = @{ $c->req->every_param( $attrs{name} ) };
-        return _choice_field( $c, \@values, $field->label, %attrs, @_ );
+        my $values = $c->req->every_param( $attrs{name} );
+        return _choice_field( $c, $values, $field->label, %attrs, @_ );
     }
 
     # hidden
