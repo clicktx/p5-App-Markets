@@ -113,13 +113,16 @@ sub render_help {
 }
 
 sub render_label {
-    my ( $self, $name, %attrs ) = @_;
+    my ( $self, $name ) = ( shift, shift );
+    my %attrs = @_;
+
     my $field = $self->fieldset->field($name);
     $self->tag_helpers->label_for( $field, %attrs );
 }
 
 sub render {
-    my ( $self, $name, %attrs ) = @_;
+    my ( $self, $name ) = ( shift, shift );
+    my %attrs = @_;
 
     my $field = $self->fieldset->field($name);
     my $method = $attrs{type} || $field->type || 'text';
