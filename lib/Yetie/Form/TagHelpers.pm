@@ -125,7 +125,7 @@ sub _choice_list_widget {
     elsif ( $field_type == 10 ) {
         $args{multiple} = undef;
         my $name = delete $args{name};
-        return $c->select_field( $name => _choices_for_select( $c, $name, $choices ), %args );
+        return $c->select_field( $name => _select_field( $c, $name, $choices ), %args );
     }
 
     # checkbox
@@ -137,41 +137,8 @@ sub _choice_list_widget {
     # select
     else {
         my $name = delete $args{name};
-        return $c->select_field( $name => _choices_for_select( $c, $name, $choices ), %args );
+        return $c->select_field( $name => _select_field( $c, $name, $choices ), %args );
     }
-}
-
-# I18N and bool selected
-# NOTE: This function is used only for "$c->select_field" helper
-sub _choices_for_select {
-    my ( $c, $name, $choices ) = ( shift, shift, shift );
-
-    for my $group ( @{$choices} ) {
-        next unless ref $group;
-
-        # optgroup
-        if ( blessed $group && $group->isa('Mojo::Collection') ) {
-            my ( $label, $fields, %attrs ) = @{$group};
-            $label  = $c->__($label);
-            $fields = _choices_for_select( $c, $name, $fields );
-            $group  = c( $label => $fields, %attrs );
-        }
-        else {
-            my ( $label, $field ) = @{$group};
-            $label = $c->__($label);
-
-            # true to "selected"
-            my %attrs = ( @{$group}[ 2 .. $#$group ] );
-
-            # choiced
-            my $choiced = delete $attrs{choiced};
-            if ($choiced) { $attrs{selected} = $choiced }
-
-            $attrs{selected} ? $attrs{selected} = 'selected' : delete $attrs{selected};
-            $group = [ $label, $field, %attrs ];
-        }
-    }
-    return $choices;
 }
 
 sub _error {
@@ -280,7 +247,40 @@ sub _select {
 
     my $choices = delete $attrs{choices} || [];
     my $name = delete $attrs{name};
-    return $c->select_field( $name => _choices_for_select( $c, $name, $choices ), %attrs );
+    return $c->select_field( $name => _select_field( $c, $name, $choices ), %attrs );
+}
+
+# I18N and bool selected
+# NOTE: This function is used only for "$c->select_field" helper
+sub _select_field {
+    my ( $c, $name, $choices ) = ( shift, shift, shift );
+
+    for my $group ( @{$choices} ) {
+        next unless ref $group;
+
+        # optgroup
+        if ( blessed $group && $group->isa('Mojo::Collection') ) {
+            my ( $label, $fields, %attrs ) = @{$group};
+            $label  = $c->__($label);
+            $fields = _select_field( $c, $name, $fields );
+            $group  = c( $label => $fields, %attrs );
+        }
+        else {
+            my ( $label, $field ) = @{$group};
+            $label = $c->__($label);
+
+            # true to "selected"
+            my %attrs = ( @{$group}[ 2 .. $#$group ] );
+
+            # choiced
+            my $choiced = delete $attrs{choiced};
+            if ($choiced) { $attrs{selected} = $choiced }
+
+            $attrs{selected} ? $attrs{selected} = 'selected' : delete $attrs{selected};
+            $group = [ $label, $field, %attrs ];
+        }
+    }
+    return $choices;
 }
 
 sub _textarea {
