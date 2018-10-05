@@ -1,6 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
+use Test::Exception;
 use t::Util;
 use Mojo::Collection qw(c);
 use Yetie::Domain::Collection qw(collection);
@@ -169,8 +170,9 @@ subtest 'parameters' => sub {
 
     subtest 'every_param' => sub {
         my $f = $construct->();
-        $f->do_validate;
+        dies_ok sub { $f->every_param('name') }, 'right before do_validate';
 
+        $f->do_validate;
         is_deeply $f->every_param('address'), [], 'right has not parameter';
         is_deeply $f->every_param('email'),   [], 'right empty character';
         is_deeply $f->every_param('name'),             ['frank'], 'right single parameter';
@@ -181,8 +183,7 @@ subtest 'parameters' => sub {
 
     subtest 'param' => sub {
         my $f = $construct->();
-        eval { my $name = $f->param('name') };
-        ok $@, 'right before do_validate';
+        dies_ok sub { $f->param('name') }, 'right before do_validate';
 
         $f->do_validate;
         is $f->param('email'),            '',      'right empty character';
@@ -193,12 +194,24 @@ subtest 'parameters' => sub {
         is $f->param('iligal_param'),     '',      'right iligal param';
     };
 
-    subtest 'to_hash' => sub {
+    subtest 'params' => sub {
         my $f = $construct->();
-        $f->do_validate;
+        dies_ok sub { $f->params }, 'right before do_validate';
 
-        my $params = $f->params->to_hash;
-        is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
+        subtest 'to_hash' => sub {
+            my $f = $construct->();
+            $f->do_validate;
+
+            my $params = $f->params->to_hash;
+            is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
+            is_deeply $params,
+              {
+                name               => 'frank',
+                'favorite_color[]' => ['red'],
+                luky_number        => [ 2, 3 ],
+              },
+              'right every param to_hash';
+        };
     };
 
     subtest 'scope_param' => sub {
