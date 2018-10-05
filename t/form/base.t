@@ -300,8 +300,8 @@ subtest 'do_validate' => sub {
             name               => '',
             address            => 'ny',
             'favorite_color[]' => 'red',
-            'luky_number[]'    => 2,
-            'luky_number[]'    => 3,
+            luky_number        => 2,
+            luky_number        => 3,
             'item.0.id'        => 11,
             'item.1.id'        => '',
             'item.2.id'        => 33,
@@ -312,6 +312,20 @@ subtest 'do_validate' => sub {
     );
     my $result = $f->do_validate;
     ok !$result, 'right failed validation';
+
+    # mojo.captures after do_validate.
+    my $captures = $c->stash('mojo.captures');
+    is $captures->{name}, '', 'right parameter captures';
+    is $c->param('name'), '', 'right param';
+    is_deeply $c->every_param('name'), [''], 'right every_param';
+
+    is_deeply $captures->{'favorite_color[]'}, ['red'], 'right parameter captures';
+    is $c->param('favorite_color[]'), 'red', 'right param';
+    is_deeply $c->every_param('favorite_color[]'), ['red'], 'right every_param';
+
+    is_deeply $captures->{luky_number}, [ 2, 3 ], 'right parameter captures';
+    is $c->param('luky_number'), 3, 'right param';
+    is_deeply $c->every_param('luky_number'), [ 2, 3 ], 'right every_param';
 
     my $v = $f->controller->validation;
     my ( $check, $res, @args ) = @{ $v->error('email') };

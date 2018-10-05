@@ -136,8 +136,11 @@ sub validation { shift->controller->validation }
 # NOTE: filter適用後の値をfill-in formで使われるようにする
 sub _replace_req_param {
     my ( $c, $key ) = @_;
-    my $validated_value = $c->validation->param($key);
-    $c->param( $key => $validated_value ) if $validated_value;
+    my $validated = $c->validation->every_param($key);
+
+    # parameterが無い場合は空文字を設定する
+    my $value = @{$validated} ? $validated : '';
+    $c->param( $key => $value );
 }
 
 sub _do_check {
