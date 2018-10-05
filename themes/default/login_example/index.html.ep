@@ -23,28 +23,28 @@
 
     <h4>smart version</h4>
     <div class="">
-        <%= form_label('example#agreed') %>
-        <%= form_widget('example#agreed') %>
+        <%= form_label 'example#agreed' %>
+        <%= form_widget 'example#agreed' %>
     </div>
     <div class="">
-        <%= form_label('example#note') %>
-        <%= form_widget('example#note') %>
+        <%= form_label 'example#note' %>
+        <%= form_widget 'example#note' %>
     </div>
     <div class="">
-        <%= form_label('example#country1') %>
-        <%= form_widget('example#country1') %>
+        <%= form_label 'example#country1' %>
+        <%= form_widget 'example#country1', choiced => 'en' %>
     </div>
     <div class="">
-        <%= form_label('example#country2') %>
-        <%= form_widget('example#country2') %>
+        <%= form_label 'example#country2' %>
+        <%= form_widget 'example#country2', choiced => 'en' %>
     </div>
     <div class="">
-        <%= form_label('example#country3') %>
-        <%= form_widget('example#country3') %>
+        <%= form_label 'example#country3' %>
+        <%= form_widget 'example#country3', choiced => 'en' %>
     </div>
     <div class="">
-        <%= form_label('example#country4') %>
-        <%= form_widget('example#country4') %>
+        <%= form_label 'example#country4' %>
+        <%= form_widget 'example#country4', choiced => 'en' %>
     </div>
 
     <h4>in loop</h4>
