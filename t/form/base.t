@@ -171,12 +171,12 @@ subtest 'parameters' => sub {
         my $f = $construct->();
         $f->do_validate;
 
-        is_deeply $f->every_param('address'),          [''],      'right has not parameter';
-        is_deeply $f->every_param('email'),            [''],      'right empty character';
+        is_deeply $f->every_param('address'), [], 'right has not parameter';
+        is_deeply $f->every_param('email'),   [], 'right empty character';
         is_deeply $f->every_param('name'),             ['frank'], 'right single parameter';
         is_deeply $f->every_param('favorite_color[]'), ['red'],   'right multiple parameters';
         is_deeply $f->every_param('luky_number'), [ 2, 3 ], 'right multiple parameters';
-        is_deeply $f->every_param('iligal_param'), [''], 'right iligal parameter';
+        is_deeply $f->every_param('iligal_param'), [], 'right iligal parameter';
     };
 
     subtest 'param' => sub {
