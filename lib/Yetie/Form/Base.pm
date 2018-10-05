@@ -47,13 +47,7 @@ sub do_validate {
     return $v->has_error ? undef : 1;
 }
 
-sub every_param {
-    my ( $self, $key ) = @_;
-    my $param = $self->params->every_param($key);
-
-    # NOTE: "Mojolicious::Validator::Validation->output" does not hold parameters with empty strings ;(
-    @{$param} ? $param : [''];
-}
+sub every_param { shift->params->every_param(shift) }
 
 sub field { shift->fieldset->field(@_) }
 
@@ -119,13 +113,16 @@ sub render_help {
 }
 
 sub render_label {
-    my ( $self, $name, %attrs ) = @_;
+    my ( $self, $name ) = ( shift, shift );
+    my %attrs = @_;
+
     my $field = $self->fieldset->field($name);
     $self->tag_helpers->label_for( $field, %attrs );
 }
 
 sub render {
-    my ( $self, $name, %attrs ) = @_;
+    my ( $self, $name ) = ( shift, shift );
+    my %attrs = @_;
 
     my $field = $self->fieldset->field($name);
     my $method = $attrs{type} || $field->type || 'text';
