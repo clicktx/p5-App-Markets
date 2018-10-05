@@ -77,10 +77,9 @@ sub has_data { shift->validation->has_data }
 
 sub param {
     my ( $self, $key ) = @_;
-    my $param = $self->params->param($key);
 
     # NOTE: "Mojolicious::Validator::Validation->output" does not hold parameters with empty strings ;(
-    defined $param ? $param : '';
+    return $self->every_param($key)->[-1] // '';
 }
 
 sub params {
