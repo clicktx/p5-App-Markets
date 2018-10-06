@@ -34,13 +34,13 @@ sub do_validate {
             foreach my $key (@match) {
                 $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
                 $self->_do_check($_) for @$checks;
-                _replace_req_param( $c, $key );
+                $self->_replace_req_param($key);
             }
         }
         else {
             $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
             $self->_do_check($_) for @$checks;
-            _replace_req_param( $c, $field_key );
+            $self->_replace_req_param($field_key);
         }
     }
     $self->is_validated(1);
@@ -132,16 +132,6 @@ sub scope_param { shift->params->every_param(shift) }
 
 sub validation { shift->controller->validation }
 
-# NOTE: filter適用後の値をfill-in formで使われるようにする
-sub _replace_req_param {
-    my ( $c, $key ) = @_;
-    my $validated = $c->validation->every_param($key);
-
-    # parameterが無い場合は空文字を設定する
-    my $value = @{$validated} ? $validated : '';
-    $c->param( $key => $value );
-}
-
 sub _do_check {
     my $self = shift;
     my $c    = $self->controller;
@@ -192,6 +182,17 @@ sub _fill_field {
         $field->choices( _fill_choice_field( $field->choices, $value ) );
     }
     else { $field->default_value($value) }
+}
+
+# NOTE: filter適用後の値をfill-in formで使われるようにする
+sub _replace_req_param {
+    my ( $self, $key ) = @_;
+    my $c         = $self->controller;
+    my $validated = $c->validation->every_param($key);
+
+    # parameterが無い場合は空文字を設定する
+    my $value = @{$validated} ? $validated : '';
+    $c->param( $key => $value );
 }
 
 1;
