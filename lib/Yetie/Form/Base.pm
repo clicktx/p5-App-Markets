@@ -18,8 +18,6 @@ has tag_helpers  => sub { Yetie::Form::TagHelpers->new( shift->controller ) };
 sub do_validate {
     my $self     = shift;
     my $c        = $self->controller;
-    my $v        = $c->validation;
-    my $names    = $c->req->params->names;
     my $fieldset = $self->fieldset;
 
     foreach my $field_key ( @{ $fieldset->field_keys } ) {
@@ -30,21 +28,24 @@ sub do_validate {
         # NOTE: expanding field
         # e.g. field_key = "user.[].id" expanding to parameter_name = "user.0.id"
         if ( $field_key =~ m/\.\[]|\.\{}/ ) {
+            my $names = $c->req->params->names;
             my @match = grep { my $name = $fieldset->_replace_key($_); $field_key eq $name } @{$names};
-            foreach my $key (@match) {
-                $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
-                $self->_do_check($_) for @$checks;
-                $self->_replace_req_param($key);
-            }
+            $self->_validate_field( $_ => $required, $filters, $checks ) for @match;
         }
-        else {
-            $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
-            $self->_do_check($_) for @$checks;
-            $self->_replace_req_param($field_key);
-        }
+        else { $self->_validate_field( $field_key => $required, $filters, $checks ) }
     }
     $self->is_validated(1);
-    return $v->has_error ? undef : 1;
+    return $c->validation->has_error ? undef : 1;
+}
+
+sub _validate_field {
+    my ( $self, $field_key, $required, $filters, $checks ) = @_;
+    my $v = $self->controller->validation;
+    $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
+    $self->_do_check($_) for @$checks;
+
+    # NOTE: filter適用後の値をfill-in formで使われるようにする
+    $self->_replace_req_param($field_key);
 }
 
 sub every_param { shift->params->every_param(shift) }
