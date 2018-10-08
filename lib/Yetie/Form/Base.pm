@@ -27,12 +27,12 @@ sub do_validate {
 
         # NOTE: expanding field
         # e.g. field_key = "user.[].id" expanding to parameter_name = "user.0.id"
-        if ( $field_key =~ m/\.\[]|\.\{}/ ) {
-            my $names = $c->req->params->names;
-            my @match = grep { my $name = $fieldset->_replace_key($_); $field_key eq $name } @{$names};
-            $self->_validate_field( $_ => $required, $filters, $checks ) for @match;
-        }
-        else { $self->_validate_field( $field_key => $required, $filters, $checks ) }
+        my $names = $c->req->params->names;
+        my @keys =
+          $field_key =~ m/\.\[]|\.\{}/
+          ? grep { $fieldset->_replace_key($_) eq $field_key } @{$names}
+          : ($field_key);
+        $self->_validate_field( $_ => $required, $filters, $checks ) for @keys;
     }
     $self->is_validated(1);
     return $c->validation->has_error ? undef : 1;
