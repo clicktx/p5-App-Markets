@@ -81,7 +81,13 @@ sub update_product {
         $product->product_categories->search( { category_id => $primary_category } )->update( { is_primary => 1 } );
 
         # Product detail
-        $product->update($params);
+        $product->update(
+            {
+                title       => $params->{title},
+                description => $params->{description},
+                price       => $params->{price},
+            }
+        );
     };
 
     try { $self->schema->txn_do($cb) }
