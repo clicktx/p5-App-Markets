@@ -91,7 +91,7 @@ sub _choice_field {
     my $choiced = delete $attrs{choiced};
     if ($choiced) { $attrs{checked} = $choiced }
 
-    my $params = $c->req->every_param( $attrs{name} );
+    my $params = $c->every_param( $attrs{name} );
     if ( @{$params} ) { delete $attrs{checked} }
     else {    # default checked(bool)
         $attrs{checked} ? $attrs{checked} = undef : delete $attrs{checked};
