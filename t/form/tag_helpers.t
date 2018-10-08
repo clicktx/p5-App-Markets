@@ -107,9 +107,9 @@ subtest 'choice' => sub {
         $dom = Mojo::DOM->new( $h->choice($f) );
         is $dom->at('*')->attr->{multiple}, undef, 'right multiple';
 
-        $c->req->params->append( country => [qw(en cn)] );
+        # has parameters
+        $c->param( country => [qw(en cn)] );
         $dom = Mojo::DOM->new( $h->choice($f) );
-
         $dom->find('option')->each(
             sub {
                 my $attr = $_->attr;
@@ -118,6 +118,27 @@ subtest 'choice' => sub {
                 ok exists $attr->{selected},  "right selected $v"     if $v eq 'en' or $v eq 'cn';
             }
         );
+
+        # choiced attribute in templates
+        ( $c, $h ) = init();
+        $f->multiple(1);
+        $f->expanded(0);
+        $dom = Mojo::DOM->new( $h->choice( $f, choiced => 'en' ) );
+        my @attrs = ();
+        $dom->find('option')->each( sub { push @attrs, $_->attr } );
+        is_deeply \@attrs,
+          [ { value => 'de' }, { selected => undef, value => 'en' }, { value => 'cn' }, { value => 'jp' }, ],
+          'right choiced';
+
+        ( $c, $h ) = init();
+        $f->multiple(1);
+        $f->expanded(0);
+        $dom = Mojo::DOM->new( $h->choice( $f, choiced => ['cn'] ) );
+        @attrs = ();
+        $dom->find('option')->each( sub { push @attrs, $_->attr } );
+        is_deeply \@attrs,
+          [ { value => 'de' }, { value => 'en' }, { selected => undef, value => 'cn' }, { value => 'jp' }, ],
+          'right choiced';
     };
 
     # radio list
