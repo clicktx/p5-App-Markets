@@ -38,16 +38,6 @@ sub do_validate {
     return $c->validation->has_error ? undef : 1;
 }
 
-sub _validate_field {
-    my ( $self, $field_key, $required, $filters, $checks ) = @_;
-    my $v = $self->controller->validation;
-    $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
-    $self->_do_check($_) for @$checks;
-
-    # NOTE: filter適用後の値をfill-in formで使われるようにする
-    $self->_replace_req_param($field_key);
-}
-
 sub every_param { shift->params->every_param(shift) }
 
 sub field { shift->fieldset->field(@_) }
@@ -194,6 +184,16 @@ sub _replace_req_param {
     # parameterが無い場合は空文字を設定する
     my $value = @{$validated} ? $validated : '';
     $c->param( $key => $value );
+}
+
+sub _validate_field {
+    my ( $self, $field_key, $required, $filters, $checks ) = @_;
+    my $v = $self->controller->validation;
+    $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
+    $self->_do_check($_) for @$checks;
+
+    # NOTE: filter適用後の値をfill-in formで使われるようにする
+    $self->_replace_req_param($field_key);
 }
 
 1;
