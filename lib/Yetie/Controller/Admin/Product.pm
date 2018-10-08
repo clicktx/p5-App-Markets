@@ -56,7 +56,7 @@ sub edit {
     return $c->render() if !$form->has_data or !$form->do_validate;
 
     # Update data
-    $c->service('product')->update_product( $product_id, $form->params->to_hash );
+    $c->service('product')->update_product( $product_id, $form );
     return $c->render();
 }
 
