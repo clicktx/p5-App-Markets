@@ -190,6 +190,37 @@ subtest 'choice' => sub {
         is_deeply $input->[3]->attr,
           { checked => undef, name => 'country', type => 'checkbox', value => 'jp' },
           'right checked';
+
+        # choiced attribute in templates
+        ( $c, $h ) = init();
+        $f->multiple(1);
+        $f->expanded(1);
+        $dom = Mojo::DOM->new( $h->choice( $f, choiced => 'en' ) );
+        my @attrs = ();
+        $dom->find('input')->each( sub { push @attrs, $_->attr } );
+        is_deeply \@attrs,
+          [
+            { name => 'country', type => 'checkbox', value => 'de' },
+            { name => 'country', type => 'checkbox', value => 'en', checked => undef },
+            { name => 'country', type => 'checkbox', value => 'cn' },
+            { name => 'country', type => 'checkbox', value => 'jp' },
+          ],
+          'right choiced';
+
+        ( $c, $h ) = init();
+        $f->multiple(1);
+        $f->expanded(1);
+        $dom = Mojo::DOM->new( $h->choice( $f, choiced => [ 'en', 'cn' ] ) );
+        @attrs = ();
+        $dom->find('input')->each( sub { push @attrs, $_->attr } );
+        is_deeply \@attrs,
+          [
+            { name => 'country', type => 'checkbox', value => 'de' },
+            { name => 'country', type => 'checkbox', value => 'en', checked => undef },
+            { name => 'country', type => 'checkbox', value => 'cn', checked => undef },
+            { name => 'country', type => 'checkbox', value => 'jp' },
+          ],
+          'right choiced';
     };
 };
 

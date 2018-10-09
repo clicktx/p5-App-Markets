@@ -110,6 +110,11 @@ sub _choice_list_widget {
     my $c    = shift;
     my %args = @_;
 
+    # default choiced from template
+    my $choiced =
+      $args{choiced} ? ref $args{choiced} eq 'ARRAY' ? delete $args{choiced} : [ delete $args{choiced} ] : [];
+    $c->param( $args{name} => $choiced ) unless $c->param( $args{name} );
+
     my $choices = delete $args{choices} || [];
     my $multiple = delete $args{multiple} ? 1 : 0;
     my $expanded = delete $args{expanded} ? 1 : 0;
