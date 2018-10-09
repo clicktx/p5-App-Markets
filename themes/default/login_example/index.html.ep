@@ -36,7 +36,7 @@
     </div>
     <div class="">
         <%= form_label 'example#country2' %>
-        <%= form_widget 'example#country2', choiced => 'en' %>
+        <%= form_widget 'example#country2', choiced => ['en', 'cn'] %>
     </div>
     <div class="">
         <%= form_label 'example#country3' %>
@@ -44,7 +44,7 @@
     </div>
     <div class="">
         <%= form_label 'example#country4' %>
-        <%= form_widget 'example#country4', choiced => 'en' %>
+        <%= form_widget 'example#country4', choiced => ['en', 'cn'] %>
     </div>
 
     <h4>in loop</h4>
