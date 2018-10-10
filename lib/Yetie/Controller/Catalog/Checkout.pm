@@ -79,24 +79,30 @@ sub payment_method {
 sub billing_address {
     my $c = shift;
 
-    my $form        = $c->form('checkout-select_address');
     my $customer_id = $c->server_session->customer_id;
-
-    my $addresses = $c->service('customer')->get_billing_addresses($customer_id);
+    my $addresses   = $c->service('customer')->get_billing_addresses($customer_id);
     $c->stash( addresses => $addresses );
 
-    return $c->render() unless $form->has_data;
-    return $c->render() unless $form->do_validate;
+    my $form_select_address = $c->form('checkout-select_address');
+    my $form_set_address    = $c->form('billing_address');
+    return $c->render() unless $form_select_address->has_data;
 
-    my $no       = $form->param('select_address');
+    $form_select_address->do_validate;
+    my $no       = $form_select_address->param('select_address');
     my $selected = $addresses->get($no);
 
-    # 正規に選択されなかった
-    return $c->render() unless $selected;
+    # Select Address
+    if ($selected) {
+        $c->cart->set_billing_address($selected);
+        return $c->confirm_handler;
+    }
 
-    my $cart = $c->cart;
-    $cart->set_billing_address($selected);
+    # Set Address
+    $form_set_address->do_validate;
+    return $c->render() unless $form_set_address->do_validate;
 
+    my $set_address = $c->factory('entity-address')->construct( $form_set_address->params->to_hash );
+    $c->cart->set_billing_address($set_address);
     return $c->confirm_handler;
 }
 
