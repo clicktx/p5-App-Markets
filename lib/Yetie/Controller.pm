@@ -29,6 +29,9 @@ sub process {
     # CSRF protection
     return unless $self->csrf_protect();
 
+    # Set variant for templates
+    $self->stash( variant => $self->language ) unless $self->language eq 'en';
+
     # Controller process
     $self->app->plugins->emit_hook( before_init => $self );
     $self->init();
