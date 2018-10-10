@@ -62,11 +62,25 @@ sub test_02_shipping_address : Tests() {
 
     $t->get_ok('/checkout/shipping-address')->status_is(200)->content_like(qr/shipping address/);
 
+    # Select address
     my $post_data = {
         csrf_token     => $self->csrf_token,
         select_address => 1,
     };
-    $t->post_ok( '/checkout/shipping-address', form => $post_data )->status_is(200);
+    $t->post_ok( '/checkout/shipping-address', form => $post_data )->status_is(200)->content_like(qr/billing address/);
+
+    # New address
+    $post_data = {
+        csrf_token    => $self->csrf_token,
+        country_code  => 'us',
+        personal_name => 'foo',
+        line1         => 'bar',
+        city          => 'baz',
+        state         => 'foo',
+        postal_code   => 'bar',
+        phone         => 'baz',
+    };
+    $t->post_ok( '/checkout/shipping-address', form => $post_data )->status_is(200)->content_like(qr/billing address/);
 }
 
 sub test_03_billing_address : Tests() {
@@ -75,11 +89,25 @@ sub test_03_billing_address : Tests() {
 
     $t->get_ok('/checkout/billing-address')->status_is(200)->content_like(qr/billing address/);
 
+    # Select address
     my $post_data = {
         csrf_token     => $self->csrf_token,
         select_address => 0,
     };
-    $t->post_ok( '/checkout/billing-address', form => $post_data )->status_is(200);
+    $t->post_ok( '/checkout/billing-address', form => $post_data )->status_is(200)->content_like(qr/confirm/);
+
+    # New address
+    $post_data = {
+        csrf_token    => $self->csrf_token,
+        country_code  => 'us',
+        personal_name => 'foo',
+        line1         => 'bar',
+        city          => 'baz',
+        state         => 'foo',
+        postal_code   => 'bar',
+        phone         => 'baz',
+    };
+    $t->post_ok( '/checkout/billing-address', form => $post_data )->status_is(200)->content_like(qr/confirm/);
 }
 
 sub test_10_confirm : Tests() {
