@@ -119,7 +119,7 @@ the following new ones.
 
 Argument: L<Yetie::Domain::Entity::Page::Product> object.
 
-Return: Array ou Array refference.
+Return: Array or Array reference.
 
 =head2 C<duplicate_product>
 
@@ -142,6 +142,12 @@ Data does include C<breadcrumbs>.
     my $product = $service->find_product($product_id);
 
 Return L<Yetie::Domain::Entity::Page::Product> object.
+
+=head2 C<is_sold>
+
+    my $bool = $servece->is_sold($product_id);
+
+Return boolean value.
 
 =head2 C<new_product>
 

@@ -82,7 +82,7 @@ Return L<Yetie::Domain::Entity::Staff> object.
     my $bool = $service->login_process( $login_id, $raw_password );
 
 Return boolean value.
-Returns true if login succeeded.
+Returns true if log-in succeeded.
 
 =head1 AUTHOR
 

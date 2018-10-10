@@ -68,6 +68,10 @@ Emit "message" event and log error message.
 
 Emit "message" event and log fatal message.
 
+=head2 C<path>
+
+
+
 =head1 SEE ALSO
 
 L<Yetie::Log>, L<Mojo::Log>

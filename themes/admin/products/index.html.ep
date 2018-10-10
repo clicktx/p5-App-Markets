@@ -30,4 +30,4 @@
     % });
 </ul>
 
-<%= include 'admin/component/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>
+<%= include 'admin/components/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>

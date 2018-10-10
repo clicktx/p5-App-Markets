@@ -44,7 +44,7 @@ the following new ones.
     # [ { name => {...} }, { name2 => {...} }, ... ]
     $array_ref = $resultset->to_data();
 
-Return Array refference.
+Return Array reference.
 
 =head1 AUTHOR
 

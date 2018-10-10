@@ -180,7 +180,7 @@ See L</get_addresses>
 
     my $bool = $service->story->login_process;
 
-Returns true if login succeeded.
+Returns true if log-in succeeded.
 
 =head1 AUTHOR
 

@@ -25,30 +25,36 @@ sub index {
 sub shipping_address {
     my $c = shift;
 
-    my $form        = $c->form('checkout-select_address');
     my $customer_id = $c->server_session->customer_id;
-
-    my $addresses = $c->service('customer')->get_shipping_addresses($customer_id);
+    my $addresses   = $c->service('customer')->get_shipping_addresses($customer_id);
     $c->stash( addresses => $addresses );
 
-    return $c->render() unless $form->has_data;
-    return $c->render() unless $form->do_validate;
+    my $form_select_address = $c->form('checkout-select_address');
+    my $form_set_address    = $c->form('shipping_address');
+    return $c->render() unless $form_select_address->has_data;
 
-    my $no       = $form->param('select_address');
+    $form_select_address->do_validate;
+    my $no       = $form_select_address->param('select_address');
     my $selected = $addresses->get($no);
 
-    # 正規に選択されなかった
-    return $c->render() unless $selected;
+    # Select Address
+    if ($selected) {
+        $c->cart->set_shipping_address($selected);
+        return $c->confirm_handler;
+    }
+
+    # Set Address
+    $form_set_address->do_validate;
+    return $c->render() unless $form_set_address->do_validate;
+
+    my $set_address = $c->factory('entity-address')->construct( $form_set_address->params->to_hash );
+    $c->cart->set_shipping_address($set_address);
 
     # NOTE: 1箇所のみに配送の場合
     # 複数配送の場合は先に配送先を複数登録しておく？別コントローラが良い？
     # shipment objectを生成して配列にpushする必要がある。
     # my $shipment = $c->factory('entity-shipment')->create( shipping_address => $selected->address->to_data );
     # $cart->add_shipment($shipment);
-
-    my $cart = $c->cart;
-    $cart->set_shipping_address($selected);
-
     # NOTE: 複数配送を使うかのpreference
     if ( $c->pref('can_multiple_shipments') ) {
         say 'multiple shipment is true';
@@ -73,24 +79,30 @@ sub payment_method {
 sub billing_address {
     my $c = shift;
 
-    my $form        = $c->form('checkout-select_address');
     my $customer_id = $c->server_session->customer_id;
-
-    my $addresses = $c->service('customer')->get_billing_addresses($customer_id);
+    my $addresses   = $c->service('customer')->get_billing_addresses($customer_id);
     $c->stash( addresses => $addresses );
 
-    return $c->render() unless $form->has_data;
-    return $c->render() unless $form->do_validate;
+    my $form_select_address = $c->form('checkout-select_address');
+    my $form_set_address    = $c->form('billing_address');
+    return $c->render() unless $form_select_address->has_data;
 
-    my $no       = $form->param('select_address');
+    $form_select_address->do_validate;
+    my $no       = $form_select_address->param('select_address');
     my $selected = $addresses->get($no);
 
-    # 正規に選択されなかった
-    return $c->render() unless $selected;
+    # Select Address
+    if ($selected) {
+        $c->cart->set_billing_address($selected);
+        return $c->confirm_handler;
+    }
 
-    my $cart = $c->cart;
-    $cart->set_billing_address($selected);
+    # Set Address
+    $form_set_address->do_validate;
+    return $c->render() unless $form_set_address->do_validate;
 
+    my $set_address = $c->factory('entity-address')->construct( $form_set_address->params->to_hash );
+    $c->cart->set_billing_address($set_address);
     return $c->confirm_handler;
 }
 

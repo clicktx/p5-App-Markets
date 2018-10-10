@@ -165,7 +165,7 @@ and L<DBIx::Class::Tree::NestedSet> and implements the following new ones.
     my @ids = $category->descendant_ids;
     my $ids = $category->descendant_ids;
 
-Return Array or Array refference.
+Return Array or Array reference.
 
 NOTE: return values includes C<me.id> in addition to descendant ids.
 

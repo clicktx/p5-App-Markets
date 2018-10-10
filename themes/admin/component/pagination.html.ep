@@ -1,2 +1,0 @@
-admin/component/pagination from
-<%= include 'component/pagination' =%>

@@ -32,8 +32,11 @@ subtest 'append' => sub {
 
 subtest 'get' => sub {
     my $c = $pkg->new( 1, 2, 3 );
+    is $c->get(0), 1,     'right get element';
     is $c->get(1), 2,     'right get element';
     is $c->get(4), undef, 'right has not element';
+    is $c->get(), undef, 'right has not element';
+    is $c->get(''), undef, 'right has not element';
 };
 
 subtest 'get_by_id' => sub {

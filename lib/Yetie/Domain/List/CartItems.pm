@@ -19,7 +19,7 @@ sub remove {
 }
 
 sub subtotal {
-    my $self=shift;
+    my $self = shift;
     $self->list->reduce( sub { $a + $b->subtotal }, 0 );
 }
 
@@ -74,6 +74,10 @@ the following new ones.
 =head2 C<remove>
 
     $items->remove($item_id);
+
+=head2 C<subtotal>
+
+    my $subtotal = $items->subtotal;
 
 =head1 AUTHOR
 

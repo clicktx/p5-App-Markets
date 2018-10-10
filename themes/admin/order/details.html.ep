@@ -14,7 +14,7 @@
         <%= link_to 'RN_admin_order_edit_billing_address' => begin %>
             Edit
         <% end %>
-        <%= include 'common/components/address', address => $order->billing_address %>
+        <%= include 'common/elements/address', address => $order->billing_address %>
     <% end =%>
 </div>
 <div class="">
@@ -23,7 +23,7 @@
         <%= link_to 'RN_admin_order_edit_shipping_address' => begin %>
             Edit
         <% end %>
-        <%= include 'common/components/address', address => $order->shipping_address %>
+        <%= include 'common/elements/address', address => $order->shipping_address %>
     <% end =%>
 </div>
 <div class="">

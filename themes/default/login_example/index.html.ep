@@ -9,57 +9,42 @@
 }
 % end
 
-<%= form_for '/login_example' => (method => 'POST', style => 'border:1px solid gray') => begin %>
+<%= form_for '' => (method => 'POST', style => 'border:1px solid gray') => begin %>
     <%= csrf_field %>
 
     <h4>longer version(example)</h4>
     <div class="">
         <%= form('example')->render_label("email") %>
-        <%= form('example')->render("email") %>
+        <%= form('example')->render( "email", value => 'a@c.com' ) %>
     </div>
 
+    <h4>nomal select tag</h4>
+    %= select_field country0 => [c(EU => ['de', 'en']), c(Asia => ['cn', 'jp'])], multiple => undef
 
     <h4>smart version</h4>
     <div class="">
-        <%= form_label('example#email') %>
-        <%= form_widget('example#email') %>
-    </div>
-    <div class=""><%= form_field('example#password') %>
-        <%= form_label %>
-        <%= form_widget %>
-        <%= form_help %>
-        <%= form_error %>
+        <%= form_label 'example#agreed' %>
+        <%= form_widget 'example#agreed' %>
     </div>
     <div class="">
-        <%= form_label('example#password_again') %>
-        <%= form_widget('example#password_again') %>
-        <%= form_help('example#password_again') %>
-        <%= form_error('example#password_again') %>
-    </div>
-
-    <div class="">
-        <%= form_label('example#address') %>
-        <%= form_widget('example#address') %>
+        <%= form_label 'example#note' %>
+        <%= form_widget 'example#note' %>
     </div>
     <div class="">
-        <%= form_label('example#agreed') %>
-        <%= form_widget('example#agreed') %>
+        <%= form_label 'example#country1' %>
+        <%= form_widget 'example#country1', choiced => 'en' %>
     </div>
     <div class="">
-        <%= form_label('example#note') %>
-        <%= form_widget('example#note') %>
+        <%= form_label 'example#country2' %>
+        <%= form_widget 'example#country2', choiced => ['en', 'cn'] %>
     </div>
     <div class="">
-        <%= form_label('example#country') %>
-        <%= form_widget('example#country') %>
+        <%= form_label 'example#country3' %>
+        <%= form_widget 'example#country3', choiced => 'en' %>
     </div>
     <div class="">
-        <%= form_label('example#country2') %>
-        <%= form_widget('example#country2') %>
-    </div>
-    <div class="">
-        <%= form_label('example#country3') %>
-        <%= form_widget('example#country3') %>
+        <%= form_label 'example#country4' %>
+        <%= form_widget 'example#country4', choiced => ['en', 'cn'] %>
     </div>
 
     <h4>in loop</h4>

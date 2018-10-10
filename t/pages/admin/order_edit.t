@@ -36,7 +36,7 @@ sub t01_billing_address : Tests() {
         'billing_address.phone'         => '305-939-8498',
     };
     $t->post_ok( '/admin/order/1/edit/billing_address', form => $post_data )
-      ->status_is( 302, 'right update billing_address' );
+      ->status_is( 200, 'right update billing_address' );
 }
 
 sub t02_shipping_address : Tests() {

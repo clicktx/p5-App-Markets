@@ -48,9 +48,7 @@ sub AUTOLOAD {
     if ( $method eq 'checkbox' || $method eq 'radio' ) {
         delete $attrs{id};
         $attrs{type} = $method;
-
-        my @values = @{ $c->req->every_param( $attrs{name} ) };
-        return _choice_field( $c, \@values, $field->label, %attrs, @_ );
+        return _choice_field( $c, $field->label, %attrs, @_ );
     }
 
     # hidden
@@ -85,7 +83,7 @@ sub new {
 
 # check_box or radio_button into the label
 sub _choice_field {
-    my ( $c, $values, $pair ) = ( shift, shift, shift );
+    my ( $c, $pair ) = ( shift, shift );
 
     $pair = [ $pair, $pair ] unless ref $pair eq 'ARRAY';
     my %attrs = ( value => $pair->[1], @$pair[ 2 .. $#$pair ], @_ );
@@ -94,13 +92,14 @@ sub _choice_field {
     my $choiced = delete $attrs{choiced};
     if ($choiced) { $attrs{checked} = $choiced }
 
-    if ( @{$values} ) { delete $attrs{checked} }
+    my $params = $c->every_param( $attrs{name} );
+    if ( @{$params} ) { delete $attrs{checked} }
     else {    # default checked(bool)
         $attrs{checked} ? $attrs{checked} = undef : delete $attrs{checked};
     }
 
     my $value = $attrs{value} // 'on';
-    $attrs{checked} = undef if grep { $_ eq $value } @{$values};
+    $attrs{checked} = undef if grep { $_ eq $value } @{$params};
     my $name = delete $attrs{name};
 
     my $tag = _validation( $c, $name, 'input', name => $name, %attrs );
@@ -108,34 +107,35 @@ sub _choice_field {
     return $c->tag( 'label', sub { $tag . $label_text } );
 }
 
-# NOTE: multipleの場合はname属性を xxx[] に変更する？
 sub _choice_list_widget {
     my $c    = shift;
     my %args = @_;
 
+    # default choiced from template
+    my $choiced =
+      $args{choiced} ? ref $args{choiced} eq 'ARRAY' ? delete $args{choiced} : [ delete $args{choiced} ] : [];
+    $c->param( $args{name} => $choiced ) unless $c->param( $args{name} );
+
     my $choices = delete $args{choices} || [];
     my $multiple = delete $args{multiple} ? 1 : 0;
     my $expanded = delete $args{expanded} ? 1 : 0;
-    my $flag     = $multiple . $expanded;
-
-    # Add suffix for multiple
-    $args{name} .= '[]' if $multiple;
+    my $field_type = $multiple . $expanded;
 
     # radio
-    if ( $flag == 1 ) {
+    if ( $field_type == 1 ) {
         $args{type} = 'radio';
         return _list_field( $c, $choices, %args );
     }
 
     # select-multiple
-    elsif ( $flag == 10 ) {
+    elsif ( $field_type == 10 ) {
         $args{multiple} = undef;
         my $name = delete $args{name};
-        return $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
+        return $c->select_field( $name => _select_field( $c, $name, $choices ), %args );
     }
 
     # checkbox
-    elsif ( $flag == 11 ) {
+    elsif ( $field_type == 11 ) {
         $args{type} = 'checkbox';
         return _list_field( $c, $choices, %args );
     }
@@ -143,42 +143,8 @@ sub _choice_list_widget {
     # select
     else {
         my $name = delete $args{name};
-        return $c->select_field( $name => _choices_for_select( $c, $choices ), %args );
+        return $c->select_field( $name => _select_field( $c, $name, $choices ), %args );
     }
-}
-
-# I18N and bool selected
-# NOTE: This function is used only for "$c->select_field" helper
-sub _choices_for_select {
-    my $c       = shift;
-    my $choices = shift;
-
-    for my $group ( @{$choices} ) {
-        next unless ref $group;
-
-        # optgroup
-        if ( blessed $group && $group->isa('Mojo::Collection') ) {
-            my ( $label, $values, %attrs ) = @{$group};
-            $label  = $c->__($label);
-            $values = _choices_for_select( $c, $values );
-            $group  = c( $label => $values, %attrs );
-        }
-        else {
-            my ( $label, $value ) = @{$group};
-            $label = $c->__($label);
-
-            # true to "selected"
-            my %attrs = ( @{$group}[ 2 .. $#$group ] );
-
-            # choiced
-            my $choiced = delete $attrs{choiced};
-            if ($choiced) { $attrs{selected} = $choiced }
-
-            $attrs{selected} ? $attrs{selected} = 'selected' : delete $attrs{selected};
-            $group = [ $label, $value, %attrs ];
-        }
-    }
-    return $choices;
 }
 
 sub _error {
@@ -252,12 +218,10 @@ sub _label {
 
 # checkbox list or radio button list
 sub _list_field {
-    my $c       = shift;
-    my $choices = shift;
-    my %args    = @_;
+    my ( $c, $choices ) = ( shift, shift );
+    my %args = @_;
 
     delete $args{$_} for qw(value id);
-    my @values = @{ $c->req->every_param( $args{name} ) };
 
     my $root_class;
     my $groups = '';
@@ -269,12 +233,12 @@ sub _list_field {
             $label = $c->__($label);
             my $legend = $c->tag( 'legend', $label );
             my $items = join '',
-              map { $c->tag( 'div', class => 'form-choice-item', _choice_field( $c, \@values, $_, %args ) ) } @$v;
+              map { $c->tag( 'div', class => 'form-choice-item', _choice_field( $c, $_, %args ) ) } @$v;
             $groups .= $c->tag( 'fieldset', class => 'form-choice-group', %attrs, sub { $legend . $items } );
         }
         else {
             $root_class = 'form-choice-group' unless $root_class;
-            my $row = _choice_field( $c, \@values, $group, %args );
+            my $row = _choice_field( $c, $group, %args );
             $groups .= $c->tag( 'div', class => 'form-choice-item', sub { $row } );
         }
     }
@@ -287,7 +251,40 @@ sub _select {
 
     my $choices = delete $attrs{choices} || [];
     my $name = delete $attrs{name};
-    return $c->select_field( $name => _choices_for_select( $c, $choices ), %attrs );
+    return $c->select_field( $name => _select_field( $c, $name, $choices ), %attrs );
+}
+
+# I18N and bool selected
+# NOTE: This function is used only for "$c->select_field" helper
+sub _select_field {
+    my ( $c, $name, $choices ) = ( shift, shift, shift );
+
+    for my $group ( @{$choices} ) {
+        next unless ref $group;
+
+        # optgroup
+        if ( blessed $group && $group->isa('Mojo::Collection') ) {
+            my ( $label, $fields, %attrs ) = @{$group};
+            $label  = $c->__($label);
+            $fields = _select_field( $c, $name, $fields );
+            $group  = c( $label => $fields, %attrs );
+        }
+        else {
+            my ( $label, $field ) = @{$group};
+            $label = $c->__($label);
+
+            # true to "selected"
+            my %attrs = ( @{$group}[ 2 .. $#$group ] );
+
+            # choiced
+            my $choiced = delete $attrs{choiced};
+            if ($choiced) { $attrs{selected} = $choiced }
+
+            $attrs{selected} ? $attrs{selected} = 'selected' : delete $attrs{selected};
+            $group = [ $label, $field, %attrs ];
+        }
+    }
+    return $choices;
 }
 
 sub _textarea {
@@ -340,7 +337,7 @@ L<Yetie::Form::TagHelpers> inherits all methods from L<Mojo::Base> and implement
 
 =head1 TAG HELPER METHODS
 
-Return code refference.
+Return code reference.
 All methods is L<Mojolicious::Plugin::TagHelpers> wrapper methods.
 
 =head2 C<checkbox>
@@ -354,7 +351,7 @@ All methods is L<Mojolicious::Plugin::TagHelpers> wrapper methods.
     say $tag_helpers->checkbox($f);
 
     # HTML
-    <label><input checked name=" agreed " type=" checkbox " value=" yes ">I agreed</label>
+    <label><input checked name="agreed" type="checkbox" value="yes">I agreed</label>
 
 =head2 C<choice>
 
@@ -366,14 +363,14 @@ All methods is L<Mojolicious::Plugin::TagHelpers> wrapper methods.
     say $tag_helpers->choice($f);
 
     # HTML
-    <select id=" country " name=" country ">
-        <optgroup label=" EU ">
-            <option value=" de ">de</option>
-            <option value=" en ">en</option>
+    <select id="country" name="country">
+        <optgroup label="EU">
+            <option value="de">de</option>
+            <option value="en">en</option>
         </optgroup>
-        <optgroup label=" Asia ">
-            <option value=" cn ">China</option>
-            <option selected=" selected " value=" jp ">Japan</option>
+        <optgroup label="Asia">
+            <option value="cn">China</option>
+            <option selected="selected" value="jp">Japan</option>
         </optgroup>
     </select>
 
@@ -385,14 +382,14 @@ All methods is L<Mojolicious::Plugin::TagHelpers> wrapper methods.
     say $tag_helpers->choice($f);
 
     # HTML
-    <select id=" country " multiple name=" country [] ">
-        <optgroup label=" EU ">
-            <option value=" de ">de</option>
-            <option value=" en ">en</option>
+    <select id="country" multiple name="country[]">
+        <optgroup label="EU">
+            <option value="de">de</option>
+            <option value="en">en</option>
         </optgroup>
-        <optgroup label=" Asia ">
-            <option value=" cn ">China</option>
-            <option selected=" selected " value=" jp ">Japan</option>
+        <optgroup label="Asia">
+            <option value="cn">China</option>
+            <option selected="selected" value="jp">Japan</option>
         </optgroup>
     </select>
 
@@ -407,15 +404,15 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     say $tag_helpers->choice($f);
 
     # HTML
-    <fieldset class=" form-choice-group ">
-        <div class=" form-choice-item ">
-            <label><input name=" country " type=" radio " value=" jp ">Japan</label>
+    <fieldset class="form-choice-group">
+        <div class="form-choice-item">
+            <label><input name="country" type="radio" value="jp">Japan</label>
         </div>
-        <div class=" form-choice-item ">
-            <label><input name=" country " type=" radio " value=" de ">Germany</label>
+        <div class="form-choice-item">
+            <label><input name="country" type="radio" value="de">Germany</label>
         </div>
-        <div class=" form-choice-item ">
-            <label><input name=" country " type=" radio " value=" cn ">cn</label>
+        <div class="form-choice-item">
+            <label><input name="country" type="radio" value="cn">cn</label>
         </div>
     </fieldset>
 
@@ -427,15 +424,15 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     say $tag_helpers->choice($f);
 
     # HTML
-    <fieldset class=" form-choice-group ">
-        <div class=" form-choice-item ">
-            <label><input name=" country [] " type=" checkbox " value=" jp ">Japan</label>
+    <fieldset class="form-choice-group">
+        <div class="form-choice-item">
+            <label><input name="country[]" type="checkbox" value="jp">Japan</label>
         </div>
-        <div class=" form-choice-item ">
-            <label><input name=" country [] " type=" checkbox " value=" de ">Germany</label>
+        <div class="form-choice-item">
+            <label><input name="country[]" type="checkbox" value="de">Germany</label>
         </div>
-        <div class=" form-choice-item ">
-            <label><input name=" country [] " type=" checkbox " value=" cn ">cn</label>
+        <div class="form-choice-item">
+            <label><input name="country[]" type="checkbox" value="cn">cn</label>
         </div>
     </fieldset>
 
@@ -444,23 +441,23 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     say $tag_helpers->choice($f);
 
     # HTML
-    <fieldset class=" form-choice-groups ">
-        <fieldset class=" form-choice-group ">
+    <fieldset class="form-choice-groups">
+        <fieldset class="form-choice-group">
             <legend>EU</legend>
-            <div class=" form-choice-item ">
-                <label><input name=" country [] " type=" checkbox " value=" de ">de</label>
+            <div class="form-choice-item">
+                <label><input name="country[]" type="checkbox" value="de">de</label>
             </div>
-            <div class=" form-choice-item ">
-                <label><input name=" country [] " type=" checkbox " value=" en ">en</label>
+            <div class="form-choice-item">
+                <label><input name="country[]" type="checkbox" value="en">en</label>
             </div>
         </fieldset>
-        <fieldset class=" form-choice-group ">
+        <fieldset class="form-choice-group">
             <legend>Asia</legend>
-            <div class=" form-choice-item ">
-                <label><input name=" country [] " type=" checkbox " value=" cn ">China</label>
+            <div class="form-choice-item">
+                <label><input name="country[]" type="checkbox" value="cn">China</label>
             </div>
-            <div class=" form-choice-item ">
-                <label><input checked name=" country [] " type=" checkbox " value=" jp ">Japan</label>
+            <div class="form-choice-item">
+                <label><input checked name="country[]" type="checkbox" value="jp">Japan</label>
             </div>
         </fieldset>
     </fieldset>
@@ -487,7 +484,7 @@ See L<Mojolicious::Plugin::TagHelpers/select_field>
     # HTML
     <span class="">Your name.</span>
 
-    # code refference
+    # code reference
     my $f = Yetie::Form::Field->new(
         name    => 'password',
         help   => sub {
@@ -506,7 +503,7 @@ Render help block.
 
 C<I18N>
 
-Default $c->__($text) or code refference $code($c)
+Default $c->__($text) or code reference $code($c)
 See L<Mojolicious::Plugin::LocaleTextDomainOO>
 
 =head2 C<label_for>
@@ -530,7 +527,7 @@ See L<Mojolicious::Plugin::LocaleTextDomainOO>
     say $tag_helpers->radio($f);
 
     # HTML
-    <label><input checked name=" agreed " type=" radio " value=" yes ">I agreed</label>
+    <label><input checked name="agreed " type="radio " value="yes ">I agreed</label>
 
 =head2 C<range>
 
@@ -553,15 +550,15 @@ See L<Mojolicious::Plugin::LocaleTextDomainOO>
     say $tag_helpers->textarea($f);
 
     # HTML
-    <textarea name=" description " cols=" 40 ">default text</textarea>
+    <textarea name="description " cols="40 ">default text</textarea>
 
     $f->value('text text text');
     say $tag_helpers->textarea($f);
 
     # HTML
-    <textarea name=" description " cols=" 40 ">text text text</textarea>
+    <textarea name="description " cols="40 ">text text text</textarea>
 
-In textarea, " default_value " and " value " is treated as content text.
+In text-area, " default_value " and " value " is treated as content text.
 
 =head2 C<time>
 

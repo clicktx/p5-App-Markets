@@ -149,7 +149,7 @@ Yetie::Addons - Addon manager for Yetie
 
 =head1 DESCRIPTION
 
-L<Yetie::Addons> is L<Mojolicious::Plugins> based addon maneger for L<Yetie>.
+L<Yetie::Addons> is L<Mojolicious::Plugins> based add-on manager for L<Yetie>.
 
 =head1 EVENTS
 
@@ -174,7 +174,7 @@ Return Hash ref.
     my $uploaded_addons = $addons->uploaded;
 
 Return L<Mojo::Collection> object.
-The list of all uploaded addons.
+The list of all uploaded add-ons.
 
 =head1 METHODS
 
@@ -210,20 +210,20 @@ Emit L<Yetie::App::Core::Trigger> events as triggers.
     my $addon = $addons->load_addon( 'MyAddon', $addon_pref );
     my $addon = $addons->load_addon( 'Yetie::Addon::MyAddon', $addon_pref );
 
-Load an addon from the configured.
+Load an add-on from the configured.
 Return L<Yetie::Addon> object.
 
 =head2 C<to_enable>
 
     $addons->to_enable($addon_object);
 
-Change addon status to enable.
+Change add-on status to enable.
 
 =head2 C<to_disable>
 
     $addons->to_disable($addon_object);
 
-Change addon status to disable.
+Change add-on status to disable.
 
 =head1 SEE ALSO
 

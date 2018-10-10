@@ -1,6 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
+use Test::Exception;
 use t::Util;
 use Mojo::Collection qw(c);
 use Yetie::Domain::Collection qw(collection);
@@ -151,38 +152,70 @@ subtest 'fill_in for scope' => sub {
 };
 
 subtest 'parameters' => sub {
-    my $c = $t->app->build_controller;
-    my $f = Yetie::Form::Base->new( 'test', controller => $c );
-    $c->req->params->pairs(
-        [
-            email              => 'a@b.c',
+    my $construct = sub {
+        my $pairs = shift
+          || [
+            email              => '',
             name               => 'frank',
-            address            => '',
             'favorite_color[]' => 'red',
-            'luky_number[]'    => 2,
-            'luky_number[]'    => 3,
+            luky_number        => 2,
+            luky_number        => 3,
             iligal_param       => 'attack',
-        ]
-    );
+          ];
 
-    eval { my $name = $f->param('name') };
-    ok $@, 'right before do_validate';
+        my $c = $t->app->build_controller;
+        $c->req->params->pairs($pairs);
+        return Yetie::Form::Base->new( 'test', controller => $c );
+    };
 
-    $f->do_validate;
-    is $f->param('email'),   'a@b.c', 'right parameter';
-    is $f->param('name'),    'frank', 'right parameter';
-    is $f->param('address'), '',      'right blank parameter';
-    is_deeply $f->param('favorite_color[]'), ['red'], 'right every param';
-    is $f->param('iligal_param'), '', 'right iligal param';
+    subtest 'every_param' => sub {
+        my $f = $construct->();
+        dies_ok sub { $f->every_param('name') }, 'right before do_validate';
 
-    # to_hash
-    my $params = $f->params->to_hash;
-    is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
+        $f->do_validate;
+        is_deeply $f->every_param('address'), [], 'right has not parameter';
+        is_deeply $f->every_param('email'),   [], 'right empty character';
+        is_deeply $f->every_param('name'),             ['frank'], 'right single parameter';
+        is_deeply $f->every_param('favorite_color[]'), ['red'],   'right multiple parameters';
+        is_deeply $f->every_param('luky_number'), [ 2, 3 ], 'right multiple parameters';
+        is_deeply $f->every_param('iligal_param'), [], 'right iligal parameter';
+    };
+
+    subtest 'param' => sub {
+        my $f = $construct->();
+        dies_ok sub { $f->param('name') }, 'right before do_validate';
+
+        $f->do_validate;
+        is $f->param('email'),            '',      'right empty character';
+        is $f->param('name'),             'frank', 'right parameter';
+        is $f->param('address'),          '',      'right blank parameter';
+        is $f->param('favorite_color[]'), 'red',   'right param in multiple param';
+        is $f->param('luky_number'),      3,       'right param in multiple param';
+        is $f->param('iligal_param'),     '',      'right iligal param';
+    };
+
+    subtest 'params' => sub {
+        my $f = $construct->();
+        dies_ok sub { $f->params }, 'right before do_validate';
+
+        subtest 'to_hash' => sub {
+            my $f = $construct->();
+            $f->do_validate;
+
+            my $params = $f->params->to_hash;
+            is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
+            is_deeply $params,
+              {
+                name               => 'frank',
+                'favorite_color[]' => ['red'],
+                luky_number        => [ 2, 3 ],
+              },
+              'right every param to_hash';
+        };
+    };
 
     subtest 'scope_param' => sub {
-        my $c = $t->app->build_controller;
-        my $f = Yetie::Form::Base->new( 'test', controller => $c );
-        $c->req->params->pairs(
+        my $f = $construct->(
             [
                 'item.0.id'     => 1,
                 'item.1.id'     => 2,
@@ -221,16 +254,12 @@ subtest 'parameters' => sub {
           ],
           'right scope params';
 
-        $c = $t->app->build_controller;
-        $f = Yetie::Form::Base->new( 'test', controller => $c );
-        $c->req->params->pairs( [] );
+        $f = $construct->( [] );
         $f->do_validate;
         is_deeply $f->scope_param('item'),    [], 'right params empty';
         is_deeply $f->scope_param('billing'), [], 'right params empty';
 
-        $c = $t->app->build_controller;
-        $f = Yetie::Form::Base->new( 'test', controller => $c );
-        $c->req->params->pairs(
+        $f = $construct->(
             [
                 'item.0.id'     => 11,
                 'item.0.name'   => 'aa',
@@ -284,8 +313,8 @@ subtest 'do_validate' => sub {
             name               => '',
             address            => 'ny',
             'favorite_color[]' => 'red',
-            'luky_number[]'    => 2,
-            'luky_number[]'    => 3,
+            luky_number        => 2,
+            luky_number        => 3,
             'item.0.id'        => 11,
             'item.1.id'        => '',
             'item.2.id'        => 33,
@@ -296,6 +325,20 @@ subtest 'do_validate' => sub {
     );
     my $result = $f->do_validate;
     ok !$result, 'right failed validation';
+
+    # mojo.captures after do_validate.
+    my $captures = $c->stash('mojo.captures');
+    is $captures->{name}, '', 'right parameter captures';
+    is $c->param('name'), '', 'right param';
+    is_deeply $c->every_param('name'), [''], 'right every_param';
+
+    is_deeply $captures->{'favorite_color[]'}, ['red'], 'right parameter captures';
+    is $c->param('favorite_color[]'), 'red', 'right param';
+    is_deeply $c->every_param('favorite_color[]'), ['red'], 'right every_param';
+
+    is_deeply $captures->{luky_number}, [ 2, 3 ], 'right parameter captures';
+    is $c->param('luky_number'), 3, 'right param';
+    is_deeply $c->every_param('luky_number'), [ 2, 3 ], 'right every_param';
 
     my $v = $f->controller->validation;
     my ( $check, $res, @args ) = @{ $v->error('email') };
@@ -312,8 +355,8 @@ subtest 'do_validate' => sub {
             name               => 'frank',
             address            => 'ny',
             'favorite_color[]' => 'red',
-            'luky_number[]'    => 2,
-            'luky_number[]'    => 3,
+            luky_number        => 2,
+            luky_number        => 3,
             'order.*123.name'  => 'foo',
             'order.*bar.name'  => 'bar',
             'item.0.id'        => 11,

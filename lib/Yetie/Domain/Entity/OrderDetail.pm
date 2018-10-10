@@ -37,6 +37,12 @@ the following new ones.
 L<Yetie::Domain::Entity::OrderDetail> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<bill_to_name>
+
+=head2 C<ship_to_name>
+
+=head2 C<total_amount>
+
 =head1 AUTHOR
 
 Yetie authors.

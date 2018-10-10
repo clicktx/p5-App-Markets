@@ -1,0 +1,12 @@
+ja
+<div class="display-address">
+    <ul class="display-address-inner">
+        <li class="postal-code"><%= $address->postal_code %></li>
+        <li class="address"><%= $address->state %><%= $address->city %><%= $address->line1 %></li>
+        <li class="address"><%= $address->line2 %></li>
+        <li class="country"><%= $address->country_code %></li>
+        <li class="organization"><%= $address->organization %></li>
+        <li class="personal-name"><%= $address->personal_name %></li>
+        <li class="phone-number"><%= $address->phone %></li>
+    </ul>
+</div>

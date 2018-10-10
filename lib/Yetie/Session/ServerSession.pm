@@ -130,7 +130,7 @@ Get cart id.
     # Specify cart id
     my $sid = $session->create( { cart_id => 111 } );
 
-This method overrided L<MojoX::Session/create>.
+This method override L<MojoX::Session/create>.
 
 =head2 C<customer_id>
 
@@ -143,8 +143,12 @@ Get/Set customer id.
 
     $session->flush;
 
-This method overrided L<MojoX::Session/flush>.
+This method override L<MojoX::Session/flush>.
 Stored session data.
+
+=head2 C<load>
+
+    my $sid = $session->load;
 
 =head2 C<regenerate_sid>
 

@@ -247,6 +247,13 @@ Number of key-value pair in IxHash.
 
 Turn IxHash into hash reference.
 
+=head2 C<values>
+
+    my @values = $ixhash->values;
+    my $values = $ixhash->values;
+
+Return array or array reference.
+
 =head1 AUTHOR
 
 Yetie authors.

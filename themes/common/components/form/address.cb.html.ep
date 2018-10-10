@@ -1,3 +1,5 @@
+% # DEPRECATED!
+
 % my $field_block = begin
     % my $name = shift;
     % my $target = '#' . $name;

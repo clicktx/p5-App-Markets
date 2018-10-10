@@ -183,6 +183,10 @@ following new ones.
 L<Yetie::App::Common> inherits all methods from L<Mojolicious> and implements
 the following new ones.
 
+=head2 C<initialize_app>
+
+    $app->initialize_app;
+
 =head1 SEE ALSO
 
 L<Mojolicious>

@@ -70,18 +70,24 @@ sub update_product_categories {
 }
 
 sub update_product {
-    my ( $self, $product_id, $params ) = @_;
+    my ( $self, $product_id, $form ) = @_;
 
     my $product = $self->find( $product_id, { prefetch => { product_categories => 'detail' } } );
     my $cb = sub {
 
         # Primary category
-        my $primary_category = delete $params->{primary_category};
         $product->product_categories->update( { is_primary => 0 } );
-        $product->product_categories->search( { category_id => $primary_category } )->update( { is_primary => 1 } );
+        $product->product_categories->search( { category_id => $form->param('primary_category') } )
+          ->update( { is_primary => 1 } );
 
         # Product detail
-        $product->update($params);
+        $product->update(
+            {
+                title       => $form->param('title'),
+                description => $form->param('description'),
+                price       => $form->param('price'),
+            }
+        );
     };
 
     try { $self->schema->txn_do($cb) }
