@@ -4,7 +4,7 @@
         <% form $action; =%>
         <%= csrf_field %>
         <%= hidden_field "id" => $entity->$action->id %>
-        <%= include 'common/components/form/fields', field_names => stash('field_names') %>
+        <%= include 'common/components/form/address', fieldset => $action %>
         <div class="">
             <%= submit_button __("save.$action") %>
         </div>
