@@ -15,7 +15,7 @@ sub index {
     $c->stash( entity => $category );
 
     # 404
-    return $c->reply->not_found() unless $category->has_data;
+    return $c->reply->not_found() unless $category->has_id;
 
     # Page Data
     $category->page_title( $category->title );

@@ -74,12 +74,12 @@ subtest 'clone' => sub {
     cmp_deeply $clone->{fuga}->{a}->[0], {}, 'right three dimensions';
 };
 
-subtest 'has_data' => sub {
+subtest 'has_id' => sub {
     my $e = Yetie::Domain::Entity::Hoge->new( id => 1 );
-    ok $e->has_data, 'right has data';
+    ok $e->has_id, 'right has data';
 
     $e = Yetie::Domain::Entity::Hoge->new();
-    ok !$e->has_data, 'right has not data';
+    ok !$e->has_id, 'right has not data';
 };
 
 subtest 'is_empty' => sub {

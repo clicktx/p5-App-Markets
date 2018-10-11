@@ -21,7 +21,7 @@ sub duplicate_product {
     my ( $self, $product_id ) = @_;
 
     my $entity = $self->find_product($product_id);
-    return unless $entity->has_data;
+    return unless $entity->has_id;
 
     my $title = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
     my $rs    = $self->resultset('Product');

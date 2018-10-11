@@ -22,7 +22,7 @@ sub index {
     $product->page_title( $product->title );
 
     # 404
-    return $c->reply->not_found unless $product->has_data;
+    return $c->reply->not_found unless $product->has_id;
 
     my $validation = $c->validation;
     return $c->render() unless $validation->has_data;
