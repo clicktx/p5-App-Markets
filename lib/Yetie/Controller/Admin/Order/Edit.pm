@@ -70,7 +70,7 @@ sub _edit_address {
     return $c->render('admin/order/edit/address') unless $form->do_validate;
 
     # Update address
-    $c->service('address')->store( $form->params->to_hash );
+    $c->service('address')->update_address( $form->params->to_hash );
 
     return $c->redirect_to( 'RN_admin_order_details', order_id => $order_id );
 }

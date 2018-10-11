@@ -21,7 +21,7 @@ sub get_registered_id {
     return $registered->id;
 }
 
-sub store {
+sub update_address {
     my ( $self, $params ) = @_;
 
     my $address       = $self->factory('entity-address')->construct($params);
@@ -73,9 +73,9 @@ Return L<Yetie::Domain::Entity::AddressTypes> object.
 
 Return address ID or C<undefined>.
 
-=head2 C<store>
+=head2 C<update_address>
 
-    $service->store(\%form_params);
+    $service->update_address(\%form_params);
 
 =head1 AUTHOR
 
