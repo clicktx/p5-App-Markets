@@ -28,7 +28,7 @@ subtest 'get_addresses' => sub {
     my ( $c, $s ) = _init();
 
     my $e = $s->get_addresses( 111, 'shipping' );
-    isa_ok $e, 'Yetie::Domain::Entity::Addresses';
+    isa_ok $e, 'Yetie::Domain::List::Addresses';
     is $e->list->size, 2, 'right shipping addresses';
 
     $e = $s->get_addresses( 111, 'billing' );

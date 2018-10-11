@@ -54,7 +54,7 @@ sub get_addresses {
         },
         { prefetch => 'customer_addresses' }
     );
-    return $self->factory('entity-addresses')->construct( list => $rs->to_data );
+    return $self->factory('list-addresses')->construct( list => $rs->to_data );
 }
 
 sub get_billing_addresses { shift->get_addresses( shift, 'billing' ) }
@@ -150,7 +150,7 @@ Return L<Yetie::Domain::Entity::Customer> object.
 
     my $addresses = $service->get_addresses( $customer_id, $address_type_name );
 
-Return L<Yetie::Domain::Entity::Addresses> object.
+Return L<Yetie::Domain::List::Addresses> object.
 
 =head2 C<get_billing_addresses>
 
@@ -159,7 +159,7 @@ Return L<Yetie::Domain::Entity::Addresses> object.
     # Alias method
     my $addresses = $service->get_addresses( $customer_id, 'billing' );
 
-Return L<Yetie::Domain::Entity::Addresses> object.
+Return L<Yetie::Domain::List::Addresses> object.
 See L</get_addresses>
 
 =head2 C<get_shipping_addresses>
@@ -169,7 +169,7 @@ See L</get_addresses>
     # Alias method
     my $addresses = $service->get_addresses( $customer_id, 'shipping' );
 
-Return L<Yetie::Domain::Entity::Addresses> object.
+Return L<Yetie::Domain::List::Addresses> object.
 See L</get_addresses>
 
 =head2 C<load_history>
