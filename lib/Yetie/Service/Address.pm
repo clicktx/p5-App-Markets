@@ -7,7 +7,7 @@ sub get_address_types {
     return $self->cache('address_types') if $self->cache('address_types');
 
     my $rs = $self->resultset('Address::Type')->search();
-    my $address_types = $self->factory('entity-address_types')->construct( list => $rs->to_data );
+    my $address_types = $self->factory('list-address_types')->construct( list => $rs->to_data );
     $self->cache( address_types => $address_types );
     return $address_types;
 }
@@ -64,7 +64,7 @@ the following new ones.
 
     my $address_types = $servece->get_address_types;
 
-Return L<Yetie::Domain::Entity::AddressTypes> object.
+Return L<Yetie::Domain::List::AddressTypes> object.
 
 =head2 C<get_registered_id>
 

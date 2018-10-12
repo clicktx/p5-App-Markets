@@ -32,7 +32,7 @@ subtest 'get_address_types' => sub {
     is $c->cache('address_types'), undef, 'right uncached';
 
     my $types = $s->get_address_types;
-    isa_ok $types, 'Yetie::Domain::Entity::AddressTypes';
+    isa_ok $types, 'Yetie::Domain::List::AddressTypes';
 
     is $c->cache('address_types'), $types, 'right cached';
 };
