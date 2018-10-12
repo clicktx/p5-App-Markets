@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::Order::Items;
-use Yetie::Domain::Base 'Yetie::Domain::Entity::SellingItems';
+use Yetie::Domain::Base 'Yetie::Domain::List::SellingItems';
 
 1;
 __END__
@@ -14,12 +14,12 @@ Yetie::Domain::Entity::Order::Items
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Order::Items> inherits all attributes from L<Yetie::Domain::Entity::SellingItems> and implements
+L<Yetie::Domain::Entity::Order::Items> inherits all attributes from L<Yetie::Domain::List::SellingItems> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Order::Items> inherits all methods from L<Yetie::Domain::Entity::SellingItems> and implements
+L<Yetie::Domain::Entity::Order::Items> inherits all methods from L<Yetie::Domain::List::SellingItems> and implements
 the following new ones.
 
 =head1 AUTHOR
@@ -28,4 +28,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity::SellingItems>, L<Yetie::Domain::Entity>
+L<Yetie::Domain::List::SellingItems>, L<Yetie::Domain::Entity>
