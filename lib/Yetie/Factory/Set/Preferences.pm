@@ -1,4 +1,4 @@
-package Yetie::Factory::Entity::Preferences;
+package Yetie::Factory::Set::Preferences;
 use Mojo::Base 'Yetie::Factory';
 
 sub cook {
@@ -13,25 +13,25 @@ __END__
 
 =head1 NAME
 
-Yetie::Factory::Entity::Preferences
+Yetie::Factory::Set::Preferences
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Factory::Entity::Preferences->new( %args )->construct();
+    my $entity = Yetie::Factory::Set::Preferences->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-preferences')->construct(%args);
+    my $entity = $c->factory('set-preferences')->construct(%args);
 
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
-L<Yetie::Factory::Entity::Preferences> inherits all attributes from L<Yetie::Factory> and implements
+L<Yetie::Factory::Set::Preferences> inherits all attributes from L<Yetie::Factory> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Factory::Entity::Preferences> inherits all methods from L<Yetie::Factory> and implements
+L<Yetie::Factory::Set::Preferences> inherits all methods from L<Yetie::Factory> and implements
 the following new ones.
 
 =head1 AUTHOR
