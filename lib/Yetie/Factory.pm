@@ -67,6 +67,10 @@ sub cook { }
 sub construct {
     my $self = shift;
 
+    # unshift @_, 'value' if $self->domain_class =~ /::Value/;
+    # unshift @_, 'list' if $self->domain_class =~ /::List/;
+    unshift @_, 'hash_set' if $self->domain_class =~ /::Set/;
+
     # my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
     # NOTE: For now to debuggable code...
     my $args = {};
