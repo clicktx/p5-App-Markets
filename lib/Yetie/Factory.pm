@@ -37,13 +37,27 @@ sub aggregate_collection {
 
 sub aggregate_ixhash {
     my ( $self, $accessor, $domain, $data ) = @_;
-    croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
+
+    # croak 'Data type is not Array refference' if ref $data ne 'ARRAY';
+    # NOTE: $data is Array reference or Yetie::Domain::Ixhash object
 
     my @kvlist;
-    foreach my $kv ( @{$data} ) {
-        my ( $key, $value ) = %{$kv};
-        push @kvlist, ( $key => $self->factory($domain)->construct($value) );
+    if ( ref $data eq 'ARRAY' ) {
+        foreach my $kv ( @{$data} ) {
+            my ( $key, $value ) = %{$kv};
+            push @kvlist, ( $key => $self->factory($domain)->construct($value) );
+        }
     }
+    elsif ( $data->isa('Yetie::Domain::IxHash') ) {
+        $data->each(
+            sub {
+                my ( $key, $value ) = @_;
+                push @kvlist, ( $key => $self->factory($domain)->construct($value) );
+            }
+        );
+    }
+    else { croak 'Bad data type' }
+
     $self->param( $accessor => ixhash(@kvlist) );
     return $self;
 }
@@ -62,8 +76,8 @@ sub construct {
     $self->params($args);
 
     # Convert parameter for Yetie::Domain::List and Yetie::Domain::Set
-    $self->_convert_param( list => $self->param('list') )     if $self->domain_class =~ /::List/;
-    $self->_convert_param( set  => $self->param('hash_set') ) if $self->domain_class =~ /::Set/;
+    $self->_convert_param('list')     if $self->domain_class =~ /::List/;
+    $self->_convert_param('hash_set') if $self->domain_class =~ /::Set/;
 
     # Cooking parameter
     $self->cook();
@@ -136,19 +150,17 @@ sub _convert_data {
 }
 
 sub _convert_param {
-    my ( $self, $key, $value ) = @_;
+    my ( $self, $type ) = @_;
 
-    my $converter = {
-        list => sub {
-            my $value = shift || [];
-            $self->param( list => collection( @{$value} ) );
-        },
-        set => sub {
-            my $value = shift || {};
-            $self->param( hash_set => ixhash( %{$value} ) );
-        },
-    };
-    $converter->{$key}->($value);
+    my $value = $self->param($type);
+    return $self->param( list => collection( @{$value} ) ) if $type eq 'list';
+
+    my @kvlist;
+    foreach my $kv ( @{$value} ) {
+        my ( $key, $value ) = %{$kv};
+        push @kvlist, ( $key => $value );
+    }
+    return $self->param( hash_set => ixhash(@kvlist) ) if $type eq 'hash_set';
 }
 
 1;
