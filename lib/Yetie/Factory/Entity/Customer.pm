@@ -8,7 +8,7 @@ sub cook {
     $self->aggregate( password => 'value-password', $self->{password} || {} );
 
     # emails
-    $self->aggregate( emails => 'list-emails', { list => $self->param('emails') || [] } );
+    $self->aggregate( emails => 'list-emails', $self->param('emails') || [] );
 }
 
 1;
