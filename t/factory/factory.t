@@ -51,7 +51,7 @@ subtest 'basic' => sub {
 
     subtest 'set domain' => sub {
         my $f = Yetie::Factory->new('set-pref');
-        my $e = $f->construct( hash_set => { a => 1, b => 2, c => 3 } );
+        my $e = $f->construct( hash_set => [ { a => 1 }, { b => 2 }, { c => 3 } ] );
 
         isa_ok $e->hash_set, 'Yetie::Domain::IxHash';
         is_deeply $e->hash_set->to_data, { a => 1, b => 2, c => 3 }, 'right set data';
