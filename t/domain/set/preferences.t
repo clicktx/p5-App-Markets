@@ -55,7 +55,7 @@ my $construct = sub { Yetie::Factory->new('set-preferences')->construct($data) }
 
 subtest 'basic' => sub {
     my $pref = $construct->();
-    isa_ok $pref, 'Yetie::Domain::Entity';
+    isa_ok $pref, 'Yetie::Domain::Set';
 };
 
 subtest 'properties' => sub {
