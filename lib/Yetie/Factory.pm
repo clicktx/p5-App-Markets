@@ -76,8 +76,8 @@ sub construct {
     $self->params($args);
 
     # Convert parameter for Yetie::Domain::List and Yetie::Domain::Set
-    $self->_convert_param('list')     if $self->domain_class =~ /::List/;
-    $self->_convert_param('hash_set') if $self->domain_class =~ /::Set/;
+    # $self->_convert_param('list')     if $self->domain_class =~ /::List/;
+    # $self->_convert_param('hash_set') if $self->domain_class =~ /::Set/;
 
     # Cooking parameter
     $self->cook();
@@ -149,19 +149,19 @@ sub _convert_data {
     return $data;
 }
 
-sub _convert_param {
-    my ( $self, $type ) = @_;
-
-    my $value = $self->param($type);
-    return $self->param( list => collection( @{$value} ) ) if $type eq 'list';
-
-    my @kvlist;
-    foreach my $kv ( @{$value} ) {
-        my ( $key, $value ) = %{$kv};
-        push @kvlist, ( $key => $value );
-    }
-    return $self->param( hash_set => ixhash(@kvlist) ) if $type eq 'hash_set';
-}
+# sub _convert_param {
+#     my ( $self, $type ) = @_;
+#
+#     my $value = $self->param($type);
+#     return $self->param( list => collection( @{$value} ) ) if $type eq 'list';
+#
+#     my @kvlist;
+#     foreach my $kv ( @{$value} ) {
+#         my ( $key, $value ) = %{$kv};
+#         push @kvlist, ( $key => $value );
+#     }
+#     return $self->param( hash_set => ixhash(@kvlist) ) if $type eq 'hash_set';
+# }
 
 1;
 __END__
