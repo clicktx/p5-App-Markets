@@ -124,14 +124,16 @@ subtest 'add_item' => sub {
 
     $cart = _create_entity;
     $cart->add_item( Yetie::Domain::Entity::Cart::Item->new( product_id => 1, quantity => 1, price => 100 ) );
-    cmp_deeply $cart->items->first->to_data, { id => ignore(), product_id => 1, quantity => 2, price => 100 }, 'right item';
+    cmp_deeply $cart->items->first->to_data, { id => ignore(), product_id => 1, quantity => 2, price => 100 },
+      'right item';
     is $cart->is_modified, 1, 'right modified';
 };
 
 subtest 'add_shipping_item' => sub {
     my $cart = _create_entity;
     $cart->add_shipping_item( 0, Yetie::Domain::Entity::Cart::Item->new( product_id => 11 ) );
-    cmp_deeply $cart->shipments->first->items->last->to_data, { id => ignore(), product_id => 11 }, 'right shipping_item';
+    cmp_deeply $cart->shipments->first->items->last->to_data, { id => ignore(), product_id => 11 },
+      'right shipping_item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
@@ -290,7 +292,10 @@ subtest 'remove_item' => sub {
     $cart->remove_item($id);
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{items},
-      [ { id => ignore(), product_id => 1, quantity => 1, price => 100 }, { id => ignore(), product_id => 3, quantity => 3, price => 100 }, ],
+      [
+        { id => ignore(), product_id => 1, quantity => 1, price => 100 },
+        { id => ignore(), product_id => 3, quantity => 3, price => 100 },
+      ],
       'right remove item';
 
     # Unremove. not found item.
@@ -317,7 +322,10 @@ subtest 'remove_shipping_item' => sub {
     $cart->remove_shipping_item( 1, $id );
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
-      [ { id => ignore(), product_id => 5, quantity => 5, price => 100 }, { id => ignore(), product_id => 6, quantity => 6, price => 100 }, ],
+      [
+        { id => ignore(), product_id => 5, quantity => 5, price => 100 },
+        { id => ignore(), product_id => 6, quantity => 6, price => 100 },
+      ],
       'right remove shipping item';
 
     # Unremove. not found item.
