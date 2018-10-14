@@ -9,7 +9,7 @@ use Data::Clone qw();
 
 has 'id';
 
-my @not_dump_data_attrs = (qw/id created_at updated_at/);
+my @not_dump_data_attrs = (qw/created_at updated_at/);
 
 sub clone {
     my $self  = shift;

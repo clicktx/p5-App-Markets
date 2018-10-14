@@ -3,6 +3,7 @@ package t::pages::product;
 use Mojo::Base 't::pages::common';
 use t::Util;
 use Test::More;
+use Test::Deep;
 use Test::Mojo;
 
 sub t01_basic : Tests() {
@@ -29,8 +30,9 @@ sub t02_add_item : Tests() {
 
     my $server_session = $self->server_session;
     delete $post_data->{csrf_token};
-    is_deeply $server_session->cart->data->{items}->[0],
+    cmp_deeply $server_session->cart->data->{items}->[0],
       {
+        id            => ignore(),
         product_id    => 1,
         product_title => 'test product1',
         quantity      => 2,
