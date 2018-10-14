@@ -10,44 +10,46 @@ subtest 'default attributes' => sub {
     isa_ok $p->hash_set, 'Yetie::Domain::IxHash', 'right properties';
 };
 
-my $data = [
-    {
-        hoge => {
-            id            => 3,
-            value         => '',
-            default_value => '33',
-            position      => 100,
-            group_id      => 2,
-        }
-    },
-    {
-        fuga => {
-            id            => 4,
-            value         => '',
-            default_value => '44',
-            position      => 200,
-            group_id      => 1,
-        }
-    },
-    {
-        pref2 => {
-            id            => 2,
-            value         => '',
-            default_value => '22',
-            position      => 300,
-            group_id      => 2,
-        }
-    },
-    {
-        pref1 => {
-            id            => 1,
-            value         => '',
-            default_value => '11',
-            position      => 500,
-            group_id      => 1,
-        }
-    },
-];
+my $data = {
+    hash_set => [
+        {
+            hoge => {
+                id            => 3,
+                value         => '',
+                default_value => '33',
+                position      => 100,
+                group_id      => 2,
+            }
+        },
+        {
+            fuga => {
+                id            => 4,
+                value         => '',
+                default_value => '44',
+                position      => 200,
+                group_id      => 1,
+            }
+        },
+        {
+            pref2 => {
+                id            => 2,
+                value         => '',
+                default_value => '22',
+                position      => 300,
+                group_id      => 2,
+            }
+        },
+        {
+            pref1 => {
+                id            => 1,
+                value         => '',
+                default_value => '11',
+                position      => 500,
+                group_id      => 1,
+            }
+        },
+    ]
+};
 
 my $construct = sub { Yetie::Factory->new('set-preferences')->construct($data) };
 
