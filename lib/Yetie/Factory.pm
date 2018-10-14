@@ -67,10 +67,6 @@ sub cook { }
 sub construct {
     my $self = shift;
 
-    # unshift @_, 'value' if $self->domain_class =~ /::Value/;
-    # unshift @_, 'list' if $self->domain_class =~ /::List/;
-    unshift @_, 'hash_set' if $self->domain_class =~ /::Set/;
-
     # my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
     # NOTE: For now to debuggable code...
     my $args = {};
@@ -79,12 +75,13 @@ sub construct {
     }
     $self->params($args);
 
-    # Convert parameter for Yetie::Domain::List and Yetie::Domain::Set
-    # $self->_convert_param('list')     if $self->domain_class =~ /::List/;
-    # $self->_convert_param('hash_set') if $self->domain_class =~ /::Set/;
-
     # Cooking parameter
     $self->cook();
+
+    # Convert parameter for Yetie::Domain::List and Yetie::Domain::Set
+    # in the case of first domain
+    $self->_convert_param_to_list if $self->domain_class =~ /::List/;
+    $self->_convert_param_to_set  if $self->domain_class =~ /::Set/;
 
     # no need parameter
     my $params = $self->params;
@@ -153,19 +150,26 @@ sub _convert_data {
     return $data;
 }
 
-# sub _convert_param {
-#     my ( $self, $type ) = @_;
-#
-#     my $value = $self->param($type);
-#     return $self->param( list => collection( @{$value} ) ) if $type eq 'list';
-#
-#     my @kvlist;
-#     foreach my $kv ( @{$value} ) {
-#         my ( $key, $value ) = %{$kv};
-#         push @kvlist, ( $key => $value );
-#     }
-#     return $self->param( hash_set => ixhash(@kvlist) ) if $type eq 'hash_set';
-# }
+sub _convert_param_to_list {
+    my $self  = shift;
+    my $param = $self->param('list');
+    return if ref $param ne 'ARRAY';
+
+    $self->param( list => collection( @{$param} ) );
+}
+
+sub _convert_param_to_set {
+    my $self  = shift;
+    my $param = $self->param('hash_set');
+    return if ref $param ne 'ARRAY';
+
+    my @kvlist;
+    foreach my $kv ( @{$param} ) {
+        my ( $key, $value ) = %{$kv};
+        push @kvlist, ( $key => $value );
+    }
+    return $self->param( hash_set => ixhash(@kvlist) );
+}
 
 1;
 __END__
