@@ -29,6 +29,7 @@ __PACKAGE__->runtests;
     package Yetie::Controller::Catalog::Test;
     use Mojo::Base 'Yetie::Controller::Catalog';
     use Test::More;
+    use Test::Deep;
 
     sub get_csrf_token {
         my $c = shift;
@@ -40,8 +41,14 @@ __PACKAGE__->runtests;
 
         subtest 'items' => sub {
             $c->service('cart')->add_item( { product_id => 1, quantity => 1 } );
-            is_deeply $c->cart->items->last->to_data,
-              { product_id => 1, product_title => 'test product1', quantity => 1, price => '100.00' },
+            cmp_deeply $c->cart->items->last->to_data,
+              {
+                id            => ignore(),
+                product_id    => 1,
+                product_title => 'test product1',
+                quantity      => 1,
+                price         => '100.00'
+              },
               'right add cart';
         };
         $c->render( text => 1 );

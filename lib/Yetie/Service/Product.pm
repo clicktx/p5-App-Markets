@@ -29,6 +29,7 @@ sub duplicate_product {
     $entity->title( $title . $i );
 
     my $data = $entity->to_data;
+    delete $data->{id};
     delete $data->{breadcrumbs};
     my $result = $rs->create($data);
 
