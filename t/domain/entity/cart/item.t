@@ -17,7 +17,7 @@ subtest 'basic' => sub {
     is $item->product_title, 'test product', 'right product_title';
     is $item->quantity,      1,              'right quantity';
     is $item->price,         100,            'right price';
-    is $item->is_modified, 0, 'right default modified';
+    is $item->is_modified,   0,              'right default modified';
 
     $item->product_id(111);
     is $item->is_modified, 0, 'right not modified';
@@ -34,6 +34,31 @@ subtest 'basic' => sub {
 
     is $item->equal($item),  1, 'right equal item';
     is $item->equal($item2), 0, 'right not equal item';
+};
+
+subtest 'hash_code' => sub {
+    my $item = Yetie::Domain::Entity::Cart::Item->new(
+        {
+            product_id => 111,
+        }
+    );
+    is $item->hash_code, '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2', 'right hash code';
+};
+
+subtest 'to_data' => sub {
+    my $item = Yetie::Domain::Entity::Cart::Item->new(
+        {
+            hash       => 'foobar',
+            product_id => 110,
+            quantity   => 1,
+        }
+    );
+    is_deeply $item->to_data,
+      {
+        product_id => 110,
+        quantity   => 1,
+      },
+      'right dump data';
 };
 
 done_testing();
