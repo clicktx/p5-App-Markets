@@ -14,15 +14,6 @@ sub subtotal {
     return $subtotal;
 }
 
-sub to_digest {
-    my $self = shift;
-    my $bytes;
-
-    # $bytes .= ...;
-    $bytes .= $self->product_id;
-    return $self->hash_code($bytes);
-}
-
 1;
 __END__
 
@@ -58,13 +49,6 @@ the following new ones.
 
 Returns the combined price of all the items in the row.
 This is equal to C< $item-E<gt>price> times C<$item-E<gt>quantity>.
-
-=head2 C<to_digest>
-
-    my $id = $item->to_digest;
-
-Return SHA1 string.
-This method gets a string identifying items.
 
 =head1 AUTHOR
 
