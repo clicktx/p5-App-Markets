@@ -441,11 +441,23 @@ subtest 'subtotal' => sub {
 };
 
 subtest 'to_order_data' => sub {
-    my $cart       = _create_entity;
-    my $order_data = { %{ $cart->to_data } };
-    delete $order_data->{cart_id};
-    delete $order_data->{items};
-    cmp_deeply $cart->to_order_data, $order_data, 'right order data';
+    my $cart = _create_entity;
+    cmp_deeply $cart->to_order_data,
+      {
+        billing_address => { id => ignore() },
+        email           => ignore(),
+        shipments       => [
+            {
+                items            => ignore(),
+                shipping_address => { id => ignore() },
+            },
+            {
+                items            => ignore(),
+                shipping_address => { id => ignore() },
+            }
+        ],
+      },
+      'right dump order data';
 };
 
 done_testing();

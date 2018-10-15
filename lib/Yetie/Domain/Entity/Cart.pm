@@ -159,6 +159,15 @@ sub to_order_data {
 
     # Remove needless data
     delete $data->{$_} for @needless_attrs;
+
+    # Billing Address
+    $data->{billing_address} = { id => $data->{billing_address}->{id} };
+
+    # Shipments
+    foreach my $shipment ( @{ $data->{shipments} } ) {
+        my $id = $shipment->{shipping_address}->{id};
+        $shipment->{shipping_address} = { id => $id };
+    }
     return $data;
 }
 
