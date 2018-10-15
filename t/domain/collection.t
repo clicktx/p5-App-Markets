@@ -53,18 +53,18 @@ subtest 'get_by_id' => sub {
     is $c->get_by_id(1), undef, 'right empty collection';
 };
 
-subtest 'has' => sub {
+subtest 'has_element' => sub {
     my @entities;
     Yetie::Domain::Entity->attr( [qw(hoge)] );
     push @entities, Yetie::Domain::Entity->new($_) for @data;
 
     my $c = $pkg->new(@entities);
-    is $c->has(2), 1, 'right has element';
-    is $c->has(5), 0, 'right has not element';
+    is $c->has_element(2), 1, 'right has element';
+    is $c->has_element(5), 0, 'right has not element';
 
     # Empty array
     $c = $pkg->new();
-    is $c->has(1), 0, 'right has not element';
+    is $c->has_element(1), 0, 'right has not element';
 };
 
 subtest 'to_data' => sub {
