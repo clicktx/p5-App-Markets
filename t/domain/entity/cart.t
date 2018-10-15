@@ -197,24 +197,17 @@ subtest 'has_shipping_address' => sub {
 subtest 'merge' => sub {
     my $cart        = _create_entity;
     my %stored_data = (
-        email => '',
-        items => [
+        billing_address => {},
+        email           => '',
+        items           => [
             { product_id => 4, quantity => 4, price => 100 },
             { product_id => 1, quantity => 1, price => 100 },
             { product_id => 5, quantity => 5, price => 100 },
         ],
         shipments => [
             {
-                shipping_address => {
-                    country_code => '',
-                    line1        => '',
-                    line2        => '',
-                    city         => '',
-                    state        => '',
-                    postal_code  => '',
-                    phone        => '',
-                },
-                items => []
+                shipping_address => {},
+                items            => []
             }
         ],
     );
@@ -234,33 +227,11 @@ subtest 'merge' => sub {
     my $cart_data = $cart->to_data;
     cmp_deeply $cart_data, $d, 'right non-destructive';
 
-    %d                    = %stored_data;
-    $d                    = \%d;
-    $d->{cart_id}         = '99999';
-    $d->{billing_address} = {
-        hash          => '20f551adf8c892c32845022b874e0763ecf68788',
-        country_code  => '',
-        line1         => '',
-        line2         => '',
-        city          => '',
-        state         => '',
-        postal_code   => '',
-        personal_name => '',
-        organization  => '',
-        phone         => '',
-    };
-    $d->{shipments}->[0]->{shipping_address} = {
-        hash          => '20f551adf8c892c32845022b874e0763ecf68788',
-        country_code  => '',
-        line1         => '',
-        line2         => '',
-        city          => '',
-        state         => '',
-        postal_code   => '',
-        personal_name => '',
-        organization  => '',
-        phone         => '',
-    };
+    %d            = %stored_data;
+    $d            = \%d;
+    $d->{cart_id} = '99999';
+    $d->{billing_address} = { hash => '20f551adf8c892c32845022b874e0763ecf68788', };
+    $d->{shipments}->[0]->{shipping_address} = { hash => '20f551adf8c892c32845022b874e0763ecf68788' };
     my $stored_cart_data = $stored_cart->to_data;
     cmp_deeply $stored_cart_data, $d, 'right stored';
     my $merged_cart      = $cart->merge($stored_cart);
@@ -389,16 +360,9 @@ subtest 'set_billing_address' => sub {
         line1        => 'Tokyo',
     );
     my $valid_data = {
-        hash          => ignore(),
-        country_code  => 'jp',
-        city          => '',
-        state         => '',
-        line1         => 'Tokyo',
-        line2         => '',
-        postal_code   => '',
-        personal_name => '',
-        organization  => '',
-        phone         => '',
+        hash         => ignore(),
+        country_code => 'jp',
+        line1        => 'Tokyo',
     };
 
     my $cart = _create_entity;
@@ -424,16 +388,9 @@ subtest 'set_shipping_address' => sub {
         line1        => 'Shimane',
     );
     my $valid_data = {
-        hash          => ignore(),
-        country_code  => 'jp',
-        city          => '',
-        state         => '',
-        line1         => 'Shimane',
-        line2         => '',
-        postal_code   => '',
-        personal_name => '',
-        organization  => '',
-        phone         => '',
+        hash         => ignore(),
+        country_code => 'jp',
+        line1        => 'Shimane',
     };
 
     my $cart = _create_entity;
