@@ -157,8 +157,33 @@ sub complete_handler {
     my $cart = $c->cart;
     return $c->redirect_to('RN_cart') unless $cart->total_quantity;
 
-    # billing address
+    # XXX:未完成 Address正規化
+    # set時(set_billing_address,set_shipping_address)に正規化を行う？
+
+    # shipments
     my $customer_id = $c->server_session->customer_id;
+    $cart->shipments->each(
+        sub {
+            my $shipment = shift;
+            if ( !$shipment->shipping_address->id ) {
+                my $result = $c->resultset('Address')
+                  ->find_or_create( $shipment->shipping_address->to_hash, { key => 'ui_hash' } );
+                $shipment->shipping_address->id( $result->id );
+
+                # Add to customer address
+                my $address_types = $c->service('address')->get_address_types;
+                $c->resultset('Customer::Address')->find_or_create(
+                    {
+                        customer_id     => $customer_id,
+                        address_id      => $result->id,
+                        address_type_id => $address_types->get_id_by_name('shipping')
+                    }
+                );
+            }
+        }
+    );
+
+    # billing address
     if ( !$cart->billing_address->id ) {
         my $result = $c->resultset('Address')->find_or_create( $cart->billing_address->to_hash, { key => 'ui_hash' } );
         $cart->billing_address->id( $result->id );
@@ -191,9 +216,6 @@ sub complete_handler {
 
     # XXX: WIP ゲスト購入
     delete $order->{email};
-
-    # XXX:未完成 Address正規化
-    # set時(set_billing_address,set_shipping_address)に正規化を行う？
 
     # Store order
     my $schema = $c->app->schema;
