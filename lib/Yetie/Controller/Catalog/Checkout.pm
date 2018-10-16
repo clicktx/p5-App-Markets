@@ -154,16 +154,32 @@ sub confirm_handler {
 sub complete_handler {
     my $c = shift;
 
-    # NOTE: itemsに商品がある場合 or shipment.itemsが1つも無い場合はcomplete出来ない。
     my $cart = $c->cart;
     return $c->redirect_to('RN_cart') unless $cart->total_quantity;
+
+    # billing address
+    my $customer_id = $c->server_session->customer_id;
+    if ( !$cart->billing_address->id ) {
+        my $result = $c->resultset('Address')->find_or_create( $cart->billing_address->to_hash, { key => 'ui_hash' } );
+        $cart->billing_address->id( $result->id );
+
+        # Customer Addressに登録
+        # NOTE: 自動でアドレス帳に登録するのは良いUXか考慮？
+        my $address_types = $c->service('address')->get_address_types;
+        $c->resultset('Customer::Address')->find_or_create(
+            {
+                customer_id     => $customer_id,
+                address_id      => $result->id,
+                address_type_id => $address_types->get_id_by_name('billing')
+            }
+        );
+    }
 
     # Make order data
     my $order = $cart->to_order_data;
 
     # Customer id
     # ログイン購入
-    my $customer_id = $c->server_session->data('customer_id');
     if ($customer_id) {
         $order->{customer} = { id => $customer_id };
     }
@@ -173,27 +189,11 @@ sub complete_handler {
         $order->{customer} = {};
     }
 
-    # NOTE: WIP ゲスト購入
+    # XXX: WIP ゲスト購入
     delete $order->{email};
 
-    # Address正規化
-    my $schema_address = $c->app->schema->resultset('Address');
-
-    # billing_address
-    my $billing_address = $schema_address->find( { line1 => $order->{billing_address}->{line1} } );
-    $order->{billing_address} = { id => $billing_address->id } if $billing_address;
-
-    # shipping_address
-    foreach my $shipment ( @{ $order->{shipments} } ) {
-        my $result = $schema_address->find( { line1 => $shipment->{shipping_address}->{line1} } );
-        next unless $result;
-        my $shipping_address_id = $result->id;
-        $shipment->{shipping_address} = { id => $shipping_address_id };
-    }
-    $order->{orders} = delete $order->{shipments};
-
-    use DDP;
-    p $order;    # debug
+    # XXX:未完成 Address正規化
+    # set時(set_billing_address,set_shipping_address)に正規化を行う？
 
     # Store order
     my $schema = $c->app->schema;
