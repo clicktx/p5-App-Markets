@@ -43,7 +43,6 @@ __PACKAGE__->runtests;
             $c->service('cart')->add_item( { product_id => 1, quantity => 1 } );
             cmp_deeply $c->cart->items->last->to_data,
               {
-                id            => ignore(),
                 product_id    => 1,
                 product_title => 'test product1',
                 quantity      => 1,

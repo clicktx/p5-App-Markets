@@ -32,7 +32,6 @@ sub t02_add_item : Tests() {
     delete $post_data->{csrf_token};
     cmp_deeply $server_session->cart->data->{items}->[0],
       {
-        id            => ignore(),
         product_id    => 1,
         product_title => 'test product1',
         quantity      => 2,

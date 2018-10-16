@@ -119,28 +119,26 @@ subtest 'methods' => sub {
 subtest 'add_item' => sub {
     my $cart = _create_entity;
     $cart->add_item( Yetie::Domain::Entity::Cart::Item->new( product_id => 11 ) );
-    cmp_deeply $cart->items->last->to_data, { id => ignore(), product_id => 11 }, 'right item';
+    cmp_deeply $cart->items->last->to_data, { product_id => 11 }, 'right item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
     $cart->add_item( Yetie::Domain::Entity::Cart::Item->new( product_id => 1, quantity => 1, price => 100 ) );
-    cmp_deeply $cart->items->first->to_data, { id => ignore(), product_id => 1, quantity => 2, price => 100 },
-      'right item';
+    cmp_deeply $cart->items->first->to_data, { product_id => 1, quantity => 2, price => 100 }, 'right item';
     is $cart->is_modified, 1, 'right modified';
 };
 
 subtest 'add_shipping_item' => sub {
     my $cart = _create_entity;
     $cart->add_shipping_item( 0, Yetie::Domain::Entity::Cart::Item->new( product_id => 11 ) );
-    cmp_deeply $cart->shipments->first->items->last->to_data, { id => ignore(), product_id => 11 },
-      'right shipping_item';
+    cmp_deeply $cart->shipments->first->items->last->to_data, { product_id => 11 }, 'right shipping_item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
     $cart->add_shipping_item( 0,
         Yetie::Domain::Entity::Cart::Item->new( product_id => 4, quantity => 4, price => 100 ) );
     cmp_deeply $cart->shipments->first->items->first->to_data,
-      { id => ignore(), product_id => 4, quantity => 8, price => 100 }, 'right sum quantity';
+      { product_id => 4, quantity => 8, price => 100 }, 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
 };
 
@@ -243,11 +241,11 @@ subtest 'merge' => sub {
         email           => '',
         billing_address => ignore(),
         items           => [
-            { id => ignore(), product_id => 4, quantity => 4, price => 100 },
-            { id => ignore(), product_id => 1, quantity => 2, price => 100 },
-            { id => ignore(), product_id => 5, quantity => 5, price => 100 },
-            { id => ignore(), product_id => 2, quantity => 2, price => 100 },
-            { id => ignore(), product_id => 3, quantity => 3, price => 100 },
+            { product_id => 4, quantity => 4, price => 100 },
+            { product_id => 1, quantity => 2, price => 100 },
+            { product_id => 5, quantity => 5, price => 100 },
+            { product_id => 2, quantity => 2, price => 100 },
+            { product_id => 3, quantity => 3, price => 100 },
         ],
         shipments => [ { shipping_address => ignore(), items => [] } ],
       },
@@ -256,61 +254,55 @@ subtest 'merge' => sub {
 };
 
 subtest 'remove_item' => sub {
-    my $cart = _create_entity;
-    my $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 2, quantity => 1 );
-    my $id   = $item->id;
+    my $cart      = _create_entity;
+    my $item      = Yetie::Domain::Entity::Cart::Item->new( product_id => 2, quantity => 1 );
+    my $hash_code = $item->hash;
 
-    $cart->remove_item($id);
+    $cart->remove_item($hash_code);
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{items},
-      [
-        { id => ignore(), product_id => 1, quantity => 1, price => 100 },
-        { id => ignore(), product_id => 3, quantity => 3, price => 100 },
-      ],
+      [ { product_id => 1, quantity => 1, price => 100 }, { product_id => 3, quantity => 3, price => 100 }, ],
       'right remove item';
 
     # Unremove. not found item.
-    $cart = _create_entity;
-    $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 123, quantity => 1 );
-    $id   = $item->id;
+    $cart      = _create_entity;
+    $item      = Yetie::Domain::Entity::Cart::Item->new( product_id => 123, quantity => 1 );
+    $hash_code = $item->hash;
 
-    $cart->remove_item($id);
+    $cart->remove_item($hash_code);
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{items},
       [
-        { id => ignore(), product_id => 1, quantity => 1, price => 100 },
-        { id => ignore(), product_id => 2, quantity => 2, price => 100 },
-        { id => ignore(), product_id => 3, quantity => 3, price => 100 },
+        { product_id => 1, quantity => 1, price => 100 },
+        { product_id => 2, quantity => 2, price => 100 },
+        { product_id => 3, quantity => 3, price => 100 },
       ],
       'right not removed';
 };
 
 subtest 'remove_shipping_item' => sub {
-    my $cart = _create_entity;
-    my $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 4 );
-    my $id   = $item->id;
+    my $cart      = _create_entity;
+    my $item      = Yetie::Domain::Entity::Cart::Item->new( product_id => 4 );
+    my $hash_code = $item->hash;
 
-    $cart->remove_shipping_item( 1, $id );
+    $cart->remove_shipping_item( 1, $hash_code );
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
-      [
-        { id => ignore(), product_id => 5, quantity => 5, price => 100 },
-        { id => ignore(), product_id => 6, quantity => 6, price => 100 },
-      ],
+      [ { product_id => 5, quantity => 5, price => 100 }, { product_id => 6, quantity => 6, price => 100 }, ],
       'right remove shipping item';
 
     # Unremove. not found item.
-    $cart = _create_entity;
-    $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 123 );
-    $id   = $item->id;
+    $cart      = _create_entity;
+    $item      = Yetie::Domain::Entity::Cart::Item->new( product_id => 123 );
+    $hash_code = $item->hash;
 
-    $cart->remove_shipping_item( 1, $id );
+    $cart->remove_shipping_item( 1, $hash_code );
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
-        { id => ignore(), product_id => 4, quantity => 4, price => 100 },
-        { id => ignore(), product_id => 5, quantity => 5, price => 100 },
-        { id => ignore(), product_id => 6, quantity => 6, price => 100 },
+        { product_id => 4, quantity => 4, price => 100 },
+        { product_id => 5, quantity => 5, price => 100 },
+        { product_id => 6, quantity => 6, price => 100 },
       ],
       'right not removed';
 };
