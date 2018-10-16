@@ -11,9 +11,7 @@ sub hash_code {
     my $str = '';
     $str .= $self->product_id;
 
-    my $hash_code = $self->SUPER::hash_code($str);
-    $self->hash($hash_code);
-    return $hash_code;
+    return $self->SUPER::hash_code($str);
 }
 
 sub to_data {
@@ -42,6 +40,8 @@ the following new ones.
 
 =head2 C<hash>
 
+See L</hash_code>
+
 =head2 C<id>
 
 =head2 C<product_id>
@@ -61,10 +61,8 @@ the following new ones.
 
     my $hash_code = $item->hash_code;
 
-Return SHA1 string and set attribute "hash".
+Return SHA1 string.
 This method gets a string identifying items.
-
-See L</hash>
 
 =head1 AUTHOR
 

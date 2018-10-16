@@ -43,6 +43,7 @@ subtest 'hash_code' => sub {
         }
     );
     is $item->hash_code, '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2', 'right hash code';
+    is $item->is_modified, 0, 'right not modified';
 };
 
 subtest 'to_data' => sub {
