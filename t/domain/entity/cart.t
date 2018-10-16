@@ -438,7 +438,7 @@ subtest 'to_order_data' => sub {
       {
         billing_address => { id => ignore() },
         email           => ignore(),
-        shipments       => [
+        orders          => [
             {
                 items            => ignore(),
                 shipping_address => { id => ignore() },

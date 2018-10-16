@@ -168,6 +168,10 @@ sub to_order_data {
         my $id = $shipment->{shipping_address}->{id};
         $shipment->{shipping_address} = { id => $id };
     }
+
+    # Rename shipments to orders
+    $data->{orders} = delete $data->{shipments};
+
     return $data;
 }
 
