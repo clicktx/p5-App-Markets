@@ -40,6 +40,15 @@ sub merge_cart {
     return $merged_cart;
 }
 
+sub set_address_id {
+    my ( $self, $address_type ) = @_;
+    my $cart = $self->controller->cart;
+
+    my $result = $self->resultset('Address')->find_or_create_address( $cart->$address_type->to_hash );
+    $cart->$address_type->id( $result->id );
+    return;
+}
+
 1;
 __END__
 
@@ -80,6 +89,11 @@ Return L<Yetie::Domain::Entity::Cart> object.
 Return L<Yetie::Domain::Entity::Cart> object.
 
 Merge with saved customer cart.
+
+=head2 C<set_address_id>
+
+    $servece->set_address_id('billing_address');
+    $servece->set_address_id('shipping_address');
 
 =head1 AUTHOR
 

@@ -166,16 +166,14 @@ sub complete_handler {
         sub {
             my $shipment = shift;
             if ( !$shipment->shipping_address->id ) {
-                my $result = $c->resultset('Address')
-                  ->find_or_create( $shipment->shipping_address->to_hash, { key => 'ui_hash' } );
-                $shipment->shipping_address->id( $result->id );
+                $c->service('cart')->set_address_id('shipping_address');
 
                 # Add to customer address
                 my $address_types = $c->service('address')->get_address_types;
                 $c->resultset('Customer::Address')->find_or_create(
                     {
                         customer_id     => $customer_id,
-                        address_id      => $result->id,
+                        address_id      => $shipment->shipping_address->id,
                         address_type_id => $address_types->get_id_by_name('shipping')
                     }
                 );
@@ -185,8 +183,7 @@ sub complete_handler {
 
     # billing address
     if ( !$cart->billing_address->id ) {
-        my $result = $c->resultset('Address')->find_or_create( $cart->billing_address->to_hash, { key => 'ui_hash' } );
-        $cart->billing_address->id( $result->id );
+        $c->service('cart')->set_address_id('billing_address');
 
         # Customer Addressに登録
         # NOTE: 自動でアドレス帳に登録するのは良いUXか考慮？
@@ -194,7 +191,7 @@ sub complete_handler {
         $c->resultset('Customer::Address')->find_or_create(
             {
                 customer_id     => $customer_id,
-                address_id      => $result->id,
+                address_id      => $cart->billing_address->id,
                 address_type_id => $address_types->get_id_by_name('billing')
             }
         );
