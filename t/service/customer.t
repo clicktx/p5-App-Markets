@@ -1,41 +1,58 @@
-use Mojo::Base -strict;
+package t::service::customer;
 
+use Mojo::Base 't::pages::common';
 use t::Util;
 use Test::More;
 use Test::Mojo;
 
-my $t   = Test::Mojo->new('App');
-my $app = $t->app;
+sub t00_startup : Tests(startup) { shift->app->routes->any('/:controller/:action')->to() }
 
-sub _init {
-    my $controller = $app->build_controller;
-    my $service    = $controller->service('customer');
-    return ( $controller, $service );
+sub t01 : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $t->get_ok('/test/find_customer')->status_is(200);
+    $t->get_ok('/test/get_addresses')->status_is(200);
 }
 
-subtest 'find_customer' => sub {
-    my ( $c, $s ) = _init();
+__PACKAGE__->runtests;
 
-    my $entity = $s->find_customer('foo@bar.baz');
-    isa_ok $entity, 'Yetie::Domain::Entity::Customer';
-    is $entity->id, undef, 'right nonexists';
+package Yetie::Controller::Catalog::Test;
+use Mojo::Base 'Yetie::Controller::Catalog';
+use Test::More;
+use Test::Deep;
 
-    $entity = $s->find_customer('a@example.org');
-    is $entity->id, 111, 'right customer';
-};
+sub find_customer {
+    my $c = shift;
+    my $s = $c->service('customer');
 
-subtest 'get_addresses' => sub {
-    my ( $c, $s ) = _init();
+    subtest 'find_customer' => sub {
+        my $entity = $s->find_customer('foo@bar.baz');
+        isa_ok $entity, 'Yetie::Domain::Entity::Customer';
+        is $entity->id, undef, 'right nonexists';
 
-    my $e = $s->get_addresses( 111, 'shipping_address' );
-    isa_ok $e, 'Yetie::Domain::List::Addresses';
-    is $e->list->size, 2, 'right shipping addresses';
+        $entity = $s->find_customer('a@example.org');
+        is $entity->id, 111, 'right customer';
+    };
+    $c->render( text => 1 );
+}
 
-    $e = $s->get_addresses( 111, 'billing_address' );
-    is $e->list->size, 1, 'right billing addresses';
+sub get_addresses {
+    my $c = shift;
+    my $s = $c->service('customer');
 
-    $e = $s->get_addresses( 111, 'foo' );
-    is $e->list->size, 0, 'right bad address type name';
-};
+    subtest 'get_addresses' => sub {
+        my $e = $s->get_addresses( 111, 'shipping_address' );
+        isa_ok $e, 'Yetie::Domain::List::Addresses';
+        is $e->list->size, 2, 'right shipping addresses';
+
+        $e = $s->get_addresses( 111, 'billing_address' );
+        is $e->list->size, 1, 'right billing addresses';
+
+        $e = $s->get_addresses( 111, 'foo' );
+        is $e->list->size, 0, 'right bad address type name';
+    };
+    $c->render( text => 1 );
+}
 
 done_testing();
