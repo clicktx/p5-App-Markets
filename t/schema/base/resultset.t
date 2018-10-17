@@ -13,6 +13,17 @@ subtest 'attribute' => sub {
     isa_ok $rs->schema, 'Yetie::Schema';
 };
 
+subtest 'last_id' => sub {
+    my $rs = $schema->resultset('Test');
+
+    my $last_id = $rs->last_id;
+    is $last_id, undef, 'right no data';
+
+    $rs->create( { name => 'foo' } );
+    $last_id = $rs->last_id;
+    is $last_id, 1, 'right last id';
+};
+
 subtest 'to_array' => sub {
     my $rs = $schema->resultset('Sales::Order::Item');
 
