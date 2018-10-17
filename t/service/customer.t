@@ -27,11 +27,11 @@ subtest 'find_customer' => sub {
 subtest 'get_addresses' => sub {
     my ( $c, $s ) = _init();
 
-    my $e = $s->get_addresses( 111, 'shipping' );
+    my $e = $s->get_addresses( 111, 'shipping_address' );
     isa_ok $e, 'Yetie::Domain::List::Addresses';
     is $e->list->size, 2, 'right shipping addresses';
 
-    $e = $s->get_addresses( 111, 'billing' );
+    $e = $s->get_addresses( 111, 'billing_address' );
     is $e->list->size, 1, 'right billing addresses';
 
     $e = $s->get_addresses( 111, 'foo' );

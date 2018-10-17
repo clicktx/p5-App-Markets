@@ -57,9 +57,9 @@ sub get_addresses {
     return $self->factory('list-addresses')->construct( list => $rs->to_data );
 }
 
-sub get_billing_addresses { shift->get_addresses( shift, 'billing' ) }
+sub get_billing_addresses { shift->get_addresses( shift, 'billing_address' ) }
 
-sub get_shipping_addresses { shift->get_addresses( shift, 'shipping' ) }
+sub get_shipping_addresses { shift->get_addresses( shift, 'shipping_address' ) }
 
 sub load_history {
     my $self = shift;
@@ -157,7 +157,7 @@ Return L<Yetie::Domain::List::Addresses> object.
     my $addresses = $service->get_billing_addresses($customer_id);
 
     # Alias method
-    my $addresses = $service->get_addresses( $customer_id, 'billing' );
+    my $addresses = $service->get_addresses( $customer_id, 'billing_address' );
 
 Return L<Yetie::Domain::List::Addresses> object.
 See L</get_addresses>
@@ -167,7 +167,7 @@ See L</get_addresses>
     my $addresses = $service->get_shipping_addresses($customer_id);
 
     # Alias method
-    my $addresses = $service->get_addresses( $customer_id, 'shipping' );
+    my $addresses = $service->get_addresses( $customer_id, 'shipping_address' );
 
 Return L<Yetie::Domain::List::Addresses> object.
 See L</get_addresses>

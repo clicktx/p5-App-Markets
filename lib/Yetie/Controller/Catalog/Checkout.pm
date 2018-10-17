@@ -174,7 +174,7 @@ sub complete_handler {
                     {
                         customer_id     => $customer_id,
                         address_id      => $shipment->shipping_address->id,
-                        address_type_id => $address_types->get_id_by_name('shipping')
+                        address_type_id => $address_types->get_id_by_name('shipping_address')
                     }
                 );
             }
@@ -192,7 +192,7 @@ sub complete_handler {
             {
                 customer_id     => $customer_id,
                 address_id      => $cart->billing_address->id,
-                address_type_id => $address_types->get_id_by_name('billing')
+                address_type_id => $address_types->get_id_by_name('billing_address')
             }
         );
     }
