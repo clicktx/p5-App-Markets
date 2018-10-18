@@ -13,6 +13,7 @@ my $r = $app->routes->namespaces( ['Yetie::Controller'] );
 $r->get('/good')->to('test#good');
 $r->get('/not_found')->to('test#not_found');
 $r->get('/buged')->to('test#buged');
+$r->get('/construct')->to('test#construct');
 $r->get('/methods')->to('test#methods');
 
 subtest 'Service Layer basic' => sub {
@@ -34,6 +35,7 @@ subtest 'Service Layer basic' => sub {
     );
     $t->get_ok('/not_found')->status_is(500);
     $t->get_ok('/buged')->status_is(500);
+    $t->get_ok('/construct')->status_is(200);
     $t->get_ok('/methods')->status_is(200);
 };
 
@@ -44,9 +46,9 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 use Test::More;
 
 sub good {
-    my $c         = shift;
-    my $service   = $c->service('test');
-    my $is_weak   = Scalar::Util::isweak $service->{controller} ? 1 : 0;
+    my $c       = shift;
+    my $service = $c->service('test');
+    my $is_weak = Scalar::Util::isweak $service->{controller} ? 1 : 0;
 
     return $c->render(
         json => {
@@ -66,6 +68,17 @@ sub not_found {
 sub buged {
     my $c       = shift;
     my $service = $c->service('buged');
+}
+
+sub construct {
+    my $c = shift;
+    my $service = $c->service( 'test', baz => 1, qux => 2 );
+    isa_ok $service, 'Yetie::Service';
+
+    is $service->baz, 1, 'right attribute accesser';
+    is $service->{qux}, 2, 'right attribute';
+
+    return $c->render( json => {} );
 }
 
 sub methods {
