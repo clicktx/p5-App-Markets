@@ -18,7 +18,6 @@ $r->get('/methods')->to('test#methods');
 subtest 'Service Layer basic' => sub {
     $t->get_ok('/good')->json_is(
         {
-            is_cached  => 0,
             service    => "Yetie::Service::Test",
             app        => "App",
             controller => "Yetie::Controller::Test",
@@ -27,7 +26,6 @@ subtest 'Service Layer basic' => sub {
     );
     $t->get_ok('/good')->json_is(
         {
-            is_cached  => 1,
             service    => "Yetie::Service::Test",
             app        => "App",
             controller => "Yetie::Controller::Test",
@@ -47,13 +45,11 @@ use Test::More;
 
 sub good {
     my $c         = shift;
-    my $is_cached = $c->app->{services}{Test} ? 1 : 0;
     my $service   = $c->service('test');
     my $is_weak   = Scalar::Util::isweak $service->{controller} ? 1 : 0;
 
     return $c->render(
         json => {
-            is_cached  => $is_cached,
             service    => ref $service,
             app        => ref $service->app,
             controller => ref $service->controller,
