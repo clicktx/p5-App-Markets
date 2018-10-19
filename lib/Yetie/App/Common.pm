@@ -158,7 +158,7 @@ sub _load_plugins {
     $app->plugin('Scrypt');
 
     # Session
-    $app->plugin( 'Yetie::Session' => { expires_delta => 3600 } );
+    $app->plugin( 'Yetie::Core::Session' => { expires_delta => 3600 } );
 }
 
 1;

@@ -1,7 +1,7 @@
-package Yetie::Session;
+package Yetie::Core::Session;
 use Mojo::Base 'Mojolicious::Plugin';
-use Yetie::Session::ServerSession;
-use Yetie::Session::Store::Dbic;
+use Yetie::Core::Session::ServerSession;
+use Yetie::Core::Session::Store::Dbic;
 
 sub register {
     my ( $self, $app, $args ) = @_;
@@ -21,8 +21,8 @@ sub register {
 
             say "hook! before_dispatch from plugin session";    # debug
             my $session =
-              Yetie::Session::ServerSession->new( %$args,
-                store => Yetie::Session::Store::Dbic->new( schema => $app->schema ), );
+              Yetie::Core::Session::ServerSession->new( %$args,
+                store => Yetie::Core::Session::Store::Dbic->new( schema => $app->schema ), );
             $session->tx( $c->tx );
             $init->( $c, $session ) if $init;
             $c->stash( $stash_key => $session, );
@@ -76,7 +76,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Session - forked from Mojolicious::Plugin::Session
+Yetie::Core::Session - forked from Mojolicious::Plugin::Session
 
 =head1 SYNOPSIS
 
@@ -103,7 +103,7 @@ Yetie::Session - forked from Mojolicious::Plugin::Session
 
 =head2 C<stash_key>
 
-    Yetie::Session::ServerSession instance will be saved in stash using this key.
+    Yetie::Core::Session::ServerSession instance will be saved in stash using this key.
 
 =head1 HELPERS
 
@@ -114,19 +114,19 @@ Yetie::Session - forked from Mojolicious::Plugin::Session
     # Longer version
     my $cart_session = $c->server_session->cart_session;
 
-Return L<Yetie::Session::CartSession> object.
+Return L<Yetie::Core::Session::CartSession> object.
 
 =head2 C<server_session>
 
     my $server_session = $c->server_session;
 
-Return L<Yetie::Session::ServerSession> object.
+Return L<Yetie::Core::Session::ServerSession> object.
 
 =head1 SEE ALSO
 
-L<Yetie::Session::ServerSession>
+L<Yetie::Core::Session::ServerSession>
 
-L<Yetie::Session::CartSession>
+L<Yetie::Core::Session::CartSession>
 
 L<Mojolicious::Plugin::Session>
 
