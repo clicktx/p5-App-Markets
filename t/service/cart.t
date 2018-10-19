@@ -74,29 +74,30 @@ sub set_address_id {
     my $c    = shift;
     my $cart = $c->cart;
 
-    my $address = $c->factory('entity-address')->construct(
-        {
-            country_code  => 'us',
-            line1         => '42 Pendergast St.',
-            line2         => '',
-            city          => 'Piedmont',
-            state         => 'SC',
-            postal_code   => '12345',
-            personal_name => 'foo bar',
-            organization  => '',
-            phone         => '0011223344',
-        }
+    my %data = (
+        country_code  => 'us',
+        line1         => '42 Pendergast St.',
+        line2         => '',
+        city          => 'Piedmont',
+        state         => 'SC',
+        postal_code   => '12345',
+        personal_name => 'foo bar',
+        organization  => '',
+        phone         => '0011223344',
     );
-    $cart->set_billing_address($address);
     my $last_id = $c->resultset('Address')->last_id;
 
     subtest 'set_address_id' => sub {
-        $c->service('cart')->set_address_id('billing_address');
-        is $cart->billing_address->id, $last_id + 1, 'right set address id';
+        my $address = $c->factory('entity-address')->construct(%data);
+        $cart->billing_address($address);
+        $c->service('cart')->set_address_id( $cart->billing_address );
+        is $cart->billing_address->id, $last_id + 1, 'right insert to storage';
 
-        $cart->billing_address->id('');
-        $c->service('cart')->set_address_id('billing_address');
-        is $cart->billing_address->id, $last_id + 1, 'right set address id';
+        $address = $c->factory('entity-address')->construct(%data);
+        $cart->billing_address($address);
+        is $cart->billing_address->id, undef;
+        $c->service('cart')->set_address_id( $cart->billing_address );
+        is $cart->billing_address->id, $last_id + 1, 'right load from storage';
     };
     $c->render( text => 1 );
 }
