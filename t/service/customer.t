@@ -13,6 +13,7 @@ sub t01 : Tests() {
 
     $t->get_ok('/test/find_customer')->status_is(200);
     $t->get_ok('/test/get_addresses')->status_is(200);
+    $t->get_ok('/test/store_address')->status_is(200);
 }
 
 __PACKAGE__->runtests;
@@ -51,6 +52,24 @@ sub get_addresses {
 
         $e = $s->get_addresses( 111, 'foo' );
         is $e->list->size, 0, 'right bad address type name';
+    };
+    $c->render( text => 1 );
+}
+
+sub store_address {
+    my $c = shift;
+    my $s = $c->service('customer');
+
+    subtest 'store_address' => sub {
+        my $res = $s->store_address( 'billing_address', 1 );
+        ok !$res, 'right no data';
+
+        $c->server_session->customer_id(115);
+        $res = $s->store_address( 'billing_address', 1 );
+        ok $res, 'right store address';
+
+        $res = $s->store_address( 'billing_address', 1 );
+        ok !$res, 'right stored address';
     };
     $c->render( text => 1 );
 }
