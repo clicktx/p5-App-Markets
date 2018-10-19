@@ -43,14 +43,14 @@ sub get_addresses {
     my $s = $c->service('customer');
 
     subtest 'get_addresses' => sub {
-        my $e = $s->get_addresses( 111, 'shipping_address' );
+        my $e = $s->get_addresses( 112, 'shipping_address' );
         isa_ok $e, 'Yetie::Domain::List::Addresses';
-        is $e->list->size, 2, 'right shipping addresses';
+        is $e->list->size, 1, 'right shipping addresses';
 
-        $e = $s->get_addresses( 111, 'billing_address' );
+        $e = $s->get_addresses( 112, 'billing_address' );
         is $e->list->size, 1, 'right billing addresses';
 
-        $e = $s->get_addresses( 111, 'foo' );
+        $e = $s->get_addresses( 112, 'foo' );
         is $e->list->size, 0, 'right bad address type name';
     };
     $c->render( text => 1 );
