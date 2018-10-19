@@ -161,47 +161,31 @@ sub complete_handler {
     # set時(set_billing_address,set_shipping_address)に正規化を行う？
 
     # shipments
-    my $customer_id = $c->server_session->customer_id;
+    my $cart_service     = $c->service('cart');
+    my $customer_service = $c->service('customer');
     $cart->shipments->each(
         sub {
             my $shipment = shift;
-            if ( !$shipment->shipping_address->id ) {
-                $c->service('cart')->set_address_id('shipping_address');
+            $cart_service->set_address_id( $shipment->shipping_address );
 
-                # Add to customer address
-                my $address_types = $c->service('address')->get_address_types;
-                $c->resultset('Customer::Address')->find_or_create(
-                    {
-                        customer_id     => $customer_id,
-                        address_id      => $shipment->shipping_address->id,
-                        address_type_id => $address_types->get_id_by_name('shipping_address')
-                    }
-                );
-            }
+            # Add to customer address
+            $customer_service->store_shipping_address( $shipment->shipping_address->id );
         }
     );
 
     # billing address
-    if ( !$cart->billing_address->id ) {
-        $c->service('cart')->set_address_id('billing_address');
+    $cart_service->set_address_id( $cart->billing_address );
 
-        # Customer Addressに登録
-        # NOTE: 自動でアドレス帳に登録するのは良いUXか考慮？
-        my $address_types = $c->service('address')->get_address_types;
-        $c->resultset('Customer::Address')->find_or_create(
-            {
-                customer_id     => $customer_id,
-                address_id      => $cart->billing_address->id,
-                address_type_id => $address_types->get_id_by_name('billing_address')
-            }
-        );
-    }
+    # Add to customer address
+    # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
+    $customer_service->store_billing_address( $cart->billing_address->id );
 
     # Make order data
     my $order = $cart->to_order_data;
 
-    # Customer id
+    # オーダーデータ整形
     # ログイン購入
+    my $customer_id = $c->server_session->customer_id;
     if ($customer_id) {
         $order->{customer} = { id => $customer_id };
     }
