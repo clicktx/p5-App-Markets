@@ -57,6 +57,10 @@ See L</hash_code>
 L<Yetie::Domain::Entity::Cart::Item> inherits all methods from L<Yetie::Domain::Entity::SellingItem> and implements
 the following new ones.
 
+=head2 C<equal>
+
+    my $bool = $item->equal($other_item);
+
 =head2 C<hash_code>
 
     my $hash_code = $item->hash_code;
