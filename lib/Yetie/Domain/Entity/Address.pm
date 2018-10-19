@@ -103,11 +103,9 @@ sub notation {
 
 sub to_data {
     my $self = shift;
+    my $data = $self->SUPER::to_data;
 
-    my $data = {};
-    $data->{$_} = $self->$_ // '' for @{$attrs};
-
-    # Generate hash
+    # Regenerate hash code
     $data->{hash} = $self->hash_code;
     return $data;
 }

@@ -14,7 +14,7 @@ subtest 'basic' => sub {
     $pkg->attr( [qw(hoge fuga)] );
 
     my $e = $pkg->new( id => 1, hoge => 1, fuga => 2 );
-    cmp_deeply $e->to_hash, { hoge => 1, fuga => 2 }, 'right to_hash';
+    cmp_deeply $e->to_hash, { id => 1, hoge => 1, fuga => 2 }, 'right to_hash';
 
     $e->is_modified(3);
     is $e->is_modified, 1, 'right modified';
@@ -74,12 +74,12 @@ subtest 'clone' => sub {
     cmp_deeply $clone->{fuga}->{a}->[0], {}, 'right three dimensions';
 };
 
-subtest 'has_data' => sub {
+subtest 'has_id' => sub {
     my $e = Yetie::Domain::Entity::Hoge->new( id => 1 );
-    ok $e->has_data, 'right has data';
+    ok $e->has_id, 'right has data';
 
     $e = Yetie::Domain::Entity::Hoge->new();
-    ok !$e->has_data, 'right has not data';
+    ok !$e->has_id, 'right has not data';
 };
 
 subtest 'is_empty' => sub {
@@ -93,7 +93,7 @@ subtest 'is_empty' => sub {
 subtest 'to_array method' => sub {
     my $data = { id => 1, hoge => 1, fuga => 2 };
     my $e = $pkg->new($data);
-    cmp_deeply $e->to_array, [ [qw/fuga hoge/], [qw/2 1/] ], 'right to_array';
+    cmp_deeply $e->to_array, [ [qw/fuga hoge id/], [qw/2 1 1/] ], 'right to_array';
 };
 
 subtest 'Entity object base' => sub {

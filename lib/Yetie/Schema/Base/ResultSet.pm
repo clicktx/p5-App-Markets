@@ -28,6 +28,12 @@ sub each {
     return $self;
 }
 
+sub last_id {
+    my $self = shift;
+    my $result = $self->search( {}, { order_by => 'id DESC' } )->slice( 0, 0 )->first;
+    return defined $result ? $result->id : undef;
+}
+
 sub to_array {
     my $self    = shift;
     my @columns = $self->result_class->choose_column_name(@_);
@@ -85,6 +91,12 @@ the following new ones.
 
     $rs->each( sub { say $_->column_name } );
     $rs->each( sub { my ( $res, $num ) = @_; ... } );
+
+=head2 C<last_id>
+
+    my $last_id = $rs->last_id;
+
+Return last id of undef.
 
 =head2 C<to_array>
 

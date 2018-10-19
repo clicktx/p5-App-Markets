@@ -7,7 +7,7 @@ sub get_address_types {
     return $self->cache('address_types') if $self->cache('address_types');
 
     my $rs = $self->resultset('Address::Type')->search();
-    my $address_types = $self->factory('entity-address_types')->construct( list => $rs->to_data );
+    my $address_types = $self->factory('list-address_types')->construct( list => $rs->to_data );
     $self->cache( address_types => $address_types );
     return $address_types;
 }
@@ -21,7 +21,7 @@ sub get_registered_id {
     return $registered->id;
 }
 
-sub store {
+sub update_address {
     my ( $self, $params ) = @_;
 
     my $address       = $self->factory('entity-address')->construct($params);
@@ -64,7 +64,7 @@ the following new ones.
 
     my $address_types = $servece->get_address_types;
 
-Return L<Yetie::Domain::Entity::AddressTypes> object.
+Return L<Yetie::Domain::List::AddressTypes> object.
 
 =head2 C<get_registered_id>
 
@@ -73,9 +73,9 @@ Return L<Yetie::Domain::Entity::AddressTypes> object.
 
 Return address ID or C<undefined>.
 
-=head2 C<store>
+=head2 C<update_address>
 
-    $service->store(\%form_params);
+    $service->update_address(\%form_params);
 
 =head1 AUTHOR
 

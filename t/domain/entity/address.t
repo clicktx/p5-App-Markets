@@ -78,6 +78,7 @@ subtest 'to_data' => sub {
     my $address = construct($data);
     is_deeply $address->to_data,
       {
+        id            => 1,
         hash          => '83fdfb97f5ec0b93d486606da8a032af87235ccc',
         country_code  => 'us',
         line1         => '42 Pendergast St.',

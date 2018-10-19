@@ -95,20 +95,20 @@ sub move_items_to_first_shipment {
 
 # NOTE: 数量は未考慮
 sub remove_item {
-    my ( $self, $item_id ) = @_;
-    croak 'Argument was not a Scalar' if ref \$item_id ne 'SCALAR';
+    my ( $self, $hash_code ) = @_;
+    croak 'Argument was not a Scalar' if ref \$hash_code ne 'SCALAR';
 
-    $self->items->remove($item_id);
+    $self->items->remove($hash_code);
 }
 
 # NOTE: 数量は未考慮
 sub remove_shipping_item {
-    my ( $self, $index, $item_id ) = @_;
+    my ( $self, $index, $hash_code ) = @_;
     croak 'First argument was not a Digit'   if $index =~ /\D/;
-    croak 'Second argument was not a Scalar' if ref \$item_id ne 'SCALAR';
+    croak 'Second argument was not a Scalar' if ref \$hash_code ne 'SCALAR';
 
     my $shipment = $self->shipments->get($index);
-    $shipment->items->remove($item_id);
+    $shipment->items->remove($hash_code);
 }
 
 sub revert {
@@ -159,6 +159,19 @@ sub to_order_data {
 
     # Remove needless data
     delete $data->{$_} for @needless_attrs;
+
+    # Billing Address
+    $data->{billing_address} = { id => $data->{billing_address}->{id} };
+
+    # Shipments
+    foreach my $shipment ( @{ $data->{shipments} } ) {
+        my $id = $shipment->{shipping_address}->{id};
+        $shipment->{shipping_address} = { id => $id };
+    }
+
+    # Rename shipments to orders
+    $data->{orders} = delete $data->{shipments};
+
     return $data;
 }
 
@@ -285,11 +298,11 @@ Move all items to the first element of C<Yetie::Domain::List::Shipments>.
 
 =head2 C<remove_item>
 
-    $cart->remove_item($item_id);
+    $cart->remove_item($hash_code);
 
 =head2 C<remove_shipping_item>
 
-    $cart->remove_shipping_item($shipment_index, $item_id);
+    $cart->remove_shipping_item($shipment_index, $hash_code);
 
 =head2 C<revert>
 

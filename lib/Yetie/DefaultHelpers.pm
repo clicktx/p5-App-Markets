@@ -1,10 +1,10 @@
 package Yetie::DefaultHelpers;
 use Mojo::Base 'Mojolicious::Plugin';
 
-use Carp         ();
-use Scalar::Util ();
-use Mojo::Util   ();
-use Yetie::Util  ();
+use Carp                    ();
+use Scalar::Util            ();
+use Mojo::Util              ();
+use Yetie::Util             ();
 use Yetie::App::Core::Cache ();
 use Yetie::Factory;
 
@@ -64,22 +64,14 @@ sub _pref {
 }
 
 sub _service {
-    my ( $self, $ns ) = @_;
+    my ( $self, $ns ) = ( shift, shift );
+
     $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
     Carp::croak 'Service name is empty.' unless $ns;
 
-    my $service = $self->app->{services}{$ns};
-    if ( Scalar::Util::blessed $service ) {
-        $service->controller($self);
-        Scalar::Util::weaken $service->{controller};
-    }
-    else {
-        my $class = "Yetie::Service::" . $ns;
-        Yetie::Util::load_class($class);
-        $service = $class->new($self);
-        $self->app->{services}{$ns} = $service;
-    }
-    return $service;
+    my $class = "Yetie::Service::" . $ns;
+    Yetie::Util::load_class($class);
+    return $class->new( $self, @_ );
 }
 
 sub _template {

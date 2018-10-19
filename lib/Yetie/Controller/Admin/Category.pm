@@ -40,7 +40,7 @@ sub edit {
 
     my $form = $c->form('admin-category');
     my $entity = $c->service('category')->find_category( $category_id, $form );
-    return $c->reply->not_found() unless $entity->has_data;
+    return $c->reply->not_found() unless $entity->has_id;
 
     $form->fill_in($entity);
     return $c->render() unless $form->has_data;

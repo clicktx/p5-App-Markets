@@ -7,7 +7,7 @@ has updated_at       => undef;
 has customer         => sub { __PACKAGE__->factory('entity-customer')->construct() };
 has billing_address  => sub { __PACKAGE__->factory('entity-address')->construct() };
 has shipping_address => sub { __PACKAGE__->factory('entity-address')->construct() };
-has items            => sub { __PACKAGE__->factory('entity-order-items')->construct() };
+has items            => sub { __PACKAGE__->factory('list-order_items')->construct() };
 
 has purchased_on => '';
 has order_status => '';

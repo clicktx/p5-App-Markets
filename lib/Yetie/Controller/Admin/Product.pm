@@ -43,7 +43,7 @@ sub edit {
 
     my $product_id = $c->stash('product_id');
     my $entity     = $c->service('product')->find_product($product_id);
-    return $c->reply->not_found() unless $entity->has_data;
+    return $c->reply->not_found() unless $entity->has_id;
 
     # Init form
     my $form = $c->form('admin-product');
@@ -65,7 +65,7 @@ sub category {
 
     my $product_id = $c->stash('product_id');
     my $entity     = $c->service('product')->find_product($product_id);
-    return $c->reply->not_found() unless $entity->has_data;
+    return $c->reply->not_found() unless $entity->has_id;
 
     # Init form
     my $form = $c->form('admin-product-category');

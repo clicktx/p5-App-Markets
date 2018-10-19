@@ -28,10 +28,10 @@
     # reference table
     'Address::Type' => [
         [ qw/id name label/ ],
-        [ 1, 'postal', 'Postal Address' ],
-        [ 2, 'billing', 'Billing Address' ],
-        [ 3, 'shipping', 'Shipping Address' ],
-        [ 4, 'delivery', 'Delivery Address' ],
-        [ 5, 'residential', 'Residential Address' ],
+        [ 1, 'postal_address', 'Postal Address' ],
+        [ 2, 'billing_address', 'Billing Address' ],
+        [ 3, 'shipping_address', 'Shipping Address' ],
+        [ 4, 'delivery_address', 'Delivery Address' ],
+        [ 5, 'residential_address', 'Residential Address' ],
     ],
 )

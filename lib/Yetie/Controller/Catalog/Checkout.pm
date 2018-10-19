@@ -154,16 +154,38 @@ sub confirm_handler {
 sub complete_handler {
     my $c = shift;
 
-    # NOTE: itemsに商品がある場合 or shipment.itemsが1つも無い場合はcomplete出来ない。
     my $cart = $c->cart;
     return $c->redirect_to('RN_cart') unless $cart->total_quantity;
+
+    # XXX:未完成 Address正規化
+    # set時(set_billing_address,set_shipping_address)に正規化を行う？
+
+    # shipments
+    my $cart_service     = $c->service('cart');
+    my $customer_service = $c->service('customer');
+    $cart->shipments->each(
+        sub {
+            my $shipment = shift;
+            $cart_service->set_address_id( $shipment->shipping_address );
+
+            # Add to customer address
+            $customer_service->store_shipping_address( $shipment->shipping_address->id );
+        }
+    );
+
+    # billing address
+    $cart_service->set_address_id( $cart->billing_address );
+
+    # Add to customer address
+    # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
+    $customer_service->store_billing_address( $cart->billing_address->id );
 
     # Make order data
     my $order = $cart->to_order_data;
 
-    # Customer id
+    # オーダーデータ整形
     # ログイン購入
-    my $customer_id = $c->server_session->data('customer_id');
+    my $customer_id = $c->server_session->customer_id;
     if ($customer_id) {
         $order->{customer} = { id => $customer_id };
     }
@@ -173,27 +195,8 @@ sub complete_handler {
         $order->{customer} = {};
     }
 
-    # NOTE: WIP ゲスト購入
+    # XXX: WIP ゲスト購入
     delete $order->{email};
-
-    # Address正規化
-    my $schema_address = $c->app->schema->resultset('Address');
-
-    # billing_address
-    my $billing_address = $schema_address->find( { line1 => $order->{billing_address}->{line1} } );
-    $order->{billing_address} = { id => $billing_address->id } if $billing_address;
-
-    # shipping_address
-    foreach my $shipment ( @{ $order->{shipments} } ) {
-        my $result = $schema_address->find( { line1 => $shipment->{shipping_address}->{line1} } );
-        next unless $result;
-        my $shipping_address_id = $result->id;
-        $shipment->{shipping_address} = { id => $shipping_address_id };
-    }
-    $order->{orders} = delete $order->{shipments};
-
-    use DDP;
-    p $order;    # debug
 
     # Store order
     my $schema = $c->app->schema;
