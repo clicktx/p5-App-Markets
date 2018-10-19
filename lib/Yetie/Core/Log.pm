@@ -1,6 +1,6 @@
-package Yetie::Log;
+package Yetie::Core::Log;
 use Mojo::Base 'Mojolicious::Plugin';
-use Yetie::Log::Logger;
+use Yetie::Core::Log::Logger;
 
 sub register {
     my ( $self, $app ) = @_;
@@ -17,7 +17,7 @@ sub register {
     $app->attr(
         logger => sub {
             my $self = shift;
-            my $logger = Yetie::Log::Logger->new( app => $app );
+            my $logger = Yetie::Core::Log::Logger->new( app => $app );
 
             # Reduced log output outside of development mode
             return $mode eq 'development' ? $logger : $logger->level('info');
@@ -58,17 +58,17 @@ __END__
 
 =head1 NAME
 
-Yetie::Log
+Yetie::Core::Log
 
 =head1 SYNOPSIS
 
     # Mojolicious
     $app->plugin('Yetie::I18N');    # dependence
-    $app->plugin('Yetie::Log');
+    $app->plugin('Yetie::Core::Log');
 
     # Mojolicious::Lite
     plugin 'Yetie::I18N';    # dependence
-    plugin 'Yetie::Log';
+    plugin 'Yetie::Core::Log';
 
     # In controller
     $c->logging_warn( $msgid, %context );
@@ -78,17 +78,17 @@ Yetie::Log
 
 =head1 ATTRIBUTES for APPLICATION
 
-L<Yetie::Log> implements the following attributes for application.
+L<Yetie::Core::Log> implements the following attributes for application.
 
 =head2 C<logger>
 
     my $logger = $app->logger;
 
-Return L<Yetie::Log::Logger> object.
+Return L<Yetie::Core::Log::Logger> object.
 
 =head1 HELPERS
 
-L<Yetie::Log> implements the following helpers.
+L<Yetie::Core::Log> implements the following helpers.
 
 NOTE: If the log file path contains C<"admin.log">, add C<"staff_id"> as an argument.
 
@@ -102,7 +102,7 @@ NOTE: If the log file path contains C<"admin.log">, add C<"staff_id"> as an argu
     # $app_home/var/log/admin.log
     $c->logging->info( $msgid, %context );
 
-Log level see L<Yetie::Log::Logger>.
+Log level see L<Yetie::Core::Log::Logger>.
 
 =head2 C<logging_debug>
 
@@ -141,7 +141,7 @@ Log level see L<Yetie::Log::Logger>.
 
 =head1 METHODS
 
-L<Yetie::Log> inherits all methods from L<Mojolicious::Plugin> and implements the following new ones.
+L<Yetie::Core::Log> inherits all methods from L<Mojolicious::Plugin> and implements the following new ones.
 
 =head2 register
 
@@ -151,6 +151,6 @@ Register helpers in L<Mojolicious> application.
 
 =head1 SEE ALSO
 
-L<Yetie::Log::Logger>, L<Mojo::Log>, L<Mojolicious::Plugin>
+L<Yetie::Core::Log::Logger>, L<Mojo::Log>, L<Mojolicious::Plugin>
 
 =cut

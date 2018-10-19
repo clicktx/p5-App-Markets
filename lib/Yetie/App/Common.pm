@@ -152,7 +152,7 @@ sub _load_plugins {
 
     # Logging
     # NOTE: Need after loading "Yetie::I18N"
-    $app->plugin('Yetie::Log');
+    $app->plugin('Yetie::Core::Log');
 
     # Password
     $app->plugin('Scrypt');
