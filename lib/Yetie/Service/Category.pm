@@ -1,5 +1,5 @@
 package Yetie::Service::Category;
-use Mojo::Base 'Yetie::Service';
+use Mojo::Base 'Yetie::App::Core::Service';
 
 sub find_category_with_products { shift->_find_category( @_, 1 ) }
 
@@ -52,12 +52,12 @@ Yetie::Service::Category
 
 =head1 ATTRIBUTES
 
-L<Yetie::Service::Category> inherits all attributes from L<Yetie::Service> and implements
+L<Yetie::Service::Category> inherits all attributes from L<Yetie::App::Core::Service> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Service::Category> inherits all methods from L<Yetie::Service> and implements
+L<Yetie::Service::Category> inherits all methods from L<Yetie::App::Core::Service> and implements
 the following new ones.
 
 =head2 C<find_category_with_products>
@@ -80,4 +80,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Service>
+L<Yetie::App::Core::Service>
