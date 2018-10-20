@@ -7,13 +7,13 @@ use Mojo::Collection qw(c);
 use Mojolicious::Controller;
 use Yetie::Util qw(load_class);
 use Yetie::App::Core::Parameters;
-use Yetie::Form::TagHelpers;
+use Yetie::App::Core::Form::TagHelpers;
 
 has controller => sub { Mojolicious::Controller->new };
 has 'fieldset';
 has is_validated => '0';
 has name_space   => 'Yetie::Form::FieldSet';
-has tag_helpers  => sub { Yetie::Form::TagHelpers->new( shift->controller ) };
+has tag_helpers  => sub { Yetie::App::Core::Form::TagHelpers->new( shift->controller ) };
 
 sub do_validate {
     my $self     = shift;
@@ -369,6 +369,6 @@ Alias $controller->validation
 
 =head1 SEE ALSO
 
-L<Yetie::Form>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::Form::TagHelpers>
+L<Yetie::Form>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::App::Core::Form::TagHelpers>
 
 =cut

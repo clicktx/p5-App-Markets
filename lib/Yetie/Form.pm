@@ -234,7 +234,7 @@ Register helpers in L<Mojolicious> application.
 
 =head1 SEE ALSO
 
-L<Yetie::Form::Base>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::Form::TagHelpers>,
+L<Yetie::Form::Base>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::App::Core::Form::TagHelpers>,
 L<Mojolicious::Plugin>
 
 =cut

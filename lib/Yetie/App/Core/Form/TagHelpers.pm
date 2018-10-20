@@ -1,4 +1,4 @@
-package Yetie::Form::TagHelpers;
+package Yetie::App::Core::Form::TagHelpers;
 use Mojo::Base -base;
 use Carp qw(croak);
 use Scalar::Util qw(blessed weaken);
@@ -307,11 +307,11 @@ __END__
 
 =head1 NAME
 
-Yetie::Form::TagHelpers
+Yetie::App::Core::Form::TagHelpers
 
 =head1 SYNOPSIS
 
-    my $tag_helpers = Yetie::Form::TagHelpers->new($controller);
+    my $tag_helpers = Yetie::App::Core::Form::TagHelpers->new($controller);
     my $field = $form->fieldset->field('field_name');
     say $tag_helpers->text( $field, %attrs );
 
@@ -319,7 +319,7 @@ Yetie::Form::TagHelpers
 
 =head1 ATTRIBUTES
 
-L<Yetie::Form::TagHelpers> inherits all attributes from L<Mojo::Base> and implements the following new ones.
+L<Yetie::App::Core::Form::TagHelpers> inherits all attributes from L<Mojo::Base> and implements the following new ones.
 
 =head2 C<controller>
 
@@ -329,11 +329,11 @@ Return weak reference L<Mojolicious::Controller> object.
 
 =head1 METHODS
 
-L<Yetie::Form::TagHelpers> inherits all methods from L<Mojo::Base> and implements the following new ones.
+L<Yetie::App::Core::Form::TagHelpers> inherits all methods from L<Mojo::Base> and implements the following new ones.
 
 =head2 C<new>
 
-    my $tag_helpers = Yetie::Form::TagHelpers->new($controller);
+    my $tag_helpers = Yetie::App::Core::Form::TagHelpers->new($controller);
 
 =head1 TAG HELPER METHODS
 
