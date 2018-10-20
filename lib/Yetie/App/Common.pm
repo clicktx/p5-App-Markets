@@ -138,7 +138,7 @@ sub _load_plugins {
     # Locale
     $ENV{MOJO_I18N_DEBUG} = 1 if $app->mode eq 'development';
     $app->plugin(
-        'Yetie::I18N',
+        'Yetie::App::Core::I18N',
         {
             # file_type => 'po',    # or 'mo'. default: po
             # default   => $self->pref('default_language'),
@@ -151,7 +151,7 @@ sub _load_plugins {
     );
 
     # Logging
-    # NOTE: Need after loading "Yetie::I18N"
+    # NOTE: Need after loading "Yetie::App::Core::I18N"
     $app->plugin('Yetie::Core::Log');
 
     # Password

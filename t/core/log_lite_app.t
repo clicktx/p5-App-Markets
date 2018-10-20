@@ -1,7 +1,7 @@
 use Mojo::Base -strict;
 use Mojolicious::Lite;
 
-plugin 'Yetie::I18N';    # dependence
+plugin 'Yetie::App::Core::I18N';    # dependence
 plugin 'Yetie::Core::Log';
 
 get '/' => sub {

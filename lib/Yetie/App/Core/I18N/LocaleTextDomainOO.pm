@@ -1,4 +1,4 @@
-package Yetie::I18N::LocaleTextDomainOO;
+package Yetie::App::Core::I18N::LocaleTextDomainOO;
 use Mojo::Base 'Mojolicious::Plugin::LocaleTextDomainOO';
 
 use Mojo::Util qw(monkey_patch);
@@ -173,15 +173,15 @@ __END__
 
 =head1 NAME
 
-Yetie::I18N::LocaleTextDomainOO
+Yetie::App::Core::I18N::LocaleTextDomainOO
 
 =head1 SYNOPSIS
 
     # Mojolicious
-    $app->plugin('Yetie::I18N::LocaleTextDomainOO');
+    $app->plugin('Yetie::App::Core::I18N::LocaleTextDomainOO');
 
     # Mojolicious::Lite
-    plugin 'Yetie::I18N::LocaleTextDomainOO';
+    plugin 'Yetie::App::Core::I18N::LocaleTextDomainOO';
 
 
 =head1 DESCRIPTION
@@ -190,12 +190,12 @@ Yetie::I18N::LocaleTextDomainOO
 
 =head1 ATTRIBUTES
 
-L<Yetie::I18N::LocaleTextDomainOO> inherits all attributes from L<Mojolicious::Plugin::LocaleTextDomainOO> and implements
+L<Yetie::App::Core::I18N::LocaleTextDomainOO> inherits all attributes from L<Mojolicious::Plugin::LocaleTextDomainOO> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::I18N::LocaleTextDomainOO> inherits all methods from L<Mojolicious::Plugin::LocaleTextDomainOO> and implements
+L<Yetie::App::Core::I18N::LocaleTextDomainOO> inherits all methods from L<Mojolicious::Plugin::LocaleTextDomainOO> and implements
 the following new ones.
 
 =head1 SEE ALSO

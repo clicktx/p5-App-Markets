@@ -63,11 +63,11 @@ Yetie::Core::Log
 =head1 SYNOPSIS
 
     # Mojolicious
-    $app->plugin('Yetie::I18N');    # dependence
+    $app->plugin('Yetie::App::Core::I18N');    # dependence
     $app->plugin('Yetie::Core::Log');
 
     # Mojolicious::Lite
-    plugin 'Yetie::I18N';    # dependence
+    plugin 'Yetie::App::Core::I18N';    # dependence
     plugin 'Yetie::Core::Log';
 
     # In controller
