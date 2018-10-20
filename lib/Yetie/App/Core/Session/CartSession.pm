@@ -1,4 +1,4 @@
-package Yetie::Core::Session::CartSession;
+package Yetie::App::Core::Session::CartSession;
 use Mojo::Base -base;
 use Scalar::Util qw/weaken/;
 
@@ -71,7 +71,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Core::Session::CartSession
+Yetie::App::Core::Session::CartSession
 
 =head1 SYNOPSIS
 
@@ -81,7 +81,7 @@ Yetie::Core::Session::CartSession
 
 =head2 C<session>
 
-Return L<Yetie::Core::Session::ServerSession> object.
+Return L<Yetie::App::Core::Session::ServerSession> object.
 
 =head1 METHODS
 
@@ -90,7 +90,7 @@ Return L<Yetie::Core::Session::ServerSession> object.
     my $id = $cart->cart_id;
     $cart->cart_id('xxxxxxxxxx');
 
-Get/Set cart id. SEE L<Yetie::Core::Session::ServerSession>
+Get/Set cart id. SEE L<Yetie::App::Core::Session::ServerSession>
 
 =head2 C<data>
 
@@ -127,7 +127,7 @@ Get/Set modified flag.
 
 =head1 SEE ALSO
 
-L<Yetie::Core::Session::ServerSession>
+L<Yetie::App::Core::Session::ServerSession>
 
 L<MojoX::Session>
 

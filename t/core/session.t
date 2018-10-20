@@ -13,9 +13,9 @@ my $cart_id = $session->cart_id;
 my $cart    = $session->cart_session;
 
 subtest 'create session' => sub {
-    isa_ok $session, 'Yetie::Core::Session::ServerSession', 'right session object';
-    isa_ok $cart,    'Yetie::Core::Session::CartSession',   'right cart object';
-    isa_ok $session->cart, 'Yetie::Core::Session::CartSession', 'right alias';
+    isa_ok $session, 'Yetie::App::Core::Session::ServerSession', 'right session object';
+    isa_ok $cart,    'Yetie::App::Core::Session::CartSession',   'right cart object';
+    isa_ok $session->cart, 'Yetie::App::Core::Session::CartSession', 'right alias';
 
     ok $sid, 'created session';
     is_deeply $session->cart_session->data, {}, 'create new cart';

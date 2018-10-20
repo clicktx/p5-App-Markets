@@ -1,10 +1,10 @@
-package Yetie::Core::Session::ServerSession;
+package Yetie::App::Core::Session::ServerSession;
 
 use Mojo::Base qw/MojoX::Session/;
-use Yetie::Core::Session::CartSession;
+use Yetie::App::Core::Session::CartSession;
 use Yetie::Util qw/generate_token/;
 
-has cart_session => sub { Yetie::Core::Session::CartSession->new(shift) };
+has cart_session => sub { Yetie::App::Core::Session::CartSession->new(shift) };
 has cart         => sub { shift->cart_session };
 
 sub cart_id { shift->data('cart_id') }
@@ -92,7 +92,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Core::Session::ServerSession - based MojoX::Session
+Yetie::App::Core::Session::ServerSession - based MojoX::Session
 
 =head1 SYNOPSIS
 
@@ -104,7 +104,7 @@ Yetie::Core::Session::ServerSession - based MojoX::Session
 
     my $cart_session = $session->cart_session;
 
-Returns new L<Yetie::Core::Session::CartSession> object.
+Returns new L<Yetie::App::Core::Session::CartSession> object.
 
 =head2 C<cart>
 
@@ -114,7 +114,7 @@ Alias for L</cart_session>
 
 =head1 METHODS
 
-L<Yetie::Core::Session::ServerSession> inherits all methods from L<MojoX::Session> and implements
+L<Yetie::App::Core::Session::ServerSession> inherits all methods from L<MojoX::Session> and implements
 the following new ones.
 
 =head2 C<cart_id>
@@ -176,7 +176,7 @@ Get/Set staff id.
 
 =head1 SEE ALSO
 
-L<Yetie::Core::Session::CartSession>
+L<Yetie::App::Core::Session::CartSession>
 
 L<MojoX::Session>
 

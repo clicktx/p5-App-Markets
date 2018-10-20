@@ -67,9 +67,9 @@ sub server_session {
     my $tx = Mojo::Transaction::HTTP->new();
     $tx->req->cookies($cookie);
 
-    return Yetie::Core::Session::ServerSession->new(
+    return Yetie::App::Core::Session::ServerSession->new(
         tx            => $tx,
-        store         => Yetie::Core::Session::Store::Dbic->new( schema => $app->schema ),
+        store         => Yetie::App::Core::Session::Store::Dbic->new( schema => $app->schema ),
         transport     => MojoX::Session::Transport::Cookie->new,
         expires_delta => 3600,
     );

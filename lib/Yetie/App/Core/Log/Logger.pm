@@ -1,4 +1,4 @@
-package Yetie::Core::Log::Logger;
+package Yetie::App::Core::Log::Logger;
 use Mojo::Base 'Mojo::Log';
 use Role::Tiny::With;
 
@@ -24,7 +24,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Core::Log::Logger
+Yetie::App::Core::Log::Logger
 
 =head1 SYNOPSIS
 
@@ -32,11 +32,11 @@ Yetie::Core::Log::Logger
 
 =head1 ATTRIBUTES
 
-L<Yetie::Core::Log::Logger> inherits all attributes from L<Mojo::Log> and implements the following new ones.
+L<Yetie::App::Core::Log::Logger> inherits all attributes from L<Mojo::Log> and implements the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Core::Log::Logger> inherits all methods from L<Mojo::Log> and implements the following new ones.
+L<Yetie::App::Core::Log::Logger> inherits all methods from L<Mojo::Log> and implements the following new ones.
 
 =head2 C<debug>
 
@@ -74,6 +74,6 @@ Emit "message" event and log fatal message.
 
 =head1 SEE ALSO
 
-L<Yetie::Core::Log>, L<Mojo::Log>
+L<Yetie::App::Core::Log>, L<Mojo::Log>
 
 =cut

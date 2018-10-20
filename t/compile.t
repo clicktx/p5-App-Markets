@@ -5,7 +5,7 @@ use Test::More;
 use_ok $_ for qw(
   Yetie
   MojoX::Session
-  Yetie::Core::Session::Store::Dbic
+  Yetie::App::Core::Session::Store::Dbic
   Mojolicious::Plugin::LocaleTextDomainOO
   Mojolicious::Plugin::Scrypt
 );

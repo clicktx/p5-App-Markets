@@ -1,4 +1,4 @@
-package Yetie::Core::Session::Store::Dbic;
+package Yetie::App::Core::Session::Store::Dbic;
 use Mojo::Base 'MojoX::Session::Store';
 
 use Try::Tiny;
@@ -199,7 +199,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Core::Session::Store::Dbic - Dbic Store for MojoX::Session
+Yetie::App::Core::Session::Store::Dbic - Dbic Store for MojoX::Session
 
 =head1 SYNOPSIS
 
@@ -219,20 +219,20 @@ Yetie::Core::Session::Store::Dbic - Dbic Store for MojoX::Session
     # Your App
     my $schema = MyDbic::DB->new(...);
     my $session = MojoX::Session->new(
-        store => Yetie::Core::Session::Store::Dbic->new( schema => $schema ),
+        store => Yetie::App::Core::Session::Store::Dbic->new( schema => $schema ),
         ...
     );
 
 =head1 DESCRIPTION
 
-L<Yetie::Core::Session::Store::Dbic> is a store for L<MojoX::Session> that stores a
+L<Yetie::App::Core::Session::Store::Dbic> is a store for L<MojoX::Session> that stores a
 session in a database using Dbic.
 
 forked by L<MojoX::Session::Store::Dbic>
 
 =head1 ATTRIBUTES
 
-L<Yetie::Core::Session::Store::Dbic> implements the following attributes.
+L<Yetie::App::Core::Session::Store::Dbic> implements the following attributes.
 
 =head2 C<schema>
 
@@ -259,7 +259,7 @@ Cart column name. Default is 'cart_id'.
 
 =head1 METHODS
 
-L<Yetie::Core::Session::Store::Dbic> inherits all methods from
+L<Yetie::App::Core::Session::Store::Dbic> inherits all methods from
 L<MojoX::Session::Store>.
 
 =head2 C<create>
@@ -292,7 +292,7 @@ Delete session from database.
 
 =head1 SEE ALSO
 
-L<Yetie::Core::Session::CartSession>
+L<Yetie::App::Core::Session::CartSession>
 
 L<DBIx::Class>
 

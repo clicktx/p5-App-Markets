@@ -152,13 +152,13 @@ sub _load_plugins {
 
     # Logging
     # NOTE: Need after loading "Yetie::App::Core::I18N"
-    $app->plugin('Yetie::Core::Log');
+    $app->plugin('Yetie::App::Core::Log');
 
     # Password
     $app->plugin('Scrypt');
 
     # Session
-    $app->plugin( 'Yetie::Core::Session' => { expires_delta => 3600 } );
+    $app->plugin( 'Yetie::App::Core::Session' => { expires_delta => 3600 } );
 }
 
 1;

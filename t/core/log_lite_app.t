@@ -2,7 +2,7 @@ use Mojo::Base -strict;
 use Mojolicious::Lite;
 
 plugin 'Yetie::App::Core::I18N';    # dependence
-plugin 'Yetie::Core::Log';
+plugin 'Yetie::App::Core::Log';
 
 get '/' => sub {
     my $c = shift;
