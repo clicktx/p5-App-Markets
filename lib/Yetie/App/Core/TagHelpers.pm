@@ -1,4 +1,4 @@
-package Yetie::TagHelpers;
+package Yetie::App::Core::TagHelpers;
 use Mojo::Base 'Mojolicious::Plugin';
 use Mojolicious::Plugin::TagHelpers;
 
@@ -37,13 +37,13 @@ __END__
 
 =head1 NAME
 
-Yetie::TagHelpers - Tag helpers plugin for Yetie
+Yetie::App::Core::TagHelpers - Tag helpers plugin for Yetie
 
 =head1 DESCRIPTION
 
 =head1 HELPERS
 
-L<Yetie::TagHelpers> implements the following helpers.
+L<Yetie::App::Core::TagHelpers> implements the following helpers.
 
 =head2 C<button>
 

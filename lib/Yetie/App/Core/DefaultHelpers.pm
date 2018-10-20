@@ -15,7 +15,7 @@ sub register {
     $app->attr( caches => sub { Yetie::App::Core::Cache->new } );
 
     # TagHelpers more
-    $app->plugin('Yetie::TagHelpers');
+    $app->plugin('Yetie::App::Core::TagHelpers');
 
     $app->helper( __x_default_lang => sub { __x_default_lang(@_) } );
     $app->helper( addons           => sub { shift->app->addons(@_) } );

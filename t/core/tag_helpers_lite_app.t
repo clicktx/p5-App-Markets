@@ -4,7 +4,7 @@ use Test::More;
 use Mojolicious::Lite;
 use Test::Mojo;
 
-plugin 'Yetie::TagHelpers';
+plugin 'Yetie::App::Core::TagHelpers';
 
 get '/button';
 
