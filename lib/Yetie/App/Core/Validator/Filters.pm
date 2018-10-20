@@ -1,4 +1,4 @@
-package Yetie::Validator::Filters;
+package Yetie::App::Core::Validator::Filters;
 use Mojo::Base 'Mojolicious::Plugin';
 use Lingua::JA::Regular::Unicode qw();
 
@@ -102,15 +102,15 @@ our %FILTERS = (
 
 =head1 NAME
 
-Yetie::Validator::Filters
+Yetie::App::Core::Validator::Filters
 
 =head1 SYNOPSIS
 
     # Mojolicious
-    $app->plugin('Yetie::Validator::Filters');
+    $app->plugin('Yetie::App::Core::Validator::Filters');
 
     # Mojolicious::Lite
-    plugin 'Yetie::Validator::Filters';
+    plugin 'Yetie::App::Core::Validator::Filters';
 
 
 =head1 DESCRIPTION
@@ -119,11 +119,11 @@ Yetie::Validator::Filters
 
 =head1 METHODS
 
-L<Yetie::Validator::Filters> inherits all methods from L<Mojolicious::Plugin> and implements
+L<Yetie::App::Core::Validator::Filters> inherits all methods from L<Mojolicious::Plugin> and implements
 the following new ones.
 
 =head1 SEE ALSO
 
-L<Yetie::Validator>, L<Lingua::JA::Regular::Unicode>, L<Mojolicious::Plugin>
+L<Yetie::App::Core::Validator>, L<Lingua::JA::Regular::Unicode>, L<Mojolicious::Plugin>
 
 =cut

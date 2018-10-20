@@ -3,7 +3,7 @@ use Test::More;
 use Test::Mojo;
 use t::Util;
 
-use_ok 'Yetie::Validator::Filters';
+use_ok 'Yetie::App::Core::Validator::Filters';
 my $t = Test::Mojo->new('App');
 
 sub new_req {

@@ -4,7 +4,7 @@ use Test::Mojo;
 use t::Util;
 use Yetie::Form::Base;
 
-use_ok 'Yetie::Validator';
+use_ok 'Yetie::App::Core::Validator';
 
 my $t = Test::Mojo->new('App');
 

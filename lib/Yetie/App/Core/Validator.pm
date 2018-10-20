@@ -1,4 +1,4 @@
-package Yetie::Validator;
+package Yetie::App::Core::Validator;
 use Mojo::Base 'Mojolicious::Plugin';
 use Mojo::Util qw(monkey_patch);
 use FormValidator::Simple::Validator;
@@ -313,17 +313,17 @@ sub is_digits {
 
 =head1 NAME
 
-Yetie::Validator - Validate values
+Yetie::App::Core::Validator - Validate values
 
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
 
-L<Yetie::Validator> validates values for L<Yetie>.
+L<Yetie::App::Core::Validator> validates values for L<Yetie>.
 
 =head1 CHECKS
 
-L<Yetie::Validator> adds all the checks to L<Mojolicious::Validator>.
+L<Yetie::App::Core::Validator> adds all the checks to L<Mojolicious::Validator>.
 
 These validation checks are available.
 
@@ -431,11 +431,11 @@ See L<Mojolicious::Validator/upload>.
 
 =head1 ATTRIBUTES
 
-L<Yetie::Validator> adds all the attributes to L<Mojolicious::Validator>.
+L<Yetie::App::Core::Validator> adds all the attributes to L<Mojolicious::Validator>.
 
 =head1 METHODS
 
-L<Yetie::Validator> adds all the methods to L<Mojolicious::Validator>.
+L<Yetie::App::Core::Validator> adds all the methods to L<Mojolicious::Validator>.
 
 =head2 C<error_message>
 
