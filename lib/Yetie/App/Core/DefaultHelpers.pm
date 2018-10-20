@@ -1,4 +1,4 @@
-package Yetie::DefaultHelpers;
+package Yetie::App::Core::DefaultHelpers;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use Carp                    ();
@@ -84,13 +84,13 @@ __END__
 
 =head1 NAME
 
-Yetie::DefaultHelpers - Default helpers plugin for Yetie
+Yetie::App::Core::DefaultHelpers - Default helpers plugin for Yetie
 
 =head1 DESCRIPTION
 
 =head1 HELPERS
 
-L<Yetie::DefaultHelpers> implements the following helpers.
+L<Yetie::App::Core::DefaultHelpers> implements the following helpers.
 
 =head2 C<__x_default_lang>
 

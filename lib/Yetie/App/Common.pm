@@ -133,7 +133,7 @@ sub _load_plugins {
     $app->plugin('PODRenderer') if $app->mode eq 'development';
 
     # Default Helpers
-    $app->plugin('Yetie::DefaultHelpers');
+    $app->plugin('Yetie::App::Core::DefaultHelpers');
 
     # Locale
     $ENV{MOJO_I18N_DEBUG} = 1 if $app->mode eq 'development';
