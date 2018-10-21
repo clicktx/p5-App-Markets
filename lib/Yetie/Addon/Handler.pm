@@ -1,4 +1,4 @@
-package Yetie::Addons;
+package Yetie::Addon::Handler;
 use Mojo::Base -base;
 use Yetie::App::Core::Trigger;
 
@@ -6,7 +6,7 @@ use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
 use Mojo::File;
 use Mojo::Collection;
-use constant { ADDON_NAME_SPACE => 'Yetie::Addon', };
+use constant { NAME_SPACE => 'Yetie::Addon' };
 
 has dir     => sub { shift->app->pref('addons_dir') };
 has trigger => sub { Yetie::App::Core::Trigger->new( shift->app ) };
@@ -16,7 +16,7 @@ sub addon {
     my $self = shift;
     return $self->{installed} unless @_;
 
-    my $namespace = ADDON_NAME_SPACE;
+    my $namespace = NAME_SPACE;
     my $name = $_[0] =~ /${namespace}::(.*)/ ? decamelize $1 : decamelize $_[0];
 
     @_ > 1 ? $self->{installed}->{$name} = $_[1] : $self->{installed}->{$name};
@@ -88,7 +88,7 @@ sub _add_inc_path {
     my ( $self, $addon_class_name ) = @_;
 
     my $addons_dir = $self->dir;
-    my $namespace  = ADDON_NAME_SPACE;
+    my $namespace  = NAME_SPACE;
     my $dir        = ( $addon_class_name =~ /${namespace}::(.*)/ and $1 );
 
     # testスクリプト用にabs_pathを渡す必要がある。
@@ -114,13 +114,13 @@ sub _fetch_uploded_addons {
 sub _full_module_name {
     my $name      = shift;
     my $suffix    = $name =~ /^[a-z]/ ? camelize $name : $name;
-    my $namespace = ADDON_NAME_SPACE;
+    my $namespace = NAME_SPACE;
     my $class     = $suffix =~ /${namespace}::/ ? $suffix : $namespace . '::' . $suffix;
 }
 
 sub _load_class {
     my $class = shift;
-    return $class->isa(ADDON_NAME_SPACE)
+    return $class->isa( NAME_SPACE . '::Base' )
       unless my $e = load_class $class;
     ref $e ? die $e : return;
 }
@@ -142,18 +142,18 @@ sub _remove_routes {
 
 =head1 NAME
 
-Yetie::Addons - Addon manager for Yetie
+Yetie::Addon::Handler - Addon manager for Yetie
 
 =head1 SYNOPSIS
 
 
 =head1 DESCRIPTION
 
-L<Yetie::Addons> is L<Mojolicious::Plugins> based add-on manager for L<Yetie>.
+L<Yetie::Addon::Handler> is L<Mojolicious::Plugins> based add-on manager for L<Yetie>.
 
 =head1 EVENTS
 
-L<Yetie::Addons> inherits all events from L<Mojo::Base>.
+L<Yetie::Addon::Handler> inherits all events from L<Mojo::Base>.
 
 =head1 ATTRIBUTES
 
@@ -178,7 +178,7 @@ The list of all uploaded add-ons.
 
 =head1 METHODS
 
-L<Yetie::Addons> inherits all methods from L<Mojo::Base> and implements
+L<Yetie::Addon::Handler> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
 
 =head2 C<addon>
@@ -211,7 +211,7 @@ Emit L<Yetie::App::Core::Trigger> events as triggers.
     my $addon = $addons->load_addon( 'Yetie::Addon::MyAddon', $addon_pref );
 
 Load an add-on from the configured.
-Return L<Yetie::Addon> object.
+Return L<Yetie::Addon::Base> object.
 
 =head2 C<to_enable>
 
@@ -227,6 +227,6 @@ Change add-on status to disable.
 
 =head1 SEE ALSO
 
-L<Yetie::App::Core::Trigger> L<Yetie::Addon>
+L<Yetie::App::Core::Trigger> L<Yetie::Addon::Base>
 
 =cut

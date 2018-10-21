@@ -49,7 +49,7 @@ sub _sort_by_priority {
 
 =head1 NAME
 
-Yetie::App::Core::EventEmitter - Event emitter base class for L<Yetie::Addons>
+Yetie::App::Core::EventEmitter - Event emitter base class for L<Yetie::Addon::Handler>
 
 =head1 SYNOPSIS
 

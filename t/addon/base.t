@@ -25,7 +25,7 @@ subtest 'addons basic' => sub {
     # Get addon object
     my $addon = $addons->addon('Yetie::Addon::TestAddon');
     ok defined $addon, 'right addon method';
-    isa_ok $addon, 'Yetie::Addon';
+    isa_ok $addon, 'Yetie::Addon::Base';
 
     is ref $addons->addon('Yetie::Addon::TestAddon'), 'Yetie::Addon::TestAddon', 'access full module name';
     is ref $addons->addon('TestAddon'),                 'Yetie::Addon::TestAddon', 'access camel case';
@@ -42,9 +42,9 @@ subtest 'addons basic' => sub {
     subtest 'load addon' => sub {
 
         #_full_module_name
-        is Yetie::Addons::_full_module_name('Yetie::Addon::MyAddon'), 'Yetie::Addon::MyAddon';
-        is Yetie::Addons::_full_module_name('MyAddon'),                 'Yetie::Addon::MyAddon';
-        is Yetie::Addons::_full_module_name('my_addon'),                'Yetie::Addon::MyAddon';
+        is Yetie::Addon::Handler::_full_module_name('Yetie::Addon::MyAddon'), 'Yetie::Addon::MyAddon';
+        is Yetie::Addon::Handler::_full_module_name('MyAddon'),                 'Yetie::Addon::MyAddon';
+        is Yetie::Addon::Handler::_full_module_name('my_addon'),                'Yetie::Addon::MyAddon';
 
         is ref $addons->load_addon("Yetie::Addon::TestAddon"), 'Yetie::Addon::TestAddon';
         is ref $addons->load_addon("TestAddon"),                 'Yetie::Addon::TestAddon';

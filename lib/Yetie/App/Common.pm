@@ -1,7 +1,7 @@
 package Yetie::App::Common;
 use Mojo::Base 'Mojolicious';
 use Mojo::Log;
-use Yetie::Addons;
+use Yetie::Addon::Handler;
 use DBIx::QueryLog;
 
 # $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
@@ -9,7 +9,7 @@ $ENV{DBIC_TRACE}            = 1;
 $ENV{DBIX_QUERYLOG_COMPACT} = 1;
 $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
 
-has addons => sub { Yetie::Addons->new(@_) };
+has addons => sub { Yetie::Addon::Handler->new(@_) };
 has region => 'us';
 
 # has restart_app => sub { system shift->home . "/script/appctl --restart" };

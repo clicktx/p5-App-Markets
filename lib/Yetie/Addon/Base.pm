@@ -1,4 +1,4 @@
-package Yetie::Addon;
+package Yetie::Addon::Base;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use Class::C3;
@@ -8,14 +8,15 @@ use Carp 'croak';
 use Mojo::Util qw/camelize decamelize/;
 use Mojo::Loader qw/load_class/;
 use constant {
-    FORMAT  => 'html',
-    HANDLER => 'ep',
+    NAMESPACE => 'Yetie::Addon',
+    FORMAT    => 'html',
+    HANDLER   => 'ep',
 };
 
 has class_name => sub { ref shift };
 has name => sub {
-    my $package = __PACKAGE__;
-    shift->class_name =~ /${package}::(.*)/ and decamelize $1;
+    my $namespace = NAMESPACE;
+    shift->class_name =~ /${namespace}::(.*)/ and decamelize $1;
 };
 has [qw/app config is_enabled routes/];
 has triggers => sub { [] };
@@ -99,7 +100,7 @@ sub setup {
     # Routes
     my $class_name = $self->class_name;
     my $r          = Mojolicious::Routes->new;
-    $r = $r->to( namespace => __PACKAGE__ )->name($class_name);
+    $r = $r->to( namespace => NAMESPACE )->name($class_name);
     $self->routes($r);
 
     # Load lexicon file.
@@ -160,13 +161,13 @@ sub _remove_trigger {
 
 =head1 NAME
 
-Yetie::Addon - Yetie External plugin system
+Yetie::Addon::Base - Yetie External plugin system
 
 =head1 SYNOPSIS
 
   # YourAddon
   package Yetie::Addon::YourAddon;
-  use Mojo::Base 'Yetie::Addon';
+  use Mojo::Base 'Yetie::Addon::Base';
 
   sub register {
     my ($self, $app, $arg) = @_;
@@ -176,7 +177,7 @@ Yetie::Addon - Yetie External plugin system
 
 =head1 DESCRIPTION
 
-L<Yetie::Addon> is L<Mojolicious::Plugin> base plugin system.
+L<Yetie::Addon::Base> is L<Mojolicious::Plugin> base plugin system.
 
 =head1 ATRIBUTES
 
@@ -218,7 +219,7 @@ Return array ref.This is an add trigger list.
 
 =head1 METHODS
 
-L<Yetie::Addon> inherits all methods from L<Mojolicious::Plugin> and
+L<Yetie::Addon::Base> inherits all methods from L<Mojolicious::Plugin> and
 implements the following new ones.
 
 =head2 C<addon_home>
@@ -251,7 +252,7 @@ I<e.g.) template.html.ep>
 
 =head2 C<register>
 
-This method will be called after L<Yetie::Addon>::setup() at startup time.
+This method will be called after L<Yetie::Addon::Base/setup> at startup time.
 Meant to be overloaded in a subclass.
 
 =head2 C<rm_trigger>
@@ -262,7 +263,7 @@ Remove L<Yetie::App::Core::Trigger> trigger event.
 
 =head2 C<setup>
 
-This method will be called by L<Yetie::Addon> at startup time.
+This method will be called by L<Yetie::Addon::Base> at startup time.
 
 =head2 C<trigger>
 
@@ -288,7 +289,7 @@ Extend L<Yetie::App::Core::Trigger> trigger event.
 
 =head1 SEE ALSO
 
-L<Yetie::Addons> L<Yetie::App::Core::Trigger> L<Mojolicious::Plugin>
+L<Yetie::Addon::Handler> L<Yetie::App::Core::Trigger> L<Mojolicious::Plugin>
 
 =cut
 

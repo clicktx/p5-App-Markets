@@ -1,5 +1,5 @@
 package Yetie::Addon::MyAddon;
-use Mojo::Base 'Yetie::Addon';
+use Mojo::Base 'Yetie::Addon::Base';
 
 use Data::Dumper;
 
