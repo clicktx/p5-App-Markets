@@ -73,7 +73,7 @@ sub buged {
 sub construct {
     my $c = shift;
     my $service = $c->service( 'test', baz => 1, qux => 2 );
-    isa_ok $service, 'Yetie::App::Core::Service';
+    isa_ok $service, 'Yetie::Service::Base';
 
     is $service->baz, 1, 'right attribute accesser';
     is $service->{qux}, 2, 'right attribute';

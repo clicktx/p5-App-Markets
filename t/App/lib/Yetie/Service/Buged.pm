@@ -1,5 +1,5 @@
 package Yetie::Service::Buged;
-use Mojo::Base 'Yetie::App::Core::Service';
+use Mojo::Base 'Yetie::Service::Base';
 
 the baged module!
 1;

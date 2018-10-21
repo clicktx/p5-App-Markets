@@ -1,5 +1,5 @@
 package Yetie::Service::Test;
-use Mojo::Base 'Yetie::App::Core::Service';
+use Mojo::Base 'Yetie::Service::Base';
 
 has 'baz';
 
