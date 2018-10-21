@@ -8,7 +8,7 @@ use Test::Perl::Metrics::Lite (
         qw(lib/Yetie/App/Core/View/DOM/HTML.pm lib/Yetie/Domain/Base.pm lib/Yetie/Domain/Entity.pm),
 
         # at AUTOLOAD
-        'lib/Yetie/Form/TagHelpers.pm',
+        'lib/Yetie/App/Core/Form/TagHelpers.pm',
     ],
 );
 
