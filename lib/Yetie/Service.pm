@@ -27,10 +27,10 @@ sub service { shift->controller->service(@_) }
 sub schema { shift->app->schema(@_) }
 
 sub new {
-    my ( $class, $c ) = @_;
+    my ( $class, $c ) = ( shift, shift );
 
     my $app = $c->app;
-    my $self = $class->SUPER::new( app => $app, controller => $c );
+    my $self = $class->SUPER::new( app => $app, controller => $c, @_ );
 
     Scalar::Util::weaken $self->{controller};
     return $self;
@@ -44,6 +44,10 @@ __END__
 Yetie::Service - Application Service Layer
 
 =head1 SYNOPSIS
+
+    my $service = $c->service('foo');
+
+    my $service = $c->service('foo', bar => 1, baz => 2);
 
 =head1 DESCRIPTION
 

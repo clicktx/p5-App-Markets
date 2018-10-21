@@ -279,13 +279,13 @@ Inherit Yetie::Form::FieldSet::Example class
 
     validations => [ int, { size => [ 4, 8 ] }, ... ],
 
-Set array refference.
-If the method has arguments, it returns hash refference.
+Set array reference.
+If the method has arguments, it returns hash reference.
 
     # Value from Preferences
     validations => [ int, { size => [ \'password_min', \'password_max' ] }, ... ],
 
-Passing a scalar reffernce as an arguments to the validator method expands from preferences.
+Passing a scalar reference as an arguments to the validator method expands from preferences.
 
 =head1 DESCRIPTION
 
@@ -338,11 +338,11 @@ the following new ones.
 
 =head2 C<checks>
 
-    # Return array refference
+    # Return array reference
     # [ 'validation1', 'validation2', ... ]
     my $checks = $fieldset->checks('email');
 
-    # Return hash refference
+    # Return hash reference
     # { field_key => [ 'validation1', 'validation2', ... ], field_key2 => [ 'validation1', 'validation2', ... ] }
     my $checks = $fieldset->checks;
 
@@ -369,7 +369,7 @@ See L</has_field> above for information on the contents of the hash.
 
     my @field_keys = $fieldset->field_keys;
 
-    # Return array refference
+    # Return array reference
     my $field_keys = $fieldset->field_keys;
 
 =head2 C<field>
@@ -377,15 +377,15 @@ See L</has_field> above for information on the contents of the hash.
     my $field = $fieldset->field('field_name');
 
 Return L<Yetie::Form::Field> object.
-Object once created are cached in "$fieldset->{_field}->{$field_key}".
+Object once created are cached in C<"$fieldset-E<gt>{_field}-E<gt>{$field_key}">.
 
 =head2 C<filters>
 
-    # Return array refference
+    # Return array reference
     # [ 'filter1', 'filter2', ... ]
     my $filters = $fieldset->filters('field_key');
 
-    # Return hash refference
+    # Return hash reference
     # { field_key => [ 'filter1', 'filter2', ... ], field_key2 => [ 'filter1', 'filter2', ... ] }
     my $filters = $fieldset->filters;
 
@@ -399,10 +399,10 @@ Object once created are cached in "$fieldset->{_field}->{$field_key}".
 
     my $field_schema = $fieldset->schema('field_key');
 
-Return hash refference. Get a field definition.
+Return hash reference. Get a field definition.
 
 =head1 SEE ALSO
 
-L<Yetie::Form>, L<Yetie::Form::Base>, L<Yetie::Form::Field>, L<Yetie::Form::TagHelpers>
+L<Yetie::App::Core::Form>, L<Yetie::Form::Base>, L<Yetie::Form::Field>, L<Yetie::App::Core::Form::TagHelpers>
 
 =cut

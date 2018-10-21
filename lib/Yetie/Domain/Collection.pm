@@ -10,15 +10,18 @@ sub c { collection(@_) }
 
 sub collection { __PACKAGE__->new(@_) }
 
-sub get { shift->[ +shift ] }
+sub get {
+    my ( $self, $index ) = ( shift, shift // '' );
+    return if $index eq '';
+    $self->[$index];
+}
 
 sub get_by_id {
     my ( $self, $str ) = @_;
     $self->first( sub { $_->id eq $str } ) or undef;
 }
 
-no warnings 'redefine';
-sub has { shift->get_by_id(shift) ? 1 : 0 }
+sub has_element { shift->get_by_id(shift) ? 1 : 0 }
 
 sub to_data {
     my $self = shift;
@@ -93,9 +96,9 @@ Return $element or undef.
 
 Return L<Yetie::Domain::Entity> object or undef.
 
-=head2 C<has>
+=head2 C<has_element>
 
-    my $bool = $collection->has($entity_id);
+    my $bool = $collection->has_element($entity_id);
 
 Return boolean value.
 

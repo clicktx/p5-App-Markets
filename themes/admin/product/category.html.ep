@@ -14,10 +14,8 @@
 </ul>
 
 <%= form_for current_route() => ( method => 'POST' ) => begin %>
-    % my $field;
     <div class="">
-        % $field = '#categories';
-        <%= form_widget $field %>
+        <%= form_widget '#categories[]' %>
     </div>
     <%= csrf_field %>
     <%= submit_button 'Submit' %>

@@ -36,7 +36,7 @@ has_field address => (
     validations => [],
 );
 
-has_field favorite_color => (
+has_field 'favorite_color[]' => (
     type        => 'choice',
     multiple    => 1,
     expanded    => 1,

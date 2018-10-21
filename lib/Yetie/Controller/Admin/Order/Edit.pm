@@ -70,8 +70,7 @@ sub _edit_address {
     return $c->render('admin/order/edit/address') unless $form->do_validate;
 
     # Update address
-    my $address_type = $c->stash('action');
-    $c->service('address')->store( $form->param($address_type) );
+    $c->service('address')->update_address( $form->params->to_hash );
 
     return $c->redirect_to( 'RN_admin_order_details', order_id => $order_id );
 }
@@ -86,16 +85,11 @@ sub _init_form {
     # Set form default value
     my $field_names = $order->$address_type->field_names($region);
     my $params      = $c->req->params;
-    do {
-        my $value = $order->$address_type->$_;
-        $params->append( "$address_type.$_" => "$value" );
-      }
-      for @{$field_names};
-
-    # Collate field keys
-    my @field_keys = map { "$address_type.$_" } @{$field_names};
-    $c->stash( field_names => \@field_keys );
-
+    foreach my $key ( @{$field_names} ) {
+        my $value = $order->$address_type->$key;
+        $params->append( $key => "$value" );
+    }
+    $c->stash( field_names => $field_names );
     return $form;
 }
 

@@ -92,6 +92,10 @@ Yetie::Schema
 
 L<Yetie::Schema> inherits all methods from L<DBIx::Class::Schema>.
 
+=head2 C<connect>
+
+
+
 =head2 C<now>
 
 Return L<DateTime> object.
@@ -106,6 +110,10 @@ Return L<DateTime> object.
 
 This method is alias for L<DBIx::Class::Schema/resultset>.
 But you can use the snake case for C<$source_name>.
+
+=head2 C<sequence>
+
+DEPRECATED
 
 =head2 C<time_zone>
 

@@ -1,6 +1,11 @@
 package Yetie::Schema::ResultSet::Address;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 
+sub find_or_create_address {
+    my ( $self, $data ) = @_;
+    return $self->find_or_create( $data, { key => 'ui_hash' } );
+}
+
 1;
 __END__
 =encoding utf8
@@ -24,6 +29,12 @@ the following new ones.
 
 L<Yetie::Schema::ResultSet::Address> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
 the following new ones.
+
+=head2 C<find_or_create_address>
+
+    my $result = $resultset->find_or_create_address(\%data);
+
+Return L<Yetie::Schema::Result::Address> object.
 
 =head1 AUTHOR
 

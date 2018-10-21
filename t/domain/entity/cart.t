@@ -195,24 +195,17 @@ subtest 'has_shipping_address' => sub {
 subtest 'merge' => sub {
     my $cart        = _create_entity;
     my %stored_data = (
-        email => '',
-        items => [
+        billing_address => {},
+        email           => '',
+        items           => [
             { product_id => 4, quantity => 4, price => 100 },
             { product_id => 1, quantity => 1, price => 100 },
             { product_id => 5, quantity => 5, price => 100 },
         ],
         shipments => [
             {
-                shipping_address => {
-                    country_code => '',
-                    line1        => '',
-                    line2        => '',
-                    city         => '',
-                    state        => '',
-                    postal_code  => '',
-                    phone        => '',
-                },
-                items => []
+                shipping_address => {},
+                items            => []
             }
         ],
     );
@@ -232,33 +225,11 @@ subtest 'merge' => sub {
     my $cart_data = $cart->to_data;
     cmp_deeply $cart_data, $d, 'right non-destructive';
 
-    %d                    = %stored_data;
-    $d                    = \%d;
-    $d->{cart_id}         = '99999';
-    $d->{billing_address} = {
-        hash          => '20f551adf8c892c32845022b874e0763ecf68788',
-        country_code  => '',
-        line1         => '',
-        line2         => '',
-        city          => '',
-        state         => '',
-        postal_code   => '',
-        personal_name => '',
-        organization  => '',
-        phone         => '',
-    };
-    $d->{shipments}->[0]->{shipping_address} = {
-        hash          => '20f551adf8c892c32845022b874e0763ecf68788',
-        country_code  => '',
-        line1         => '',
-        line2         => '',
-        city          => '',
-        state         => '',
-        postal_code   => '',
-        personal_name => '',
-        organization  => '',
-        phone         => '',
-    };
+    %d            = %stored_data;
+    $d            = \%d;
+    $d->{cart_id} = '99999';
+    $d->{billing_address} = { hash => '20f551adf8c892c32845022b874e0763ecf68788', };
+    $d->{shipments}->[0]->{shipping_address} = { hash => '20f551adf8c892c32845022b874e0763ecf68788' };
     my $stored_cart_data = $stored_cart->to_data;
     cmp_deeply $stored_cart_data, $d, 'right stored';
     my $merged_cart      = $cart->merge($stored_cart);
@@ -283,22 +254,22 @@ subtest 'merge' => sub {
 };
 
 subtest 'remove_item' => sub {
-    my $cart = _create_entity;
-    my $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 2, quantity => 1 );
-    my $id   = $item->id;
+    my $cart      = _create_entity;
+    my $item      = Yetie::Domain::Entity::Cart::Item->new( product_id => 2, quantity => 1 );
+    my $hash_code = $item->hash;
 
-    $cart->remove_item($id);
+    $cart->remove_item($hash_code);
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{items},
       [ { product_id => 1, quantity => 1, price => 100 }, { product_id => 3, quantity => 3, price => 100 }, ],
       'right remove item';
 
     # Unremove. not found item.
-    $cart = _create_entity;
-    $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 123, quantity => 1 );
-    $id   = $item->id;
+    $cart      = _create_entity;
+    $item      = Yetie::Domain::Entity::Cart::Item->new( product_id => 123, quantity => 1 );
+    $hash_code = $item->hash;
 
-    $cart->remove_item($id);
+    $cart->remove_item($hash_code);
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{items},
       [
@@ -310,22 +281,22 @@ subtest 'remove_item' => sub {
 };
 
 subtest 'remove_shipping_item' => sub {
-    my $cart = _create_entity;
-    my $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 4 );
-    my $id   = $item->id;
+    my $cart      = _create_entity;
+    my $item      = Yetie::Domain::Entity::Cart::Item->new( product_id => 4 );
+    my $hash_code = $item->hash;
 
-    $cart->remove_shipping_item( 1, $id );
+    $cart->remove_shipping_item( 1, $hash_code );
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [ { product_id => 5, quantity => 5, price => 100 }, { product_id => 6, quantity => 6, price => 100 }, ],
       'right remove shipping item';
 
     # Unremove. not found item.
-    $cart = _create_entity;
-    $item = Yetie::Domain::Entity::Cart::Item->new( product_id => 123 );
-    $id   = $item->id;
+    $cart      = _create_entity;
+    $item      = Yetie::Domain::Entity::Cart::Item->new( product_id => 123 );
+    $hash_code = $item->hash;
 
-    $cart->remove_shipping_item( 1, $id );
+    $cart->remove_shipping_item( 1, $hash_code );
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
@@ -381,16 +352,9 @@ subtest 'set_billing_address' => sub {
         line1        => 'Tokyo',
     );
     my $valid_data = {
-        hash          => ignore(),
-        country_code  => 'jp',
-        city          => '',
-        state         => '',
-        line1         => 'Tokyo',
-        line2         => '',
-        postal_code   => '',
-        personal_name => '',
-        organization  => '',
-        phone         => '',
+        hash         => ignore(),
+        country_code => 'jp',
+        line1        => 'Tokyo',
     };
 
     my $cart = _create_entity;
@@ -416,16 +380,9 @@ subtest 'set_shipping_address' => sub {
         line1        => 'Shimane',
     );
     my $valid_data = {
-        hash          => ignore(),
-        country_code  => 'jp',
-        city          => '',
-        state         => '',
-        line1         => 'Shimane',
-        line2         => '',
-        postal_code   => '',
-        personal_name => '',
-        organization  => '',
-        phone         => '',
+        hash         => ignore(),
+        country_code => 'jp',
+        line1        => 'Shimane',
     };
 
     my $cart = _create_entity;
@@ -476,11 +433,23 @@ subtest 'subtotal' => sub {
 };
 
 subtest 'to_order_data' => sub {
-    my $cart       = _create_entity;
-    my $order_data = { %{ $cart->to_data } };
-    delete $order_data->{cart_id};
-    delete $order_data->{items};
-    cmp_deeply $cart->to_order_data, $order_data, 'right order data';
+    my $cart = _create_entity;
+    cmp_deeply $cart->to_order_data,
+      {
+        billing_address => { id => ignore() },
+        email           => ignore(),
+        orders          => [
+            {
+                items            => ignore(),
+                shipping_address => { id => ignore() },
+            },
+            {
+                items            => ignore(),
+                shipping_address => { id => ignore() },
+            }
+        ],
+      },
+      'right dump order data';
 };
 
 done_testing();

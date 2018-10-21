@@ -13,12 +13,12 @@ my $r = $app->routes->namespaces( ['Yetie::Controller'] );
 $r->get('/good')->to('test#good');
 $r->get('/not_found')->to('test#not_found');
 $r->get('/buged')->to('test#buged');
+$r->get('/construct')->to('test#construct');
 $r->get('/methods')->to('test#methods');
 
 subtest 'Service Layer basic' => sub {
     $t->get_ok('/good')->json_is(
         {
-            is_cached  => 0,
             service    => "Yetie::Service::Test",
             app        => "App",
             controller => "Yetie::Controller::Test",
@@ -27,7 +27,6 @@ subtest 'Service Layer basic' => sub {
     );
     $t->get_ok('/good')->json_is(
         {
-            is_cached  => 1,
             service    => "Yetie::Service::Test",
             app        => "App",
             controller => "Yetie::Controller::Test",
@@ -36,6 +35,7 @@ subtest 'Service Layer basic' => sub {
     );
     $t->get_ok('/not_found')->status_is(500);
     $t->get_ok('/buged')->status_is(500);
+    $t->get_ok('/construct')->status_is(200);
     $t->get_ok('/methods')->status_is(200);
 };
 
@@ -46,14 +46,12 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 use Test::More;
 
 sub good {
-    my $c         = shift;
-    my $is_cached = $c->app->{services}{Test} ? 1 : 0;
-    my $service   = $c->service('test');
-    my $is_weak   = Scalar::Util::isweak $service->{controller} ? 1 : 0;
+    my $c       = shift;
+    my $service = $c->service('test');
+    my $is_weak = Scalar::Util::isweak $service->{controller} ? 1 : 0;
 
     return $c->render(
         json => {
-            is_cached  => $is_cached,
             service    => ref $service,
             app        => ref $service->app,
             controller => ref $service->controller,
@@ -72,6 +70,17 @@ sub buged {
     my $service = $c->service('buged');
 }
 
+sub construct {
+    my $c = shift;
+    my $service = $c->service( 'test', baz => 1, qux => 2 );
+    isa_ok $service, 'Yetie::Service';
+
+    is $service->baz, 1, 'right attribute accesser';
+    is $service->{qux}, 2, 'right attribute';
+
+    return $c->render( json => {} );
+}
+
 sub methods {
     my $c       = shift;
     my $service = $c->service('test');
@@ -79,7 +88,7 @@ sub methods {
     isa_ok $service->schema, 'Yetie::Schema';
     can_ok $service, 'factory';
     can_ok $service, 'service';
-    isa_ok $service->service('test')->controller->server_session, 'Yetie::Session::ServerSession';
+    isa_ok $service->service('test')->controller->server_session, 'Yetie::App::Core::Session::ServerSession';
 
     return $c->render( json => {} );
 }

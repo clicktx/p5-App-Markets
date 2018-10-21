@@ -103,11 +103,9 @@ sub notation {
 
 sub to_data {
     my $self = shift;
+    my $data = $self->SUPER::to_data;
 
-    my $data = {};
-    $data->{$_} = $self->$_ // '' for @{$attrs};
-
-    # Generate hash
+    # Regenerate hash code
     $data->{hash} = $self->hash_code;
     return $data;
 }
@@ -160,7 +158,7 @@ Get form field names.
     # Country Japan
     my $field_names = $address->field_names('jp');
 
-Return Array refference.
+Return Array reference.
 
 Default region "us".
 
@@ -168,7 +166,7 @@ Default region "us".
 
     my $hash_code = $address->hash_code;
 
-Generate unique hash code from address infomation.
+Generate unique hash code from address information.
 
 =head2 C<is_empty>
 

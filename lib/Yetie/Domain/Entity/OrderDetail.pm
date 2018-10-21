@@ -7,7 +7,7 @@ has updated_at       => undef;
 has customer         => sub { __PACKAGE__->factory('entity-customer')->construct() };
 has billing_address  => sub { __PACKAGE__->factory('entity-address')->construct() };
 has shipping_address => sub { __PACKAGE__->factory('entity-address')->construct() };
-has items            => sub { __PACKAGE__->factory('entity-order-items')->construct() };
+has items            => sub { __PACKAGE__->factory('list-order_items')->construct() };
 
 has purchased_on => '';
 has order_status => '';
@@ -36,6 +36,12 @@ the following new ones.
 
 L<Yetie::Domain::Entity::OrderDetail> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<bill_to_name>
+
+=head2 C<ship_to_name>
+
+=head2 C<total_amount>
 
 =head1 AUTHOR
 

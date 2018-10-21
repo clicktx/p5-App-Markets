@@ -9,7 +9,7 @@ use Data::Clone qw();
 
 has 'id';
 
-my @not_dump_data_attrs = (qw/id created_at updated_at/);
+my @not_dump_data_attrs = (qw/created_at updated_at/);
 
 sub clone {
     my $self  = shift;
@@ -29,7 +29,7 @@ sub equal { shift->id eq shift->id ? 1 : 0 }
 
 sub factory { Yetie::Factory->new( $_[1] ) }
 
-sub has_data { return shift->id ? 1 : 0 }
+sub has_id { return shift->id ? 1 : 0 }
 
 sub hash_code {
     my ( $self, $arg ) = @_;
@@ -168,9 +168,9 @@ Return boolean value.
 
 Return Yetie::Factory object.
 
-=head2 C<has_data>
+=head2 C<has_id>
 
-    my $bool = $entity->has_data;
+    my $bool = $entity->has_id;
 
 Return boolean value.
 

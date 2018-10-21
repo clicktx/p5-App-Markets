@@ -130,7 +130,7 @@ Return Value: L<$result|DBIx::Class::Manual::ResultClass> | undef
 
     my $array_ref = $rs->get_ancestors_arrayref($category_id);
 
-Return Array refference.
+Return Array reference.
 
 =head2 C<get_category_choices>
 
@@ -140,7 +140,7 @@ Return Array refference.
     my $tree = $rs->get_category_choices(3);
     my $tree = $rs->get_category_choices( [ 1, 3, 5 ] );
 
-Return Array refference.
+Return Array reference.
 
 =head2 C<has_title>
 

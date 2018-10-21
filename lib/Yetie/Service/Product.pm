@@ -21,7 +21,7 @@ sub duplicate_product {
     my ( $self, $product_id ) = @_;
 
     my $entity = $self->find_product($product_id);
-    return unless $entity->has_data;
+    return unless $entity->has_id;
 
     my $title = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
     my $rs    = $self->resultset('Product');
@@ -29,6 +29,7 @@ sub duplicate_product {
     $entity->title( $title . $i );
 
     my $data = $entity->to_data;
+    delete $data->{id};
     delete $data->{breadcrumbs};
     my $result = $rs->create($data);
 
@@ -119,7 +120,7 @@ the following new ones.
 
 Argument: L<Yetie::Domain::Entity::Page::Product> object.
 
-Return: Array ou Array refference.
+Return: Array or Array reference.
 
 =head2 C<duplicate_product>
 
@@ -142,6 +143,12 @@ Data does include C<breadcrumbs>.
     my $product = $service->find_product($product_id);
 
 Return L<Yetie::Domain::Entity::Page::Product> object.
+
+=head2 C<is_sold>
+
+    my $bool = $servece->is_sold($product_id);
+
+Return boolean value.
 
 =head2 C<new_product>
 

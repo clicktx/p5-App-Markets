@@ -36,6 +36,12 @@ the following new ones.
 L<Yetie::Service::Order> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
+=head2 C<find_order>
+
+    my $order_detail = $servece->find_order($order_id);
+
+Return L<Yetie::Domain::Entity::OrderDetail> object.
+
 =head1 AUTHOR
 
 Yetie authors.

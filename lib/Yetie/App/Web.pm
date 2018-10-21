@@ -51,7 +51,39 @@ sub startup {
     $self->plugin($_) for qw(Yetie::Routes);
 
     # Form Framework
-    $self->plugin('Yetie::Form');
+    $self->plugin('Yetie::App::Core::Form');
 }
 
 1;
+__END__
+=encoding utf8
+
+=head1 NAME
+
+Yetie::App::Web
+
+=head1 SYNOPSIS
+
+
+
+=head1 DESCRIPTION
+
+
+
+=head1 ATTRIBUTES
+
+L<Yetie::App::Web> inherits all attributes from L<Yetie::App::Common> and implements
+the following new ones.
+
+=head1 METHODS
+
+L<Yetie::App::Web> inherits all methods from L<Yetie::App::Common> and implements
+the following new ones.
+
+=head2 C<startup>
+
+=head1 SEE ALSO
+
+L<Yetie::App::Common>
+
+=cut

@@ -54,12 +54,12 @@ sub get_addresses {
         },
         { prefetch => 'customer_addresses' }
     );
-    return $self->factory('entity-addresses')->construct( list => $rs->to_data );
+    return $self->factory('list-addresses')->construct( list => $rs->to_data );
 }
 
-sub get_billing_addresses { shift->get_addresses( shift, 'billing' ) }
+sub get_billing_addresses { shift->get_addresses( shift, 'billing_address' ) }
 
-sub get_shipping_addresses { shift->get_addresses( shift, 'shipping' ) }
+sub get_shipping_addresses { shift->get_addresses( shift, 'shipping_address' ) }
 
 sub load_history {
     my $self = shift;
@@ -81,6 +81,30 @@ sub login_process {
 
     return $self->_logged_in( $customer->id );
 }
+
+sub store_address {
+    my ( $self, $address_type, $address_id ) = @_;
+    my $c = $self->controller;
+
+    my $customer_id     = $c->server_session->customer_id;
+    my $address_type_id = $c->service('address')->get_address_types->get_id_by_name($address_type);
+    return if !$customer_id or !$address_type_id or !$address_id;
+
+    my $result = $c->resultset('Customer::Address')->find_or_new(
+        {
+            customer_id     => $customer_id,
+            address_type_id => $address_type_id,
+            address_id      => $address_id,
+        }
+    );
+    return if $result->in_storage;
+
+    $result->insert;
+}
+
+sub store_billing_address { shift->store_address( 'billing_address', shift ) }
+
+sub store_shipping_address { shift->store_address( 'shipping_address', shift ) }
 
 sub _logged_in {
     my ( $self, $customer_id ) = @_;
@@ -150,16 +174,16 @@ Return L<Yetie::Domain::Entity::Customer> object.
 
     my $addresses = $service->get_addresses( $customer_id, $address_type_name );
 
-Return L<Yetie::Domain::Entity::Addresses> object.
+Return L<Yetie::Domain::List::Addresses> object.
 
 =head2 C<get_billing_addresses>
 
     my $addresses = $service->get_billing_addresses($customer_id);
 
     # Alias method
-    my $addresses = $service->get_addresses( $customer_id, 'billing' );
+    my $addresses = $service->get_addresses( $customer_id, 'billing_address' );
 
-Return L<Yetie::Domain::Entity::Addresses> object.
+Return L<Yetie::Domain::List::Addresses> object.
 See L</get_addresses>
 
 =head2 C<get_shipping_addresses>
@@ -167,9 +191,9 @@ See L</get_addresses>
     my $addresses = $service->get_shipping_addresses($customer_id);
 
     # Alias method
-    my $addresses = $service->get_addresses( $customer_id, 'shipping' );
+    my $addresses = $service->get_addresses( $customer_id, 'shipping_address' );
 
-Return L<Yetie::Domain::Entity::Addresses> object.
+Return L<Yetie::Domain::List::Addresses> object.
 See L</get_addresses>
 
 =head2 C<load_history>
@@ -180,7 +204,28 @@ See L</get_addresses>
 
     my $bool = $service->story->login_process;
 
-Returns true if login succeeded.
+Returns true if log-in succeeded.
+
+=head2 C<store_address>
+
+    $service->store_address('billing_address');
+    $service->store_address('shipping_address');
+
+Store customer address in storage from cart data.
+
+If it is not registered, not logged in, or there is no cart address id, false is returned.
+
+=head2 C<store_billing_address>
+
+    $service->store_billing_address;
+
+See L</store_address>
+
+=head2 C<store_shipping_address>
+
+    $service->store_shipping_address;
+
+See L</store_address>
 
 =head1 AUTHOR
 
