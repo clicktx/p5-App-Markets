@@ -1,10 +1,10 @@
 use Mojo::Base -strict;
 
 use Test::More;
-use Yetie::App::Core::Trigger;
+use Yetie::Addon::Trigger;
 
 # priority
-my $e = Yetie::App::Core::Trigger->new;
+my $e = Yetie::Addon::Trigger->new;
 
 my $custom;
 my $cb = sub { $custom += shift };

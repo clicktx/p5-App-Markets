@@ -1,4 +1,4 @@
-package Yetie::App::Core::EventEmitter;
+package Yetie::Addon::EventEmitter;
 use Mojo::Base 'Mojo::EventEmitter';
 
 use constant DEBUG => $ENV{MOJO_EVENTEMITTER_DEBUG} || 0;
@@ -49,7 +49,7 @@ sub _sort_by_priority {
 
 =head1 NAME
 
-Yetie::App::Core::EventEmitter - Event emitter base class for L<Yetie::Addon::Handler>
+Yetie::Addon::EventEmitter - Event emitter base class for L<Yetie::Addon::Handler>
 
 =head1 SYNOPSIS
 
@@ -61,7 +61,7 @@ There Events will be run in priority order.
 
 =head1 EVENTS
 
-L<Yetie::App::Core::EventEmitter> inherits all events from L<Mojo::EventEmitter> & L<Mojolicious::Plugins>.
+L<Yetie::Addon::EventEmitter> inherits all events from L<Mojo::EventEmitter> & L<Mojolicious::Plugins>.
 
 =head1 ATTRIBUTES
 

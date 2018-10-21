@@ -1,10 +1,10 @@
 use Mojo::Base -strict;
 
 use Test::More;
-use Yetie::App::Core::EventEmitter;
+use Yetie::Addon::EventEmitter;
 
 # Normal event
-my $e = Yetie::App::Core::EventEmitter->new;
+my $e = Yetie::Addon::EventEmitter->new;
 my $called = 0;
 $e->on(
     {
@@ -27,7 +27,7 @@ is $@, "works!\n", 'right error';
 
 # Unhandled error event
 eval { $e->emit( error => 'works' ) };
-like $@, qr/^Yetie::App::Core::EventEmitter: works/, 'right error';
+like $@, qr/^Yetie::Addon::EventEmitter: works/, 'right error';
 
 # has_subscribers
 ok !$e->has_subscribers('foo'), 'no subscribers';
@@ -70,7 +70,7 @@ eval {
 like $@, qr/not support/, 'once, not support';
 
 # Unsubscribe
-$e = Yetie::App::Core::EventEmitter->new;
+$e = Yetie::Addon::EventEmitter->new;
 my $counter;
 my $event = $e->on(
     {

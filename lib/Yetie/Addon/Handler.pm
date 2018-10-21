@@ -1,6 +1,6 @@
 package Yetie::Addon::Handler;
 use Mojo::Base -base;
-use Yetie::App::Core::Trigger;
+use Yetie::Addon::Trigger;
 
 use Mojo::Loader 'load_class';
 use Mojo::Util qw/camelize decamelize/;
@@ -9,7 +9,7 @@ use Mojo::Collection;
 use constant { NAME_SPACE => 'Yetie::Addon' };
 
 has dir     => sub { shift->app->pref('addons_dir') };
-has trigger => sub { Yetie::App::Core::Trigger->new( shift->app ) };
+has trigger => sub { Yetie::Addon::Trigger->new( shift->app ) };
 has [qw/app installed uploaded/];
 
 sub addon {
@@ -198,7 +198,7 @@ the following new ones.
 
     $app->addons->emit_trigger( xxx_trigger_name => $foo, $bar, $baz );
 
-Emit L<Yetie::App::Core::Trigger> events as triggers.
+Emit L<Yetie::Addon::Trigger> events as triggers.
 
 =head2 C<init>
 
@@ -227,6 +227,6 @@ Change add-on status to disable.
 
 =head1 SEE ALSO
 
-L<Yetie::App::Core::Trigger> L<Yetie::Addon::Base>
+L<Yetie::Addon::Trigger> L<Yetie::Addon::Base>
 
 =cut

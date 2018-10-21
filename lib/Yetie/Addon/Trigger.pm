@@ -1,5 +1,5 @@
-package Yetie::App::Core::Trigger;
-use Mojo::Base 'Yetie::App::Core::EventEmitter';
+package Yetie::Addon::Trigger;
+use Mojo::Base 'Yetie::Addon::EventEmitter';
 
 use constant { DEFAULT_PRIORITY => '100', };
 
@@ -48,18 +48,18 @@ sub unsubscribe_triggers {
 
 =head1 NAME
 
-Yetie::App::Core::Trigger - Event for Yetie
+Yetie::Addon::Trigger - Event for Yetie addons
 
 =head1 SYNOPSIS
 
 
 =head1 DESCRIPTION
 
-L<Yetie::App::Core::Trigger> is L<Mojolicious> Based events.
+L<Yetie::Addon::Trigger> is L<Mojolicious> Based events.
 
 =head1 EVENTS
 
-L<Yetie::App::Core::Trigger> inherits all events from L<Mojo::EventEmitter> & L<Yetie::App::Core::EventEmitter>.
+L<Yetie::Addon::Trigger> inherits all events from L<Mojo::EventEmitter> & L<Yetie::Addon::EventEmitter>.
 
 =head1 ATTRIBUTES
 
@@ -76,7 +76,7 @@ Return the application object.
 
 =head1 METHODS
 
-L<Yetie::App::Core::Trigger> inherits all methods from L<Mojolicious::EventEmitter> and implements
+L<Yetie::Addon::Trigger> inherits all methods from L<Mojolicious::EventEmitter> and implements
 the following new ones.
 
 =head2 C<remove_triggers>
@@ -97,6 +97,6 @@ Unsubscribe trigger events.
 
 =head1 SEE ALSO
 
-L<Yetie::App::Core::EventEmitter> L<Mojolicious::Plugins> L<Mojo::EventEmitter>
+L<Yetie::Addon::EventEmitter> L<Mojolicious::Plugins> L<Mojo::EventEmitter>
 
 =cut
