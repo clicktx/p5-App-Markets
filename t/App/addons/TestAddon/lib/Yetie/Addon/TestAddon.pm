@@ -1,5 +1,5 @@
 package Yetie::Addon::TestAddon;
-use Mojo::Base 'Yetie::Addon';
+use Mojo::Base 'Yetie::Addon::Base';
 
 sub register {
     my ( $self, $app, $conf ) = @_;

@@ -88,7 +88,7 @@ sub methods {
     isa_ok $service->schema, 'Yetie::Schema';
     can_ok $service, 'factory';
     can_ok $service, 'service';
-    isa_ok $service->service('test')->controller->server_session, 'Yetie::Session::ServerSession';
+    isa_ok $service->service('test')->controller->server_session, 'Yetie::App::Core::Session::ServerSession';
 
     return $c->render( json => {} );
 }
