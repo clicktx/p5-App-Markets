@@ -403,6 +403,6 @@ Return hash reference. Get a field definition.
 
 =head1 SEE ALSO
 
-L<Yetie::Form>, L<Yetie::Form::Base>, L<Yetie::Form::Field>, L<Yetie::App::Core::Form::TagHelpers>
+L<Yetie::App::Core::Form>, L<Yetie::Form::Base>, L<Yetie::Form::Field>, L<Yetie::App::Core::Form::TagHelpers>
 
 =cut

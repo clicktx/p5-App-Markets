@@ -51,7 +51,7 @@ sub startup {
     $self->plugin($_) for qw(Yetie::Routes);
 
     # Form Framework
-    $self->plugin('Yetie::Form');
+    $self->plugin('Yetie::App::Core::Form');
 }
 
 1;

@@ -149,7 +149,7 @@ subtest 'number' => sub {
 
     # Locale: RU (Russian; русский язык) / FR (French; français)
     $t->app->pref( locale_country => 'RU' );
-    $t->app->plugin('Yetie::Form');
+    $t->app->plugin('Yetie::App::Core::Form');
 
     ( $c, $f, $v ) = new_req();
     $v->input( { foo => '1 000 000,00', bar => '5,5' } );
@@ -159,7 +159,7 @@ subtest 'number' => sub {
 
     # Locale: DE (German, Deutsch)
     $t->app->pref( locale_country => 'DE' );
-    $t->app->plugin('Yetie::Form');
+    $t->app->plugin('Yetie::App::Core::Form');
 
     ( $c, $f, $v ) = new_req();
     $v->input( { foo => '1.000.000,00', bar => '5,5' } );

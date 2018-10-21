@@ -1,4 +1,4 @@
-package Yetie::Form;
+package Yetie::App::Core::Form;
 use Mojo::Base 'Mojolicious::Plugin';
 use Scalar::Util qw(weaken);
 use Yetie::Form::Base;
@@ -94,15 +94,15 @@ __END__
 
 =head1 NAME
 
-Yetie::Form - Form for Yetie
+Yetie::App::Core::Form - Form for Yetie
 
 =head1 SYNOPSIS
 
     # Mojolicious
-    $app->plugin('Yetie::Form');
+    $app->plugin('Yetie::App::Core::Form');
 
     # Mojolicious::Lite
-    plugin 'Yetie::Form';
+    plugin 'Yetie::App::Core::Form';
 
 =head2 Custom Error Messages
 
@@ -147,7 +147,7 @@ Use C<error_message> method.
 
 =head1 HELPERS
 
-L<Yetie::Form> implements the following helpers.
+L<Yetie::App::Core::Form> implements the following helpers.
 
 =head2 C<form>
 
@@ -223,7 +223,7 @@ Can add arbitrary attributes.
 
 =head1 METHODS
 
-L<Yetie::Form> inherits all methods from
+L<Yetie::App::Core::Form> inherits all methods from
 L<Mojolicious::Plugin> and implements the following new ones.
 
 =head2 register

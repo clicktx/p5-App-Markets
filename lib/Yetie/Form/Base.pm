@@ -369,6 +369,6 @@ Alias $controller->validation
 
 =head1 SEE ALSO
 
-L<Yetie::Form>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::App::Core::Form::TagHelpers>
+L<Yetie::App::Core::Form>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::App::Core::Form::TagHelpers>
 
 =cut
