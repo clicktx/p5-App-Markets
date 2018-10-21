@@ -203,6 +203,6 @@ Get / Set error messages.
 
 =head1 SEE ALSO
 
-L<Yetie::Form>, L<Yetie::Form::Base>, L<Yetie::Form::FieldSet>, L<Yetie::Form::TagHelpers>
+L<Yetie::App::Core::Form>, L<Yetie::Form::Base>, L<Yetie::Form::FieldSet>, L<Yetie::App::Core::Form::TagHelpers>
 
 =cut

@@ -6,13 +6,13 @@ use Mojo::Collection 'c';
 use t::Util;
 use Yetie::Form::Field;
 
-use_ok 'Yetie::Form::TagHelpers';
+use_ok 'Yetie::App::Core::Form::TagHelpers';
 
 my $t = Test::Mojo->new('App');
 
 sub init {
     my $c = $t->app->build_controller;
-    my $h = Yetie::Form::TagHelpers->new($c);
+    my $h = Yetie::App::Core::Form::TagHelpers->new($c);
     return ( $c, $h );
 }
 

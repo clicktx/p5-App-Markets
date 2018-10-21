@@ -1,5 +1,5 @@
 package Yetie::Addon::DisableAddon;
-use Mojo::Base 'Yetie::Addon';
+use Mojo::Base 'Yetie::Addon::Base';
 
 use Data::Dumper;
 

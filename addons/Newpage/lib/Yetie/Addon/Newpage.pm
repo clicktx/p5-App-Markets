@@ -1,5 +1,5 @@
 package Yetie::Addon::Newpage;
-use Mojo::Base 'Yetie::Addon';
+use Mojo::Base 'Yetie::Addon::Base';
 use Data::Dumper;
 
 my $class = __PACKAGE__;           # or $class = ref $self;
