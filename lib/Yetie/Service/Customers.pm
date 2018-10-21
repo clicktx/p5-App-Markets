@@ -1,5 +1,5 @@
 package Yetie::Service::Customers;
-use Mojo::Base 'Yetie::Service::Base';
+use Mojo::Base 'Yetie::Service';
 
 sub search_customers {
     my ( $self, $form ) = @_;
@@ -35,12 +35,12 @@ Yetie::Service::Customers
 
 =head1 ATTRIBUTES
 
-L<Yetie::Service::Customers> inherits all attributes from L<Yetie::Service::Base> and implements
+L<Yetie::Service::Customers> inherits all attributes from L<Yetie::Service> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Service::Customers> inherits all methods from L<Yetie::Service::Base> and implements
+L<Yetie::Service::Customers> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
 =head2 C<search_customers>
@@ -55,4 +55,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Service::Base>
+L<Yetie::Service>

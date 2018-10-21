@@ -1,5 +1,5 @@
 package Yetie::Service::Cart;
-use Mojo::Base 'Yetie::Service::Base';
+use Mojo::Base 'Yetie::Service';
 
 sub add_item {
     my ( $self, $form_params ) = @_;
@@ -60,12 +60,12 @@ Yetie::Service::Cart - Application Service Layer
 
 =head1 ATTRIBUTES
 
-L<Yetie::Service::Cart> inherits all attributes from L<Yetie::Service::Base> and implements
+L<Yetie::Service::Cart> inherits all attributes from L<Yetie::Service> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Service::Cart> inherits all methods from L<Yetie::Service::Base> and implements
+L<Yetie::Service::Cart> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
 =head2 C<add_item>
@@ -101,4 +101,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Service::Base>
+L<Yetie::Service>

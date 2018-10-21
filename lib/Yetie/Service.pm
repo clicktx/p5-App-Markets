@@ -1,4 +1,4 @@
-package Yetie::Service::Base;
+package Yetie::Service;
 use Mojo::Base -base;
 use Scalar::Util ();
 use Carp;
@@ -41,7 +41,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Service::Base - Application Service Layer
+Yetie::Service - Application Service Layer
 
 =head1 SYNOPSIS
 
@@ -74,7 +74,7 @@ a L<Mojolicious::Controller> object.
 
 =head1 METHODS
 
-L<Yetie::Service::Base> inherits all methods from L<Mojo::Base> and implements
+L<Yetie::Service> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
 
 =head2 C<factory>

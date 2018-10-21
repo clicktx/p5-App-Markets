@@ -1,5 +1,5 @@
 package Yetie::Service::Customer;
-use Mojo::Base 'Yetie::Service::Base';
+use Mojo::Base 'Yetie::Service';
 use Try::Tiny;
 
 # getアクセスのみ履歴として保存する
@@ -148,12 +148,12 @@ Yetie::Service::Customer
 
 =head1 ATTRIBUTES
 
-L<Yetie::Service::Customer> inherits all attributes from L<Yetie::Service::Base> and implements
+L<Yetie::Service::Customer> inherits all attributes from L<Yetie::Service> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Service::Customer> inherits all methods from L<Yetie::Service::Base> and implements
+L<Yetie::Service::Customer> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
 =head2 C<add_history>
@@ -233,4 +233,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Service::Base>
+L<Yetie::Service>

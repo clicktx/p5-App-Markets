@@ -1,5 +1,5 @@
 package Yetie::Service::Staff;
-use Mojo::Base 'Yetie::Service::Base';
+use Mojo::Base 'Yetie::Service';
 use Carp qw/croak/;
 
 sub find_staff {
@@ -63,12 +63,12 @@ Yetie::Service::Staff
 
 =head1 ATTRIBUTES
 
-L<Yetie::Service::Staff> inherits all attributes from L<Yetie::Service::Base> and implements
+L<Yetie::Service::Staff> inherits all attributes from L<Yetie::Service> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Service::Staff> inherits all methods from L<Yetie::Service::Base> and implements
+L<Yetie::Service::Staff> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
 =head2 C<find_staff>
@@ -90,4 +90,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Service::Base>
+L<Yetie::Service>

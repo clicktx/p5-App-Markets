@@ -1,5 +1,5 @@
 package Yetie::Service::Order;
-use Mojo::Base 'Yetie::Service::Base';
+use Mojo::Base 'Yetie::Service';
 
 sub find_order {
     my ( $self, $order_id ) = @_;
@@ -28,12 +28,12 @@ Yetie::Service::Order
 
 =head1 ATTRIBUTES
 
-L<Yetie::Service::Order> inherits all attributes from L<Yetie::Service::Base> and implements
+L<Yetie::Service::Order> inherits all attributes from L<Yetie::Service> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Service::Order> inherits all methods from L<Yetie::Service::Base> and implements
+L<Yetie::Service::Order> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
 =head2 C<find_order>
@@ -48,4 +48,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Service::Base>
+L<Yetie::Service>

@@ -1,5 +1,5 @@
 package Yetie::Service::CategoryTree;
-use Mojo::Base 'Yetie::Service::Base';
+use Mojo::Base 'Yetie::Service';
 
 sub get_cache { shift->app->cache('category_tree') }
 
@@ -34,12 +34,12 @@ Yetie::Service::CategoryTree
 
 =head1 ATTRIBUTES
 
-L<Yetie::Service::CategoryTree> inherits all attributes from L<Yetie::Service::Base> and implements
+L<Yetie::Service::CategoryTree> inherits all attributes from L<Yetie::Service> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Service::CategoryTree> inherits all methods from L<Yetie::Service::Base> and implements
+L<Yetie::Service::CategoryTree> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
 =head2 C<get_cache>
@@ -65,4 +65,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Service::Base>
+L<Yetie::Service>
