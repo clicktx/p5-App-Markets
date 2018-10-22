@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::Order::Item;
+package Yetie::Domain::Entity::OrderItem;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::SellingItem';
 
 1;
@@ -6,7 +6,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Order::Item
+Yetie::Domain::Entity::OrderItem
 
 =head1 SYNOPSIS
 
@@ -14,12 +14,12 @@ Yetie::Domain::Entity::Order::Item
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Order::Item> inherits all attributes from L<Yetie::Domain::Entity::SellingItem> and implements
+L<Yetie::Domain::Entity::OrderItem> inherits all attributes from L<Yetie::Domain::Entity::SellingItem> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Order::Item> inherits all methods from L<Yetie::Domain::Entity::SellingItem> and implements
+L<Yetie::Domain::Entity::OrderItem> inherits all methods from L<Yetie::Domain::Entity::SellingItem> and implements
 the following new ones.
 
 =head1 AUTHOR

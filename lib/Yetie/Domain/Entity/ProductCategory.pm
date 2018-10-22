@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::Product::Category;
+package Yetie::Domain::Entity::ProductCategory;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has id => sub { shift->category_id };
@@ -19,7 +19,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Product::Category
+Yetie::Domain::Entity::ProductCategory
 
 =head1 SYNOPSIS
 
@@ -27,7 +27,7 @@ Yetie::Domain::Entity::Product::Category
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Product::Category> inherits all attributes from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::ProductCategory> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<id>
@@ -40,7 +40,7 @@ the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Product::Category> inherits all methods from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::ProductCategory> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head1 AUTHOR

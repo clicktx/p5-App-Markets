@@ -6,7 +6,7 @@ sub cook {
 
     # Aggregate product_categories
     my $product_categories = $self->param('product_categories');
-    $self->aggregate_collection( product_categories => 'entity-product-category', $product_categories || [] );
+    $self->aggregate_collection( product_categories => 'entity-product_category', $product_categories || [] );
 
     # Aggregate breadcrumbs
     my $breadcrumbs = $self->param('breadcrumbs');

@@ -15,7 +15,7 @@ sub add_item {
     $form_params->{product_title} = $product->title;
     $form_params->{price}         = $product->price;
 
-    my $item = $self->factory('entity-cart-item')->construct($form_params);
+    my $item = $self->factory('entity-cart_item')->construct($form_params);
     return $self->controller->cart->add_item($item);
 }
 

@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::Preference::Property;
+package Yetie::Domain::Entity::PreferenceProperty;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has [qw/name value default_value title summary position group_id/];
@@ -8,7 +8,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Preference::Property
+Yetie::Domain::Entity::PreferenceProperty
 
 =head1 SYNOPSIS
 
@@ -16,12 +16,12 @@ Yetie::Domain::Entity::Preference::Property
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Preference::Property> inherits all attributes from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::PreferenceProperty> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Preference::Property> inherits all methods from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::PreferenceProperty> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head1 AUTHOR

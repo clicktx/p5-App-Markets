@@ -1,7 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Yetie::Domain::Collection;
-use Yetie::Domain::Entity::Cart::Item;
+use Yetie::Domain::Entity::CartItem;
 use Yetie::Factory;
 
 my $pkg = 'Yetie::Domain::Entity::Shipment';
@@ -48,9 +48,9 @@ subtest 'item_count' => sub {
 subtest 'subtotal' => sub {
     my $shipment = construct( id => 1 );
     $shipment->{items} = Yetie::Domain::Collection->new(
-        Yetie::Domain::Entity::Cart::Item->new( quantity => 1, price => 100 ),
-        Yetie::Domain::Entity::Cart::Item->new( quantity => 2, price => 100 ),
-        Yetie::Domain::Entity::Cart::Item->new( quantity => 3, price => 100 ),
+        Yetie::Domain::Entity::CartItem->new( quantity => 1, price => 100 ),
+        Yetie::Domain::Entity::CartItem->new( quantity => 2, price => 100 ),
+        Yetie::Domain::Entity::CartItem->new( quantity => 3, price => 100 ),
     );
     is $shipment->subtotal, 600, 'right subtotal';
 };

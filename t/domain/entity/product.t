@@ -56,7 +56,7 @@ subtest 'product_categories' => sub {
     my $attr = $e->product_categories;
     isa_ok $attr, 'Yetie::Domain::Collection';
     is @{$attr}, 3, 'right elements';
-    isa_ok $attr->[0], 'Yetie::Domain::Entity::Product::Category';
+    isa_ok $attr->[0], 'Yetie::Domain::Entity::ProductCategory';
 };
 
 done_testing();
