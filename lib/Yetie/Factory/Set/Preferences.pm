@@ -5,7 +5,7 @@ sub cook {
     my $self = shift;
 
     # Aggregate properties
-    $self->aggregate_ixhash( hash_set => 'entity-preference-property', $self->param('hash_set') || [] );
+    $self->aggregate_ixhash( hash_set => 'entity-preference_property', $self->param('hash_set') || [] );
 }
 
 1;

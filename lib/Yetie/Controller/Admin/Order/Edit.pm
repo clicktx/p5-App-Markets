@@ -24,7 +24,7 @@ sub items {
         my $id = $key;
         $id =~ s/\*//g;
         my $values = $params->{$key};
-        $c->resultset('sales-order-item')->search( { id => $id } )->update($values);
+        $c->resultset('Sales::Order::Item')->search( { id => $id } )->update($values);
     }
     return $c->redirect_to( 'RN_admin_order_details', order_id => $order_id );
 }

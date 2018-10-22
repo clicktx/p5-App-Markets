@@ -152,10 +152,8 @@ sub confirm_handler {
 }
 
 sub complete_handler {
-    my $c = shift;
-
+    my $c    = shift;
     my $cart = $c->cart;
-    return $c->redirect_to('RN_cart') unless $cart->total_quantity;
 
     # XXX:未完成 Address正規化
     # set時(set_billing_address,set_shipping_address)に正規化を行う？
