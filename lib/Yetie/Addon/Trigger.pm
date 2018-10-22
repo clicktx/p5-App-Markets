@@ -48,7 +48,7 @@ sub unsubscribe_triggers {
 
 =head1 NAME
 
-Yetie::Addon::Trigger - Event for Yetie addons
+Yetie::Addon::Trigger - Event for Yetie add-ons
 
 =head1 SYNOPSIS
 
