@@ -34,14 +34,14 @@ subtest 'argument items data only' => sub {
             items => [ {} ],
         }
     )->construct();
-    isa_ok $e->items->first, 'Yetie::Domain::Entity::Cart::Item';
+    isa_ok $e->items->first, 'Yetie::Domain::Entity::CartItem';
 };
 
 subtest 'argument shipments data only' => sub {
     my $e = $pkg->new( 'entity-cart', { shipments => [ { items => [ {}, {} ] } ] }, )->construct();
     $e->shipments->first->items->each(
         sub {
-            isa_ok $_, 'Yetie::Domain::Entity::Cart::Item';
+            isa_ok $_, 'Yetie::Domain::Entity::CartItem';
         }
     );
 };

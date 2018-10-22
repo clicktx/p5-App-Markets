@@ -213,7 +213,7 @@ the following new ones.
     $items->each( sub { ... } );
 
 Return L<Yetie::Domain::List::CartItems> object.
-Elements is L<Yetie::Domain::Entity::Cart::Item> object.
+Elements is L<Yetie::Domain::Entity::CartItem> object.
 
 =head2 C<shipments>
 
@@ -353,5 +353,5 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::List::CartItems>, L<Yetie::Domain::Entity::Cart::Item>,
+L<Yetie::Domain::Entity>, L<Yetie::Domain::List::CartItems>, L<Yetie::Domain::Entity::CartItem>,
 L<Yetie::Domain::Entity::Shipment>

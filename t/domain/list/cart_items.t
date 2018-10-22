@@ -14,7 +14,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'append' => sub {
-    my $f = Yetie::Factory->new('entity-cart-item');
+    my $f = Yetie::Factory->new('entity-cart_item');
     my $data = [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 } ];
     my ( $list, $item );
 
