@@ -10,9 +10,8 @@ unique_column name => {
 };
 
 column is_enabled => {
-    data_type     => 'TINYINT',
-    size          => 1,
-    is_nullable   => 1,
+    data_type     => 'BOOLEAN',
+    is_nullable   => 0,
     default_value => 0,
 };
 
