@@ -6,7 +6,7 @@ primary_column id => { data_type => 'INT', };
 
 unique_column name => {
     data_type => 'VARCHAR',
-    size      => 50,
+    size      => 64,
 };
 
 column is_enabled => {
