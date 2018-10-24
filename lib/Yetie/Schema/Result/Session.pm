@@ -19,7 +19,7 @@ column cart_id => {
 };
 
 column expires => {
-    data_type   => 'BIGINT',
+    data_type   => 'INT',
     is_nullable => 0,
 };
 
