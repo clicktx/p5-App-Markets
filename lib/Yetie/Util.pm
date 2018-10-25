@@ -8,7 +8,7 @@ use List::Util qw/reduce/;
 use Session::Token;
 use Mojo::Loader;
 
-our @EXPORT_OK = ( qw(array_to_hash directories generate_token load_class), );
+our @EXPORT_OK = (qw(array_to_hash directories generate_token load_class uuid));
 
 =head1 FUNCTIONS
 
@@ -121,6 +121,43 @@ sub load_class {
         croak ref $e ? "Exception: $e" : "$class not found!";
     }
     1;
+}
+
+=over
+
+=item C<uuid>
+
+Create UUID version 4 token.
+
+    use Yetie::Util qw(uuid);
+    my $token = uuid();
+
+SEE ALSO L<Session::Token/TOKEN-TEMPLATES>
+
+=back
+
+=cut
+
+sub uuid {
+    my $t = _token_template(
+        x => [ 0 .. 9, 'a' .. 'f' ],
+        y => [ 8, 9, 'a', 'b' ],
+    );
+
+    my $uuid = $t->('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx');
+    return uc $uuid;
+}
+
+sub _token_template {
+    my (%m) = @_;
+
+    %m = map { $_ => Session::Token->new( alphabet => $m{$_}, length => 1 ) } keys %m;
+
+    return sub {
+        my $v = shift;
+        $v =~ s/(.)/exists $m{$1} ? $m{$1}->get : $1/eg;
+        return $v;
+    };
 }
 
 1;

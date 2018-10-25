@@ -31,4 +31,10 @@ subtest 'directories' => sub {
     is ref $addons, 'ARRAY', 'loading addons';
 };
 
+subtest 'uuid' => sub {
+    my $uuid = Yetie::Util::uuid();
+    my $r    = qr/[0-9A-F]/;
+    like $uuid, qr/$r{8}\-$r{4}\-4$r{3}\-[89AB]$r{3}\-$r{12}/, 'right UUID';
+};
+
 done_testing();
