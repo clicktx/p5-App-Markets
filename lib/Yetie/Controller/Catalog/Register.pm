@@ -14,7 +14,19 @@ sub index {
     # Create login session
     $c->redirect_to('RN_customer_register_done');
 
-    #Registration – Activate a New Account by Email
+# 1. email checking
+# emailチェック用テーブルにtokenと有効期限をセット
+#   email,token,expires,ip?
+#   同じemailは上書き
+#   登録済みemailが入力されたときの動作。「登録済みです」と表示するのは良くないか？
+#   （登録済みかチェック出来てしまう）
+# emailを送信
+# 2. set password
+
+    # Web サービスにパスワードは必要ない - Frasco
+    # https://frasco.io/your-users-dont-need-a-password-8527a891e224
+
+    # Registration – Activate a New Account by Email
     # Verification Token
     # The VerificationToken Entity
     # Add the enabled Field to User
