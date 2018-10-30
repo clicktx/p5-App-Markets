@@ -88,7 +88,7 @@ sub add_catalog_routes {
     my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
 
     # Route Examples
-    $r->get('/')->to('example#welcome')->name('RN_top');
+    $r->get('/')->to('example#welcome')->name('RN_home');
     $r->any('/login-example')->to('login_example#index');
 
     # Cart

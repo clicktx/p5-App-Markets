@@ -1,7 +1,7 @@
 header
 <ul>
     <li><%= link_to 'Dashboard' => 'RN_admin_dashboard' %></li>
-    <li><%= link_to 'Catalog' => 'RN_top' %></li>
+    <li><%= link_to 'Catalog' => 'RN_home' %></li>
     <li><%= link_to 'Logout' => 'RN_admin_logout' %></li>
 </ul>
 <hr>
