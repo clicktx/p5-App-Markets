@@ -117,6 +117,8 @@ sub add_catalog_routes {
     $register->get('/done')->to('#done')->name('RN_customer_register_done');
 
     $r->any('/login')->to('account#login')->name('RN_customer_login');
+    $r->any('/login/email')->to('account#login_email')->name('RN_customer_login_email');
+    $r->any('/login/password')->to('account#login_password')->name('RN_customer_login_password');
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
     {
         # Authorization required
