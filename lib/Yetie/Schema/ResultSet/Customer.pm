@@ -26,6 +26,15 @@ sub get_id_by_email {
     return $customer ? $customer->id : undef;
 }
 
+sub last_loged_in_now {
+    my ( $self, $customer_id ) = @_;
+
+    my $result = $self->find($customer_id);
+    return unless $result;
+
+    $result->update( { last_logged_in_at => \'NOW()' } );
+}
+
 sub search_by_email {
     my ( $self, $email ) = @_;
 
@@ -92,6 +101,12 @@ the following new ones.
 =head2 C<get_id_by_email>
 
     my $customer_id = $self->get_id_by_email($email);
+
+=head2 C<last_loged_in_now>
+
+    $resultset->last_loged_in_now($customer_id);
+
+Update C<last_logged_in_at>.
 
 =head2 C<search_by_email>
 
