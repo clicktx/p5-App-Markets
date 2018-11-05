@@ -9,7 +9,7 @@ primary_column id => {
 
 column address => {
     data_type   => 'VARCHAR',
-    size        => 64,
+    size        => 320,
     is_nullable => 0,
 };
 
