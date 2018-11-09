@@ -88,7 +88,7 @@ sub add_catalog_routes {
     my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
 
     # Route Examples
-    $r->get('/')->to('example#welcome')->name('RN_top');
+    $r->get('/')->to('example#welcome')->name('RN_home');
     $r->any('/login-example')->to('login_example#index');
 
     # Cart
@@ -117,6 +117,8 @@ sub add_catalog_routes {
     $register->get('/done')->to('#done')->name('RN_customer_register_done');
 
     $r->any('/login')->to('account#login')->name('RN_customer_login');
+    $r->any('/login/email')->to('account#login_email')->name('RN_customer_login_email');
+    $r->any('/login/password')->to('account#login_password')->name('RN_customer_login_password');
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
     {
         # Authorization required

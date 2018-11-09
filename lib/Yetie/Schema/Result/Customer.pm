@@ -19,6 +19,12 @@ column updated_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
+column last_logged_in_at => {
+    data_type   => 'DATETIME',
+    is_nullable => 1,
+    timezone    => Yetie::Schema->TZ,
+};
+
 # Relation
 might_have
   customer_password => 'Yetie::Schema::Result::Customer::Password',

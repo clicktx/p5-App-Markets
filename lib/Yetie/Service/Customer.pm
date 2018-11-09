@@ -122,6 +122,11 @@ sub _logged_in {
     # Regenerate sid and set cart id
     $session->create( { cart_id => $customer_id } );
     $session->cart->data( $merged_cart->to_data );
+
+    # NOTE: ログインログに記録する方が良い？
+    # Update last login date
+    $self->resultset('Customer')->last_loged_in_now($customer_id);
+
     return 1;
 }
 

@@ -7,9 +7,10 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
+# NOTE: Column that use index have a max key length is 767 bytes.
 column address => {
     data_type   => 'VARCHAR',
-    size        => 64,
+    size        => 128,
     is_nullable => 0,
 };
 

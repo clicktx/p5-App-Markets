@@ -1,4 +1,4 @@
-package Yetie::Form::FieldSet::Catalog::Register;
+package Yetie::Form::FieldSet::Register;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 
