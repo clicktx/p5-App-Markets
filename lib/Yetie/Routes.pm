@@ -112,9 +112,9 @@ sub add_catalog_routes {
     $guest_checkout->any('/shipping-address')->to('#shipping_address')->name('RN_guest_checkout_shipping_address');
 
     # For Customers
-    my $register = $r->any('/register')->to( controller => 'register' );
-    $register->any('/')->to('#index')->name('RN_customer_register');
-    $register->get('/done')->to('#done')->name('RN_customer_register_done');
+    my $signup = $r->any('/signup')->to( controller => 'signup' );
+    $signup->any('/')->to('#index')->name('RN_customer_signup');
+    $signup->get('/done')->to('#done')->name('RN_customer_signup_done');
 
     $r->any('/login')->to('account#login')->name('RN_customer_login');
     $r->any('/login/email')->to('account#login_email')->name('RN_customer_login_email');

@@ -1,18 +1,14 @@
-package Yetie::Controller::Catalog::Register;
+package Yetie::Controller::Catalog::Signup;
 use Mojo::Base 'Yetie::Controller::Catalog';
 
 sub index {
     my $c = shift;
 
-    my $form = $c->form('register');
+    my $form = $c->form('signup');
     return $c->render() unless $form->has_data;
 
     # Validation form
     return $c->render() unless $form->do_validate;
-
-    # Registration customer data
-    # Create login session
-    $c->redirect_to('RN_customer_register_done');
 
 # 1. email checking
 # emailチェック用テーブルにtokenと有効期限をセット
@@ -38,6 +34,10 @@ sub index {
     # RegistrationController Processing the Registration Confirmation
     # Adding Account Activation Checking to the Login Process
     # CustomAuthenticationFailureHandler:
+
+    # Registration customer data
+    # Create login session
+    $c->redirect_to('RN_customer_signup_done');
 }
 
 sub done {

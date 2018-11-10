@@ -21,5 +21,5 @@
 </p>
 
 <p>
-    New Customer? <%= link_to 'Create Your Account' => 'RN_customer_register' %>
+    New Customer? <%= link_to 'Create Your Account' => 'RN_customer_signup' %>
 </p>

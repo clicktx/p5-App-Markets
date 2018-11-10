@@ -1,4 +1,4 @@
-package t::pages::register;
+package t::pages::signup;
 
 use Mojo::Base 't::pages::common';
 use t::Util;
@@ -15,10 +15,10 @@ sub t01_register_form : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $t->get_ok('/register')->status_is( 200, 'right registration form page' );
+    $t->get_ok('/signup')->status_is( 200, 'right registration form page' );
 
     my $post_data = { csrf_token => $self->csrf_token };
-    $t->post_ok( '/register', form => $post_data )->status_is( 200, 'right form validate error' );
+    $t->post_ok( '/signup', form => $post_data )->status_is( 200, 'right form validate error' );
 
     $post_data = {
         csrf_token     => $self->csrf_token,
@@ -26,7 +26,7 @@ sub t01_register_form : Tests() {
         password       => '12345678',
         password_again => '12345678',
     };
-    $t->post_ok( '/register', form => $post_data )->status_is( 302, 'right form validated' );
+    $t->post_ok( '/signup', form => $post_data )->status_is( 302, 'right form validated' );
 }
 
 __PACKAGE__->runtests;
