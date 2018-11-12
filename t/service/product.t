@@ -26,8 +26,8 @@ subtest 'duplicate_product' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
 
-    my $last_id = $app->schema->resultset('Product')->search( {}, { order_by => { -desc => 'id' } } )->first->id;
-    my $orig = $app->schema->resultset('Product')->find(1);
+    my $last_id = $app->schema->resultset('Product')->last_id;
+    my $orig    = $app->schema->resultset('Product')->find(1);
 
     my $product = $service->duplicate_product(1);
     is $product->id, $last_id + 1, 'right id';
@@ -58,7 +58,7 @@ subtest 'new_product' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
 
-    my $last_id = $app->schema->resultset('Product')->search( {}, { order_by => { -desc => 'id' } } )->first->id;
+    my $last_id = $app->schema->resultset('Product')->last_id;
     my $product = $service->new_product;
     is $product->id, $last_id + 1, 'right create new product';
 };
