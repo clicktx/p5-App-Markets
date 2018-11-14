@@ -22,6 +22,11 @@ subtest 'last_id' => sub {
     $rs->create( { name => 'foo' } );
     $last_id = $rs->last_id;
     is $last_id, 1, 'right last id';
+
+    $last_id = $rs->last_id( { name => 'foo' } );
+    is $last_id, 1, 'right last id';
+    $last_id = $rs->last_id( { name => 'bar' } );
+    is $last_id, undef, 'right no data';
 };
 
 subtest 'to_array' => sub {

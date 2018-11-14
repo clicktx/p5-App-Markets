@@ -30,7 +30,9 @@ sub each {
 
 sub last_id {
     my $self = shift;
-    my $result = $self->search( {}, { order_by => 'id DESC' } )->slice( 0, 0 )->first;
+    my $cond = shift || {};
+
+    my $result = $self->search( $cond, { order_by => 'id DESC' } )->slice( 0, 0 )->first;
     return defined $result ? $result->id : undef;
 }
 
@@ -95,6 +97,8 @@ the following new ones.
 =head2 C<last_id>
 
     my $last_id = $rs->last_id;
+
+    my $last_id = $rs->last_id( { foo => 'bar' } );
 
 Return last id of undef.
 
