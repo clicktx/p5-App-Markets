@@ -25,15 +25,21 @@ column request_ip => {
     is_nullable => 0,
 };
 
-column activated_at => {
-    data_type   => 'DATETIME',
-    is_nullable => 1,
-    timezone    => Yetie::Schema->TZ,
+column is_activated => {
+    data_type     => 'BOOLEAN',
+    is_nullable   => 0,
+    default_value => 0,
 };
 
 column expires => {
     data_type   => 'INT',
     is_nullable => 0,
+};
+
+column created_at => {
+    data_type   => 'DATETIME',
+    is_nullable => 0,
+    timezone    => Yetie::Schema->TZ,
 };
 
 # Index
