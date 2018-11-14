@@ -10,6 +10,15 @@ sub index {
     # Validation form
     return $c->render() unless $form->do_validate;
 
+    my $email = $form->param('email');
+    my $token = $c->service('account')->create_token($email);
+
+    # NOTE: 登録済みならurlをloginにする。またメールの内容も変える。
+    my $url = $c->url_for( 'RN_callback_customer_signup', token => $token );
+
+    $c->flash( callback_url => $url->to_abs );
+    $c->redirect_to('RN_customer_signup_email_sended');
+
 # 1. email checking
 # emailチェック用テーブルにtokenと有効期限をセット
 #   email,token,expires,ip?
@@ -37,7 +46,21 @@ sub index {
 
     # Registration customer data
     # Create login session
-    $c->redirect_to('RN_customer_signup_done');
+}
+
+sub email_sended {
+    my $c = shift;
+    return $c->render();
+}
+
+sub callback {
+    my $c = shift;
+
+    use DDP;
+    p $c->stash('token');
+    die;
+
+    return $c->redirect_to('RN_customer_signup_done');
 }
 
 sub done {
