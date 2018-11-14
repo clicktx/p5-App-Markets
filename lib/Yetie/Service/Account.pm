@@ -10,7 +10,7 @@ sub create_token {
 
     # Request IP
     # NOTE: 'X-Real-IP', 'X-Forwarded-For'はどうする？
-    my $request_ip = $self->controller->tx->remote_address || 'none';
+    my $request_ip = $self->controller->tx->remote_address || 'unknown';
 
     # Expires
     my $expires = $self->factory('value-expires')->construct();
