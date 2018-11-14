@@ -11,7 +11,7 @@ sub index {
     return $c->render() unless $form->do_validate;
 
     my $email = $form->param('email');
-    my $token = $c->service('account')->create_token($email);
+    my $token = $c->service('account')->generate_token($email);
 
     # NOTE: 登録済みならurlをloginにする。またメールの内容も変える。
     my $url = $c->url_for( 'RN_callback_customer_signup', token => $token );
@@ -56,8 +56,11 @@ sub email_sended {
 sub callback {
     my $c = shift;
 
+    my $token     = $c->stash('token');
+    my $is_verify = $c->service('account')->verify_token($token);
+
     use DDP;
-    p $c->stash('token');
+    p $token;
     die;
 
     return $c->redirect_to('RN_customer_signup_done');

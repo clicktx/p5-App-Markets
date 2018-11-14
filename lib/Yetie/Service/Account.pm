@@ -2,7 +2,7 @@ package Yetie::Service::Account;
 use Mojo::Base 'Yetie::Service';
 use Yetie::Util qw(uuid);
 
-sub create_token {
+sub generate_token {
     my ( $self, $email ) = @_;
 
     # Token
@@ -48,9 +48,9 @@ the following new ones.
 L<Yetie::Service::Account> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
-=head2 C<create_token>
+=head2 C<generate_token>
 
-    my token = $servece->create_token($email);
+    my token = $servece->generate_token($email);
 
 Create one-time token and store it in the DB.
 
