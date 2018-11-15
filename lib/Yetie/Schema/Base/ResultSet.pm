@@ -37,8 +37,11 @@ sub last_id {
 }
 
 sub limit {
-    my ( $self, $limit ) = @_;
-    $self->slice( 0, $limit - 1 );
+    my $self = shift;
+
+    my ( $offset, $limit ) = @_ > 1 ? ( shift, shift ) : ( 0, shift );
+    my $last = $offset + $limit - 1;
+    $self->slice( $offset, $last );
 }
 
 sub to_array {
@@ -109,7 +112,13 @@ Return last id of undef.
 
 =head2 C<limit>
 
+MySQL like limit and offset.
+
+    # select one row
     my $resultset = $rs->search( {} )->limit(1);
+
+    # offset 5, and limit 10
+    my $resultset = $rs->search( {} )->limit( 5, 10 );
 
 Return L<DBIx::Class::ResultSet> object.
 
