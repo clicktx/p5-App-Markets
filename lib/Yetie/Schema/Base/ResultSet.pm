@@ -36,6 +36,11 @@ sub last_id {
     return defined $result ? $result->id : undef;
 }
 
+sub limit {
+    my ( $self, $limit ) = @_;
+    $self->slice( 0, $limit - 1 );
+}
+
 sub to_array {
     my $self    = shift;
     my @columns = $self->result_class->choose_column_name(@_);
@@ -101,6 +106,12 @@ the following new ones.
     my $last_id = $rs->last_id( { foo => 'bar' } );
 
 Return last id of undef.
+
+=head2 C<limit>
+
+    my $resultset = $rs->search( {} )->limit(1);
+
+Return L<DBIx::Class::ResultSet> object.
 
 =head2 C<to_array>
 

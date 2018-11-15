@@ -29,6 +29,13 @@ subtest 'last_id' => sub {
     is $last_id, undef, 'right no data';
 };
 
+subtest 'limit' => sub {
+    my $rs = $schema->resultset('Sales');
+
+    my $res = $rs->search( {} )->limit(1);
+    is $res->count, 1, 'right limit';
+};
+
 subtest 'to_array' => sub {
     my $rs = $schema->resultset('Sales::Order::Item');
 
