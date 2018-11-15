@@ -14,8 +14,7 @@ sub index {
     my $token = $c->service('account')->generate_token($email);
 
     # NOTE: 登録済みならurlをloginにする。またメールの内容も変える。
-    my $url = $c->url_for( 'RN_callback_customer_signup', token => $token );
-
+    my $url = $c->url_for( 'RN_callback_customer_signup', email => $email, token => $token );
     $c->flash( callback_url => $url->to_abs );
     $c->redirect_to('RN_customer_signup_email_sended');
 
@@ -56,12 +55,16 @@ sub email_sended {
 sub callback {
     my $c = shift;
 
-    my $token     = $c->stash('token');
-    my $is_verify = $c->service('account')->verify_token($token);
+    my $email  = $c->stash('email');
+    my $token  = $c->stash('token');
+    my $verify = $c->service('account')->verify_token($token);
 
     use DDP;
+    p $email;
     p $token;
-    die;
+    p $verify;
+    # die $email ? 'ok' : 'ng';
+    die 'die';
 
     return $c->redirect_to('RN_customer_signup_done');
 }
