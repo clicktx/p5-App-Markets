@@ -9,7 +9,7 @@ my $app = $t->app;
 
 sub _init {
     my $controller = $app->build_controller;
-    my $service    = $controller->service('account');
+    my $service    = $controller->service('authorization_request');
     return ( $controller, $service );
 }
 
