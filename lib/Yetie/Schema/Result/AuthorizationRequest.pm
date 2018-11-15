@@ -45,4 +45,9 @@ column created_at => {
 # Index
 unique_constraint ui_token => [qw/token/];
 
+sub sqlt_deploy_hook {
+    my ( $self, $table ) = @_;
+    $table->add_index( name => 'idx_email', fields => ['email'] );
+}
+
 1;
