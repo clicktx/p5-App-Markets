@@ -42,6 +42,12 @@ column created_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
+column updated_at => {
+    data_type   => 'DATETIME',
+    is_nullable => 0,
+    timezone    => Yetie::Schema->TZ,
+};
+
 # Index
 unique_constraint ui_token => [qw/token/];
 
