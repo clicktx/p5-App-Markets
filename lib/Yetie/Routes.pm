@@ -112,16 +112,18 @@ sub add_catalog_routes {
     $guest_checkout->any('/shipping-address')->to('#shipping_address')->name('RN_guest_checkout_shipping_address');
 
     # For Customers
-    my $signup = $r->any('/signup')->to( controller => 'signup' );
-    $signup->any('/')->to('#index')->name('RN_customer_signup');
-    $signup->get('/email-sended')->to('#email_sended')->name('RN_customer_signup_email_sended');
-    $signup->get('/done')->to('#done')->name('RN_customer_signup_done');
-    $signup->get('/callback/#email/:token')->to('#callback')->name('RN_callback_customer_signup');
-
     $r->any('/login')->to('account#login')->name('RN_customer_login');
     $r->any('/login/email')->to('account#login_email')->name('RN_customer_login_email');
     $r->any('/login/password')->to('account#login_password')->name('RN_customer_login_password');
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
+    {
+        # Sign-up
+        my $signup = $r->any('/signup')->to( controller => 'signup' );
+        $signup->any('/')->to('#index')->name('RN_customer_signup');
+        $signup->get('/email-sended')->to('#email_sended')->name('RN_customer_signup_email_sended');
+        $signup->get('/done')->to('#done')->name('RN_customer_signup_done');
+        $signup->get('/callback/:token')->to('#callback')->name('RN_callback_customer_signup');
+    }
     {
         # Authorization required
         my $account = $r->under('/account')->to('account#authorize')->name('RN_customer_bridge');
