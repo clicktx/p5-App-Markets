@@ -23,4 +23,32 @@ subtest 'generate_token' => sub {
     isnt $last_id, $rs->last_id, 'right store to DB';
 };
 
+subtest 'validate_token' => sub {
+    my ( $c, $s ) = _init();
+
+    my $res;
+    my $rs     = $c->resultset('AuthorizationRequest');
+    my $email  = 'foo@bar.baz';
+    my $token1 = $s->generate_token($email);
+
+    # hack expired
+    my $expires = time - 3600;
+    $rs->find( { token => $token1 } )->update( { expires => $expires } );
+    $res = $s->validate_token($token1);
+    ok !$res, 'right expired';
+
+    my $token2 = $s->generate_token($email);
+    my $token3 = $s->generate_token($email);
+    $res = $s->validate_token('tokenfoobarbaz');
+    ok !$res, 'right not found token';
+
+    $res = $s->validate_token($token2);
+    ok !$res, 'right not last request';
+
+    $res = $s->validate_token($token3);
+    ok $res, 'right first validation';
+    $res = $s->validate_token($token3);
+    ok !$res, 'right second validation';
+};
+
 done_testing();
