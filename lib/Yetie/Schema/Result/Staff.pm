@@ -26,7 +26,7 @@ column updated_at => {
 };
 
 # Index
-unique_constraint staffs_ui_login_id => [qw/login_id/];
+unique_constraint ui_login_id => [qw/login_id/];
 
 # Relation
 has_one

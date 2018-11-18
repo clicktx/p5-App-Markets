@@ -22,6 +22,22 @@ subtest 'last_id' => sub {
     $rs->create( { name => 'foo' } );
     $last_id = $rs->last_id;
     is $last_id, 1, 'right last id';
+
+    $last_id = $rs->last_id( { name => 'foo' } );
+    is $last_id, 1, 'right last id';
+    $last_id = $rs->last_id( { name => 'bar' } );
+    is $last_id, undef, 'right no data';
+};
+
+subtest 'limit' => sub {
+    my $rs = $schema->resultset('Sales');
+
+    my $res = $rs->search( {} )->limit(1);
+    is $res->count, 1, 'right limit 1';
+
+    $res = $rs->search( {} )->limit( 2, 3 );
+    is $res->count, 3, 'right limit 3';
+    is $res->first->id, 3, 'right offset first';
 };
 
 subtest 'to_array' => sub {

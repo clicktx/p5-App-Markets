@@ -153,9 +153,9 @@ Return Boolean value.
 
 =head2 C<update_category>
 
-    $service->update_category( $entity, \@option );
+    $rs->update_category( $entity, \@option );
 
-    $service->update_category( $entity, [ 'column_foo', 'colmun_bar' ] );
+    $rs->update_category( $entity, [ 'column_foo', 'colmun_bar' ] );
 
 Update category using entity data.
 Add a column to be updated with the second argument.

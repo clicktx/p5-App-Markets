@@ -17,7 +17,7 @@
 </ol>
 
 <%= link_to 'Login' => 'RN_customer_login', class => 'btn btn-primary' %>
-<%= link_to 'Register' => 'RN_customer_register', class => 'btn btn-primary' %>
+<%= link_to 'Register' => 'RN_customer_signup', class => 'btn btn-primary' %>
 
 <hr>
 OR
