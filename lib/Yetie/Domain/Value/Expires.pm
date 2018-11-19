@@ -1,7 +1,7 @@
 package Yetie::Domain::Value::Expires;
 use Yetie::Domain::Base 'Yetie::Domain::Value';
 
-our $default_expiration = 600;
+our $default_expires_delta = 600;
 
 sub is_expired {
     my $self = shift;
@@ -14,7 +14,7 @@ sub is_expired {
 sub new {
     my $class = shift;
 
-    my $expires = time + $default_expiration;
+    my $expires = time + $default_expires_delta;
     push @_, ( value => $expires ) unless @_;
     return $class->SUPER::new(@_);
 }
