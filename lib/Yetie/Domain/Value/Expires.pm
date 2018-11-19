@@ -1,7 +1,7 @@
 package Yetie::Domain::Value::Expires;
 use Yetie::Domain::Base 'Yetie::Domain::Value';
 
-our $default_expiration = 3600;
+our $default_expiration = 600;
 
 sub is_expired {
     my $self = shift;
@@ -30,9 +30,10 @@ Yetie::Domain::Value::Expires
 
 =head1 DESCRIPTION
 
-    # default time + 3600
+    # UTC +600 second
     my $expires = Yetie::Domain::Value::Expires->new;
 
+    # Set $utc
     my $expires = Yetie::Domain::Value::Expires->new($utc);
 
 =head1 ATTRIBUTES
