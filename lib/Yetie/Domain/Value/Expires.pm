@@ -13,10 +13,14 @@ sub is_expired {
 
 sub new {
     my $class = shift;
+    my $arg = shift // '';
 
-    my $expires = time + $default_expires_delta;
-    push @_, ( value => $expires ) unless @_;
-    return $class->SUPER::new(@_);
+    # +expires_delta
+    $arg =~ /(\A\+)(\d+)/;
+    $arg = time + $2 if $1;
+
+    my $expires = $arg ? $arg : time + $default_expires_delta;
+    return $class->SUPER::new( value => $expires );
 }
 
 1;
@@ -32,6 +36,9 @@ Yetie::Domain::Value::Expires
 
     # UTC +600 second
     my $expires = Yetie::Domain::Value::Expires->new;
+
+    # Expires delta
+    my $expires = Yetie::Domain::Value::Expires->new('+3600');
 
     # Set $utc
     my $expires = Yetie::Domain::Value::Expires->new($utc);
