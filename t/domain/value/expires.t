@@ -8,10 +8,10 @@ subtest 'basic' => sub {
     my $v = $pkg->new();
     is $v->value, time + 600, 'right default construct';
 
-    $v = $pkg->new('+3600');
+    $v = $pkg->new( expires_delta => 3600 );
     is $v->value, time + 3600, 'right construct with delta';
 
-    $v = $pkg->new(111);
+    $v = $pkg->new( { value => 111 } );
     is $v->value, 111, 'right construct with arguments';
 };
 
@@ -19,11 +19,11 @@ subtest 'is_expired' => sub {
     my $time    = time;
     my $expires = $time + 600;
 
-    my $v = $pkg->new($expires);
+    my $v = $pkg->new( value => $expires );
     is $v->is_expired, 0, 'right not expired';
 
     $expires = $time - 600;
-    $v       = $pkg->new($expires);
+    $v = $pkg->new( value => $expires );
     is $v->is_expired, 1, 'right expired';
 };
 

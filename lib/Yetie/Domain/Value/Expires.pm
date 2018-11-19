@@ -6,20 +6,17 @@ our $default_expires_delta = 600;
 sub is_expired {
     my $self = shift;
 
-    my $expires = $self->value;
-    my $now     = time;
+    my $expires = $self->value // 0;
+    my $now = time;
     return $expires - $now < 0 ? 1 : 0;
 }
 
 sub new {
     my $class = shift;
-    my $arg = shift // '';
+    my $args = @_ ? @_ > 1 ? {@_} : $_[0] : {};
 
-    # +expires_delta
-    $arg =~ /(\A\+)(\d+)/;
-    $arg = time + $2 if $1;
-
-    my $expires = $arg ? $arg : time + $default_expires_delta;
+    my $expires_delta = $args->{expires_delta} // $default_expires_delta;
+    my $expires       = $args->{value}         // time + $expires_delta;
     return $class->SUPER::new( value => $expires );
 }
 
@@ -38,10 +35,10 @@ Yetie::Domain::Value::Expires
     my $expires = Yetie::Domain::Value::Expires->new;
 
     # Expires delta
-    my $expires = Yetie::Domain::Value::Expires->new('+3600');
+    my $expires = Yetie::Domain::Value::Expires->new( expires_delta => 3600 );
 
     # Set $utc
-    my $expires = Yetie::Domain::Value::Expires->new($utc);
+    my $expires = Yetie::Domain::Value::Expires->new( value => $utc );
 
 =head1 ATTRIBUTES
 
