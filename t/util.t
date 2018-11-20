@@ -36,10 +36,10 @@ subtest 'hashids' => sub {
     isa_ok $h, 'Hashids';
 
     my $id = $h->encode(12345);
-    is $id , 'EQLRKX', 'right encode';
+    is $id , 'JWYWZ4', 'right encode';
     is $h->decode($id), 12345, 'right decode';
 
-    my $id2 = Yetie::Util::hashids('the salt')->encode(12345);
+    my $id2 = Yetie::Util::hashids('EEB37B41-3DED-40EC-A058-19FA4F4F98D1')->encode(12345);
     isnt $id, $id2, 'right use salt';
 };
 

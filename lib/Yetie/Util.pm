@@ -120,8 +120,9 @@ SEE ALSO L<Hashids>
 =cut
 
 sub hashids {
+    my $salt = Mojo::Util::md5( shift // '' );
     return Hashids->new(
-        salt => shift // '',
+        salt          => $salt,
         alphabet      => 'ABCDEFGHJKLMNQRSTWXYZ123456789',
         minHashLength => 6
     );
