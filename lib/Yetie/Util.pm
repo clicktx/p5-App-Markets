@@ -1,12 +1,13 @@
 package Yetie::Util;
 use Mojo::Base -strict;
 
-use Exporter 'import';
 use Carp qw(croak);
+use Exporter 'import';
 use File::Find::Rule;
+use Hashids;
 use List::Util qw/reduce/;
-use Session::Token;
 use Mojo::Loader;
+use Session::Token;
 
 our @EXPORT_OK = (qw(array_to_hash directories generate_token load_class uuid));
 
@@ -97,6 +98,34 @@ SEE ALSO L<Session::Token>
 =cut
 
 sub generate_token { Session::Token->new(@_)->get }
+
+=over
+
+=item C<hashids>
+
+Generate short unique ids.
+
+    use Yetie::Util qw(hashids);
+    my $hashids = hashids($salt);
+
+    my $hash = $hashids->encode(123);
+
+    # 123
+    my $int  = $hashids->decode($hash);
+
+SEE ALSO L<Hashids>
+
+=back
+
+=cut
+
+sub hashids {
+    return Hashids->new(
+        salt => shift // '',
+        alphabet      => 'ABCDEFGHJKLMNQRSTWXYZ123456789',
+        minHashLength => 6
+    );
+}
 
 =over
 
