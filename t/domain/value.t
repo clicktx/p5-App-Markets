@@ -13,9 +13,6 @@ subtest 'basic' => sub {
 
     $v = $pkg->new( { value => 'bar' } );
     is $v->value, 'bar', 'right hash refference argument';
-
-    $v = $pkg->new('baz');
-    is $v->value, 'baz', 'right scalar argument';
 };
 
 subtest 'operators' => sub {

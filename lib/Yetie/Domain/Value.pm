@@ -5,12 +5,12 @@ use overload
   q("")    => sub { shift->value },
   fallback => 1;
 
-has 'value';
+has value => '';
 
 sub new {
     my $class = shift;
 
-    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : { value => $_[0] // '' };
+    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
     return $class->SUPER::new($args);
 }
 
@@ -27,8 +27,6 @@ Yetie::Domain::Value
 =head1 SYNOPSIS
 
     my $vo = Yetie::Domain::Value->new( value => 'foo' );
-
-    my $vo = Yetie::Domain::Value->new('foo');
 
 =head1 DESCRIPTION
 
