@@ -9,9 +9,22 @@ my $app = $t->app;
 
 sub _init {
     my $controller = $app->build_controller;
-    my $service    = $controller->service('authorization_request');
+    my $service    = $controller->service('authorization');
     return ( $controller, $service );
 }
+
+my ( $c, $s ) = _init();
+my $token = $s->generate_token('foo@example.org');
+
+my $obj = $s->validate($token);
+isa_ok $obj, 'Yetie::Domain::Entity::Authorization', 'right validate';
+
+$obj = $s->validate('foobar');
+is $obj, undef, 'right not found token';
+
+use DDP;
+p $obj;
+# die '';
 
 subtest 'generate_token' => sub {
     my ( $c, $s ) = _init();

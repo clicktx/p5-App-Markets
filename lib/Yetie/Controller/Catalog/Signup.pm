@@ -11,10 +11,11 @@ sub index {
     return $c->render() unless $form->do_validate;
 
     my $email = $form->param('email');
-    my $token = $c->service('authorization_request')->generate_token($email);
+    my $token = $c->service('authorization')->generate_token($email);
 
     # NOTE: 登録済みならurlをloginにする。またメールの内容も変える。
-    my $url = $c->url_for( 'RN_callback_customer_signup', email => $email, token => $token );
+    my $url = $c->url_for( 'RN_callback_customer_signup', token => $token )->query( redirect => 'RN_customer_home' );
+
     $c->flash( callback_url => $url->to_abs );
     $c->redirect_to('RN_customer_signup_email_sended');
 
@@ -55,14 +56,23 @@ sub email_sended {
 sub callback {
     my $c = shift;
 
-    my $email = $c->stash('email');
     my $token = $c->stash('token');
-    my $bool  = $c->service('authorization_request')->is_verify( $email, $token );
+
+    my $service = $c->service('authorization');
+
+    # my $authorization = $service->create($token);
+
+    my $authorization = $c->service('authorization')->validate($token);
+
+    # my $is_verify = $c->service('authorization')->validate_token($token);
+    # trueならアカウント作成 & ログイン & requestを使用済みに
+    # return $c->render( template => 'error', title => 'Bad Request' ) unless $is_verify;
+    return $c->render( template => 'error', title => 'Bad Request' ) unless $authorization;
 
     use DDP;
-    p $email;
     p $token;
-    p $bool;
+    p $authorization;
+    p $authorization->email;    # 登録用
 
     # die $email ? 'ok' : 'ng';
     die 'die';
