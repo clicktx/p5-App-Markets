@@ -125,8 +125,8 @@ subtest 'to_data method' => sub {
             a => 1,
             h => $pkg->new( a => 1, b => 2 ),
         ),
-        url => Mojo::URL->new,                     # has not "to_data" method.
-        v   => Yetie::Domain::Value->new('foo'),
+        url => Mojo::URL->new,                                # has not "to_data" method.
+        v   => Yetie::Domain::Value->new( value => 'foo' ),
     );
 
     cmp_deeply $e->to_data,
