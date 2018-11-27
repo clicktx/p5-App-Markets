@@ -7,6 +7,13 @@ use overload
 
 has value => '';
 
+sub equal {
+    my ( $self, $arg ) = @_;
+
+    my $value = ref $arg ? $arg->value : $arg;
+    return $self->value eq $value ? 1 : 0;
+}
+
 sub new {
     my $class = shift;
 
@@ -52,6 +59,14 @@ The value can not be set.This object is immutable.
 
 L<Yetie::Domain::Value> inherits all methods from L<Yetie::Domain::Base> and implements
 the following new ones.
+
+=head2 C<equal>
+
+Compare strings.
+
+    my $bool = $obj->equal($string);
+
+Return boolean value.
 
 =head2 C<to_data>
 
