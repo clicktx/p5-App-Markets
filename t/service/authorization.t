@@ -13,19 +13,6 @@ sub _init {
     return ( $controller, $service );
 }
 
-my ( $c, $s ) = _init();
-my $token = $s->generate_token('foo@example.org');
-
-my $obj = $s->validate($token);
-isa_ok $obj, 'Yetie::Domain::Entity::Authorization', 'right validate';
-
-$obj = $s->validate('foobar');
-is $obj, undef, 'right not found token';
-
-use DDP;
-p $obj;
-# die '';
-
 subtest 'generate_token' => sub {
     my ( $c, $s ) = _init();
     my $rs      = $c->resultset('AuthorizationRequest');
@@ -36,7 +23,22 @@ subtest 'generate_token' => sub {
     isnt $last_id, $rs->last_id, 'right store to DB';
 };
 
-subtest 'validate_token' => sub {
+subtest 'find' => sub {
+    my ( $c, $s ) = _init();
+
+    my $rs    = $c->resultset('AuthorizationRequest');
+    my $email = 'foo@bar.baz';
+    my $token = $s->generate_token($email);
+
+    my $auth = $s->find($token);
+    ok $auth, 'right find token';
+
+    $auth = $s->find('foobar');
+    ok !$auth, 'right not found token';
+    like $c->logging->history->[-1]->[2], qr/Not found token/, 'right logging';
+};
+
+subtest 'validate' => sub {
     my ( $c, $s ) = _init();
 
     my $res;
@@ -44,23 +46,31 @@ subtest 'validate_token' => sub {
     my $email  = 'foo@bar.baz';
     my $token1 = $s->generate_token($email);
 
-    # hack expired
+    # Hack expired
     my $expires = time - 3600;
     $rs->find( { token => $token1 } )->update( { expires => $expires } );
-    $res = $s->validate_token($token1);
+    my $auth = $s->find($token1);
+    $res = $s->validate($auth);
     ok !$res, 'right expired';
+
+    # Hack email
+    $auth->email( $s->factory('value-email')->construct( value => 'a@b.com' ) );
+    $res = $s->validate($auth);
+    ok !$res, 'right not found last request';
+    like $c->logging->history->[-1]->[2], qr/Not found last request/, 'right logging';
 
     my $token2 = $s->generate_token($email);
     my $token3 = $s->generate_token($email);
-    $res = $s->validate_token('tokenfoobarbaz');
-    ok !$res, 'right not found token';
-
-    $res = $s->validate_token($token2);
+    $auth = $s->find($token2);
+    $res  = $s->validate($auth);
     ok !$res, 'right not last request';
 
-    $res = $s->validate_token($token3);
+    $auth = $s->find($token3);
+    $res  = $s->validate($auth);
     ok $res, 'right first validation';
-    $res = $s->validate_token($token3);
+
+    $auth = $s->find($token3);
+    $res  = $s->validate($auth);
     ok !$res, 'right second validation';
 };
 

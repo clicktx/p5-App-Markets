@@ -14,7 +14,7 @@ sub generate_token {
     );
 
     # Store to DB
-    my $result = $self->resultset('AuthorizationRequest')->create(
+    $self->resultset('AuthorizationRequest')->create(
         {
             email      => $email,
             token      => $authorization->token,
@@ -25,59 +25,35 @@ sub generate_token {
     return $authorization->token;
 }
 
-# NOTE: アクセス制限が必要？同一IP、時間内回数制限
-# email sha1を引数にして判定を追加する？
-sub validate_token {
+sub find {
     my ( $self, $token ) = @_;
 
     my $rs = $self->resultset('AuthorizationRequest');
+    my $result = $rs->find( { token => $token } ) || return $self->_logging('Not found token');
+    return $self->factory('entity-authorization')->construct( $result->to_hash );
+}
 
-    my $request = $rs->find( { token => $token } );
-    return $self->_logging('Not found') unless $request;
+# NOTE: アクセス制限が必要？同一IP、時間内回数制限
+# email sha1を引数にして判定を追加する？
+sub validate {
+    my ( $self, $authorization ) = @_;
 
-    # Is last request?
-    my $email        = $request->email;
-    my $last_request = $rs->find_last_by_email($email);
-    return $self->_logging('Not last request') if $token ne $last_request->token;
+    # last request
+    my $rs          = $self->resultset('AuthorizationRequest');
+    my $last_result = $rs->find_last_by_email( $authorization->email );
+    return $self->_logging('Not found last request') unless $last_result;
 
-    # activated
-    return $self->_logging('Activated') if $request->is_activated;
+    # validate token
+    return $self->_logging( $authorization->error_message ) unless $authorization->is_validated( $last_result->token );
 
-    # expired
-    my $expires = $self->factory('value-expires')->construct( value => $request->expires );
-    return $self->_logging('Expired') if $expires->is_expired;
-
-    # Token activated
-    $request->update( { is_activated => 1 } );
-
-    # All passed
+    # passed
+    $last_result->update( { is_activated => 1 } );
+    $authorization = $authorization->new( $last_result->to_hash );
     return 1;
 }
 
-sub validate {
-    my ( $self, $token ) = @_;
-
-    my $rs = $self->resultset('AuthorizationRequest');
-    my $result = $rs->find( { token => $token } );
-    return $self->_logging('Not found token') unless $result;
-
-    # last request
-    my $last_result = $rs->find_last_by_email( $result->email );
-    return $self->_logging('Not found last request') unless $last_result;
-
-    my $factory      = $self->factory('entity-authorization');
-    my $passwordless = $factory->construct( $result->to_hash );
-
-    # validate token
-    return $self->logging( $passwordless->error_message ) unless $passwordless->is_validated( $last_result->token );
-
-    # Token activated
-    $result->update( { is_activated => 1 } );
-    return $factory->construct( $result->to_hash );
-}
-
 sub _logging {
-    shift->app->log->info( 'Failed to authorization request: ' . shift );
+    shift->logging_warn( 'Failed to authorization request: ' . shift );
     return;
 }
 
@@ -110,9 +86,15 @@ Create one-time token and store it in the DB.
 
 Return token string.
 
-=head2 C<validate_token>
+=head2 C<find>
 
-    my $bool = $service->validate_token($token);
+    my $authorization = $service->find($token);
+
+Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
+
+=head2 C<validate>
+
+    my $bool = $service->validate($authorization);
 
 Return boolean value.
 
