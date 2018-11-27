@@ -25,7 +25,7 @@ sub clone {
     return $clone;
 }
 
-sub equal { shift->id eq shift->id ? 1 : 0 }
+sub equals { shift->id eq shift->id ? 1 : 0 }
 
 sub factory { Yetie::Factory->new( $_[1] ) }
 
@@ -156,9 +156,9 @@ the following new ones.
 
 Return object.
 
-=head2 C<equal>
+=head2 C<equals>
 
-    my $bool = $entity->equal($other_entity);
+    my $bool = $entity->equals($other_entity);
 
 Return boolean value.
 

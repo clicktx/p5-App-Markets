@@ -21,15 +21,15 @@ subtest 'operators' => sub {
     is "$v", 'foo', 'right stringify';
 };
 
-subtest 'equal' => sub {
+subtest 'equals' => sub {
     my $v  = $pkg->new( value => 'foo' );
     my $v2 = $pkg->new( value => 'foo' );
-    is $v->equal($v2), 1, 'right object';
-    is $v->equal('foo'), 1, 'right string';
+    is $v->equals($v2), 1, 'right object';
+    is $v->equals('foo'), 1, 'right string';
 
     my $v3 = $pkg->new( value => 'bar' );
-    is $v->equal($v3), 0, 'right object';
-    is $v->equal('bar'), 0, 'right string';
+    is $v->equals($v3), 0, 'right object';
+    is $v->equals('bar'), 0, 'right string';
 };
 
 subtest 'to_data' => sub {

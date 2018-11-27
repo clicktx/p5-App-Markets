@@ -57,7 +57,7 @@ has _locale_notation => sub {
 
 sub empty_hash_code { shift->hash_code('empty') }
 
-sub equal {
+sub equals {
     my ( $self, $address ) = @_;
     return $self->hash_code eq $address->hash_code ? 1 : 0;
 }
@@ -141,9 +141,9 @@ the following new ones.
 
 All data empty L</hash_code>.
 
-=head2 C<equal>
+=head2 C<equals>
 
-    my $bool = $address->equal($other_address);
+    my $bool = $address->equals($other_address);
 
 Compare L</hash_code>.
 
