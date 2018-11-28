@@ -1,12 +1,12 @@
 package Yetie::Domain::Entity::CategoryTree;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
-has level     => 0;
-has root_id   => 0;
-has title     => '';
-has children  => sub { Yetie::Domain::Collection->new };
+has level    => 0;
+has root_id  => 0;
+has title    => '';
+has children => sub { __PACKAGE__->factory('list-category_trees')->construct() };
 
-sub has_child { @{ shift->children } ? 1 : 0 }
+sub has_child { shift->children->count ? 1 : 0 }
 
 1;
 __END__
@@ -32,7 +32,7 @@ the following new ones.
 
 =head2 C<children>
 
-Return L<Yetie::Domain::Collection> object.
+Return L<Yetie::Domain::List::CategoryTrees> object.
 
 =head1 METHODS
 

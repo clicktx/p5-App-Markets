@@ -4,7 +4,7 @@
 <h1><%= title %></h1>
 
 <ul>
-% $entity->each( sub {
+% $entity->customer_list->each( sub {
     <li>
         <%= $_->id %>
         <%= link_to 'Edit' => 'RN_admin_customer_detail' => { customer_id => $_->id } %>
