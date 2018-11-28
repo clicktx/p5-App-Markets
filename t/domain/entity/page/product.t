@@ -45,9 +45,9 @@ subtest 'breadcrumbs' => sub {
     my $e = _create_entity();
 
     my $attr = $e->breadcrumbs;
-    isa_ok $attr, 'Yetie::Domain::Collection';
-    is @{$attr}, 5, 'right elements';
-    isa_ok $attr->[0], 'Yetie::Domain::Entity::Breadcrumb';
+    isa_ok $attr, 'Yetie::Domain::List::Breadcrumbs';
+    is $attr->list->size, 5, 'right elements';
+    isa_ok $attr->first, 'Yetie::Domain::Entity::Breadcrumb';
 };
 
 subtest 'product_categories' => sub {
