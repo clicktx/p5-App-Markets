@@ -26,12 +26,15 @@ belongs_to
   email => 'Yetie::Schema::Result::Email',
   { 'foreign.id' => 'self.email_id' };
 
+# Index
+unique_constraint ui_email_id => [qw/email_id/];
+
 sub to_data {
     my $self = shift;
 
     return {
-        value       => $self->email->address,
-        is_primary  => $self->is_primary,
+        value      => $self->email->address,
+        is_primary => $self->is_primary,
     };
 }
 
