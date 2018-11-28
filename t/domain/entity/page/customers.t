@@ -11,11 +11,4 @@ subtest 'basic' => sub {
     isa_ok $e->customer_list, 'Yetie::Domain::Collection';
 };
 
-subtest 'each' => sub {
-    my $e = $pkg->new( customer_list => c( 1, 2, 3 ) );
-    my @array;
-    $e->each( sub { push @array, $_ } );
-    is_deeply \@array, [ 1, 2, 3 ], 'right each method';
-};
-
 done_testing();
