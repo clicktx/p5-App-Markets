@@ -4,9 +4,8 @@ use Mojo::Base 'Yetie::Factory';
 sub cook {
     my $self = shift;
 
-    # Aggregate product_categories
-    my $product_categories = $self->param('product_categories');
-    $self->aggregate_collection( product_categories => 'entity-product_category', $product_categories || [] );
+    # product_categories
+    $self->aggregate( product_categories => 'list-product_categories', $self->param('product_categories') || [] );
 
     # breadcrumbs
     $self->aggregate( breadcrumbs => 'list-breadcrumbs', $self->param('breadcrumbs') || [] );
