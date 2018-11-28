@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::Page::Customers;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
-has customer_list => sub { Yetie::Domain::Collection->new };
+has customer_list => sub { __PACKAGE__->factory('list-customers')->construct() };
 
 1;
 __END__
@@ -23,7 +23,7 @@ the following new ones.
 
     my $collection = $entity->customer_list;
 
-Return L<Yetie::Domain::Collection> object.
+Return L<Yetie::Domain::List::Customers> object.
 
 =head1 METHODS
 
