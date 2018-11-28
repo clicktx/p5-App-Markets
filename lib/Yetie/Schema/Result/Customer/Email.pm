@@ -32,7 +32,6 @@ sub to_data {
     return {
         value       => $self->email->address,
         is_primary  => $self->is_primary,
-        is_verified => $self->email->is_verified,
     };
 }
 
