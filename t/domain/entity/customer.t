@@ -11,7 +11,7 @@ subtest 'basic' => sub {
 
     is $customer->id,           1;
     isa_ok $customer->password, 'Yetie::Domain::Value::Password';
-    isa_ok $customer->emails,   'Yetie::Domain::Collection';
+    isa_ok $customer->emails,   'Yetie::Domain::List::Emails';
 };
 
 subtest 'is_registered' => sub {
