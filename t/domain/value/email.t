@@ -6,13 +6,11 @@ use_ok $pkg;
 
 subtest 'basic' => sub {
     my $v = $pkg->new(
-        value       => 'a@b.c',
-        is_primary  => 0,
-        is_verified => 0,
+        value      => 'a@b.c',
+        is_primary => 0,
     );
-    is $v->value,       'a@b.c', 'right value';
-    is $v->is_primary,  0,       'right primary';
-    is $v->is_verified, 0,       'right verified';
+    is $v->value,      'a@b.c', 'right value';
+    is $v->is_primary, 0,       'right primary';
 };
 
 done_testing();

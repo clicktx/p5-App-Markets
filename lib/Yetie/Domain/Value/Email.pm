@@ -2,7 +2,6 @@ package Yetie::Domain::Value::Email;
 use Yetie::Domain::Base 'Yetie::Domain::Value';
 
 has is_primary  => 0;
-has is_verified => 0;
 
 1;
 __END__
@@ -21,10 +20,6 @@ L<Yetie::Domain::Value::Email> inherits all attributes from L<Yetie::Domain::Val
 the following new ones.
 
 =head2 C<is_primary>
-
-Return boolean.
-
-=head2 C<is_verified>
 
 Return boolean.
 
