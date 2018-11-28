@@ -17,7 +17,7 @@ subtest 'basic' => sub {
     can_ok $e, 'pager';
     can_ok $e, 'form';
 
-    isa_ok $e->breadcrumbs, 'Yetie::Domain::Collection';
+    isa_ok $e->breadcrumbs, 'Yetie::Domain::List::Breadcrumbs';
     isa_ok $e->pager,       'Data::Page';
     isa_ok $e->form,        'Yetie::Form::Base';
 };

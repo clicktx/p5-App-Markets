@@ -8,7 +8,7 @@ has meta_description => '';
 has meta_keywords    => '';
 has meta_robots      => '';
 has page_title       => '';
-has breadcrumbs      => sub { Yetie::Domain::Collection->new };
+has breadcrumbs      => sub { __PACKAGE__->factory('list-breadcrumbs')->construct() };
 has form             => sub { Yetie::Form::Base->new };
 has pager            => sub { Data::Page->new };
 
@@ -45,7 +45,7 @@ the following new ones.
 
     $page->breadcrumbs->each( sub { ... } );
 
-has L<Yetie::Domain::Entity::Link> object in L<Yetie::Domain::Collection> object.
+Return L<Yetie::Domain::List::Breadcrumbs> object.
 
 =head2 C<form_params>
 
