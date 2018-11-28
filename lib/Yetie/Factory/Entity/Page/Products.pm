@@ -4,8 +4,8 @@ use Mojo::Base 'Yetie::Factory';
 sub cook {
     my $self = shift;
 
-    my $product_list = $self->param('product_list');
-    $self->aggregate_collection( product_list => 'entity-page-product', $product_list || [] );
+    # products
+    $self->aggregate( product_list => 'list-products', $self->param('product_list') || [] );
 }
 
 1;

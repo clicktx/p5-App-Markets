@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::Page::Products;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
-has product_list => sub { Yetie::Domain::Collection->new };
+has product_list => sub { __PACKAGE__->factory('list-products')->construct() };
 
 1;
 __END__
@@ -23,7 +23,7 @@ the following new ones.
 
     my $collection = $products->product_list;
 
-Return L<Yetie::Domain::Collection> object.
+Return L<Yetie::Domain::List::Products> object.
 
 =head1 METHODS
 
