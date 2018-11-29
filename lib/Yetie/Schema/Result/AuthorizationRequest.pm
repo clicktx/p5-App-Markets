@@ -44,7 +44,7 @@ column created_at => {
 
 column updated_at => {
     data_type   => 'DATETIME',
-    is_nullable => 0,
+    is_nullable => 1,
     timezone    => Yetie::Schema->TZ,
 };
 

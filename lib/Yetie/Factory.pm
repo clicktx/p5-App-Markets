@@ -16,6 +16,8 @@ has domain_class => sub {
 
 sub aggregate {
     my ( $self, $accessor, $domain, $arg ) = @_;
+    return unless defined $arg;
+
     my $data = $self->_convert_data( $domain, $arg );
     croak 'Data type is not Hash refference' if ref $data ne 'HASH';
 

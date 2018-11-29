@@ -1,14 +1,15 @@
 package Yetie::Domain::Entity::Customer;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
-use Yetie::Domain::Value::Password;
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
 has created_at => undef;
 has updated_at => undef;
 has password   => sub { __PACKAGE__->factory('value-password')->construct() };
-has emails     => sub { Yetie::Domain::Collection->new };
+has emails     => sub { __PACKAGE__->factory('list-emails')->construct() };
 
-sub is_registered { shift->password->value ? 1 : 0 }
+sub has_password { shift->password->value ? 1 : 0 }
+
+sub is_registered { shift->id ? 1 : 0 }
 
 1;
 __END__
@@ -54,6 +55,12 @@ Return L<Yetie::Domain::Value::Password> object.
 
 L<Yetie::Domain::Entity::Customer> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<has_password>
+
+    my $bool = $customer->has_password;
+
+Returns true if a password has been set.
 
 =head2 C<is_registered>
 

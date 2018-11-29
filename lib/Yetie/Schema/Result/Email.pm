@@ -14,12 +14,6 @@ column address => {
     is_nullable => 0,
 };
 
-column is_verified => {
-    data_type     => 'BOOLEAN',
-    is_nullable   => 0,
-    default_value => 0,
-};
-
 unique_constraint ui_address => [qw/address/];
 
 might_have

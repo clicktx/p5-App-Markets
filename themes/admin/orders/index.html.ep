@@ -4,7 +4,7 @@
 <h1><%= title %></h1>
 
 <ul>
-% $entity->each( sub {
+% $entity->order_list->each( sub {
     % my $order_summary = shift;
     <li>
         [

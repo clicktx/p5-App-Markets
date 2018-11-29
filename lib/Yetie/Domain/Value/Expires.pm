@@ -1,22 +1,23 @@
 package Yetie::Domain::Value::Expires;
 use Yetie::Domain::Base 'Yetie::Domain::Value';
 
-our $default_expiration = 3600;
+our $default_expires_delta = 600;
 
 sub is_expired {
     my $self = shift;
 
-    my $expires = $self->value;
-    my $now     = time;
+    my $expires = $self->value // 0;
+    my $now = time;
     return $expires - $now < 0 ? 1 : 0;
 }
 
 sub new {
     my $class = shift;
+    my $args = @_ ? @_ > 1 ? {@_} : $_[0] : {};
 
-    my $expires = time + $default_expiration;
-    push @_, ( value => $expires ) unless @_;
-    return $class->SUPER::new(@_);
+    my $expires_delta = $args->{expires_delta} // $default_expires_delta;
+    my $expires       = $args->{value}         // time + $expires_delta;
+    return $class->SUPER::new( value => $expires );
 }
 
 1;
@@ -30,10 +31,14 @@ Yetie::Domain::Value::Expires
 
 =head1 DESCRIPTION
 
-    # default time + 3600
+    # UTC +600 second
     my $expires = Yetie::Domain::Value::Expires->new;
 
-    my $expires = Yetie::Domain::Value::Expires->new($utc);
+    # Expires delta
+    my $expires = Yetie::Domain::Value::Expires->new( expires_delta => 3600 );
+
+    # Set $utc
+    my $expires = Yetie::Domain::Value::Expires->new( value => $utc );
 
 =head1 ATTRIBUTES
 

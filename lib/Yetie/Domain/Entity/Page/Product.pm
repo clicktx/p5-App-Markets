@@ -6,7 +6,7 @@ has description        => '';
 has price              => 0;
 has created_at         => undef;
 has updated_at         => undef;
-has product_categories => sub { Yetie::Domain::Collection->new };
+has product_categories => sub { __PACKAGE__->factory('list-product_categories')->construct() };
 
 1;
 __END__
@@ -32,7 +32,7 @@ the following new ones.
 
 =head2 C<product_categories>
 
-Return L<Yetie::Domain::Collection> object.
+Return L<Yetie::Domain::List::ProductCategories> object.
 
 =head2 C<created_at>
 

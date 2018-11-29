@@ -65,7 +65,7 @@ sub merge {
         $clone->items->each(
             sub {
                 my ( $e, $num ) = @_;
-                if ( $e->equal($item) ) {
+                if ( $e->equals($item) ) {
                     $item->quantity( $e->quantity + $item->quantity );
                     my $i = $num - 1;
                     splice @{ $clone->items->list }, $i, 1;
@@ -121,7 +121,7 @@ sub revert {
 sub set_billing_address {
     my ( $self, $address ) = @_;
     croak 'Argument is missing.' unless $address;
-    return if $self->billing_address->equal($address);
+    return if $self->billing_address->equals($address);
 
     $self->billing_address($address);
 }
@@ -141,7 +141,7 @@ sub set_shipping_address {
         my $address  = $addresses->{$index};
         my $shipment = $self->shipments->get($index);
 
-        next if $shipment->shipping_address->equal($address);
+        next if $shipment->shipping_address->equals($address);
         $shipment->shipping_address($address);
         $cnt++;
     }

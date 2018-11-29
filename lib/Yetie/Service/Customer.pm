@@ -32,6 +32,11 @@ sub add_history {
     $c->server_session->data( history => $history );
 }
 
+sub create_new_customer {
+    my ( $self, $email ) = @_;
+    return $self->resultset('Customer')->create_new_customer($email);
+}
+
 sub find_customer {
     my ( $self, $email ) = @_;
 
@@ -67,6 +72,30 @@ sub load_history {
     $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
+sub logged_in {
+    my ( $self, $customer_id ) = @_;
+    my $session = $self->controller->server_session;
+
+    # Double login
+    return 1 if $session->customer_id;
+
+    # Set customer id (logedin flag)
+    $session->customer_id($customer_id);
+
+    # Merge cart
+    my $merged_cart = $self->service('cart')->merge_cart($customer_id);
+
+    # Regenerate sid and set cart id
+    $session->create( { cart_id => $customer_id } );
+    $session->cart->data( $merged_cart->to_data );
+
+    # NOTE: ログインログに記録する方が良い？
+    # Update last login date
+    $self->resultset('Customer')->last_loged_in_now($customer_id);
+
+    return 1;
+}
+
 sub login_process {
     my ( $self, $email, $raw_password ) = @_;
 
@@ -79,7 +108,7 @@ sub login_process {
     return $self->_login_failed( 'login.failed.password', email => $email )
       unless $customer->password->is_verify($raw_password);
 
-    return $self->_logged_in( $customer->id );
+    return $self->logged_in( $customer->id );
 }
 
 sub store_address {
@@ -105,30 +134,6 @@ sub store_address {
 sub store_billing_address { shift->store_address( 'billing_address', shift ) }
 
 sub store_shipping_address { shift->store_address( 'shipping_address', shift ) }
-
-sub _logged_in {
-    my ( $self, $customer_id ) = @_;
-    my $session = $self->controller->server_session;
-
-    # Double login
-    return 1 if $session->customer_id;
-
-    # Set customer id (logedin flag)
-    $session->customer_id($customer_id);
-
-    # Merge cart
-    my $merged_cart = $self->service('cart')->merge_cart($customer_id);
-
-    # Regenerate sid and set cart id
-    $session->create( { cart_id => $customer_id } );
-    $session->cart->data( $merged_cart->to_data );
-
-    # NOTE: ログインログに記録する方が良い？
-    # Update last login date
-    $self->resultset('Customer')->last_loged_in_now($customer_id);
-
-    return 1;
-}
 
 # NOTE: logging 未完成
 sub _login_failed {
@@ -169,6 +174,14 @@ the following new ones.
     Add history current URL for server session.
     Unsave list setting in L<Yetie::Routes>.
 
+=head2 C<create_new_customer>
+
+    Create new customer.
+
+    my $customer_id = $service->create_new_customer($email);
+
+Return customer ID(integer)
+
 =head2 C<find_customer>
 
     my $entity = $service->find_customer($email);
@@ -204,6 +217,14 @@ See L</get_addresses>
 =head2 C<load_history>
 
     my $history = $c->service('customer')->load_history;
+
+=head2 C<logged_in>
+
+Set customer logged-in flag to server_session.
+
+    my $bool = $service->logged_in($customer_id);
+
+Return boolean value.
 
 =head2 C<login_process>
 

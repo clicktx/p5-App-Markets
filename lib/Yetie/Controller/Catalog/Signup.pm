@@ -11,10 +11,11 @@ sub index {
     return $c->render() unless $form->do_validate;
 
     my $email = $form->param('email');
-    my $token = $c->service('authorization_request')->generate_token($email);
+    my $token = $c->service('authorization')->generate_token($email);
 
     # NOTE: 登録済みならurlをloginにする。またメールの内容も変える。
-    my $url = $c->url_for( 'RN_callback_customer_signup', email => $email, token => $token );
+    my $url = $c->url_for( 'RN_callback_customer_signup', token => $token )->query( redirect => 'RN_customer_home' );
+
     $c->flash( callback_url => $url->to_abs );
     $c->redirect_to('RN_customer_signup_email_sended');
 
@@ -52,22 +53,40 @@ sub email_sended {
     return $c->render();
 }
 
+# Create account, login, and disable token after validate.
 sub callback {
-    my $c = shift;
-
-    my $email = $c->stash('email');
+    my $c     = shift;
     my $token = $c->stash('token');
-    my $bool  = $c->service('authorization_request')->is_verify( $email, $token );
 
-    use DDP;
-    p $email;
-    p $token;
-    p $bool;
+    my $auth_service  = $c->service('authorization');
+    my $authorization = $auth_service->find($token);
+    return $c->_callback_error() unless $authorization;
 
-    # die $email ? 'ok' : 'ng';
-    die 'die';
+    my $is_validated = $auth_service->validate($authorization);
+    return $c->_callback_error() unless $is_validated;
 
+    # Validated
+    my $email            = $authorization->email;
+    my $customer_service = $c->service('customer');
+
+    # 登録済みのemailの場合は不正なリクエスト
+    my $customer = $customer_service->find_customer( $email->value );
+    return $c->_callback_error() if $customer->is_registered;
+
+    # Create customer
+    my $customer_id = $customer_service->create_new_customer($email);
+
+    # Logged-in
+    $c->service('customer')->logged_in($customer_id);
     return $c->redirect_to('RN_customer_signup_done');
+}
+
+sub _callback_error {
+    my $c = shift;
+    $c->reply->error(
+        title         => $c->__('authorization.request.error.title'),
+        error_message => $c->__('authorization.request.error.message')
+    );
 }
 
 sub done {

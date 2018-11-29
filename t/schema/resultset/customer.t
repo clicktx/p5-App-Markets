@@ -10,6 +10,13 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('Customer');
 
+subtest 'create_new_customer' => sub {
+    my $last_id = $rs->last_id;
+
+    my $customer_id = $rs->create_new_customer('new_customer@example.com');
+    is $customer_id, $last_id + 1, 'right create new customer';
+};
+
 subtest 'find_by_id' => sub {
     my $res = $rs->find_by_id(111);
     cmp_deeply $res->{related_resultsets},

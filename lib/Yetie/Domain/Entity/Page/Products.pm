@@ -1,9 +1,7 @@
 package Yetie::Domain::Entity::Page::Products;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
-has product_list => sub { Yetie::Domain::Collection->new };
-
-sub each { shift->product_list->each(@_) }
+has product_list => sub { __PACKAGE__->factory('list-products')->construct() };
 
 1;
 __END__
@@ -25,19 +23,12 @@ the following new ones.
 
     my $collection = $products->product_list;
 
-Return L<Yetie::Domain::Collection> object.
+Return L<Yetie::Domain::List::Products> object.
 
 =head1 METHODS
 
 L<Yetie::Domain::Entity::Page::Products> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
 the following new ones.
-
-=head2 C<each>
-
-    $products->each(...);
-
-    # Longer version
-    $products->product_list->each(...);
 
 =head1 AUTHOR
 
