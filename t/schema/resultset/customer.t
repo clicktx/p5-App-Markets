@@ -13,7 +13,7 @@ my $rs     = $schema->resultset('Customer');
 subtest 'create_new_customer' => sub {
     my $last_id = $rs->last_id;
 
-    my $customer_id = $rs->create_new_customer('new_customer@example.com');
+    my $customer_id = $rs->create_new_customer('new_customer_on_schema@example.com');
     is $customer_id, $last_id + 1, 'right create new customer';
 };
 

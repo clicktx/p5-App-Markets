@@ -35,7 +35,7 @@ subtest 'find' => sub {
 
     $auth = $s->find('foobar');
     ok !$auth, 'right not found token';
-    like $c->logging->history->[-1]->[2], qr/Not found token/, 'right logging';
+    is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 };
 
 subtest 'validate' => sub {
@@ -57,7 +57,7 @@ subtest 'validate' => sub {
     $auth->email( $s->factory('value-email')->construct( value => 'a@b.com' ) );
     $res = $s->validate($auth);
     ok !$res, 'right not found last request';
-    like $c->logging->history->[-1]->[2], qr/Not found last request/, 'right logging';
+    is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 
     my $token2 = $s->generate_token($email);
     my $token3 = $s->generate_token($email);
