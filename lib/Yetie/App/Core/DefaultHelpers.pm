@@ -24,6 +24,7 @@ sub register {
     $app->helper( cookie_session   => sub { shift->session(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
+    $app->helper( 'reply.error'    => sub { _error(@_) } );
     $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
     $app->helper( schema           => sub { shift->app->schema } );
     $app->helper( service          => sub { _service(@_) } );
@@ -48,6 +49,18 @@ sub _cache {
 }
 
 sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
+
+sub _error {
+    my $self = shift;
+
+    my %options = (
+        status        => 400,
+        template      => 'error',
+        title         => 'Bad Request',
+        error_message => '',
+    );
+    $self->render( %options, @_ );
+}
 
 sub _factory {
     my $self = shift;
@@ -166,6 +179,12 @@ Return L<Yetie::Schema::ResultSet> object.
     $c->pref( hoge => 'fizz', fuga => 'bazz' );
 
 Get/Set preference.
+
+=head2 C<reply-E<gt>error>
+
+    $c->reply->error( title => 'foo', error_message => 'bar' );
+
+Render the error template and set the response status code to 400.
 
 =head2 C<schema>
 
