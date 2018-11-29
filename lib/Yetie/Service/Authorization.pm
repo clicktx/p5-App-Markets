@@ -4,10 +4,7 @@ use Mojo::Base 'Yetie::Service';
 sub generate_token {
     my ( $self, $email ) = @_;
 
-    # Request IP
-    # NOTE: 'X-Real-IP', 'X-Forwarded-For'はどうする？
-    my $request_ip = $self->controller->tx->remote_address || 'unknown';
-
+    my $request_ip    = $self->controller->request_ip_address;
     my $authorization = $self->factory('entity-authorization')->construct(
         email      => $email,
         request_ip => $request_ip,

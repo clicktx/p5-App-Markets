@@ -17,18 +17,19 @@ sub register {
     # TagHelpers more
     $app->plugin('Yetie::App::Core::TagHelpers');
 
-    $app->helper( __x_default_lang => sub { __x_default_lang(@_) } );
-    $app->helper( addons           => sub { shift->app->addons(@_) } );
-    $app->helper( cache            => sub { _cache(@_) } );
-    $app->helper( cart             => sub { _cart(@_) } );
-    $app->helper( cookie_session   => sub { shift->session(@_) } );
-    $app->helper( factory          => sub { _factory(@_) } );
-    $app->helper( pref             => sub { _pref(@_) } );
-    $app->helper( 'reply.error'    => sub { _error(@_) } );
-    $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
-    $app->helper( schema           => sub { shift->app->schema } );
-    $app->helper( service          => sub { _service(@_) } );
-    $app->helper( template         => sub { _template(@_) } );
+    $app->helper( __x_default_lang   => sub { __x_default_lang(@_) } );
+    $app->helper( addons             => sub { shift->app->addons(@_) } );
+    $app->helper( cache              => sub { _cache(@_) } );
+    $app->helper( cart               => sub { _cart(@_) } );
+    $app->helper( cookie_session     => sub { shift->session(@_) } );
+    $app->helper( factory            => sub { _factory(@_) } );
+    $app->helper( pref               => sub { _pref(@_) } );
+    $app->helper( 'reply.error'      => sub { _error(@_) } );
+    $app->helper( resultset          => sub { shift->app->schema->resultset(@_) } );
+    $app->helper( request_ip_address => sub { _request_ip_address(@_) } );
+    $app->helper( schema             => sub { shift->app->schema } );
+    $app->helper( service            => sub { _service(@_) } );
+    $app->helper( template           => sub { _template(@_) } );
 }
 
 sub __x_default_lang {
@@ -74,6 +75,14 @@ sub _pref {
     my $self = shift;
     my $pref = $self->cache('preferences');
     return @_ ? $pref->value(@_) : $pref;
+}
+
+sub _request_ip_address {
+    my $self = shift;
+
+    # NOTE: 'X-Real-IP', 'X-Forwarded-For'はどうする？
+    my $request_ip = $self->tx->remote_address || 'unknown';
+    return $request_ip;
 }
 
 sub _service {
