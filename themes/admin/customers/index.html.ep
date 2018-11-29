@@ -10,7 +10,7 @@
         <%= link_to 'Edit' => 'RN_admin_customer_detail' => { customer_id => $_->id } %>
         Name: xxx
         Primary Email: <%= $_->emails->primary %>
-        Register: <%= $_->is_registered ? 'Yse' : 'No' %>
+        has_password?: <%= $_->has_password ? 'Yse' : 'No' %>
         <br>
         Last Logged in: xxx
     </li>
