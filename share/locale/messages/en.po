@@ -19,40 +19,40 @@ msgstr "{message}"
 
 # Log messages for admin
 msgid "admin.login.failed.not_found"
-msgstr "Login failed: account not found. login_id: {login_id}"
+msgstr "[{request_ip_address}] Login failed:account not found. login_id:{login_id}"
 
 msgid "admin.login.failed.password"
-msgstr "Login failed: password mismatch. login id: {login_id}"
+msgstr "[{request_ip_address}] Login failed:password mismatch. login id:{login_id}"
 
 msgid "admin.category.created"
-msgstr "Created new category by Staff ID:{staff_id}"
+msgstr "[{request_ip_address}] Created new category by Staff ID:{staff_id}"
 
 msgid "admin.category.edited"
-msgstr "Updated category ID:{category_id} by Staff ID:{staff_id}"
+msgstr "[{request_ip_address}] Updated category ID:{category_id} by Staff ID:{staff_id}"
 
 msgid "admin.product.duplicated"
-msgstr "Duplicate product from ID:{product_id} by Staff ID:{staff_id}"
+msgstr "[{request_ip_address}] Duplicate product from ID:{product_id} by Staff ID:{staff_id}"
 
 msgid "admin.product.removed"
-msgstr "Removed product ID:{product_id} by Staff ID:{staff_id}"
+msgstr "[{request_ip_address}] Removed product ID:{product_id} by Staff ID:{staff_id}"
 
 
 # Log messages for catalog
 msgid "login.failed.not_found"
-msgstr "Login failed: account not found. email: {email}"
+msgstr "[{request_ip_address}] Login failed:account not found. email:{email}"
 
 msgid "login.failed.password"
-msgstr "Login failed: password mismatch. email: {email}"
+msgstr "[{request_ip_address}] Login failed:password mismatch. email:{email}"
 
 msgid "passwordless.authorization.failed"
-msgstr "Failed to authorization request: {reason}"
+msgstr "[{request_ip_address}] Failed to authorization request:{reason}"
 
 # Log messages for App
 msgid "schema.rollback.failed"
-msgstr "Transaction rollback failed: {error}"
+msgstr "Transaction rollback failed:{error}"
 
 msgid "schema.do.rollback"
-msgstr "Did rollback transaction: {error}"
+msgstr "Did rollback transaction:{error}"
 
 msgid "pref.update.failed"
 msgstr "Could not update preference"
