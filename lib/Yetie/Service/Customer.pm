@@ -32,6 +32,22 @@ sub add_history {
     $c->server_session->data( history => $history );
 }
 
+sub create_new_customer {
+    my ( $self, $email ) = @_;
+
+    my $result = $self->resultset('Customer')->create(
+        {
+            emails => [
+                {
+                    email      => { address => $email->value },
+                    is_primary => 1,
+                }
+            ]
+        }
+    );
+    return $result->id;
+}
+
 sub find_customer {
     my ( $self, $email ) = @_;
 

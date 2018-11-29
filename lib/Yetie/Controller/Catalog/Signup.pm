@@ -53,31 +53,36 @@ sub email_sended {
     return $c->render();
 }
 
+# Create account, login, and disable token after validate.
 sub callback {
-    my $c = shift;
-
+    my $c     = shift;
     my $token = $c->stash('token');
 
-    my $service = $c->service('authorization');
+    my $auth_service  = $c->service('authorization');
+    my $authorization = $auth_service->find($token);
+    return $c->_callback_error() unless $authorization;
 
-    # my $authorization = $service->create($token);
+    my $is_validated = $auth_service->validate($authorization);
+    return $c->_callback_error() unless $is_validated;
 
-    my $authorization = $c->service('authorization')->validate($token);
+    # Validated
+    my $email            = $authorization->email;
+    my $customer_service = $c->service('customer');
 
-    # my $is_verify = $c->service('authorization')->validate_token($token);
-    # trueならアカウント作成 & ログイン & requestを使用済みに
-    # return $c->render( template => 'error', title => 'Bad Request' ) unless $is_verify;
-    return $c->render( template => 'error', title => 'Bad Request' ) unless $authorization;
+    # 登録済みのemailの場合は不正なリクエスト
+    my $registered_customer = $customer_service->find_customer($email);
+    return $c->_callback_error() if $registered_customer->is_registered;
 
-    use DDP;
-    p $token;
-    p $authorization;
-    p $authorization->email;    # 登録用
+    # Create customer
+    my $customer_id = $customer_service->create_new_customer($email);
 
-    # die $email ? 'ok' : 'ng';
-    die 'die';
-
+    # Logged-in
+    $c->service('customer')->logged_in($customer_id);
     return $c->redirect_to('RN_customer_signup_done');
+}
+
+sub _callback_error {
+    shift->render( status => 400, template => 'error', title => 'Bad Request' );
 }
 
 sub done {
