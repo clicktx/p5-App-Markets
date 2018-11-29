@@ -34,18 +34,7 @@ sub add_history {
 
 sub create_new_customer {
     my ( $self, $email ) = @_;
-
-    my $result = $self->resultset('Customer')->create(
-        {
-            emails => [
-                {
-                    email      => { address => $email->value },
-                    is_primary => 1,
-                }
-            ]
-        }
-    );
-    return $result->id;
+    return $self->resultset('Customer')->create_new_customer($email);
 }
 
 sub find_customer {
@@ -184,6 +173,14 @@ the following new ones.
 
     Add history current URL for server session.
     Unsave list setting in L<Yetie::Routes>.
+
+=head2 C<create_new_customer>
+
+    Create new customer.
+
+    my $customer_id = $service->create_new_customer($email);
+
+Return customer ID(integer)
 
 =head2 C<find_customer>
 

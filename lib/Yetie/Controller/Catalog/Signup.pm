@@ -70,8 +70,8 @@ sub callback {
     my $customer_service = $c->service('customer');
 
     # 登録済みのemailの場合は不正なリクエスト
-    my $registered_customer = $customer_service->find_customer($email);
-    return $c->_callback_error() if $registered_customer->is_registered;
+    my $customer = $customer_service->find_customer( $email->value );
+    return $c->_callback_error() if $customer->is_registered;
 
     # Create customer
     my $customer_id = $customer_service->create_new_customer($email);
