@@ -53,7 +53,8 @@ sub validate {
 }
 
 sub _logging {
-    shift->logging_warn( 'Failed to authorization request: ' . shift );
+    my $self = shift;
+    $self->logging_warn( 'passwordless.authorization.failed', reason => shift );
     return;
 }
 
