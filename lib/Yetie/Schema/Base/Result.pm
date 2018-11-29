@@ -24,7 +24,6 @@ sub insert {
 
     my $now = $self->schema->now;
     $self->created_at($now) if $self->can('created_at');
-    $self->updated_at($now) if $self->can('updated_at');
 
     $self->next::method(@_);
 }

@@ -112,8 +112,8 @@ subtest 'methods' => sub {
         }
     );
 
-    is $cart->equal($cart),  1, 'right equal entity';
-    is $cart->equal($cart2), 0, 'right not equal entity';
+    is $cart->equals($cart),  1, 'right equals entity';
+    is $cart->equals($cart2), 0, 'right not equals entity';
 };
 
 subtest 'add_item' => sub {

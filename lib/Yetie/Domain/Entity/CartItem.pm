@@ -3,7 +3,7 @@ use Yetie::Domain::Base 'Yetie::Domain::Entity::SellingItem';
 
 has hash => sub { shift->hash_code };
 
-sub equal { shift->hash eq shift->hash ? 1 : 0 }
+sub equals { shift->hash eq shift->hash ? 1 : 0 }
 
 sub hash_code {
     my $self = shift;
@@ -57,9 +57,9 @@ See L</hash_code>
 L<Yetie::Domain::Entity::CartItem> inherits all methods from L<Yetie::Domain::Entity::SellingItem> and implements
 the following new ones.
 
-=head2 C<equal>
+=head2 C<equals>
 
-    my $bool = $item->equal($other_item);
+    my $bool = $item->equals($other_item);
 
 =head2 C<hash_code>
 

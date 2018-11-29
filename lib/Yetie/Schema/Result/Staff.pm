@@ -21,12 +21,12 @@ column created_at => {
 
 column updated_at => {
     data_type   => 'DATETIME',
-    is_nullable => 0,
+    is_nullable => 1,
     timezone    => Yetie::Schema->TZ,
 };
 
 # Index
-unique_constraint staffs_ui_login_id => [qw/login_id/];
+unique_constraint ui_login_id => [qw/login_id/];
 
 # Relation
 has_one

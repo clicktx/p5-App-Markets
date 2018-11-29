@@ -10,7 +10,14 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('Customer');
 
-subtest 'find_by_id()' => sub {
+subtest 'create_new_customer' => sub {
+    my $last_id = $rs->last_id;
+
+    my $customer_id = $rs->create_new_customer('new_customer@example.com');
+    is $customer_id, $last_id + 1, 'right create new customer';
+};
+
+subtest 'find_by_id' => sub {
     my $res = $rs->find_by_id(111);
     cmp_deeply $res->{related_resultsets},
       {
@@ -23,7 +30,7 @@ subtest 'find_by_id()' => sub {
     ok !$res;
 };
 
-subtest 'find_by_email()' => sub {
+subtest 'find_by_email' => sub {
     my $res = $rs->find_by_email('c@example.org');
     is $res->id, 111, 'right id';
     cmp_deeply $res->{related_resultsets},
@@ -48,7 +55,16 @@ subtest 'get_id_by_email' => sub {
     is $customer_id, undef, 'right no found';
 };
 
-subtest 'search_by_id()' => sub {
+subtest 'last_loged_in_now' => sub {
+    my $last_loged_in_at = $rs->find(111)->last_logged_in_at;
+
+    $rs->last_loged_in_now(111);
+    isnt $last_loged_in_at, $rs->find(111)->last_logged_in_at, 'right update last loged in';
+
+    is $rs->last_loged_in_now(999), undef, 'right not found customer';
+};
+
+subtest 'search_by_id' => sub {
     my @res = $rs->search_by_id(111);
     is @res, 1, 'right search by id';
 
@@ -56,7 +72,7 @@ subtest 'search_by_id()' => sub {
     ok !@res, 'right not found';
 };
 
-subtest 'search_by_email()' => sub {
+subtest 'search_by_email' => sub {
     my @res = $rs->search_by_email('c@example.org');
     is @res, 1, 'right search by email';
 

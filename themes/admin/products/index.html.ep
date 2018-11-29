@@ -15,7 +15,7 @@
 <h2><%= __('Products') %></h2>
 
 <ul>
-    % $entity->each( sub {
+    % $entity->product_list->each( sub {
         % my $product = shift;
         % my $id = $product->id;
         <li>ID:<%= $id %>

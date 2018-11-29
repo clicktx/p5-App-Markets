@@ -30,8 +30,18 @@ sub each {
 
 sub last_id {
     my $self = shift;
-    my $result = $self->search( {}, { order_by => 'id DESC' } )->slice( 0, 0 )->first;
+    my $cond = shift || {};
+
+    my $result = $self->search( $cond, { order_by => 'id DESC' } )->slice( 0, 0 )->first;
     return defined $result ? $result->id : undef;
+}
+
+sub limit {
+    my $self = shift;
+
+    my ( $offset, $limit ) = @_ > 1 ? ( shift, shift ) : ( 0, shift );
+    my $last = $offset + $limit - 1;
+    $self->slice( $offset, $last );
 }
 
 sub to_array {
@@ -96,7 +106,21 @@ the following new ones.
 
     my $last_id = $rs->last_id;
 
+    my $last_id = $rs->last_id( { foo => 'bar' } );
+
 Return last id of undef.
+
+=head2 C<limit>
+
+MySQL like limit and offset.
+
+    # select one row
+    my $resultset = $rs->search( {} )->limit(1);
+
+    # offset 5, and limit 10
+    my $resultset = $rs->search( {} )->limit( 5, 10 );
+
+Return L<DBIx::Class::ResultSet> object.
 
 =head2 C<to_array>
 

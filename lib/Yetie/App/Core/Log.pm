@@ -48,8 +48,14 @@ sub register {
 sub _logging {
     my ( $level, $c ) = ( shift, shift );
     my @args = @_;
+
+    # For admin
     push @args, ( staff_id => $c->server_session->staff_id ) if $c->logging->path =~ /admin\.log$/;
-    $c->logging->$level(@args);
+
+    # Other than debugging
+    push @args, ( request_ip_address => $c->request_ip_address ) if $level ne 'debug';
+
+    return $c->logging->$level(@args);
 }
 
 1;

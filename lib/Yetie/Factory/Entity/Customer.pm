@@ -5,7 +5,7 @@ sub cook {
     my $self = shift;
 
     # password
-    $self->aggregate( password => 'value-password', $self->{password} || {} );
+    $self->aggregate( password => 'value-password', $self->{password} );
 
     # emails
     $self->aggregate( emails => 'list-emails', $self->param('emails') || [] );

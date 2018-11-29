@@ -11,7 +11,7 @@ column addon_id => {
 
 column trigger_name => {
     data_type   => 'VARCHAR',
-    size        => 50,
+    size        => 64,
     is_nullable => 1,
 };
 

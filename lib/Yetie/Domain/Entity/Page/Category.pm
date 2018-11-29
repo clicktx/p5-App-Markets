@@ -1,10 +1,10 @@
 package Yetie::Domain::Entity::Page::Category;
 use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
 
-has level     => 0;
-has root_id   => 0;
-has title     => '';
-has products  => sub { Yetie::Domain::Collection->new };
+has level    => 0;
+has root_id  => 0;
+has title    => '';
+has products => sub { __PACKAGE__->factory('list-products')->construct() };
 
 1;
 __END__

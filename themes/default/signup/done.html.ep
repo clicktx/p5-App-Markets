@@ -1,8 +1,12 @@
 % layout 'default';
-% title 'Registration';
+% title 'Signup';
 
 <h2>Create account</h2>
 
 <div class="">
     Customer registration is complete
+</div>
+
+<div class="">
+    <%= link_to 'str' => '/' %>
 </div>

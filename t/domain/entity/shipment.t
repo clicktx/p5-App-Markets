@@ -27,12 +27,12 @@ subtest 'basic' => sub {
     is $shipment->id, 1, 'right id';
 };
 
-subtest 'equal' => sub {
+subtest 'equals' => sub {
     my $shipment  = construct( id => 1 );
     my $shipment2 = construct( id => 2 );
 
-    is $shipment->equal($shipment),  1, 'right equal item';
-    is $shipment->equal($shipment2), 0, 'right not equal item';
+    is $shipment->equals($shipment),  1, 'right equals item';
+    is $shipment->equals($shipment2), 0, 'right not equals item';
 };
 
 # subtest 'clone' => sub {};

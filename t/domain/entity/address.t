@@ -35,13 +35,13 @@ subtest 'basic' => sub {
     is $address->hash, '20f551adf8c892c32845022b874e0763ecf68788', 'right hash';
 };
 
-subtest 'equal' => sub {
+subtest 'equals' => sub {
     my $address1 = construct($data);
     my $address2 = construct($data);
-    is $address1->equal($address2), 1, 'right equal';
+    is $address1->equals($address2), 1, 'right equals';
 
     $address1->personal_name('foo bar');
-    is $address1->equal($address2), 0, 'right not equal';
+    is $address1->equals($address2), 0, 'right not equals';
 };
 
 subtest 'field_names' => sub {
