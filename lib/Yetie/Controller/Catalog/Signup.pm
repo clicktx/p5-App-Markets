@@ -82,7 +82,11 @@ sub callback {
 }
 
 sub _callback_error {
-    shift->render( status => 400, template => 'error', title => 'Bad Request' );
+    my $c = shift;
+    $c->reply->error(
+        title         => $c->__('authorization.request.error.title'),
+        error_message => $c->__('authorization.request.error.message')
+    );
 }
 
 sub done {
