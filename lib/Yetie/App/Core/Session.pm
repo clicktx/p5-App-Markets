@@ -81,7 +81,7 @@ Yetie::App::Core::Session - forked from Mojolicious::Plugin::Session
 =head1 SYNOPSIS
 
     # Mojolicious::Lite
-    plugin session =>
+    plugin 'Yetie::App::Core::Session' =>
         {
             stash_key       => 'yetie.session',
             store           => 'dbi',
@@ -90,7 +90,7 @@ Yetie::App::Core::Session - forked from Mojolicious::Plugin::Session
 
     # Mojolicious
     $self->plugin(
-        session => {
+        'Yetie::App::Core::Session' => {
             stash_key       => 'yetie.session',
             store           => 'dbi',
             expires_delta   => 5
