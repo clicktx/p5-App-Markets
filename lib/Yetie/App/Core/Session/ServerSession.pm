@@ -22,6 +22,23 @@ sub flush {
     return $result;
 }
 
+sub new {
+    my $class = shift;
+    my %args  = @_;
+
+    my $domain   = delete $args{domain}   // '';
+    my $path     = delete $args{path}     // '/';
+    my $httponly = delete $args{httponly} // 0;
+    my $secure   = delete $args{secure}   // 0;
+
+    my $self = $class->SUPER::new(%args);
+
+    my $transport = $self->transport;
+    $transport->httponly($httponly);
+    $transport->secure($secure);
+    return $self;
+}
+
 sub regenerate_sid {
     my $self = shift;
 
@@ -96,7 +113,46 @@ Yetie::App::Core::Session::ServerSession - based MojoX::Session
 
 =head1 SYNOPSIS
 
+    Yetie::App::Core::Session::ServerSession->new(
+        # MojoX::Session option
+        tx        => $tx,
+        store     => MojoX::Session::Store::Dbi->new( dbh => $dbh ),
+        transport => MojoX::Session::Transport::Cookie->new,
+        ip_match  => 1
+
+        # Constructor options
+        name      => 'sid',
+        domain    => '',
+        path      => '/',
+        httponly  => 1,
+        secure    => 0,
+    );
+
 =head1 DESCRIPTION
+
+=head1 OPTIONS
+
+Constructor C<new> takes some options as hash or hashref.
+
+=head2 C<name>
+
+default: sid
+
+=head2 C<domain>
+
+default: empty string
+
+=head2 C<path>
+
+default: /
+
+=head2 C<httponly>
+
+default: 1
+
+=head2 C<secure>
+
+default: 0
 
 =head1 ATTRIBUTES
 
