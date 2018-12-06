@@ -135,7 +135,7 @@ This method override L<MojoX::Session/create>.
 =head2 C<customer_id>
 
     my $customer_id = $session->customer_id;
-    $cart->customer_id('xxxxxxxxxx');
+    $session->customer_id('xxxxxxxxxx');
 
 Get/Set customer id.
 
@@ -170,16 +170,12 @@ Return C<boolean> value.
 =head2 C<staff_id>
 
     my $staff_id = $session->staff_id;
-    $cart->staff_id('xxxxxxxxxx');
+    $session->staff_id('xxxxxxxxxx');
 
 Get/Set staff id.
 
 =head1 SEE ALSO
 
-L<Yetie::App::Core::Session::CartSession>
-
-L<MojoX::Session>
-
-L<Mojolicious>
+L<Yetie::App::Core::Session::CartSession>, L<MojoX::Session>, L<Mojolicious>
 
 =cut
