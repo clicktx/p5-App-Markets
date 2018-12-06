@@ -61,7 +61,7 @@ sub initialize_app {
     $self->secrets( $self->config('secrets') );
 
     # Load plugins
-    _load_plugins($self);
+    $self->_load_plugins;
 
     # Preferences
     $self->service('preference')->load;
@@ -75,7 +75,7 @@ sub initialize_app {
 
     # Add before/after action hook
     # NOTE: Mojoliciou::Controllerの挙動を変更
-    _add_hooks($self);
+    $self->_add_hooks;
 }
 
 sub _add_hooks {
