@@ -78,20 +78,20 @@ sub staff_id {
     return $id ? $self->data( staff_id => $id ) : $self->data('staff_id');
 }
 
-# Overwride method MojoX::Session
+# Overwride method MojoX::Session::create
 ##################################
 sub create {
     my ( $self, $args ) = ( shift, shift || {} );
 
     # New cart
     my $sid = $self->SUPER::create(@_);
-    my $id =
+    my $cart_id =
       $args->{cart_id} ? $args->{cart_id} : generate_token( length => 40, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
     my $cart = {
         data         => {},
         _is_modified => 0,
     };
-    $self->data( cart_id => $id, cart => $cart );
+    $self->data( cart_id => $cart_id, cart => $cart );
 
     return $sid;
 }
