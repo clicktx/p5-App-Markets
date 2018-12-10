@@ -2,10 +2,11 @@ package Yetie::App::Core::Session::ServerSession;
 
 use Mojo::Base qw/MojoX::Session/;
 use Yetie::App::Core::Session::CartSession;
-use Yetie::Util qw/generate_token/;
+use Yetie::Util qw();
 
 has cart_session => sub { Yetie::App::Core::Session::CartSession->new(shift) };
 has cart         => sub { shift->cart_session };
+has cookie_token_length => 40;
 
 sub cart_id { shift->data('cart_id') }
 
@@ -20,6 +21,11 @@ sub flush {
     my $result = $self->SUPER::flush(@_);
     $self->cart->is_modified(0);
     return $result;
+}
+
+sub generate_cookie_token {
+    my $self = shift;
+    Yetie::Util::generate_token( length => $self->cookie_token_length, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
 }
 
 sub new {
@@ -83,10 +89,11 @@ sub staff_id {
 sub create {
     my ( $self, $args ) = ( shift, shift || {} );
 
-    # New cart
+    # Session
     my $sid = $self->SUPER::create(@_);
-    my $cart_id =
-      $args->{cart_id} ? $args->{cart_id} : generate_token( length => 40, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
+
+    # cart
+    my $cart_id = $args->{cart_id} || $self->generate_cookie_token;
     my $cart = {
         data         => {},
         _is_modified => 0,
@@ -168,6 +175,12 @@ Returns new L<Yetie::App::Core::Session::CartSession> object.
 
 Alias for L</cart_session>
 
+=head2 C<cookie_token_length>
+
+Default: 40
+
+See L</generate_cookie_token>
+
 =head1 METHODS
 
 L<Yetie::App::Core::Session::ServerSession> inherits all methods from L<MojoX::Session> and implements
@@ -201,6 +214,10 @@ Get/Set customer id.
 
 This method override L<MojoX::Session/flush>.
 Stored session data.
+
+=head2 C<generate_cookie_token>
+
+    my $token = $session->genarate_token;
 
 =head2 C<load>
 
