@@ -114,6 +114,8 @@ sub load {
 1;
 __END__
 
+=for stopwords sid
+
 =head1 NAME
 
 Yetie::App::Core::Session::ServerSession - based MojoX::Session
