@@ -40,6 +40,8 @@ sub new {
     my $self = $class->SUPER::new(%args);
 
     my $transport = $self->transport;
+    $transport->domain($domain);
+    $transport->path($path);
     $transport->httponly($httponly);
     $transport->secure($secure);
     return $self;
