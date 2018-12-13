@@ -6,13 +6,40 @@ use Yetie::Util qw();
 
 has cart_session => sub { Yetie::App::Core::Session::CartSession->new(shift) };
 has cart         => sub { shift->cart_session };
-has cookie_token_length => 40;
+
+has _cookie_expires      => 0;
+has cookie_expires_delta => 3600 * 24 * 365;
+has cookie_token_length  => 40;
 
 sub cart_id { shift->data('cart_id') }
 
 sub customer_id {
     my ( $self, $id ) = @_;
     return $id ? $self->data( customer_id => $id ) : $self->data('customer_id');
+}
+
+sub cookie_expires {
+    my $self = shift;
+    my ($val) = @_;
+
+    if ( defined $val ) {
+        $self->_cookie_expires($val);
+        $self->_is_flushed(0);
+    }
+
+    return $self->_cookie_expires;
+}
+
+sub extend_expires {
+    my $self = shift;
+
+    $self->SUPER::extend_expires(@_);
+    $self->cookie_expires( time + $self->cookie_expires_delta );
+
+    if ( $self->transport ) {
+        $self->transport->tx( $self->tx );
+        $self->transport->set( $self->sid, $self->cookie_expires );
+    }
 }
 
 sub flush {
@@ -86,13 +113,21 @@ sub staff_id {
     return $id ? $self->data( staff_id => $id ) : $self->data('staff_id');
 }
 
-# Overwride method MojoX::Session::create
+# Override method MojoX::Session::create
 ##################################
 sub create {
     my ( $self, $args ) = ( shift, shift || {} );
 
     # Session
     my $sid = $self->SUPER::create(@_);
+
+    # cookie
+    # NOTE: override expires for cookie
+    $self->cookie_expires( time + $self->cookie_expires_delta );
+    if ( $self->transport ) {
+        $self->transport->tx( $self->tx );
+        $self->transport->set( $self->sid, $self->cookie_expires );
+    }
 
     # cart
     my $cart_id = $args->{cart_id} || $self->generate_cookie_token;
@@ -109,7 +144,7 @@ sub load {
     my $self = shift;
     my $sid  = $self->SUPER::load(@_);
 
-    $self->data( cart => {} ) if !$self->data('cart');
+    $self->data( cart => {} ) unless $self->data('cart');
     return $sid;
 }
 
@@ -179,6 +214,10 @@ Returns new L<Yetie::App::Core::Session::CartSession> object.
 
 Alias for L</cart_session>
 
+=head2 C<cookie_expires_delta>
+
+    my $delta = $session->cookie_expires_delta;
+
 =head2 C<cookie_token_length>
 
 Default: 40
@@ -196,6 +235,13 @@ the following new ones.
 
 Get cart id.
 
+=head2 C<cookie_expires>
+
+    my $expires = $session->cookie_expires;
+    $session->cookie_expires(1234567890);
+
+Get/Set cookie expire time.
+
 =head2 C<create>
 
     my $sid = $session->create;
@@ -211,6 +257,10 @@ This method override L<MojoX::Session/create>.
     $session->customer_id('xxxxxxxxxx');
 
 Get/Set customer id.
+
+=head2 C<extend_expires>
+
+This method override L<MojoX::Session/extend_expires>.
 
 =head2 C<flush>
 
