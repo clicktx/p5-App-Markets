@@ -8,8 +8,8 @@ primary_column id => {
 };
 
 column name => {
-    data_type => 'VARCHAR',
-    size      => 32,
+    data_type   => 'VARCHAR',
+    size        => 64,
     is_nullable => 0,
 };
 
@@ -24,14 +24,14 @@ column default_value => {
 };
 
 column title => {
-    data_type => 'VARCHAR',
-    size      => 64,
+    data_type   => 'VARCHAR',
+    size        => 64,
     is_nullable => 1,
 };
 
 column summary => {
-    data_type => 'VARCHAR',
-    size      => 128,
+    data_type   => 'VARCHAR',
+    size        => 128,
     is_nullable => 1,
 };
 

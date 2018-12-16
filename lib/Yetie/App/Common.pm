@@ -69,6 +69,17 @@ sub initialize_app {
     # Set default language
     $self->language( $self->pref('default_language') );
 
+    # Server Session
+    $self->plugin(
+        'Yetie::App::Core::Session' => {
+            expires_delta        => $self->pref('server_session_expires_delta'),
+            cookie_expires_delta => $self->pref('server_session_cookie_expires_delta'),
+            httponly             => 1,
+
+            # secure => 1 if pref->https_only
+        }
+    );
+
     # TimeZone
     # my $time_zone = 'Asia/Tokyo';                 # from preference
     # $self->schema->time_zone($time_zone);
@@ -156,15 +167,6 @@ sub _load_plugins {
 
     # Password
     $app->plugin('Scrypt');
-
-    # Session
-    $app->plugin(
-        'Yetie::App::Core::Session' => {
-            expires_delta => 3600,
-            httponly      => 1,
-            # secure => 1 if pref->https_only
-        }
-    );
 }
 
 1;

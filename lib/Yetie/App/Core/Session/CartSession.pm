@@ -6,8 +6,6 @@ has 'session';
 
 sub cart_id { shift->session->cart_id(@_) }
 
-# public用カートデータ
-# $session->{cart}->{data}
 sub data {
     my $self = shift;
     my $data = $self->_data('data');
@@ -52,8 +50,6 @@ sub new {
     return $self;
 }
 
-# 全てのcartデータ
-# $session->{cart}
 sub _data {
     my $self = shift;
     my $data = $self->session->data('cart');
