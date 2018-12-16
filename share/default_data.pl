@@ -11,6 +11,8 @@
         [ 'addons_dir', 'addons', 'pref.title.addons_dir', 'pref.summary.addons_dir', 200, 1 ],
         [ 'can_multiple_shipments', 0, 'pref.title.can_multiple_shipments', 'pref.summary.can_multiple_shipments', 200, 1 ],
         [ 'default_language', 'en', 'pref.title.defalut_language', 'pref.summary.defalut_language', 200, 1 ],
+        [ 'server_session_expires_delta', 3600, 'pref.title.server_session_expires_delta', 'pref.summary.server_session_expires_delta', 200, 1 ],
+        [ 'server_session_cookie_expires_delta', 3600 * 24 * 365, 'pref.title.server_session_cookie_expires_delta', 'pref.summary.server_session_cookie_expires_delta', 200, 1 ],
 
         # shop master
         [ 'locale_country', 'US', 'pref.title.locale_country', 'pref.summary.locale_country', 100, 2 ],
