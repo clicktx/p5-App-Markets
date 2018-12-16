@@ -1,6 +1,19 @@
 package Yetie::Controller;
 use Mojo::Base 'Mojolicious::Controller';
 
+sub cookie {
+    my ( $self, $name ) = ( shift, shift );
+
+    # Request cookie
+    return $self->SUPER::cookie($name) unless @_;
+
+    # Response cookie
+    my ( $value, $opt ) = ( shift, shift || {} );
+    $opt->{path}     //= '/';
+    $opt->{httponly} //= 1;
+    return $self->SUPER::cookie( $name => $value, $opt );
+}
+
 sub csrf_protect {
     my $self = shift;
     return 1 if $self->req->method ne 'POST';
@@ -91,6 +104,8 @@ sub redirect_to {
 1;
 __END__
 
+=for stopwords httponly
+
 =head1 NAME
 
 Yetie::Controller - Controller base class
@@ -169,6 +184,19 @@ implements the following new ones.
 
 L<Yetie::Controller> inherits all methods from L<Mojolicious::Controller> and
 implements the following new ones.
+
+=head2 C<cookie>
+
+    my $foo = $c->cookie('foo');
+    $c->cookie( foo => 'bar', { path => '/', httponly => 1 } )
+
+Set default options.
+
+path: /
+
+httponly: 1
+
+L<Mojolicious::Controller/cookie>
 
 =head2 C<csrf_protect>
 
