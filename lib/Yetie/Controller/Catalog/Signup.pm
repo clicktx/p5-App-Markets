@@ -4,7 +4,7 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 sub index {
     my $c = shift;
 
-    my $form = $c->form('signup');
+    my $form = $c->form('base-email');
     return $c->render() unless $form->has_data;
 
     # Validation form

@@ -18,7 +18,7 @@ sub magic_link {
     $c->flash( ref => $c->flash('ref') );
 
     # Initialize form
-    my $form = $c->form('account-email');
+    my $form = $c->form('base-email');
     return $c->render() unless $form->has_data;
     return $c->render() unless $form->do_validate;
 
