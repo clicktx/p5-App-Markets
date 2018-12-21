@@ -112,10 +112,18 @@ sub add_catalog_routes {
     $guest_checkout->any('/shipping-address')->to('#shipping_address')->name('RN_guest_checkout_shipping_address');
 
     # For Customers
-    $r->any('/login')->to('account#login')->name('RN_customer_login');
-    $r->any('/login/email')->to('account#login_email')->name('RN_customer_login_email');
-    $r->any('/login/password')->to('account#login_password')->name('RN_customer_login_password');
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
+
+    {
+        # Log-in
+        my $login = $r->any('/login')->to( controller => 'login' );
+        $login->any('/')->to('#index')->name('RN_customer_login');
+        $login->any('/magic-link')->to('#magic_link')->name('RN_customer_login_magic_link');
+        $login->any('/with-password')->to('#with_password')->name('RN_customer_login_with_password');
+        $login->any('/toggle')->to('#toggle')->name('RN_customer_login_toggle');
+        $login->any('/email')->to('#email')->name('RN_customer_login_email');
+        $login->any('/password')->to('#password')->name('RN_customer_login_password');
+    }
     {
         # Sign-up
         my $signup = $r->any('/signup')->to( controller => 'signup' );
