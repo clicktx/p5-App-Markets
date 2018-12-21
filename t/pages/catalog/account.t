@@ -37,57 +37,19 @@ sub t02_login_process : Tests() {
     my $csrf_token = $self->csrf_token;
 
     # not found customer
-    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'xx@xxxx.xxx', password => '12345678' } )
+    $t->post_ok( '/login/with-password',
+        form => { csrf_token => $csrf_token, email => 'xx@xxxx.xxx', password => '12345678' } )
       ->status_is( 401, 'not found customer' );
 
     # password failure
-    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'c@example.org', password => '11223344' } )
+    $t->post_ok( '/login/with-password',
+        form => { csrf_token => $csrf_token, email => 'c@example.org', password => '11223344' } )
       ->status_is( 401, 'password failure' );
 
     # accept and redirect to wishlist?
     $t->get_ok('/account/wishlist');
-    $t->post_ok( '/login', form => { csrf_token => $csrf_token, email => 'c@example.org', password => '12345678' } )
-      ->status_is( 302, 'right accepr to redirect' )
-      ->header_like( location => qr/wishlist/, 'right location after redirect' );
-
-    my $sid_loged_in = t::Util::get_sid($t);
-    isnt $sid, $sid_loged_in, 'right regenerate sid';
-
-    # Try required authrization pages
-    $t->get_ok($_)->status_is(200) for @paths;
-
-    # logout
-    $t->get_ok('/logout')->status_is(200);
-    $t->get_ok('/account/home')->status_is(302);
-    my $sid_new_session = t::Util::get_sid($t);
-    isnt $sid_loged_in, $sid_new_session, 'right new sid';
-}
-
-sub t03_login_process_email_and_password : Tests() {
-    my $self = shift;
-    my $t    = $self->t;
-
-    my $sid = t::Util::get_sid($t);
-    ok $sid, 'right sid';
-
-    # login
-    my $tx         = $t->tx;
-    my $csrf_token = $self->csrf_token;
-
-    # not found email
-    # $t->post_ok( '/login/email', form => { csrf_token => $csrf_token, email => 'xx@xxxx.xxx' } )
-    #   ->status_is( 401, 'not found email' );
-
-    # accept and redirect to wishlist?
-    $t->get_ok('/account/wishlist');
-    $t->post_ok( '/login/email', form => { csrf_token => $csrf_token, email => 'c@example.org' } )
-      ->status_is( 302, 'right accepr to redirect' )->header_like( location => qr/login\/password/, 'right redirect' );
-
-    # password failure
-    $t->post_ok( '/login/password', form => { csrf_token => $csrf_token, password => 'xxxxxxxx' } )
-      ->status_is( 401, 'password failure' );
-
-    $t->post_ok( '/login/password', form => { csrf_token => $csrf_token, password => '12345678' } )
+    $t->post_ok( '/login/with-password',
+        form => { csrf_token => $csrf_token, email => 'c@example.org', password => '12345678' } )
       ->status_is( 302, 'right accepr to redirect' )
       ->header_like( location => qr/wishlist/, 'right location after redirect' );
 
