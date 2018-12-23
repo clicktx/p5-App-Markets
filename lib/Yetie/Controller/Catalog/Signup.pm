@@ -14,7 +14,7 @@ sub index {
     my $token = $c->service('authorization')->generate_token($email);
 
     # NOTE: 登録済みならurlをloginにする。またメールの内容も変える。
-    my $url = $c->url_for( 'RN_callback_customer_signup', token => $token )->query( redirect => 'RN_customer_home' );
+    my $url = $c->url_for( 'RN_callback_customer_signup', token => $token );
 
     $c->flash( callback_url => $url->to_abs );
     $c->redirect_to('RN_customer_signup_email_sended');
