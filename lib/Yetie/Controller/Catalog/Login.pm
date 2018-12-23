@@ -13,6 +13,7 @@ sub index {
       : $c->redirect_to('RN_customer_login_magic_link');
 }
 
+# NOTE: メール送信リクエストに一定期間の時間制限をかける？
 sub magic_link {
     my $c = shift;
     $c->flash( ref => $c->flash('ref') );
@@ -24,9 +25,16 @@ sub magic_link {
 
     my $email    = $form->param('email');
     my $customer = $c->service('customer')->find_customer($email);
-    say 'Not registered' unless $customer->is_registered;
 
-    die 'end';
+    # NOTE: 未登録の場合は登録確認のメールを送信する
+    die 'Not registered' unless $customer->is_registered;
+
+    my $redirect = $c->flash('ref') || 'RN_customer_home';
+    my $token = $c->service('authorization')->generate_token( $email, { redirect_to => $redirect } );
+    my $url = $c->url_for( 'RN_callback_customer_login', token => $token );
+
+    $c->flash( callback_url => $url->to_abs );
+    $c->redirect_to('RN_customer_login_email_sended');
 }
 
 sub toggle {
