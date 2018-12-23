@@ -6,6 +6,19 @@ sub find_last_by_email {
     return $self->search( { email => $email }, { order_by => 'id DESC' } )->limit(1)->first;
 }
 
+sub store_token {
+    my ( $self, $authorization ) = @_;
+    return $self->create(
+        {
+            email      => $authorization->email,
+            token      => $authorization->token,
+            redirect   => $authorization->redirect,
+            request_ip => $authorization->request_ip,
+            expires    => $authorization->expires,
+        }
+    );
+}
+
 1;
 __END__
 =encoding utf8
@@ -35,6 +48,12 @@ the following new ones.
     my $result = $rs->find_last_by_email($email);
 
 Return L<Yetie::Schema::Result::AuthorizationRequest> object or C<undef>.
+
+=head2 C<store_token>
+
+    $rs->store_token($authorization_entity);
+
+Save the token for storage.
 
 =head1 AUTHOR
 

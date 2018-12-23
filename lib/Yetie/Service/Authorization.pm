@@ -12,15 +12,7 @@ sub generate_token {
     );
 
     # Store to DB
-    $self->resultset('AuthorizationRequest')->create(
-        {
-            email      => $authorization->email,
-            token      => $authorization->token,
-            redirect   => $authorization->redirect,
-            request_ip => $authorization->request_ip,
-            expires    => $authorization->expires,
-        }
-    );
+    $self->resultset('AuthorizationRequest')->store_token($authorization);
     return $authorization->token;
 }
 
