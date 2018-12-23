@@ -2,20 +2,22 @@ package Yetie::Service::Authorization;
 use Mojo::Base 'Yetie::Service';
 
 sub generate_token {
-    my ( $self, $email ) = @_;
+    my ( $self, $email, $opt ) = ( shift, shift, shift || {} );
 
     my $request_ip    = $self->controller->request_ip_address;
     my $authorization = $self->factory('entity-authorization')->construct(
         email      => $email,
+        redirect   => $opt->{redirect},
         request_ip => $request_ip,
     );
 
     # Store to DB
     $self->resultset('AuthorizationRequest')->create(
         {
-            email      => $email,
+            email      => $authorization->email,
             token      => $authorization->token,
-            request_ip => $request_ip,
+            redirect   => $authorization->redirect,
+            request_ip => $authorization->request_ip,
             expires    => $authorization->expires,
         }
     );
@@ -78,11 +80,23 @@ the following new ones.
 
 =head2 C<generate_token>
 
-    my $token = $service->generate_token($email);
+    my $token = $service->generate_token( $email, \%options );
 
 Create one-time token and store it in the DB.
 
 Return token string.
+
+B<OPTIONS>
+
+=over 4
+
+=item redirect
+
+Redirect url or route name.
+
+=back
+
+    my $token = $service->generate_token( $email, { redirect => 'RN_foo'} );
 
 =head2 C<find>
 
