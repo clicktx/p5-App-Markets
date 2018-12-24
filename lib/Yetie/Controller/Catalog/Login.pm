@@ -6,7 +6,7 @@ sub index {
     $c->flash( ref => $c->flash('ref') );
 
     my $url = $c->flash('ref') || 'RN_home';
-    return redirect_to($url) if $c->is_logged_in;
+    return $c->redirect_to($url) if $c->is_logged_in;
 
     return $c->cookie('login_with_password')
       ? $c->redirect_to('RN_customer_login_with_password')
