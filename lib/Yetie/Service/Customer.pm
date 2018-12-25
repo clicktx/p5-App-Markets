@@ -72,7 +72,7 @@ sub load_history {
     $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
-sub logged_in {
+sub login {
     my ( $self, $customer_id ) = @_;
     my $session = $self->controller->server_session;
 
@@ -108,7 +108,7 @@ sub login_process {
     return $self->_login_failed( 'login.failed.password', email => $email )
       unless $customer->password->is_verify($raw_password);
 
-    return $self->logged_in( $customer->id );
+    return $self->login( $customer->id );
 }
 
 sub store_address {
@@ -218,11 +218,11 @@ See L</get_addresses>
 
     my $history = $c->service('customer')->load_history;
 
-=head2 C<logged_in>
+=head2 C<login>
 
 Set customer logged-in flag to server_session.
 
-    my $bool = $service->logged_in($customer_id);
+    my $bool = $service->login($customer_id);
 
 Return boolean value.
 

@@ -11,7 +11,7 @@ sub find_staff {
     return $self->factory('entity-staff')->construct($data);
 }
 
-sub logged_in {
+sub login {
     my ( $self, $staff_id ) = @_;
     my $session = $self->controller->server_session;
 
@@ -38,7 +38,7 @@ sub login_process {
     return $self->_login_failed( 'admin.login.failed.password', login_id => $login_id )
       unless $staff->password->is_verify($raw_password);
 
-    return $self->logged_in( $staff->id );
+    return $self->login( $staff->id );
 }
 
 sub _login_failed {
@@ -77,11 +77,11 @@ the following new ones.
 
 Return L<Yetie::Domain::Entity::Staff> object.
 
-=head2 C<logged_in>
+=head2 C<login>
 
 Set staff logged-in flag to server_session.
 
-    my $bool = $service->logged_in($staff_id);
+    my $bool = $service->login($staff_id);
 
 Return boolean value.
 

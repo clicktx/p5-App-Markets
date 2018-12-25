@@ -80,8 +80,8 @@ sub callback {
     # Create customer
     my $customer_id = $customer_service->create_new_customer($email);
 
-    # Logged-in
-    $c->service('customer')->logged_in($customer_id);
+    # Login
+    $c->service('customer')->login($customer_id);
     return $c->redirect_to('RN_customer_signup_done');
 }
 
