@@ -62,12 +62,17 @@ sub callback {
     my $c     = shift;
     my $token = $c->stash('token');
 
+    my %error_messages = (
+        title         => $c->__('authorization.request.error.title'),
+        error_message => $c->__('authorization.request.error.message')
+    );
+
     my $auth_service  = $c->service('authorization');
     my $authorization = $auth_service->find($token);
-    return $c->_callback_error() unless $authorization;
+    return $c->reply->error(%error_messages) unless $authorization;
 
     my $is_validated = $auth_service->validate($authorization);
-    return $c->_callback_error() unless $is_validated;
+    return $c->reply->error(%error_messages) unless $is_validated;
 
     # Validated
     my $email            = $authorization->email;
@@ -75,7 +80,7 @@ sub callback {
 
     # 登録済みのemailの場合は不正なリクエスト
     my $customer = $customer_service->find_customer( $email->value );
-    return $c->_callback_error() if $customer->is_registered;
+    return $c->reply->error(%error_messages) if $customer->is_registered;
 
     # Create customer
     my $customer_id = $customer_service->create_new_customer($email);
@@ -83,14 +88,6 @@ sub callback {
     # Login
     $c->service('customer')->login($customer_id);
     return $c->redirect_to('RN_customer_signup_done');
-}
-
-sub _callback_error {
-    my $c = shift;
-    $c->reply->error(
-        title         => $c->__('authorization.request.error.title'),
-        error_message => $c->__('authorization.request.error.message')
-    );
 }
 
 sub done {
