@@ -1,6 +1,7 @@
 package Yetie::Controller::Catalog::Signup;
 use Mojo::Base 'Yetie::Controller::Catalog';
 
+# NOTE: リクエストに一定期間の時間制限をかける
 sub index {
     my $c = shift;
 
@@ -10,10 +11,13 @@ sub index {
     # Validation form
     return $c->render() unless $form->do_validate;
 
-    my $email = $form->param('email');
-    my $token = $c->service('authorization')->generate_token($email);
+    my $email    = $form->param('email');
+    my $customer = $c->service('customer')->find_customer($email);
 
     # NOTE: 登録済みならurlをloginにする。またメールの内容も変える。
+    die 'Registered' if $customer->is_registered;
+
+    my $token = $c->service('authorization')->generate_token($email);
     my $url = $c->url_for( 'RN_callback_customer_signup', token => $token );
 
     $c->flash( callback_url => $url->to_abs );
