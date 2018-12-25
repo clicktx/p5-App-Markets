@@ -1,4 +1,4 @@
-package t::pages::checkout;
+package t::pages::catalog::checkout;
 
 use Mojo::Base 't::pages::common';
 use t::Util;

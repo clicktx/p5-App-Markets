@@ -1,4 +1,4 @@
-package t::pages::category;
+package t::pages::catalog::category;
 
 use Mojo::Base 't::pages::common';
 use t::Util;
