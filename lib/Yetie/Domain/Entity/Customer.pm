@@ -27,12 +27,6 @@ Yetie::Domain::Entity::Customer
 L<Yetie::Domain::Entity::Customer> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<logged_in>
-
-    my $bool = $customer->logged_in;
-
-Returns C<true> if the customer is logged in.
-
 =head2 C<emails>
 
     my $emails = $customer->emails;
