@@ -13,6 +13,39 @@ sub index {
       : $c->redirect_to('RN_customer_login_magic_link');
 }
 
+sub callback {
+    my $c     = shift;
+    my $token = $c->stash('token');
+
+    my %error_messages = (
+        title         => $c->__('authorization.request.error.title'),
+        error_message => $c->__('authorization.request.error.message')
+    );
+
+    my $auth_service  = $c->service('authorization');
+    my $authorization = $auth_service->find($token);
+    return $c->reply->error(%error_messages) unless $authorization;
+
+    my $is_validated = $auth_service->validate($authorization);
+    return $c->reply->error(%error_messages) unless $is_validated;
+
+    # Customer
+    my $email    = $authorization->email;
+    my $customer = $c->service('customer')->find_customer( $email->value );
+    return $c->reply->error(%error_messages) unless $customer->is_registered;
+
+    # Login
+    $c->service('customer')->login( $customer->id );
+
+    my $redirect_route = $authorization->redirect || 'RN_home';
+    return $c->redirect_to($redirect_route);
+}
+
+sub email_sended {
+    my $c = shift;
+    return $c->render();
+}
+
 # NOTE: メール送信リクエストに一定期間の時間制限をかける？
 sub magic_link {
     my $c = shift;
