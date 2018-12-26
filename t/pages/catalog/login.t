@@ -52,4 +52,15 @@ sub t01_magic_link_request : Tests() {
     $t->post_ok( '/login/magic-link', form => $post_data )->status_is( 302, 'right not registered' );
 }
 
+sub t02_magic_link_callback : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    my $token =
+      $t->app->resultset('AuthorizationRequest')->search( {}, { order_by => 'id DESC' } )->first->token;
+
+    $t->get_ok("/login/token/foo-bar-baz")->status_is( 400, 'right illegal token' );
+    $t->get_ok("/login/token/$token")->status_is( 302, 'right login' );
+}
+
 __PACKAGE__->runtests;
