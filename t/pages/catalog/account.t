@@ -22,7 +22,7 @@ sub t01_required_authrization : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $t->get_ok($_)->status_is( 302, 'right redirect' ) for @paths;
+    $t->get_ok($_)->status_is( 302, 'right redirect' )->header_is( Location => '/login' ) for @paths;
 }
 
 sub t02_login_process : Tests() {
