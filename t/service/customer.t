@@ -14,6 +14,7 @@ sub t01 : Tests() {
     $t->get_ok('/test/find_customer')->status_is(200);
     $t->get_ok('/test/get_addresses')->status_is(200);
     $t->get_ok('/test/store_address')->status_is(200);
+    $t->get_ok('/test/login_process');
 }
 
 __PACKAGE__->runtests;
@@ -71,6 +72,22 @@ sub store_address {
         $res = $s->store_address( 'billing_address', 1 );
         ok !$res, 'right stored address';
     };
+    $c->render( text => 1 );
+}
+
+sub login_process {
+    my $c = shift;
+    my $s = $c->service('customer');
+
+    subtest 'login_process' => sub {
+        ok !$s->login_process( '',                '' ),         'right not argument';
+        ok !$s->login_process( 'foo-bar@baz.com', '' ),         'right not found customer';
+        ok !$s->login_process( 'c@example.org',   '11223344' ), 'right password failure';
+
+        ok $s->login_process( 'c@example.org', '12345678' ), 'right accept password';
+        $c->server_session->customer_id, 111, 'right login';
+    };
+
     $c->render( text => 1 );
 }
 
