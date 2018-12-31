@@ -259,9 +259,9 @@ Returns true if log-in succeeded.
 
     $service->send_authorization_mail($email);
 
-Will send an magic link email for login or signup.
+Will send an magic link email for log-in or sign-up.
 
-Retuen render_to('RN_customer_login_email_sended') or render_to('RN_customer_signup_email_sended')
+Retuen C<render_to('RN_customer_login_email_sended')> or C<render_to('RN_customer_signup_email_sended')>
 
 =head2 C<store_address>
 
