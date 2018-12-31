@@ -34,7 +34,11 @@ sub add_history {
 
 sub create_new_customer {
     my ( $self, $email ) = @_;
-    return $self->resultset('Customer')->create_new_customer($email);
+
+    my $result = $self->resultset('Customer')->create_new_customer($email);
+    return unless $result;
+
+    return $self->factory('entity-customer')->construct( $result->to_data );
 }
 
 sub find_customer {
@@ -199,7 +203,7 @@ the following new ones.
 
     my $customer_id = $service->create_new_customer($email);
 
-Return customer ID(integer)
+Return L<Yetie::Domain::Entity::Customer> object or C<undef>.
 
 =head2 C<find_customer>
 

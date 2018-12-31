@@ -46,10 +46,10 @@ sub callback {
     return $c->reply->error(%error_messages) if $customer->is_registered;
 
     # Create customer
-    my $customer_id = $customer_service->create_new_customer($email);
+    my $new_customer = $customer_service->create_new_customer($email);
 
     # Login
-    $c->service('customer')->login($customer_id);
+    $c->service('customer')->login( $new_customer->id );
     return $c->redirect_to('RN_customer_signup_done');
 }
 

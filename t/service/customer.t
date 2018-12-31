@@ -11,6 +11,7 @@ sub t01 : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
+    $t->get_ok('/test/create_new_customer')->status_is(200);
     $t->get_ok('/test/find_customer')->status_is(200);
     $t->get_ok('/test/get_addresses')->status_is(200);
     $t->get_ok('/test/store_address')->status_is(200);
@@ -23,6 +24,20 @@ package Yetie::Controller::Catalog::Test;
 use Mojo::Base 'Yetie::Controller::Catalog';
 use Test::More;
 use Test::Deep;
+
+sub create_new_customer {
+    my $c = shift;
+    my $s = $c->service('customer');
+
+    my $new_customer = $s->create_new_customer('new_customer_on_service@example.com');
+    isa_ok $new_customer, 'Yetie::Domain::Entity::Customer';
+    ok $new_customer->id, 'right id';
+
+    $new_customer = $s->create_new_customer('new_customer_on_service@example.com');
+    is $new_customer, undef, 'right duplicated';
+
+    $c->render( text => 1 );
+}
 
 sub find_customer {
     my $c = shift;
