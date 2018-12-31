@@ -11,45 +11,8 @@ sub index {
     # Validation form
     return $c->render() unless $form->do_validate;
 
-    my $email    = $form->param('email');
-    my $customer = $c->service('customer')->find_customer($email);
-
-    # NOTE: 登録済みならurlをloginにする。またメールの内容も変える。
-    die 'Registered' if $customer->is_registered;
-
-    my $token = $c->service('authorization')->generate_token($email);
-    my $url = $c->url_for( 'RN_callback_customer_signup', token => $token );
-
-    $c->flash( callback_url => $url->to_abs );
-    $c->redirect_to('RN_customer_signup_email_sended');
-
-# 1. email checking
-# emailチェック用テーブルにtokenと有効期限をセット
-#   email,token,expires,ip?
-#   同じemailは上書き
-#   登録済みemailが入力されたときの動作。「登録済みです」と表示するのは良くないか？
-#   （登録済みかチェック出来てしまう）
-# emailを送信
-# 2. set password
-
-    # Web サービスにパスワードは必要ない - Frasco
-    # https://frasco.io/your-users-dont-need-a-password-8527a891e224
-
-    # Registration – Activate a New Account by Email
-    # Verification Token
-    # The VerificationToken Entity
-    # Add the enabled Field to User
-    # Using a Spring Event to Create the Token and Send the Verification Email
-    #
-    # The Event and The Listener
-    # The RegistrationListener Handles the OnRegistrationCompleteEvent
-    # Processing the Verification Token Parameter
-    # RegistrationController Processing the Registration Confirmation
-    # Adding Account Activation Checking to the Login Process
-    # CustomAuthenticationFailureHandler:
-
-    # Registration customer data
-    # Create login session
+    my $email = $form->param('email');
+    return $c->service('customer')->send_authorization_mail($email);
 }
 
 sub email_sended {

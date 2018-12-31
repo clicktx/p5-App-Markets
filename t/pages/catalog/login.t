@@ -31,26 +31,26 @@ sub t00_login : Tests() {
     $t->get_ok('/login')->status_is( 302, 'right after logged-in' );
 }
 
-# NOTE: login process is in t/pages/catalog/account.t
 sub t01_magic_link_request : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
     $t->get_ok('/login/magic-link')->status_is( 200, 'right request form' );
 
-    my $post_data = {
-        csrf_token => $self->csrf_token,
-        email      => $login_email,
-    };
-    $t->post_ok( '/login/magic-link', form => $post_data )->status_is( 302, 'right token request' );
-
     # Not registered
-    $post_data = {
+    my $post_data = {
         csrf_token => $self->csrf_token,
         email      => 'foo-bar-baz@example.org',
     };
+    $t->post_ok( '/login/magic-link', form => $post_data )->status_is( 302, 'right not registered' )
+      ->header_is( location => '/signup/email-sended' );
 
-    # $t->post_ok( '/login/magic-link', form => $post_data )->status_is( 302, 'right not registered' );
+    $post_data = {
+        csrf_token => $self->csrf_token,
+        email      => $login_email,
+    };
+    $t->post_ok( '/login/magic-link', form => $post_data )->status_is( 302, 'right token request' )
+      ->header_is( location => '/login/email-sended' );
 }
 
 sub t02_magic_link_callback : Tests() {

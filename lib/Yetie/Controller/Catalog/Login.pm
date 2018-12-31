@@ -56,18 +56,8 @@ sub magic_link {
     return $c->render() unless $form->has_data;
     return $c->render() unless $form->do_validate;
 
-    my $email    = $form->param('email');
-    my $customer = $c->service('customer')->find_customer($email);
-
-    # NOTE: 未登録の場合は登録確認のメールを送信する
-    die 'Not registered' unless $customer->is_registered;
-
-    my $redirect = $c->flash('ref') || 'RN_customer_home';
-    my $token = $c->service('authorization')->generate_token( $email, { redirect => $redirect } );
-    my $url = $c->url_for( 'RN_callback_customer_login', token => $token );
-
-    $c->flash( callback_url => $url->to_abs );
-    $c->redirect_to('RN_customer_login_email_sended');
+    my $email = $form->param('email');
+    return $c->service('customer')->send_authorization_mail($email);
 }
 
 sub toggle {

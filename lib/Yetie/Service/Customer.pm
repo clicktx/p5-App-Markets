@@ -111,6 +111,25 @@ sub login_process {
     return $self->login( $customer->id );
 }
 
+sub send_authorization_mail {
+    my ( $self, $email ) = @_;
+    my $c = $self->controller;
+
+    my $redirect = $c->flash('ref') || 'RN_home';
+    my $token = $c->service('authorization')->generate_token( $email, { redirect => $redirect } );
+    my $url = $c->url_for( 'RN_callback_customer_login', token => $token );
+
+    # WIP: Send email
+
+    # NOTE: demo and debug
+    $c->flash( callback_url => $url->to_abs );
+
+    my $customer = $self->find_customer($email);
+    my $redirect_route =
+      $customer->is_registered ? 'RN_customer_login_email_sended' : 'RN_customer_signup_email_sended';
+    return $c->redirect_to($redirect_route);
+}
+
 sub store_address {
     my ( $self, $address_type, $address_id ) = @_;
     my $c = $self->controller;
@@ -231,6 +250,14 @@ Return boolean value.
     my $bool = $service->story->login_process;
 
 Returns true if log-in succeeded.
+
+=head2 C<send_authorization_mail>
+
+    $service->send_authorization_mail($email);
+
+Will send an magic link email for login or signup.
+
+Retuen render_to('RN_customer_login_email_sended') or render_to('RN_customer_signup_email_sended')
 
 =head2 C<store_address>
 
