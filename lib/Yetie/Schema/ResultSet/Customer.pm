@@ -1,5 +1,6 @@
 package Yetie::Schema::ResultSet::Customer;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
+use Try::Tiny;
 
 has prefetch => sub {
     [ { customer_password => 'password' }, { emails => 'email' } ];
@@ -8,16 +9,20 @@ has prefetch => sub {
 sub create_new_customer {
     my ( $self, $email ) = @_;
 
-    return $self->create(
-        {
-            emails => [
-                {
-                    email      => { address => $email },
-                    is_primary => 1,
-                }
-            ]
-        }
-    )->id;
+    my $result;
+    try {
+        $result = $self->create(
+            {
+                emails => [
+                    {
+                        email      => { address => $email },
+                        is_primary => 1,
+                    }
+                ]
+            }
+        );
+    };
+    return $result;
 }
 
 sub find_by_email {
