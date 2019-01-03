@@ -19,7 +19,8 @@ subtest 'generate_token' => sub {
     my $last_id = $rs->last_id;
 
     my $r = qr/[0-9A-F]/;
-    like $s->generate_token('foo@example.org'), qr/$r{8}\-$r{4}\-4$r{3}\-[89AB]$r{3}\-$r{12}/, 'right token';
+    my $token = $s->generate_token( 'foo@example.org', { redirect => 'foo' } );
+    like $token, qr/$r{8}\-$r{4}\-4$r{3}\-[89AB]$r{3}\-$r{12}/, 'right token';
     isnt $last_id, $rs->last_id, 'right store to DB';
 };
 

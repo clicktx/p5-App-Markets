@@ -42,33 +42,31 @@ sub register {
             $session->load;
 
             # Create session or extend expires
-            if ( $session->sid ) {
-                say "   ... ented session expires time.";            # debug
-                $session->extend_expires;
-            }
-            else {
-                _create_session( $c, $session );
-            }
+            if   ( $session->sid ) { $session->extend_expires }
+            else                   { _create_session( $c, $session ) }
+
+            # Cookie check
+            $c->cookie( cookie_check => 1, { path => '/', expires => time + 60 * 60 * 24 * 365 } );
         }
     );
 }
 
+# NOTE: cookieに対応している場合のみセッション生成する
 sub _create_session {
     my ( $c, $session ) = @_;
-    my $landing_page_on_cookie = $c->cookie_session('landing_page');
 
-    # cookieに対応している場合のみセッション生成する
-    # cookieが無いときはlanding pageのurlを保存
-    if ($landing_page_on_cookie) {
-        say "   ... created new session.";    # debug
-        $session->data( landing_page => $landing_page_on_cookie, );
-        $session->create;
-    }
-    else {
-        say "   ... created cookie landing_page.";    # debug
-        my $landing_page = $c->req->url->to_string;
-        $c->cookie_session( landing_page => $landing_page );
-    }
+    # Landing page
+    my $landing = $c->cookie_session('landing_page');
+    $c->cookie_session( landing_page => $c->req->url->to_string ) unless $landing;
+
+    # Cookie check
+    my $cookie_check = $c->cookie('cookie_check');
+    $c->cookie( cookie_check => 1, { path => '/', expires => time + 60 * 60 * 24 * 365 } );
+    return unless $cookie_check;
+
+    # Create new server session
+    $session->data( landing_page => $c->cookie_session('landing_page') );
+    $session->create;
 }
 
 1;
@@ -81,7 +79,7 @@ Yetie::App::Core::Session - forked from Mojolicious::Plugin::Session
 =head1 SYNOPSIS
 
     # Mojolicious::Lite
-    plugin session =>
+    plugin 'Yetie::App::Core::Session' =>
         {
             stash_key       => 'yetie.session',
             store           => 'dbi',
@@ -90,7 +88,7 @@ Yetie::App::Core::Session - forked from Mojolicious::Plugin::Session
 
     # Mojolicious
     $self->plugin(
-        session => {
+        'Yetie::App::Core::Session' => {
             stash_key       => 'yetie.session',
             store           => 'dbi',
             expires_delta   => 5

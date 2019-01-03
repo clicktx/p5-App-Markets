@@ -1,4 +1,4 @@
-package t::pages::checkout;
+package t::pages::catalog::checkout;
 
 use Mojo::Base 't::pages::common';
 use t::Util;
@@ -37,10 +37,14 @@ sub test_01_01_no_loged_in : Tests() {
     $t->get_ok('/checkout')->status_is(200);
     is_deeply $t->tx->redirects, [], 'right no redirects';
 
-    $t->get_ok($_)->status_is(200)->content_like(qr/login/)
+    $t->get_ok($_)->status_is(302)
       for (
         qw(
         /checkout/shipping-address
+        /checkout/delivery-options
+        /checkout/payment-option
+        /checkout/billing-address
+        /checkout/confirm
         )
       );
 }

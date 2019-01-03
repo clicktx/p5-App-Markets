@@ -186,4 +186,13 @@ subtest 'remove_session' => sub {
     is $session->remove_session, 0, 'right do not remove session';
 };
 
+subtest 'cookie_expires' => sub {
+    my $session = t::Util::server_session($app);
+    $session->create;
+
+    is $session->cookie_expires(1234567890), 1234567890, 'right set cookie expires';
+    is $session->_is_flushed, 0, 'right flushed flag';
+    ok $session->cookie_expires, 'right get cookie expires';
+};
+
 done_testing();

@@ -3,6 +3,7 @@ use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has token => sub { __PACKAGE__->factory('value-token')->construct() };
 has email => sub { __PACKAGE__->factory('value-email')->construct() };
+has redirect      => '';
 has request_ip    => 'unknown';
 has is_activated  => 0;
 has expires       => sub { __PACKAGE__->factory('value-expires')->construct() };
@@ -44,6 +45,23 @@ Yetie::Domain::Entity::Authorization
 L<Yetie::Domain::Entity::Authorization> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<token>
+
+=head2 C<email>
+
+=head2 C<redirect>
+
+=head2 C<request_ip>
+
+=head2 C<is_activated>
+
+=head2 C<expires>
+
+=head2 C<created_at>
+
+=head2 C<updated_at>
+
+=head2 C<error_message>
 
 =head1 METHODS
 

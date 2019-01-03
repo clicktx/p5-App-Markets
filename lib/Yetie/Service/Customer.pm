@@ -34,7 +34,11 @@ sub add_history {
 
 sub create_new_customer {
     my ( $self, $email ) = @_;
-    return $self->resultset('Customer')->create_new_customer($email);
+
+    my $result = $self->resultset('Customer')->create_new_customer($email);
+    return unless $result;
+
+    return $self->factory('entity-customer')->construct( $result->to_data );
 }
 
 sub find_customer {
@@ -72,7 +76,7 @@ sub load_history {
     $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
-sub logged_in {
+sub login {
     my ( $self, $customer_id ) = @_;
     my $session = $self->controller->server_session;
 
@@ -108,7 +112,28 @@ sub login_process {
     return $self->_login_failed( 'login.failed.password', email => $email )
       unless $customer->password->is_verify($raw_password);
 
-    return $self->logged_in( $customer->id );
+    return $self->login( $customer->id );
+}
+
+sub send_authorization_mail {
+    my ( $self, $email ) = @_;
+
+    my $c        = $self->controller;
+    my $redirect = $c->flash('ref') || 'RN_home';
+    my $token    = $c->service('authorization')->generate_token( $email, { redirect => $redirect } );
+
+    my $customer       = $self->find_customer($email);
+    my $callback_route = $customer->is_registered ? 'RN_callback_customer_login' : 'RN_callback_customer_signup';
+    my $url            = $c->url_for( $callback_route, token => $token );
+
+    # WIP: Send email
+
+    # NOTE: demo and debug
+    $c->flash( callback_url => $url->to_abs );
+
+    my $redirect_route =
+      $customer->is_registered ? 'RN_customer_login_email_sended' : 'RN_customer_signup_email_sended';
+    return $c->redirect_to($redirect_route);
 }
 
 sub store_address {
@@ -180,7 +205,7 @@ the following new ones.
 
     my $customer_id = $service->create_new_customer($email);
 
-Return customer ID(integer)
+Return L<Yetie::Domain::Entity::Customer> object or C<undef>.
 
 =head2 C<find_customer>
 
@@ -218,11 +243,11 @@ See L</get_addresses>
 
     my $history = $c->service('customer')->load_history;
 
-=head2 C<logged_in>
+=head2 C<login>
 
 Set customer logged-in flag to server_session.
 
-    my $bool = $service->logged_in($customer_id);
+    my $bool = $service->login($customer_id);
 
 Return boolean value.
 
@@ -231,6 +256,14 @@ Return boolean value.
     my $bool = $service->story->login_process;
 
 Returns true if log-in succeeded.
+
+=head2 C<send_authorization_mail>
+
+    $service->send_authorization_mail($email);
+
+Will send an magic link email for log-in or sign-up.
+
+Retuen C<render_to('RN_customer_login_email_sended')> or C<render_to('RN_customer_signup_email_sended')>
 
 =head2 C<store_address>
 
