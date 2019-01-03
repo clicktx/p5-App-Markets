@@ -61,6 +61,17 @@ sub t04_get_addresses : Tests() {
     is $e->list->size, 0, 'right bad address type name';
 }
 
+sub t05_send_authorization_mail : Tests() {
+    my $self = shift;
+    my ( $c, $s ) = $self->_init();
+
+    $s->send_authorization_mail('foo-bar@exapmle.org');
+    like $c->session('new_flash')->{callback_url}->to_string, qr|/signup/get-started|, 'right singup';
+
+    $s->send_authorization_mail('a@example.org');
+    like $c->session('new_flash')->{callback_url}->to_string, qr|/login/token|, 'right login';
+}
+
 __PACKAGE__->runtests;
 
 package Yetie::Controller::Catalog::Test;
