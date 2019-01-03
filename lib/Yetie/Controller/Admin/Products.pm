@@ -11,7 +11,7 @@ sub index {
     $form->do_validate;
 
     # use service
-    my $products = $c->service('products')->search_products($form);
+    my $products = $c->service('product')->search_products($form);
     $c->stash( entity => $products );
 
     # Page Data
