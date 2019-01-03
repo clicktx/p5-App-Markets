@@ -117,18 +117,20 @@ sub login_process {
 
 sub send_authorization_mail {
     my ( $self, $email ) = @_;
-    my $c = $self->controller;
 
+    my $c        = $self->controller;
     my $redirect = $c->flash('ref') || 'RN_home';
-    my $token = $c->service('authorization')->generate_token( $email, { redirect => $redirect } );
-    my $url = $c->url_for( 'RN_callback_customer_login', token => $token );
+    my $token    = $c->service('authorization')->generate_token( $email, { redirect => $redirect } );
+
+    my $customer       = $self->find_customer($email);
+    my $callback_route = $customer->is_registered ? 'RN_callback_customer_login' : 'RN_callback_customer_signup';
+    my $url            = $c->url_for( $callback_route, token => $token );
 
     # WIP: Send email
 
     # NOTE: demo and debug
     $c->flash( callback_url => $url->to_abs );
 
-    my $customer = $self->find_customer($email);
     my $redirect_route =
       $customer->is_registered ? 'RN_customer_login_email_sended' : 'RN_customer_signup_email_sended';
     return $c->redirect_to($redirect_route);
