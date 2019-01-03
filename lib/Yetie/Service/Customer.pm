@@ -115,6 +115,27 @@ sub login_process {
     return $self->login( $customer->id );
 }
 
+sub search_customers {
+    my ( $self, $form ) = @_;
+
+    my $conditions = {
+        where    => '',
+        order_by => '',
+        page_no  => $form->param('page') || 1,
+        per_page => $form->param('per_page') || 5,
+    };
+    my $rs = $self->resultset('Customer')->search_customers($conditions);
+
+    my $data = {
+        meta_title    => 'Customers',
+        form          => $form,
+        breadcrumbs   => [],
+        customer_list => $rs->to_data,
+        pager         => $rs->pager,
+    };
+    return $self->factory('entity-page-customers')->construct($data);
+}
+
 sub send_authorization_mail {
     my ( $self, $email ) = @_;
 
@@ -256,6 +277,12 @@ Return boolean value.
     my $bool = $service->story->login_process;
 
 Returns true if log-in succeeded.
+
+=head2 C<search_customers>
+
+    my $customers = $service->search_customers($form_object);
+
+Return L<Yetie::Domain::Entity::Page::Customers> Object.
 
 =head2 C<send_authorization_mail>
 

@@ -61,7 +61,18 @@ sub t04_get_addresses : Tests() {
     is $e->list->size, 0, 'right bad address type name';
 }
 
-sub t05_send_authorization_mail : Tests() {
+sub t05_search_customers : Tests() {
+    my $self = shift;
+    my ( $c, $s ) = $self->_init();
+
+    my $form = $c->form('search');
+    $form->do_validate;
+
+    my $e = $s->search_customers($form);
+    isa_ok $e, 'Yetie::Domain::Entity::Page::Customers';
+}
+
+sub t06_send_authorization_mail : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
