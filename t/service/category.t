@@ -46,6 +46,16 @@ subtest 'find_category_with_products' => sub {
     is $e->id, undef, 'right not found category';
 };
 
+subtest 'get_category_tree' => sub {
+    my ( $c, $s ) = _init();
+
+    is $app->cache('category_tree'), undef, 'right not cached';
+
+    my $tree = $s->get_category_tree();
+    isa_ok $tree, 'Yetie::Domain::Entity::CategoryTree';
+    isa_ok $app->cache('category_tree'), 'Yetie::Domain::Entity::CategoryTree', 'right cached';
+};
+
 done_testing();
 
 __END__

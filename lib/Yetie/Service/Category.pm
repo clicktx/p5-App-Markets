@@ -5,6 +5,28 @@ sub find_category_with_products { shift->_find_category( @_, 1 ) }
 
 sub find_category { shift->_find_category( @_, undef ) }
 
+sub get_category_tree {
+    my $self = shift;
+
+    my $cache = $self->app->cache('category_tree');
+    return $cache if $cache;
+
+    my $root = $self->resultset('Category')->search( { level => 0 } );
+    my $tree = _create_tree($root) || [];
+    my $entity = $self->app->factory('entity-category_tree')->construct( children => $tree );
+
+    # Set to cache
+    $self->app->cache( category_tree => $entity );
+    return $entity;
+}
+
+sub _create_tree {
+    my $nodes = shift;
+    my @tree;
+    $nodes->each( sub { push @tree, shift->to_data } );
+    return \@tree;
+}
+
 sub _find_category {
     my ( $self, $category_id, $form, $with_products ) = @_;
     my $category = $self->resultset('Category')->find($category_id);
@@ -73,6 +95,15 @@ The attribute "products" has a list of products.
     my $entity = $service->find_category( $category_id, $form );
 
 Return L<Yetie::Domain::Entity::Page::Category> object.
+
+=head2 C<get_category_tree>
+
+    my $category_tree = $service->get_category_tree;
+
+Return L<Yetie::Domain::Enity::CategoryTree> object.
+
+If there is a cache it returns it.
+If it is not cached, it creates an entity object.
 
 =head1 AUTHOR
 
