@@ -25,6 +25,8 @@ sub csrf_protect {
     return;
 }
 
+sub is_get_request { shift->req->method eq 'GET' ? 1 : 0 }
+
 sub is_logged_in {
     my $self = shift;
 
@@ -203,6 +205,12 @@ L<Mojolicious::Controller/cookie>
     $c->csrf_protect();
 
 Request method 'POST' requires CSRF token.
+
+=head2 C<is_get_request>
+
+    my $bool = $c->is_get_request;
+
+Return boolean value.
 
 =head2 C<is_logged_in>
 
