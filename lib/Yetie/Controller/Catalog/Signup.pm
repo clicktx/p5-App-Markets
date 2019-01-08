@@ -5,8 +5,11 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 sub index {
     my $c = shift;
 
+    # Initialize form
     my $form = $c->form('base-email');
-    return $c->render() unless $form->has_data;
+
+    # Get request
+    return $c->render() if $c->is_get_request;
 
     # Validation form
     return $c->render() unless $form->do_validate;

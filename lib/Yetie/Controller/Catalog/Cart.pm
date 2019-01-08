@@ -25,7 +25,11 @@ sub index {
     # Initialize form
     my $form = $c->form('cart');
     $c->init_form( $form, $cart );
-    return $c->render() unless $form->has_data;
+
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
     return $c->render() unless $form->do_validate;
 
     # Edit cart
