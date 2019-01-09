@@ -16,15 +16,18 @@
             var $this = $(this);
             data[$this.data('name')] = $this.data('value');
 
+            // Target form
+            //var $form = $('<form>').attr({
+            //    action: $this.attr('href'),
+            //    method: 'POST',
+            //});
+            var $form = $this.parent('form');
+
             // Append hidden fields
-            var $form = $('<form>').attr({
-                action: $this.attr('href'),
-                method: 'POST',
-            });
             for (key in data){ appendHiddenField( $form, key, data[key] ) }
 
             // Submit form
-            $('body').append($form);
+            //$('body').append($form);
             $form.submit();
             return false;
         });
