@@ -50,7 +50,7 @@ sub find_customer {
     return $self->factory('entity-customer')->construct($data);
 }
 
-sub get_addresses {
+sub get_address_list {
     my ( $self, $customer_id ) = @_;
 
     my $rs = $self->resultset('Address')->search(
@@ -224,9 +224,9 @@ Return L<Yetie::Domain::Entity::Customer> object or C<undef>.
 
 Return L<Yetie::Domain::Entity::Customer> object.
 
-=head2 C<get_addresses>
+=head2 C<get_address_list>
 
-    my $addresses = $service->get_addresses($customer_id);
+    my $addresses = $service->get_address_list($customer_id);
 
 Return L<Yetie::Domain::List::Addresses> object.
 

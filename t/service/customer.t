@@ -46,15 +46,15 @@ sub t03_find_customer : Tests() {
     is $entity->id, 111, 'right customer';
 }
 
-sub t04_get_addresses : Tests() {
+sub t04_get_address_list : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
-    my $e = $s->get_addresses(112);
+    my $e = $s->get_address_list(112);
     isa_ok $e, 'Yetie::Domain::List::Addresses';
     is $e->list->size, 1, 'right addresses';
 
-    $e = $s->get_addresses(999);
+    $e = $s->get_address_list(999);
     is $e->list->size, 0, 'right not found customer';
 }
 
