@@ -50,15 +50,12 @@ sub t04_get_addresses : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
-    my $e = $s->get_addresses( 112, 'shipping_address' );
+    my $e = $s->get_addresses(112);
     isa_ok $e, 'Yetie::Domain::List::Addresses';
     is $e->list->size, 1, 'right shipping addresses';
 
-    $e = $s->get_addresses( 112, 'billing_address' );
+    $e = $s->get_addresses(112);
     is $e->list->size, 1, 'right billing addresses';
-
-    $e = $s->get_addresses( 112, 'foo' );
-    is $e->list->size, 0, 'right bad address type name';
 }
 
 sub t05_search_customers : Tests() {
@@ -95,14 +92,14 @@ sub store_address {
     my $s = $c->service('customer');
 
     subtest 'store_address' => sub {
-        my $res = $s->store_address( 'billing_address', 1 );
+        my $res = $s->store_address(1);
         ok !$res, 'right no data';
 
         $c->server_session->customer_id(115);
-        $res = $s->store_address( 'billing_address', 1 );
+        $res = $s->store_address(1);
         ok $res, 'right store address';
 
-        $res = $s->store_address( 'billing_address', 1 );
+        $res = $s->store_address(1);
         ok !$res, 'right stored address';
     };
     $c->render( text => 1 );
