@@ -18,6 +18,7 @@
 
 <h3>Select a shipping address</h3>
 <div class="">
+    <%= form_for 'RN_checkout_select_address' => ( method => 'POST' ) => begin %>
     % $addresses->each( sub {
         % my ($address, $n) = @_;
         <%= include 'common/elements/address', address => $address %>
@@ -25,6 +26,7 @@
         <%= link_to 'Edit' => '', ( class => 'btn btn-light' ) %>
         <%= link_to 'Remove' => '', ( class => 'btn btn-light' ) %>
     % });
+    <% end %>
 </div>
 
 <h3>Add a new address</h3>
