@@ -53,7 +53,11 @@ sub magic_link {
 
     # Initialize form
     my $form = $c->form('base-email');
-    return $c->render() unless $form->has_data;
+
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
     return $c->render() unless $form->do_validate;
 
     my $email = $form->param('email');
@@ -75,7 +79,11 @@ sub with_password {
 
     # Initialize form
     my $form = $c->form('account-login');
-    return $c->render() unless $form->has_data;
+
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
     return $c->render() unless $form->do_validate;
 
     my $email    = $form->param('email');

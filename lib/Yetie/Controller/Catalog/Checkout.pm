@@ -44,7 +44,6 @@ sub shipping_address {
     }
 
     # Set Address
-    $form_set_address->do_validate;
     return $c->render() unless $form_set_address->do_validate;
 
     my $set_address = $c->factory('entity-address')->construct( $form_set_address->params->to_hash );
@@ -98,7 +97,6 @@ sub billing_address {
     }
 
     # Set Address
-    $form_set_address->do_validate;
     return $c->render() unless $form_set_address->do_validate;
 
     my $set_address = $c->factory('entity-address')->construct( $form_set_address->params->to_hash );
