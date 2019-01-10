@@ -62,10 +62,6 @@ sub get_addresses {
     return $self->factory('list-addresses')->construct( list => $rs->to_data );
 }
 
-sub get_billing_addresses { say "Deprecated"; shift->get_addresses(shift) }
-
-sub get_shipping_addresses { say "Deprecated"; shift->get_addresses(shift) }
-
 sub load_history {
     my $self = shift;
     my $c    = $self->controller;
@@ -233,30 +229,6 @@ Return L<Yetie::Domain::Entity::Customer> object.
     my $addresses = $service->get_addresses($customer_id);
 
 Return L<Yetie::Domain::List::Addresses> object.
-
-=head2 C<get_billing_addresses>
-
-Deprecated
-
-    my $addresses = $service->get_billing_addresses($customer_id);
-
-    # Alias method
-    my $addresses = $service->get_addresses($customer_id);
-
-Return L<Yetie::Domain::List::Addresses> object.
-See L</get_addresses>
-
-=head2 C<get_shipping_addresses>
-
-Deprecated
-
-    my $addresses = $service->get_shipping_addresses($customer_id);
-
-    # Alias method
-    my $addresses = $service->get_addresses($customer_id);
-
-Return L<Yetie::Domain::List::Addresses> object.
-See L</get_addresses>
 
 =head2 C<load_history>
 

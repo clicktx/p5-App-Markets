@@ -52,10 +52,10 @@ sub t04_get_addresses : Tests() {
 
     my $e = $s->get_addresses(112);
     isa_ok $e, 'Yetie::Domain::List::Addresses';
-    is $e->list->size, 1, 'right shipping addresses';
+    is $e->list->size, 1, 'right addresses';
 
-    $e = $s->get_addresses(112);
-    is $e->list->size, 1, 'right billing addresses';
+    $e = $s->get_addresses(999);
+    is $e->list->size, 0, 'right not found customer';
 }
 
 sub t05_search_customers : Tests() {
