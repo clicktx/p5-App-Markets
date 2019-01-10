@@ -135,7 +135,7 @@
 
     # Orders
     'Sales' => [
-        [qw/id customer_id address_id created_at updated_at/],
+        [qw/id customer_id billing_address_id created_at updated_at/],
         [ 1, 111, 1, '2017-06-06 20:01:35', '2017-06-06 20:01:35' ],
         [ 2, 112, 2, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
         [ 3, 113, 4, '2017-07-07 07:08:05', '2017-07-07 07:08:05' ],
@@ -145,7 +145,7 @@
         [ 7, 113, 4, '2017-07-07 07:15:01', '2017-07-07 07:15:01' ],
     ],
     'Sales::Order' => [
-        [qw/id sales_id address_id/],
+        [qw/id sales_id shipping_address_id/],
         [ 1, 1, 1 ],
         [ 2, 1, 3 ],
         [ 3, 2, 2 ],
