@@ -27,13 +27,13 @@ subtest 'method find_by_order_id()' => sub {
 sub _find_tests {
     my $res = shift;
 
-    is $res->id,         1, 'right id';
-    is $res->address_id, 1, 'right address_id';
+    is $res->id,                 1, 'right id';
+    is $res->billing_address_id, 1, 'right billing address id';
     cmp_deeply $res->{related_resultsets},
       {
         billing_address => ignore(),
         customer        => ignore(),
-        orders       => ignore(),
+        orders          => ignore(),
       },
       'right related_resultsets';
 
