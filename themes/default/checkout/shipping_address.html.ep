@@ -18,7 +18,7 @@
 
 <h3>Select a shipping address</h3>
 <div class="">
-    <%= form_for 'RN_checkout_select_address' => ( method => 'POST' ) => begin %>
+    <%= form_for 'RN_checkout_shipping_address_select' => ( method => 'POST' ) => begin %>
     % $addresses->each( sub {
         % my ($address, $n) = @_;
         <%= include 'common/elements/address', address => $address %>
