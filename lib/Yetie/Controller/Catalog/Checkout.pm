@@ -26,27 +26,19 @@ sub shipping_address {
     my $c = shift;
 
     my $customer_id = $c->server_session->customer_id;
-    my $addresses   = $c->service('customer')->get_shipping_addresses($customer_id);
+    my $addresses   = $c->service('customer')->get_address_list($customer_id);
     $c->stash( addresses => $addresses );
 
-    my $form_select_address = $c->form('checkout-select_address');
-    my $form_set_address    = $c->form('shipping_address');
-    return $c->render() unless $form_select_address->has_data;
+    my $form = $c->form('shipping_address');
 
-    $form_select_address->do_validate;
-    my $no       = $form_select_address->param('select_address');
-    my $selected = $addresses->get($no);
+    # Get request
+    return $c->render() if $c->is_get_request;
 
-    # Select Address
-    if ($selected) {
-        $c->cart->set_shipping_address($selected);
-        return $c->confirm_handler;
-    }
+    # Validation form
+    return $c->render() unless $form->do_validate;
 
     # Set Address
-    return $c->render() unless $form_set_address->do_validate;
-
-    my $set_address = $c->factory('entity-address')->construct( $form_set_address->params->to_hash );
+    my $set_address = $c->factory('entity-address')->construct( $form->params->to_hash );
     $c->cart->set_shipping_address($set_address);
 
     # NOTE: 1箇所のみに配送の場合
@@ -65,6 +57,13 @@ sub shipping_address {
     return $c->confirm_handler;
 }
 
+sub shipping_address_select {
+    my $c = shift;
+
+    $c->_select_address('shipping_address');
+    return $c->confirm_handler;
+}
+
 sub delivery_option {
     my $c = shift;
     return $c->redirect_to('RN_checkout_payment_method');
@@ -79,28 +78,27 @@ sub billing_address {
     my $c = shift;
 
     my $customer_id = $c->server_session->customer_id;
-    my $addresses   = $c->service('customer')->get_billing_addresses($customer_id);
+    my $addresses   = $c->service('customer')->get_address_list($customer_id);
     $c->stash( addresses => $addresses );
 
-    my $form_select_address = $c->form('checkout-select_address');
-    my $form_set_address    = $c->form('billing_address');
-    return $c->render() unless $form_select_address->has_data;
+    my $form = $c->form('billing_address');
 
-    $form_select_address->do_validate;
-    my $no       = $form_select_address->param('select_address');
-    my $selected = $addresses->get($no);
+    # Get request
+    return $c->render() if $c->is_get_request;
 
-    # Select Address
-    if ($selected) {
-        $c->cart->set_billing_address($selected);
-        return $c->confirm_handler;
-    }
+    # Validation form
+    return $c->render() unless $form->do_validate;
 
     # Set Address
-    return $c->render() unless $form_set_address->do_validate;
-
-    my $set_address = $c->factory('entity-address')->construct( $form_set_address->params->to_hash );
+    my $set_address = $c->factory('entity-address')->construct( $form->params->to_hash );
     $c->cart->set_billing_address($set_address);
+    return $c->confirm_handler;
+}
+
+sub billing_address_select {
+    my $c = shift;
+
+    $c->_select_address('billing_address');
     return $c->confirm_handler;
 }
 
@@ -231,6 +229,24 @@ sub complete_handler {
 
     # redirect_to thank you page
     $c->redirect_to('RN_checkout_complete');
+}
+
+sub _select_address {
+    my ( $c, $address_type ) = @_;
+
+    my $form = $c->form('checkout-select_address');
+    return unless $form->do_validate;
+
+    my $no          = $form->param('select_no');
+    my $customer_id = $c->server_session->customer_id;
+    my $addresses   = $c->service('customer')->get_address_list($customer_id);
+    my $selected    = $addresses->get($no);
+    return unless $selected;
+
+    # Set Address
+    # NOTE: set_billing_address or set_shipping_address
+    my $method = 'set_' . $address_type;
+    $c->cart->$method($selected);
 }
 
 1;
