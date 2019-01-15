@@ -82,6 +82,7 @@ sub import {
     tie %{"${caller}::schema"}, 'Tie::IxHash';
     monkey_patch $caller, 'extends',   sub { _extends(@_) };
     monkey_patch $caller, 'fieldset',  sub { _fieldset(@_) };
+    monkey_patch $caller, 'requires',  sub { _requires( $caller, @_ ) };
     monkey_patch $caller, 'has_field', sub { append_field( $caller, @_ ) };
     monkey_patch $caller, 'c',         sub { Mojo::Collection->new(@_) };
 
@@ -145,6 +146,15 @@ sub _replace_key {
     return $arg;
 }
 
+sub _requires {
+    my $caller = shift;
+
+    foreach my $name (@_) {
+        my $pkg = _fieldset($name);
+        $caller->append_field( $_ => $pkg->schema->{$_} ) for @{ $pkg->field_keys };
+    }
+}
+
 1;
 __END__
 
@@ -175,6 +185,15 @@ Yetie::Form::FieldSet
     } else {
         $c->render( text => 'validation failure');
     }
+
+To import multiple field set modules, use C<requires>.
+
+    package Yetie::Form::FieldSet::Foo;
+
+    # All fields include.
+    # FieldSet::Bar, FieldSet::Baz and FieldSet::Qux
+    requires qw(bar baz qux);
+    1;
 
 =head1 IMPORT OPTIONS
 
@@ -324,6 +343,12 @@ Load a class.
     has_field 'field_name' => ( type => 'text', ... );
 
     has_field 'field_name' => { type => 'text', ...  };
+
+=head2 C<requires>
+
+    requires qw(base-address base-name base-phone);
+
+Import all fields.
 
 =head1 METHODS
 
