@@ -10,15 +10,16 @@ has_field 'id' => (
 );
 
 has_field 'country_code' => (
-    type        => 'choice',
-    required    => 1,
-    label       => 'Country',
-    help        => '',
-    filters     => [qw(trim)],
-    validations => [],
-    expanded    => 0,
-    multiple    => 0,
-    choices     => [
+    type         => 'choice',
+    required     => 1,
+    label        => 'Country',
+    help         => '',
+    autocomplete => 'off',
+    filters      => [qw(trim)],
+    validations  => [],
+    expanded     => 0,
+    multiple     => 0,
+    choices      => [
         c( Americas       => [ [ Canada  => 'ca' ], [ 'United States' => 'us' ] ] ),
         c( 'Asia Pacific' => [ [ China   => 'cn' ], [ Japan           => 'jp' ] ] ),
         c( EU             => [ [ England => 'en' ], [ Germany         => 'de' ] ] ),
