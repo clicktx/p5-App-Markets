@@ -11,29 +11,29 @@ has_field 'product_id' => (
 
 has_field 'title' => (
     type        => 'text',
-    label       => 'Title',
     required    => 1,
+    label       => 'Title',
     validations => [],
 );
 
 has_field 'description' => (
     type        => 'textarea',
-    label       => 'Description',
     required    => 0,
+    label       => 'Description',
     validations => [],
 );
 
 has_field 'price' => (
     type        => 'text',
-    label       => 'Price',
     required    => 1,
+    label       => 'Price',
     validations => ['number'],
 );
 
 has_field 'quantity' => (
     type          => 'text',
-    label         => 'Quantity',
     required      => 1,
+    label         => 'Quantity',
     default_value => 1,
     filters       => [qw(trim)],
     validations   => [ 'uint', [ min => 1 ] ],
@@ -41,8 +41,8 @@ has_field 'quantity' => (
 
 has_field 'categories' => (
     type        => 'choice',
-    label         => 'Categories',
     required    => 0,
+    label       => 'Categories',
     expanded    => 1,
     multiple    => 1,
     validations => ['uint'],
@@ -50,8 +50,8 @@ has_field 'categories' => (
 
 has_field 'primary_category' => (
     type        => 'choice',
-    label => 'Primary Category',
     required    => 0,
+    label       => 'Primary Category',
     expanded    => 1,
     multiple    => 0,
     validations => ['uint'],
