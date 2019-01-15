@@ -9,10 +9,14 @@ sub create {
 sub delete {
     my $c = shift;
 
+    # Initialize form
     my $form = $c->form('admin-order');
-    return $c->render() unless $form->has_data;
 
-    say 'form ok' if $form->do_validate;
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
+    return $c->render() unless $form->do_validate;
 
     my $order_id = $form->param('id');
 

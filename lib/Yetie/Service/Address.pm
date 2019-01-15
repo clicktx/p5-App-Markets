@@ -1,17 +1,6 @@
 package Yetie::Service::Address;
 use Mojo::Base 'Yetie::Service';
 
-sub get_address_types {
-    my $self = shift;
-
-    return $self->cache('address_types') if $self->cache('address_types');
-
-    my $rs = $self->resultset('Address::Type')->search();
-    my $address_types = $self->factory('list-address_types')->construct( list => $rs->to_data );
-    $self->cache( address_types => $address_types );
-    return $address_types;
-}
-
 sub get_registered_id {
     my ( $self, $address ) = @_;
 
@@ -59,12 +48,6 @@ the following new ones.
 
 L<Yetie::Service::Address> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
-
-=head2 C<get_address_types>
-
-    my $address_types = $servece->get_address_types;
-
-Return L<Yetie::Domain::List::AddressTypes> object.
 
 =head2 C<get_registered_id>
 

@@ -12,13 +12,15 @@ sub authorize {
 
 sub login {
     my $c = shift;
-
     $c->flash( ref => $c->flash('ref') );
 
     # Initialize form
     my $form = $c->form('admin-login');
-    return $c->render() unless $form->has_data;
 
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
     return $c->render() unless $form->do_validate;
 
     my $login_id = $form->param('login_id');

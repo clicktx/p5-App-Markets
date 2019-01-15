@@ -5,17 +5,21 @@ sub index {
     my $c = shift;
     $c->stash( preferences => $c->pref->properties );
 
-    my $validation = $c->validation;
-    $c->render() unless $validation->has_data;
-
+    # Initialize form
     my $form = $c->form('admin-preference');
-    if ( $form->do_validate ) {
-        for my $name ( @{ $form->params->names } ) {
-            $c->pref( $name => $form->param($name) );
-        }
-        $c->service('preference')->store;
+
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
+    return $c->render() unless $form->do_validate;
+
+    for my $name ( @{ $form->params->names } ) {
+        $c->pref( $name => $form->param($name) );
     }
-    $c->render();
+    $c->service('preference')->store;
+
+    return $c->render();
 }
 
 1;

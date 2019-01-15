@@ -23,6 +23,7 @@ sub register {
     $app->helper( cart               => sub { _cart(@_) } );
     $app->helper( cookie_session     => sub { shift->session(@_) } );
     $app->helper( factory            => sub { _factory(@_) } );
+    $app->helper( j                  => sub { _j(@_) } );
     $app->helper( pref               => sub { _pref(@_) } );
     $app->helper( 'reply.error'      => sub { _error(@_) } );
     $app->helper( resultset          => sub { shift->app->schema->resultset(@_) } );
@@ -70,6 +71,8 @@ sub _factory {
     $factory->app( $self->app );
     return $factory;
 }
+
+sub _j { Mojo::JSON::j( $_[1] ) }
 
 sub _pref {
     my $self = shift;
@@ -168,6 +171,16 @@ Alias for $c->session;
     my $factory = $c->factory('entity-something');
 
 Return L<Yetie::Factory> Object.
+
+=head2 C<j>
+
+    # { "foo":"bar" }
+    $c->j( { foo => "bar" } );
+
+    # in template
+    <%== j { a => 1}  >
+
+See L<Mojo::JSON/j>
 
 =head2 C<resultset>
 
