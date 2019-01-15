@@ -32,7 +32,7 @@
 <h3>Add a new address</h3>
 <div class="">
     <%= form_for '' => ( method => 'POST' ) => begin %>
-        <%= include 'common/components/form/address', fieldset => $action %>
+        <%= include 'common/components/form/address', fieldset => 'customer_address' %>
         <div class="">
             <%= csrf_field %>
             <%= submit_button __("Ship to this address") => ( class => 'btn btn-primary' ) %>

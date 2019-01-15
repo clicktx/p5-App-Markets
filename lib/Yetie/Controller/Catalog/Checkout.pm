@@ -29,7 +29,7 @@ sub shipping_address {
     my $addresses   = $c->service('customer')->get_address_list($customer_id);
     $c->stash( addresses => $addresses );
 
-    my $form = $c->form('shipping_address');
+    my $form = $c->form('customer_address');
 
     # Get request
     return $c->render() if $c->is_get_request;
@@ -81,7 +81,7 @@ sub billing_address {
     my $addresses   = $c->service('customer')->get_address_list($customer_id);
     $c->stash( addresses => $addresses );
 
-    my $form = $c->form('billing_address');
+    my $form = $c->form('customer_address');
 
     # Get request
     return $c->render() if $c->is_get_request;
