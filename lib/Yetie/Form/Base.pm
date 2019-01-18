@@ -66,26 +66,25 @@ sub new {
 
 sub has_data { shift->validation->has_data }
 
-sub param {
-    my ( $self, $key ) = @_;
-
-    # NOTE: "Mojolicious::Validator::Validation->output" does not hold parameters with empty strings ;(
-    return $self->every_param($key)->[-1] // '';
-}
+sub param { shift->every_param(shift)->[-1] }
 
 sub params {
     my $self = shift;
     croak 'do not call "do_validate" method' unless $self->is_validated;
     return $self->{_validated_parameters} if $self->{_validated_parameters};
 
-    my $v      = $self->validation;
-    my %output = %{ $v->output };
+    # NOTE: 'Mojolicious::Validator::Validation->output' does not hold parameters with empty strings ;(
+    my $v          = $self->validation;
+    my %field_keys = map { $_ => 1 } @{ $self->fieldset->field_keys };
+    my @input_keys = grep { $field_keys{ $self->fieldset->replace_key($_) } } keys %{ $v->input };
+    my %o          = %{ $v->output };
+    my %output     = map { $_ // '' } %o{@input_keys};
 
-    # NOTE: scope parameterは別に保存していないので
-    # 'user.name' フィールドを使う場合は 'user'フィールドを使うことが出来ない
+    # Expand hash
     my $expand_hash = expand_hash( \%output );
     %output = ( %output, %{$expand_hash} );
 
+    # Cache
     $self->{_validated_parameters} = Yetie::App::Core::Parameters->new(%output);
     return $self->{_validated_parameters};
 }

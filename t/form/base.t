@@ -174,7 +174,7 @@ subtest 'parameters' => sub {
 
         $f->do_validate;
         is_deeply $f->every_param('address'), [], 'right has not parameter';
-        is_deeply $f->every_param('email'),   [], 'right empty character';
+        is_deeply $f->every_param('email'),            [''],      'right empty character';
         is_deeply $f->every_param('name'),             ['frank'], 'right single parameter';
         is_deeply $f->every_param('favorite_color[]'), ['red'],   'right multiple parameters';
         is_deeply $f->every_param('luky_number'), [ 2, 3 ], 'right multiple parameters';
@@ -186,12 +186,12 @@ subtest 'parameters' => sub {
         dies_ok sub { $f->param('name') }, 'right before do_validate';
 
         $f->do_validate;
+        is $f->param('address'),          undef,   'right blank parameter';
         is $f->param('email'),            '',      'right empty character';
         is $f->param('name'),             'frank', 'right parameter';
-        is $f->param('address'),          '',      'right blank parameter';
         is $f->param('favorite_color[]'), 'red',   'right param in multiple param';
         is $f->param('luky_number'),      3,       'right param in multiple param';
-        is $f->param('iligal_param'),     '',      'right iligal param';
+        is $f->param('iligal_param'),     undef,   'right iligal param';
     };
 
     subtest 'params' => sub {
@@ -206,6 +206,7 @@ subtest 'parameters' => sub {
             is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
             is_deeply $params,
               {
+                email              => '',
                 name               => 'frank',
                 'favorite_color[]' => ['red'],
                 luky_number        => [ 2, 3 ],
@@ -376,7 +377,9 @@ subtest 'do_validate' => sub {
         '{bar}' => { name => 'bar' },
       },
       'right expand field hash keys';
-    is_deeply $f->scope_param('item'), [ { id => 11 }, { id => 22 }, { id => 33 }, ], 'right expand field array keys';
+    is_deeply $f->scope_param('item'),
+      [ { id => 11, name => '' }, { id => 22, name => '' }, { id => 33, name => '' } ],
+      'right expand field array keys';
 };
 
 subtest 'do_validate with filter' => sub {
