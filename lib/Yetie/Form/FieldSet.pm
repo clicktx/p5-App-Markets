@@ -103,11 +103,12 @@ sub remove {
 sub replace_key {
     my ( $self, $key ) = @_;
 
-    # e.g. "foo.*123.bar" to "foo.{}.bar"
-    # e.g. "foo.*a_b_c_123.bar" to "foo.{}.bar"
-    $key =~ s/\.\*\w+\./.{}./g;
+    # e.g. "foo.{123}.bar" to "foo.{}.bar"
+    #      "foo.{a_b_c_123}" to "foo.{}"
+    $key =~ s/\.\{\w+}/.{}/g;
 
     # e.g. "foo.123.bar" to "foo.[].bar"
+    #      "foo.0" to "foo.[]"
     $key =~ s/\.\d+/.[]/g;
     return $key;
 }
@@ -275,7 +276,7 @@ List or Hash field.
     # item.0.id, item.1.id and more
     has_field 'item.[].id' => ( ... );
 
-    # order.*123.name, order.*abc.name, order.*1_a_2_b.name and more
+    # order.{123}.name, order.{abc}.name, order.{1_a_2_b}.name and more
     has_field 'order.{}.name' => ( ... );
 
 Inherit Yetie::Form::FieldSet::Example class

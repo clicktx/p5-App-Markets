@@ -213,10 +213,10 @@ subtest 'replace_key' => sub {
     is $fs->replace_key('foo0'),      'foo0',       'right not replace';
     is $fs->replace_key('foo.0.bar'), 'foo.[].bar', 'right replace';
 
-    is $fs->replace_key('foo.*bar.baz'), 'foo.{}.baz', 'right replace';
-    is $fs->replace_key('foo*bar'),      'foo*bar',    'right not replace';
-    is $fs->replace_key('foo{}'),        'foo{}',      'right not replace';
-    is $fs->replace_key('foo.*bar'),     'foo.*bar',   'right not replace';
+    is $fs->replace_key('foo.{bar}'),     'foo.{}',     'right replace';
+    is $fs->replace_key('foo.{bar}.baz'), 'foo.{}.baz', 'right replace';
+    is $fs->replace_key('foo{bar}'),      'foo{bar}',   'right not replace';
+    is $fs->replace_key('foo{}'),         'foo{}',      'right not replace';
 };
 
 done_testing();

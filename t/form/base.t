@@ -357,8 +357,8 @@ subtest 'do_validate' => sub {
             'favorite_color[]' => 'red',
             luky_number        => 2,
             luky_number        => 3,
-            'order.*123.name'  => 'foo',
-            'order.*bar.name'  => 'bar',
+            'order.{123}.name' => 'foo',
+            'order.{bar}.name' => 'bar',
             'item.0.id'        => 11,
             'item.1.id'        => 22,
             'item.2.id'        => 33,
@@ -372,8 +372,8 @@ subtest 'do_validate' => sub {
 
     is_deeply $f->param('order'),
       {
-        '*123' => { name => 'foo' },
-        '*bar' => { name => 'bar' },
+        '{123}' => { name => 'foo' },
+        '{bar}' => { name => 'bar' },
       },
       'right expand field hash keys';
     is_deeply $f->scope_param('item'), [ { id => 11 }, { id => 22 }, { id => 33 }, ], 'right expand field array keys';
