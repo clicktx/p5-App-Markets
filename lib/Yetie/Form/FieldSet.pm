@@ -49,7 +49,7 @@ sub field {
     my $args = @_ > 1 ? +{@_} : shift || {};
     my $class = ref $self || $self;
 
-    my $field_key = $self->_replace_key($name);
+    my $field_key = $self->replace_key($name);
     my $cache_key = $name eq $field_key ? $field_key : "$field_key=$name";
     return $self->{_field}->{$cache_key} if $self->{_field}->{$cache_key};
 
@@ -100,6 +100,18 @@ sub remove {
     delete ${"${class}::schema"}{$field_key};
 }
 
+sub replace_key {
+    my ( $self, $key ) = @_;
+
+    # e.g. "foo.*123.bar" to "foo.{}.bar"
+    # e.g. "foo.*a_b_c_123.bar" to "foo.{}.bar"
+    $key =~ s/\.\*\w+\./.{}./g;
+
+    # e.g. "foo.123.bar" to "foo.[].bar"
+    $key =~ s/\.\d+/.[]/g;
+    return $key;
+}
+
 sub schema {
     my ( $self, $field_key ) = @_;
     my $class = ref $self || $self;
@@ -132,18 +144,6 @@ sub _get_data {
         my %data = map { $_ => $self->schema->{$_}->{$attr_name} || [] } @{ $self->field_keys };
         return \%data || {};
     }
-}
-
-sub _replace_key {
-    my ( $self, $arg ) = @_;
-
-    # e.g. "foo.*123.bar" to "foo.{}.bar"
-    # e.g. "foo.*a_b_c_123.bar" to "foo.{}.bar"
-    $arg =~ s/\.\*\w+\./.{}./g;
-
-    # e.g. "foo.123.bar" to "foo.[].bar"
-    $arg =~ s/\.\d+/.[]/g;
-    return $arg;
 }
 
 sub _requires {
@@ -413,6 +413,18 @@ Object once created are cached in C<"$fieldset-E<gt>{_field}-E<gt>{$field_key}">
     # Return hash reference
     # { field_key => [ 'filter1', 'filter2', ... ], field_key2 => [ 'filter1', 'filter2', ... ] }
     my $filters = $fieldset->filters;
+
+=head2 C<replace_key>
+
+    my $replace_key = $fieldset->replace_key($field_key);
+
+    # foo.[].bar
+    say $fieldset->replace_key('foo.0.bar');
+
+    # foo.{}.baz
+    say $fieldset->replace_key('foo.*bar.baz');
+
+Replace field name.
 
 =head2 C<remove>
 

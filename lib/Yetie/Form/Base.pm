@@ -30,7 +30,7 @@ sub do_validate {
         my $names = $c->req->params->names;
         my @keys =
           $field_key =~ m/\.\[]|\.\{}/
-          ? grep { $fieldset->_replace_key($_) eq $field_key } @{$names}
+          ? grep { $fieldset->replace_key($_) eq $field_key } @{$names}
           : ($field_key);
         $self->_validate_field( $_ => $required, $filters, $checks ) for @keys;
     }
