@@ -197,6 +197,12 @@ subtest 'parameters' => sub {
     subtest 'params' => sub {
         my $f = $construct->();
         dies_ok sub { $f->params }, 'right before do_validate';
+        is $f->validated_parameters, undef, 'right not cache';
+
+        $f->do_validate;
+        my $params = $f->params;
+        isa_ok $params, 'Yetie::App::Core::Parameters';
+        ok $f->validated_parameters, 'right cache';
     };
 
     subtest 'to_hash' => sub {
