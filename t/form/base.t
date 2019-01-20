@@ -197,22 +197,22 @@ subtest 'parameters' => sub {
     subtest 'params' => sub {
         my $f = $construct->();
         dies_ok sub { $f->params }, 'right before do_validate';
+    };
 
-        subtest 'to_hash' => sub {
-            my $f = $construct->();
-            $f->do_validate;
+    subtest 'to_hash' => sub {
+        my $f = $construct->();
+        $f->do_validate;
 
-            my $params = $f->params->to_hash;
-            is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
-            is_deeply $params,
-              {
-                email              => '',
-                name               => 'frank',
-                'favorite_color[]' => ['red'],
-                luky_number        => [ 2, 3 ],
-              },
-              'right every param to_hash';
-        };
+        my $params = $f->params->to_hash;
+        is_deeply $params->{'favorite_color[]'}, ['red'], 'right every param to_hash';
+        is_deeply $params,
+          {
+            email              => '',
+            name               => 'frank',
+            'favorite_color[]' => ['red'],
+            luky_number        => [ 2, 3 ],
+          },
+          'right every param to_hash';
     };
 
     subtest 'scope_param' => sub {
