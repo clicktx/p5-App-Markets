@@ -1,4 +1,5 @@
 header
+<p>session-id: <%= $self->server_session->sid %></p>
 <ul>
     <li><%= link_to 'Dashboard' => 'RN_admin_dashboard' %></li>
     <li><%= link_to 'Catalog' => 'RN_home' %></li>
