@@ -52,7 +52,7 @@ sub magic_link {
     $c->flash( ref => $c->flash('ref') );
 
     # Initialize form
-    my $form = $c->form('base-email');
+    my $form = $c->form('account-magic_link');
 
     # Get request
     return $c->render() if $c->is_get_request;
