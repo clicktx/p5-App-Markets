@@ -46,19 +46,16 @@ sub t03_find_customer : Tests() {
     is $entity->id, 111, 'right customer';
 }
 
-sub t04_get_addresses : Tests() {
+sub t04_get_address_list : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
-    my $e = $s->get_addresses( 112, 'shipping_address' );
+    my $e = $s->get_address_list(112);
     isa_ok $e, 'Yetie::Domain::List::Addresses';
-    is $e->list->size, 1, 'right shipping addresses';
+    is $e->list->size, 1, 'right addresses';
 
-    $e = $s->get_addresses( 112, 'billing_address' );
-    is $e->list->size, 1, 'right billing addresses';
-
-    $e = $s->get_addresses( 112, 'foo' );
-    is $e->list->size, 0, 'right bad address type name';
+    $e = $s->get_address_list(999);
+    is $e->list->size, 0, 'right not found customer';
 }
 
 sub t05_search_customers : Tests() {
@@ -95,14 +92,14 @@ sub store_address {
     my $s = $c->service('customer');
 
     subtest 'store_address' => sub {
-        my $res = $s->store_address( 'billing_address', 1 );
+        my $res = $s->store_address(1);
         ok !$res, 'right no data';
 
         $c->server_session->customer_id(115);
-        $res = $s->store_address( 'billing_address', 1 );
+        $res = $s->store_address(1);
         ok $res, 'right store address';
 
-        $res = $s->store_address( 'billing_address', 1 );
+        $res = $s->store_address(1);
         ok !$res, 'right stored address';
     };
     $c->render( text => 1 );

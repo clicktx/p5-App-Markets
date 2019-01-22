@@ -122,15 +122,12 @@
         [ 115, 9, 1 ],
     ],
     'Customer::Address' => [
-        [qw/customer_id address_id address_type_id/],
-        [qw/111 1 1/],
-        [qw/111 1 2/],
-        [qw/111 1 3/],
-        [qw/111 2 3/],
-        [qw/112 2 2/],
-        [qw/112 2 3/],
-        [qw/113 3 3/],
-        [qw/113 4 3/],
+        [qw/customer_id address_id/],
+        [qw/111 1/],
+        [qw/111 2/],
+        [qw/112 2/],
+        [qw/113 3/],
+        [qw/113 4/],
     ],
 
     # Orders

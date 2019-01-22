@@ -50,25 +50,17 @@ sub find_customer {
     return $self->factory('entity-customer')->construct($data);
 }
 
-sub get_addresses {
-    my ( $self, $customer_id, $type_name ) = @_;
-
-    my $address_types   = $self->service('address')->get_address_types;
-    my $address_type_id = $address_types->get_id_by_name($type_name);
+sub get_address_list {
+    my ( $self, $customer_id ) = @_;
 
     my $rs = $self->resultset('Address')->search(
         {
-            'customer_addresses.customer_id'     => $customer_id,
-            'customer_addresses.address_type_id' => $address_type_id,
+            'customer_addresses.customer_id' => $customer_id,
         },
         { prefetch => 'customer_addresses' }
     );
     return $self->factory('list-addresses')->construct( list => $rs->to_data );
 }
-
-sub get_billing_addresses { shift->get_addresses( shift, 'billing_address' ) }
-
-sub get_shipping_addresses { shift->get_addresses( shift, 'shipping_address' ) }
 
 sub load_history {
     my $self = shift;
@@ -158,18 +150,16 @@ sub send_authorization_mail {
 }
 
 sub store_address {
-    my ( $self, $address_type, $address_id ) = @_;
+    my ( $self, $address_id ) = @_;
     my $c = $self->controller;
 
-    my $customer_id     = $c->server_session->customer_id;
-    my $address_type_id = $c->service('address')->get_address_types->get_id_by_name($address_type);
-    return if !$customer_id or !$address_type_id or !$address_id;
+    my $customer_id = $c->server_session->customer_id;
+    return if !$customer_id or !$address_id;
 
     my $result = $c->resultset('Customer::Address')->find_or_new(
         {
-            customer_id     => $customer_id,
-            address_type_id => $address_type_id,
-            address_id      => $address_id,
+            customer_id => $customer_id,
+            address_id  => $address_id,
         }
     );
     return if $result->in_storage;
@@ -177,9 +167,9 @@ sub store_address {
     $result->insert;
 }
 
-sub store_billing_address { shift->store_address( 'billing_address', shift ) }
+sub store_billing_address { say "Deprecated"; shift->store_address(shift) }
 
-sub store_shipping_address { shift->store_address( 'shipping_address', shift ) }
+sub store_shipping_address { say "Deprecated"; shift->store_address(shift) }
 
 # NOTE: logging 未完成
 sub _login_failed {
@@ -234,31 +224,11 @@ Return L<Yetie::Domain::Entity::Customer> object or C<undef>.
 
 Return L<Yetie::Domain::Entity::Customer> object.
 
-=head2 C<get_addresses>
+=head2 C<get_address_list>
 
-    my $addresses = $service->get_addresses( $customer_id, $address_type_name );
-
-Return L<Yetie::Domain::List::Addresses> object.
-
-=head2 C<get_billing_addresses>
-
-    my $addresses = $service->get_billing_addresses($customer_id);
-
-    # Alias method
-    my $addresses = $service->get_addresses( $customer_id, 'billing_address' );
+    my $addresses = $service->get_address_list($customer_id);
 
 Return L<Yetie::Domain::List::Addresses> object.
-See L</get_addresses>
-
-=head2 C<get_shipping_addresses>
-
-    my $addresses = $service->get_shipping_addresses($customer_id);
-
-    # Alias method
-    my $addresses = $service->get_addresses( $customer_id, 'shipping_address' );
-
-Return L<Yetie::Domain::List::Addresses> object.
-See L</get_addresses>
 
 =head2 C<load_history>
 
@@ -294,20 +264,21 @@ Retuen C<render_to('RN_customer_login_email_sended')> or C<render_to('RN_custome
 
 =head2 C<store_address>
 
-    $service->store_address('billing_address');
-    $service->store_address('shipping_address');
+    $service->store_address($address_id);
 
-Store customer address in storage from cart data.
-
-If it is not registered, not logged in, or there is no cart address id, false is returned.
+Store customer addresses in storage from cart data.
 
 =head2 C<store_billing_address>
+
+Deprecated
 
     $service->store_billing_address;
 
 See L</store_address>
 
 =head2 C<store_shipping_address>
+
+Deprecated
 
     $service->store_shipping_address;
 

@@ -4,12 +4,12 @@ use Yetie::Form::FieldSet;
 
 has_field 'email' => (
     type          => 'email',
+    required      => 1,
     label         => 'Email',
-    autocomplete  => 'email',
+    default_value => '',
     placeholder   => 'user@domain.com',
     help          => '',
-    default_value => '',
-    required      => 1,
+    autocomplete  => 'email',
     filters       => [qw(trim)],
     validations   => [],                  # NOTE: max 64
 );

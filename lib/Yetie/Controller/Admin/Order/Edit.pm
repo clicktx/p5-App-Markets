@@ -12,8 +12,8 @@ sub items {
 
     my $form = $c->form('admin-order-edit-item');
 
-    # GET Request
-    return $c->render() if $c->req->method eq 'GET';
+    # Get request
+    return $c->render() if $c->is_get_request;
 
     # Validation form
     return $c->render() unless $form->do_validate;
@@ -61,32 +61,35 @@ sub _edit_address {
     $c->stash( entity => $order );
     return $c->reply->not_found if $order->is_empty;
 
-    my $form = $c->_init_form( $args->{address_type} );
+    # Init form
+    my $address = $order->{ $args->{address_type} };
+    my $form    = $c->_init_form($address);
 
-    # GET Request
-    return $c->render('admin/order/edit/address') if $c->req->method eq 'GET';
+    # Get request
+    return $c->render('admin/order/edit/address') if $c->is_get_request;
 
     # Validation form
     return $c->render('admin/order/edit/address') unless $form->do_validate;
 
     # Update address
+    # FIXME: 入力済み項目を消す事ができない。
+    # $form->params->to_hash が空文字を出力しないため例えば会社名を消す事ができない
     $c->service('address')->update_address( $form->params->to_hash );
 
     return $c->redirect_to( 'RN_admin_order_details', order_id => $order_id );
 }
 
 sub _init_form {
-    my ( $c, $address_type ) = @_;
+    my ( $c, $address ) = @_;
 
     my $region = 'us';
-    my $form   = $c->form($address_type);
-    my $order  = $c->stash('entity');
+    my $form   = $c->form('customer_address');
 
-    # Set form default value
-    my $field_names = $order->$address_type->field_names($region);
+    # Set default value
+    my $field_names = $address->field_names($region);
     my $params      = $c->req->params;
     foreach my $key ( @{$field_names} ) {
-        my $value = $order->$address_type->$key;
+        my $value = $address->$key;
         $params->append( $key => "$value" );
     }
     $c->stash( field_names => $field_names );

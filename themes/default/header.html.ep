@@ -1,4 +1,5 @@
 header
+<p>session-id: <%= $self->server_session->sid %></p>
 <ul>
     <li><%= link_to 'Category1' => 'RN_category' => { category_id => 1 } %></li>
     <li><%= link_to 'My Cart' => 'RN_cart' %></li>

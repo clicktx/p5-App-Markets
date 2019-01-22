@@ -9,7 +9,7 @@ use Data::Clone qw();
 
 has 'id';
 
-my @not_dump_data_attrs = (qw/created_at updated_at/);
+my @not_dump_attrs_defautls = (qw/created_at updated_at/);
 
 sub clone {
     my $self  = shift;
@@ -90,10 +90,11 @@ sub to_hash {
     my %hash = %{ +shift };
 
     # Remove needless data
+    my @not_dump = @not_dump_attrs_defautls;
     my @private = grep { $_ =~ /^_.*/ } keys %hash;
-    push @not_dump_data_attrs, @private;
+    push @not_dump, @private;
 
-    delete $hash{$_} for @not_dump_data_attrs;
+    delete $hash{$_} for @not_dump;
     return \%hash;
 }
 

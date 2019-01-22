@@ -4,9 +4,10 @@ use Yetie::Form::FieldSet;
 
 has_field 'organization' => (
     type         => 'text',
+    required     => 0,
     label        => 'Organization',
-    autocomplete => 'organization',
     placeholder  => '',
+    autocomplete => 'organization',
     filters      => [qw(trim)],
     validations  => [],
     help         => 'Company name, Local business, Educational organization, NGO, etc.',
@@ -14,9 +15,10 @@ has_field 'organization' => (
 
 has_field 'personal_name' => (
     type         => 'text',
+    required     => 1,
     label        => 'Full Name',
-    autocomplete => 'name',
     placeholder  => 'Christian Holst',
+    autocomplete => 'name',
     filters      => [qw(trim)],
     validations  => [],
     help         => '',

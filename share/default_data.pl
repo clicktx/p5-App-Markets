@@ -26,14 +26,4 @@
         [ 'customer_password_min', '4', 'pref.title.customer_password_min', 'pref.summary.customer_password_min', 100, 2 ],
         [ 'customer_password_max', '8', 'pref.title.customer_password_max', 'pref.summary.customer_password_max', 101, 2 ],
     ],
-
-    # reference table
-    'Address::Type' => [
-        [ qw/id name label/ ],
-        [ 1, 'postal_address', 'Postal Address' ],
-        [ 2, 'billing_address', 'Billing Address' ],
-        [ 3, 'shipping_address', 'Shipping Address' ],
-        [ 4, 'delivery_address', 'Delivery Address' ],
-        [ 5, 'residential_address', 'Residential Address' ],
-    ],
 )
