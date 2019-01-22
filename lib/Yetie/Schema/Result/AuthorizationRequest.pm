@@ -19,6 +19,12 @@ column token => {
     is_nullable => 0,
 };
 
+column redirect => {
+    data_type   => 'VARCHAR',
+    size        => 256,
+    is_nullable => 1,
+};
+
 column request_ip => {
     data_type   => 'VARCHAR',
     size        => 45,

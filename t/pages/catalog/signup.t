@@ -1,11 +1,11 @@
-package t::pages::signup;
+package t::pages::catalog::signup;
 
 use Mojo::Base 't::pages::common';
 use t::Util;
 use Test::More;
 use Test::Mojo;
 
-my $register_email = 'new_customer@example.com';
+my $register_email = 'new_customer_on_page@example.com';
 
 sub startup : Test(startup) {
     my $self = shift;

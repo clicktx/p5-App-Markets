@@ -88,6 +88,27 @@ sub remove_product {
     return;
 }
 
+sub search_products {
+    my ( $self, $form ) = @_;
+
+    my $conditions = {
+        where    => '',
+        order_by => '',
+        page_no  => $form->param('page') || 1,
+        per_page => $form->param('per_page') || 5,
+    };
+
+    my $products_rs = $self->resultset('Product')->search_products($conditions);
+    my $data        = {
+        meta_title   => '',
+        breadcrumbs  => [],
+        form         => $form,
+        product_list => $products_rs->to_data( { no_relation => 1, no_breadcrumbs => 1 } ),
+        pager        => $products_rs->pager,
+    };
+    return $self->factory('entity-page-products')->construct($data);
+}
+
 sub update_product_categories { shift->resultset('Product')->update_product_categories(@_) }
 
 sub update_product { shift->resultset('Product')->update_product(@_) }
@@ -161,6 +182,10 @@ Return L<Yetie::Schema::Result::Product> object.
     my $result = $service->remove_product($product_id);
 
 Return L<Yetie::Schema::Result::Product> object or undefined.
+
+=head2 C<search_products>
+
+    my $entity = $service->search_products($form);
 
 =head2 C<update_product_categories>
 

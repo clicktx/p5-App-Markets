@@ -7,10 +7,10 @@ sub index {
     my $form = $c->form('search');
     $c->init_form();
 
-    # return $c->render() unless $form->has_data;
+    # Validation form
     return $c->render() unless $form->do_validate;
 
-    my $orders = $c->service('orders')->search_orders($form);
+    my $orders = $c->service('order')->search_orders($form);
     $c->stash( entity => $orders );
 
     # Page Data

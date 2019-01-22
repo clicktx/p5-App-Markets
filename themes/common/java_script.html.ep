@@ -1,24 +1,35 @@
 %= javascript 'https://code.jquery.com/jquery-3.2.1.min.js', integrity => "sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=", crossorigin => "anonymous"
 %= javascript begin
     $(function(){
-        var token = '<%= csrf_token %>';
+        // controllerからhidden項目を追加できる
+        // $c->stash( json_data => { foo => 'bar' } );
+        var data = <%== j stash('json_data') || {} %>;
+        data['csrf_token'] = '<%= csrf_token %>';
+
+        var appendHiddenField = function( $form, key, value ){
+            $('<input>').attr({
+                type:  'hidden',
+                name:  key,
+                value: value
+            }).appendTo($form);
+        };
+
         $('a.submit-post').click( function(){
             var $this = $(this);
-            var $form = $('<form>').attr({
-                action: $this.attr('href'),
-                method: 'POST',
-            });
-            $('<input>').attr({
-                type:  'hidden',
-                name:  'csrf_token',
-                value: token
-            }).appendTo($form);
-            $('<input>').attr({
-                type:  'hidden',
-                name:  $this.data('name'),
-                value: $this.data('value')
-            }).appendTo($form);
-            $('body').append($form);
+            data[$this.data('name')] = $this.data('value');
+
+            // Target form
+            //var $form = $('<form>').attr({
+            //    action: $this.attr('href'),
+            //    method: 'POST',
+            //});
+            var $form = $this.parent('form');
+
+            // Append hidden fields
+            for (key in data){ appendHiddenField( $form, key, data[key] ) }
+
+            // Submit form
+            //$('body').append($form);
             $form.submit();
             return false;
         });

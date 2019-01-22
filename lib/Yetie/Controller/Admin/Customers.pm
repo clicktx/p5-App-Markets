@@ -8,7 +8,7 @@ sub index {
     $c->init_form();    # hook point
     return $c->render() unless $form->do_validate;
 
-    my $customers = $c->service('customers')->search_customers($form);
+    my $customers = $c->service('customer')->search_customers($form);
     $c->stash( entity => $customers );
 
     # Page data

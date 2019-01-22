@@ -34,7 +34,11 @@ sub add_history {
 
 sub create_new_customer {
     my ( $self, $email ) = @_;
-    return $self->resultset('Customer')->create_new_customer($email);
+
+    my $result = $self->resultset('Customer')->create_new_customer($email);
+    return unless $result;
+
+    return $self->factory('entity-customer')->construct( $result->to_data );
 }
 
 sub find_customer {
@@ -46,25 +50,17 @@ sub find_customer {
     return $self->factory('entity-customer')->construct($data);
 }
 
-sub get_addresses {
-    my ( $self, $customer_id, $type_name ) = @_;
-
-    my $address_types   = $self->service('address')->get_address_types;
-    my $address_type_id = $address_types->get_id_by_name($type_name);
+sub get_address_list {
+    my ( $self, $customer_id ) = @_;
 
     my $rs = $self->resultset('Address')->search(
         {
-            'customer_addresses.customer_id'     => $customer_id,
-            'customer_addresses.address_type_id' => $address_type_id,
+            'customer_addresses.customer_id' => $customer_id,
         },
         { prefetch => 'customer_addresses' }
     );
     return $self->factory('list-addresses')->construct( list => $rs->to_data );
 }
-
-sub get_billing_addresses { shift->get_addresses( shift, 'billing_address' ) }
-
-sub get_shipping_addresses { shift->get_addresses( shift, 'shipping_address' ) }
 
 sub load_history {
     my $self = shift;
@@ -72,7 +68,7 @@ sub load_history {
     $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
-sub logged_in {
+sub login {
     my ( $self, $customer_id ) = @_;
     my $session = $self->controller->server_session;
 
@@ -108,22 +104,62 @@ sub login_process {
     return $self->_login_failed( 'login.failed.password', email => $email )
       unless $customer->password->is_verify($raw_password);
 
-    return $self->logged_in( $customer->id );
+    return $self->login( $customer->id );
+}
+
+sub search_customers {
+    my ( $self, $form ) = @_;
+
+    my $conditions = {
+        where    => '',
+        order_by => '',
+        page_no  => $form->param('page') || 1,
+        per_page => $form->param('per_page') || 5,
+    };
+    my $rs = $self->resultset('Customer')->search_customers($conditions);
+
+    my $data = {
+        meta_title    => 'Customers',
+        form          => $form,
+        breadcrumbs   => [],
+        customer_list => $rs->to_data,
+        pager         => $rs->pager,
+    };
+    return $self->factory('entity-page-customers')->construct($data);
+}
+
+sub send_authorization_mail {
+    my ( $self, $email ) = @_;
+
+    my $c        = $self->controller;
+    my $redirect = $c->flash('ref') || 'RN_home';
+    my $token    = $c->service('authorization')->generate_token( $email, { redirect => $redirect } );
+
+    my $customer       = $self->find_customer($email);
+    my $callback_route = $customer->is_registered ? 'RN_callback_customer_login' : 'RN_callback_customer_signup';
+    my $url            = $c->url_for( $callback_route, token => $token );
+
+    # WIP: Send email
+
+    # NOTE: demo and debug
+    $c->flash( callback_url => $url->to_abs );
+
+    my $redirect_route =
+      $customer->is_registered ? 'RN_customer_login_email_sended' : 'RN_customer_signup_email_sended';
+    return $c->redirect_to($redirect_route);
 }
 
 sub store_address {
-    my ( $self, $address_type, $address_id ) = @_;
+    my ( $self, $address_id ) = @_;
     my $c = $self->controller;
 
-    my $customer_id     = $c->server_session->customer_id;
-    my $address_type_id = $c->service('address')->get_address_types->get_id_by_name($address_type);
-    return if !$customer_id or !$address_type_id or !$address_id;
+    my $customer_id = $c->server_session->customer_id;
+    return if !$customer_id or !$address_id;
 
     my $result = $c->resultset('Customer::Address')->find_or_new(
         {
-            customer_id     => $customer_id,
-            address_type_id => $address_type_id,
-            address_id      => $address_id,
+            customer_id => $customer_id,
+            address_id  => $address_id,
         }
     );
     return if $result->in_storage;
@@ -131,9 +167,9 @@ sub store_address {
     $result->insert;
 }
 
-sub store_billing_address { shift->store_address( 'billing_address', shift ) }
+sub store_billing_address { say "Deprecated"; shift->store_address(shift) }
 
-sub store_shipping_address { shift->store_address( 'shipping_address', shift ) }
+sub store_shipping_address { say "Deprecated"; shift->store_address(shift) }
 
 # NOTE: logging 未完成
 sub _login_failed {
@@ -180,7 +216,7 @@ the following new ones.
 
     my $customer_id = $service->create_new_customer($email);
 
-Return customer ID(integer)
+Return L<Yetie::Domain::Entity::Customer> object or C<undef>.
 
 =head2 C<find_customer>
 
@@ -188,41 +224,21 @@ Return customer ID(integer)
 
 Return L<Yetie::Domain::Entity::Customer> object.
 
-=head2 C<get_addresses>
+=head2 C<get_address_list>
 
-    my $addresses = $service->get_addresses( $customer_id, $address_type_name );
-
-Return L<Yetie::Domain::List::Addresses> object.
-
-=head2 C<get_billing_addresses>
-
-    my $addresses = $service->get_billing_addresses($customer_id);
-
-    # Alias method
-    my $addresses = $service->get_addresses( $customer_id, 'billing_address' );
+    my $addresses = $service->get_address_list($customer_id);
 
 Return L<Yetie::Domain::List::Addresses> object.
-See L</get_addresses>
-
-=head2 C<get_shipping_addresses>
-
-    my $addresses = $service->get_shipping_addresses($customer_id);
-
-    # Alias method
-    my $addresses = $service->get_addresses( $customer_id, 'shipping_address' );
-
-Return L<Yetie::Domain::List::Addresses> object.
-See L</get_addresses>
 
 =head2 C<load_history>
 
     my $history = $c->service('customer')->load_history;
 
-=head2 C<logged_in>
+=head2 C<login>
 
 Set customer logged-in flag to server_session.
 
-    my $bool = $service->logged_in($customer_id);
+    my $bool = $service->login($customer_id);
 
 Return boolean value.
 
@@ -232,22 +248,37 @@ Return boolean value.
 
 Returns true if log-in succeeded.
 
+=head2 C<search_customers>
+
+    my $customers = $service->search_customers($form_object);
+
+Return L<Yetie::Domain::Entity::Page::Customers> Object.
+
+=head2 C<send_authorization_mail>
+
+    $service->send_authorization_mail($email);
+
+Will send an magic link email for log-in or sign-up.
+
+Retuen C<render_to('RN_customer_login_email_sended')> or C<render_to('RN_customer_signup_email_sended')>
+
 =head2 C<store_address>
 
-    $service->store_address('billing_address');
-    $service->store_address('shipping_address');
+    $service->store_address($address_id);
 
-Store customer address in storage from cart data.
-
-If it is not registered, not logged in, or there is no cart address id, false is returned.
+Store customer addresses in storage from cart data.
 
 =head2 C<store_billing_address>
+
+Deprecated
 
     $service->store_billing_address;
 
 See L</store_address>
 
 =head2 C<store_shipping_address>
+
+Deprecated
 
     $service->store_shipping_address;
 

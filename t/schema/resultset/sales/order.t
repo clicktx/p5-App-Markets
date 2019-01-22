@@ -12,9 +12,9 @@ my $rs     = $schema->resultset('Sales::Order');
 
 subtest 'method find_by_id()' => sub {
     my $res = $rs->find_by_id(1);
-    is $res->id,         1, 'right id';
-    is $res->sales_id,   1, 'right sales_id';
-    is $res->address_id, 1, 'right address_id';
+    is $res->id,                  1, 'right id';
+    is $res->sales_id,            1, 'right sales_id';
+    is $res->shipping_address_id, 1, 'right shipping address id';
     cmp_deeply $res->{related_resultsets},
       {
         sales            => ignore(),
@@ -45,9 +45,9 @@ subtest 'method search_sales_orders()' => sub {
     isa_ok $itr->pager, 'DBIx::Class::ResultSet::Pager', 'right pager';
 
     my $row = $itr->first;
-    is $row->id,         1, 'right id';
-    is $row->sales_id,   1, 'right sales_id';
-    is $row->address_id, 1, 'right address_id';
+    is $row->id,                  1, 'right id';
+    is $row->sales_id,            1, 'right sales_id';
+    is $row->shipping_address_id, 1, 'right shipping address id';
     cmp_deeply $row->{related_resultsets},
       {
         sales            => ignore(),

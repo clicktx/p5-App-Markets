@@ -15,6 +15,27 @@ sub find_order {
     return $order_detail;
 }
 
+sub search_orders {
+    my ( $self, $form ) = @_;
+
+    my $conditions = {
+        where    => '',
+        order_by => '',
+        page_no  => $form->param('page') || 1,
+        per_page => $form->param('per_page') || 5,
+    };
+    my $result = $self->resultset('Sales::Order')->search_sales_orders($conditions);
+
+    my $data = {
+        meta_title  => 'Orders',
+        form        => $form,
+        breadcrumbs => [],
+        order_list  => $result->to_data,
+        pager       => $result->pager,
+    };
+    return $self->factory('entity-page-orders')->construct($data);
+}
+
 1;
 __END__
 
@@ -41,6 +62,10 @@ the following new ones.
     my $order_detail = $servece->find_order($order_id);
 
 Return L<Yetie::Domain::Entity::OrderDetail> object.
+
+=head2 C<search_orders>
+
+    my $entity = $service->search_orders($form);
 
 =head1 AUTHOR
 

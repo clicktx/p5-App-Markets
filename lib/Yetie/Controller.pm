@@ -1,6 +1,19 @@
 package Yetie::Controller;
 use Mojo::Base 'Mojolicious::Controller';
 
+sub cookie {
+    my ( $self, $name ) = ( shift, shift );
+
+    # Request cookie
+    return $self->SUPER::cookie($name) unless @_;
+
+    # Response cookie
+    my ( $value, $opt ) = ( shift, shift || {} );
+    $opt->{path}     //= '/';
+    $opt->{httponly} //= 1;
+    return $self->SUPER::cookie( $name => $value, $opt );
+}
+
 sub csrf_protect {
     my $self = shift;
     return 1 if $self->req->method ne 'POST';
@@ -11,6 +24,8 @@ sub csrf_protect {
     );
     return;
 }
+
+sub is_get_request { shift->req->method eq 'GET' ? 1 : 0 }
 
 sub is_logged_in {
     my $self = shift;
@@ -91,6 +106,8 @@ sub redirect_to {
 1;
 __END__
 
+=for stopwords httponly
+
 =head1 NAME
 
 Yetie::Controller - Controller base class
@@ -170,11 +187,30 @@ implements the following new ones.
 L<Yetie::Controller> inherits all methods from L<Mojolicious::Controller> and
 implements the following new ones.
 
+=head2 C<cookie>
+
+    my $foo = $c->cookie('foo');
+    $c->cookie( foo => 'bar', { path => '/', httponly => 1 } )
+
+Set default options.
+
+path: /
+
+httponly: 1
+
+L<Mojolicious::Controller/cookie>
+
 =head2 C<csrf_protect>
 
     $c->csrf_protect();
 
 Request method 'POST' requires CSRF token.
+
+=head2 C<is_get_request>
+
+    my $bool = $c->is_get_request;
+
+Return boolean value.
 
 =head2 C<is_logged_in>
 

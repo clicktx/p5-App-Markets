@@ -13,8 +13,11 @@ my $rs     = $schema->resultset('Customer');
 subtest 'create_new_customer' => sub {
     my $last_id = $rs->last_id;
 
-    my $customer_id = $rs->create_new_customer('new_customer@example.com');
-    is $customer_id, $last_id + 1, 'right create new customer';
+    my $customer = $rs->create_new_customer('new_customer_on_schema@example.com');
+    is $customer->id, $last_id + 1, 'right create new customer';
+
+    $customer = $rs->create_new_customer('new_customer_on_schema@example.com');
+    is $customer, undef, 'right duplicated';
 };
 
 subtest 'find_by_id' => sub {

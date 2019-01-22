@@ -49,15 +49,15 @@ subtest 'form_field' => sub {
     is $c->stash( $stash_key . '.topic' ),       'search', 'right switch topic form';
     is $c->stash( $stash_key . '.topic_field' ), 'q',      'right switch topic field';
 
-    $c->form_field('order.*123.name');
-    is $c->stash( $stash_key . '.topic_field' ), 'order.*123.name', 'right topic field';
+    $c->form_field('order.{123}.name');
+    is $c->stash( $stash_key . '.topic_field' ), 'order.{123}.name', 'right topic field';
 
-    $c->form_field('#order.*123.name');
-    is $c->stash( $stash_key . '.topic_field' ), 'order.*123.name', 'right topic field';
+    $c->form_field('#order.{123}.name');
+    is $c->stash( $stash_key . '.topic_field' ), 'order.{123}.name', 'right topic field';
 
-    $c->form_field('test#order.*123.name');
-    is $c->stash( $stash_key . '.topic' ),       'test',            'right topic form';
-    is $c->stash( $stash_key . '.topic_field' ), 'order.*123.name', 'right topic field';
+    $c->form_field('test#order.{123}.name');
+    is $c->stash( $stash_key . '.topic' ),       'test',             'right topic form';
+    is $c->stash( $stash_key . '.topic_field' ), 'order.{123}.name', 'right topic field';
 };
 
 subtest 'exception' => sub {

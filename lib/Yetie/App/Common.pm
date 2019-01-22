@@ -61,7 +61,7 @@ sub initialize_app {
     $self->secrets( $self->config('secrets') );
 
     # Load plugins
-    _load_plugins($self);
+    $self->_load_plugins;
 
     # Preferences
     $self->service('preference')->load;
@@ -69,13 +69,24 @@ sub initialize_app {
     # Set default language
     $self->language( $self->pref('default_language') );
 
+    # Server Session
+    $self->plugin(
+        'Yetie::App::Core::Session' => {
+            expires_delta        => $self->pref('server_session_expires_delta'),
+            cookie_expires_delta => $self->pref('server_session_cookie_expires_delta'),
+            httponly             => 1,
+
+            # secure => 1 if pref->https_only
+        }
+    );
+
     # TimeZone
     # my $time_zone = 'Asia/Tokyo';                 # from preference
     # $self->schema->time_zone($time_zone);
 
     # Add before/after action hook
     # NOTE: Mojoliciou::Controllerの挙動を変更
-    _add_hooks($self);
+    $self->_add_hooks;
 }
 
 sub _add_hooks {
@@ -156,9 +167,6 @@ sub _load_plugins {
 
     # Password
     $app->plugin('Scrypt');
-
-    # Session
-    $app->plugin( 'Yetie::App::Core::Session' => { expires_delta => 3600 } );
 }
 
 1;

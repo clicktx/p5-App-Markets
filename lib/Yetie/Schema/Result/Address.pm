@@ -88,12 +88,12 @@ has_many
 
 has_many
   sales => 'Yetie::Schema::Result::Sales',
-  { 'foreign.address_id' => 'self.id' },
+  { 'foreign.billing_address_id' => 'self.id' },
   { cascade_delete       => 0 };
 
 has_many
   orders => 'Yetie::Schema::Result::Sales::Order',
-  { 'foreign.address_id' => 'self.id' },
+  { 'foreign.shipping_address_id' => 'self.id' },
   { cascade_delete       => 0 };
 
 1;

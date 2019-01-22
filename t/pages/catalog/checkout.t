@@ -1,4 +1,4 @@
-package t::pages::checkout;
+package t::pages::catalog::checkout;
 
 use Mojo::Base 't::pages::common';
 use t::Util;
@@ -37,10 +37,14 @@ sub test_01_01_no_loged_in : Tests() {
     $t->get_ok('/checkout')->status_is(200);
     is_deeply $t->tx->redirects, [], 'right no redirects';
 
-    $t->get_ok($_)->status_is(200)->content_like(qr/login/)
+    $t->get_ok($_)->status_is(302)
       for (
         qw(
         /checkout/shipping-address
+        /checkout/delivery-options
+        /checkout/payment-option
+        /checkout/billing-address
+        /checkout/confirm
         )
       );
 }
@@ -62,15 +66,8 @@ sub test_02_shipping_address : Tests() {
 
     $t->get_ok('/checkout/shipping-address')->status_is(200)->content_like(qr/shipping address/);
 
-    # Select address
-    my $post_data = {
-        csrf_token     => $self->csrf_token,
-        select_address => 1,
-    };
-    $t->post_ok( '/checkout/shipping-address', form => $post_data )->status_is(200)->content_like(qr/billing address/);
-
     # New address
-    $post_data = {
+    my $post_data = {
         csrf_token    => $self->csrf_token,
         country_code  => 'us',
         personal_name => 'foo',
@@ -89,15 +86,8 @@ sub test_03_billing_address : Tests() {
 
     $t->get_ok('/checkout/billing-address')->status_is(200)->content_like(qr/billing address/);
 
-    # Select address
-    my $post_data = {
-        csrf_token     => $self->csrf_token,
-        select_address => 0,
-    };
-    $t->post_ok( '/checkout/billing-address', form => $post_data )->status_is(200)->content_like(qr/confirm/);
-
     # New address
-    $post_data = {
+    my $post_data = {
         csrf_token    => $self->csrf_token,
         country_code  => 'us',
         personal_name => 'foo',
@@ -108,6 +98,21 @@ sub test_03_billing_address : Tests() {
         phone         => 'baz',
     };
     $t->post_ok( '/checkout/billing-address', form => $post_data )->status_is(200)->content_like(qr/confirm/);
+}
+
+sub test_04_select_address : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    my $post_data = {
+        csrf_token => $self->csrf_token,
+        select_no  => 0,
+    };
+    $t->post_ok( '/checkout/shipping-address/select', form => $post_data )
+      ->status_is( 200, 'right select shipping address' );
+
+    $t->post_ok( '/checkout/billing-address/select', form => $post_data )
+      ->status_is( 200, 'right select billing address' );
 }
 
 sub test_10_confirm : Tests() {
