@@ -41,9 +41,8 @@ sub register {
             my $session = $c->stash($stash_key);
             $session->load;
 
-            # Create session or extend expires
-            if   ( $session->sid ) { $session->extend_expires }
-            else                   { _create_session( $c, $session ) }
+            if   ( !$session->is_expired ) { $session->extend_expires }
+            else                           { _create_session( $c, $session ) }
 
             # Cookie check
             $c->cookie( cookie_check => 1, { path => '/', expires => time + 60 * 60 * 24 * 365 } );
