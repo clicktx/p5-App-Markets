@@ -9,7 +9,12 @@
         <%= csrf_field %>
         <%= form_label '#email' %><%= form_widget '#email' %>
         <%= form_error '#email' %>
-        <%= submit_button __('Send Magic Link') %>
+        <div class="">
+            <%= form_widget '#remember_me' %>
+        </div>
+        <div class="">
+            <%= submit_button __('Send Magic Link') %>
+        </div>
     <% end %>
 </p>
 
