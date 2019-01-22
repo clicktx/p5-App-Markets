@@ -23,7 +23,7 @@ subtest 'data' => sub {
     );
     my $e = $factory->construct();
     is $e->shipping_address->line1, 'Silicon Valley', 'right data';
-    isa_ok $e->items->first, 'Yetie::Domain::Entity::Cart::Item';
+    isa_ok $e->items->first, 'Yetie::Domain::Entity::CartItem';
 };
 
 done_testing;

@@ -5,7 +5,7 @@ sub cook {
     my $self = shift;
 
     # Aggregate items
-    $self->aggregate_collection( list => ( 'entity-cart-item', $self->param('list') ) );
+    $self->aggregate_collection( list => 'entity-cart_item', $self->param('list') );
 }
 
 1;
@@ -17,10 +17,10 @@ Yetie::Factory::List::CartItems
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Factory::List::CartItems->new()->construct();
+    my $list = Yetie::Factory::List::CartItems->new()->construct();
 
     # In controller
-    my $entity = $c->factory('list-cart_items')->construct();
+    my $list = $c->factory('list-cart_items')->construct();
 
 =head1 DESCRIPTION
 

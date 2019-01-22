@@ -36,7 +36,7 @@ sub customer_loged_in {
         csrf_token => $self->csrf_token,
     };
 
-    $self->t->post_ok( $self->app->url_for('RN_customer_login'), form => $post_data );
+    $self->t->post_ok( $self->app->url_for('RN_customer_login_with_password'), form => $post_data );
     is $self->server_session->customer_id, 111, 'right customer loged in';
 }
 

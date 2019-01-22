@@ -14,7 +14,8 @@ requires 'DBIx::Class::Tree::NestedSet',            '0.10';
 requires 'File::Find::Rule',                        '0.34';
 requires 'FormValidator::Simple',                   '0.29';
 requires 'Gazelle',                                 '0.46';
-requires 'Mojolicious',                             '== 7.72';
+requires 'Hashids',                                 '1.001010';
+requires 'Mojolicious',                             '== 8.02';
 requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';
 requires 'Mojolicious::Plugin::Scrypt',             '0.01';
 requires 'MojoX::Session',                          '0.33';
@@ -56,22 +57,26 @@ on configure => sub {
 };
 
 on test => sub {
-    requires 'DateTime::Format::MySQL';
-    requires 'Harriet';
-    requires 'Test::Class';
-    requires 'Test::Deep';
-    requires 'Test::Exception';
-    requires 'Test::Harness', '3.39';
-    requires 'Test::More';
-    requires 'Test::mysqld';
-    requires 'Test::Perl::Critic';
+    requires 'DateTime::Format::MySQL', '0.06';
+    requires 'Harriet',                 '00.05';
+    requires 'Test::Class',             '0.50';
+    requires 'Test::Deep',              '1.128';
+    requires 'Test::Exception',         '0.43';
+    requires 'Test::Harness',           '3.39';
+    requires 'Test::More',              '1.302140';
+    requires 'Test::mysqld',            '1.0012';
+    requires 'Test::Perl::Critic',      '1.04';
+    requires 'Test::Pod',               '1.52';
+    requires 'Test::Pod::Coverage',     '1.10';
+    requires 'Test::Requires',          '0.10';
+    requires 'Test::Spellunker',        '0.4.0';
 };
 
 on develop => sub {
-    requires 'DBIx::QueryLog';
-    requires 'Data::Dumper';
     requires 'DDP';
-    requires 'ExtUtils::Manifest', '1.70';
-    requires 'Test::Perl::Metrics::Lite';
-    requires 'Test::Vars', '0.014';
+    requires 'Data::Dumper',              '2.172';
+    requires 'DBIx::QueryLog',            '0.41';
+    requires 'ExtUtils::Manifest',        '1.70';
+    requires 'Test::Perl::Metrics::Lite', '0.2';
+    requires 'Test::Vars',                '0.014';
 };

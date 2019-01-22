@@ -127,7 +127,7 @@ Yetie::Domain::Base
 
 =head1 DESCRIPTION
 
-Override "attr" method and "has" function of L<Mojo::Base>.
+Override C<attr> method and C<has> function of L<Mojo::Base>.
 Using setter will automatically update "_is_modified" to true.
 
 =head1 FUNCTIONS

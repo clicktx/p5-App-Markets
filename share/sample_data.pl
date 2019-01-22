@@ -46,16 +46,16 @@
 
     # For Accounts
     'Email' => [
-        [qw/id address is_verified/],
-        [ 1, 'a@example.org', 1 ],
-        [ 2, 'b@example.org', 1 ],
-        [ 3, 'c@example.org', 1 ],
-        [ 4, 'd@example.org', 0 ],
-        [ 5, 'e@example.org', 0 ],
-        [ 6, 'f@example.org', 0 ],
-        [ 7, 'g@example.org', 0 ],
-        [ 8, 'h@example.org', 0 ],
-        [ 9, 'i@example.org', 0 ],
+        [qw/id address/],
+        [ 1, 'a@example.org' ],
+        [ 2, 'b@example.org' ],
+        [ 3, 'c@example.org' ],
+        [ 4, 'd@example.org' ],
+        [ 5, 'e@example.org' ],
+        [ 6, 'f@example.org' ],
+        [ 7, 'g@example.org' ],
+        [ 8, 'h@example.org' ],
+        [ 9, 'i@example.org' ],
     ],
     'Address' => [
         [qw/id country_code line1 line2 city state postal_code personal_name organization phone hash/],
@@ -122,19 +122,17 @@
         [ 115, 9, 1 ],
     ],
     'Customer::Address' => [
-        [qw/customer_id address_id address_type_id/],
-        [qw/111 1 1/],
-        [qw/111 1 2/],
-        [qw/111 1 3/],
-        [qw/111 2 3/],
-        [qw/112 2 3/],
-        [qw/113 3 3/],
-        [qw/113 4 3/],
+        [qw/customer_id address_id/],
+        [qw/111 1/],
+        [qw/111 2/],
+        [qw/112 2/],
+        [qw/113 3/],
+        [qw/113 4/],
     ],
 
     # Orders
     'Sales' => [
-        [qw/id customer_id address_id created_at updated_at/],
+        [qw/id customer_id billing_address_id created_at updated_at/],
         [ 1, 111, 1, '2017-06-06 20:01:35', '2017-06-06 20:01:35' ],
         [ 2, 112, 2, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
         [ 3, 113, 4, '2017-07-07 07:08:05', '2017-07-07 07:08:05' ],
@@ -144,7 +142,7 @@
         [ 7, 113, 4, '2017-07-07 07:15:01', '2017-07-07 07:15:01' ],
     ],
     'Sales::Order' => [
-        [qw/id sales_id address_id/],
+        [qw/id sales_id shipping_address_id/],
         [ 1, 1, 1 ],
         [ 2, 1, 3 ],
         [ 3, 2, 2 ],

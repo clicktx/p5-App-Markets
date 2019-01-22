@@ -65,7 +65,7 @@ sub merge {
         $clone->items->each(
             sub {
                 my ( $e, $num ) = @_;
-                if ( $e->equal($item) ) {
+                if ( $e->equals($item) ) {
                     $item->quantity( $e->quantity + $item->quantity );
                     my $i = $num - 1;
                     splice @{ $clone->items->list }, $i, 1;
@@ -95,20 +95,20 @@ sub move_items_to_first_shipment {
 
 # NOTE: 数量は未考慮
 sub remove_item {
-    my ( $self, $item_id ) = @_;
-    croak 'Argument was not a Scalar' if ref \$item_id ne 'SCALAR';
+    my ( $self, $hash_code ) = @_;
+    croak 'Argument was not a Scalar' if ref \$hash_code ne 'SCALAR';
 
-    $self->items->remove($item_id);
+    $self->items->remove($hash_code);
 }
 
 # NOTE: 数量は未考慮
 sub remove_shipping_item {
-    my ( $self, $index, $item_id ) = @_;
+    my ( $self, $index, $hash_code ) = @_;
     croak 'First argument was not a Digit'   if $index =~ /\D/;
-    croak 'Second argument was not a Scalar' if ref \$item_id ne 'SCALAR';
+    croak 'Second argument was not a Scalar' if ref \$hash_code ne 'SCALAR';
 
     my $shipment = $self->shipments->get($index);
-    $shipment->items->remove($item_id);
+    $shipment->items->remove($hash_code);
 }
 
 sub revert {
@@ -121,7 +121,7 @@ sub revert {
 sub set_billing_address {
     my ( $self, $address ) = @_;
     croak 'Argument is missing.' unless $address;
-    return if $self->billing_address->equal($address);
+    return if $self->billing_address->equals($address);
 
     $self->billing_address($address);
 }
@@ -141,7 +141,7 @@ sub set_shipping_address {
         my $address  = $addresses->{$index};
         my $shipment = $self->shipments->get($index);
 
-        next if $shipment->shipping_address->equal($address);
+        next if $shipment->shipping_address->equals($address);
         $shipment->shipping_address($address);
         $cnt++;
     }
@@ -159,6 +159,19 @@ sub to_order_data {
 
     # Remove needless data
     delete $data->{$_} for @needless_attrs;
+
+    # Billing Address
+    $data->{billing_address} = { id => $data->{billing_address}->{id} };
+
+    # Shipments
+    foreach my $shipment ( @{ $data->{shipments} } ) {
+        my $id = $shipment->{shipping_address}->{id};
+        $shipment->{shipping_address} = { id => $id };
+    }
+
+    # Rename shipments to orders
+    $data->{orders} = delete $data->{shipments};
+
     return $data;
 }
 
@@ -200,7 +213,7 @@ the following new ones.
     $items->each( sub { ... } );
 
 Return L<Yetie::Domain::List::CartItems> object.
-Elements is L<Yetie::Domain::Entity::Cart::Item> object.
+Elements is L<Yetie::Domain::Entity::CartItem> object.
 
 =head2 C<shipments>
 
@@ -285,11 +298,11 @@ Move all items to the first element of C<Yetie::Domain::List::Shipments>.
 
 =head2 C<remove_item>
 
-    $cart->remove_item($item_id);
+    $cart->remove_item($hash_code);
 
 =head2 C<remove_shipping_item>
 
-    $cart->remove_shipping_item($shipment_index, $item_id);
+    $cart->remove_shipping_item($shipment_index, $hash_code);
 
 =head2 C<revert>
 
@@ -340,5 +353,5 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::List::CartItems>, L<Yetie::Domain::Entity::Cart::Item>,
+L<Yetie::Domain::Entity>, L<Yetie::Domain::List::CartItems>, L<Yetie::Domain::Entity::CartItem>,
 L<Yetie::Domain::Entity::Shipment>

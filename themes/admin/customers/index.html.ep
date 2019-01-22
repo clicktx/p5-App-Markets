@@ -4,20 +4,20 @@
 <h1><%= title %></h1>
 
 <ul>
-% $entity->each( sub {
+% $entity->customer_list->each( sub {
     <li>
         <%= $_->id %>
         <%= link_to 'Edit' => 'RN_admin_customer_detail' => { customer_id => $_->id } %>
         Name: xxx
         Primary Email: <%= $_->emails->primary %>
-        Register: <%= $_->is_registered ? 'Yse' : 'No' %>
+        has_password?: <%= $_->has_password ? 'Yse' : 'No' %>
         <br>
         Last Logged in: xxx
     </li>
 % });
 </ul>
 
-<%= include 'admin/component/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>
+<%= include 'admin/components/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>
 
 <ul>
     <li><%= link_to __('Create New Customer') => 'RN_admin_customer_create' %></li>

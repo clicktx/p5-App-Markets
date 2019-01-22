@@ -1,8 +1,0 @@
-% layout 'default';
-% title 'Registration';
-
-<h2>Create account</h2>
-
-<div class="">
-    Customer registration is complete
-</div>

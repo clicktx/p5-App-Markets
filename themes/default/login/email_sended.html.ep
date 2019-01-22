@@ -1,0 +1,14 @@
+% layout 'default';
+% title 'Sent an email';
+
+<h1><%= title %>(login)</h1>
+
+<div class="">
+    A mail has been sent.
+    Please follow the procedure from the link in the text.
+</div>
+
+<div class="">
+    <% my $callback_url = flash('callback_url'); %>
+    <%= link_to $callback_url => $callback_url %>
+</div>

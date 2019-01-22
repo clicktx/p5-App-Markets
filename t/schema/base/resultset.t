@@ -13,7 +13,34 @@ subtest 'attribute' => sub {
     isa_ok $rs->schema, 'Yetie::Schema';
 };
 
-subtest 'method to_array()' => sub {
+subtest 'last_id' => sub {
+    my $rs = $schema->resultset('Test');
+
+    my $last_id = $rs->last_id;
+    is $last_id, undef, 'right no data';
+
+    $rs->create( { name => 'foo' } );
+    $last_id = $rs->last_id;
+    is $last_id, 1, 'right last id';
+
+    $last_id = $rs->last_id( { name => 'foo' } );
+    is $last_id, 1, 'right last id';
+    $last_id = $rs->last_id( { name => 'bar' } );
+    is $last_id, undef, 'right no data';
+};
+
+subtest 'limit' => sub {
+    my $rs = $schema->resultset('Sales');
+
+    my $res = $rs->search( {} )->limit(1);
+    is $res->count, 1, 'right limit 1';
+
+    $res = $rs->search( {} )->limit( 2, 3 );
+    is $res->count, 3, 'right limit 3';
+    is $res->first->id, 3, 'right offset first';
+};
+
+subtest 'to_array' => sub {
     my $rs = $schema->resultset('Sales::Order::Item');
 
     subtest 'basic' => sub {
@@ -41,14 +68,14 @@ subtest 'method to_array()' => sub {
     };
 };
 
-subtest 'method to_data()' => sub {
+subtest 'to_data' => sub {
     my $rs    = $schema->resultset('Sales');
     my $order = $rs->search()->to_data;
 
     is ref $order, 'ARRAY', 'right types';
 };
 
-subtest 'method each()' => sub {
+subtest 'each' => sub {
     my $rs = $schema->resultset('Sales');
     my $order = $rs->find( 1, { prefetch => { orders => [ 'shipping_address', 'items' ] } }, );
 

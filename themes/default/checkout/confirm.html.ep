@@ -24,7 +24,7 @@
             Change
         <% end %>
         <!-- NOTE: とりあえず通常配送のみ -->
-        <%= include 'common/components/address', address => $cart->shipments->first->shipping_address %>
+        <%= include 'common/elements/address', address => $cart->shipments->first->shipping_address %>
     <% end =%>
 </div>
 
@@ -34,7 +34,7 @@
         <%= link_to 'RN_checkout_billing_address' => begin %>
             Change
         <% end %>
-        <%= include 'common/components/address', address => $cart->billing_address %>
+        <%= include 'common/elements/address', address => $cart->billing_address %>
     <% end =%>
 </div>
 

@@ -23,7 +23,7 @@ Yetie::App::Core::Cache
 
 =head1 ATTRIBUTES
 
-L<Yetie::App::Core::Cache> inherits all attribures from L<Mojo::Cache> and implements the
+L<Yetie::App::Core::Cache> inherits all attributes from L<Mojo::Cache> and implements the
 following new ones.
 
 =head1 METHODS

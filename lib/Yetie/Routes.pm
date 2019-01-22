@@ -88,7 +88,7 @@ sub add_catalog_routes {
     my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
 
     # Route Examples
-    $r->get('/')->to('example#welcome')->name('RN_top');
+    $r->get('/')->to('example#welcome')->name('RN_home');
     $r->any('/login-example')->to('login_example#index');
 
     # Cart
@@ -103,21 +103,39 @@ sub add_catalog_routes {
         my $authorize = $r->under('/checkout')->to('account#authorize')->name('RN_checkout_bridge');
         my $checkout  = $authorize->any('/')->to('checkout#');
         $checkout->any('/shipping-address')->to('#shipping_address')->name('RN_checkout_shipping_address');
+        $checkout->post('/shipping-address/select')->to('#shipping_address_select')
+          ->name('RN_checkout_shipping_address_select');
         $checkout->any('/delivery-options')->to('#delivery_option')->name('RN_checkout_delivery_option');
         $checkout->any('/payment-option')->to('#payment_method')->name('RN_checkout_payment_method');
         $checkout->any('/billing-address')->to('#billing_address')->name('RN_checkout_billing_address');
+        $checkout->post('/billing-address/select')->to('#billing_address_select')
+          ->name('RN_checkout_billing_address_select');
         $checkout->any('/confirm')->to('#confirm')->name('RN_checkout_confirm');
     }
     my $guest_checkout = $r->any('/checkout/guest')->to('checkout#');
     $guest_checkout->any('/shipping-address')->to('#shipping_address')->name('RN_guest_checkout_shipping_address');
 
     # For Customers
-    my $register = $r->any('/register')->to( controller => 'register' );
-    $register->any('/')->to('#index')->name('RN_customer_register');
-    $register->get('/done')->to('#done')->name('RN_customer_register_done');
-
-    $r->any('/login')->to('account#login')->name('RN_customer_login');
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
+
+    {
+        # Log-in
+        my $login = $r->any('/login')->to( controller => 'login' );
+        $login->get('/')->to('#index')->name('RN_customer_login');
+        $login->get('/email-sended')->to('#email_sended')->name('RN_customer_login_email_sended');
+        $login->get('/toggle')->to('#toggle')->name('RN_customer_login_toggle');
+        $login->get('/token/:token')->to('#callback')->name('RN_callback_customer_login');
+        $login->any('/magic-link')->to('#magic_link')->name('RN_customer_login_magic_link');
+        $login->any('/with-password')->to('#with_password')->name('RN_customer_login_with_password');
+    }
+    {
+        # Sign-up
+        my $signup = $r->any('/signup')->to( controller => 'signup' );
+        $signup->any('/')->to('#index')->name('RN_customer_signup');
+        $signup->get('/email-sended')->to('#email_sended')->name('RN_customer_signup_email_sended');
+        $signup->get('/done')->to('#done')->name('RN_customer_signup_done');
+        $signup->get('/get-started/:token')->to('#callback')->name('RN_callback_customer_signup');
+    }
     {
         # Authorization required
         my $account = $r->under('/account')->to('account#authorize')->name('RN_customer_bridge');

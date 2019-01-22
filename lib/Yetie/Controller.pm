@@ -1,6 +1,19 @@
 package Yetie::Controller;
 use Mojo::Base 'Mojolicious::Controller';
 
+sub cookie {
+    my ( $self, $name ) = ( shift, shift );
+
+    # Request cookie
+    return $self->SUPER::cookie($name) unless @_;
+
+    # Response cookie
+    my ( $value, $opt ) = ( shift, shift || {} );
+    $opt->{path}     //= '/';
+    $opt->{httponly} //= 1;
+    return $self->SUPER::cookie( $name => $value, $opt );
+}
+
 sub csrf_protect {
     my $self = shift;
     return 1 if $self->req->method ne 'POST';
@@ -11,6 +24,8 @@ sub csrf_protect {
     );
     return;
 }
+
+sub is_get_request { shift->req->method eq 'GET' ? 1 : 0 }
 
 sub is_logged_in {
     my $self = shift;
@@ -28,6 +43,9 @@ sub process {
 
     # CSRF protection
     return unless $self->csrf_protect();
+
+    # Set variant for templates
+    $self->stash( variant => $self->language ) unless $self->language eq 'en';
 
     # Controller process
     $self->app->plugins->emit_hook( before_init => $self );
@@ -88,6 +106,8 @@ sub redirect_to {
 1;
 __END__
 
+=for stopwords httponly
+
 =head1 NAME
 
 Yetie::Controller - Controller base class
@@ -131,6 +151,32 @@ Yetie::Controller - Controller base class
 
 =head1 DESCRIPTION
 
+=head1 PROSESS
+
+Controller process.
+
+C<before_init> hook
+
+=head3 C<init>
+
+C<after_init> hook
+
+=head3 C<init_form>
+
+C<after_init_form> hook
+
+C<before_action> hook
+
+=head3 C<action_before>
+
+C<controller action>
+
+=head3 C<action_after>
+
+C<after_action> hook
+
+=head3 C<finalize>
+
 =head1 ATTRIBUTES
 
 L<Yetie::Controller> inherits all attributes from L<Mojolicious::Controller> and
@@ -141,11 +187,30 @@ implements the following new ones.
 L<Yetie::Controller> inherits all methods from L<Mojolicious::Controller> and
 implements the following new ones.
 
+=head2 C<cookie>
+
+    my $foo = $c->cookie('foo');
+    $c->cookie( foo => 'bar', { path => '/', httponly => 1 } )
+
+Set default options.
+
+path: /
+
+httponly: 1
+
+L<Mojolicious::Controller/cookie>
+
 =head2 C<csrf_protect>
 
     $c->csrf_protect();
 
 Request method 'POST' requires CSRF token.
+
+=head2 C<is_get_request>
+
+    my $bool = $c->is_get_request;
+
+Return boolean value.
 
 =head2 C<is_logged_in>
 
@@ -154,6 +219,15 @@ Request method 'POST' requires CSRF token.
     else { say "Not loged in" }
 
 Return boolean value.
+
+=head2 C<redirect_to>
+
+
+
+=head2 C<process>
+
+
+See L</PROSESS>
 
 =head1 SEE ALSO
 

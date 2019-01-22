@@ -7,19 +7,17 @@ use Mojo::Collection qw(c);
 use Mojolicious::Controller;
 use Yetie::Util qw(load_class);
 use Yetie::App::Core::Parameters;
-use Yetie::Form::TagHelpers;
+use Yetie::App::Core::Form::TagHelpers;
 
 has controller => sub { Mojolicious::Controller->new };
-has 'fieldset';
 has is_validated => '0';
 has name_space   => 'Yetie::Form::FieldSet';
-has tag_helpers  => sub { Yetie::Form::TagHelpers->new( shift->controller ) };
+has tag_helpers  => sub { Yetie::App::Core::Form::TagHelpers->new( shift->controller ) };
+has [qw(fieldset validated_parameters)];
 
 sub do_validate {
     my $self     = shift;
     my $c        = $self->controller;
-    my $v        = $c->validation;
-    my $names    = $c->req->params->names;
     my $fieldset = $self->fieldset;
 
     foreach my $field_key ( @{ $fieldset->field_keys } ) {
@@ -27,28 +25,20 @@ sub do_validate {
         my $filters  = $fieldset->filters($field_key);
         my $checks   = $fieldset->checks($field_key);
 
-        # multiple field: eg. parameter_name = "favorite_color[]"
-        $field_key .= '[]' if $fieldset->schema($field_key)->{multiple};
-
         # NOTE: expanding field
         # e.g. field_key = "user.[].id" expanding to parameter_name = "user.0.id"
-        if ( $field_key =~ m/\.\[]|\.\{}/ ) {
-            my @match = grep { my $name = $fieldset->_replace_key($_); $field_key eq $name } @{$names};
-            foreach my $key (@match) {
-                $required ? $v->required( $key, @{$filters} ) : $v->optional( $key, @{$filters} );
-                $self->_do_check($_) for @$checks;
-                _replace_req_param( $c, $key );
-            }
-        }
-        else {
-            $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
-            $self->_do_check($_) for @$checks;
-            _replace_req_param( $c, $field_key );
-        }
+        my $names = $c->req->params->names;
+        my @keys =
+          $field_key =~ m/\.\[]|\.\{}/
+          ? grep { $fieldset->replace_key($_) eq $field_key } @{$names}
+          : ($field_key);
+        $self->_validate_field( $_ => $required, $filters, $checks ) for @keys;
     }
     $self->is_validated(1);
-    return $v->has_error ? undef : 1;
+    return $c->validation->has_error ? undef : 1;
 }
+
+sub every_param { shift->params->every_param(shift) }
 
 sub field { shift->fieldset->field(@_) }
 
@@ -76,29 +66,27 @@ sub new {
 
 sub has_data { shift->validation->has_data }
 
-sub param {
-    my ( $self, $key ) = @_;
-    my $param = $key =~ m/\[\]$/ ? $self->params->every_param($key) : $self->params->param($key);
-
-    # NOTE: "Mojolicious::Validator::Validation->output" does not hold parameters with empty strings ;(
-    defined $param ? $param : '';
-}
+sub param { shift->every_param(shift)->[-1] }
 
 sub params {
     my $self = shift;
     croak 'do not call "do_validate" method' unless $self->is_validated;
-    return $self->{_validated_parameters} if $self->{_validated_parameters};
+    return $self->validated_parameters if $self->validated_parameters;
 
-    my $v      = $self->validation;
-    my %output = %{ $v->output };
+    # NOTE: 'Mojolicious::Validator::Validation->output' does not hold parameters with empty strings ;(
+    my $v          = $self->validation;
+    my %field_keys = map { $_ => 1 } @{ $self->fieldset->field_keys };
+    my @input_keys = grep { $field_keys{ $self->fieldset->replace_key($_) } } keys %{ $v->input };
+    my %o          = %{ $v->output };
+    my %output     = map { $_ // '' } %o{@input_keys};
 
-    # NOTE: scope parameterは別に保存していないので
-    # 'user.name' フィールドを使う場合は 'user'フィールドを使うことが出来ない
+    # Expand hash
     my $expand_hash = expand_hash( \%output );
     %output = ( %output, %{$expand_hash} );
 
-    $self->{_validated_parameters} = Yetie::App::Core::Parameters->new(%output);
-    return $self->{_validated_parameters};
+    # Cache
+    $self->validated_parameters( Yetie::App::Core::Parameters->new(%output) );
+    return $self->validated_parameters;
 }
 
 sub render_error {
@@ -114,16 +102,16 @@ sub render_help {
 }
 
 sub render_label {
-    my ( $self, $name, %attrs ) = @_;
+    my ( $self, $name ) = ( shift, shift );
+    my %attrs = @_;
+
     my $field = $self->fieldset->field($name);
     $self->tag_helpers->label_for( $field, %attrs );
 }
 
 sub render {
-    my ( $self, $name, %attrs ) = @_;
-
-    my $value = $self->controller->req->params->param($name);
-    $attrs{value} = $value if defined $value;
+    my ( $self, $name ) = ( shift, shift );
+    my %attrs = @_;
 
     my $field = $self->fieldset->field($name);
     my $method = $attrs{type} || $field->type || 'text';
@@ -134,13 +122,6 @@ sub scope_param { shift->params->every_param(shift) }
 
 sub validation { shift->controller->validation }
 
-# NOTE: filter適用後の値をfill-in formで使われるようにする
-sub _replace_req_param {
-    my ( $c, $key ) = @_;
-    my $validated_value = $c->validation->param($key);
-    $c->param( $key => $validated_value ) if $validated_value;
-}
-
 sub _do_check {
     my $self = shift;
     my $c    = $self->controller;
@@ -149,7 +130,7 @@ sub _do_check {
     my ( $check, @args ) = ref $_[0] eq 'ARRAY' ? @{ $_[0] } : $_[0];
     return $v->$check unless @args;
 
-    # scalar refference to preference value
+    # scalar reference to preference value
     @args = map { ref $_ eq 'SCALAR' ? $c->pref( ${$_} ) : $_ } @args;
     return $v->$check(@args);
 }
@@ -191,6 +172,27 @@ sub _fill_field {
         $field->choices( _fill_choice_field( $field->choices, $value ) );
     }
     else { $field->default_value($value) }
+}
+
+# NOTE: filter適用後の値をfill-in formで使われるようにする
+sub _replace_req_param {
+    my ( $self, $key ) = @_;
+    my $c         = $self->controller;
+    my $validated = $c->validation->every_param($key);
+
+    # parameterが無い場合は空文字を設定する
+    my $value = @{$validated} ? $validated : '';
+    $c->param( $key => $value );
+}
+
+sub _validate_field {
+    my ( $self, $field_key, $required, $filters, $checks ) = @_;
+    my $v = $self->controller->validation;
+    $required ? $v->required( $field_key, @{$filters} ) : $v->optional( $field_key, @{$filters} );
+    $self->_do_check($_) for @$checks;
+
+    # NOTE: filter適用後の値をfill-in formで使われるようにする
+    $self->_replace_req_param($field_key);
 }
 
 1;
@@ -244,6 +246,12 @@ Default Yetie::Form::FieldSet
 
 $controller->validation alias.
 
+=head2 C<validated_parameters>
+
+    my $params = $fieldset->validated_parameters;
+
+Return L<Yetie::App::Core::Parameters> object or C<undefined>.
+
 =head1 METHODS
 
 L<Yetie::Form::Base> inherits all methods from L<Mojo::Base> and implements the following new ones.
@@ -254,6 +262,18 @@ L<Yetie::Form::Base> inherits all methods from L<Mojo::Base> and implements the 
     say 'Validation failure!' unless $bool;
 
 Return boolean. success return true.
+
+=head2 C<every_param>
+
+    my $params = $form->every_param;
+
+Return Array reference.
+
+    # Get first value
+    say $form->every_param('foo')->[0];
+
+The parameter is a validated values.
+This method should be called after the L</do_validate> method.
 
 =head2 C<field>
 
@@ -284,7 +304,7 @@ L<Mojolicious::Validator::Validation/has_data>
     # Return scalar
     my $param = $form->param('name');
 
-    # Return array refference
+    # Return last parameter in parameters
     my $param = $form->param('favorite[]')
 
 The parameter is a validated values.
@@ -328,7 +348,7 @@ Rendering HTML form widget(field or fields).
 
     my $scope = $form->scope_param('user');
 
-Return array refference.
+Return array reference.
 The parameter is a validated values.
 
 NOTE: This method should be called after the L</do_validate> method.
@@ -354,6 +374,6 @@ Alias $controller->validation
 
 =head1 SEE ALSO
 
-L<Yetie::Form>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::Form::TagHelpers>
+L<Yetie::App::Core::Form>, L<Yetie::Form::FieldSet>, L<Yetie::Form::Field>, L<Yetie::App::Core::Form::TagHelpers>
 
 =cut

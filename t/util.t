@@ -31,4 +31,22 @@ subtest 'directories' => sub {
     is ref $addons, 'ARRAY', 'loading addons';
 };
 
+subtest 'hashids' => sub {
+    my $h = Yetie::Util::hashids();
+    isa_ok $h, 'Hashids';
+
+    my $id = $h->encode(12345);
+    is $id , 'JWYWZ4', 'right encode';
+    is $h->decode($id), 12345, 'right decode';
+
+    my $id2 = Yetie::Util::hashids('EEB37B41-3DED-40EC-A058-19FA4F4F98D1')->encode(12345);
+    isnt $id, $id2, 'right use salt';
+};
+
+subtest 'uuid' => sub {
+    my $uuid = Yetie::Util::uuid();
+    my $r    = qr/[0-9A-F]/;
+    like $uuid, qr/$r{8}\-$r{4}\-4$r{3}\-[89AB]$r{3}\-$r{12}/, 'right UUID';
+};
+
 done_testing();

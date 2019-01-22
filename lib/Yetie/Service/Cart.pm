@@ -15,7 +15,7 @@ sub add_item {
     $form_params->{product_title} = $product->title;
     $form_params->{price}         = $product->price;
 
-    my $item = $self->factory('entity-cart-item')->construct($form_params);
+    my $item = $self->factory('entity-cart_item')->construct($form_params);
     return $self->controller->cart->add_item($item);
 }
 
@@ -38,6 +38,13 @@ sub merge_cart {
     # Remove previous cart from DB
     $session->remove_cart( $session->cart_id );
     return $merged_cart;
+}
+
+sub set_address_id {
+    my ( $self, $address ) = @_;
+
+    my $result = $self->resultset('Address')->find_or_create_address( $address->to_hash );
+    $address->id( $result->id );
 }
 
 1;
@@ -80,6 +87,13 @@ Return L<Yetie::Domain::Entity::Cart> object.
 Return L<Yetie::Domain::Entity::Cart> object.
 
 Merge with saved customer cart.
+
+=head2 C<set_address_id>
+
+    $servece->set_address_id( $cart->billing_address );
+    $servece->set_address_id( $cart->shipment->[0]->shipping_address );
+
+Argument L<Yetie::Domain::Entity::Address> object.
 
 =head1 AUTHOR
 

@@ -15,14 +15,13 @@ sub index {
     $c->stash( entity => $category );
 
     # 404
-    return $c->reply->not_found() unless $category->has_data;
+    return $c->reply->not_found() unless $category->has_id;
 
     # Page Data
     $category->page_title( $category->title );
 
     # widget category tree
-    my $service = $c->service('category_tree');
-    $c->stash( 'yetie.widget.category_tree' => $service->search_all );
+    $c->stash( 'yetie.widget.category_tree' => $c->service('category')->get_category_tree );
 
     return $c->render();
 }

@@ -11,6 +11,21 @@ sub find_staff {
     return $self->factory('entity-staff')->construct($data);
 }
 
+sub login {
+    my ( $self, $staff_id ) = @_;
+    my $session = $self->controller->server_session;
+
+    # Double login
+    return 1 if $session->staff_id;
+
+    # Set staff id (logedin flag)
+    $session->staff_id($staff_id);
+
+    # Regenerate sid
+    $session->regenerate_sid;
+    return 1;
+}
+
 # NOTE: scenario(story) class?
 sub login_process {
     my ( $self, $login_id, $raw_password ) = @_;
@@ -23,22 +38,7 @@ sub login_process {
     return $self->_login_failed( 'admin.login.failed.password', login_id => $login_id )
       unless $staff->password->is_verify($raw_password);
 
-    return $self->_logged_in($staff);
-}
-
-sub _logged_in {
-    my ( $self, $staff ) = @_;
-    my $session = $self->controller->server_session;
-
-    # Double login
-    return 1 if $session->staff_id;
-
-    # Set staff id (logedin flag)
-    $session->staff_id( $staff->id );
-
-    # Regenerate sid
-    $session->regenerate_sid;
-    return 1;
+    return $self->login( $staff->id );
 }
 
 sub _login_failed {
@@ -77,12 +77,20 @@ the following new ones.
 
 Return L<Yetie::Domain::Entity::Staff> object.
 
+=head2 C<login>
+
+Set staff logged-in flag to server_session.
+
+    my $bool = $service->login($staff_id);
+
+Return boolean value.
+
 =head2 C<login_process>
 
     my $bool = $service->login_process( $login_id, $raw_password );
 
 Return boolean value.
-Returns true if login succeeded.
+Returns true if log-in succeeded.
 
 =head1 AUTHOR
 

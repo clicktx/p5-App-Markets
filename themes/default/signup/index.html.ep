@@ -1,0 +1,21 @@
+% layout 'default';
+% title 'Signup';
+
+<h2>Create account</h2>
+
+<div class="">
+    <%= form_for 'RN_customer_signup' => ( method => 'POST' ) => begin %>
+        <%= csrf_field %>
+        <div class="">
+            <%= form_field '#email' =%>
+            <%= form_label %>
+            <%= form_widget %>
+            <%= form_error %>
+        </div>
+        <%= submit_button 'Send' %>
+    <% end %>
+</div>
+
+<div class="">
+    Already have an account? <%= link_to 'Sign in' => 'RN_customer_login' %>
+</div>

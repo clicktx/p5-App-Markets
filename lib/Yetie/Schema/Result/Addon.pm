@@ -6,13 +6,12 @@ primary_column id => { data_type => 'INT', };
 
 unique_column name => {
     data_type => 'VARCHAR',
-    size      => 50,
+    size      => 64,
 };
 
 column is_enabled => {
-    data_type     => 'TINYINT',
-    size          => 1,
-    is_nullable   => 1,
+    data_type     => 'BOOLEAN',
+    is_nullable   => 0,
     default_value => 0,
 };
 

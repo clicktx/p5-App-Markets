@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Yetie::Factory;
 
 use_ok 'Yetie::Domain::Entity::CategoryTree';
 
@@ -14,9 +15,10 @@ subtest 'basic' => sub {
 };
 
 subtest 'has_child' => sub {
-    my $e = Yetie::Domain::Entity::CategoryTree->new( children => [ {} ] );
+    my $f = Yetie::Factory->new('entity-category_tree');
+    my $e = $f->construct( children => [ {} ] );
     is $e->has_child, 1, 'right has child';
-    $e = Yetie::Domain::Entity::CategoryTree->new( children => [] );
+    $e = $f->construct( children => [] );
     is $e->has_child, 0, 'right has not child';
 };
 

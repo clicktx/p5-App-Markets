@@ -9,21 +9,21 @@
     <% end =%>
 </div>
 <div class="">
-    <h3>Billing Address</h3>
-    <%= content billing_address => begin =%>
-        <%= link_to 'RN_admin_order_edit_billing_address' => begin %>
-            Edit
-        <% end %>
-        <%= include 'common/components/address', address => $order->billing_address %>
-    <% end =%>
-</div>
-<div class="">
     <h3>Shipping Address</h3>
     <%= content shipping_address => begin =%>
         <%= link_to 'RN_admin_order_edit_shipping_address' => begin %>
             Edit
         <% end %>
-        <%= include 'common/components/address', address => $order->shipping_address %>
+        <%= include 'common/elements/address', address => $order->shipping_address %>
+    <% end =%>
+</div>
+<div class="">
+    <h3>Billing Address</h3>
+    <%= content billing_address => begin =%>
+        <%= link_to 'RN_admin_order_edit_billing_address' => begin %>
+            Edit
+        <% end %>
+        <%= include 'common/elements/address', address => $order->billing_address %>
     <% end =%>
 </div>
 <div class="">

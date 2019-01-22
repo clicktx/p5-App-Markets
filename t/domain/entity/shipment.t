@@ -1,7 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Yetie::Domain::Collection;
-use Yetie::Domain::Entity::Cart::Item;
+use Yetie::Domain::Entity::CartItem;
 use Yetie::Factory;
 
 my $pkg = 'Yetie::Domain::Entity::Shipment';
@@ -27,12 +27,12 @@ subtest 'basic' => sub {
     is $shipment->id, 1, 'right id';
 };
 
-subtest 'equal' => sub {
+subtest 'equals' => sub {
     my $shipment  = construct( id => 1 );
     my $shipment2 = construct( id => 2 );
 
-    is $shipment->equal($shipment),  1, 'right equal item';
-    is $shipment->equal($shipment2), 0, 'right not equal item';
+    is $shipment->equals($shipment),  1, 'right equals item';
+    is $shipment->equals($shipment2), 0, 'right not equals item';
 };
 
 # subtest 'clone' => sub {};
@@ -48,9 +48,9 @@ subtest 'item_count' => sub {
 subtest 'subtotal' => sub {
     my $shipment = construct( id => 1 );
     $shipment->{items} = Yetie::Domain::Collection->new(
-        Yetie::Domain::Entity::Cart::Item->new( quantity => 1, price => 100 ),
-        Yetie::Domain::Entity::Cart::Item->new( quantity => 2, price => 100 ),
-        Yetie::Domain::Entity::Cart::Item->new( quantity => 3, price => 100 ),
+        Yetie::Domain::Entity::CartItem->new( quantity => 1, price => 100 ),
+        Yetie::Domain::Entity::CartItem->new( quantity => 2, price => 100 ),
+        Yetie::Domain::Entity::CartItem->new( quantity => 3, price => 100 ),
     );
     is $shipment->subtotal, 600, 'right subtotal';
 };

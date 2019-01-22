@@ -12,7 +12,7 @@ column customer_id => {
     is_nullable => 0,
 };
 
-column address_id => {
+column billing_address_id => {
     data_type   => 'INT',
     is_nullable => 0,
 };
@@ -25,7 +25,7 @@ column created_at => {
 
 column updated_at => {
     data_type   => 'DATETIME',
-    is_nullable => 0,
+    is_nullable => 1,
     timezone    => Yetie::Schema->TZ,
 };
 
@@ -35,7 +35,7 @@ belongs_to
 
 belongs_to
   billing_address => 'Yetie::Schema::Result::Address',
-  { 'foreign.id' => 'self.address_id' };
+  { 'foreign.id' => 'self.billing_address_id' };
 
 has_many
   orders => 'Yetie::Schema::Result::Sales::Order',

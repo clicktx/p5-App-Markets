@@ -1,8 +1,11 @@
 package Yetie::App::Core::View::DOM::HTML;    # based on Mojo::DOM::HTML
 use Mojo::Base -base;
 
+use Exporter 'import';
 use Mojo::Util qw(html_attr_unescape html_unescape xml_escape);
 use Scalar::Util 'weaken';
+
+our @EXPORT_OK = ('tag_to_html');
 
 has tree => sub { ['root'] };
 has 'xml';
@@ -68,9 +71,9 @@ my %END = ( body => 'head', optgroup => 'optgroup', option => 'option' );
 
 # HTML elements that break paragraphs
 map { $END{$_} = 'p' } (
-    qw(address article aside blockquote details div dl fieldset figcaption),
-    qw(figure footer form h1 h2 h3 h4 h5 h6 header hgroup hr main menu nav ol p),
-    qw(pre section table ul)
+    qw(address article aside blockquote details dialog div dl fieldset),
+    qw(figcaption figure footer form h1 h2 h3 h4 h5 h6 header hgroup hr main),
+    qw(menu nav ol p pre section table ul)
 );
 
 # HTML table elements with optional end tags
@@ -192,6 +195,10 @@ sub parse {
 
 sub render { _render( $_[0]->tree, $_[0]->xml ) }
 
+sub tag { shift->tree( [ 'root', _tag(@_) ] ) }
+
+sub tag_to_html { _render( _tag(@_), undef ) }
+
 sub _end {
     my ( $end, $xml, $current ) = @_;
 
@@ -220,12 +227,43 @@ sub _node {
 sub _render {
     my ( $tree, $xml ) = @_;
 
-    # Text (escaped)
+    # Tag
     my $type = $tree->[0];
+    if ( $type eq 'tag' ) {
+
+        # Start tag
+        my $tag    = $tree->[1];
+        my $result = "<$tag";
+
+        # Attributes
+        for my $key ( sort keys %{ $tree->[2] } ) {
+            my $value = $tree->[2]{$key};
+            $result .= $xml ? qq{ $key="$key"} : " $key" and next
+              unless defined $value;
+            $result .= qq{ $key="} . xml_escape($value) . '"';
+        }
+
+        # No children
+        return $xml ? "$result />" : $EMPTY{$tag} ? "$result>" : "$result></$tag>"
+          unless $tree->[4];
+
+        # Children
+        no warnings 'recursion';
+        $result .= '>' . join '', map { _render( $_, $xml ) } @$tree[ 4 .. $#$tree ];
+
+        # End tag
+        return "$result</$tag>";
+    }
+
+    # Text (escaped)
     return xml_escape $tree->[1] if $type eq 'text';
 
     # Raw text
     return $tree->[1] if $type eq 'raw';
+
+    # Root
+    return join '', map { _render( $_, $xml ) } @$tree[ 1 .. $#$tree ]
+      if $type eq 'root';
 
     # EP Line
     return $tree->[1] if $type eq 'ep_line';
@@ -245,34 +283,8 @@ sub _render {
     # Processing instruction
     return '<?' . $tree->[1] . '?>' if $type eq 'pi';
 
-    # Root
-    return join '', map { _render( $_, $xml ) } @$tree[ 1 .. $#$tree ]
-      if $type eq 'root';
-
-    # Start tag
-    my $tag    = $tree->[1];
-    my $result = "<$tag";
-
-    # Attributes
-    for my $key ( sort keys %{ $tree->[2] } ) {
-        my $value = $tree->[2]{$key};
-        $result .= $xml ? qq{ $key="$key"} : " $key" and next
-          unless defined $value;
-
-        $value = xml_escape($value) if $value !~ /$EP_TAG_IN_TAG_RE/;
-        $result .= qq{ $key="} . $value . '"';
-    }
-
-    # No children
-    return $xml ? "$result />" : $EMPTY{$tag} ? "$result>" : "$result></$tag>"
-      unless $tree->[4];
-
-    # Children
-    no warnings 'recursion';
-    $result .= '>' . join '', map { _render( $_, $xml ) } @$tree[ 4 .. $#$tree ];
-
-    # End tag
-    return "$result</$tag>";
+    # Everything else
+    return '';
 }
 
 sub _start {
@@ -300,6 +312,21 @@ sub _start {
     $$current = $new;
 }
 
+sub _tag {
+    my $tree = [ 'tag', shift, undef, undef ];
+
+    # Content
+    push @$tree, ref $_[-1] eq 'CODE' ? [ 'raw', pop->() ] : [ 'text', pop ]
+      if @_ % 2;
+
+    # Attributes
+    my $attrs = $tree->[2] = {@_};
+    return $tree unless exists $attrs->{data} && ref $attrs->{data} eq 'HASH';
+    my $data = delete $attrs->{data};
+    @$attrs{ map { y/_/-/; lc "data-$_" } keys %$data } = values %$data;
+    return $tree;
+}
+
 1;
 
 =encoding utf8
@@ -325,6 +352,20 @@ L<Yetie::App::Core::View::DOM::HTML> is the HTML/XML engine used by L<Mojo::DOM>
 L<HTML Living Standard|https://html.spec.whatwg.org> and the
 L<Extensible Markup Language (XML) 1.0|http://www.w3.org/TR/xml/>.
 
+=head1 FUNCTIONS
+
+L<Yetie::App::Core::View::DOM::HTML> implements the following functions, which can be imported individually.
+
+=head2 tag_to_html
+
+    my $str = tag_to_html 'div', id => 'foo', 'safe content';
+
+Generate HTML/XML tag and render it right away. This is a significantly faster
+alternative to L</"tag"> for template systems that have to generate a lot of
+tags.
+
+See L<Mojo::DOM::HTML/tag_to_html>
+
 =head1 ATTRIBUTES
 
 L<Yetie::App::Core::View::DOM::HTML> implements the following attributes.
@@ -337,6 +378,8 @@ L<Yetie::App::Core::View::DOM::HTML> implements the following attributes.
 Document Object Model. Note that this structure should only be used very
 carefully since it is very dynamic.
 
+See L<Mojo::DOM::HTML/tree>
+
 =head2 C<xml>
 
   my $bool = $html->xml;
@@ -344,6 +387,8 @@ carefully since it is very dynamic.
 
 Disable HTML semantics in parser and activate case-sensitivity, defaults to
 auto-detection based on XML declarations.
+
+See L<Mojo::DOM::HTML/xml>
 
 =head1 METHODS
 
@@ -356,11 +401,23 @@ following new ones.
 
 Parse HTML/XML/EP Tenmplate fragment.
 
+See L<Mojo::DOM::HTML/parse>
+
 =head2 C<render>
 
   my $str = $html->render;
 
 Render DOM to HTML/XML/EP Tenmplate.
+
+See L<Mojo::DOM::HTML/render>
+
+=head2 C<tag>
+
+    $html = $html->tag('div', id => 'foo', 'safe content');
+
+Generate HTML/XML tag.
+
+See L<Mojo::DOM::HTML/tag>
 
 =head1 SEE ALSO
 

@@ -54,6 +54,13 @@ msgstr "Must be at the most {length} symbols"
 msgid "Must be between {min} and {max} symbols"
 msgstr "Must be between {min} and {max} symbols"
 
+# password-less authorization
+msgid "authorization.request.error.title"
+msgstr "Bad request"
+
+msgid "authorization.request.error.message"
+msgstr "It is an expired or invalid request."
+
 # for preferences
 msgid "pref.title.admin_uri_prefix"
 msgstr "admin page prefix"

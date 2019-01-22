@@ -13,8 +13,10 @@ sub index {
     $form->field('parent_id')->choices($tree);
     $c->init_form();
 
-    return $c->render() unless $form->has_data;
+    # Get request
+    return $c->render() if $c->is_get_request;
 
+    # Validation form
     return $c->render() unless $form->do_validate;
 
     # Validation
@@ -38,12 +40,17 @@ sub edit {
 
     my $category_id = $c->stash('category_id');
 
+    # Initialize form
     my $form = $c->form('admin-category');
     my $entity = $c->service('category')->find_category( $category_id, $form );
-    return $c->reply->not_found() unless $entity->has_data;
-
     $form->fill_in($entity);
-    return $c->render() unless $form->has_data;
+
+    return $c->reply->not_found() unless $entity->has_id;
+
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
     return $c->render() unless $form->do_validate;
 
     $entity->title( $form->param('title') );

@@ -1,7 +1,7 @@
 package Yetie::App::Common;
 use Mojo::Base 'Mojolicious';
 use Mojo::Log;
-use Yetie::Addons;
+use Yetie::Addon::Handler;
 use DBIx::QueryLog;
 
 # $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
@@ -9,7 +9,7 @@ $ENV{DBIC_TRACE}            = 1;
 $ENV{DBIX_QUERYLOG_COMPACT} = 1;
 $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
 
-has addons => sub { Yetie::Addons->new(@_) };
+has addons => sub { Yetie::Addon::Handler->new(@_) };
 has region => 'us';
 
 # has restart_app => sub { system shift->home . "/script/appctl --restart" };
@@ -61,7 +61,7 @@ sub initialize_app {
     $self->secrets( $self->config('secrets') );
 
     # Load plugins
-    _load_plugins($self);
+    $self->_load_plugins;
 
     # Preferences
     $self->service('preference')->load;
@@ -69,13 +69,24 @@ sub initialize_app {
     # Set default language
     $self->language( $self->pref('default_language') );
 
+    # Server Session
+    $self->plugin(
+        'Yetie::App::Core::Session' => {
+            expires_delta        => $self->pref('server_session_expires_delta'),
+            cookie_expires_delta => $self->pref('server_session_cookie_expires_delta'),
+            httponly             => 1,
+
+            # secure => 1 if pref->https_only
+        }
+    );
+
     # TimeZone
     # my $time_zone = 'Asia/Tokyo';                 # from preference
     # $self->schema->time_zone($time_zone);
 
     # Add before/after action hook
     # NOTE: Mojoliciou::Controllerの挙動を変更
-    _add_hooks($self);
+    $self->_add_hooks;
 }
 
 sub _add_hooks {
@@ -133,12 +144,12 @@ sub _load_plugins {
     $app->plugin('PODRenderer') if $app->mode eq 'development';
 
     # Default Helpers
-    $app->plugin('Yetie::DefaultHelpers');
+    $app->plugin('Yetie::App::Core::DefaultHelpers');
 
     # Locale
     $ENV{MOJO_I18N_DEBUG} = 1 if $app->mode eq 'development';
     $app->plugin(
-        'Yetie::I18N',
+        'Yetie::App::Core::I18N',
         {
             # file_type => 'po',    # or 'mo'. default: po
             # default   => $self->pref('default_language'),
@@ -151,14 +162,11 @@ sub _load_plugins {
     );
 
     # Logging
-    # NOTE: Need after loading "Yetie::I18N"
-    $app->plugin('Yetie::Log');
+    # NOTE: Need after loading "Yetie::App::Core::I18N"
+    $app->plugin('Yetie::App::Core::Log');
 
     # Password
     $app->plugin('Scrypt');
-
-    # Session
-    $app->plugin( 'Yetie::Session' => { expires_delta => 3600 } );
 }
 
 1;
@@ -182,6 +190,10 @@ following new ones.
 
 L<Yetie::App::Common> inherits all methods from L<Mojolicious> and implements
 the following new ones.
+
+=head2 C<initialize_app>
+
+    $app->initialize_app;
 
 =head1 SEE ALSO
 

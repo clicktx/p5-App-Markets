@@ -5,7 +5,7 @@ sub cook {
     my $self = shift;
 
     # children
-    $self->aggregate_collection( children => 'entity-category_tree', $self->{children} );
+    $self->aggregate( children => 'list-category_trees', $self->param('children') || [] );
 }
 
 1;

@@ -7,16 +7,11 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
+# NOTE: Column that use index have a max key length is 767 bytes.
 column address => {
     data_type   => 'VARCHAR',
-    size        => 64,
+    size        => 128,
     is_nullable => 0,
-};
-
-column is_verified => {
-    data_type     => 'BOOLEAN',
-    is_nullable   => 0,
-    default_value => 0,
 };
 
 unique_constraint ui_address => [qw/address/];

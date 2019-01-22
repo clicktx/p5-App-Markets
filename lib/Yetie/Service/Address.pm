@@ -1,17 +1,6 @@
 package Yetie::Service::Address;
 use Mojo::Base 'Yetie::Service';
 
-sub get_address_types {
-    my $self = shift;
-
-    return $self->cache('address_types') if $self->cache('address_types');
-
-    my $rs = $self->resultset('Address::Type')->search();
-    my $address_types = $self->factory('entity-address_types')->construct( list => $rs->to_data );
-    $self->cache( address_types => $address_types );
-    return $address_types;
-}
-
 sub get_registered_id {
     my ( $self, $address ) = @_;
 
@@ -21,7 +10,7 @@ sub get_registered_id {
     return $registered->id;
 }
 
-sub store {
+sub update_address {
     my ( $self, $params ) = @_;
 
     my $address       = $self->factory('entity-address')->construct($params);
@@ -67,9 +56,9 @@ the following new ones.
 
 Return address ID or C<undefined>.
 
-=head2 C<store>
+=head2 C<update_address>
 
-    $service->store(\%form_params);
+    $service->update_address(\%form_params);
 
 =head1 AUTHOR
 

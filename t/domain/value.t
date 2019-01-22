@@ -13,15 +13,23 @@ subtest 'basic' => sub {
 
     $v = $pkg->new( { value => 'bar' } );
     is $v->value, 'bar', 'right hash refference argument';
-
-    $v = $pkg->new('baz');
-    is $v->value, 'baz', 'right scalar argument';
 };
 
 subtest 'operators' => sub {
     my $v = $pkg->new( value => 'foo' );
     ok !!$v;
     is "$v", 'foo', 'right stringify';
+};
+
+subtest 'equals' => sub {
+    my $v  = $pkg->new( value => 'foo' );
+    my $v2 = $pkg->new( value => 'foo' );
+    is $v->equals($v2), 1, 'right object';
+    is $v->equals('foo'), 1, 'right string';
+
+    my $v3 = $pkg->new( value => 'bar' );
+    is $v->equals($v3), 0, 'right object';
+    is $v->equals('bar'), 0, 'right string';
 };
 
 subtest 'to_data' => sub {

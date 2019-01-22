@@ -5,12 +5,19 @@ use overload
   q("")    => sub { shift->value },
   fallback => 1;
 
-has 'value';
+has value => '';
+
+sub equals {
+    my ( $self, $arg ) = @_;
+
+    my $value = ref $arg ? $arg->value : $arg;
+    return $self->value eq $value ? 1 : 0;
+}
 
 sub new {
     my $class = shift;
 
-    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : { value => $_[0] // '' };
+    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
     return $class->SUPER::new($args);
 }
 
@@ -27,8 +34,6 @@ Yetie::Domain::Value
 =head1 SYNOPSIS
 
     my $vo = Yetie::Domain::Value->new( value => 'foo' );
-
-    my $vo = Yetie::Domain::Value->new('foo');
 
 =head1 DESCRIPTION
 
@@ -54,6 +59,14 @@ The value can not be set.This object is immutable.
 
 L<Yetie::Domain::Value> inherits all methods from L<Yetie::Domain::Base> and implements
 the following new ones.
+
+=head2 C<equals>
+
+Compare strings.
+
+    my $bool = $obj->equals($string);
+
+Return boolean value.
 
 =head2 C<to_data>
 

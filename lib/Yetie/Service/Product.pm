@@ -21,7 +21,7 @@ sub duplicate_product {
     my ( $self, $product_id ) = @_;
 
     my $entity = $self->find_product($product_id);
-    return unless $entity->has_data;
+    return unless $entity->has_id;
 
     my $title = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
     my $rs    = $self->resultset('Product');
@@ -29,6 +29,7 @@ sub duplicate_product {
     $entity->title( $title . $i );
 
     my $data = $entity->to_data;
+    delete $data->{id};
     delete $data->{breadcrumbs};
     my $result = $rs->create($data);
 
@@ -87,6 +88,27 @@ sub remove_product {
     return;
 }
 
+sub search_products {
+    my ( $self, $form ) = @_;
+
+    my $conditions = {
+        where    => '',
+        order_by => '',
+        page_no  => $form->param('page') || 1,
+        per_page => $form->param('per_page') || 5,
+    };
+
+    my $products_rs = $self->resultset('Product')->search_products($conditions);
+    my $data        = {
+        meta_title   => '',
+        breadcrumbs  => [],
+        form         => $form,
+        product_list => $products_rs->to_data( { no_relation => 1, no_breadcrumbs => 1 } ),
+        pager        => $products_rs->pager,
+    };
+    return $self->factory('entity-page-products')->construct($data);
+}
+
 sub update_product_categories { shift->resultset('Product')->update_product_categories(@_) }
 
 sub update_product { shift->resultset('Product')->update_product(@_) }
@@ -119,7 +141,7 @@ the following new ones.
 
 Argument: L<Yetie::Domain::Entity::Page::Product> object.
 
-Return: Array ou Array refference.
+Return: Array or Array reference.
 
 =head2 C<duplicate_product>
 
@@ -143,6 +165,12 @@ Data does include C<breadcrumbs>.
 
 Return L<Yetie::Domain::Entity::Page::Product> object.
 
+=head2 C<is_sold>
+
+    my $bool = $servece->is_sold($product_id);
+
+Return boolean value.
+
 =head2 C<new_product>
 
     my $result = $service->new_product();
@@ -154,6 +182,10 @@ Return L<Yetie::Schema::Result::Product> object.
     my $result = $service->remove_product($product_id);
 
 Return L<Yetie::Schema::Result::Product> object or undefined.
+
+=head2 C<search_products>
+
+    my $entity = $service->search_products($form);
 
 =head2 C<update_product_categories>
 

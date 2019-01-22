@@ -10,25 +10,6 @@ sub authorize {
     return 0;
 }
 
-sub login {
-    my $c = shift;
-    $c->flash( ref => $c->flash('ref') );
-
-    # Initialize form
-    my $form = $c->form('account-login');
-    return $c->render() unless $form->has_data;
-    return $c->render() unless $form->do_validate;
-
-    my $email    = $form->param('email');
-    my $password = $form->param('password');
-    my $route    = $c->flash('ref') || 'RN_customer_home';
-    return $c->redirect_to($route) if $c->service('customer')->login_process( $email, $password );
-
-    # Login failure
-    $form->field($_)->append_error_class for qw(email password);
-    return $c->render( login_failure => 1 );
-}
-
 sub logout {
     my $c = shift;
 

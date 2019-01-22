@@ -43,7 +43,7 @@ sub edit {
 
     my $product_id = $c->stash('product_id');
     my $entity     = $c->service('product')->find_product($product_id);
-    return $c->reply->not_found() unless $entity->has_data;
+    return $c->reply->not_found() unless $entity->has_id;
 
     # Init form
     my $form = $c->form('admin-product');
@@ -53,10 +53,14 @@ sub edit {
     $form->field('primary_category')->choices($categories);
     $c->init_form();
 
-    return $c->render() if !$form->has_data or !$form->do_validate;
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
+    return $c->render() unless $form->do_validate;
 
     # Update data
-    $c->service('product')->update_product( $product_id, $form->params->to_hash );
+    $c->service('product')->update_product( $product_id, $form );
     return $c->render();
 }
 
@@ -65,7 +69,7 @@ sub category {
 
     my $product_id = $c->stash('product_id');
     my $entity     = $c->service('product')->find_product($product_id);
-    return $c->reply->not_found() unless $entity->has_data;
+    return $c->reply->not_found() unless $entity->has_id;
 
     # Init form
     my $form = $c->form('admin-product-category');
@@ -74,13 +78,17 @@ sub category {
     $entity->product_categories->each( sub { push @{$category_ids}, $_->category_id } );
 
     my $category_choices = $c->schema->resultset('Category')->get_category_choices($category_ids);
-    $form->field('categories')->choices($category_choices);
+    $form->field('categories[]')->choices($category_choices);
     $c->init_form();
 
-    return $c->render() if !$form->has_data or !$form->do_validate;
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
+    return $c->render() unless $form->do_validate;
 
     # Selected categories
-    my $selected_categories = $form->param('categories[]');
+    my $selected_categories = $form->every_param('categories[]');
     return $c->render() unless @{$selected_categories};
 
     my $primary_category_id = @{ $entity->product_categories } ? $entity->product_categories->first->category_id : '';

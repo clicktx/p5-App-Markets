@@ -1,9 +1,29 @@
 package Yetie::Schema::ResultSet::Customer;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
+use Try::Tiny;
 
 has prefetch => sub {
     [ { customer_password => 'password' }, { emails => 'email' } ];
 };
+
+sub create_new_customer {
+    my ( $self, $email ) = @_;
+
+    my $result;
+    try {
+        $result = $self->create(
+            {
+                emails => [
+                    {
+                        email      => { address => $email },
+                        is_primary => 1,
+                    }
+                ]
+            }
+        );
+    };
+    return $result;
+}
 
 sub find_by_email {
     my ( $self, $email ) = @_;
@@ -24,6 +44,15 @@ sub get_id_by_email {
 
     my $customer = $self->find( { 'email.address' => $email }, { prefetch => { emails => 'email' } } );
     return $customer ? $customer->id : undef;
+}
+
+sub last_loged_in_now {
+    my ( $self, $customer_id ) = @_;
+
+    my $result = $self->find($customer_id);
+    return unless $result;
+
+    $result->update( { last_logged_in_at => \'NOW()' } );
 }
 
 sub search_by_email {
@@ -81,6 +110,10 @@ the following new ones.
 L<Yetie::Schema::ResultSet::Customer> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
 the following new ones.
 
+=head2 C<create_new_customer>
+
+    my $customer_id = $resultset->create_new_customer($email);
+
 =head2 C<find_by_email>
 
     my $customer = $resultset->find_by_email($email);
@@ -92,6 +125,12 @@ the following new ones.
 =head2 C<get_id_by_email>
 
     my $customer_id = $self->get_id_by_email($email);
+
+=head2 C<last_loged_in_now>
+
+    $resultset->last_loged_in_now($customer_id);
+
+Update C<last_logged_in_at>.
 
 =head2 C<search_by_email>
 

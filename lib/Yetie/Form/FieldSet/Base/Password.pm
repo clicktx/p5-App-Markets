@@ -4,9 +4,9 @@ use Yetie::Form::FieldSet;
 
 my %password_base = (
     type        => 'password',
+    required    => 1,
     label       => 'Password',
     placeholder => 'your password',
-    required    => 1,
     filters     => ['trim'],
 );
 
@@ -36,12 +36,12 @@ has_field customer_password => (
 
 has_field password_again => (
     type           => 'password',
+    required       => 1,
     label          => 'Password Again',
     placeholder    => 'password again',
-    required       => 1,
+    help           => 'Type Password Again.',
     filters        => [],
     validations    => [ [ equal_to => 'password' ] ],
-    help           => 'Type Password Again.',
     error_messages => {
         equal_to => 'The passwords you entered do not much.',
     },

@@ -26,8 +26,8 @@ subtest 'duplicate_product' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
 
-    my $last_id = $app->schema->resultset('Product')->search( {}, { order_by => { -desc => 'id' } } )->first->id;
-    my $orig = $app->schema->resultset('Product')->find(1);
+    my $last_id = $app->schema->resultset('Product')->last_id;
+    my $orig    = $app->schema->resultset('Product')->find(1);
 
     my $product = $service->duplicate_product(1);
     is $product->id, $last_id + 1, 'right id';
@@ -41,14 +41,14 @@ subtest 'find_product_with_breadcrumbs' => sub {
     my $e = $app->service('product')->find_product_with_breadcrumbs(1);
     isa_ok $e, 'Yetie::Domain::Entity::Page::Product';
     is $e->id, 1, 'right ID';
-    isa_ok $e->breadcrumbs->[0], 'Yetie::Domain::Entity::Breadcrumb';
+    isa_ok $e->breadcrumbs->first, 'Yetie::Domain::Entity::Breadcrumb';
 };
 
 subtest 'find_product' => sub {
     my $e = $app->service('product')->find_product(1);
     isa_ok $e, 'Yetie::Domain::Entity::Page::Product';
     is $e->id, 1, 'right ID';
-    is_deeply $e->breadcrumbs, [], 'right no breadcrumbs';
+    is_deeply $e->breadcrumbs->to_data, [], 'right no breadcrumbs';
 
     $e = $app->service('product')->find_product(999);
     is $e->id, undef, 'right not found product';
@@ -58,7 +58,7 @@ subtest 'new_product' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
 
-    my $last_id = $app->schema->resultset('Product')->search( {}, { order_by => { -desc => 'id' } } )->first->id;
+    my $last_id = $app->schema->resultset('Product')->last_id;
     my $product = $service->new_product;
     is $product->id, $last_id + 1, 'right create new product';
 };

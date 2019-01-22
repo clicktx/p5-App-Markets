@@ -26,17 +26,6 @@ my %params = (
     phone         => '3059398498'
 );
 
-subtest 'get_address_types' => sub {
-    my ( $c, $s ) = _init();
-
-    is $c->cache('address_types'), undef, 'right uncached';
-
-    my $types = $s->get_address_types;
-    isa_ok $types, 'Yetie::Domain::Entity::AddressTypes';
-
-    is $c->cache('address_types'), $types, 'right cached';
-};
-
 subtest 'get_registered_id' => sub {
     my ( $c, $s ) = _init();
     my %p = %params;
@@ -62,25 +51,25 @@ subtest 'get_registered_id' => sub {
     is $id, 1, 'right found registered';
 };
 
-subtest 'store' => sub {
+subtest 'update_address' => sub {
     my ( $c, $s ) = _init();
 
     subtest 'exception' => sub {
         my %p = %params;
         $p{id} = 2;
-        eval { $s->store( \%p ) };
+        eval { $s->update_address( \%p ) };
         ok $@, 'right exception';
     };
 
     subtest 'do update' => sub {
         my %p = %params;
         $p{personal_name} = 'Eli za beth T. Peoples';
-        $s->store( \%p );
+        $s->update_address( \%p );
         my $res = $c->schema->resultset('Address')->find( $p{id} );
         is $res->personal_name, $p{personal_name}, 'right update minor chages';
 
         # Revert DB data
-        $s->store( \%params );
+        $s->update_address( \%params );
     };
 };
 

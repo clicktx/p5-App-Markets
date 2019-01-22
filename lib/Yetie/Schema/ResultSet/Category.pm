@@ -130,7 +130,7 @@ Return Value: L<$result|DBIx::Class::Manual::ResultClass> | undef
 
     my $array_ref = $rs->get_ancestors_arrayref($category_id);
 
-Return Array refference.
+Return Array reference.
 
 =head2 C<get_category_choices>
 
@@ -140,7 +140,7 @@ Return Array refference.
     my $tree = $rs->get_category_choices(3);
     my $tree = $rs->get_category_choices( [ 1, 3, 5 ] );
 
-Return Array refference.
+Return Array reference.
 
 =head2 C<has_title>
 
@@ -153,9 +153,9 @@ Return Boolean value.
 
 =head2 C<update_category>
 
-    $service->update_category( $entity, \@option );
+    $rs->update_category( $entity, \@option );
 
-    $service->update_category( $entity, [ 'column_foo', 'colmun_bar' ] );
+    $rs->update_category( $entity, [ 'column_foo', 'colmun_bar' ] );
 
 Update category using entity data.
 Add a column to be updated with the second argument.

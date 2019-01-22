@@ -51,7 +51,8 @@ create_ddl
 =head1 DESCRIPTION
 
 Create DDL file from Yetie::Schema
-yetie_current_dir/share/sql/Yetie-Schema-xxxxx-MySQL.sql
+
+    yetie_current_dir/share/sql/Yetie-Schema-xxxxx-MySQL.sql
 
 =head1 AUTHOR
 

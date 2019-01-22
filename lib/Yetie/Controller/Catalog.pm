@@ -51,8 +51,6 @@ Get/Set entity cart object for stash `yetie.cart`
 L<Yetie::Controller::Catalog> inherits all methods from L<Yetie::Controller> and
 implements the following new ones.
 
-=head2 C<is_logged_in>
-
 =head1 SEE ALSO
 
 L<Yetie::Controller>

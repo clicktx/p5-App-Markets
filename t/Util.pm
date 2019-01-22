@@ -3,8 +3,9 @@ package t::Util;
 use strict;
 use File::Spec;
 use File::Basename qw(dirname);
-use lib File::Spec->catdir( dirname(__FILE__), '..', 'lib' );
-use lib 't/App/lib', 't/lib';
+use lib File::Spec->catdir( dirname(__FILE__), '..', 'lib' ),
+  File::Spec->catdir( dirname(__FILE__), 'App', 'lib' ),
+  File::Spec->catdir( dirname(__FILE__), 'lib' );
 use Yetie::Util;
 use Mojo::Util qw(b64_decode);
 use Mojo::JSON;
@@ -67,9 +68,9 @@ sub server_session {
     my $tx = Mojo::Transaction::HTTP->new();
     $tx->req->cookies($cookie);
 
-    return Yetie::Session::ServerSession->new(
+    return Yetie::App::Core::Session::ServerSession->new(
         tx            => $tx,
-        store         => Yetie::Session::Store::Dbic->new( schema => $app->schema ),
+        store         => Yetie::App::Core::Session::Store::Dbic->new( schema => $app->schema ),
         transport     => MojoX::Session::Transport::Cookie->new,
         expires_delta => 3600,
     );

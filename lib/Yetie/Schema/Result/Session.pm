@@ -14,12 +14,12 @@ column data => {
 
 column cart_id => {
     data_type => 'VARCHAR',
-    size      => 50,
+    size      => 40,
     is_nullable => 0,
 };
 
 column expires => {
-    data_type   => 'BIGINT',
+    data_type   => 'INT',
     is_nullable => 0,
 };
 

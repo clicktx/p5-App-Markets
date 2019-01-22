@@ -1,0 +1,2 @@
+breadcrumbs from
+<%= include 'common/components/breadcrumbs' =%>

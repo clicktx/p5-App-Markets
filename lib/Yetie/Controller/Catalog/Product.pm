@@ -11,6 +11,7 @@ sub init_form {
 sub index {
     my $c = shift;
 
+    # Initialize form
     my $form       = $c->form('product');
     my $product_id = $c->stash('product_id');
     $c->init_form( $form, $product_id );
@@ -22,21 +23,19 @@ sub index {
     $product->page_title( $product->title );
 
     # 404
-    return $c->reply->not_found unless $product->has_data;
+    return $c->reply->not_found unless $product->has_id;
 
-    my $validation = $c->validation;
-    return $c->render() unless $validation->has_data;
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
+    return $c->render() unless $form->do_validate;
 
     # Add to cart
-    if ( $form->do_validate ) {
-        $c->service('cart')->add_item( $form->params->to_hash );
+    $c->service('cart')->add_item( $form->params->to_hash );
 
-        $c->flash( ref => $c->req->url->to_string );
-        return $c->redirect_to('RN_cart');
-    }
-
-    # Invalid
-    $c->render();
+    $c->flash( ref => $c->req->url->to_string );
+    return $c->redirect_to('RN_cart');
 }
 
 1;

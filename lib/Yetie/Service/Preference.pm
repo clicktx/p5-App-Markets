@@ -6,7 +6,7 @@ sub load {
     my $self = shift;
 
     my $properties = $self->resultset('Preference')->search( {} )->to_data;
-    my $pref = $self->factory('entity-preferences')->construct( hash_set => $properties );
+    my $pref = $self->factory('set-preferences')->construct( hash_set => $properties );
     $self->app->cache( preferences => $pref );
 
     $self->app->log->debug( 'Loading preferences from DB via ' . __PACKAGE__ );
@@ -69,7 +69,7 @@ And set application defaults 'yetie.entity.preference' into C<Yetie::Domain::Ent
 
     $app->service('preference')->store();
 
-Store the data into database, if C<is_modified> is ture.
+Store the data into database, if C<is_modified> is true.
 Updates are modified data only.
 
 =head1 AUTHOR

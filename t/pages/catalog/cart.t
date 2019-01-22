@@ -1,4 +1,4 @@
-package t::pages::cart;
+package t::pages::catalog::cart;
 
 use Mojo::Base 't::pages::common';
 use t::Util;

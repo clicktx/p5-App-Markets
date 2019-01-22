@@ -14,7 +14,7 @@ subtest 'basic' => sub {
     $pkg->attr( [qw(hoge fuga)] );
 
     my $e = $pkg->new( id => 1, hoge => 1, fuga => 2 );
-    cmp_deeply $e->to_hash, { hoge => 1, fuga => 2 }, 'right to_hash';
+    cmp_deeply $e->to_hash, { id => 1, hoge => 1, fuga => 2 }, 'right to_hash';
 
     $e->is_modified(3);
     is $e->is_modified, 1, 'right modified';
@@ -74,12 +74,12 @@ subtest 'clone' => sub {
     cmp_deeply $clone->{fuga}->{a}->[0], {}, 'right three dimensions';
 };
 
-subtest 'has_data' => sub {
+subtest 'has_id' => sub {
     my $e = Yetie::Domain::Entity::Hoge->new( id => 1 );
-    ok $e->has_data, 'right has data';
+    ok $e->has_id, 'right has data';
 
     $e = Yetie::Domain::Entity::Hoge->new();
-    ok !$e->has_data, 'right has not data';
+    ok !$e->has_id, 'right has not data';
 };
 
 subtest 'is_empty' => sub {
@@ -93,7 +93,7 @@ subtest 'is_empty' => sub {
 subtest 'to_array method' => sub {
     my $data = { id => 1, hoge => 1, fuga => 2 };
     my $e = $pkg->new($data);
-    cmp_deeply $e->to_array, [ [qw/fuga hoge/], [qw/2 1/] ], 'right to_array';
+    cmp_deeply $e->to_array, [ [qw/fuga hoge id/], [qw/2 1 1/] ], 'right to_array';
 };
 
 subtest 'Entity object base' => sub {
@@ -102,8 +102,8 @@ subtest 'Entity object base' => sub {
     my $e2   = Yetie::Domain::Entity::Fuga->new( id => 2 );
 
     is $e1->id, 1, 'right entity id';
-    is $e1->equal($e1_1), 1, 'right equal object';
-    is $e1->equal($e2),   0, 'right not equal object';
+    is $e1->equals($e1_1), 1, 'right equals object';
+    is $e1->equals($e2),   0, 'right not equals object';
     is $e1->hash_code, '356a192b7913b04c54574d18c28d46e6395428ab', 'right hash code';
 
     $e1->id(1);
@@ -125,8 +125,8 @@ subtest 'to_data method' => sub {
             a => 1,
             h => $pkg->new( a => 1, b => 2 ),
         ),
-        url => Mojo::URL->new,                     # has not "to_data" method.
-        v   => Yetie::Domain::Value->new('foo'),
+        url => Mojo::URL->new,                                # has not "to_data" method.
+        v   => Yetie::Domain::Value->new( value => 'foo' ),
     );
 
     cmp_deeply $e->to_data,

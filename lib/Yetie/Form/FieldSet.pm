@@ -49,7 +49,7 @@ sub field {
     my $args = @_ > 1 ? +{@_} : shift || {};
     my $class = ref $self || $self;
 
-    my $field_key = $self->_replace_key($name);
+    my $field_key = $self->replace_key($name);
     my $cache_key = $name eq $field_key ? $field_key : "$field_key=$name";
     return $self->{_field}->{$cache_key} if $self->{_field}->{$cache_key};
 
@@ -82,6 +82,7 @@ sub import {
     tie %{"${caller}::schema"}, 'Tie::IxHash';
     monkey_patch $caller, 'extends',   sub { _extends(@_) };
     monkey_patch $caller, 'fieldset',  sub { _fieldset(@_) };
+    monkey_patch $caller, 'requires',  sub { _requires( $caller, @_ ) };
     monkey_patch $caller, 'has_field', sub { append_field( $caller, @_ ) };
     monkey_patch $caller, 'c',         sub { Mojo::Collection->new(@_) };
 
@@ -97,6 +98,19 @@ sub remove {
 
     no strict 'refs';
     delete ${"${class}::schema"}{$field_key};
+}
+
+sub replace_key {
+    my ( $self, $key ) = @_;
+
+    # e.g. "foo.{123}.bar" to "foo.{}.bar"
+    #      "foo.{a_b_c_123}" to "foo.{}"
+    $key =~ s/\.\{\w+}/.{}/g;
+
+    # e.g. "foo.123.bar" to "foo.[].bar"
+    #      "foo.0" to "foo.[]"
+    $key =~ s/\.\d+/.[]/g;
+    return $key;
 }
 
 sub schema {
@@ -133,16 +147,13 @@ sub _get_data {
     }
 }
 
-sub _replace_key {
-    my ( $self, $arg ) = @_;
+sub _requires {
+    my $caller = shift;
 
-    # e.g. "foo.*123.bar" to "foo.{}.bar"
-    # e.g. "foo.*a_b_c_123.bar" to "foo.{}.bar"
-    $arg =~ s/\.\*\w+\./.{}./g;
-
-    # e.g. "foo.123.bar" to "foo.[].bar"
-    $arg =~ s/\.\d+/.[]/g;
-    return $arg;
+    foreach my $name (@_) {
+        my $pkg = _fieldset($name);
+        $caller->append_field( $_ => $pkg->schema->{$_} ) for @{ $pkg->field_keys };
+    }
 }
 
 1;
@@ -175,6 +186,15 @@ Yetie::Form::FieldSet
     } else {
         $c->render( text => 'validation failure');
     }
+
+To import multiple field set modules, use C<requires>.
+
+    package Yetie::Form::FieldSet::Foo;
+
+    # All fields include.
+    # FieldSet::Bar, FieldSet::Baz and FieldSet::Qux
+    requires qw(bar baz qux);
+    1;
 
 =head1 IMPORT OPTIONS
 
@@ -256,7 +276,7 @@ List or Hash field.
     # item.0.id, item.1.id and more
     has_field 'item.[].id' => ( ... );
 
-    # order.*123.name, order.*abc.name, order.*1_a_2_b.name and more
+    # order.{123}.name, order.{abc}.name, order.{1_a_2_b}.name and more
     has_field 'order.{}.name' => ( ... );
 
 Inherit Yetie::Form::FieldSet::Example class
@@ -279,13 +299,13 @@ Inherit Yetie::Form::FieldSet::Example class
 
     validations => [ int, { size => [ 4, 8 ] }, ... ],
 
-Set array refference.
-If the method has arguments, it returns hash refference.
+Set array reference.
+If the method has arguments, it returns hash reference.
 
     # Value from Preferences
     validations => [ int, { size => [ \'password_min', \'password_max' ] }, ... ],
 
-Passing a scalar reffernce as an arguments to the validator method expands from preferences.
+Passing a scalar reference as an arguments to the validator method expands from preferences.
 
 =head1 DESCRIPTION
 
@@ -325,6 +345,12 @@ Load a class.
 
     has_field 'field_name' => { type => 'text', ...  };
 
+=head2 C<requires>
+
+    requires qw(base-address base-name base-phone);
+
+Import all fields.
+
 =head1 METHODS
 
 L<Yetie::Form::FieldSet> inherits all methods from L<Mojo::Base> and implements
@@ -338,11 +364,11 @@ the following new ones.
 
 =head2 C<checks>
 
-    # Return array refference
+    # Return array reference
     # [ 'validation1', 'validation2', ... ]
     my $checks = $fieldset->checks('email');
 
-    # Return hash refference
+    # Return hash reference
     # { field_key => [ 'validation1', 'validation2', ... ], field_key2 => [ 'validation1', 'validation2', ... ] }
     my $checks = $fieldset->checks;
 
@@ -369,7 +395,7 @@ See L</has_field> above for information on the contents of the hash.
 
     my @field_keys = $fieldset->field_keys;
 
-    # Return array refference
+    # Return array reference
     my $field_keys = $fieldset->field_keys;
 
 =head2 C<field>
@@ -377,17 +403,29 @@ See L</has_field> above for information on the contents of the hash.
     my $field = $fieldset->field('field_name');
 
 Return L<Yetie::Form::Field> object.
-Object once created are cached in "$fieldset->{_field}->{$field_key}".
+Object once created are cached in C<"$fieldset-E<gt>{_field}-E<gt>{$field_key}">.
 
 =head2 C<filters>
 
-    # Return array refference
+    # Return array reference
     # [ 'filter1', 'filter2', ... ]
     my $filters = $fieldset->filters('field_key');
 
-    # Return hash refference
+    # Return hash reference
     # { field_key => [ 'filter1', 'filter2', ... ], field_key2 => [ 'filter1', 'filter2', ... ] }
     my $filters = $fieldset->filters;
+
+=head2 C<replace_key>
+
+    my $replace_key = $fieldset->replace_key($field_key);
+
+    # foo.[].bar
+    say $fieldset->replace_key('foo.0.bar');
+
+    # foo.{}.baz
+    say $fieldset->replace_key('foo.*bar.baz');
+
+Replace field name.
 
 =head2 C<remove>
 
@@ -399,10 +437,10 @@ Object once created are cached in "$fieldset->{_field}->{$field_key}".
 
     my $field_schema = $fieldset->schema('field_key');
 
-Return hash refference. Get a field definition.
+Return hash reference. Get a field definition.
 
 =head1 SEE ALSO
 
-L<Yetie::Form>, L<Yetie::Form::Base>, L<Yetie::Form::Field>, L<Yetie::Form::TagHelpers>
+L<Yetie::App::Core::Form>, L<Yetie::Form::Base>, L<Yetie::Form::Field>, L<Yetie::App::Core::Form::TagHelpers>
 
 =cut
