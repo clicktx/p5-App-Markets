@@ -77,15 +77,15 @@ sub params {
     my $v          = $self->validation;
     my %field_keys = map { $_ => 1 } @{ $self->fieldset->field_keys };
     my @input_keys = grep { $field_keys{ $self->fieldset->replace_key($_) } } keys %{ $v->input };
-    my %o          = %{ $v->output };
-    my %output     = map { $_ // '' } %o{@input_keys};
+    my %output;
+    $output{$_} = $v->output->{$_} // '' for @input_keys;
 
     # Expand hash
     my $expand_hash = expand_hash( \%output );
-    %output = ( %output, %{$expand_hash} );
+    my %parameters = ( %output, %{$expand_hash} );
 
     # Cache
-    $self->validated_parameters( Yetie::App::Core::Parameters->new(%output) );
+    $self->validated_parameters( Yetie::App::Core::Parameters->new(%parameters) );
     return $self->validated_parameters;
 }
 
