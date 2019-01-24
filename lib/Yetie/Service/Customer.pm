@@ -92,16 +92,17 @@ sub login {
 }
 
 sub login_process {
-    my ( $self, $email, $raw_password ) = @_;
+    my ( $self, $form ) = @_;
 
     # Find account
+    my $email    = $form->param('email');
     my $customer = $self->find_customer($email);
     return $self->_login_failed( 'login.failed.not_found', email => $email )
       unless $customer->is_registered;
 
     # Authentication
     return $self->_login_failed( 'login.failed.password', email => $email )
-      unless $customer->password->is_verify($raw_password);
+      unless $customer->password->is_verify( $form->param('password') );
 
     return $self->login( $customer->id );
 }
@@ -243,9 +244,9 @@ Return customer ID.
 
 =head2 C<login_process>
 
-    my $customer_id = $service->login_process( $email, $raw_password );
+    my $customer_id = $service->login_process($form_object);
 
-Return customer ID if log-in succeeded.
+Return customer ID if log-in succeeded or C<undefined>.
 
 =head2 C<search_customers>
 

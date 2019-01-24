@@ -19,7 +19,26 @@ sub t01 : Tests() {
     my $t    = $self->t;
 
     $t->get_ok('/test/store_address')->status_is(200);
-    $t->get_ok('/test/login_process');
+
+    subtest login_process => sub {
+        my %csrf = ( csrf_token => $self->csrf_token );
+
+        # right not argument
+        $t->post_ok( '/test/login_process', form => { %csrf, email => '', password => '' } )->status_is(401)
+          ->json_is( { customer_id => undef } );
+
+        # right not found customer
+        $t->post_ok( '/test/login_process', form => { %csrf, email => 'foo-bar@baz.com', password => '11111111' } )
+          ->status_is(401)->json_is( { customer_id => undef } );
+
+        # right password failure
+        $t->post_ok( '/test/login_process', form => { %csrf, email => 'c@example.org', password => '11111111' } )
+          ->json_is( { customer_id => undef } );
+
+        # right accept password
+        $t->post_ok( '/test/login_process', form => { %csrf, email => 'c@example.org', password => '12345678' } )
+          ->status_is(200)->json_is( { customer_id => 111 } );
+    };
 }
 
 sub t02_create_new_customer : Tests() {
@@ -108,16 +127,11 @@ sub store_address {
 sub login_process {
     my $c = shift;
     my $s = $c->service('customer');
+    my $f = $c->form('account-login');
+    $f->do_validate;
 
-    subtest 'login_process' => sub {
-        ok !$s->login_process( '',                '' ),         'right not argument';
-        ok !$s->login_process( 'foo-bar@baz.com', '' ),         'right not found customer';
-        ok !$s->login_process( 'c@example.org',   '11223344' ), 'right password failure';
-
-        ok $s->login_process( 'c@example.org', '12345678' ), 'right accept password';
-        $c->server_session->customer_id, 111, 'right login';
-    };
-    $c->render( text => 1 );
+    my $customer_id = $s->login_process($f);
+    $c->render( json => { customer_id => $customer_id } );
 }
 
 done_testing();

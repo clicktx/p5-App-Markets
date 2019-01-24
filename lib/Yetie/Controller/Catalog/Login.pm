@@ -86,10 +86,8 @@ sub with_password {
     # Validation form
     return $c->render() unless $form->do_validate;
 
-    my $email    = $form->param('email');
-    my $password = $form->param('password');
-    my $route    = $c->flash('ref') || 'RN_customer_home';
-    return $c->redirect_to($route) if $c->service('customer')->login_process( $email, $password );
+    my $route = $c->flash('ref') || 'RN_customer_home';
+    return $c->redirect_to($route) if $c->service('customer')->login_process($form);
 
     # Login failure
     $form->field($_)->append_error_class for qw(email password);
