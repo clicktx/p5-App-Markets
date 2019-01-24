@@ -72,10 +72,10 @@ sub login {
     my ( $self, $customer_id ) = @_;
     my $session = $self->controller->server_session;
 
-    # Double login
-    return 1 if $session->customer_id;
+    # Logged in
+    return $customer_id if $session->customer_id eq $customer_id;
 
-    # Set customer id (logedin flag)
+    # Set customer id (logged-in flag)
     $session->customer_id($customer_id);
 
     # Merge cart
@@ -88,8 +88,7 @@ sub login {
     # NOTE: ログインログに記録する方が良い？
     # Update last login date
     $self->resultset('Customer')->last_loged_in_now($customer_id);
-
-    return 1;
+    return $customer_id;
 }
 
 sub login_process {
@@ -178,7 +177,7 @@ sub _login_failed {
 
     # Logging
     $self->logging_warn(@_);
-    return 0;
+    return;
 }
 
 1;
@@ -238,15 +237,15 @@ Return L<Yetie::Domain::List::Addresses> object.
 
 Set customer logged-in flag to server_session.
 
-    my $bool = $service->login($customer_id);
+    my $customer_id = $service->login($customer_id);
 
-Return boolean value.
+Return customer ID.
 
 =head2 C<login_process>
 
-    my $bool = $service->story->login_process;
+    my $customer_id = $service->login_process( $email, $raw_password );
 
-Returns true if log-in succeeded.
+Return customer ID if log-in succeeded.
 
 =head2 C<search_customers>
 
