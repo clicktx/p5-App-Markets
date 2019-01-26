@@ -5,7 +5,7 @@ sub authorize {
     my $c = shift;
     return 1 if $c->is_logged_in;
 
-    $c->flash( ref => $c->req->url->to_string );
+    $c->flash( ref => $c->current_route );
     $c->redirect_to( $c->url_for('RN_customer_login') );
     return 0;
 }
