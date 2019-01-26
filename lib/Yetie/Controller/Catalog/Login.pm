@@ -79,12 +79,17 @@ sub with_password {
 
     # Initialize form
     my $form = $c->form('account-login');
+    $form->field('remember_me')->checked( $c->cookie('default_remember_me') );
 
     # Get request
     return $c->render() if $c->is_get_request;
 
     # Validation form
     return $c->render() unless $form->do_validate;
+    $c->cookie(
+        default_remember_me => $form->param('remember_me') ? 1 : 0,
+        { path => '/', expires => time + 60 * 60 * 24 * 365 }
+    );
 
     # Login failure
     return $c->render( login_failure => 1 ) unless $c->service('customer')->login_process($form);
