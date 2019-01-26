@@ -95,13 +95,12 @@ sub login_process {
     my ( $self, $form ) = @_;
 
     # Find account
-    my $email    = $form->param('email');
-    my $customer = $self->find_customer($email);
-    return $self->_login_failed( 'login.failed.not_found', email => $email )
+    my $customer = $self->find_customer( $form->param('email') );
+    return $self->_login_failed( 'login.failed.not_found', $form )
       unless $customer->is_registered;
 
     # Authentication
-    return $self->_login_failed( 'login.failed.password', email => $email )
+    return $self->_login_failed( 'login.failed.password', $form )
       unless $customer->password->is_verify( $form->param('password') );
 
     return $self->login( $customer->id );
@@ -171,13 +170,15 @@ sub store_billing_address { say "Deprecated"; shift->store_address(shift) }
 
 sub store_shipping_address { say "Deprecated"; shift->store_address(shift) }
 
-# NOTE: logging 未完成
 sub _login_failed {
-    my $self = shift;
+    my ( $self, $message, $form ) = @_;
+
+    $form->field($_)->append_error_class for qw(email password);
     $self->controller->stash( status => 401 );
 
     # Logging
-    $self->logging_warn(@_);
+    # NOTE: WIP: logging 未完成
+    $self->logging_warn( $message, email => $form->param('email') );
     return;
 }
 
