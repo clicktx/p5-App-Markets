@@ -9,6 +9,7 @@ sub generate_token {
         email      => $email,
         redirect   => $opt->{redirect},
         request_ip => $request_ip,
+        expires    => $opt->{expires},
     );
 
     # Store to DB
