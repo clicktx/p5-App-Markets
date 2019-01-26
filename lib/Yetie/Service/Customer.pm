@@ -166,10 +166,6 @@ sub store_address {
     $result->insert;
 }
 
-sub store_billing_address { say "Deprecated"; shift->store_address(shift) }
-
-sub store_shipping_address { say "Deprecated"; shift->store_address(shift) }
-
 sub _login_failed {
     my ( $self, $message, $form ) = @_;
 
@@ -268,22 +264,6 @@ Retuen C<render_to('RN_customer_login_email_sended')> or C<render_to('RN_custome
     $service->store_address($address_id);
 
 Store customer addresses in storage from cart data.
-
-=head2 C<store_billing_address>
-
-Deprecated
-
-    $service->store_billing_address;
-
-See L</store_address>
-
-=head2 C<store_shipping_address>
-
-Deprecated
-
-    $service->store_shipping_address;
-
-See L</store_address>
 
 =head1 AUTHOR
 
