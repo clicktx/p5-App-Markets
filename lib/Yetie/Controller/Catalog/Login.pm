@@ -60,6 +60,26 @@ sub magic_link {
     return $c->service('customer')->send_authorization_mail($email);
 }
 
+sub remember_me {
+    my $c = shift;
+    return 1 if $c->is_logged_in;
+
+    my $token = $c->cookie('remember_me');
+    return 1 unless $token;
+
+    # Auto login
+    my $authorization = $c->service('authorization')->validate($token);
+    return $c->cookie( remember_me => undef, { expires => -1 } ) unless $authorization->is_valid;
+
+    # Recreate cookie
+    my $email = $authorization->email;
+    $c->service('customer')->remember_me($email);
+
+    my $customer = $c->service('customer')->find_customer($email);
+    $c->service('customer')->login( $customer->id );
+    return 1;
+}
+
 sub toggle {
     my $c = shift;
     $c->flash( ref => $c->flash('ref') );
