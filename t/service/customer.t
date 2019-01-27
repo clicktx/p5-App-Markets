@@ -101,10 +101,17 @@ sub t07_send_authorization_mail : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
-    $s->send_authorization_mail('foo-bar@exapmle.org');
+    my $f = $c->form('account-magic_link');
+    $c->req->param( email => 'foo-bar@exapmle.org' );
+    $f->do_validate;
+    $s->send_authorization_mail($f);
     like $c->session('new_flash')->{callback_url}->to_string, qr|/signup/get-started|, 'right singup';
 
-    $s->send_authorization_mail('a@example.org');
+    ( $c, $s ) = $self->_init();
+    $f = $c->form('account-magic_link');
+    $c->req->param( email => 'a@example.org' );
+    $f->do_validate;
+    $s->send_authorization_mail($f);
     like $c->session('new_flash')->{callback_url}->to_string, qr|/login/token|, 'right login';
 }
 

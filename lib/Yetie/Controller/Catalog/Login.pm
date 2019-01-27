@@ -13,6 +13,7 @@ sub index {
       : $c->redirect_to('RN_customer_login_magic_link');
 }
 
+# NOTE: remember_me はどうするか
 sub callback {
     my $c     = shift;
     my $token = $c->stash('token');
@@ -56,8 +57,7 @@ sub magic_link {
     # Validation form
     return $c->render() unless $form->do_validate;
 
-    my $email = $form->param('email');
-    return $c->service('customer')->send_authorization_mail($email);
+    return $c->service('customer')->send_authorization_mail($form);
 }
 
 sub remember_me {

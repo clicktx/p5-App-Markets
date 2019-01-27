@@ -142,10 +142,11 @@ sub search_customers {
 }
 
 sub send_authorization_mail {
-    my ( $self, $email ) = @_;
+    my ( $self, $form ) = @_;
 
     my $c        = $self->controller;
     my $redirect = $c->flash('ref') || 'RN_home';
+    my $email    = $form->param('email');
     my $token    = $c->service('authorization')->generate_token( $email, { redirect => $redirect } );
 
     my $customer       = $self->find_customer($email);
