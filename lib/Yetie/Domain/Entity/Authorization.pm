@@ -8,11 +8,11 @@ has request_ip    => 'unknown';
 has is_activated  => 0;
 has expires       => sub { __PACKAGE__->factory('value-expires')->construct() };
 has error_message => '';
-has _is_valid     => undef;
+has _is_valid     => 0;
 
 sub is_valid { shift->_is_valid(@_) }
 
-sub is_validated {
+sub validate_token {
     my ( $self, $last_token ) = @_;
 
     # Last request token
@@ -25,10 +25,15 @@ sub is_validated {
     return $self->_fails('Expired') if $self->expires->is_expired;
 
     # All passed
-    return 1;
+    $self->_is_valid(1);
 }
 
-sub _fails { shift->error_message(shift) && 0 }
+sub _fails {
+    my $self = shift;
+
+    $self->_is_valid(0);
+    $self->error_message(shift);
+}
 
 1;
 __END__
@@ -71,14 +76,12 @@ the following new ones.
 
 Return boolean value.
 
-=head2 C<is_validated>
+=head2 C<validate_token>
 
 Validate token.
 Same as last token, Not activated, and Not expired.
 
-    my $bool = $auth->is_validated($last_token);
-
-Return boolean value.
+    $auth->validate_token($last_token);
 
 =head1 AUTHOR
 
