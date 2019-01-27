@@ -69,7 +69,7 @@ sub remember_me {
 
     # Auto login
     my $authorization = $c->service('authorization')->validate($token);
-    return $c->cookie( remember_me => undef, { expires => -1 } ) unless $authorization->is_valid;
+    return $c->remove_cookie('remember_me') unless $authorization->is_valid;
 
     # Recreate cookie
     my $email = $authorization->email;
