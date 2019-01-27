@@ -22,12 +22,8 @@ sub callback {
         error_message => 'authorization.request.error.message'
     );
 
-    my $auth_service  = $c->service('authorization');
-    my $authorization = $auth_service->find($token);
-    return $c->reply->error(%error_messages) unless $authorization;
-
-    my $is_validated = $auth_service->validate($authorization);
-    return $c->reply->error(%error_messages) unless $is_validated;
+    my $authorization = $c->service('authorization')->validate($token);
+    return $c->reply->error(%error_messages) unless $authorization->is_valid;
 
     # Customer
     my $email    = $authorization->email;

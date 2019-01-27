@@ -28,27 +28,26 @@ sub find {
 # NOTE: アクセス制限が必要？同一IP、時間内回数制限
 # email sha1を引数にして判定を追加する？
 sub validate {
-    my ( $self, $authorization ) = @_;
+    my ( $self, $token ) = @_;
+
+    my $authorization = $self->find($token);
+    return $self->factory('entity-authorization')->construct() unless $authorization;
 
     # last request
-    my $rs          = $self->resultset('AuthorizationRequest');
-    my $last_result = $rs->find_last_by_email( $authorization->email );
-    return $self->_logging('Not found last request') unless $last_result;
+    my $last_result = $self->resultset('AuthorizationRequest')->find_last_by_email( $authorization->email );
 
     # validate token
-    return $self->_logging( $authorization->error_message ) unless $authorization->is_validated( $last_result->token );
+    $authorization->validate_token( $last_result->token );
+    return ( $self->_logging( $authorization->error_message ), $authorization )
+      unless $authorization->is_valid;
 
     # passed
     $last_result->update( { is_activated => 1 } );
-    $authorization = $authorization->new( $last_result->to_hash );
-    return 1;
+    $authorization->is_activated(1);
+    return $authorization;
 }
 
-sub _logging {
-    my $self = shift;
-    $self->logging_warn( 'passwordless.authorization.failed', reason => shift );
-    return;
-}
+sub _logging { shift->logging_warn( 'passwordless.authorization.failed', reason => shift ) && 0 }
 
 1;
 __END__
@@ -99,9 +98,9 @@ Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
 
 =head2 C<validate>
 
-    my $bool = $service->validate($authorization);
+    my $authorization = $service->validate($token);
 
-Return boolean value.
+Return Return L<Yetie::Domain::Entity::Authorization>.
 
 =head1 AUTHOR
 
