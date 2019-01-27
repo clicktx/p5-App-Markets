@@ -10,6 +10,9 @@ has expires       => sub { __PACKAGE__->factory('value-expires')->construct() };
 has created_at    => undef;
 has updated_at    => undef;
 has error_message => '';
+has _is_valid     => undef;
+
+sub is_valid { shift->_is_valid(@_) }
 
 sub is_validated {
     my ( $self, $last_token ) = @_;
@@ -67,6 +70,12 @@ the following new ones.
 
 L<Yetie::Domain::Entity::Authorization> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<is_valid>
+
+    my $bool = $auth->is_valid;
+
+Return boolean value.
 
 =head2 C<is_validated>
 
