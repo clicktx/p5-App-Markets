@@ -15,7 +15,9 @@ sub logout {
 
     my $session = $c->server_session;
     $session->remove_session;
-    $c->render();
+    $c->remove_cookie('remember_me');
+
+    return $c->render();
 }
 
 sub home {
