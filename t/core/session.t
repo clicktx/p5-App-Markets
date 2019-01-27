@@ -114,8 +114,7 @@ subtest 'remove cart data' => sub {
 };
 
 subtest 'customer_id' => sub {
-    my $customer_id = $session->data('customer_id');
-    is $session->customer_id, $customer_id, 'right load customer_id';
+    is $session->customer_id, '', 'right load customer_id';
 
     $session->customer_id('123456');
     is $session->customer_id, 123456, 'right changed customer_id';
@@ -126,8 +125,7 @@ subtest 'customer_id' => sub {
 };
 
 subtest 'staff_id' => sub {
-    my $staff_id = $session->data('staff_id');
-    is $session->staff_id, $staff_id, 'right load staff_id';
+    is $session->staff_id, '', 'right load staff_id';
 
     $session->staff_id('123456');
     is $session->staff_id, 123456, 'right changed staff_id';

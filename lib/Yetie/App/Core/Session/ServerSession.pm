@@ -15,7 +15,7 @@ sub cart_id { shift->data('cart_id') }
 
 sub customer_id {
     my ( $self, $id ) = @_;
-    return $id ? $self->data( customer_id => $id ) : $self->data('customer_id');
+    return $id ? $self->data( customer_id => $id ) : $self->data('customer_id') // '';
 }
 
 sub cookie_expires {
@@ -110,7 +110,7 @@ sub remove_session {
 
 sub staff_id {
     my ( $self, $id ) = @_;
-    return $id ? $self->data( staff_id => $id ) : $self->data('staff_id');
+    return $id ? $self->data( staff_id => $id ) : $self->data('staff_id') // '';
 }
 
 # Override method MojoX::Session::create
