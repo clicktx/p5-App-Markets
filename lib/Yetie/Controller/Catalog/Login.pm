@@ -64,7 +64,7 @@ sub remember_me {
     my $c = shift;
     return 1 if $c->is_logged_in;
 
-    my $token = $c->cookie('remember_me');
+    my $token = $c->service('customer')->remember_me;
     return 1 unless $token;
 
     # Auto login
