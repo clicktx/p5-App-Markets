@@ -14,8 +14,6 @@ subtest 'basic' => sub {
 
     can_ok $auth, 'request_ip';
     can_ok $auth, 'is_activated';
-    can_ok $auth, 'created_at';
-    can_ok $auth, 'updated_at';
     can_ok $auth, 'error_message';
 };
 

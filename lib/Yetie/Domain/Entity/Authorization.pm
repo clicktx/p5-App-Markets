@@ -7,8 +7,6 @@ has redirect      => '';
 has request_ip    => 'unknown';
 has is_activated  => 0;
 has expires       => sub { __PACKAGE__->factory('value-expires')->construct() };
-has created_at    => undef;
-has updated_at    => undef;
 has error_message => '';
 has _is_valid     => undef;
 
@@ -59,10 +57,6 @@ the following new ones.
 =head2 C<is_activated>
 
 =head2 C<expires>
-
-=head2 C<created_at>
-
-=head2 C<updated_at>
 
 =head2 C<error_message>
 
