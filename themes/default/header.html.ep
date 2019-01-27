@@ -1,7 +1,9 @@
 header
-<p>session-id: <%= $self->server_session->sid %></p>
+<div>session-id: <%= $self->server_session->sid %></div>
+<div>flash ref: <%= $self->flash('ref') %></div>
 <ul>
     <li><%= link_to 'Category1' => 'RN_category' => { category_id => 1 } %></li>
     <li><%= link_to 'My Cart' => 'RN_cart' %></li>
+    <li><%= link_to __('login') => 'RN_customer_login' %></li>
 </ul>
 <hr>

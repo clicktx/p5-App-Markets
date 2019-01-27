@@ -18,16 +18,12 @@ sub callback {
     my $token = $c->stash('token');
 
     my %error_messages = (
-        title         => $c->__('authorization.request.error.title'),
-        error_message => $c->__('authorization.request.error.message')
+        title         => 'authorization.request.error.title',
+        error_message => 'authorization.request.error.message'
     );
 
-    my $auth_service  = $c->service('authorization');
-    my $authorization = $auth_service->find($token);
-    return $c->reply->error(%error_messages) unless $authorization;
-
-    my $is_validated = $auth_service->validate($authorization);
-    return $c->reply->error(%error_messages) unless $is_validated;
+    my $authorization = $c->service('authorization')->validate($token);
+    return $c->reply->error(%error_messages) unless $authorization->is_valid;
 
     # Customer
     my $email    = $authorization->email;
@@ -52,7 +48,7 @@ sub magic_link {
     $c->flash( ref => $c->flash('ref') );
 
     # Initialize form
-    my $form = $c->form('base-email');
+    my $form = $c->form('account-magic_link');
 
     # Get request
     return $c->render() if $c->is_get_request;
@@ -62,6 +58,26 @@ sub magic_link {
 
     my $email = $form->param('email');
     return $c->service('customer')->send_authorization_mail($email);
+}
+
+sub remember_me {
+    my $c = shift;
+    return 1 if $c->is_logged_in;
+
+    my $token = $c->service('customer')->remember_me;
+    return 1 unless $token;
+
+    # Auto login
+    my $authorization = $c->service('authorization')->validate($token);
+    return $c->remove_cookie('remember_me') unless $authorization->is_valid;
+
+    # Recreate cookie
+    my $email = $authorization->email;
+    $c->service('customer')->remember_me($email);
+
+    my $customer = $c->service('customer')->find_customer($email);
+    $c->service('customer')->login( $customer->id );
+    return 1;
 }
 
 sub toggle {
@@ -79,21 +95,26 @@ sub with_password {
 
     # Initialize form
     my $form = $c->form('account-login');
+    $form->field('remember_me')->checked( $c->cookie('default_remember_me') );
 
     # Get request
     return $c->render() if $c->is_get_request;
 
     # Validation form
     return $c->render() unless $form->do_validate;
-
-    my $email    = $form->param('email');
-    my $password = $form->param('password');
-    my $route    = $c->flash('ref') || 'RN_customer_home';
-    return $c->redirect_to($route) if $c->service('customer')->login_process( $email, $password );
+    $c->cookie(
+        default_remember_me => $form->param('remember_me') ? 1 : 0,
+        { path => '/', expires => time + $c->pref('cookie_expires_long') }
+    );
 
     # Login failure
-    $form->field($_)->append_error_class for qw(email password);
-    return $c->render( login_failure => 1 );
+    return $c->render( login_failure => 1 ) unless $c->service('customer')->login_process($form);
+
+    # Login success
+    $c->service('customer')->remember_me( $form->param('email') ) if $form->param('remember_me');
+
+    my $route = $c->flash('ref') || 'RN_customer_home';
+    return $c->redirect_to($route);
 }
 
 1;

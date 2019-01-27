@@ -56,3 +56,11 @@ msgstr "Did rollback transaction:{error}"
 
 msgid "pref.update.failed"
 msgstr "Could not update preference"
+
+
+# Error messages
+msgid "authorization.request.error.title"
+msgstr "Invalid Authorization Request"
+
+msgid "authorization.request.error.message"
+msgstr "authorization　request　error　message"

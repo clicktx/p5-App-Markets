@@ -11,7 +11,7 @@ sub cook {
     $self->aggregate( email => 'value-email', $self->{email} );
 
     # expires
-    $self->aggregate( expires => 'value-expires', $self->{expires} ) if $self->{expires};
+    $self->aggregate( expires => 'value-expires', $self->{expires} );
 }
 
 1;

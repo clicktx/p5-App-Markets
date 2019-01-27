@@ -72,10 +72,10 @@ sub login {
     my ( $self, $customer_id ) = @_;
     my $session = $self->controller->server_session;
 
-    # Double login
-    return 1 if $session->customer_id;
+    # Logged in
+    return $customer_id if $session->customer_id eq $customer_id;
 
-    # Set customer id (logedin flag)
+    # Set customer id (logged-in flag)
     $session->customer_id($customer_id);
 
     # Merge cart
@@ -88,23 +88,36 @@ sub login {
     # NOTE: ログインログに記録する方が良い？
     # Update last login date
     $self->resultset('Customer')->last_loged_in_now($customer_id);
-
-    return 1;
+    return $customer_id;
 }
 
 sub login_process {
-    my ( $self, $email, $raw_password ) = @_;
+    my ( $self, $form ) = @_;
 
     # Find account
-    my $customer = $self->find_customer($email);
-    return $self->_login_failed( 'login.failed.not_found', email => $email )
+    my $customer = $self->find_customer( $form->param('email') );
+    return $self->_login_failed( 'login.failed.not_found', $form )
       unless $customer->is_registered;
 
     # Authentication
-    return $self->_login_failed( 'login.failed.password', email => $email )
-      unless $customer->password->is_verify($raw_password);
+    return $self->_login_failed( 'login.failed.password', $form )
+      unless $customer->password->is_verify( $form->param('password') );
 
     return $self->login( $customer->id );
+}
+
+sub remember_me {
+    my ( $self, $email ) = @_;
+    my $c = $self->controller;
+
+    # Getter
+    return $c->cookie('remember_me') unless $email;
+
+    # Setter
+    my $expires = time + $c->pref('cookie_expires_long');
+    my $token = $c->service('authorization')->generate_token( $email, { expires => $expires } );
+    $c->cookie( remember_me => $token, { path => '/', expires => $expires } );
+    return $token;
 }
 
 sub search_customers {
@@ -167,18 +180,16 @@ sub store_address {
     $result->insert;
 }
 
-sub store_billing_address { say "Deprecated"; shift->store_address(shift) }
-
-sub store_shipping_address { say "Deprecated"; shift->store_address(shift) }
-
-# NOTE: logging 未完成
 sub _login_failed {
-    my $self = shift;
+    my ( $self, $message, $form ) = @_;
+
+    $form->field($_)->append_error_class for qw(email password);
     $self->controller->stash( status => 401 );
 
     # Logging
-    $self->logging_warn(@_);
-    return 0;
+    # NOTE: WIP: logging 未完成
+    $self->logging_warn( $message, email => $form->param('email') );
+    return;
 }
 
 1;
@@ -238,15 +249,25 @@ Return L<Yetie::Domain::List::Addresses> object.
 
 Set customer logged-in flag to server_session.
 
-    my $bool = $service->login($customer_id);
+    my $customer_id = $service->login($customer_id);
 
-Return boolean value.
+Return customer ID.
 
 =head2 C<login_process>
 
-    my $bool = $service->story->login_process;
+    my $customer_id = $service->login_process($form_object);
 
-Returns true if log-in succeeded.
+Return customer ID if log-in succeeded or C<undefined>.
+
+=head2 C<remember_me>
+
+    # Setter
+    $service->remember_me($email);
+
+    # Getter
+    my $token = $service->remember_me;
+
+Set/Get cookie "remember_me".
 
 =head2 C<search_customers>
 
@@ -267,22 +288,6 @@ Retuen C<render_to('RN_customer_login_email_sended')> or C<render_to('RN_custome
     $service->store_address($address_id);
 
 Store customer addresses in storage from cart data.
-
-=head2 C<store_billing_address>
-
-Deprecated
-
-    $service->store_billing_address;
-
-See L</store_address>
-
-=head2 C<store_shipping_address>
-
-Deprecated
-
-    $service->store_shipping_address;
-
-See L</store_address>
 
 =head1 AUTHOR
 

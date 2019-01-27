@@ -16,7 +16,7 @@ sub login {
     my $session = $self->controller->server_session;
 
     # Double login
-    return 1 if $session->staff_id;
+    return 1 if $session->staff_id eq $staff_id;
 
     # Set staff id (logedin flag)
     $session->staff_id($staff_id);
