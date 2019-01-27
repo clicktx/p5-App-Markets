@@ -18,8 +18,8 @@ sub callback {
     my $token = $c->stash('token');
 
     my %error_messages = (
-        title         => $c->__('authorization.request.error.title'),
-        error_message => $c->__('authorization.request.error.message')
+        title         => 'authorization.request.error.title',
+        error_message => 'authorization.request.error.message'
     );
 
     my $auth_service  = $c->service('authorization');
