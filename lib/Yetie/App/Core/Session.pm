@@ -46,7 +46,7 @@ sub register {
             else                           { _create_session( $c, $session ) }
 
             # Cookie check
-            $c->cookie( cookie_check => 1, { path => '/', expires => time + $c->pref('cookie_expires_long') } );
+            $c->cookie( cookie_check => 1, { expires => time + $c->pref('cookie_expires_long') } );
         }
     );
 }
@@ -61,7 +61,7 @@ sub _create_session {
 
     # Cookie check
     my $cookie_check = $c->cookie('cookie_check');
-    $c->cookie( cookie_check => 1, { path => '/', expires => time + 60 * 60 * 24 * 365 } );
+    $c->cookie( cookie_check => 1, { expires => time + 60 * 60 * 24 * 365 } );
     return unless $cookie_check;
 
     # Create new server session

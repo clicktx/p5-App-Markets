@@ -116,7 +116,7 @@ sub remember_me {
     # Setter
     my $expires = time + $c->pref('cookie_expires_long');
     my $token = $c->service('authorization')->generate_token( $email, { expires => $expires } );
-    $c->cookie( remember_me => $token, { path => '/', expires => $expires } );
+    $c->cookie( remember_me => $token, { expires => $expires } );
     return $token;
 }
 

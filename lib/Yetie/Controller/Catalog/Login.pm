@@ -104,7 +104,7 @@ sub with_password {
     return $c->render() unless $form->do_validate;
     $c->cookie(
         default_remember_me => $form->param('remember_me') ? 1 : 0,
-        { path => '/', expires => time + $c->pref('cookie_expires_long') }
+        { expires => time + $c->pref('cookie_expires_long') }
     );
 
     # Login failure
