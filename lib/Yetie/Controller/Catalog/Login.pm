@@ -91,6 +91,8 @@ sub with_password {
     return $c->render( login_failure => 1 ) unless $c->service('customer')->login_process($form);
 
     # Login success
+    $c->service('customer')->remember_me( $form->param('email') ) if $form->param('remember_me');
+
     my $route = $c->flash('ref') || 'RN_customer_home';
     return $c->redirect_to($route);
 }

@@ -106,6 +106,20 @@ sub login_process {
     return $self->login( $customer->id );
 }
 
+sub remember_me {
+    my ( $self, $email ) = @_;
+    my $c = $self->controller;
+
+    # Getter
+    return $c->cookie('remember_me') unless $email;
+
+    # Setter
+    my $expires = time + $c->pref('cookie_expires_long');
+    my $token = $c->service('authorization')->generate_token( $email, { expires => $expires } );
+    $c->cookie( remember_me => $token, { path => '/', expires => $expires } );
+    return $token;
+}
+
 sub search_customers {
     my ( $self, $form ) = @_;
 
@@ -244,6 +258,16 @@ Return customer ID.
     my $customer_id = $service->login_process($form_object);
 
 Return customer ID if log-in succeeded or C<undefined>.
+
+=head2 C<remember_me>
+
+    # Setter
+    $service->remember_me($email);
+
+    # Getter
+    my $token = $service->remember_me;
+
+Set/Get cookie "remember_me".
 
 =head2 C<search_customers>
 

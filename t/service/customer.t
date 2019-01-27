@@ -77,7 +77,16 @@ sub t04_get_address_list : Tests() {
     is $e->list->size, 0, 'right not found customer';
 }
 
-sub t05_search_customers : Tests() {
+sub t05_remember_me : Tests() {
+    my $self = shift;
+    my ( $c, $s ) = $self->_init();
+
+    ok !$s->remember_me, 'right getter';
+    ok $s->remember_me('foo@bar.baz'), 'right setter';
+    is $c->tx->res->cookies->[0]->name, 'remember_me', 'right set cookie';
+}
+
+sub t06_search_customers : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
@@ -88,7 +97,7 @@ sub t05_search_customers : Tests() {
     isa_ok $e, 'Yetie::Domain::Entity::Page::Customers';
 }
 
-sub t06_send_authorization_mail : Tests() {
+sub t07_send_authorization_mail : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
