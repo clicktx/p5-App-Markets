@@ -85,7 +85,7 @@ sub toggle {
     $c->flash( ref => $c->flash('ref') );
 
     my $value = $c->cookie('login_with_password') ? 0 : 1;
-    $c->cookie( login_with_password => $value );
+    $c->cookie( login_with_password => $value, { expires => time + $c->pref('cookie_expires_long') } );
     return $c->redirect_to('RN_customer_login');
 }
 
