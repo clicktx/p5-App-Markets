@@ -113,6 +113,14 @@ sub t07_send_authorization_mail : Tests() {
     $f->do_validate;
     $s->send_authorization_mail($f);
     like $c->session('new_flash')->{callback_url}->to_string, qr|/login/token|, 'right login';
+
+    ( $c, $s ) = $self->_init();
+    $f = $c->form('account-magic_link');
+    $c->req->param( email       => 'a@example.org' );
+    $c->req->param( remember_me => 1 );
+    $f->do_validate;
+    $s->send_authorization_mail($f);
+    is $c->session('new_flash')->{callback_url}->query, 'remember_me=1', 'right remember_me';
 }
 
 __PACKAGE__->runtests;

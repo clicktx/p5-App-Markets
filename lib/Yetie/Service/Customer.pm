@@ -153,6 +153,9 @@ sub send_authorization_mail {
     my $callback_route = $customer->is_registered ? 'RN_callback_customer_login' : 'RN_callback_customer_signup';
     my $url            = $c->url_for( $callback_route, token => $token );
 
+    # Add remember me
+    $url->query( remember_me => 1 ) if $form->param('remember_me');
+
     # WIP: Send email
 
     # NOTE: demo and debug
