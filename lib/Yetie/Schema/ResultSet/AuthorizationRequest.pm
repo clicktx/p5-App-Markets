@@ -3,6 +3,11 @@ use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 
 sub activate { shift->update( { is_activated => 1 } ) }
 
+sub disable_token {
+    my ( $self, $token ) = @_;
+    return $self->search( { token => $token } )->activate;
+}
+
 sub find_last_by_email {
     my ( $self, $email ) = @_;
     return $self->search( { email => $email }, { order_by => 'id DESC' } )->limit(1)->first;
@@ -48,6 +53,14 @@ the following new ones.
 =head2 C<activate>
 
     $resultset->activate;
+
+Set the "is_activated" column to true.
+
+=head2 C<disable_token>
+
+    $resultset->disable_token($token);
+
+Do disabled the Token.
 
 =head2 C<find_last_by_email>
 
