@@ -1,6 +1,8 @@
 package Yetie::Schema::ResultSet::AuthorizationRequest;
 use Mojo::Base 'Yetie::Schema::Base::ResultSet';
 
+sub activate { shift->update( { is_activated => 1 } ) }
+
 sub find_last_by_email {
     my ( $self, $email ) = @_;
     return $self->search( { email => $email }, { order_by => 'id DESC' } )->limit(1)->first;
@@ -42,6 +44,10 @@ the following new ones.
 
 L<Yetie::Schema::ResultSet::AuthorizationRequest> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
 the following new ones.
+
+=head2 C<activate>
+
+    $resultset->activate;
 
 =head2 C<find_last_by_email>
 
