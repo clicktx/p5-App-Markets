@@ -120,6 +120,18 @@ sub remember_me {
     return $token;
 }
 
+sub remove_remember_me {
+    my $self = shift;
+
+    my $token = $self->remember_me;
+    return unless $token;
+
+    my $c = $self->controller;
+    $c->remove_cookie('remember_me');
+    $c->resultset('AuthorizationRequest')->disable_token($token);
+    return 1;
+}
+
 sub search_customers {
     my ( $self, $form ) = @_;
 
@@ -272,6 +284,14 @@ Return customer ID if log-in succeeded or C<undefined>.
     my $token = $service->remember_me;
 
 Set/Get cookie "remember_me".
+
+Setter method create auto login token.
+
+=head2 C<remove_remember_me>
+
+    $service->remove_remember_me;
+
+Remove "remember_me" cookie and disable the auto login token.
 
 =head2 C<search_customers>
 
