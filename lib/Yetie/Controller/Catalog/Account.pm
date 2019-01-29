@@ -10,6 +10,16 @@ sub authorize {
     return 0;
 }
 
+sub remember_me_handler {
+    my $c = shift;
+    return 1 if $c->is_logged_in;
+    return 1 unless $c->is_get_request;
+    return 1 unless $c->cookie('has_remember_me');
+
+    $c->flash( return_path => $c->req->url->to_string );
+    return $c->redirect_to('RN_customer_login_remember_me');
+}
+
 sub logout {
     my $c = shift;
 

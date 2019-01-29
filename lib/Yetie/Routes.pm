@@ -88,7 +88,8 @@ sub add_catalog_routes {
     my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
 
     # Remember me
-    $r = $r->under('/')->to('login#remember_me')->name('RN_customer_login_remember_me');
+    $r->get('/login/remember-me')->to('login#remember_me')->name('RN_customer_login_remember_me');
+    $r = $r->under('/')->to('account#remember_me_handler')->name('RN_customer_remember_me_handler');
 
     # Route Examples
     $r->get('/')->to('example#welcome')->name('RN_home');

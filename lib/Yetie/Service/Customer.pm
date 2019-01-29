@@ -115,8 +115,10 @@ sub remember_me {
 
     # Setter
     my $expires = time + $c->pref('cookie_expires_long');
-    my $token = $c->service('authorization')->generate_token( $email, { expires => $expires } );
-    $c->cookie( remember_me => $token, { expires => $expires } );
+    my $token   = $c->service('authorization')->generate_token( $email, { expires => $expires } );
+    my $path    = $c->match->root->lookup('RN_customer_login_remember_me')->to_string;
+    $c->cookie( remember_me => $token, { expires => $expires, path => $path } );
+    $c->cookie( has_remember_me => 1, { expires => $expires } );
     return $token;
 }
 
@@ -128,6 +130,7 @@ sub remove_remember_me {
 
     my $c = $self->controller;
     $c->remove_cookie('remember_me');
+    $c->remove_cookie('has_remember_me');
     $c->resultset('AuthorizationRequest')->disable_token($token);
     return 1;
 }

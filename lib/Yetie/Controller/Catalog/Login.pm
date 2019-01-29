@@ -61,23 +61,27 @@ sub magic_link {
 }
 
 sub remember_me {
-    my $c = shift;
-    return 1 if $c->is_logged_in;
-
-    my $token = $c->service('customer')->remember_me;
-    return 1 unless $token;
+    my $c           = shift;
+    my $service     = $c->service('customer');
+    my $return_path = $c->flash('return_path') // 'RN_home';
 
     # Auto login
+    my $token         = $service->remember_me;
     my $authorization = $c->service('authorization')->validate($token);
-    return $c->remove_cookie('remember_me') unless $authorization->is_valid;
+    do {
+        $service->remove_remember_me;
+        return $c->redirect_to($return_path);
+    } unless $authorization->is_valid;
 
-    # Recreate cookie
+    # Recreate token
     my $email = $authorization->email;
-    $c->service('customer')->remember_me($email);
+    $service->remember_me($email);
 
-    my $customer = $c->service('customer')->find_customer($email);
-    $c->service('customer')->login( $customer->id );
-    return 1;
+    # Login
+    my $customer = $service->find_customer($email);
+    $service->login( $customer->id );
+
+    return $c->redirect_to($return_path);
 }
 
 sub toggle {
