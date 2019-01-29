@@ -288,13 +288,13 @@ Return customer ID if log-in succeeded or C<undefined>.
 
 Set/Get cookie "remember_me".
 
-Setter method create auto login token.
+Setter method create auto log-in token.
 
 =head2 C<remove_remember_me>
 
     $service->remove_remember_me;
 
-Remove "remember_me" cookie and disable the auto login token.
+Remove "remember_me" cookie and disable the auto log-in token.
 
 =head2 C<search_customers>
 
