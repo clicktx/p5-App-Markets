@@ -27,7 +27,7 @@ sub login {
     my $password = $form->param('password');
 
     my $route = $c->flash('ref') || 'RN_admin_dashboard';
-    return $c->redirect_to($route) if $c->service('staff')->login_process( $login_id, $password );
+    return $c->redirect_to($route) if $c->service('staff')->login_process_with_password( $login_id, $password );
 
     # Set error class
     $form->field($_)->append_error_class for qw(login_id password);

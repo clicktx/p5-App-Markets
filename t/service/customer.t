@@ -20,23 +20,23 @@ sub t01 : Tests() {
 
     $t->get_ok('/test/store_address')->status_is(200);
 
-    subtest login_process => sub {
+    subtest login_process_with_password => sub {
         my %csrf = ( csrf_token => $self->csrf_token );
 
         # right not argument
-        $t->post_ok( '/test/login_process', form => { %csrf, email => '', password => '' } )->status_is(401)
+        $t->post_ok( '/test/login_process_with_password', form => { %csrf, email => '', password => '' } )->status_is(401)
           ->json_is( { customer_id => undef } );
 
         # right not found customer
-        $t->post_ok( '/test/login_process', form => { %csrf, email => 'foo-bar@baz.com', password => '11111111' } )
+        $t->post_ok( '/test/login_process_with_password', form => { %csrf, email => 'foo-bar@baz.com', password => '11111111' } )
           ->status_is(401)->json_is( { customer_id => undef } );
 
         # right password failure
-        $t->post_ok( '/test/login_process', form => { %csrf, email => 'c@example.org', password => '11111111' } )
+        $t->post_ok( '/test/login_process_with_password', form => { %csrf, email => 'c@example.org', password => '11111111' } )
           ->json_is( { customer_id => undef } );
 
         # right accept password
-        $t->post_ok( '/test/login_process', form => { %csrf, email => 'c@example.org', password => '12345678' } )
+        $t->post_ok( '/test/login_process_with_password', form => { %csrf, email => 'c@example.org', password => '12345678' } )
           ->status_is(200)->json_is( { customer_id => 111 } );
     };
 }
@@ -161,13 +161,13 @@ sub store_address {
     $c->render( text => 1 );
 }
 
-sub login_process {
+sub login_process_with_password {
     my $c = shift;
     my $s = $c->service('customer');
     my $f = $c->form('account-login');
     $f->do_validate;
 
-    my $customer_id = $s->login_process($f);
+    my $customer_id = $s->login_process_with_password($f);
     $c->render( json => { customer_id => $customer_id } );
 }
 

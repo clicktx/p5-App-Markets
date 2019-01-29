@@ -91,7 +91,7 @@ sub login {
     return $customer_id;
 }
 
-sub login_process {
+sub login_process_with_password {
     my ( $self, $form ) = @_;
 
     # Find account
@@ -272,9 +272,9 @@ Set customer logged-in flag to server_session.
 
 Return customer ID.
 
-=head2 C<login_process>
+=head2 C<login_process_with_password>
 
-    my $customer_id = $service->login_process($form_object);
+    my $customer_id = $service->login_process_with_password($form_object);
 
 Return customer ID if log-in succeeded or C<undefined>.
 
