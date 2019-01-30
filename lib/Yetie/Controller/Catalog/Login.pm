@@ -68,17 +68,9 @@ sub remember_me {
     my $token         = $service->remember_me;
     my $authorization = $c->service('authorization')->validate($token);
 
-    if ( $authorization->is_valid ) {
-
-        # Recreate token
-        my $email = $authorization->email;
-        $service->remember_me($email);
-
-        # Login
-        my $customer = $service->find_customer($email);
-        $service->login( $customer->id );
-    }
-    else { $service->remove_remember_me }
+    # NOTE: ADD logging??
+    if   ( $authorization->is_valid ) { $service->login_process_remember_me( $authorization->email ) }
+    else                              { $service->remove_remember_me }
 
     my $return_path = $c->flash('return_path') // 'RN_home';
     return $c->redirect_to($return_path);

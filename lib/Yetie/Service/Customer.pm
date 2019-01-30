@@ -92,6 +92,19 @@ sub login {
     return $customer_id;
 }
 
+sub login_process_remember_me {
+    my ( $self, $email ) = @_;
+
+    my $customer = $self->find_customer($email);
+    return unless $customer->id;
+
+    # Recreate token
+    $self->remember_me($email);
+
+    # Login
+    $self->login( $customer->id );
+}
+
 sub login_process_with_password {
     my ( $self, $form ) = @_;
 
@@ -272,6 +285,12 @@ Set customer logged-in flag to server_session.
     my $customer_id = $service->login($customer_id);
 
 Return customer ID.
+
+=head2 C<login_process_remember_me>
+
+    my $customer_id = $service->login_process_with_password($email);
+
+Return customer ID if log-in succeeded or C<undefined>.
 
 =head2 C<login_process_with_password>
 
