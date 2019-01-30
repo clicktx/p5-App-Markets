@@ -17,7 +17,7 @@ sub t01_not_logedin_request : Tests() {
     }
 }
 
-sub t02_admin_login_process : Tests() {
+sub t02_admin_login_process_with_password : Tests() {
     my $self = shift;
     my $t    = $self->t;
 

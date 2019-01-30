@@ -20,24 +20,40 @@ sub t01 : Tests() {
 
     $t->get_ok('/test/store_address')->status_is(200);
 
-    subtest login_process => sub {
+    subtest login_process_remember_me => sub {
+
+        # right not argument
+        $t->get_ok('/test/login_process_remember_me?email=')->status_is(200)->json_is( { customer_id => undef } );
+
+        # right not found customer
+        $t->get_ok('/test/login_process_remember_me?email=foo@bar.baz')->status_is(200)
+          ->json_is( { customer_id => undef } );
+
+        # right login
+        $t->get_ok('/test/login_process_remember_me?email=c@example.org')->status_is(200)
+          ->json_is( { customer_id => 111 } );
+    };
+
+    subtest login_process_with_password => sub {
         my %csrf = ( csrf_token => $self->csrf_token );
 
         # right not argument
-        $t->post_ok( '/test/login_process', form => { %csrf, email => '', password => '' } )->status_is(401)
-          ->json_is( { customer_id => undef } );
-
-        # right not found customer
-        $t->post_ok( '/test/login_process', form => { %csrf, email => 'foo-bar@baz.com', password => '11111111' } )
+        $t->post_ok( '/test/login_process_with_password', form => { %csrf, email => '', password => '' } )
           ->status_is(401)->json_is( { customer_id => undef } );
 
-        # right password failure
-        $t->post_ok( '/test/login_process', form => { %csrf, email => 'c@example.org', password => '11111111' } )
+        # right not found customer
+        $t->post_ok( '/test/login_process_with_password',
+            form => { %csrf, email => 'foo-bar@baz.com', password => '11111111' } )->status_is(401)
           ->json_is( { customer_id => undef } );
 
+        # right password failure
+        $t->post_ok( '/test/login_process_with_password',
+            form => { %csrf, email => 'c@example.org', password => '11111111' } )->json_is( { customer_id => undef } );
+
         # right accept password
-        $t->post_ok( '/test/login_process', form => { %csrf, email => 'c@example.org', password => '12345678' } )
-          ->status_is(200)->json_is( { customer_id => 111 } );
+        $t->post_ok( '/test/login_process_with_password',
+            form => { %csrf, email => 'c@example.org', password => '12345678' } )->status_is(200)
+          ->json_is( { customer_id => 111 } );
     };
 }
 
@@ -83,7 +99,20 @@ sub t05_remember_me : Tests() {
 
     ok !$s->remember_me, 'right getter';
     ok $s->remember_me('foo@bar.baz'), 'right setter';
-    is $c->tx->res->cookies->[0]->name, 'remember_me', 'right set cookie';
+    my $cookie = $c->tx->res->cookies->[0];
+    is $cookie->name, 'remember_me',        'right set cookie';
+    is $cookie->path, '/login/remember-me', 'right cookie path';
+    is $c->tx->res->cookies->[1]->name, 'has_remember_me', 'right set cookie';
+
+    # Remove token
+    ( $c, $s ) = $self->_init();
+    $c->tx->req->cookies( { name => $cookie->name, value => $cookie->value } );
+    my $res = $s->remove_remember_me;
+    ok $res, 'right remove remember_me';
+    $cookie = $c->tx->res->cookies->[0];
+    is $cookie->name,    'remember_me', 'right cookie name';
+    is $cookie->expires, 0,             'right cookie remove';
+    is $c->tx->res->cookies->[1]->name, 'has_remember_me', 'right cookie remove';
 }
 
 sub t06_search_customers : Tests() {
@@ -148,13 +177,20 @@ sub store_address {
     $c->render( text => 1 );
 }
 
-sub login_process {
+sub login_process_remember_me {
+    my $c     = shift;
+    my $email = $c->param('email');
+
+    my $customer_id = $c->service('customer')->login_process_remember_me($email);
+    $c->render( json => { customer_id => $customer_id } );
+}
+
+sub login_process_with_password {
     my $c = shift;
-    my $s = $c->service('customer');
     my $f = $c->form('account-login');
     $f->do_validate;
 
-    my $customer_id = $s->login_process($f);
+    my $customer_id = $c->service('customer')->login_process_with_password($f);
     $c->render( json => { customer_id => $customer_id } );
 }
 

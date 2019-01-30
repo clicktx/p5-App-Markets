@@ -60,6 +60,8 @@ sub startup : Test(startup) {
     my $self = shift;
 
     my $t = Test::Mojo->new('App');
+    $t->app->controller_class('Yetie::Controller');
+
     $self->{t}   = $t;
     $self->{app} = $t->app;
     $self->{ua}  = $t->ua;
