@@ -73,7 +73,8 @@ sub login {
     my $session = $self->controller->server_session;
 
     # Logged in
-    return $customer_id if $session->customer_id eq $customer_id;
+    my $loggedin_customer_id = $session->customer_id // '';
+    return $customer_id if $loggedin_customer_id eq $customer_id;
 
     # Set customer id (logged-in flag)
     $session->customer_id($customer_id);
