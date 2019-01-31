@@ -138,10 +138,12 @@ sub remember_me {
 
 sub remove_remember_me {
     my $self = shift;
+    my $c    = $self->controller;
 
-    my $c = $self->controller;
-    $c->remove_cookie('remember_me');
-    $c->remove_cookie('has_remember_me');
+    # Remove cookies
+    my $path = $c->match->root->lookup('RN_customer_login_remember_me')->to_string;
+    $c->cookie( remember_me => '', { expires => 0, path => $path } );
+    $c->cookie( has_remember_me => '', { expires => 0 } );
 
     my $token = $self->remember_me;
     $c->resultset('AuthorizationRequest')->disable_token($token) if $token;
