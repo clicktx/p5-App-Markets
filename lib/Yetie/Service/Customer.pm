@@ -139,13 +139,12 @@ sub remember_me {
 sub remove_remember_me {
     my $self = shift;
 
-    my $token = $self->remember_me;
-    return unless $token;
-
     my $c = $self->controller;
     $c->remove_cookie('remember_me');
     $c->remove_cookie('has_remember_me');
-    $c->resultset('AuthorizationRequest')->disable_token($token);
+
+    my $token = $self->remember_me;
+    $c->resultset('AuthorizationRequest')->disable_token($token) if $token;
     return 1;
 }
 
