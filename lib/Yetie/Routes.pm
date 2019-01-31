@@ -83,6 +83,8 @@ sub add_admin_routes {
 }
 
 # Routes for Catalog
+# NOTE: No site map route
+# qw(RN_customer_login_remember_me)
 sub add_catalog_routes {
     my ( $self, $app ) = @_;
     my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
