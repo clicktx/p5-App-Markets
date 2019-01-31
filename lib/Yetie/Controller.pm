@@ -103,7 +103,7 @@ sub redirect_to {
     return $self->rendered( $res->is_redirect ? () : 302 );
 }
 
-sub remove_cookie { $_[0]->cookie( $_[1] => undef, { expires => -1 } ) }
+sub remove_cookie { $_[0]->cookie( $_[1] => '', { expires => 0 } ) }
 
 1;
 __END__
