@@ -87,6 +87,9 @@ sub add_catalog_routes {
     my ( $self, $app ) = @_;
     my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
 
+    # Logout
+    $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
+
     # Remember me
     $r->get('/login/remember-me')->to('login#remember_me')->name('RN_customer_login_remember_me');
     $r = $r->under('/')->to('account#remember_me_handler')->name('RN_customer_remember_me_handler');
@@ -120,8 +123,6 @@ sub add_catalog_routes {
     $guest_checkout->any('/shipping-address')->to('#shipping_address')->name('RN_guest_checkout_shipping_address');
 
     # For Customers
-    $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
-
     {
         # Log-in
         my $login = $r->any('/login')->to( controller => 'login' );
