@@ -103,8 +103,6 @@ sub redirect_to {
     return $self->rendered( $res->is_redirect ? () : 302 );
 }
 
-sub remove_cookie { $_[0]->cookie( $_[1] => undef, { expires => -1 } ) }
-
 1;
 __END__
 
@@ -223,15 +221,6 @@ Return boolean value.
 Return boolean value.
 
 =head2 C<redirect_to>
-
-=head2 C<remove_cookie>
-
-    $c->remove_cookie('foo');
-
-    # Longer version
-    $c->cookie( foo => undef, { expires => -1 } );
-
-Remove cookie.
 
 =head2 C<process>
 

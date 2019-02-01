@@ -27,7 +27,7 @@ sub logout {
     $session->remove_session;
 
     # Remove auto login cookie & token
-    $c->service('customer')->remove_remember_me;
+    $c->service('customer')->remove_remember_me_token;
 
     return $c->render();
 }

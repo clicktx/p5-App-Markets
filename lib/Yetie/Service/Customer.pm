@@ -99,7 +99,7 @@ sub login_process_remember_me {
     return unless $customer->id;
 
     # Recreate token
-    $self->remember_me($email);
+    $self->remember_me_token($email);
 
     # Login
     $self->login( $customer->id );
@@ -120,7 +120,7 @@ sub login_process_with_password {
     return $self->login( $customer->id );
 }
 
-sub remember_me {
+sub remember_me_token {
     my ( $self, $email ) = @_;
     my $c = $self->controller;
 
@@ -136,16 +136,17 @@ sub remember_me {
     return $token;
 }
 
-sub remove_remember_me {
+sub remove_remember_me_token {
     my $self = shift;
+    my $c    = $self->controller;
 
-    my $token = $self->remember_me;
-    return unless $token;
+    # Remove cookies
+    my $path = $c->match->root->lookup('RN_customer_login_remember_me')->to_string;
+    $c->cookie( remember_me => '', { expires => 0, path => $path } );
+    $c->cookie( has_remember_me => '', { expires => 0 } );
 
-    my $c = $self->controller;
-    $c->remove_cookie('remember_me');
-    $c->remove_cookie('has_remember_me');
-    $c->resultset('AuthorizationRequest')->disable_token($token);
+    my $token = $self->remember_me_token;
+    $c->resultset('AuthorizationRequest')->disable_token($token) if $token;
     return 1;
 }
 
@@ -298,21 +299,21 @@ Return customer ID if log-in succeeded or C<undefined>.
 
 Return customer ID if log-in succeeded or C<undefined>.
 
-=head2 C<remember_me>
+=head2 C<remember_me_token>
 
     # Setter
-    $service->remember_me($email);
+    $service->remember_me_token($email);
 
     # Getter
-    my $token = $service->remember_me;
+    my $token = $service->remember_me_token;
 
 Set/Get cookie "remember_me".
 
 Setter method create auto log-in token.
 
-=head2 C<remove_remember_me>
+=head2 C<remove_remember_me_token>
 
-    $service->remove_remember_me;
+    $service->remove_remember_me_token;
 
 Remove "remember_me" cookie and disable the auto log-in token.
 
