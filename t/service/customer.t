@@ -97,8 +97,8 @@ sub t05_remember_me : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
-    ok !$s->remember_me, 'right getter';
-    ok $s->remember_me('foo@bar.baz'), 'right setter';
+    ok !$s->remember_me_token, 'right getter';
+    ok $s->remember_me_token('foo@bar.baz'), 'right setter';
     my $cookie = $c->tx->res->cookies->[0];
     is $cookie->name, 'remember_me',        'right set cookie';
     is $cookie->path, '/login/remember-me', 'right cookie path';
@@ -107,7 +107,7 @@ sub t05_remember_me : Tests() {
     # Remove token
     ( $c, $s ) = $self->_init();
     $c->tx->req->cookies( { name => $cookie->name, value => $cookie->value } );
-    my $res = $s->remove_remember_me;
+    my $res = $s->remove_remember_me_token;
     ok $res, 'right remove remember_me';
     $cookie = $c->tx->res->cookies->[0];
     is $cookie->name,    'remember_me', 'right cookie name';
