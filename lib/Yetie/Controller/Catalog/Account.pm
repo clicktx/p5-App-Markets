@@ -25,6 +25,7 @@ sub logout {
 
     # Remove server session
     my $session = $c->server_session;
+    $session->cart_session->remove;
     $session->remove_session;
 
     # Remove auto login cookie & token
