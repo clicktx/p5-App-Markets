@@ -23,11 +23,15 @@ sub remember_me_handler {
 sub logout {
     my $c = shift;
 
+    # Remove server session
     my $session = $c->server_session;
     $session->remove_session;
 
     # Remove auto login cookie & token
     $c->service('customer')->remove_remember_me_token;
+
+    # Remove cookie session
+    $c->cookie_session( expires => 1 );
 
     return $c->render();
 }
