@@ -41,9 +41,13 @@ sub register {
             my $session = $c->stash($stash_key);
             $session->load;
 
-            # Create session or extend expires
-            if   ( !$session->is_expired ) { $session->extend_expires }
-            else                           { _create_session( $c, $session ) }
+            # Extend expires
+            return $session->extend_expires unless $session->is_expired;
+
+            # Create a session after deleting old sessions
+            if ( $session->is_customer_logged_in ) { $session->remove_session }
+            else                                   { $session->cart_session->remove }  # Remove visitor cart and session
+            _create_session( $c, $session );
         }
     );
 }
@@ -51,6 +55,9 @@ sub register {
 # NOTE: cookieに対応している場合のみセッション生成する
 sub _create_session {
     my ( $c, $session ) = @_;
+
+    # Clear all data for recreate session
+    $session->clear;
 
     # Landing page
     my $landing = $c->cookie_session('landing_page');
