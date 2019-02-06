@@ -1,6 +1,7 @@
 package Yetie::App::Core::Session::ServerSession;
 
 use Mojo::Base qw/MojoX::Session/;
+use Carp qw(croak);
 use Yetie::App::Core::Session::CartSession;
 use Yetie::Util qw();
 
@@ -117,6 +118,18 @@ sub staff_id {
     return $id ? $self->data( staff_id => $id ) : $self->data('staff_id') // '';
 }
 
+# Override method MojoX::Session::clear
+##################################
+sub clear {
+    my $self = shift;
+    $self->SUPER::clear(@_);
+
+    return if @_;
+
+    # Init Cart
+    $self->_init_cart( $self->generate_cookie_token );
+}
+
 # Override method MojoX::Session::create
 ##################################
 sub create {
@@ -135,11 +148,7 @@ sub create {
 
     # cart
     my $cart_id = $args->{cart_id} || $self->generate_cookie_token;
-    my $cart = {
-        data         => {},
-        _is_modified => 0,
-    };
-    $self->data( cart_id => $cart_id, cart => $cart );
+    $self->_init_cart($cart_id);
 
     return $sid;
 }
@@ -150,6 +159,17 @@ sub load {
 
     $self->data( cart => {} ) unless $self->data('cart');
     return $sid;
+}
+
+sub _init_cart {
+    my ( $self, $cart_id ) = @_;
+    croak 'Need an argument "cart_id".' unless $cart_id;
+
+    my $cart = {
+        data         => {},
+        _is_modified => 0,
+    };
+    $self->data( cart_id => $cart_id, cart => $cart );
 }
 
 1;
@@ -245,6 +265,16 @@ Get cart id.
     $session->cookie_expires(1234567890);
 
 Get/Set cookie expire time.
+
+=head2 C<clear>
+
+    # Clear data 'foo'
+    $session->clear('foo');
+
+    # Clear all data and initialize cart
+    $session->clear;
+
+This method override L<MojoX::Session/clear>.
 
 =head2 C<create>
 
