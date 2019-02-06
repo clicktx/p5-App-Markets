@@ -30,11 +30,8 @@ sub is_get_request { shift->req->method eq 'GET' ? 1 : 0 }
 sub is_logged_in {
     my $self = shift;
 
-    my $target_id;
-    $target_id = 'customer_id' if $self->isa('Yetie::Controller::Catalog');
-    $target_id = 'staff_id'    if $self->isa('Yetie::Controller::Admin');
-
-    return $target_id ? $self->server_session->data($target_id) ? 1 : 0 : undef;
+    my $method = $self->isa('Yetie::Controller::Admin') ? 'is_staff_logged_in' : 'is_customer_logged_in';
+    return $self->server_session->$method ? 1 : 0;
 }
 
 # Action process

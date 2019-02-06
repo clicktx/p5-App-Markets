@@ -55,6 +55,10 @@ sub generate_cookie_token {
     Yetie::Util::generate_token( length => $self->cookie_token_length, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
 }
 
+sub is_customer_logged_in { return shift->customer_id ? 1 : 0 }
+
+sub is_staff_logged_in { return shift->staff_id ? 1 : 0 }
+
 sub new {
     my $class = shift;
     my %args  = @_;
@@ -272,6 +276,18 @@ Stored session data.
 =head2 C<generate_cookie_token>
 
     my $token = $session->genarate_token;
+
+=head2 C<is_customer_logged_in>
+
+    my $bool = $session->is_customer_logged_in;
+
+Return boolean value.
+
+=head2 C<is_staff_logged_in>
+
+    my $bool = $session->is_staff_logged_in;
+
+Return boolean value.
 
 =head2 C<load>
 
