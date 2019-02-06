@@ -109,7 +109,7 @@ sub with_password {
     # Login success
     $c->service('customer')->remember_me_token( $form->param('email') ) if $form->param('remember_me');
 
-    my $route = $c->flash('ref') || 'RN_customer_home';
+    my $route = $c->flash('ref') || 'RN_home';
     return $c->redirect_to($route);
 }
 
