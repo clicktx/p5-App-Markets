@@ -41,6 +41,14 @@ sub register {
             my $session = $c->stash($stash_key);
             $session->load;
 
+     # Check session expires
+     # NOTE: session(DB)の有効期限が切れていたらカートイン商品のみのカートを再生成する？
+     # session期限切れからxx秒以内ならカート復活する？
+     # 配送先等を削除。
+     # - 再度ログインしたときにカート内商品が重複してしまう
+     # - 別の人間が使ったとするとカートの中が見えてしまう（セキュリティ的にどうか）
+     # 単純にセッションを再生成するだけで良さそう（カートは空になる）
+
             # Extend expires
             return $session->extend_expires unless $session->is_expired;
 
