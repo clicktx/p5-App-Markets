@@ -21,7 +21,6 @@ subtest 'is_get_request' => sub {
 subtest 'is_logged_in' => sub {
     $t->get_ok('/customer')->json_is( { is_logged_in => 0 } );
     $t->get_ok('/staff')->json_is( { is_logged_in => 0 } );
-    $t->get_ok('/buged')->json_is( { is_logged_in => undef } );
 };
 
 done_testing();
@@ -47,11 +46,4 @@ sub login {
     return $c->render( json => { is_logged_in => $c->is_logged_in } );
 }
 
-package Yetie::Controller::Buged;
-use Mojo::Base 'Yetie::Controller';
-
-sub login {
-    my $c = shift;
-    return $c->render( json => { is_logged_in => $c->is_logged_in } );
-}
 1;

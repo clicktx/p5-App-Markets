@@ -1,6 +1,6 @@
 package t::pages::catalog::signup;
 
-use Mojo::Base 't::pages::common';
+use Mojo::Base 't::common';
 use t::Util;
 use Test::More;
 use Test::Mojo;

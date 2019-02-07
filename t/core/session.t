@@ -113,9 +113,9 @@ subtest 'remove cart data' => sub {
     is_deeply $cart->data, {}, 'flash all cart data after reload session';
 };
 
-subtest 'customer_id' => sub {
-    my $customer_id = $session->data('customer_id');
-    is $session->customer_id, $customer_id, 'right load customer_id';
+subtest 'for customer' => sub {
+    is $session->customer_id, '', 'right load customer_id';
+    ok !$session->is_customer_logged_in, 'right not logged in';
 
     $session->customer_id('123456');
     is $session->customer_id, 123456, 'right changed customer_id';
@@ -123,11 +123,12 @@ subtest 'customer_id' => sub {
     $session->flush;
     $session->load;
     is $session->customer_id, 123456, 'right changed customer_id';
+    ok $session->is_customer_logged_in, 'right logged in';
 };
 
-subtest 'staff_id' => sub {
-    my $staff_id = $session->data('staff_id');
-    is $session->staff_id, $staff_id, 'right load staff_id';
+subtest 'for staff' => sub {
+    is $session->staff_id, '', 'right load staff_id';
+    ok !$session->is_staff_logged_in, 'right not logged in';
 
     $session->staff_id('123456');
     is $session->staff_id, 123456, 'right changed staff_id';
@@ -135,6 +136,7 @@ subtest 'staff_id' => sub {
     $session->flush;
     $session->load;
     is $session->staff_id, 123456, 'right changed staff_id';
+    ok $session->is_staff_logged_in, 'right logged in';
 };
 
 subtest 'regenerate sid' => sub {

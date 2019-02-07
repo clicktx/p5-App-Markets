@@ -5,7 +5,12 @@ sub authorize {
     my $c = shift;
     return 1 if $c->is_logged_in;
 
-    $c->flash( ref => $c->req->url->to_string );
+    # NOTE: 最終リクエストがPOSTの場合はhistoryから最後のGETリクエストを取得する？
+    #       sessionが切れている（はず）なのでhistoryから取得は難しいか？
+    #       cookie_session のlanding_pageで良い？
+    #       catalog/staff 両方で必要
+    $c->flash( ref => $c->req->url->to_string ) if $c->is_get_request;
+
     $c->redirect_to( $c->url_for('RN_admin_login') );
     return 0;
 }
@@ -27,7 +32,7 @@ sub login {
     my $password = $form->param('password');
 
     my $route = $c->flash('ref') || 'RN_admin_dashboard';
-    return $c->redirect_to($route) if $c->service('staff')->login_process( $login_id, $password );
+    return $c->redirect_to($route) if $c->service('staff')->login_process_with_password( $login_id, $password );
 
     # Set error class
     $form->field($_)->append_error_class for qw(login_id password);

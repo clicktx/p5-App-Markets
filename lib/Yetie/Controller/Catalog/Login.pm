@@ -13,6 +13,7 @@ sub index {
       : $c->redirect_to('RN_customer_login_magic_link');
 }
 
+# NOTE: remember_me はどうするか
 sub callback {
     my $c     = shift;
     my $token = $c->stash('token');
@@ -56,28 +57,23 @@ sub magic_link {
     # Validation form
     return $c->render() unless $form->do_validate;
 
-    my $email = $form->param('email');
-    return $c->service('customer')->send_authorization_mail($email);
+    return $c->service('customer')->send_authorization_mail($form);
 }
 
 sub remember_me {
-    my $c = shift;
-    return 1 if $c->is_logged_in;
-
-    my $token = $c->service('customer')->remember_me;
-    return 1 unless $token;
+    my $c       = shift;
+    my $service = $c->service('customer');
 
     # Auto login
+    my $token         = $service->remember_me_token;
     my $authorization = $c->service('authorization')->validate($token);
-    return $c->remove_cookie('remember_me') unless $authorization->is_valid;
 
-    # Recreate cookie
-    my $email = $authorization->email;
-    $c->service('customer')->remember_me($email);
+    # NOTE: ADD logging??
+    if   ( $authorization->is_valid ) { $service->login_process_remember_me( $authorization->email ) }
+    else                              { $service->remove_remember_me_token }
 
-    my $customer = $c->service('customer')->find_customer($email);
-    $c->service('customer')->login( $customer->id );
-    return 1;
+    my $return_path = $c->flash('return_path') // 'RN_home';
+    return $c->redirect_to($return_path);
 }
 
 sub toggle {
@@ -85,7 +81,7 @@ sub toggle {
     $c->flash( ref => $c->flash('ref') );
 
     my $value = $c->cookie('login_with_password') ? 0 : 1;
-    $c->cookie( login_with_password => $value );
+    $c->cookie( login_with_password => $value, { expires => time + $c->pref('cookie_expires_long') } );
     return $c->redirect_to('RN_customer_login');
 }
 
@@ -104,16 +100,16 @@ sub with_password {
     return $c->render() unless $form->do_validate;
     $c->cookie(
         default_remember_me => $form->param('remember_me') ? 1 : 0,
-        { path => '/', expires => time + $c->pref('cookie_expires_long') }
+        { expires => time + $c->pref('cookie_expires_long') }
     );
 
     # Login failure
-    return $c->render( login_failure => 1 ) unless $c->service('customer')->login_process($form);
+    return $c->render( login_failure => 1 ) unless $c->service('customer')->login_process_with_password($form);
 
     # Login success
-    $c->service('customer')->remember_me( $form->param('email') ) if $form->param('remember_me');
+    $c->service('customer')->remember_me_token( $form->param('email') ) if $form->param('remember_me');
 
-    my $route = $c->flash('ref') || 'RN_customer_home';
+    my $route = $c->flash('ref') || 'RN_home';
     return $c->redirect_to($route);
 }
 

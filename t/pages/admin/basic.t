@@ -1,6 +1,6 @@
 package t::pages::admin::basic;
 
-use Mojo::Base 't::pages::common';
+use Mojo::Base 't::common';
 use t::Util;
 use Test::More;
 use Test::Mojo;
@@ -17,7 +17,7 @@ sub t01_not_logedin_request : Tests() {
     }
 }
 
-sub t02_admin_login_process : Tests() {
+sub t02_admin_login_process_with_password : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
