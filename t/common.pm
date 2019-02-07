@@ -1,4 +1,4 @@
-package t::pages::common;
+package t::common;
 
 use Mojo::Base 'Test::Class';
 use t::Util;
