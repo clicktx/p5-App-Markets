@@ -5,8 +5,9 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-has [qw/t app ua tx csrf_token/];
-has sid => sub { t::Util::get_sid( shift->t ) };
+has [qw/t app ua tx/];
+has csrf_token => sub { t::Util::get_csrf_token( shift->t ) };
+has sid        => sub { t::Util::get_sid( shift->t ) };
 has server_session => sub {
     my $self           = shift;
     my $server_session = t::Util::server_session( $self->t->app );
@@ -69,17 +70,8 @@ sub startup : Test(startup) {
 
     $t->ua->get('/');
 
-    # CSRF token
-    $self->{csrf_token} = t::Util::get_csrf_token($t);
-
     # redirect
     $self->ua->max_redirects(1);
 }
-
-# sub _common_basic_test : Tests() {
-#     my $self = shift;
-#     isa_ok $self->t, 'Test::Mojo', 'right isa Test::Mojo';
-#     ok $self->csrf_token, 'right csrf token';
-# }
 
 1;
