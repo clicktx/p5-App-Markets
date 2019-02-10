@@ -28,6 +28,15 @@ sub admin_logged_in {
     is $self->server_session->staff_id, 223, 'right staff logged in';
 }
 
+sub cookie_value {
+    my ( $self, $name ) = @_;
+
+    my ($cookie) = grep { $_->name eq $name } @{ $self->t->ua->cookie_jar->all };
+    return unless $cookie;
+
+    return $cookie->value;
+}
+
 sub customer_logged_in {
     my $self = shift;
 
