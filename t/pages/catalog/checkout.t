@@ -30,7 +30,7 @@ sub startup : Test(startup) {
 }
 
 # NOTE: カートが空の場合のtestも必要
-sub test_01_01_no_loged_in : Tests() {
+sub test_01_01_no_logged_in : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -49,11 +49,11 @@ sub test_01_01_no_loged_in : Tests() {
       );
 }
 
-sub test_01_02_index_after_loged_in : Tests() {
+sub test_01_02_index_after_logged_in : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $self->customer_loged_in;
+    $self->customer_logged_in;
 
     $t->get_ok('/checkout')->status_is(200);
     my ($url) = map { $_->req->url->path } @{ $t->tx->redirects };

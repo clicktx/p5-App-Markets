@@ -15,7 +15,7 @@ has server_session => sub {
     return $server_session;
 };
 
-sub admin_loged_in {
+sub admin_logged_in {
     my $self = shift;
 
     my $post_data = {
@@ -25,10 +25,10 @@ sub admin_loged_in {
     };
 
     $self->t->post_ok( $self->app->url_for('RN_admin_login'), form => $post_data );
-    is $self->server_session->staff_id, 223, 'right staff loged in';
+    is $self->server_session->staff_id, 223, 'right staff logged in';
 }
 
-sub customer_loged_in {
+sub customer_logged_in {
     my $self = shift;
 
     my $post_data = {
@@ -38,7 +38,7 @@ sub customer_loged_in {
     };
 
     $self->t->post_ok( $self->app->url_for('RN_customer_login_with_password'), form => $post_data );
-    is $self->server_session->customer_id, 111, 'right customer loged in';
+    is $self->server_session->customer_id, 111, 'right customer logged in';
 }
 
 sub make_path {
