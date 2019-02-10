@@ -62,4 +62,15 @@ sub t02_magic_link_callback : Tests() {
     $t->get_ok("/login/token/$token")->status_is( 302, 'right login' );
 }
 
+sub t03_toggle : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $t->get_ok('/login/toggle')->status_is(302);
+    ok $self->cookie_value('login_with_password'), 'right toggle on';
+
+    $t->get_ok('/login/toggle')->status_is(302);
+    ok !$self->cookie_value('login_with_password'), 'right toggle off';
+}
+
 __PACKAGE__->runtests;
