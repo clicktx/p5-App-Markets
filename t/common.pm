@@ -6,8 +6,7 @@ use Test::More;
 use Test::Mojo;
 
 has [qw/t app ua tx/];
-has csrf_token => sub { t::Util::get_csrf_token( shift->t ) };
-has sid        => sub { t::Util::get_sid( shift->t ) };
+
 has server_session => sub {
     my $self           = shift;
     my $server_session = t::Util::server_session( $self->t->app );
@@ -37,6 +36,8 @@ sub cookie_value {
     return $cookie->value;
 }
 
+sub csrf_token { t::Util::get_csrf_token( shift->t ) }
+
 sub customer_logged_in {
     my $self = shift;
 
@@ -65,6 +66,8 @@ sub make_paths {
     }
     return \@paths;
 }
+
+sub sid { t::Util::get_sid( shift->t ) }
 
 sub startup : Test(startup) {
     my $self = shift;
@@ -107,11 +110,7 @@ the following new ones.
 
 =head2 C<app>
 
-=head2 C<csrf_token>
-
 =head2 C<server_session>
-
-=head2 C<sid>
 
 =head2 C<t>
 
@@ -136,6 +135,10 @@ Stuff logged-in.
 
 Get cookie value.
 
+=head2 C<csrf_token>
+
+    my $token = $self->csrf_token;
+
 =head2 C<customer_logged_in>
 
     $self->customer_logged_in;
@@ -145,6 +148,10 @@ Customer logged-in.
 =head2 C<make_path>
 
 =head2 C<make_paths>
+
+=head2 C<sid>
+
+    my $sid = $self->sid;
 
 =head1 AUTHOR
 
