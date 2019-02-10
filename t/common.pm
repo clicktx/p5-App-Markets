@@ -84,3 +84,72 @@ sub startup : Test(startup) {
 }
 
 1;
+
+=encoding utf8
+
+=head1 NAME
+
+t::common
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 FUNCTIONS
+
+L<t::common> inherits all functions from L<Test::Class> and implements
+the following new ones.
+
+=head1 ATTRIBUTES
+
+L<t::common> inherits all attributes from L<Test::Class> and implements
+the following new ones.
+
+=head2 C<app>
+
+=head2 C<csrf_token>
+
+=head2 C<server_session>
+
+=head2 C<sid>
+
+=head2 C<t>
+
+=head2 C<tx>
+
+=head2 C<ua>
+
+=head1 METHODS
+
+L<t::common> inherits all methods from L<Test::Class> and implements
+the following new ones.
+
+=head2 C<admin_logged_in>
+
+    $self->admin_logged_in;
+
+Stuff logged-in.
+
+=head2 C<cookie_value>
+
+    my $value = $self->cookie_value($name);
+
+Get cookie value.
+
+=head2 C<customer_logged_in>
+
+    $self->customer_logged_in;
+
+Customer logged-in.
+
+=head2 C<make_path>
+
+=head2 C<make_paths>
+
+=head1 AUTHOR
+
+Yetie authors.
+
+=head1 SEE ALSO
+
+L<Test::Class>, L<t::Util>
