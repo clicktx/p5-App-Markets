@@ -212,8 +212,8 @@ Return boolean value.
 =head2 C<is_logged_in>
 
     my $bool = $c->is_logged_in;
-    if ($bool){ say "Loged in" }
-    else { say "Not loged in" }
+    if ($bool){ say "Logged in" }
+    else { say "Not logged in" }
 
 Return boolean value.
 

@@ -18,7 +18,7 @@ sub login {
     # Double login
     return 1 if $session->staff_id eq $staff_id;
 
-    # Set staff id (logedin flag)
+    # Set staff id (loggedin flag)
     $session->staff_id($staff_id);
 
     # Regenerate sid
