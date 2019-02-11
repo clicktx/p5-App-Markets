@@ -46,7 +46,7 @@ sub get_id_by_email {
     return $customer ? $customer->id : undef;
 }
 
-sub last_loged_in_now {
+sub last_logged_in_now {
     my ( $self, $customer_id ) = @_;
 
     my $result = $self->find($customer_id);
@@ -126,9 +126,9 @@ the following new ones.
 
     my $customer_id = $self->get_id_by_email($email);
 
-=head2 C<last_loged_in_now>
+=head2 C<last_logged_in_now>
 
-    $resultset->last_loged_in_now($customer_id);
+    $resultset->last_logged_in_now($customer_id);
 
 Update C<last_logged_in_at>.
 
