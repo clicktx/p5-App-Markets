@@ -11,7 +11,7 @@ sub startup : Test(startup) {
     $self->t->ua->max_redirects(0);
 }
 
-sub t00_login : Tests() { shift->admin_loged_in }
+sub t00_login : Tests() { shift->admin_logged_in }
 
 sub t01_billing_address : Tests() {
     my $self = shift;

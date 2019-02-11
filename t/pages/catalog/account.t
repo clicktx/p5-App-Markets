@@ -29,7 +29,7 @@ sub t02_required_authrization_after_login : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $self->customer_loged_in;
+    $self->customer_logged_in;
     $t->get_ok($_)->status_is( 200, 'right redirect' ) for @paths;
 }
 

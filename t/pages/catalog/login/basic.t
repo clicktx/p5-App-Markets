@@ -11,7 +11,7 @@ sub startup : Test(startup) {
     $self->t->ua->max_redirects(0);
 }
 
-sub t00_login : Tests() {
+sub t00_basic : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -25,7 +25,7 @@ sub t00_login : Tests() {
     );
     $t->get_ok('/login')->status_is( 302, 'right login with-password' );
 
-    $self->customer_loged_in;
+    $self->customer_logged_in;
     $t->get_ok('/login')->status_is( 302, 'right after logged-in' );
 }
 
@@ -60,6 +60,17 @@ sub t02_magic_link_callback : Tests() {
 
     $t->get_ok("/login/token/foo-bar-baz")->status_is( 400, 'right illegal token' );
     $t->get_ok("/login/token/$token")->status_is( 302, 'right login' );
+}
+
+sub t03_toggle : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    $t->get_ok('/login/toggle')->status_is(302);
+    ok $self->cookie_value('login_with_password'), 'right toggle on';
+
+    $t->get_ok('/login/toggle')->status_is(302);
+    ok !$self->cookie_value('login_with_password'), 'right toggle off';
 }
 
 __PACKAGE__->runtests;
