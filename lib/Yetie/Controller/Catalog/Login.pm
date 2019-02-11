@@ -8,9 +8,7 @@ sub index {
     my $url = $c->flash('ref') || 'RN_home';
     return $c->redirect_to($url) if $c->is_logged_in;
 
-    return $c->cookie('login_with_password')
-      ? $c->redirect_to('RN_customer_login_with_password')
-      : $c->redirect_to('RN_customer_login_magic_link');
+    $c->cookie('login_with_password') ? $c->with_password : $c->magic_link;
 }
 
 # NOTE: remember_me はどうするか
@@ -47,6 +45,7 @@ sub email_sended {
 sub magic_link {
     my $c = shift;
     $c->flash( ref => $c->flash('ref') );
+    $c->template('login/magic_link');
 
     # Initialize form
     my $form = $c->form('account-magic_link');
@@ -88,6 +87,7 @@ sub toggle {
 sub with_password {
     my $c = shift;
     $c->flash( ref => $c->flash('ref') );
+    $c->template('login/with_password');
 
     # Initialize form
     my $form = $c->form('account-login');

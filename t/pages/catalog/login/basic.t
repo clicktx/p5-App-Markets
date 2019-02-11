@@ -15,15 +15,15 @@ sub t00_basic : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $t->get_ok('/login')->status_is( 302, 'right login magic-link' );
+    $t->get_ok('/login')->status_is( 200, 'right login magic-link' )->content_like(qr/magic_link-email/)
+      ->element_exists_not('input[name=password]');
 
-    $t->ua->cookie_jar->add(
-        Mojo::Cookie::Response->new(
-            name  => 'login_with_password',
-            value => 1,
-        )
-    );
-    $t->get_ok('/login')->status_is( 302, 'right login with-password' );
+    ok !$self->cookie_value('login_with_password'), 'right toggle off';
+    $t->get_ok('/login/toggle')->status_is(302);
+    ok $self->cookie_value('login_with_password'), 'right toggle on';
+
+    $t->get_ok('/login')->status_is( 200, 'right login with-password' )->content_like(qr/account-login-password/)
+      ->element_exists('input[name=password]');
 
     $self->customer_logged_in;
     $t->get_ok('/login')->status_is( 302, 'right after logged-in' );
@@ -60,17 +60,6 @@ sub t02_magic_link_callback : Tests() {
 
     $t->get_ok("/login/token/foo-bar-baz")->status_is( 400, 'right illegal token' );
     $t->get_ok("/login/token/$token")->status_is( 302, 'right login' );
-}
-
-sub t03_toggle : Tests() {
-    my $self = shift;
-    my $t    = $self->t;
-
-    $t->get_ok('/login/toggle')->status_is(302);
-    ok $self->cookie_value('login_with_password'), 'right toggle on';
-
-    $t->get_ok('/login/toggle')->status_is(302);
-    ok !$self->cookie_value('login_with_password'), 'right toggle off';
 }
 
 __PACKAGE__->runtests;
