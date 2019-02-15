@@ -21,7 +21,7 @@ column token => {
 
 column redirect => {
     data_type   => 'VARCHAR',
-    size        => 256,
+    size        => 255,
     is_nullable => 1,
 };
 
