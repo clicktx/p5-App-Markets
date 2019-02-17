@@ -25,7 +25,7 @@ column redirect => {
     is_nullable => 1,
 };
 
-column request_ip => {
+column remote_address => {
     data_type   => 'VARCHAR',
     size        => 45,
     is_nullable => 0,

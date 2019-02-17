@@ -27,7 +27,7 @@ sub register {
     $app->helper( pref               => sub { _pref(@_) } );
     $app->helper( 'reply.error'      => sub { _error(@_) } );
     $app->helper( resultset          => sub { shift->app->schema->resultset(@_) } );
-    $app->helper( request_ip_address => sub { _request_ip_address(@_) } );
+    $app->helper( remote_address => sub { _remote_address(@_) } );
     $app->helper( schema             => sub { shift->app->schema } );
     $app->helper( service            => sub { _service(@_) } );
     $app->helper( template           => sub { _template(@_) } );
@@ -80,12 +80,12 @@ sub _pref {
     return @_ ? $pref->value(@_) : $pref;
 }
 
-sub _request_ip_address {
+sub _remote_address {
     my $self = shift;
 
     # NOTE: 'X-Real-IP', 'X-Forwarded-For'はどうする？
-    my $request_ip = $self->tx->remote_address || 'unknown';
-    return $request_ip;
+    my $remote_address = $self->tx->remote_address || 'unknown';
+    return $remote_address;
 }
 
 sub _service {
