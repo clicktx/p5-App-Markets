@@ -12,7 +12,7 @@ subtest 'basic' => sub {
     isa_ok $auth->email,   'Yetie::Domain::Value::Email';
     isa_ok $auth->expires, 'Yetie::Domain::Value::Expires';
 
-    can_ok $auth, 'request_ip';
+    can_ok $auth, 'remote_address';
     can_ok $auth, 'is_activated';
     can_ok $auth, 'is_valid';
     can_ok $auth, 'error_message';

@@ -84,8 +84,8 @@ sub _remote_address {
     my $self = shift;
 
     # NOTE: 'X-Real-IP', 'X-Forwarded-For'はどうする？
-    my $request_ip = $self->tx->remote_address || 'unknown';
-    return $request_ip;
+    my $remote_address = $self->tx->remote_address || 'unknown';
+    return $remote_address;
 }
 
 sub _service {

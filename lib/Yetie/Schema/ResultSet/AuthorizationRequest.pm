@@ -15,11 +15,11 @@ sub store_token {
     my ( $self, $authorization ) = @_;
     return $self->create(
         {
-            email      => $authorization->email,
-            token      => $authorization->token,
-            redirect   => $authorization->redirect,
-            request_ip => $authorization->request_ip,
-            expires    => $authorization->expires,
+            email          => $authorization->email,
+            token          => $authorization->token,
+            redirect       => $authorization->redirect,
+            remote_address => $authorization->remote_address,
+            expires        => $authorization->expires,
         }
     );
 }

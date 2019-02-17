@@ -4,12 +4,12 @@ use Mojo::Base 'Yetie::Service';
 sub generate_token {
     my ( $self, $email, $opt ) = ( shift, shift, shift || {} );
 
-    my $request_ip    = $self->controller->remote_address;
-    my $authorization = $self->factory('entity-authorization')->construct(
-        email      => $email,
-        redirect   => $opt->{redirect},
-        request_ip => $request_ip,
-        expires    => $opt->{expires},
+    my $remote_address = $self->controller->remote_address;
+    my $authorization  = $self->factory('entity-authorization')->construct(
+        email          => $email,
+        redirect       => $opt->{redirect},
+        remote_address => $remote_address,
+        expires        => $opt->{expires},
     );
 
     # Store to DB

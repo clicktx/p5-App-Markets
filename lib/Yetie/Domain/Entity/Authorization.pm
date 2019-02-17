@@ -3,12 +3,12 @@ use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has token => sub { __PACKAGE__->factory('value-token')->construct() };
 has email => sub { __PACKAGE__->factory('value-email')->construct() };
-has redirect      => '';
-has request_ip    => 'unknown';
-has is_activated  => 0;
-has expires       => sub { __PACKAGE__->factory('value-expires')->construct() };
-has error_message => '';
-has _is_valid     => 0;
+has redirect       => '';
+has remote_address => 'unknown';
+has is_activated   => 0;
+has expires        => sub { __PACKAGE__->factory('value-expires')->construct() };
+has error_message  => '';
+has _is_valid      => 0;
 
 sub is_valid { shift->_is_valid(@_) }
 
@@ -57,7 +57,7 @@ the following new ones.
 
 =head2 C<redirect>
 
-=head2 C<request_ip>
+=head2 C<remote_address>
 
 =head2 C<is_activated>
 
