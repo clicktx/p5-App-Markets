@@ -17,7 +17,7 @@ sub cookie {
 
 sub csrf_protect {
     my $self = shift;
-    return 1 if $self->req->method ne 'POST';
+    return 1 if $self->is_get_request;
     return 1 unless $self->validation->csrf_protect->has_error('csrf_token');
     $self->render(
         text   => 'Forbidden' . ' Invalid CSRF Token.',
