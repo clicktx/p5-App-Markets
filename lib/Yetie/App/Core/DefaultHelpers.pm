@@ -17,20 +17,20 @@ sub register {
     # TagHelpers more
     $app->plugin('Yetie::App::Core::TagHelpers');
 
-    $app->helper( __x_default_lang   => sub { __x_default_lang(@_) } );
-    $app->helper( addons             => sub { shift->app->addons(@_) } );
-    $app->helper( cache              => sub { _cache(@_) } );
-    $app->helper( cart               => sub { _cart(@_) } );
-    $app->helper( cookie_session     => sub { shift->session(@_) } );
-    $app->helper( factory            => sub { _factory(@_) } );
-    $app->helper( j                  => sub { _j(@_) } );
-    $app->helper( pref               => sub { _pref(@_) } );
-    $app->helper( 'reply.error'      => sub { _error(@_) } );
-    $app->helper( resultset          => sub { shift->app->schema->resultset(@_) } );
-    $app->helper( remote_address => sub { _remote_address(@_) } );
-    $app->helper( schema             => sub { shift->app->schema } );
-    $app->helper( service            => sub { _service(@_) } );
-    $app->helper( template           => sub { _template(@_) } );
+    $app->helper( __x_default_lang => sub { __x_default_lang(@_) } );
+    $app->helper( addons           => sub { shift->app->addons(@_) } );
+    $app->helper( cache            => sub { _cache(@_) } );
+    $app->helper( cart             => sub { _cart(@_) } );
+    $app->helper( cookie_session   => sub { shift->session(@_) } );
+    $app->helper( factory          => sub { _factory(@_) } );
+    $app->helper( j                => sub { _j(@_) } );
+    $app->helper( pref             => sub { _pref(@_) } );
+    $app->helper( 'reply.error'    => sub { _error(@_) } );
+    $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
+    $app->helper( remote_address   => sub { _remote_address(@_) } );
+    $app->helper( schema           => sub { shift->app->schema } );
+    $app->helper( service          => sub { _service(@_) } );
+    $app->helper( template         => sub { _template(@_) } );
 }
 
 sub __x_default_lang {
@@ -44,16 +44,16 @@ sub __x_default_lang {
 }
 
 sub _cache {
-    my $self = shift;
+    my $c = shift;
 
-    my $caches = $self->app->caches;
+    my $caches = $c->app->caches;
     return @_ ? @_ > 1 ? $caches->set( $_[0] => $_[1] ) : $caches->get( $_[0] ) : $caches;
 }
 
 sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
 
 sub _error {
-    my $self = shift;
+    my $c = shift;
 
     my %options = (
         status        => 400,
@@ -61,42 +61,42 @@ sub _error {
         title         => 'Bad Request',
         error_message => '',
     );
-    $self->render( %options, @_ );
+    $c->render( %options, @_ );
 }
 
 sub _factory {
-    my $self = shift;
+    my $c = shift;
 
     my $factory = Yetie::Factory->new(@_);
-    $factory->app( $self->app );
+    $factory->app( $c->app );
     return $factory;
 }
 
 sub _j { Mojo::JSON::j( $_[1] ) }
 
 sub _pref {
-    my $self = shift;
-    my $pref = $self->cache('preferences');
+    my $c    = shift;
+    my $pref = $c->cache('preferences');
     return @_ ? $pref->value(@_) : $pref;
 }
 
 sub _remote_address {
-    my $self = shift;
+    my $c = shift;
 
     # NOTE: 'X-Real-IP', 'X-Forwarded-For'はどうする？
-    my $remote_address = $self->tx->remote_address || 'unknown';
+    my $remote_address = $c->tx->remote_address || 'unknown';
     return $remote_address;
 }
 
 sub _service {
-    my ( $self, $ns ) = ( shift, shift );
+    my ( $c, $ns ) = ( shift, shift );
 
     $ns = Mojo::Util::camelize($ns) if $ns =~ /^[a-z]/;
     Carp::croak 'Service name is empty.' unless $ns;
 
     my $class = "Yetie::Service::" . $ns;
     Yetie::Util::load_class($class);
-    return $class->new( $self, @_ );
+    return $class->new( $c, @_ );
 }
 
 sub _template {
