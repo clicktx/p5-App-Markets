@@ -1,6 +1,7 @@
 package Yetie::Controller;
 use Mojo::Base 'Mojolicious::Controller';
 
+# Override Mojolicious::Controller::cookie
 sub cookie {
     my ( $self, $name ) = ( shift, shift );
 
