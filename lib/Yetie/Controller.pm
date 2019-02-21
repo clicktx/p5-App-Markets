@@ -90,16 +90,6 @@ sub finalize {
     return $self;
 }
 
-# Override method
-sub redirect_to {
-    my $self = shift;
-
-    # Don't override 3xx status
-    my $res = $self->res;
-    $res->headers->location( $self->url_for(@_) );
-    return $self->rendered( $res->is_redirect ? () : 302 );
-}
-
 1;
 __END__
 
