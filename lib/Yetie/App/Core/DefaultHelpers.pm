@@ -23,6 +23,7 @@ sub register {
     $app->helper( cart             => sub { _cart(@_) } );
     $app->helper( cookie_session   => sub { shift->session(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
+    $app->helper( is_get_request   => sub { _is_get_request(@_) } );
     $app->helper( j                => sub { _j(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
     $app->helper( 'reply.error'    => sub { _error(@_) } );
@@ -71,6 +72,8 @@ sub _factory {
     $factory->app( $c->app );
     return $factory;
 }
+
+sub _is_get_request { shift->req->method eq 'GET' ? 1 : 0 }
 
 sub _j { Mojo::JSON::j( $_[1] ) }
 
@@ -171,6 +174,12 @@ Alias for $c->session;
     my $factory = $c->factory('entity-something');
 
 Return L<Yetie::Factory> Object.
+
+=head2 C<is_get_request>
+
+    my $bool = $c->is_get_request;
+
+Return boolean value.
 
 =head2 C<j>
 
