@@ -1,6 +1,7 @@
 package Yetie::Controller;
 use Mojo::Base 'Mojolicious::Controller';
 
+# Override Mojolicious::Controller::cookie
 sub cookie {
     my ( $self, $name ) = ( shift, shift );
 
@@ -14,32 +15,12 @@ sub cookie {
     return $self->SUPER::cookie( $name => $value, $opt );
 }
 
-sub csrf_protect {
-    my $self = shift;
-    return 1 if $self->req->method ne 'POST';
-    return 1 unless $self->validation->csrf_protect->has_error('csrf_token');
-    $self->render(
-        text   => 'Forbidden' . ' Invalid CSRF Token.',
-        status => 403,
-    );
-    return;
-}
-
-sub is_get_request { shift->req->method eq 'GET' ? 1 : 0 }
-
-sub is_logged_in {
-    my $self = shift;
-
-    my $method = $self->isa('Yetie::Controller::Admin') ? 'is_staff_logged_in' : 'is_customer_logged_in';
-    return $self->server_session->$method ? 1 : 0;
-}
-
 # Action process
 sub process {
     my ( $self, $action ) = @_;
 
     # CSRF protection
-    return unless $self->csrf_protect();
+    return unless $self->_csrf_protect();
 
     # Set variant for templates
     $self->stash( variant => $self->language ) unless $self->language eq 'en';
@@ -88,6 +69,17 @@ sub finalize {
 
     $self->server_session->flush;
     return $self;
+}
+
+sub _csrf_protect {
+    my $self = shift;
+    return 1 if $self->is_get_request;
+    return 1 unless $self->validation->csrf_protect->has_error('csrf_token');
+    $self->render(
+        text   => 'Forbidden' . ' Invalid CSRF Token.',
+        status => 403,
+    );
+    return;
 }
 
 1;
@@ -187,30 +179,7 @@ httponly: 1
 
 L<Mojolicious::Controller/cookie>
 
-=head2 C<csrf_protect>
-
-    $c->csrf_protect();
-
-Request method 'POST' requires CSRF token.
-
-=head2 C<is_get_request>
-
-    my $bool = $c->is_get_request;
-
-Return boolean value.
-
-=head2 C<is_logged_in>
-
-    my $bool = $c->is_logged_in;
-    if ($bool){ say "Logged in" }
-    else { say "Not logged in" }
-
-Return boolean value.
-
-=head2 C<redirect_to>
-
 =head2 C<process>
-
 
 See L</PROSESS>
 
