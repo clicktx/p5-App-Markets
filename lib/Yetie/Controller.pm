@@ -15,23 +15,12 @@ sub cookie {
     return $self->SUPER::cookie( $name => $value, $opt );
 }
 
-sub csrf_protect {
-    my $self = shift;
-    return 1 if $self->is_get_request;
-    return 1 unless $self->validation->csrf_protect->has_error('csrf_token');
-    $self->render(
-        text   => 'Forbidden' . ' Invalid CSRF Token.',
-        status => 403,
-    );
-    return;
-}
-
 # Action process
 sub process {
     my ( $self, $action ) = @_;
 
     # CSRF protection
-    return unless $self->csrf_protect();
+    return unless $self->_csrf_protect();
 
     # Set variant for templates
     $self->stash( variant => $self->language ) unless $self->language eq 'en';
@@ -80,6 +69,17 @@ sub finalize {
 
     $self->server_session->flush;
     return $self;
+}
+
+sub _csrf_protect {
+    my $self = shift;
+    return 1 if $self->is_get_request;
+    return 1 unless $self->validation->csrf_protect->has_error('csrf_token');
+    $self->render(
+        text   => 'Forbidden' . ' Invalid CSRF Token.',
+        status => 403,
+    );
+    return;
 }
 
 1;
@@ -179,14 +179,7 @@ httponly: 1
 
 L<Mojolicious::Controller/cookie>
 
-=head2 C<csrf_protect>
-
-    $c->csrf_protect();
-
-Request method 'POST' requires CSRF token.
-
 =head2 C<process>
-
 
 See L</PROSESS>
 
