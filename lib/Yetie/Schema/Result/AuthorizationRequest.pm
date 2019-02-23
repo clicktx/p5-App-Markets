@@ -3,7 +3,7 @@ use Mojo::Base 'Yetie::Schema::Base::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column id => {
-    data_type         => 'BIGINT',
+    data_type         => 'INT',
     is_auto_increment => 1,
 };
 
