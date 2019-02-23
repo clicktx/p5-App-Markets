@@ -25,6 +25,19 @@ column redirect => {
     is_nullable => 1,
 };
 
+# 連続リクエストを防止する
+# 同一ipは5〜10秒拒否
+# 同一emailは1〜3分拒否
+
+# ブラウザごとにcookieでuuidを保存しておく。無い場合はリクエストを拒否する
+# cookieなので改変可能だが...
+# フィンガープリンティングというのもある
+# column client_uuid => {
+# data_type   => 'VARCHAR',
+# size        => 40,
+# is_nullable => 0,
+# };
+
 column remote_address => {
     data_type   => 'VARCHAR',
     size        => 45,
