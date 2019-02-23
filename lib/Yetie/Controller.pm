@@ -26,13 +26,6 @@ sub csrf_protect {
     return;
 }
 
-sub is_logged_in {
-    my $self = shift;
-
-    my $method = $self->isa('Yetie::Controller::Admin') ? 'is_staff_logged_in' : 'is_customer_logged_in';
-    return $self->server_session->$method ? 1 : 0;
-}
-
 # Action process
 sub process {
     my ( $self, $action ) = @_;
@@ -191,16 +184,6 @@ L<Mojolicious::Controller/cookie>
     $c->csrf_protect();
 
 Request method 'POST' requires CSRF token.
-
-=head2 C<is_logged_in>
-
-    my $bool = $c->is_logged_in;
-    if ($bool){ say "Logged in" }
-    else { say "Not logged in" }
-
-Return boolean value.
-
-=head2 C<redirect_to>
 
 =head2 C<process>
 

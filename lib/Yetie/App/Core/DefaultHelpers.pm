@@ -24,6 +24,7 @@ sub register {
     $app->helper( cookie_session   => sub { shift->session(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( is_get_request   => sub { _is_get_request(@_) } );
+    $app->helper( is_logged_in     => sub { _is_logged_in(@_) } );
     $app->helper( j                => sub { _j(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
     $app->helper( 'reply.error'    => sub { _error(@_) } );
@@ -74,6 +75,13 @@ sub _factory {
 }
 
 sub _is_get_request { shift->req->method eq 'GET' ? 1 : 0 }
+
+sub _is_logged_in {
+    my $c = shift;
+
+    my $method = $c->isa('Yetie::Controller::Admin') ? 'is_staff_logged_in' : 'is_customer_logged_in';
+    return $c->server_session->$method ? 1 : 0;
+}
 
 sub _j { Mojo::JSON::j( $_[1] ) }
 
@@ -178,6 +186,14 @@ Return L<Yetie::Factory> Object.
 =head2 C<is_get_request>
 
     my $bool = $c->is_get_request;
+
+Return boolean value.
+
+=head2 C<is_logged_in>
+
+    my $bool = $c->is_logged_in;
+    if ($bool){ say "Logged in" }
+    else { say "Not logged in" }
 
 Return boolean value.
 
