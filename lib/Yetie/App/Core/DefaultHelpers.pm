@@ -23,6 +23,7 @@ sub register {
     $app->helper( cart             => sub { _cart(@_) } );
     $app->helper( cookie_session   => sub { shift->session(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
+    $app->helper( is_admin_route   => sub { _is_admin_route(@_) } );
     $app->helper( is_get_request   => sub { _is_get_request(@_) } );
     $app->helper( is_logged_in     => sub { _is_logged_in(@_) } );
     $app->helper( j                => sub { _j(@_) } );
@@ -74,12 +75,14 @@ sub _factory {
     return $factory;
 }
 
+sub _is_admin_route { shift->isa('Yetie::Controller::Admin') ? 1 : 0 }
+
 sub _is_get_request { shift->req->method eq 'GET' ? 1 : 0 }
 
 sub _is_logged_in {
     my $c = shift;
 
-    my $method = $c->isa('Yetie::Controller::Admin') ? 'is_staff_logged_in' : 'is_customer_logged_in';
+    my $method = $c->is_admin_route ? 'is_staff_logged_in' : 'is_customer_logged_in';
     return $c->server_session->$method ? 1 : 0;
 }
 
