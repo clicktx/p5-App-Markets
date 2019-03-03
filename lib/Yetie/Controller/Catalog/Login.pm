@@ -45,7 +45,7 @@ sub email_sended {
 sub magic_link {
     my $c = shift;
     $c->flash( ref => $c->flash('ref') );
-    $c->template('login/magic_link');
+    $c->stash( action => 'magic_link' );
 
     # Initialize form
     my $form = $c->form('account-magic_link');
@@ -87,7 +87,7 @@ sub toggle {
 sub with_password {
     my $c = shift;
     $c->flash( ref => $c->flash('ref') );
-    $c->template('login/with_password');
+    $c->stash( action => 'with_password' );
 
     # Initialize form
     my $form = $c->form('account-login');
