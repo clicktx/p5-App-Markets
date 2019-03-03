@@ -11,31 +11,6 @@ sub index {
     $c->cookie('login_with_password') ? $c->with_password : $c->magic_link;
 }
 
-# NOTE: remember_me はどうするか
-sub callback {
-    my $c     = shift;
-    my $token = $c->stash('token');
-
-    my %error_messages = (
-        title         => 'authorization.request.error.title',
-        error_message => 'authorization.request.error.message'
-    );
-
-    my $authorization = $c->service('authorization')->validate($token);
-    return $c->reply->error(%error_messages) unless $authorization->is_valid;
-
-    # Customer
-    my $email    = $authorization->email;
-    my $customer = $c->service('customer')->find_customer( $email->value );
-    return $c->reply->error(%error_messages) unless $customer->is_registered;
-
-    # Login
-    $c->service('customer')->login( $customer->id );
-
-    my $redirect_route = $authorization->redirect || 'RN_home';
-    return $c->redirect_to($redirect_route);
-}
-
 sub email_sended {
     my $c = shift;
     return $c->render();
@@ -82,6 +57,31 @@ sub toggle {
     my $value = $c->cookie('login_with_password') ? 0 : 1;
     $c->cookie( login_with_password => $value, { expires => time + $c->pref('cookie_expires_long') } );
     return $c->redirect_to('RN_customer_login');
+}
+
+# NOTE: remember_me はどうするか
+sub with_link {
+    my $c     = shift;
+    my $token = $c->stash('token');
+
+    my %error_messages = (
+        title         => 'authorization.request.error.title',
+        error_message => 'authorization.request.error.message'
+    );
+
+    my $authorization = $c->service('authorization')->validate($token);
+    return $c->reply->error(%error_messages) unless $authorization->is_valid;
+
+    # Customer
+    my $email    = $authorization->email;
+    my $customer = $c->service('customer')->find_customer( $email->value );
+    return $c->reply->error(%error_messages) unless $customer->is_registered;
+
+    # Login
+    $c->service('customer')->login( $customer->id );
+
+    my $redirect_route = $authorization->redirect || 'RN_home';
+    return $c->redirect_to($redirect_route);
 }
 
 sub with_password {

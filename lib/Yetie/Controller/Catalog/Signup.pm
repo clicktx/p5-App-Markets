@@ -22,8 +22,13 @@ sub email_sended {
     return $c->render();
 }
 
+sub done {
+    my $c = shift;
+    return $c->render();
+}
+
 # Create account, login, and disable token after validate.
-sub callback {
+sub with_link {
     my $c     = shift;
     my $token = $c->stash('token');
 
@@ -49,11 +54,6 @@ sub callback {
     # Login
     $c->service('customer')->login( $new_customer->id );
     return $c->redirect_to('RN_customer_signup_done');
-}
-
-sub done {
-    my $c = shift;
-    return $c->render();
 }
 
 1;
