@@ -27,11 +27,6 @@ sub to_data {
     croak 'Undefined attribute "action"' unless $data->{action};
     croak 'Undefined attribute "customer_id" or "staff_id"' if !$data->{customer_id} && !$data->{staff_id};
 
-    # Adapt data structure
-    my $type = $self->type;
-    my $id   = delete $data->{"$type\_id"};
-    $data->{"$type\_activities"} = [ { "$type\_id" => $id } ];
-
     return $data;
 }
 

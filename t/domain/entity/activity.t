@@ -43,13 +43,6 @@ subtest to_data => sub {
         action => 'bar',
     );
     dies_ok { $e->to_data } 'right croak';
-
-    $e = $pkg->new(
-        name        => 'foo',
-        action      => 'bar',
-        customer_id => 111,
-    );
-    is_deeply $e->to_data->{customer_activities}, [ { customer_id => 111 } ], 'right adapt data structure';
 };
 
 done_testing();
