@@ -13,7 +13,7 @@ subtest basic => sub {
 
 subtest type => sub {
     my $e = $pkg->new();
-    dies_ok { $e->type }, 'right not set customer or staff ID';
+    dies_ok { $e->type } 'right not set customer or staff ID';
 
     $e = $pkg->new( customer_id => 111 );
     is $e->type, 'customer', 'right type';
@@ -30,19 +30,26 @@ subtest to_data => sub {
         action      => 'bar',
         customer_id => 111,
     );
-    dies_ok { $e->to_data };
+    dies_ok { $e->to_data } 'right croak';
 
     $e = $pkg->new(
         name        => 'foo',
         customer_id => 111,
     );
-    dies_ok { $e->to_data };
+    dies_ok { $e->to_data } 'right croak';
 
     $e = $pkg->new(
         name   => 'foo',
         action => 'bar',
     );
-    dies_ok { $e->to_data };
+    dies_ok { $e->to_data } 'right croak';
+
+    $e = $pkg->new(
+        name        => 'foo',
+        action      => 'bar',
+        customer_id => 111,
+    );
+    is_deeply $e->to_data->{customer_activities}, [ { customer_id => 111 } ], 'right adapt data structure';
 };
 
 done_testing();
