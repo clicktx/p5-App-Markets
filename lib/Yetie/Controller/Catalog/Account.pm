@@ -37,12 +37,11 @@ sub logout {
 
  # Amazonはサインアウトでカート内のアイテムを削除しない（日数が経過した場合は不明）
 
-    # Remove server session
-    my $session = $c->server_session;
-
+# Remove server session
 # カートセッションを削除するとDBに残っている無効なセッションも削除されるので良いが...
 # $session->cart_session->remove;
-    $session->remove_session;
+    my $session = $c->server_session;
+    return $c->render() unless $session->remove_session;
 
     # Remove auto login cookie & token
     $c->service('customer')->remove_remember_me_token;
