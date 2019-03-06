@@ -46,6 +46,11 @@ has_many
   { 'foreign.customer_id' => 'self.id' },
   { cascade_delete        => 0 };
 
+has_many
+  activities => 'Yetie::Schema::Result::Customer::Activity',
+  { 'foreign.customer_id' => 'self.id' },
+  { cascade_delete        => 0 };
+
 sub to_data {
     my $self = shift;
 
