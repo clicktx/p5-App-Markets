@@ -7,9 +7,8 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column email => {
-    data_type   => 'VARCHAR',
-    size        => 128,
+column email_id => {
+    data_type   => 'INT',
     is_nullable => 0,
 };
 
@@ -55,12 +54,12 @@ column expires => {
     is_nullable => 0,
 };
 
+# Relation
+belongs_to
+  email => 'Yetie::Schema::Result::Email',
+  { 'foreign.id' => 'self.email_id' };
+
 # Index
 unique_constraint ui_token => [qw/token/];
-
-sub sqlt_deploy_hook {
-    my ( $self, $table ) = @_;
-    $table->add_index( name => 'idx_email', fields => ['email'] );
-}
 
 1;
