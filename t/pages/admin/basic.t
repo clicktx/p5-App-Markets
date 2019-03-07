@@ -5,7 +5,7 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-sub t01_not_logedin_request : Tests() {
+sub t01_not_loggedin_request : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -42,8 +42,8 @@ sub t02_admin_login_process_with_password : Tests() {
     $t->post_ok( '/admin/login', form => { csrf_token => $csrf_token, login_id => 'staff', password => '12345678' } )
       ->status_is(200)->text_like( 'title' => qr/orders/i, 'right redirect after login' );
 
-    my $sid_loged_in = t::Util::get_sid($t);
-    isnt $sid, $sid_loged_in, 'right regenerate sid';
+    my $sid_logged_in = t::Util::get_sid($t);
+    isnt $sid, $sid_logged_in, 'right regenerate sid';
 }
 
 __PACKAGE__->runtests;

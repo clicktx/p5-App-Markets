@@ -6,8 +6,7 @@ use Test::More;
 use Test::Mojo;
 
 has [qw/t app ua tx/];
-has csrf_token => sub { t::Util::get_csrf_token( shift->t ) };
-has sid        => sub { t::Util::get_sid( shift->t ) };
+
 has server_session => sub {
     my $self           = shift;
     my $server_session = t::Util::server_session( $self->t->app );
@@ -15,7 +14,7 @@ has server_session => sub {
     return $server_session;
 };
 
-sub admin_loged_in {
+sub admin_logged_in {
     my $self = shift;
 
     my $post_data = {
@@ -25,10 +24,21 @@ sub admin_loged_in {
     };
 
     $self->t->post_ok( $self->app->url_for('RN_admin_login'), form => $post_data );
-    is $self->server_session->staff_id, 223, 'right staff loged in';
+    is $self->server_session->staff_id, 223, 'right staff logged in';
 }
 
-sub customer_loged_in {
+sub cookie_value {
+    my ( $self, $name ) = @_;
+
+    my ($cookie) = grep { $_->name eq $name } @{ $self->t->ua->cookie_jar->all };
+    return unless $cookie;
+
+    return $cookie->value;
+}
+
+sub csrf_token { t::Util::get_csrf_token( shift->t ) }
+
+sub customer_logged_in {
     my $self = shift;
 
     my $post_data = {
@@ -38,7 +48,7 @@ sub customer_loged_in {
     };
 
     $self->t->post_ok( $self->app->url_for('RN_customer_login_with_password'), form => $post_data );
-    is $self->server_session->customer_id, 111, 'right customer loged in';
+    is $self->server_session->customer_id, 111, 'right customer logged in';
 }
 
 sub make_path {
@@ -56,6 +66,8 @@ sub make_paths {
     }
     return \@paths;
 }
+
+sub sid { t::Util::get_sid( shift->t ) }
 
 sub startup : Test(startup) {
     my $self = shift;
@@ -75,3 +87,76 @@ sub startup : Test(startup) {
 }
 
 1;
+
+=encoding utf8
+
+=head1 NAME
+
+t::common
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 FUNCTIONS
+
+L<t::common> inherits all functions from L<Test::Class> and implements
+the following new ones.
+
+=head1 ATTRIBUTES
+
+L<t::common> inherits all attributes from L<Test::Class> and implements
+the following new ones.
+
+=head2 C<app>
+
+=head2 C<server_session>
+
+=head2 C<t>
+
+=head2 C<tx>
+
+=head2 C<ua>
+
+=head1 METHODS
+
+L<t::common> inherits all methods from L<Test::Class> and implements
+the following new ones.
+
+=head2 C<admin_logged_in>
+
+    $self->admin_logged_in;
+
+Stuff logged-in.
+
+=head2 C<cookie_value>
+
+    my $value = $self->cookie_value($name);
+
+Get cookie value.
+
+=head2 C<csrf_token>
+
+    my $token = $self->csrf_token;
+
+=head2 C<customer_logged_in>
+
+    $self->customer_logged_in;
+
+Customer logged-in.
+
+=head2 C<make_path>
+
+=head2 C<make_paths>
+
+=head2 C<sid>
+
+    my $sid = $self->sid;
+
+=head1 AUTHOR
+
+Yetie authors.
+
+=head1 SEE ALSO
+
+L<Test::Class>, L<t::Util>

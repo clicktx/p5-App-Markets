@@ -2,4 +2,4 @@
 % title 'Logout';
 
 
-<h2><%= __('loged out') %></h2>
+<h2><%= __('logout') %></h2>

@@ -18,7 +18,7 @@ sub t00_login_process_with_password : Tests() {
     # Access
     $t->get_ok('/account/wishlist');
 
-    my $sid = t::Util::get_sid($t);
+    my $sid = $self->sid;
     ok $sid, 'right sid';
 
     # login
@@ -42,14 +42,14 @@ sub t00_login_process_with_password : Tests() {
       ->status_is( 302, 'right accepr to redirect' )
       ->header_like( location => qr/wishlist/, 'right location after redirect' );
 
-    my $sid_loged_in = t::Util::get_sid($t);
-    isnt $sid, $sid_loged_in, 'right regenerate sid';
+    my $sid_logged_in = $self->sid;
+    isnt $sid, $sid_logged_in, 'right regenerate sid';
 
     # logout
     $t->get_ok('/logout')->status_is(200);
     $t->get_ok('/account/home')->status_is(302);
-    my $sid_new_session = t::Util::get_sid($t);
-    isnt $sid_loged_in, $sid_new_session, 'right new sid';
+    my $sid_new_session = $self->sid;
+    isnt $sid_logged_in, $sid_new_session, 'right new sid';
 }
 
 __PACKAGE__->runtests;

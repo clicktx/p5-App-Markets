@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::AuthorizationRequest;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column id => {
@@ -21,11 +21,24 @@ column token => {
 
 column redirect => {
     data_type   => 'VARCHAR',
-    size        => 256,
+    size        => 255,
     is_nullable => 1,
 };
 
-column request_ip => {
+# 連続リクエストを防止する
+# 同一ipは5〜10秒拒否
+# 同一emailは1〜3分拒否
+
+# ブラウザごとにcookieでuuidを保存しておく。無い場合はリクエストを拒否する
+# cookieなので改変可能だが...
+# フィンガープリンティングというのもある
+# column client_uuid => {
+# data_type   => 'VARCHAR',
+# size        => 40,
+# is_nullable => 0,
+# };
+
+column remote_address => {
     data_type   => 'VARCHAR',
     size        => 45,
     is_nullable => 0,

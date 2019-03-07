@@ -16,7 +16,7 @@ sub cart_id { shift->data('cart_id') }
 
 sub customer_id {
     my ( $self, $id ) = @_;
-    return $id ? $self->data( customer_id => $id ) : $self->data('customer_id') // '';
+    return $id ? $self->data( customer_id => $id ) : $self->data('customer_id') || undef;
 }
 
 sub cookie_expires {
@@ -115,7 +115,7 @@ sub remove_session {
 
 sub staff_id {
     my ( $self, $id ) = @_;
-    return $id ? $self->data( staff_id => $id ) : $self->data('staff_id') // '';
+    return $id ? $self->data( staff_id => $id ) : $self->data('staff_id') || undef;
 }
 
 # Override method MojoX::Session::clear
@@ -292,6 +292,8 @@ This method override L<MojoX::Session/create>.
 
 Get/Set customer id.
 
+Return customer ID or C<undefined>.
+
 =head2 C<extend_expires>
 
 This method override L<MojoX::Session/extend_expires>.
@@ -346,6 +348,8 @@ Return C<boolean> value.
     $session->staff_id('xxxxxxxxxx');
 
 Get/Set staff id.
+
+Return customer ID or C<undefined>.
 
 =head1 SEE ALSO
 

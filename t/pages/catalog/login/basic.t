@@ -11,21 +11,21 @@ sub startup : Test(startup) {
     $self->t->ua->max_redirects(0);
 }
 
-sub t00_login : Tests() {
+sub t00_basic : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $t->get_ok('/login')->status_is( 302, 'right login magic-link' );
+    $t->get_ok('/login')->status_is( 200, 'right login magic-link' )->content_like(qr/magic_link-email/)
+      ->element_exists_not('input[name=password]');
 
-    $t->ua->cookie_jar->add(
-        Mojo::Cookie::Response->new(
-            name  => 'login_with_password',
-            value => 1,
-        )
-    );
-    $t->get_ok('/login')->status_is( 302, 'right login with-password' );
+    ok !$self->cookie_value('login_with_password'), 'right toggle off';
+    $t->get_ok('/login/toggle')->status_is(302);
+    ok $self->cookie_value('login_with_password'), 'right toggle on';
 
-    $self->customer_loged_in;
+    $t->get_ok('/login')->status_is( 200, 'right login with-password' )->content_like(qr/account-login-password/)
+      ->element_exists('input[name=password]');
+
+    $self->customer_logged_in;
     $t->get_ok('/login')->status_is( 302, 'right after logged-in' );
 }
 

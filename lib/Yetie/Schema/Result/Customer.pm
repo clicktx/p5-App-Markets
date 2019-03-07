@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::Customer;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column id => {
@@ -43,6 +43,11 @@ has_many
 
 has_many
   sales => 'Yetie::Schema::Result::Sales',
+  { 'foreign.customer_id' => 'self.id' },
+  { cascade_delete        => 0 };
+
+has_many
+  activities => 'Yetie::Schema::Result::Customer::Activity',
   { 'foreign.customer_id' => 'self.id' },
   { cascade_delete        => 0 };
 

@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::Customer::Email;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column customer_id => {
@@ -18,6 +18,7 @@ column is_primary => {
     default_value => 0,
 };
 
+# Relation
 belongs_to
   customer => 'Yetie::Schema::Result::Customer',
   { 'foreign.id' => 'self.customer_id' };

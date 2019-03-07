@@ -1,5 +1,5 @@
 package Yetie::Schema::ResultSet::Customer;
-use Mojo::Base 'Yetie::Schema::Base::ResultSet';
+use Mojo::Base 'Yetie::Schema::ResultSet';
 use Try::Tiny;
 
 has prefetch => sub {
@@ -46,7 +46,7 @@ sub get_id_by_email {
     return $customer ? $customer->id : undef;
 }
 
-sub last_loged_in_now {
+sub last_logged_in_now {
     my ( $self, $customer_id ) = @_;
 
     my $result = $self->find($customer_id);
@@ -102,12 +102,12 @@ Yetie::Schema::ResultSet::Customer
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::ResultSet::Customer> inherits all attributes from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Customer> inherits all attributes from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::ResultSet::Customer> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Customer> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head2 C<create_new_customer>
@@ -126,9 +126,9 @@ the following new ones.
 
     my $customer_id = $self->get_id_by_email($email);
 
-=head2 C<last_loged_in_now>
+=head2 C<last_logged_in_now>
 
-    $resultset->last_loged_in_now($customer_id);
+    $resultset->last_logged_in_now($customer_id);
 
 Update C<last_logged_in_at>.
 
@@ -157,4 +157,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Schema::Base::ResultSet>, L<Yetie::Schema>
+L<Yetie::Schema::ResultSet>, L<Yetie::Schema>

@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::Email;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column id => {
@@ -14,10 +14,12 @@ column address => {
     is_nullable => 0,
 };
 
-unique_constraint ui_address => [qw/address/];
-
+# Relation
 might_have
   customer_email => 'Yetie::Schema::Result::Customer::Email',
   { 'foreign.email_id' => 'self.id' };
+
+# Index
+unique_constraint ui_address => [qw/address/];
 
 1;

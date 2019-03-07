@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Customer::Address;
+package Yetie::Schema::Result::Customer::Activity;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -7,17 +7,18 @@ primary_column customer_id => {
     is_nullable => 0,
 };
 
-primary_column address_id => {
-    data_type   => 'INT',
+primary_column activity_id => {
+    data_type   => 'BIGINT',
     is_nullable => 0,
 };
 
+# Relation
 belongs_to
   customer => 'Yetie::Schema::Result::Customer',
   { 'foreign.id' => 'self.customer_id' };
 
 belongs_to
-  address => 'Yetie::Schema::Result::Address',
-  { 'foreign.id' => 'self.address_id' };
+  activity => 'Yetie::Schema::Result::Activity',
+  { 'foreign.id' => 'self.activity_id' };
 
 1;

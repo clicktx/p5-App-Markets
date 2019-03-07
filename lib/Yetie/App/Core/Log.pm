@@ -53,7 +53,7 @@ sub _logging {
     push @args, ( staff_id => $c->server_session->staff_id ) if $c->logging->path =~ /admin\.log$/;
 
     # Other than debugging
-    push @args, ( request_ip_address => $c->request_ip_address ) if $level ne 'debug';
+    push @args, ( remote_address => $c->remote_address ) if $level ne 'debug';
 
     return $c->logging->$level(@args);
 }
