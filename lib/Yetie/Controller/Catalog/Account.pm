@@ -49,6 +49,11 @@ sub logout {
     # Remove cookie session
     $c->cookie_session( expires => 1 );
 
+    # Logging
+    # Activity
+    my $customer_id = $c->server_session->customer_id;
+    $c->service('activity')->add( logout => { customer_id => $customer_id } );
+
     return $c->render();
 }
 

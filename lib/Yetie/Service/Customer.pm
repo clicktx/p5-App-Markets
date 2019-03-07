@@ -89,6 +89,10 @@ sub login {
     # NOTE: ログインログに記録する方が良い？
     # Update last login date
     $self->resultset('Customer')->last_logged_in_now($customer_id);
+
+    # Activity
+    $self->service('activity')->add( login => { customer_id => $customer_id } );
+
     return $customer_id;
 }
 
