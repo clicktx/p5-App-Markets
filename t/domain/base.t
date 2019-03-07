@@ -1,12 +1,12 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Exception;
 
 my $pkg = 'Yetie::Domain::Base';
 use_ok $pkg;
 
 subtest 'base' => sub {
-    eval { $pkg->new( foo => 1 ) };
-    like $@, qr/has not 'foo' attribute/, '';
+    throws_ok { $pkg->new( foo => 1 ) } qr/has not 'foo' attribute/, 'right do not have attribute';
 };
 
 done_testing();
