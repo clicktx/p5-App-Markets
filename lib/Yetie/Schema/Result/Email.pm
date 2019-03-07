@@ -26,4 +26,9 @@ might_have
   { 'foreign.email_id' => 'self.id' },
   { cascade_delete     => 0 };
 
+has_many
+  authorization_requests => 'Yetie::Schema::Result::AuthorizationRequest',
+  { 'foreign.email_id' => 'self.id' },
+  { cascade_delete     => 0 };
+
 1;
