@@ -21,8 +21,8 @@ sub find {
     my ( $self, $token ) = @_;
 
     my $rs = $self->resultset('AuthorizationRequest');
-    my $result = $rs->find( { token => $token } ) || return $self->_logging('Not found token');
-    return $self->factory('entity-authorization')->construct( $result->to_hash );
+    my $result = $rs->find( { token => $token }, { prefetch => 'email' } ) || return $self->_logging('Not found token');
+    return $self->factory('entity-authorization')->construct( $result->to_data );
 }
 
 # NOTE: アクセス制限が必要？同一IP、時間内回数制限
