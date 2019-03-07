@@ -51,6 +51,12 @@ the following new ones.
 L<Yetie::Domain::Entity::Activity> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<type>
+
+    my $type = $entity->type;
+
+Return string 'customer' or 'staff'.
+
 =head1 AUTHOR
 
 Yetie authors.
