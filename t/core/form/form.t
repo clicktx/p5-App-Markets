@@ -1,6 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
+use Test::Exception;
 use t::Util;
 use Mojo::DOM;
 
@@ -63,11 +64,8 @@ subtest 'form_field' => sub {
 subtest 'exception' => sub {
     my $c = $t->app->build_controller;
 
-    eval { $c->form_widget('foo#bar') };
-    ok $@, 'right unable to set form';
-
-    eval { $c->form_widget() };
-    ok $@, 'right unable to set field name';
+    dies_ok { $c->form_widget('foo#bar') } 'right unable to set form';
+    dies_ok { $c->form_widget() } 'right unable to set field name';
 };
 
 subtest 'form_error' => sub {

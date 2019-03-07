@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Exception;
 
 my $pkg = 'Yetie::Domain::Value';
 use_ok $pkg;
@@ -39,8 +40,7 @@ subtest 'to_data' => sub {
 
 subtest 'immutable' => sub {
     my $v = $pkg->new( value => 'foo' );
-    eval { $v->value('bar') };
-    like $@, qr/immutable/, 'right immutable';
+    throws_ok { $v->value('bar') } qr/immutable/, 'right immutable';
 };
 
 done_testing();

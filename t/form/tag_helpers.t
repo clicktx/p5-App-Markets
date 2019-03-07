@@ -1,6 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
+use Test::Exception;
 use Mojo::DOM;
 use Mojo::Collection 'c';
 use t::Util;
@@ -31,8 +32,7 @@ sub f {
 subtest 'basic' => sub {
     my ( $c, $h ) = init();
     my $f = f();
-    eval { $h->hoo($f) };
-    like $@, qr/Undefined subroutine/, 'right Undefined subroutine';
+    throws_ok { $h->hoo($f) } qr/Undefined subroutine/, 'right Undefined subroutine';
 };
 
 subtest 'checkbox and radio' => sub {
