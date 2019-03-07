@@ -14,6 +14,12 @@ unique_column address => {
     is_nullable => 0,
 };
 
+column is_verified => {
+    data_type     => 'BOOLEAN',
+    is_nullable   => 0,
+    default_value => 0,
+};
+
 # Relation
 might_have
   customer_email => 'Yetie::Schema::Result::Customer::Email',

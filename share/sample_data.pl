@@ -46,16 +46,16 @@
 
     # For Accounts
     'Email' => [
-        [qw/id address/],
-        [ 1, 'a@example.org' ],
-        [ 2, 'b@example.org' ],
-        [ 3, 'c@example.org' ],
-        [ 4, 'd@example.org' ],
-        [ 5, 'e@example.org' ],
-        [ 6, 'f@example.org' ],
-        [ 7, 'g@example.org' ],
-        [ 8, 'h@example.org' ],
-        [ 9, 'i@example.org' ],
+        [qw/id address is_verified/],
+        [ 1, 'a@example.org', 1 ],
+        [ 2, 'b@example.org', 1 ],
+        [ 3, 'c@example.org', 1 ],
+        [ 4, 'd@example.org', 1 ],
+        [ 5, 'e@example.org', 1 ],
+        [ 6, 'f@example.org', 0 ],
+        [ 7, 'g@example.org', 0 ],
+        [ 8, 'h@example.org', 0 ],
+        [ 9, 'i@example.org', 0 ],
     ],
     'Address' => [
         [qw/id country_code line1 line2 city state postal_code personal_name organization phone hash/],
