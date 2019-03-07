@@ -13,15 +13,20 @@ sub find_last_by_email {
 
 sub store_token {
     my ( $self, $authorization ) = @_;
-    return $self->create(
-        {
-            email          => $authorization->email,
-            token          => $authorization->token,
-            redirect       => $authorization->redirect,
-            remote_address => $authorization->remote_address,
-            expires        => $authorization->expires,
-        }
-    );
+
+    my $cb = sub {
+        my $email_id = $self->schema->resultset('Email')->find_or_create( { address => $authorization->email } )->id;
+        $self->create(
+            {
+                email_id       => $email_id,
+                token          => $authorization->token->value,
+                redirect       => $authorization->redirect,
+                remote_address => $authorization->remote_address,
+                expires        => $authorization->expires->value,
+            }
+        );
+    };
+    $self->schema->txn($cb);
 }
 
 1;
