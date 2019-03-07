@@ -12,7 +12,7 @@ column email_id => {
     is_nullable => 0,
 };
 
-column token => {
+unique_column token => {
     data_type   => 'VARCHAR',
     size        => 40,
     is_nullable => 0,
@@ -58,8 +58,5 @@ column expires => {
 belongs_to
   email => 'Yetie::Schema::Result::Email',
   { 'foreign.id' => 'self.email_id' };
-
-# Index
-unique_constraint ui_token => [qw/token/];
 
 1;
