@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::Product;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column id => {
@@ -104,12 +104,12 @@ Yetie::Schema::Result::Product
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::Result::Product> inherits all attributes from L<Yetie::Schema::Base::Result> and implements
+L<Yetie::Schema::Result::Product> inherits all attributes from L<Yetie::Schema::Result> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::Result::Product> inherits all methods from L<Yetie::Schema::Base::Result> and implements
+L<Yetie::Schema::Result::Product> inherits all methods from L<Yetie::Schema::Result> and implements
 the following new ones.
 
 =head2 C<find_primary_category>
@@ -165,4 +165,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Schema::Base::Result>, L<Yetie::Schema>
+L<Yetie::Schema::Result>, L<Yetie::Schema>

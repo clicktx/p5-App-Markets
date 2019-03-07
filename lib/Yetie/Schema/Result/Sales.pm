@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::Sales;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => 'singular';
 
 primary_column id => {
@@ -51,7 +51,7 @@ __END__
 
 =head1 METHODS
 
-L<Yetie::Schema::Result::Sales> inherits all methods from L<Yetie::Schema::Base::Result> and implements
+L<Yetie::Schema::Result::Sales> inherits all methods from L<Yetie::Schema::Result> and implements
 the following new ones.
 
 =head2 C<is_multiple_shipping>

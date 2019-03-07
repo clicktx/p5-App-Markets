@@ -11,7 +11,7 @@ our $TIME_ZONE = 'UTC';
 
 has 'app';
 
-__PACKAGE__->load_namespaces( default_resultset_class => 'Base::ResultSet' );
+__PACKAGE__->load_namespaces( default_resultset_class => 'ResultSet' );
 
 sub connect {
     my ( $self, $dsn, $user, $password, $dbi_attributes, $extra_attributes ) = @_;
@@ -156,4 +156,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Schema::Base::Result>, L<Yetie::Schema::Base::ResultSet>, L<DBIx::Class::Schema>
+L<Yetie::Schema::Result>, L<Yetie::Schema::ResultSet>, L<DBIx::Class::Schema>

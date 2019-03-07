@@ -1,4 +1,4 @@
-package Yetie::Schema::Base::Result;
+package Yetie::Schema::Result;
 use Mojo::Base 'DBIx::Class::Core';
 
 __PACKAGE__->load_components(qw/InflateColumn::DateTime/);
@@ -57,7 +57,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Schema::Base::Result
+Yetie::Schema::Result
 
 =head1 SYNOPSIS
 
@@ -65,12 +65,12 @@ Yetie::Schema::Base::Result
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::Base::Result> inherits all attributes from L<DBIx::Class::Core> and implements
+L<Yetie::Schema::Result> inherits all attributes from L<DBIx::Class::Core> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::Base::Result> inherits all methods from L<DBIx::Class::Core> and implements
+L<Yetie::Schema::Result> inherits all methods from L<DBIx::Class::Core> and implements
 the following new ones.
 
 =head2 C<choose_column_name>

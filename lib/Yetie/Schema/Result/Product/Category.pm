@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::Product::Category;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column product_id  => { data_type => 'INT', };

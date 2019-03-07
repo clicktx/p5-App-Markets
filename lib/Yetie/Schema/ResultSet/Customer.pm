@@ -1,5 +1,5 @@
 package Yetie::Schema::ResultSet::Customer;
-use Mojo::Base 'Yetie::Schema::Base::ResultSet';
+use Mojo::Base 'Yetie::Schema::ResultSet';
 use Try::Tiny;
 
 has prefetch => sub {
@@ -102,12 +102,12 @@ Yetie::Schema::ResultSet::Customer
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::ResultSet::Customer> inherits all attributes from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Customer> inherits all attributes from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::ResultSet::Customer> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Customer> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head2 C<create_new_customer>
@@ -157,4 +157,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Schema::Base::ResultSet>, L<Yetie::Schema>
+L<Yetie::Schema::ResultSet>, L<Yetie::Schema>
