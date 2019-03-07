@@ -48,7 +48,7 @@ subtest 'txn' => sub {
     'right die';
 
     lives_ok {
-        $schema->txn( sub { } )
+        ok $schema->txn( sub { } ), 'right return value';
     }
     'right lives';
 };
