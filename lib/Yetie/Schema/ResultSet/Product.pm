@@ -1,6 +1,5 @@
 package Yetie::Schema::ResultSet::Product;
 use Mojo::Base 'Yetie::Schema::ResultSet';
-use Try::Tiny;
 
 sub find_product {
     my ( $self, $product_id ) = @_;
@@ -62,9 +61,7 @@ sub update_product_categories {
         $product->product_categories->delete;
         $product->product_categories->populate($product_categories);
     };
-
-    try { $self->schema->txn_do($cb) }
-    catch { $self->schema->txn_failed($_) };
+    $self->schema->txn($cb);
 
     return $product;
 }
@@ -89,9 +86,7 @@ sub update_product {
             }
         );
     };
-
-    try { $self->schema->txn_do($cb) }
-    catch { $self->schema->txn_failed($_) };
+    $self->schema->txn($cb);
     return $product;
 }
 

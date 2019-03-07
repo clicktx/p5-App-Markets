@@ -212,14 +212,7 @@ sub complete_handler {
         # my $data = $c->model('item')->to_array( $order_id, $items );
         # $schema->resultset('Order::Item')->populate($data);
     };
-
-    use Try::Tiny;
-    try {
-        $schema->txn_do($cb);
-    }
-    catch {
-        $schema->txn_failed($_);
-    };
+    $schema->txn($cb);
 
     # cart sessionクリア
     # cartクリア（再生成）
