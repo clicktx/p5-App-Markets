@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::Category;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 __PACKAGE__->load_components(qw( Tree::NestedSet ));
@@ -150,12 +150,12 @@ Yetie::Schema::Result::Category
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::Result::Category> inherits all attributes from L<Yetie::Schema::Base::Result> and implements
+L<Yetie::Schema::Result::Category> inherits all attributes from L<Yetie::Schema::Result> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::Result::Category> inherits all methods from L<Yetie::Schema::Base::Result>
+L<Yetie::Schema::Result::Category> inherits all methods from L<Yetie::Schema::Result>
 and L<DBIx::Class::Tree::NestedSet> and implements the following new ones.
 
 =head2 C<descendant_ids>
@@ -226,4 +226,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<DBIx::Class::Tree::NestedSet>, L<Yetie::Schema::Base::Result>, L<Yetie::Schema>
+L<DBIx::Class::Tree::NestedSet>, L<Yetie::Schema::Result>, L<Yetie::Schema>

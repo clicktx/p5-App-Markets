@@ -1,5 +1,5 @@
 package Yetie::Schema::ResultSet::Activity;
-use Mojo::Base 'Yetie::Schema::Base::ResultSet';
+use Mojo::Base 'Yetie::Schema::ResultSet';
 
 sub add_activity {
     my ( $self, $domain_entity ) = @_;
@@ -34,12 +34,12 @@ Yetie::Schema::ResultSet::Activity
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::ResultSet::Activity> inherits all attributes from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Activity> inherits all attributes from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::ResultSet::Activity> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Activity> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head2 C<add_activity>
@@ -56,4 +56,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Schema::Base::ResultSet>, L<Yetie::Schema>
+L<Yetie::Schema::ResultSet>, L<Yetie::Schema>

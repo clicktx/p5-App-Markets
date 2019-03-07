@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::Customer::Email;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column customer_id => {
