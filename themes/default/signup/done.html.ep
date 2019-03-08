@@ -6,7 +6,3 @@
 <div class="">
     Customer registration is complete
 </div>
-
-<div class="">
-    <%= link_to 'str' => '/' %>
-</div>
