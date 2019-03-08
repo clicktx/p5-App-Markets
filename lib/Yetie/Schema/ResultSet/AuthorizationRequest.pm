@@ -19,6 +19,11 @@ sub find_last_by_email {
     )->limit(1)->first;
 }
 
+sub remove_request_by_token {
+    my ( $self, $token ) = @_;
+    return $self->find( { token => $token } )->delete;
+}
+
 sub store_token {
     my ( $self, $authorization ) = @_;
 
@@ -72,6 +77,12 @@ Do disabled the Token.
     my $result = $rs->find_last_by_email($email);
 
 Return L<Yetie::Schema::Result::AuthorizationRequest> object or C<undef>.
+
+=head2 C<remove_request_by_token>
+
+    $resultset->remove_request_by_token($token);
+
+Remove token in storage.
 
 =head2 C<store_token>
 

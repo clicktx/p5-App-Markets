@@ -150,7 +150,7 @@ sub remove_remember_me_token {
     $c->cookie( has_remember_me => '', { expires => 0 } );
 
     my $token = $self->remember_me_token;
-    $c->resultset('AuthorizationRequest')->disable_token($token) if $token;
+    $c->resultset('AuthorizationRequest')->remove_request_by_token($token) if $token;
     return 1;
 }
 
