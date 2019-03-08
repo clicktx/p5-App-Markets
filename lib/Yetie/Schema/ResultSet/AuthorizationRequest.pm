@@ -8,7 +8,15 @@ sub disable_token {
 
 sub find_last_by_email {
     my ( $self, $email ) = @_;
-    return $self->search( { email => $email }, { order_by => 'id DESC' } )->limit(1)->first;
+    return $self->search(
+        {
+            'email.address' => $email
+        },
+        {
+            prefetch => 'email',
+            order_by => 'me.id DESC'
+        }
+    )->limit(1)->first;
 }
 
 sub store_token {
