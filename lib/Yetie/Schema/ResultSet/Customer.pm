@@ -18,7 +18,7 @@ sub create_new_customer {
                 {
                     emails => [
                         {
-                            email      => { address => $email },
+                            email      => { id => $result_email->id },
                             is_primary => 1,
                         }
                     ]
