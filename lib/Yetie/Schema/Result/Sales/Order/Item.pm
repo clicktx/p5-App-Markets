@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::Sales::Order::Item;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 use Yetie::Schema::Result::Product;
 

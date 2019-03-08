@@ -14,8 +14,7 @@ sub index {
     # Validation form
     return $c->render() unless $form->do_validate;
 
-    my $email = $form->param('email');
-    return $c->service('customer')->send_authorization_mail($email);
+    return $c->service('customer')->send_authorization_mail($form);
 }
 
 sub email_sended {
@@ -23,8 +22,13 @@ sub email_sended {
     return $c->render();
 }
 
+sub done {
+    my $c = shift;
+    return $c->render();
+}
+
 # Create account, login, and disable token after validate.
-sub callback {
+sub with_link {
     my $c     = shift;
     my $token = $c->stash('token');
 
@@ -33,12 +37,8 @@ sub callback {
         error_message => $c->__('authorization.request.error.message')
     );
 
-    my $auth_service  = $c->service('authorization');
-    my $authorization = $auth_service->find($token);
-    return $c->reply->error(%error_messages) unless $authorization;
-
-    my $is_validated = $auth_service->validate($authorization);
-    return $c->reply->error(%error_messages) unless $is_validated;
+    my $authorization = $c->service('authorization')->validate($token);
+    return $c->reply->error(%error_messages) unless $authorization->is_valid;
 
     # Validated
     my $email            = $authorization->email;
@@ -54,11 +54,6 @@ sub callback {
     # Login
     $c->service('customer')->login( $new_customer->id );
     return $c->redirect_to('RN_customer_signup_done');
-}
-
-sub done {
-    my $c = shift;
-    return $c->render();
 }
 
 1;

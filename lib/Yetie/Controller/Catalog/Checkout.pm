@@ -163,7 +163,7 @@ sub complete_handler {
             $cart_service->set_address_id( $shipment->shipping_address );
 
             # Add to customer address
-            $customer_service->store_shipping_address( $shipment->shipping_address->id );
+            $customer_service->store_address( $shipment->shipping_address->id );
         }
     );
 
@@ -172,7 +172,7 @@ sub complete_handler {
 
     # Add to customer address
     # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
-    $customer_service->store_billing_address( $cart->billing_address->id );
+    $customer_service->store_address( $cart->billing_address->id );
 
     # Make order data
     my $order = $cart->to_order_data;
@@ -212,14 +212,7 @@ sub complete_handler {
         # my $data = $c->model('item')->to_array( $order_id, $items );
         # $schema->resultset('Order::Item')->populate($data);
     };
-
-    use Try::Tiny;
-    try {
-        $schema->txn_do($cb);
-    }
-    catch {
-        $schema->txn_failed($_);
-    };
+    $schema->txn($cb);
 
     # cart sessionクリア
     # cartクリア（再生成）

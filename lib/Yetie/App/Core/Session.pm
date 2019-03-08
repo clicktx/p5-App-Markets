@@ -41,11 +41,21 @@ sub register {
             my $session = $c->stash($stash_key);
             $session->load;
 
-            if   ( !$session->is_expired ) { $session->extend_expires }
-            else                           { _create_session( $c, $session ) }
+     # Check session expires
+     # NOTE: session(DB)の有効期限が切れていたらカートイン商品のみのカートを再生成する？
+     # session期限切れからxx秒以内ならカート復活する？
+     # 配送先等を削除。
+     # - 再度ログインしたときにカート内商品が重複してしまう
+     # - 別の人間が使ったとするとカートの中が見えてしまう（セキュリティ的にどうか）
+     # 単純にセッションを再生成するだけで良さそう（カートは空になる）
 
-            # Cookie check
-            $c->cookie( cookie_check => 1, { path => '/', expires => time + 60 * 60 * 24 * 365 } );
+            # Extend expires
+            return $session->extend_expires unless $session->is_expired;
+
+            # Create a session after deleting old sessions
+            if ( $session->is_customer_logged_in ) { $session->remove_session }
+            else                                   { $session->cart_session->remove }  # Remove visitor cart and session
+            _create_session( $c, $session );
         }
     );
 }
@@ -54,13 +64,16 @@ sub register {
 sub _create_session {
     my ( $c, $session ) = @_;
 
+    # Clear all data for recreate session
+    $session->clear;
+
     # Landing page
     my $landing = $c->cookie_session('landing_page');
     $c->cookie_session( landing_page => $c->req->url->to_string ) unless $landing;
 
     # Cookie check
     my $cookie_check = $c->cookie('cookie_check');
-    $c->cookie( cookie_check => 1, { path => '/', expires => time + 60 * 60 * 24 * 365 } );
+    $c->cookie( cookie_check => 1, { path => '/', expires => time + $c->pref('cookie_expires_long') } );
     return unless $cookie_check;
 
     # Create new server session

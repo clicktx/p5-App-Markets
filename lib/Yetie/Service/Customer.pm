@@ -72,10 +72,11 @@ sub login {
     my ( $self, $customer_id ) = @_;
     my $session = $self->controller->server_session;
 
-    # Double login
-    return 1 if $session->customer_id;
+    # Logged in
+    my $loggedin_customer_id = $session->customer_id // '';
+    return $customer_id if $loggedin_customer_id eq $customer_id;
 
-    # Set customer id (logedin flag)
+    # Set customer id (logged-in flag)
     $session->customer_id($customer_id);
 
     # Merge cart
@@ -87,24 +88,70 @@ sub login {
 
     # NOTE: ログインログに記録する方が良い？
     # Update last login date
-    $self->resultset('Customer')->last_loged_in_now($customer_id);
+    $self->resultset('Customer')->last_logged_in_now($customer_id);
 
-    return 1;
+    # Activity
+    $self->service('activity')->add( login => { customer_id => $customer_id } );
+
+    return $customer_id;
 }
 
-sub login_process {
-    my ( $self, $email, $raw_password ) = @_;
+sub login_process_remember_me {
+    my ( $self, $email ) = @_;
+
+    my $customer = $self->find_customer($email);
+    return unless $customer->id;
+
+    # Recreate token
+    $self->remember_me_token($email);
+
+    # Login
+    $self->login( $customer->id );
+}
+
+sub login_process_with_password {
+    my ( $self, $form ) = @_;
 
     # Find account
-    my $customer = $self->find_customer($email);
-    return $self->_login_failed( 'login.failed.not_found', email => $email )
+    my $customer = $self->find_customer( $form->param('email') );
+    return $self->_login_failed( 'login.failed.not_found', $form )
       unless $customer->is_registered;
 
     # Authentication
-    return $self->_login_failed( 'login.failed.password', email => $email )
-      unless $customer->password->is_verify($raw_password);
+    return $self->_login_failed( 'login.failed.password', $form )
+      unless $customer->password->is_verify( $form->param('password') );
 
     return $self->login( $customer->id );
+}
+
+sub remember_me_token {
+    my ( $self, $email ) = @_;
+    my $c = $self->controller;
+
+    # Getter
+    return $c->cookie('remember_me') unless $email;
+
+    # Setter
+    my $expires = time + $c->pref('cookie_expires_long');
+    my $token   = $c->service('authorization')->generate_token( $email, { expires => $expires } );
+    my $path    = $c->match->root->lookup('RN_customer_login_remember_me')->to_string;
+    $c->cookie( remember_me => $token, { expires => $expires, path => $path } );
+    $c->cookie( has_remember_me => 1, { expires => $expires } );
+    return $token;
+}
+
+sub remove_remember_me_token {
+    my $self = shift;
+    my $c    = $self->controller;
+
+    # Remove cookies
+    my $path = $c->match->root->lookup('RN_customer_login_remember_me')->to_string;
+    $c->cookie( remember_me => '', { expires => 0, path => $path } );
+    $c->cookie( has_remember_me => '', { expires => 0 } );
+
+    my $token = $self->remember_me_token;
+    $c->resultset('AuthorizationRequest')->remove_request_by_token($token) if $token;
+    return 1;
 }
 
 sub search_customers {
@@ -129,15 +176,19 @@ sub search_customers {
 }
 
 sub send_authorization_mail {
-    my ( $self, $email ) = @_;
+    my ( $self, $form ) = @_;
 
     my $c        = $self->controller;
     my $redirect = $c->flash('ref') || 'RN_home';
+    my $email    = $form->param('email');
     my $token    = $c->service('authorization')->generate_token( $email, { redirect => $redirect } );
 
     my $customer       = $self->find_customer($email);
     my $callback_route = $customer->is_registered ? 'RN_callback_customer_login' : 'RN_callback_customer_signup';
     my $url            = $c->url_for( $callback_route, token => $token );
+
+    # Add remember me
+    $url->query( remember_me => 1 ) if $form->param('remember_me');
 
     # WIP: Send email
 
@@ -167,18 +218,16 @@ sub store_address {
     $result->insert;
 }
 
-sub store_billing_address { say "Deprecated"; shift->store_address(shift) }
-
-sub store_shipping_address { say "Deprecated"; shift->store_address(shift) }
-
-# NOTE: logging 未完成
 sub _login_failed {
-    my $self = shift;
+    my ( $self, $message, $form ) = @_;
+
+    $form->field($_)->append_error_class for qw(email password);
     $self->controller->stash( status => 401 );
 
     # Logging
-    $self->logging_warn(@_);
-    return 0;
+    # NOTE: WIP: logging 未完成
+    $self->logging_warn( $message, email => $form->param('email') );
+    return;
 }
 
 1;
@@ -238,15 +287,39 @@ Return L<Yetie::Domain::List::Addresses> object.
 
 Set customer logged-in flag to server_session.
 
-    my $bool = $service->login($customer_id);
+    my $customer_id = $service->login($customer_id);
 
-Return boolean value.
+Return customer ID.
 
-=head2 C<login_process>
+=head2 C<login_process_remember_me>
 
-    my $bool = $service->story->login_process;
+    my $customer_id = $service->login_process_with_password($email);
 
-Returns true if log-in succeeded.
+Return customer ID if log-in succeeded or C<undefined>.
+
+=head2 C<login_process_with_password>
+
+    my $customer_id = $service->login_process_with_password($form_object);
+
+Return customer ID if log-in succeeded or C<undefined>.
+
+=head2 C<remember_me_token>
+
+    # Setter
+    $service->remember_me_token($email);
+
+    # Getter
+    my $token = $service->remember_me_token;
+
+Set/Get cookie "remember_me".
+
+Setter method create auto log-in token.
+
+=head2 C<remove_remember_me_token>
+
+    $service->remove_remember_me_token;
+
+Remove "remember_me" cookie and disable the auto log-in token.
 
 =head2 C<search_customers>
 
@@ -267,22 +340,6 @@ Retuen C<render_to('RN_customer_login_email_sended')> or C<render_to('RN_custome
     $service->store_address($address_id);
 
 Store customer addresses in storage from cart data.
-
-=head2 C<store_billing_address>
-
-Deprecated
-
-    $service->store_billing_address;
-
-See L</store_address>
-
-=head2 C<store_shipping_address>
-
-Deprecated
-
-    $service->store_shipping_address;
-
-See L</store_address>
 
 =head1 AUTHOR
 

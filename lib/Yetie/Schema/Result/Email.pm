@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::Email;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column id => {
@@ -8,16 +8,27 @@ primary_column id => {
 };
 
 # NOTE: Column that use index have a max key length is 767 bytes.
-column address => {
+unique_column address => {
     data_type   => 'VARCHAR',
     size        => 128,
     is_nullable => 0,
 };
 
-unique_constraint ui_address => [qw/address/];
+column is_verified => {
+    data_type     => 'BOOLEAN',
+    is_nullable   => 0,
+    default_value => 0,
+};
 
+# Relation
 might_have
   customer_email => 'Yetie::Schema::Result::Customer::Email',
-  { 'foreign.email_id' => 'self.id' };
+  { 'foreign.email_id' => 'self.id' },
+  { cascade_delete     => 0 };
+
+has_many
+  authorization_requests => 'Yetie::Schema::Result::AuthorizationRequest',
+  { 'foreign.email_id' => 'self.id' },
+  { cascade_delete     => 0 };
 
 1;

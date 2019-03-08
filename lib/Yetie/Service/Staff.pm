@@ -16,9 +16,9 @@ sub login {
     my $session = $self->controller->server_session;
 
     # Double login
-    return 1 if $session->staff_id;
+    return 1 if $session->staff_id eq $staff_id;
 
-    # Set staff id (logedin flag)
+    # Set staff id (loggedin flag)
     $session->staff_id($staff_id);
 
     # Regenerate sid
@@ -27,7 +27,7 @@ sub login {
 }
 
 # NOTE: scenario(story) class?
-sub login_process {
+sub login_process_with_password {
     my ( $self, $login_id, $raw_password ) = @_;
 
     # Find account
@@ -85,9 +85,9 @@ Set staff logged-in flag to server_session.
 
 Return boolean value.
 
-=head2 C<login_process>
+=head2 C<login_process_with_password>
 
-    my $bool = $service->login_process( $login_id, $raw_password );
+    my $bool = $service->login_process_with_password( $login_id, $raw_password );
 
 Return boolean value.
 Returns true if log-in succeeded.

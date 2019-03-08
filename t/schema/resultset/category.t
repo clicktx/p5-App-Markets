@@ -4,6 +4,7 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 use Test::Deep;
+use Test::Exception;
 
 my $t      = Test::Mojo->new('App');
 my $app    = $t->app;
@@ -32,8 +33,7 @@ subtest 'create_category' => sub {
     is $result, undef, 'right not found parent';
 
     subtest 'has_title' => sub {
-        eval { $rs->has_title() };
-        ok $@, 'right argument empty';
+        dies_ok { $rs->has_title() } 'right argument empty';
 
         ok $rs->has_title('foo'), 'right has title';
         ok !$rs->has_title('bar'), 'right has not title';

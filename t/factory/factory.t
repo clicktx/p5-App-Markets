@@ -1,6 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
+use Test::Exception;
 
 subtest 'basic' => sub {
     use_ok 'Yetie::Factory';
@@ -25,8 +26,7 @@ subtest 'basic' => sub {
     $f->params( { c => 3, d => 4 } );
     is_deeply $f, { a => 1, b => 2, c => 3, d => 4, domain_class => $e_c }, 'right set params';
 
-    eval { $f->params('a') };
-    ok $@, 'getter only one argument';
+    dies_ok { $f->params('a') } 'getter only one argument';
 
     # param method
     $f->param( e => 5 );
@@ -34,12 +34,9 @@ subtest 'basic' => sub {
     is $f->param('e'), 5, 'right getter param';
     is $f->param('f'), 6, 'right getter param';
 
-    eval { $f->param() };
-    ok $@, 'no arguments';
-    eval { $f->param( g => 7, h => 8 ) };
-    ok $@, 'too many arguments';
-    eval { $f->param( { g => 7, h => 8 } ) };
-    ok $@, 'too many arguments';
+    dies_ok { $f->param() } 'no arguments';
+    dies_ok { $f->param( g => 7, h => 8 ) } 'too many arguments';
+    dies_ok { $f->param( { g => 7, h => 8 } ) } 'too many arguments';
 
     subtest 'list domain' => sub {
         my $f = Yetie::Factory->new('list-items');
@@ -113,10 +110,8 @@ subtest 'aggregate method' => sub {
     Yetie::Domain::Entity::Agg->attr( [qw(hoge fuga foos bars)] );
     my $f = Yetie::Factory->new('entity-agg');
 
-    eval { $f->aggregate_collection( 'foos', 'entity-foo', 'abc' ) };
-    ok $@, 'bad data type';
-    eval { $f->aggregate_ixhash( 'bars', 'entity-bar', 'abc' ) };
-    ok $@, 'bad data type';
+    dies_ok { $f->aggregate_collection( 'foos', 'entity-foo', 'abc' ) } 'bad data type';
+    dies_ok { $f->aggregate_ixhash( 'bars', 'entity-bar', 'abc' ) } 'bad data type';
 
     $f->aggregate( 'hoge', 'entity-hoge', {} );
     $f->aggregate( 'fuga', 'value-fuga', '' );

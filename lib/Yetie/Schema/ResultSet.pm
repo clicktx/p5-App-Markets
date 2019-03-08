@@ -1,4 +1,4 @@
-package Yetie::Schema::Base::ResultSet;
+package Yetie::Schema::ResultSet;
 use Mojo::Base 'DBIx::Class::ResultSet::HashRef';
 
 has schema => sub { shift->result_source->schema };
@@ -78,7 +78,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Schema::Base::ResultSet
+Yetie::Schema::ResultSet
 
 =head1 SYNOPSIS
 
@@ -86,12 +86,12 @@ Yetie::Schema::Base::ResultSet
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::Base::ResultSet> inherits all attributes from L<DBIx::Class::ResultSet> and implements
+L<Yetie::Schema::ResultSet> inherits all attributes from L<DBIx::Class::ResultSet> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::Base::ResultSet> inherits all methods from L<DBIx::Class::ResultSet::HashRef> and implements
+L<Yetie::Schema::ResultSet> inherits all methods from L<DBIx::Class::ResultSet::HashRef> and implements
 the following new ones.
 
 =head2 C<each>

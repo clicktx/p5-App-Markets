@@ -1,22 +1,40 @@
 package Yetie::Schema::ResultSet::AuthorizationRequest;
-use Mojo::Base 'Yetie::Schema::Base::ResultSet';
+use Mojo::Base 'Yetie::Schema::ResultSet';
 
 sub find_last_by_email {
     my ( $self, $email ) = @_;
-    return $self->search( { email => $email }, { order_by => 'id DESC' } )->limit(1)->first;
+    return $self->search(
+        {
+            'email.address' => $email
+        },
+        {
+            prefetch => 'email',
+            order_by => 'me.id DESC'
+        }
+    )->limit(1)->first;
+}
+
+sub remove_request_by_token {
+    my ( $self, $token ) = @_;
+    return $self->search( { token => $token } )->delete_all;
 }
 
 sub store_token {
     my ( $self, $authorization ) = @_;
-    return $self->create(
-        {
-            email      => $authorization->email,
-            token      => $authorization->token,
-            redirect   => $authorization->redirect,
-            request_ip => $authorization->request_ip,
-            expires    => $authorization->expires,
-        }
-    );
+
+    my $cb = sub {
+        my $email_id = $self->schema->resultset('Email')->find_or_create( { address => $authorization->email } )->id;
+        $self->create(
+            {
+                email_id       => $email_id,
+                token          => $authorization->token->value,
+                redirect       => $authorization->redirect,
+                remote_address => $authorization->remote_address,
+                expires        => $authorization->expires->value,
+            }
+        );
+    };
+    $self->schema->txn($cb);
 }
 
 1;
@@ -35,12 +53,12 @@ Yetie::Schema::ResultSet::AuthorizationRequest
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::ResultSet::AuthorizationRequest> inherits all attributes from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::AuthorizationRequest> inherits all attributes from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::ResultSet::AuthorizationRequest> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::AuthorizationRequest> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head2 C<find_last_by_email>
@@ -48,6 +66,12 @@ the following new ones.
     my $result = $rs->find_last_by_email($email);
 
 Return L<Yetie::Schema::Result::AuthorizationRequest> object or C<undef>.
+
+=head2 C<remove_request_by_token>
+
+    $resultset->remove_request_by_token($token);
+
+Remove token in storage.
 
 =head2 C<store_token>
 
@@ -61,4 +85,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Schema::Base::ResultSet>, L<Yetie::Schema>
+L<Yetie::Schema::ResultSet>, L<Yetie::Schema>

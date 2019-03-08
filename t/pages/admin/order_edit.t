@@ -1,6 +1,6 @@
 package t::pages::admin::order_edit;
 
-use Mojo::Base 't::pages::common';
+use Mojo::Base 't::common';
 use t::Util;
 use Test::More;
 use Test::Mojo;
@@ -11,7 +11,7 @@ sub startup : Test(startup) {
     $self->t->ua->max_redirects(0);
 }
 
-sub t00_login : Tests() { shift->admin_loged_in }
+sub t00_login : Tests() { shift->admin_logged_in }
 
 sub t01_billing_address : Tests() {
     my $self = shift;

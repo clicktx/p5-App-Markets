@@ -4,11 +4,12 @@ use Mojo::Base 'Yetie::Service';
 sub generate_token {
     my ( $self, $email, $opt ) = ( shift, shift, shift || {} );
 
-    my $request_ip    = $self->controller->request_ip_address;
-    my $authorization = $self->factory('entity-authorization')->construct(
-        email      => $email,
-        redirect   => $opt->{redirect},
-        request_ip => $request_ip,
+    my $remote_address = $self->controller->remote_address;
+    my $authorization  = $self->factory('entity-authorization')->construct(
+        email          => $email,
+        redirect       => $opt->{redirect},
+        remote_address => $remote_address,
+        expires        => $opt->{expires},
     );
 
     # Store to DB
@@ -16,38 +17,37 @@ sub generate_token {
     return $authorization->token;
 }
 
-sub find {
+sub find_request {
     my ( $self, $token ) = @_;
 
     my $rs = $self->resultset('AuthorizationRequest');
-    my $result = $rs->find( { token => $token } ) || return $self->_logging('Not found token');
-    return $self->factory('entity-authorization')->construct( $result->to_hash );
+    my $result = $rs->find( { token => $token }, { prefetch => 'email' } ) || return $self->_logging('Not found token');
+    return $self->factory('entity-authorization')->construct( $result->to_data );
 }
 
 # NOTE: アクセス制限が必要？同一IP、時間内回数制限
 # email sha1を引数にして判定を追加する？
 sub validate {
-    my ( $self, $authorization ) = @_;
+    my ( $self, $token ) = @_;
+
+    my $authorization = $self->find_request($token);
+    return $self->factory('entity-authorization')->construct() unless $authorization;
 
     # last request
-    my $rs          = $self->resultset('AuthorizationRequest');
-    my $last_result = $rs->find_last_by_email( $authorization->email );
-    return $self->_logging('Not found last request') unless $last_result;
+    my $last_result = $self->resultset('AuthorizationRequest')->find_last_by_email( $authorization->email );
 
     # validate token
-    return $self->_logging( $authorization->error_message ) unless $authorization->is_validated( $last_result->token );
+    $authorization->validate_token( $last_result->token );
+    return ( $self->_logging( $authorization->error_message ), $authorization )
+      unless $authorization->is_valid;
 
     # passed
     $last_result->update( { is_activated => 1 } );
-    $authorization = $authorization->new( $last_result->to_hash );
-    return 1;
+    $authorization->is_activated(1);
+    return $authorization;
 }
 
-sub _logging {
-    my $self = shift;
-    $self->logging_warn( 'passwordless.authorization.failed', reason => shift );
-    return;
-}
+sub _logging { shift->logging_warn( 'passwordless.authorization.failed', reason => shift ) && 0 }
 
 1;
 __END__
@@ -90,17 +90,17 @@ Redirect url or route name.
 
     my $token = $service->generate_token( $email, { redirect => 'RN_foo'} );
 
-=head2 C<find>
+=head2 C<find_request>
 
-    my $authorization = $service->find($token);
+    my $authorization = $service->find_request($token);
 
 Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
 
 =head2 C<validate>
 
-    my $bool = $service->validate($authorization);
+    my $authorization = $service->validate($token);
 
-Return boolean value.
+Return Return L<Yetie::Domain::Entity::Authorization>.
 
 =head1 AUTHOR
 

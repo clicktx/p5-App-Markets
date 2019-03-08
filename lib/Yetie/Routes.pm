@@ -83,9 +83,18 @@ sub add_admin_routes {
 }
 
 # Routes for Catalog
+# NOTE: No site map route
+# qw(RN_customer_login_remember_me)
 sub add_catalog_routes {
     my ( $self, $app ) = @_;
     my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
+
+    # Logout
+    $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
+
+    # Remember me
+    $r->get('/login/remember-me')->to('login#remember_me')->name('RN_customer_login_remember_me');
+    $r = $r->under('/')->to('account#remember_me_handler')->name('RN_customer_remember_me_handler');
 
     # Route Examples
     $r->get('/')->to('example#welcome')->name('RN_home');
@@ -116,15 +125,13 @@ sub add_catalog_routes {
     $guest_checkout->any('/shipping-address')->to('#shipping_address')->name('RN_guest_checkout_shipping_address');
 
     # For Customers
-    $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
-
     {
         # Log-in
         my $login = $r->any('/login')->to( controller => 'login' );
-        $login->get('/')->to('#index')->name('RN_customer_login');
+        $login->any('/')->to('#index')->name('RN_customer_login');
         $login->get('/email-sended')->to('#email_sended')->name('RN_customer_login_email_sended');
         $login->get('/toggle')->to('#toggle')->name('RN_customer_login_toggle');
-        $login->get('/token/:token')->to('#callback')->name('RN_callback_customer_login');
+        $login->get('/token/:token')->to('#with_link')->name('RN_callback_customer_login');
         $login->any('/magic-link')->to('#magic_link')->name('RN_customer_login_magic_link');
         $login->any('/with-password')->to('#with_password')->name('RN_customer_login_with_password');
     }
@@ -134,7 +141,7 @@ sub add_catalog_routes {
         $signup->any('/')->to('#index')->name('RN_customer_signup');
         $signup->get('/email-sended')->to('#email_sended')->name('RN_customer_signup_email_sended');
         $signup->get('/done')->to('#done')->name('RN_customer_signup_done');
-        $signup->get('/get-started/:token')->to('#callback')->name('RN_callback_customer_signup');
+        $signup->get('/get-started/:token')->to('#with_link')->name('RN_callback_customer_signup');
     }
     {
         # Authorization required

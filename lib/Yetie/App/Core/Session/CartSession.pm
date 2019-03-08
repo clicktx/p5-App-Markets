@@ -50,6 +50,12 @@ sub new {
     return $self;
 }
 
+sub remove {
+    my $self = shift;
+
+    $self->session->remove_cart( $self->cart_id );
+}
+
 sub _data {
     my $self = shift;
     my $data = $self->session->data('cart');
@@ -120,6 +126,12 @@ Remove cart data.
     $cart->is_modified(1);
 
 Get/Set modified flag.
+
+=head2 C<remove>
+
+    $cart->remove;
+
+Remove cart from DB.
 
 =head1 SEE ALSO
 

@@ -1,6 +1,6 @@
 package t::pages::catalog::account;
 
-use Mojo::Base 't::pages::common';
+use Mojo::Base 't::common';
 use t::Util;
 use Test::More;
 use Test::Mojo;
@@ -29,7 +29,7 @@ sub t02_required_authrization_after_login : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $self->customer_loged_in;
+    $self->customer_logged_in;
     $t->get_ok($_)->status_is( 200, 'right redirect' ) for @paths;
 }
 

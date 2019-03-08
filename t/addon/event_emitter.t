@@ -1,10 +1,11 @@
 use Mojo::Base -strict;
 
 use Test::More;
+use Test::Exception;
 use Yetie::Addon::EventEmitter;
 
 # Normal event
-my $e = Yetie::Addon::EventEmitter->new;
+my $e      = Yetie::Addon::EventEmitter->new;
 my $called = 0;
 $e->on(
     {
@@ -22,12 +23,10 @@ $e->on(
         cb   => sub { die "works!\n" },
     }
 );
-eval { $e->emit('die') };
-is $@, "works!\n", 'right error';
+throws_ok { $e->emit('die') } qr/works\!\n/, 'right error';
 
 # Unhandled error event
-eval { $e->emit( error => 'works' ) };
-like $@, qr/^Yetie::Addon::EventEmitter: works/, 'right error';
+throws_ok { $e->emit( error => 'works' ) } qr/^Yetie::Addon::EventEmitter: works/, 'right error';
 
 # has_subscribers
 ok !$e->has_subscribers('foo'), 'no subscribers';
@@ -46,8 +45,7 @@ $e->on(
         cb   => sub { die "$_[0]entional" },
     }
 );
-eval { $e->emit( error => 'int' ) };
-like $@, qr/^intentional/, 'right error';
+throws_ok { $e->emit( error => 'int' ) } qr/^intentional/, 'right error';
 
 # Normal event again
 $e->emit('test1');
@@ -64,10 +62,10 @@ is $called, 3, 'event was not emitted again';
 
 # One-time event
 # not support
-eval {
-    $e->once( error => sub { die "$_[1]entional" } );
-};
-like $@, qr/not support/, 'once, not support';
+throws_ok {
+    $e->once( error => sub { die "$_[1]entional" } )
+}
+qr/not support/, 'once, not support';
 
 # Unsubscribe
 $e = Yetie::Addon::EventEmitter->new;

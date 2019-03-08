@@ -58,13 +58,13 @@ subtest 'get_id_by_email' => sub {
     is $customer_id, undef, 'right no found';
 };
 
-subtest 'last_loged_in_now' => sub {
-    my $last_loged_in_at = $rs->find(111)->last_logged_in_at;
+subtest 'last_logged_in_now' => sub {
+    my $last_logged_in_at = $rs->find(111)->last_logged_in_at;
 
-    $rs->last_loged_in_now(111);
-    isnt $last_loged_in_at, $rs->find(111)->last_logged_in_at, 'right update last loged in';
+    $rs->last_logged_in_now(111);
+    isnt $last_logged_in_at, $rs->find(111)->last_logged_in_at, 'right update last logged in';
 
-    is $rs->last_loged_in_now(999), undef, 'right not found customer';
+    is $rs->last_logged_in_now(999), undef, 'right not found customer';
 };
 
 subtest 'search_by_id' => sub {

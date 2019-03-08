@@ -1,6 +1,5 @@
 package Yetie::Schema::ResultSet::Product;
-use Mojo::Base 'Yetie::Schema::Base::ResultSet';
-use Try::Tiny;
+use Mojo::Base 'Yetie::Schema::ResultSet';
 
 sub find_product {
     my ( $self, $product_id ) = @_;
@@ -62,9 +61,7 @@ sub update_product_categories {
         $product->product_categories->delete;
         $product->product_categories->populate($product_categories);
     };
-
-    try { $self->schema->txn_do($cb) }
-    catch { $self->schema->txn_failed($_) };
+    $self->schema->txn($cb);
 
     return $product;
 }
@@ -89,9 +86,7 @@ sub update_product {
             }
         );
     };
-
-    try { $self->schema->txn_do($cb) }
-    catch { $self->schema->txn_failed($_) };
+    $self->schema->txn($cb);
     return $product;
 }
 
@@ -111,12 +106,12 @@ Yetie::Schema::ResultSet::Product
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::ResultSet::Product> inherits all attributes from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Product> inherits all attributes from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::ResultSet::Product> inherits all methods from L<Yetie::Schema::Base::ResultSet> and implements
+L<Yetie::Schema::ResultSet::Product> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head2 C<find_product>
@@ -147,4 +142,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Schema::Base::ResultSet>, L<Yetie::Schema>
+L<Yetie::Schema::ResultSet>, L<Yetie::Schema>

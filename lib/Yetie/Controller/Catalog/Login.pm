@@ -8,26 +8,69 @@ sub index {
     my $url = $c->flash('ref') || 'RN_home';
     return $c->redirect_to($url) if $c->is_logged_in;
 
-    return $c->cookie('login_with_password')
-      ? $c->redirect_to('RN_customer_login_with_password')
-      : $c->redirect_to('RN_customer_login_magic_link');
+    $c->cookie('login_with_password') ? $c->with_password : $c->magic_link;
 }
 
-sub callback {
+sub email_sended {
+    my $c = shift;
+    return $c->render();
+}
+
+# NOTE: メール送信リクエストに一定期間の時間制限をかける？
+sub magic_link {
+    my $c = shift;
+    $c->flash( ref => $c->flash('ref') );
+    $c->stash( action => 'magic_link' );
+
+    # Initialize form
+    my $form = $c->form('account-magic_link');
+
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
+    return $c->render() unless $form->do_validate;
+
+    return $c->service('customer')->send_authorization_mail($form);
+}
+
+sub remember_me {
+    my $c       = shift;
+    my $service = $c->service('customer');
+
+    # Auto login
+    my $token         = $service->remember_me_token;
+    my $authorization = $c->service('authorization')->validate($token);
+
+    # NOTE: ADD logging??
+    if   ( $authorization->is_valid ) { $service->login_process_remember_me( $authorization->email ) }
+    else                              { $service->remove_remember_me_token }
+
+    my $return_path = $c->flash('return_path') // 'RN_home';
+    return $c->redirect_to($return_path);
+}
+
+sub toggle {
+    my $c = shift;
+    $c->flash( ref => $c->flash('ref') );
+
+    my $value = $c->cookie('login_with_password') ? 0 : 1;
+    $c->cookie( login_with_password => $value, { expires => time + $c->pref('cookie_expires_long') } );
+    return $c->redirect_to('RN_customer_login');
+}
+
+# NOTE: remember_me はどうするか
+sub with_link {
     my $c     = shift;
     my $token = $c->stash('token');
 
     my %error_messages = (
-        title         => $c->__('authorization.request.error.title'),
-        error_message => $c->__('authorization.request.error.message')
+        title         => 'authorization.request.error.title',
+        error_message => 'authorization.request.error.message'
     );
 
-    my $auth_service  = $c->service('authorization');
-    my $authorization = $auth_service->find($token);
-    return $c->reply->error(%error_messages) unless $authorization;
-
-    my $is_validated = $auth_service->validate($authorization);
-    return $c->reply->error(%error_messages) unless $is_validated;
+    my $authorization = $c->service('authorization')->validate($token);
+    return $c->reply->error(%error_messages) unless $authorization->is_valid;
 
     # Customer
     my $email    = $authorization->email;
@@ -41,59 +84,33 @@ sub callback {
     return $c->redirect_to($redirect_route);
 }
 
-sub email_sended {
-    my $c = shift;
-    return $c->render();
-}
-
-# NOTE: メール送信リクエストに一定期間の時間制限をかける？
-sub magic_link {
-    my $c = shift;
-    $c->flash( ref => $c->flash('ref') );
-
-    # Initialize form
-    my $form = $c->form('base-email');
-
-    # Get request
-    return $c->render() if $c->is_get_request;
-
-    # Validation form
-    return $c->render() unless $form->do_validate;
-
-    my $email = $form->param('email');
-    return $c->service('customer')->send_authorization_mail($email);
-}
-
-sub toggle {
-    my $c = shift;
-    $c->flash( ref => $c->flash('ref') );
-
-    my $value = $c->cookie('login_with_password') ? 0 : 1;
-    $c->cookie( login_with_password => $value );
-    return $c->redirect_to('RN_customer_login');
-}
-
 sub with_password {
     my $c = shift;
     $c->flash( ref => $c->flash('ref') );
+    $c->stash( action => 'with_password' );
 
     # Initialize form
     my $form = $c->form('account-login');
+    $form->field('remember_me')->checked( $c->cookie('default_remember_me') );
 
     # Get request
     return $c->render() if $c->is_get_request;
 
     # Validation form
     return $c->render() unless $form->do_validate;
-
-    my $email    = $form->param('email');
-    my $password = $form->param('password');
-    my $route    = $c->flash('ref') || 'RN_customer_home';
-    return $c->redirect_to($route) if $c->service('customer')->login_process( $email, $password );
+    $c->cookie(
+        default_remember_me => $form->param('remember_me') ? 1 : 0,
+        { expires => time + $c->pref('cookie_expires_long') }
+    );
 
     # Login failure
-    $form->field($_)->append_error_class for qw(email password);
-    return $c->render( login_failure => 1 );
+    return $c->render( login_failure => 1 ) unless $c->service('customer')->login_process_with_password($form);
+
+    # Login success
+    $c->service('customer')->remember_me_token( $form->param('email') ) if $form->param('remember_me');
+
+    my $route = $c->flash('ref') || 'RN_home';
+    return $c->redirect_to($route);
 }
 
 1;

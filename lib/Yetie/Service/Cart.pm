@@ -33,9 +33,9 @@ sub merge_cart {
     my $session = $c->server_session;
 
     my $customer_cart = $self->find_cart($customer_id);
-    my $merged_cart   = $c->cart->merge($customer_cart);
+    return $customer_cart unless $c->cart;    # NOTE: necessary remember_me login
 
-    # Remove previous cart from DB
+    my $merged_cart = $c->cart->merge($customer_cart);
     $session->remove_cart( $session->cart_id );
     return $merged_cart;
 }

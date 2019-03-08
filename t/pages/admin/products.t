@@ -1,11 +1,11 @@
 package t::pages::admin::products;
 
-use Mojo::Base 't::pages::common';
+use Mojo::Base 't::common';
 use t::Util;
 use Test::More;
 use Test::Mojo;
 
-sub t00_login : Tests() { shift->admin_loged_in }
+sub t00_login : Tests() { shift->admin_logged_in }
 
 sub t01_index : Tests() {
     my $self = shift;

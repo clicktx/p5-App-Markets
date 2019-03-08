@@ -1,5 +1,5 @@
 package Yetie::Schema::Result::AuthorizationRequest;
-use Mojo::Base 'Yetie::Schema::Base::Result';
+use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 primary_column id => {
@@ -7,13 +7,12 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column email => {
-    data_type   => 'VARCHAR',
-    size        => 128,
+column email_id => {
+    data_type   => 'INT',
     is_nullable => 0,
 };
 
-column token => {
+unique_column token => {
     data_type   => 'VARCHAR',
     size        => 40,
     is_nullable => 0,
@@ -21,11 +20,24 @@ column token => {
 
 column redirect => {
     data_type   => 'VARCHAR',
-    size        => 256,
+    size        => 255,
     is_nullable => 1,
 };
 
-column request_ip => {
+# 連続リクエストを防止する
+# 同一ipは5〜10秒拒否
+# 同一emailは1〜3分拒否
+
+# ブラウザごとにcookieでuuidを保存しておく。無い場合はリクエストを拒否する
+# cookieなので改変可能だが...
+# フィンガープリンティングというのもある
+# column client_uuid => {
+# data_type   => 'VARCHAR',
+# size        => 40,
+# is_nullable => 0,
+# };
+
+column remote_address => {
     data_type   => 'VARCHAR',
     size        => 45,
     is_nullable => 0,
@@ -42,24 +54,23 @@ column expires => {
     is_nullable => 0,
 };
 
-column created_at => {
-    data_type   => 'DATETIME',
-    is_nullable => 0,
-    timezone    => Yetie::Schema->TZ,
-};
+# Relation
+belongs_to
+  email => 'Yetie::Schema::Result::Email',
+  { 'foreign.id' => 'self.email_id' };
 
-column updated_at => {
-    data_type   => 'DATETIME',
-    is_nullable => 1,
-    timezone    => Yetie::Schema->TZ,
-};
+sub to_data {
+    my $self = shift;
 
-# Index
-unique_constraint ui_token => [qw/token/];
-
-sub sqlt_deploy_hook {
-    my ( $self, $table ) = @_;
-    $table->add_index( name => 'idx_email', fields => ['email'] );
+    return {
+        id             => $self->id,
+        email          => $self->email->address,
+        token          => $self->token,
+        redirect       => $self->redirect,
+        remote_address => $self->remote_address,
+        is_activated   => $self->is_activated,
+        expires        => $self->expires,
+    };
 }
 
 1;

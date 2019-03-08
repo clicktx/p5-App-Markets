@@ -1,6 +1,6 @@
 package t::pages::catalog::signup;
 
-use Mojo::Base 't::pages::common';
+use Mojo::Base 't::common';
 use t::Util;
 use Test::More;
 use Test::Mojo;
@@ -41,6 +41,7 @@ sub t02_callback : Tests() {
     my $customer    = $self->app->service('customer')->find_customer($register_email);
     is $customer->id, $customer_id, 'right register';
     is $self->server_session->customer_id, $customer_id, 'right logged-in';
+    ok $customer->emails->primary->is_verified, 'right email verified';
 
     # re-request
     $t->get_ok( '/signup/get-started/' . $token )->status_is( 400, 'right re-request' );

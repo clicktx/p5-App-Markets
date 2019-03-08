@@ -1,11 +1,11 @@
 package t::pages::admin::product;
 
-use Mojo::Base 't::pages::common';
+use Mojo::Base 't::common';
 use t::Util;
 use Test::More;
 use Test::Mojo;
 
-sub t01_not_logedin_request : Tests() {
+sub t01_not_loggedin_request : Tests() {
     my $self   = shift;
     my $t      = $self->t;
     my $routes = $self->app->routes->find('RN_admin_product')->children;
@@ -38,7 +38,7 @@ sub t01_not_logedin_request : Tests() {
     $t->ua->max_redirects(1);
 }
 
-sub t02_login : Tests() { shift->admin_loged_in }
+sub t02_login : Tests() { shift->admin_logged_in }
 
 sub t03_request : Tests() {
     my $self      = shift;

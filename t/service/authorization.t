@@ -24,18 +24,18 @@ subtest 'generate_token' => sub {
     isnt $last_id, $rs->last_id, 'right store to DB';
 };
 
-subtest 'find' => sub {
+subtest 'find_request' => sub {
     my ( $c, $s ) = _init();
 
     my $rs    = $c->resultset('AuthorizationRequest');
     my $email = 'foo@bar.baz';
     my $token = $s->generate_token($email);
 
-    my $auth = $s->find($token);
-    ok $auth, 'right find token';
+    my $auth = $s->find_request($token);
+    ok $auth, 'right find request';
 
-    $auth = $s->find('foobar');
-    ok !$auth, 'right not found token';
+    $auth = $s->find_request('foobar');
+    ok !$auth, 'right not found request';
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 };
 
@@ -43,36 +43,27 @@ subtest 'validate' => sub {
     my ( $c, $s ) = _init();
 
     my $res;
-    my $rs     = $c->resultset('AuthorizationRequest');
-    my $email  = 'foo@bar.baz';
-    my $token1 = $s->generate_token($email);
+    my $email = 'foo@bar.baz';
 
     # Hack expired
+    my $token1  = $s->generate_token($email);
     my $expires = time - 3600;
-    $rs->find( { token => $token1 } )->update( { expires => $expires } );
-    my $auth = $s->find($token1);
-    $res = $s->validate($auth);
-    ok !$res, 'right expired';
-
-    # Hack email
-    $auth->email( $s->factory('value-email')->construct( value => 'a@b.com' ) );
-    $res = $s->validate($auth);
-    ok !$res, 'right not found last request';
+    $c->resultset('AuthorizationRequest')->find( { token => $token1 } )->update( { expires => $expires } );
+    $res = $s->validate($token1);
+    ok !$res->is_valid, 'right expired';
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 
     my $token2 = $s->generate_token($email);
     my $token3 = $s->generate_token($email);
-    $auth = $s->find($token2);
-    $res  = $s->validate($auth);
-    ok !$res, 'right not last request';
+    $res = $s->validate($token2);
+    ok !$res->is_valid, 'right not last request';
 
-    $auth = $s->find($token3);
-    $res  = $s->validate($auth);
-    ok $res, 'right first validation';
+    $res = $s->validate($token3);
+    ok $res->is_valid, 'right first validation';
+    is $res->email, $email, 'right request email';
 
-    $auth = $s->find($token3);
-    $res  = $s->validate($auth);
-    ok !$res, 'right second validation';
+    $res = $s->validate($token3);
+    ok !$res->is_valid, 'right second validation';
 };
 
 done_testing();
