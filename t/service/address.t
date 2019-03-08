@@ -3,6 +3,7 @@ use Mojo::Base -strict;
 use t::Util;
 use Test::More;
 use Test::Mojo;
+use Test::Exception;
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
@@ -57,8 +58,7 @@ subtest 'update_address' => sub {
     subtest 'exception' => sub {
         my %p = %params;
         $p{id} = 2;
-        eval { $s->update_address( \%p ) };
-        ok $@, 'right exception';
+        dies_ok { $s->update_address( \%p ) } 'right exception';
     };
 
     subtest 'do update' => sub {

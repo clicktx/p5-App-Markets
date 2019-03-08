@@ -1,7 +1,5 @@
 package Yetie::App::Core::Session::Store::Dbic;
 use Mojo::Base 'MojoX::Session::Store';
-
-use Try::Tiny;
 use Mojo::Util;
 use MIME::Base64;
 use Storable qw/nfreeze thaw/;
@@ -48,15 +46,7 @@ sub create {
             }
         );
     };
-
-    try {
-        $schema->txn_do($cb);
-        return 1;
-    }
-    catch {
-        $schema->txn_failed($_);
-        return;
-    };
+    $schema->txn($cb);
 }
 
 sub update {
@@ -95,15 +85,7 @@ sub update {
             }
         );
     };
-
-    try {
-        $schema->txn_do($cb);
-        return 1;
-    }
-    catch {
-        $schema->txn_failed($_);
-        return;
-    };
+    $schema->txn($cb);
 }
 
 sub update_sid {
@@ -173,15 +155,7 @@ sub delete {
 
         # $session->delete_related('cart');#リレーション設定により不要
     };
-
-    try {
-        $schema->txn_do($cb);
-        return 1;
-    }
-    catch {
-        $schema->txn_failed($_);
-        return;
-    };
+    $schema->txn($cb);
 }
 
 sub _separate_session_data {

@@ -1,6 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
+use Test::Exception;
 use Yetie::Factory;
 
 use_ok 'Yetie::Domain::Set::Preferences';
@@ -77,10 +78,8 @@ subtest 'value' => sub {
     is $pref->value('pref2'), 2, 'right set value';
     is $pref->is_modified, 1, 'right modified';
 
-    eval { $pref->value( pref3 => 3 ) };
-    ok $@, 'right set value error';
-    eval { $pref->value('pref3') };
-    ok $@, 'right get value error';
+    dies_ok { $pref->value( pref3 => 3 ) } 'right set value error';
+    dies_ok { $pref->value('pref3') } 'right get value error';
 };
 
 done_testing();

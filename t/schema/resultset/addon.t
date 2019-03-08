@@ -8,7 +8,7 @@ use_ok 'Yetie::Schema::ResultSet::Addon';
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
-my $rs  = $app->schema->resultset('addon');
+my $rs  = $app->schema->resultset('Addon');
 
 is_deeply $rs->configure,
   {

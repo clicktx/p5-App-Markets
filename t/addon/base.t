@@ -3,7 +3,7 @@ use Mojo::Base -strict;
 use t::Util;
 use Test::More;
 use Test::Mojo;
-use Data::Dumper;
+use Test::Exception;
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
@@ -28,8 +28,8 @@ subtest 'addons basic' => sub {
     isa_ok $addon, 'Yetie::Addon::Base';
 
     is ref $addons->addon('Yetie::Addon::TestAddon'), 'Yetie::Addon::TestAddon', 'access full module name';
-    is ref $addons->addon('TestAddon'),                 'Yetie::Addon::TestAddon', 'access camel case';
-    is ref $addons->addon('test_addon'),                'Yetie::Addon::TestAddon', 'access snake case';
+    is ref $addons->addon('TestAddon'),               'Yetie::Addon::TestAddon', 'access camel case';
+    is ref $addons->addon('test_addon'),              'Yetie::Addon::TestAddon', 'access snake case';
 
     # Set addon object
     $addons->addon( 'Yetie::Addon::FirstAddon' => Yetie::Addon::TestAddon->new );
@@ -43,20 +43,20 @@ subtest 'addons basic' => sub {
 
         #_full_module_name
         is Yetie::Addon::Handler::_full_module_name('Yetie::Addon::MyAddon'), 'Yetie::Addon::MyAddon';
-        is Yetie::Addon::Handler::_full_module_name('MyAddon'),                 'Yetie::Addon::MyAddon';
-        is Yetie::Addon::Handler::_full_module_name('my_addon'),                'Yetie::Addon::MyAddon';
+        is Yetie::Addon::Handler::_full_module_name('MyAddon'),               'Yetie::Addon::MyAddon';
+        is Yetie::Addon::Handler::_full_module_name('my_addon'),              'Yetie::Addon::MyAddon';
 
         is ref $addons->load_addon("Yetie::Addon::TestAddon"), 'Yetie::Addon::TestAddon';
-        is ref $addons->load_addon("TestAddon"),                 'Yetie::Addon::TestAddon';
-        is ref $addons->load_addon("test_addon"),                'Yetie::Addon::TestAddon';
+        is ref $addons->load_addon("TestAddon"),               'Yetie::Addon::TestAddon';
+        is ref $addons->load_addon("test_addon"),              'Yetie::Addon::TestAddon';
 
         my $not_found_addon;
-        eval { $not_found_addon = $addons->load_addon("NotFoundAddon") };
-        is $@, 'Addon "NotFoundAddon" missing, maybe you need to upload it?' . "\n";
+        throws_ok { $not_found_addon = $addons->load_addon("NotFoundAddon") }
+        qr/Addon "NotFoundAddon" missing, maybe you need to upload it/, 'right not found addon';
 
         # Full module name
-        eval { $not_found_addon = $addons->load_addon("Yetie::Addon::NotFoundAddon") };
-        is $@, 'Addon "Yetie::Addon::NotFoundAddon" missing, maybe you need to upload it?' . "\n";
+        throws_ok { $not_found_addon = $addons->load_addon("Yetie::Addon::NotFoundAddon") }
+        qr/Addon "Yetie::Addon::NotFoundAddon" missing, maybe you need to upload it/, 'right not found addon';
         is $not_found_addon, undef, "don't load addon";
     };
 };

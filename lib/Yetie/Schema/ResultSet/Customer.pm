@@ -10,18 +10,23 @@ sub create_new_customer {
     my ( $self, $email ) = @_;
 
     my $result;
-    try {
-        $result = $self->create(
-            {
-                emails => [
-                    {
-                        email      => { address => $email },
-                        is_primary => 1,
-                    }
-                ]
-            }
-        );
+    my $cb = sub {
+        my $result_email =
+          $self->schema->resultset('Email')->update_or_create( { address => $email, is_verified => 1 } );
+        try {
+            $result = $self->create(
+                {
+                    emails => [
+                        {
+                            email      => { id => $result_email->id },
+                            is_primary => 1,
+                        }
+                    ]
+                }
+            );
+        };
     };
+    $self->schema->txn($cb);
     return $result;
 }
 

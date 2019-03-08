@@ -1,6 +1,7 @@
 package Yetie::Schema;
 use Mojo::Base 'DBIx::Class::Schema';
 use Carp qw/croak/;
+use Try::Tiny;
 use DateTime;
 use Mojo::Util 'camelize';
 use Data::Page::Navigation;
@@ -68,6 +69,13 @@ sub txn_failed {
         $self->app->logging('error')->fatal( $msgid, error => $err );
         croak $err;
     }
+}
+
+sub txn {
+    my ( $self, $cb ) = @_;
+    try { $self->txn_do($cb) }
+    catch { $self->txn_failed($_) };
+    return 1;
 }
 
 sub TZ { DateTime::TimeZone->new( name => shift->time_zone ) }
@@ -142,6 +150,16 @@ Return L<DateTime> object.
     ...
 
 Logging transaction error.
+
+=head2 C<txn>
+
+    $schema->txn( sub { ... } );
+
+Return C<true> or exception.
+
+Execute L<DBIx::Class::Schema/txn_do> in trap an exception.
+
+For exceptions, does L</txn_failed>.
 
 =head2 C<TZ>
 

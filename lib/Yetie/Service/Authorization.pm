@@ -17,12 +17,12 @@ sub generate_token {
     return $authorization->token;
 }
 
-sub find {
+sub find_request {
     my ( $self, $token ) = @_;
 
     my $rs = $self->resultset('AuthorizationRequest');
-    my $result = $rs->find( { token => $token } ) || return $self->_logging('Not found token');
-    return $self->factory('entity-authorization')->construct( $result->to_hash );
+    my $result = $rs->find( { token => $token }, { prefetch => 'email' } ) || return $self->_logging('Not found token');
+    return $self->factory('entity-authorization')->construct( $result->to_data );
 }
 
 # NOTE: アクセス制限が必要？同一IP、時間内回数制限
@@ -30,7 +30,7 @@ sub find {
 sub validate {
     my ( $self, $token ) = @_;
 
-    my $authorization = $self->find($token);
+    my $authorization = $self->find_request($token);
     return $self->factory('entity-authorization')->construct() unless $authorization;
 
     # last request
@@ -90,9 +90,9 @@ Redirect url or route name.
 
     my $token = $service->generate_token( $email, { redirect => 'RN_foo'} );
 
-=head2 C<find>
+=head2 C<find_request>
 
-    my $authorization = $service->find($token);
+    my $authorization = $service->find_request($token);
 
 Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
 

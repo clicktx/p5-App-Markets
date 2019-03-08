@@ -1,6 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
+use Test::Exception;
 use Yetie::Factory;
 
 my %test_data = (
@@ -135,8 +136,7 @@ subtest 'add_shipping_item' => sub {
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
-    $cart->add_shipping_item( 0,
-        Yetie::Domain::Entity::CartItem->new( product_id => 4, quantity => 4, price => 100 ) );
+    $cart->add_shipping_item( 0, Yetie::Domain::Entity::CartItem->new( product_id => 4, quantity => 4, price => 100 ) );
     cmp_deeply $cart->shipments->first->items->first->to_data,
       { product_id => 4, quantity => 8, price => 100 }, 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
@@ -358,8 +358,7 @@ subtest 'set_billing_address' => sub {
     };
 
     my $cart = _create_entity;
-    eval { $cart->set_billing_address() };
-    ok $@, 'right no arguments';
+    dies_ok { $cart->set_billing_address() } 'right no arguments';
 
     $cart = _create_entity;
     my $obj = $cart->factory('entity-address')->construct(%address);
@@ -386,8 +385,7 @@ subtest 'set_shipping_address' => sub {
     };
 
     my $cart = _create_entity;
-    eval { $cart->set_shipping_address() };
-    ok $@, 'right not arguments';
+    dies_ok { $cart->set_shipping_address() } 'right not arguments';
 
     my $obj = $cart->factory('entity-address')->construct(%address);
     my $i   = $cart->set_shipping_address($obj);
