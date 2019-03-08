@@ -24,18 +24,18 @@ subtest 'generate_token' => sub {
     isnt $last_id, $rs->last_id, 'right store to DB';
 };
 
-subtest 'find' => sub {
+subtest 'find_request' => sub {
     my ( $c, $s ) = _init();
 
     my $rs    = $c->resultset('AuthorizationRequest');
     my $email = 'foo@bar.baz';
     my $token = $s->generate_token($email);
 
-    my $auth = $s->find($token);
-    ok $auth, 'right find token';
+    my $auth = $s->find_request($token);
+    ok $auth, 'right find request';
 
-    $auth = $s->find('foobar');
-    ok !$auth, 'right not found token';
+    $auth = $s->find_request('foobar');
+    ok !$auth, 'right not found request';
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 };
 

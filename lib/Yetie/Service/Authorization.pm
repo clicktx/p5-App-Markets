@@ -17,7 +17,7 @@ sub generate_token {
     return $authorization->token;
 }
 
-sub find {
+sub find_request {
     my ( $self, $token ) = @_;
 
     my $rs = $self->resultset('AuthorizationRequest');
@@ -30,7 +30,7 @@ sub find {
 sub validate {
     my ( $self, $token ) = @_;
 
-    my $authorization = $self->find($token);
+    my $authorization = $self->find_request($token);
     return $self->factory('entity-authorization')->construct() unless $authorization;
 
     # last request
@@ -90,9 +90,9 @@ Redirect url or route name.
 
     my $token = $service->generate_token( $email, { redirect => 'RN_foo'} );
 
-=head2 C<find>
+=head2 C<find_request>
 
-    my $authorization = $service->find($token);
+    my $authorization = $service->find_request($token);
 
 Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
 
