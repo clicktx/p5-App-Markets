@@ -1,11 +1,6 @@
 package Yetie::Schema::ResultSet::AuthorizationRequest;
 use Mojo::Base 'Yetie::Schema::ResultSet';
 
-sub disable_token {
-    my ( $self, $token ) = @_;
-    return $self->search( { token => $token } )->update( { is_activated => 1 } );
-}
-
 sub find_last_by_email {
     my ( $self, $email ) = @_;
     return $self->search(
@@ -65,12 +60,6 @@ the following new ones.
 
 L<Yetie::Schema::ResultSet::AuthorizationRequest> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
-
-=head2 C<disable_token>
-
-    $resultset->disable_token($token);
-
-Do disabled the Token.
 
 =head2 C<find_last_by_email>
 
