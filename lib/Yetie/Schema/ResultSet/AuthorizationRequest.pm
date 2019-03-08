@@ -16,7 +16,7 @@ sub find_last_by_email {
 
 sub remove_request_by_token {
     my ( $self, $token ) = @_;
-    return $self->find( { token => $token } )->delete;
+    return $self->search( { token => $token } )->delete_all;
 }
 
 sub store_token {
