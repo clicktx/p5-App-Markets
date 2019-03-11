@@ -93,6 +93,17 @@
     ],
 
     # Customers
+    # ---------------------------------------------------------------------------------------
+    # customer_id     email           is_verified     is_primary    password login
+    # ---------------------------------------------------------------------------------------
+    # 111             a@example.org       1               0             yes
+    #                 b@example.org       0               0             no(not verified)
+    #                 c@example.org       1               1             yes
+    # 112             d@example.org       1               1             yes
+    # 113             e@example.org       1               1             no(has not password)
+    # ---             f@example.org       0               -
+    # ---             g@example.org       0               -
+
     'Customer' => [
         [qw/id created_at updated_at/],
         [ 111, '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
