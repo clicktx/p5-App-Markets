@@ -22,6 +22,14 @@ subtest 'has_password' => sub {
     is $customer->has_password, 1, 'right register';
 };
 
+subtest 'is_guest' => sub {
+    my $customer = $pkg->new();
+    is $customer->is_guest, 1, 'right not guest customer';
+
+    $customer = Yetie::Factory->new('entity-customer')->construct( id => 1 );
+    is $customer->is_guest, 0, 'right guest customer';
+};
+
 subtest 'is_registered' => sub {
     my $customer = $pkg->new();
     is $customer->is_registered, 0, 'right not register';
