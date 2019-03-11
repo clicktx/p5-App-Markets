@@ -43,7 +43,7 @@ subtest 'find_by_email' => sub {
       },
       'right related_resultsets';
 
-    $res = $rs->find_by_email('g@example.org');
+    $res = $rs->find_by_email('d@example.org');
     isnt $res->id, 111, 'right other customer';
 
     $res = $rs->find_by_email('xx@xx.org');
