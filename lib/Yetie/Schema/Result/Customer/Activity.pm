@@ -5,7 +5,6 @@ use DBIx::Class::Candy -autotable => v1;
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
-    extra             => { unsigned => 1 },
 };
 
 column customer_id => {
@@ -14,8 +13,9 @@ column customer_id => {
 };
 
 column activity_id => {
-    data_type   => 'BIGINT',
+    data_type   => 'INT',
     is_nullable => 0,
+    extra       => { unsigned => 1 },
 };
 
 # Relation
