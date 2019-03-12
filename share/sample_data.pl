@@ -48,7 +48,7 @@
     'Email' => [
         [qw/id address is_verified/],
         [ 1, 'a@example.org', 1 ],
-        [ 2, 'b@example.org', 0 ],
+        [ 2, 'b@example.org', 1 ],
         [ 3, 'c@example.org', 1 ],
         [ 4, 'd@example.org', 1 ],
         [ 5, 'e@example.org', 1 ],
@@ -97,7 +97,7 @@
     # customer_id     email           is_verified     is_primary    password login
     # ---------------------------------------------------------------------------------------
     # 111             a@example.org       1               0             yes
-    #                 b@example.org       0               0             no(not verified)
+    #                 b@example.org       1               0             yes
     #                 c@example.org       1               1             yes
     # 112             d@example.org       1               1             yes
     # 113             e@example.org       1               1             no(has not password)
