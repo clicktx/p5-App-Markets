@@ -37,7 +37,6 @@ sub to_data {
     return {
         value      => $self->password->hash,
         created_at => $self->password->created_at,
-        updated_at => $self->password->updated_at,
     };
 }
 
