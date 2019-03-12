@@ -7,7 +7,7 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column login_id => {
+unique_column login_id => {
     data_type   => 'VARCHAR',
     size        => 64,
     is_nullable => 0,
@@ -24,9 +24,6 @@ column updated_at => {
     is_nullable => 1,
     timezone    => Yetie::Schema->TZ,
 };
-
-# Index
-unique_constraint ui_login_id => [qw/login_id/];
 
 # Relation
 has_one
