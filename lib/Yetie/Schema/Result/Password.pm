@@ -19,12 +19,6 @@ column created_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
-column updated_at => {
-    data_type   => 'DATETIME',
-    is_nullable => 1,
-    timezone    => Yetie::Schema->TZ,
-};
-
 # Relation
 has_many
   customer => 'Yetie::Schema::Result::Customer::Password',
@@ -35,16 +29,5 @@ has_many
   staff => 'Yetie::Schema::Result::Staff::Password',
   { 'foreign.password_id' => 'self.id' },
   { cascade_delete        => 0 };
-
-# sub to_data {
-#     my $self = shift;
-#
-#     return {
-#         id         => $self->id,
-#         hash       => $self->hash,
-#         created_at => $self->created_at,
-#         updated_at => $self->updated_at,
-#     };
-# }
 
 1;

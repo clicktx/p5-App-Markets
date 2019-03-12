@@ -41,7 +41,13 @@ sub find_by_email {
 
 sub find_by_id {
     my ( $self, $customer_id ) = @_;
-    return $self->find( $customer_id, { prefetch => $self->prefetch } );
+    return $self->find(
+        $customer_id,
+        {
+            prefetch => $self->prefetch,
+            order_by => [ { '-desc' => 'password.created_at' } ],
+        }
+    );
 }
 
 sub get_id_by_email {
