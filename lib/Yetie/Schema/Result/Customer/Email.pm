@@ -2,12 +2,17 @@ package Yetie::Schema::Result::Customer::Email;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-primary_column customer_id => {
+primary_column id => {
+    data_type         => 'INT',
+    is_auto_increment => 1,
+};
+
+column customer_id => {
     data_type   => 'INT',
     is_nullable => 0,
 };
 
-primary_column email_id => {
+column email_id => {
     data_type   => 'INT',
     is_nullable => 0,
 };
@@ -28,7 +33,15 @@ belongs_to
   { 'foreign.id' => 'self.email_id' };
 
 # Index
-unique_constraint ui_email_id => [qw/email_id/];
+sub sqlt_deploy_hook {
+    my ( $self, $table ) = @_;
+
+    # alter index type
+    my @indices = $table->get_indices;
+    foreach my $index (@indices) {
+        $index->type('unique') if $index->name eq 'customer_emails_idx_email_id';
+    }
+}
 
 sub to_data {
     my $self = shift;
