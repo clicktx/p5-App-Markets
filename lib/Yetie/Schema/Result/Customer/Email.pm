@@ -46,11 +46,7 @@ sub sqlt_deploy_hook {
 sub to_data {
     my $self = shift;
 
-    return {
-        value       => $self->email->address,
-        is_primary  => $self->is_primary,
-        is_verified => $self->email->is_verified,
-    };
+    return { %{ $self->email->to_data }, is_primary => $self->is_primary, };
 }
 
 1;
