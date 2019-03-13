@@ -167,7 +167,7 @@ sub store_address {
         my $res = $s->store_address(1);
         ok !$res, 'right no data';
 
-        $c->server_session->customer_id(115);
+        $c->server_session->customer_id(113);
         $res = $s->store_address(1);
         ok $res, 'right store address';
 

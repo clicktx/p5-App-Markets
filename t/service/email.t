@@ -27,7 +27,7 @@ sub t01_find_email : Tests() {
     ok $e->in_storage, 'right in storage';
     ok !$e->is_verified, 'right not verified';
 
-    $e = $s->find_email('foo@bar.baz');
+    $e = $s->find_email('notstorage@foo.bar');
     isa_ok $e, 'Yetie::Domain::Value::Email';
     ok !$e->in_storage, 'right not in storage';
     ok !$e->is_verified, 'right not verified';
