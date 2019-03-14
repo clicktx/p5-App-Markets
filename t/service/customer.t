@@ -73,12 +73,15 @@ sub t03_find_customer : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
+    my $entity = $s->find_customer('a@example.org');
+    isa_ok $entity, 'Yetie::Domain::Entity::Customer';
+    is $entity->id, 111, 'right customer';
+
+    # Guest customer
     my $entity = $s->find_customer('foo@bar.baz');
     isa_ok $entity, 'Yetie::Domain::Entity::Customer';
     is $entity->id, undef, 'right nonexists';
-
-    $entity = $s->find_customer('a@example.org');
-    is $entity->id, 111, 'right customer';
+    ok $entity->is_guest, 'right guest';
 }
 
 sub t04_get_address_list : Tests() {

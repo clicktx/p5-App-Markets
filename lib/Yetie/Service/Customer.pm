@@ -44,10 +44,15 @@ sub create_new_customer {
 sub find_customer {
     my ( $self, $email ) = @_;
 
-    my $result = $self->resultset('Customer')->find_by_email($email);
-    my $data = $result ? $result->to_data : {};
+    my $result   = $self->resultset('Customer')->find_by_email($email);
+    my $data     = $result ? $result->to_data : {};
+    my $customer = $self->factory('entity-customer')->construct($data);
+    return $customer if $customer->is_registered;
 
-    return $self->factory('entity-customer')->construct($data);
+    # Guset customer
+    my $guest_email = $self->service('email')->find_email($email);
+    $customer->emails->append($guest_email);
+    return $customer;
 }
 
 sub get_address_list {
