@@ -4,7 +4,7 @@ use Test::Deep;
 use Test::Exception;
 use Yetie::Factory;
 
-my %test_data = (
+my %example_data = (
     email => 'a@example.org',
     items => [
         { product_id => 1, quantity => 1, price => 100 },
@@ -60,7 +60,7 @@ my %test_data = (
 
 sub _create_entity {
     my %args = @_;
-    %args = %test_data unless @_;
+    %args = %example_data unless @_;
 
     Yetie::Factory->new('entity-cart')->construct(
         {
@@ -96,7 +96,7 @@ subtest 'attributes' => sub {
 subtest 'methods' => sub {
     my $cart      = _create_entity;
     my $cart_data = $cart->to_data;
-    my %d         = %test_data;
+    my %d         = %example_data;
     my $d         = \%d;
     $d->{billing_address}->{hash}                    = 'f42001ccd9c7f10d05bfd8a9da91674635daba8c';
     $d->{shipments}->[0]->{shipping_address}->{hash} = 'a38d44916394e4d5289b8e5e2cc7b66bcd3f1722';
@@ -109,7 +109,7 @@ subtest 'methods' => sub {
     my $cart2 = Yetie::Factory->new('entity-cart')->construct(
         {
             cart_id => '54321',
-            %test_data,
+            %example_data,
         }
     );
 
@@ -216,7 +216,7 @@ subtest 'merge' => sub {
         }
     );
 
-    my %d = %test_data;
+    my %d = %example_data;
     my $d = \%d;
     $d->{cart_id}                                    = '12345';
     $d->{billing_address}->{hash}                    = 'f42001ccd9c7f10d05bfd8a9da91674635daba8c';
@@ -368,7 +368,7 @@ subtest 'set_billing_address' => sub {
 
     # not update
     $cart = _create_entity;
-    $obj  = $cart->factory('entity-address')->construct( $test_data{billing_address} );
+    $obj  = $cart->factory('entity-address')->construct( $example_data{billing_address} );
     $cart->set_billing_address($obj);
     is $cart->is_modified, 0, 'right not modified';
 };
@@ -416,7 +416,7 @@ subtest 'set_shipping_address' => sub {
 
     # not update
     $cart = _create_entity;
-    $obj  = $cart->factory('entity-address')->construct( $test_data{shipments}->[0]->{shipping_address} );
+    $obj  = $cart->factory('entity-address')->construct( $example_data{shipments}->[0]->{shipping_address} );
     $cart->set_shipping_address($obj);
     is $cart->is_modified, 0, 'right not modified';
 };
