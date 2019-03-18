@@ -23,7 +23,8 @@ sub store_token {
     my ( $self, $authorization ) = @_;
 
     my $cb = sub {
-        my $email_id = $self->schema->resultset('Email')->find_or_create( { address => $authorization->email } )->id;
+        my $email_id =
+          $self->schema->resultset('Email')->find_or_create( { address => $authorization->email->value } )->id;
         $self->create(
             {
                 email_id       => $email_id,

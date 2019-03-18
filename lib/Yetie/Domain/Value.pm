@@ -2,7 +2,6 @@ package Yetie::Domain::Value;
 use Yetie::Domain::Base -readonly;
 use overload
   q(bool)  => sub { 1 },
-  q("")    => sub { shift->value },
   fallback => 1;
 
 has value => '';
@@ -83,12 +82,6 @@ L<Yetie::Domain::Value> overloads the following operators.
     my $bool = !!$obj;
 
 Always true.
-
-=head2 C<stringify>
-
-    my $str = "$obj";
-
-Alias for "L</value>".
 
 =head1 AUTHOR
 
