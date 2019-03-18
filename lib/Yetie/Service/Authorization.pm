@@ -34,7 +34,7 @@ sub validate {
     return $self->factory('entity-authorization')->construct() unless $authorization;
 
     # last request
-    my $last_result = $self->resultset('AuthorizationRequest')->find_last_by_email( $authorization->email );
+    my $last_result = $self->resultset('AuthorizationRequest')->find_last_by_email( $authorization->email->value );
 
     # validate token
     $authorization->validate_token( $last_result->token );

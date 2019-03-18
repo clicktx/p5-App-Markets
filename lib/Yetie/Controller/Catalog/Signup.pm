@@ -49,7 +49,7 @@ sub with_link {
     return $c->reply->error(%error_messages) if $customer->is_registered;
 
     # Create customer
-    my $new_customer = $customer_service->create_new_customer($email);
+    my $new_customer = $customer_service->create_new_customer( $email->value );
 
     # Login
     $c->service('customer')->login( $new_customer->id );

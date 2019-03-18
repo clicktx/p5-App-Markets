@@ -14,7 +14,7 @@ subtest 'primary' => sub {
         $vo->new( is_primary => 0, value => 3 ),
     );
     my $emails = $pkg->new( list => $collection );
-    is $emails->primary, 2, 'right primary';
+    is $emails->primary->value, 2, 'right primary';
 };
 
 done_testing();
