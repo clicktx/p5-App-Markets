@@ -5,7 +5,12 @@ use Test::Exception;
 use Yetie::Factory;
 
 my %example_data = (
-    email => 'a@example.org',
+    email => {
+        _in_storage => 1,
+        is_primary  => 1,
+        is_verified => 1,
+        value       => 'a@example.org'
+    },
     items => [
         { product_id => 1, quantity => 1, price => 100 },
         { product_id => 2, quantity => 2, price => 100 },
@@ -196,8 +201,13 @@ subtest 'merge' => sub {
     my $cart        = _create_entity;
     my %stored_data = (
         billing_address => {},
-        email           => '',
-        items           => [
+        email           => {
+            _in_storage => 0,
+            is_primary  => 0,
+            is_verified => 0,
+            value       => "",
+        },
+        items => [
             { product_id => 4, quantity => 4, price => 100 },
             { product_id => 1, quantity => 1, price => 100 },
             { product_id => 5, quantity => 5, price => 100 },
@@ -238,7 +248,7 @@ subtest 'merge' => sub {
     cmp_deeply $merged_cart_data,
       {
         cart_id         => '99999',
-        email           => '',
+        email           => ignore(),
         billing_address => ignore(),
         items           => [
             { product_id => 4, quantity => 4, price => 100 },

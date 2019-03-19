@@ -7,6 +7,17 @@ has is_verified => 0;
 
 sub in_storage { shift->_in_storage ? 1 : 0 }
 
+sub to_data {
+    my $self = shift;
+
+    return {
+        _in_storage => $self->_in_storage,
+        is_primary  => $self->is_primary,
+        is_verified => $self->is_verified,
+        value       => $self->value,
+    };
+}
+
 1;
 __END__
 
