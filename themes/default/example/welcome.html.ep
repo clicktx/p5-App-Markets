@@ -53,3 +53,6 @@
 <p>
     domain <%= __d 'my_addon', 'hello' %><%= __d 'my_addon', 'hello2' %>
 </p>
+
+<h1>session</h1>
+<pre><%= dumper server_session->data %></pre>
