@@ -6,7 +6,7 @@ sub primary {
 
     my $primary;
     $self->each( sub { $primary = $_ if $_->is_primary } );
-    return $primary;
+    return $primary ? $primary : $self->first;
 }
 
 1;
