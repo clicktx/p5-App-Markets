@@ -5,7 +5,6 @@ use Yetie::Util;
 
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 has cart_id         => '';
-has email           => sub { __PACKAGE__->factory('value-email')->construct() };
 has billing_address => sub { __PACKAGE__->factory('entity-address')->construct() };
 has items           => sub { __PACKAGE__->factory('list-cart_items')->construct() };
 has shipments       => sub { __PACKAGE__->factory('list-shipments')->construct() };
