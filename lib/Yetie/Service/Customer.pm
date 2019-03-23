@@ -200,8 +200,7 @@ sub send_authorization_mail {
     # NOTE: demo and debug
     $c->flash( callback_url => $url->to_abs );
 
-    my $redirect_route =
-      $customer->is_registered ? 'RN_customer_login_email_sended' : 'RN_customer_signup_email_sended';
+    my $redirect_route = $customer->is_registered ? 'RN_customer_login_sent_email' : 'RN_customer_signup_sent_email';
     return $c->redirect_to($redirect_route);
 }
 
@@ -338,7 +337,7 @@ Return L<Yetie::Domain::Entity::Page::Customers> Object.
 
 Will send an magic link email for log-in or sign-up.
 
-Retuen C<render_to('RN_customer_login_email_sended')> or C<render_to('RN_customer_signup_email_sended')>
+Retuen C<render_to('RN_customer_login_sent_email')> or C<render_to('RN_customer_signup_sent_email')>
 
 =head2 C<store_address>
 
