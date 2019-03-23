@@ -134,16 +134,14 @@ sub add_catalog_routes {
         $login->get('/token/:token')->to('#with_link')->name('RN_callback_customer_login');
         $login->any('/magic-link')->to('#magic_link')->name('RN_customer_login_magic_link');
         $login->any('/with-password')->to('#with_password')->name('RN_customer_login_with_password');
-    }
-    {
+
         # Sign-up
         my $signup = $r->any('/signup')->to( controller => 'signup' );
         $signup->any('/')->to('#index')->name('RN_customer_signup');
         $signup->get('/sent-email')->to('#sent_email')->name('RN_customer_signup_sent_email');
         $signup->get('/done')->to('#done')->name('RN_customer_signup_done');
         $signup->get('/get-started/:token')->to('#with_link')->name('RN_callback_customer_signup');
-    }
-    {
+
         # Authorization required
         my $account = $r->under('/account')->to('account#authorize')->name('RN_customer_bridge');
         $account->get('/home')->to('account#home')->name('RN_customer_home');
