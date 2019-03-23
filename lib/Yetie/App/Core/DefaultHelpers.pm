@@ -28,7 +28,7 @@ sub register {
     $app->helper( is_logged_in     => sub { _is_logged_in(@_) } );
     $app->helper( j                => sub { _j(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
-    $app->helper( 'reply.error'    => sub { _error(@_) } );
+    $app->helper( 'reply.error'    => sub { _reply_error(@_) } );
     $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
     $app->helper( remote_address   => sub { _remote_address(@_) } );
     $app->helper( schema           => sub { shift->app->schema } );
@@ -54,18 +54,6 @@ sub _cache {
 }
 
 sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
-
-sub _error {
-    my $c = shift;
-
-    my %options = (
-        status        => 400,
-        template      => 'error',
-        title         => 'Bad Request',
-        error_message => '',
-    );
-    $c->render( %options, @_ );
-}
 
 sub _factory {
     my $c = shift;
@@ -100,6 +88,18 @@ sub _remote_address {
     # NOTE: 'X-Real-IP', 'X-Forwarded-For'はどうする？
     my $remote_address = $c->tx->remote_address || 'unknown';
     return $remote_address;
+}
+
+sub _reply_error {
+    my $c = shift;
+
+    my %options = (
+        status        => 400,
+        template      => 'error',
+        title         => 'Bad Request',
+        error_message => '',
+    );
+    $c->render( %options, @_ );
 }
 
 sub _service {
