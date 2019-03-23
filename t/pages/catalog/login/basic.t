@@ -41,14 +41,14 @@ sub t01_magic_link_request : Tests() {
         email      => 'foo-bar-baz@example.org',
     };
     $t->post_ok( '/login/magic-link', form => $post_data )->status_is( 302, 'right not registered' )
-      ->header_is( location => '/signup/email-sended' );
+      ->header_is( location => '/signup/sent-email' );
 
     $post_data = {
         csrf_token => $self->csrf_token,
         email      => 'a@example.org',
     };
     $t->post_ok( '/login/magic-link', form => $post_data )->status_is( 302, 'right token request' )
-      ->header_is( location => '/login/email-sended' );
+      ->header_is( location => '/login/sent-email' );
 }
 
 sub t02_magic_link_callback : Tests() {

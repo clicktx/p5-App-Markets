@@ -11,7 +11,7 @@ sub index {
     $c->cookie('login_with_password') ? $c->with_password : $c->magic_link;
 }
 
-sub email_sended {
+sub sent_email {
     my $c = shift;
     return $c->render();
 }

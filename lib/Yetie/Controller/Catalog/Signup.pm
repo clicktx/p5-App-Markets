@@ -17,7 +17,7 @@ sub index {
     return $c->service('customer')->send_authorization_mail($form);
 }
 
-sub email_sended {
+sub sent_email {
     my $c = shift;
     return $c->render();
 }
