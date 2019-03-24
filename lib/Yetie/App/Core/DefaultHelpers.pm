@@ -29,6 +29,7 @@ sub register {
     $app->helper( j                => sub { _j(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
     $app->helper( 'reply.error'    => sub { _reply_error(@_) } );
+    $app->helper( 'reply.message'  => sub { _reply_message(@_) } );
     $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
     $app->helper( remote_address   => sub { _remote_address(@_) } );
     $app->helper( schema           => sub { shift->app->schema } );
@@ -98,6 +99,18 @@ sub _reply_error {
         template      => 'error',
         title         => 'Bad Request',
         error_message => '',
+    );
+    $c->render( %options, @_ );
+}
+
+sub _reply_message {
+    my $c = shift;
+
+    my %options = (
+        status   => 200,
+        template => 'message',
+        title    => '',
+        message  => '',
     );
     $c->render( %options, @_ );
 }
@@ -235,6 +248,12 @@ Get/Set preference.
     $c->reply->error( title => 'foo', error_message => 'bar' );
 
 Render the error template and set the response status code to 400.
+
+=head2 C<reply-E<gt>message>
+
+    $c->reply->message( title => 'foo', message => 'bar' );
+
+Render the message template.
 
 =head2 C<schema>
 
