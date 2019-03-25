@@ -10,11 +10,14 @@ sub register {
     my $locale_dir = $app->home->child( 'share', 'locale' );
     $app->lexicon(
         {
-            search_dirs => [ $locale_dir, $locale_dir->child('messages') ],
+            search_dirs => [$locale_dir],
 
             # gettext_to_maketext => $boolean,                    # option
             # decode              => $boolean,                    # option
-            data => [ '*::' => '*.po' ],
+            data => [
+                '*::'             => '*.po',
+                '*::log_messages' => 'domain/log_messages/*.po',
+            ],
         }
     ) if -d $locale_dir;
 }
