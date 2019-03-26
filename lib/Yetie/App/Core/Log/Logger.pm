@@ -14,12 +14,9 @@ sub warn  { shift->_convert_message( warn  => @_ ) }
 
 sub _convert_message {
     my ( $self, $level ) = ( shift, shift );
-    my $app = $self->app;
 
-    $app->locale->domain('log_messages');
-    my $message = $app->__x(@_);
+    my $message = $self->app->__dx( 'log_messages', @_ );
     $self->_log( $level, $message );
-    $app->locale->domain('');
 }
 
 1;
