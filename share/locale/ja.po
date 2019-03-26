@@ -37,6 +37,13 @@ msgid "Delete"
 msgstr "削除"
 
 
+# Email
+msgid "email.sent.title"
+msgstr "メールを送信しました"
+
+msgid "email.sent.message"
+msgstr "お送りしたメールを確認して下さい。"
+
 # Login
 msgid "login"
 msgstr "サインイン"

@@ -25,6 +25,13 @@ msgstr "New Product"
 msgid "copy"
 msgstr "copy"
 
+# Email
+msgid "email.sent.title"
+msgstr "We have sent you an email"
+
+msgid "email.sent.message"
+msgstr "Please check your email."
+
 # Login
 msgid "login"
 msgstr "Sign in"
