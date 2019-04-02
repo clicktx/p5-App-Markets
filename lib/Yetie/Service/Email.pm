@@ -2,10 +2,10 @@ package Yetie::Service::Email;
 use Mojo::Base 'Yetie::Service';
 
 sub find_email {
-    my ( $self, $email ) = @_;
+    my ( $self, $email_addr ) = @_;
 
-    my $result = $self->resultset('Email')->find( { address => $email } );
-    my $data = $result ? $result->to_data : { value => $email };
+    my $result = $self->resultset('Email')->find( { address => $email_addr } );
+    my $data = $result ? $result->to_data : { value => $email_addr };
     return $self->factory('value-email')->construct($data);
 }
 
