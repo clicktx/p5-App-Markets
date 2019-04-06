@@ -38,4 +38,11 @@ OR
     <% end %>
 </div>
 
-<%= csrf_button_to 'Continue as a Guest' => 'RN_checkout' => ( method => 'POST') %>
+<div class="">
+    <%= csrf_button_to 'Continue as a Guest' => 'RN_checkout' => ( method => 'POST') %>
+</div>
+
+<h3>Link to drop in page.</h3>
+<div class="">
+    <%= link_to 'Drop in' => 'RN_customer_dropin', class => 'btn btn-primary' %>
+</div>
