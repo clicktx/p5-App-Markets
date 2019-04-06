@@ -9,7 +9,7 @@ sub index {
     return $c->redirect_to($route) if $c->is_logged_in;
 
     # Initialize form
-    my $form = $c->form('account-magic_link');
+    my $form = $c->form('customer-dropin');
 
     # Get request
     return $c->render() if $c->is_get_request;
@@ -17,8 +17,7 @@ sub index {
     # Validation form
     return $c->render() unless $form->do_validate;
 
-    # return $c->service('customer')->send_authorization_mail($form);
-    return $c->reply->message();
+    $c->service('email')->send_magic_link( $form->param('email'), $route );
 }
 
 1;
