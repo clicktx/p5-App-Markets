@@ -126,6 +126,10 @@ sub add_catalog_routes {
 
     # For Customers
     {
+        # Drop-in
+        my $dropin = $r->any('/dropin')->to( controller => 'dropin' );
+        $dropin->any('/')->to('#index')->name('RN_customer_dropin');
+
         # Log-in
         my $login = $r->any('/login')->to( controller => 'login' );
         $login->any('/')->to('#index')->name('RN_customer_login');
