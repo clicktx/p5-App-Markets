@@ -106,7 +106,7 @@ sub add_catalog_routes {
     $r->post('/cart/delete')->to('cart#delete')->name('RN_cart_delete');
 
     # Checkout
-    $r->any('/checkout')->to('checkout#index')->name('RN_checkout');
+    $r->get('/checkout')->to('checkout#index')->name('RN_checkout');
     $r->get('/checkout/complete')->to('checkout#complete')->name('RN_checkout_complete');
     {
         my $authorize = $r->under('/checkout')->to('account#authorize')->name('RN_checkout_bridge');
