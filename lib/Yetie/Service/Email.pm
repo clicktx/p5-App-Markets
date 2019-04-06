@@ -9,6 +9,22 @@ sub find_email {
     return $self->factory('value-email')->construct($data);
 }
 
+sub send_magic_link {
+    my ( $self, $email_addr, $callback_route ) = @_;
+    my $c = $self->controller;
+
+    # WIP: 送信制限、エラー等
+    # return $c->reply->error();
+
+    my $token = $c->service('authorization')->generate_token( $email_addr, { redirect => $callback_route } );
+    my $url = $c->url_for( 'RN_magic_link', token => $token->value );
+
+    # WIP: Send email
+    say $url->to_abs;
+
+    return $c->reply->message();
+}
+
 1;
 __END__
 
@@ -35,6 +51,12 @@ the following new ones.
     my $domain_value = $service->find_email('foo@bar.baz');
 
 Return L<Yetie::Domain::Value::Email> object.
+
+=head2 C<send_magic_link>
+
+    $service->send_magic_link( 'foo@bar.baz', 'RN_home' );
+
+Return C<reply-E<gt>error> or C<reply-E<gt>message>
 
 =head1 AUTHOR
 
