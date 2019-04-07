@@ -88,6 +88,21 @@ sub add_admin_routes {
 sub add_catalog_routes {
     my ( $self, $app ) = @_;
     my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
+    my $if_customer = $r->under(
+        sub {
+            my $self = shift;
+            return 1 if $self->is_logged_in;
+
+            # NOTE: 最終リクエストがPOSTの場合はhistoryから最後のGETリクエストを取得する？
+            #       sessionが切れている（はず）なのでhistoryから取得は難しいか？
+            #       cookie_session のlanding_pageで良い？
+            #       catalog/staff 両方で必要
+            $self->flash( ref => $self->req->url->to_string ) if $self->is_get_request;
+
+            $self->redirect_to( $self->url_for('RN_customer_login') );
+            return 0;
+        }
+    );
 
     # Logout
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
@@ -109,8 +124,7 @@ sub add_catalog_routes {
     $r->get('/checkout')->to('checkout#index')->name('RN_checkout');
     $r->get('/checkout/complete')->to('checkout#complete')->name('RN_checkout_complete');
     {
-        my $authorize = $r->under('/checkout')->to('account#authorize')->name('RN_checkout_bridge');
-        my $checkout  = $authorize->any('/')->to('checkout#');
+        my $checkout = $if_customer->any('/checkout')->to('checkout#');
         $checkout->any('/shipping-address')->to('#shipping_address')->name('RN_checkout_shipping_address');
         $checkout->post('/shipping-address/select')->to('#shipping_address_select')
           ->name('RN_checkout_shipping_address_select');
@@ -146,11 +160,11 @@ sub add_catalog_routes {
         $signup->get('/done')->to('#done')->name('RN_customer_signup_done');
         $signup->get('/get-started/:token')->to('#with_link')->name('RN_callback_customer_signup');
 
-        # Authorization required
-        my $account = $r->under('/account')->to('account#authorize')->name('RN_customer_bridge');
-        $account->get('/home')->to('account#home')->name('RN_customer_home');
-        $account->get('/orders')->to('account#orders')->name('RN_customer_orders');
-        $account->get('/wishlist')->to('account#wishlist')->name('RN_customer_wishlist');
+        # Account page
+        my $account = $if_customer->any('/account')->to('account#');
+        $account->get('/home')->to('#home')->name('RN_customer_home');
+        $account->get('/orders')->to('#orders')->name('RN_customer_orders');
+        $account->get('/wishlist')->to('#wishlist')->name('RN_customer_wishlist');
     }
 
     # Product
