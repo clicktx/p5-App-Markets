@@ -106,16 +106,16 @@ sub add_catalog_routes {
     my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
     my $if_customer = $r->under(
         sub {
-            my $self = shift;
-            return 1 if $self->is_logged_in;
+            my $c = shift;
+            return 1 if $c->is_logged_in;
 
             # NOTE: 最終リクエストがPOSTの場合はhistoryから最後のGETリクエストを取得する？
             #       sessionが切れている（はず）なのでhistoryから取得は難しいか？
             #       cookie_session のlanding_pageで良い？
             #       catalog/staff 両方で必要
-            $self->flash( ref => $self->req->url->to_string ) if $self->is_get_request;
+            $c->flash( ref => $c->req->url->to_string ) if $c->is_get_request;
 
-            $self->redirect_to( $self->url_for('RN_customer_login') );
+            $c->redirect_to( $c->url_for('RN_customer_login') );
             return 0;
         }
     );
