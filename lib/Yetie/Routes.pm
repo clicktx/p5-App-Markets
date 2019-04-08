@@ -107,7 +107,7 @@ sub add_catalog_routes {
     my $if_customer = $r->under(
         sub {
             my $c = shift;
-            return 1 if $c->is_logged_in;
+            return 1 if $c->server_session->is_customer_logged_in;
 
             # NOTE: 最終リクエストがPOSTの場合はhistoryから最後のGETリクエストを取得する？
             #       sessionが切れている（はず）なのでhistoryから取得は難しいか？
