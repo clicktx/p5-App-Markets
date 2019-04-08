@@ -14,24 +14,40 @@ sub register {
 # Routes for Admin
 sub add_admin_routes {
     my ( $self, $app ) = @_;
+
+    # Default prefix '/admin'
     my $r = $app->routes->any( $app->pref('admin_uri_prefix') )->to( namespace => 'Yetie::Controller' );
 
-    # Not authorization required
-    my $login = $r->any('login')->to( controller => 'admin-staff' );
+    # Not authentication required
+    my $login = $r->any('/login')->to( controller => 'admin-staff' );
     $login->any('/')->to('#login')->name('RN_admin_login');
 
-    # Authorization required
-    $r = $r->under->to('admin-staff#authorize')->name('RN_admin_bridge');
+    # Authentication required
+    my $if_staff = $r->under(
+        sub {
+            my $c = shift;
+            return 1 if $c->server_session->is_staff_logged_in;
+
+            # NOTE: 最終リクエストがPOSTの場合はhistoryから最後のGETリクエストを取得する？
+            #       sessionが切れている（はず）なのでhistoryから取得は難しいか？
+            #       cookie_session のlanding_pageで良い？
+            #       catalog/staff 両方で必要
+            $c->flash( ref => $c->req->url->to_string ) if $c->is_get_request;
+
+            $c->redirect_to( $c->url_for('RN_admin_login') );
+            return 0;
+        }
+    );
 
     # Dashboard
-    $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
-    $r->get('/dashboard')->to('admin-dashboard#index')->name('RN_admin_dashboard');
+    $if_staff->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
+    $if_staff->get('/dashboard')->to('admin-dashboard#index')->name('RN_admin_dashboard');
 
     # Logout
-    $r->get('/logout')->to('admin-staff#logout')->name('RN_admin_logout');
+    $if_staff->get('/logout')->to('admin-staff#logout')->name('RN_admin_logout');
 
     # Settings
-    my $settings = $r->any('/settings')->to( controller => 'admin-setting' );
+    my $settings = $if_staff->any('/settings')->to( controller => 'admin-setting' );
     $settings->get('/')->to('#index')->name('RN_admin_settings');
     {
         my $addons = $settings->any('/addon')->to( controller => 'admin-addon' );
@@ -40,20 +56,20 @@ sub add_admin_routes {
     }
 
     # Preferences
-    my $pref = $r->any('/preferences')->to( controller => 'admin-preference' );
+    my $pref = $if_staff->any('/preferences')->to( controller => 'admin-preference' );
     $pref->any('/')->to('#index')->name('RN_admin_preferences');
 
     # Category
-    my $category = $r->any('/category')->to( controller => 'admin-category' );
+    my $category = $if_staff->any('/category')->to( controller => 'admin-category' );
     $category->get('/')->to('#index')->name('RN_admin_category');
     $category->post('/')->to('#index')->name('RN_admin_category_create');
     $category->any('/:category_id/edit')->to('#edit')->name('RN_admin_category_edit');
 
     # Products
-    $r->any('/products')->to('admin-products#index')->name('RN_admin_products');
+    $if_staff->any('/products')->to('admin-products#index')->name('RN_admin_products');
 
     # Product
-    my $product = $r->any('/product')->to( controller => 'admin-product' )->name('RN_admin_product');
+    my $product = $if_staff->any('/product')->to( controller => 'admin-product' )->name('RN_admin_product');
     $product->post('/create')->to('#create')->name('RN_admin_product_create');
     $product->post('/:product_id/delete')->to('#delete')->name('RN_admin_product_delete');
     $product->post('/:product_id/duplicate')->to('#duplicate')->name('RN_admin_product_duplicate');
@@ -61,11 +77,11 @@ sub add_admin_routes {
     $product->any('/:product_id/edit/category')->to('#category')->name('RN_admin_product_category');
 
     # Orders
-    $r->any('/orders')->to('admin-orders#index')->name('RN_admin_orders');
+    $if_staff->any('/orders')->to('admin-orders#index')->name('RN_admin_orders');
 
     # Order
     # NOTE: create, delete, duplicate はPOST requestのみにするべき
-    my $order = $r->any('/order')->to( controller => 'admin-order' );
+    my $order = $if_staff->any('/order')->to( controller => 'admin-order' );
     $order->get('/:id')->to('#details')->name('RN_admin_order_details');
     $order->any('/create')->to('#create')->name('RN_admin_order_create');
     $order->post('/delete')->to('#delete')->name('RN_admin_order_delete');
@@ -79,7 +95,7 @@ sub add_admin_routes {
     $order->any('/:id/duplicate')->to('#duplicate')->name('RN_admin_order_duplicate');
 
     # Customers
-    $r->any('/customers')->to('admin-customers#index')->name('RN_admin_customers');
+    $if_staff->any('/customers')->to('admin-customers#index')->name('RN_admin_customers');
 }
 
 # Routes for Catalog
