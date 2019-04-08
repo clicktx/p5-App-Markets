@@ -10,11 +10,6 @@ sub t01_not_loggedin_request : Tests() {
     my $t    = $self->t;
 
     $t->ua->max_redirects(0);
-
-    my $paths = $self->make_paths( $self->app->routes->find('RN_admin_bridge')->children, {} );
-    foreach my $path ( @{$paths} ) {
-        $t->get_ok($path)->status_is( 302, 'right redirect' );
-    }
 }
 
 sub t02_admin_login_process_with_password : Tests() {
