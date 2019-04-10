@@ -27,7 +27,7 @@ sub find_request {
 
 # NOTE: アクセス制限が必要？同一IP、時間内回数制限
 # email sha1を引数にして判定を追加する？
-sub validate {
+sub verify {
     my ( $self, $token ) = @_;
 
     my $authorization = $self->find_request($token);
@@ -36,7 +36,7 @@ sub validate {
     # last request
     my $last_result = $self->resultset('AuthorizationRequest')->find_last_by_email( $authorization->email->value );
 
-    # validate token
+    # verify token
     $authorization->validate_token( $last_result->token );
     return ( $self->_logging( $authorization->error_message ), $authorization )
       unless $authorization->is_valid;
@@ -96,9 +96,9 @@ Redirect url or route name.
 
 Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
 
-=head2 C<validate>
+=head2 C<verify>
 
-    my $authorization = $service->validate($token);
+    my $authorization = $service->verify($token);
 
 Return Return L<Yetie::Domain::Entity::Authorization>.
 

@@ -39,7 +39,7 @@ subtest 'find_request' => sub {
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 };
 
-subtest 'validate' => sub {
+subtest 'verify' => sub {
     my ( $c, $s ) = _init();
 
     my $res;
@@ -49,20 +49,20 @@ subtest 'validate' => sub {
     my $token1  = $s->generate_token($email);
     my $expires = time - 3600;
     $c->resultset('AuthorizationRequest')->find( { token => $token1->value } )->update( { expires => $expires } );
-    $res = $s->validate($token1);
+    $res = $s->verify($token1);
     ok !$res->is_valid, 'right expired';
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 
     my $token2 = $s->generate_token($email);
     my $token3 = $s->generate_token($email);
-    $res = $s->validate( $token2->value );
+    $res = $s->verify( $token2->value );
     ok !$res->is_valid, 'right not last request';
 
-    $res = $s->validate( $token3->value );
+    $res = $s->verify( $token3->value );
     ok $res->is_valid, 'right first validation';
     is $res->email->value, $email, 'right request email';
 
-    $res = $s->validate( $token3->value );
+    $res = $s->verify( $token3->value );
     ok !$res->is_valid, 'right second validation';
 };
 
