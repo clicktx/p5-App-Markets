@@ -12,7 +12,7 @@ has _is_valid      => 0;
 
 sub is_valid { shift->_is_valid(@_) }
 
-sub validate_token {
+sub verify_token {
     my ( $self, $last_token ) = @_;
 
     # Last request token
@@ -76,12 +76,12 @@ the following new ones.
 
 Return boolean value.
 
-=head2 C<validate_token>
+=head2 C<verify_token>
 
 Validate token.
 Same as last token, Not activated, and Not expired.
 
-    $auth->validate_token($last_token);
+    $auth->verify_token($last_token);
 
 =head1 AUTHOR
 

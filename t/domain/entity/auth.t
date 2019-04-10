@@ -18,17 +18,17 @@ subtest 'basic' => sub {
     can_ok $auth, 'error_message';
 };
 
-subtest 'validate_token' => sub {
+subtest 'verify_token' => sub {
     my $f = Yetie::Factory->new('entity-auth');
 
     my $auth = $f->construct(
         token   => 'abc',
         expires => time,
     );
-    $auth->validate_token('abc');
+    $auth->verify_token('abc');
     ok $auth->is_valid, 'right validate';
 
-    $auth->validate_token('aaa');
+    $auth->verify_token('aaa');
     ok !$auth->is_valid, 'right fail';
     like $auth->error_message, qr/Different from last token/, 'right error message';
 
@@ -37,7 +37,7 @@ subtest 'validate_token' => sub {
         expires      => time,
         is_activated => 1,
     );
-    $auth->validate_token('abc');
+    $auth->verify_token('abc');
     ok !$auth->is_valid, 'right fail';
     like $auth->error_message, qr/Activated/, 'right error message';
 
@@ -46,7 +46,7 @@ subtest 'validate_token' => sub {
         expires      => time - 3600,
         is_activated => 0,
     );
-    $auth->validate_token('abc');
+    $auth->verify_token('abc');
     ok !$auth->is_valid, 'right fail';
     like $auth->error_message, qr/Expired/, 'right error message';
 };
