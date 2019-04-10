@@ -9,13 +9,13 @@ my $app = $t->app;
 
 sub _init {
     my $controller = $app->build_controller;
-    my $service    = $controller->service('authorization');
+    my $service    = $controller->service('authentication');
     return ( $controller, $service );
 }
 
 subtest 'generate_token' => sub {
     my ( $c, $s ) = _init();
-    my $rs      = $c->resultset('AuthorizationRequest');
+    my $rs      = $c->resultset('AuthenticationRequest');
     my $last_id = $rs->last_id;
 
     my $r = qr/[0-9A-F]/;
@@ -27,7 +27,7 @@ subtest 'generate_token' => sub {
 subtest 'find_request' => sub {
     my ( $c, $s ) = _init();
 
-    my $rs    = $c->resultset('AuthorizationRequest');
+    my $rs    = $c->resultset('AuthenticationRequest');
     my $email = 'foo@bar.baz';
     my $token = $s->generate_token($email);
 
@@ -39,7 +39,7 @@ subtest 'find_request' => sub {
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 };
 
-subtest 'validate' => sub {
+subtest 'verify' => sub {
     my ( $c, $s ) = _init();
 
     my $res;
@@ -48,22 +48,22 @@ subtest 'validate' => sub {
     # Hack expired
     my $token1  = $s->generate_token($email);
     my $expires = time - 3600;
-    $c->resultset('AuthorizationRequest')->find( { token => $token1->value } )->update( { expires => $expires } );
-    $res = $s->validate($token1);
-    ok !$res->is_valid, 'right expired';
+    $c->resultset('AuthenticationRequest')->find( { token => $token1->value } )->update( { expires => $expires } );
+    $res = $s->verify($token1);
+    ok !$res->is_verified, 'right expired';
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 
     my $token2 = $s->generate_token($email);
     my $token3 = $s->generate_token($email);
-    $res = $s->validate( $token2->value );
-    ok !$res->is_valid, 'right not last request';
+    $res = $s->verify( $token2->value );
+    ok !$res->is_verified, 'right not last request';
 
-    $res = $s->validate( $token3->value );
-    ok $res->is_valid, 'right first validation';
+    $res = $s->verify( $token3->value );
+    ok $res->is_verified, 'right first verify';
     is $res->email->value, $email, 'right request email';
 
-    $res = $s->validate( $token3->value );
-    ok !$res->is_valid, 'right second validation';
+    $res = $s->verify( $token3->value );
+    ok !$res->is_verified, 'right second verify';
 };
 
 done_testing();

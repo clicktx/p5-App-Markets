@@ -1,4 +1,4 @@
-package Yetie::Schema::ResultSet::AuthorizationRequest;
+package Yetie::Schema::ResultSet::AuthenticationRequest;
 use Mojo::Base 'Yetie::Schema::ResultSet';
 
 sub find_last_by_email {
@@ -44,29 +44,29 @@ __END__
 
 =head1 NAME
 
-Yetie::Schema::ResultSet::AuthorizationRequest
+Yetie::Schema::ResultSet::AuthenticationRequest
 
 =head1 SYNOPSIS
 
-    my $result = $schema->resultset('AuthorizationRequest')->method();
+    my $result = $schema->resultset('AuthenticationRequest')->method();
 
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::ResultSet::AuthorizationRequest> inherits all attributes from L<Yetie::Schema::ResultSet> and implements
+L<Yetie::Schema::ResultSet::AuthenticationRequest> inherits all attributes from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::ResultSet::AuthorizationRequest> inherits all methods from L<Yetie::Schema::ResultSet> and implements
+L<Yetie::Schema::ResultSet::AuthenticationRequest> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head2 C<find_last_by_email>
 
     my $result = $rs->find_last_by_email($email);
 
-Return L<Yetie::Schema::Result::AuthorizationRequest> object or C<undef>.
+Return L<Yetie::Schema::Result::AuthenticationRequest> object or C<undef>.
 
 =head2 C<remove_request_by_token>
 

@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::Authorization;
+package Yetie::Domain::Entity::Auth;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has token => sub { __PACKAGE__->factory('value-token')->construct() };
@@ -8,11 +8,11 @@ has remote_address => 'unknown';
 has is_activated   => 0;
 has expires        => sub { __PACKAGE__->factory('value-expires')->construct() };
 has error_message  => '';
-has _is_valid      => 0;
+has _is_verified   => 0;
 
-sub is_valid { shift->_is_valid(@_) }
+sub is_verified { shift->_is_verified(@_) }
 
-sub validate_token {
+sub verify_token {
     my ( $self, $last_token ) = @_;
 
     # Last request token
@@ -25,13 +25,13 @@ sub validate_token {
     return $self->_fails('Expired') if $self->expires->is_expired;
 
     # All passed
-    $self->_is_valid(1);
+    $self->_is_verified(1);
 }
 
 sub _fails {
     my $self = shift;
 
-    $self->_is_valid(0);
+    $self->_is_verified(0);
     $self->error_message(shift);
 }
 
@@ -40,7 +40,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Authorization
+Yetie::Domain::Entity::Auth
 
 =head1 SYNOPSIS
 
@@ -48,7 +48,7 @@ Yetie::Domain::Entity::Authorization
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Authorization> inherits all attributes from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::Auth> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<token>
@@ -67,21 +67,21 @@ the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Authorization> inherits all methods from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::Auth> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<is_valid>
+=head2 C<is_verified>
 
-    my $bool = $auth->is_valid;
+    my $bool = $auth->is_verified;
 
 Return boolean value.
 
-=head2 C<validate_token>
+=head2 C<verify_token>
 
 Validate token.
 Same as last token, Not activated, and Not expired.
 
-    $auth->validate_token($last_token);
+    $auth->verify_token($last_token);
 
 =head1 AUTHOR
 

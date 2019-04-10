@@ -1,11 +1,11 @@
-package Yetie::Service::Authorization;
+package Yetie::Service::Authentication;
 use Mojo::Base 'Yetie::Service';
 
 sub generate_token {
     my ( $self, $email, $opt ) = ( shift, shift, shift || {} );
 
     my $remote_address = $self->controller->remote_address;
-    my $authorization  = $self->factory('entity-authorization')->construct(
+    my $authorization  = $self->factory('entity-auth')->construct(
         email          => $email,
         redirect       => $opt->{redirect},
         remote_address => $remote_address,
@@ -13,33 +13,33 @@ sub generate_token {
     );
 
     # Store to DB
-    $self->resultset('AuthorizationRequest')->store_token($authorization);
+    $self->resultset('AuthenticationRequest')->store_token($authorization);
     return $authorization->token;
 }
 
 sub find_request {
     my ( $self, $token ) = @_;
 
-    my $rs = $self->resultset('AuthorizationRequest');
+    my $rs = $self->resultset('AuthenticationRequest');
     my $result = $rs->find( { token => $token }, { prefetch => 'email' } ) || return $self->_logging('Not found token');
-    return $self->factory('entity-authorization')->construct( $result->to_data );
+    return $self->factory('entity-auth')->construct( $result->to_data );
 }
 
 # NOTE: アクセス制限が必要？同一IP、時間内回数制限
 # email sha1を引数にして判定を追加する？
-sub validate {
+sub verify {
     my ( $self, $token ) = @_;
 
     my $authorization = $self->find_request($token);
-    return $self->factory('entity-authorization')->construct() unless $authorization;
+    return $self->factory('entity-auth')->construct() unless $authorization;
 
     # last request
-    my $last_result = $self->resultset('AuthorizationRequest')->find_last_by_email( $authorization->email->value );
+    my $last_result = $self->resultset('AuthenticationRequest')->find_last_by_email( $authorization->email->value );
 
-    # validate token
-    $authorization->validate_token( $last_result->token );
+    # verify token
+    $authorization->verify_token( $last_result->token );
     return ( $self->_logging( $authorization->error_message ), $authorization )
-      unless $authorization->is_valid;
+      unless $authorization->is_verified;
 
     # passed
     $last_result->update( { is_activated => 1 } );
@@ -54,7 +54,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Service::Authorization
+Yetie::Service::Authentication
 
 =head1 SYNOPSIS
 
@@ -62,12 +62,12 @@ Yetie::Service::Authorization
 
 =head1 ATTRIBUTES
 
-L<Yetie::Service::Authorization> inherits all attributes from L<Yetie::Service> and implements
+L<Yetie::Service::Authentication> inherits all attributes from L<Yetie::Service> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Service::Authorization> inherits all methods from L<Yetie::Service> and implements
+L<Yetie::Service::Authentication> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
 =head2 C<generate_token>
@@ -96,9 +96,9 @@ Redirect url or route name.
 
 Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
 
-=head2 C<validate>
+=head2 C<verify>
 
-    my $authorization = $service->validate($token);
+    my $authorization = $service->verify($token);
 
 Return Return L<Yetie::Domain::Entity::Authorization>.
 
