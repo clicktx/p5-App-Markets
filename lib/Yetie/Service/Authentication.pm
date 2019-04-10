@@ -13,14 +13,14 @@ sub generate_token {
     );
 
     # Store to DB
-    $self->resultset('AuthorizationRequest')->store_token($authorization);
+    $self->resultset('AuthenticationRequest')->store_token($authorization);
     return $authorization->token;
 }
 
 sub find_request {
     my ( $self, $token ) = @_;
 
-    my $rs = $self->resultset('AuthorizationRequest');
+    my $rs = $self->resultset('AuthenticationRequest');
     my $result = $rs->find( { token => $token }, { prefetch => 'email' } ) || return $self->_logging('Not found token');
     return $self->factory('entity-auth')->construct( $result->to_data );
 }
@@ -34,7 +34,7 @@ sub verify {
     return $self->factory('entity-auth')->construct() unless $authorization;
 
     # last request
-    my $last_result = $self->resultset('AuthorizationRequest')->find_last_by_email( $authorization->email->value );
+    my $last_result = $self->resultset('AuthenticationRequest')->find_last_by_email( $authorization->email->value );
 
     # verify token
     $authorization->verify_token( $last_result->token );

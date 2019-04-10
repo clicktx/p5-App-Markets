@@ -15,7 +15,7 @@ sub _init {
 
 subtest 'generate_token' => sub {
     my ( $c, $s ) = _init();
-    my $rs      = $c->resultset('AuthorizationRequest');
+    my $rs      = $c->resultset('AuthenticationRequest');
     my $last_id = $rs->last_id;
 
     my $r = qr/[0-9A-F]/;
@@ -27,7 +27,7 @@ subtest 'generate_token' => sub {
 subtest 'find_request' => sub {
     my ( $c, $s ) = _init();
 
-    my $rs    = $c->resultset('AuthorizationRequest');
+    my $rs    = $c->resultset('AuthenticationRequest');
     my $email = 'foo@bar.baz';
     my $token = $s->generate_token($email);
 
@@ -48,7 +48,7 @@ subtest 'verify' => sub {
     # Hack expired
     my $token1  = $s->generate_token($email);
     my $expires = time - 3600;
-    $c->resultset('AuthorizationRequest')->find( { token => $token1->value } )->update( { expires => $expires } );
+    $c->resultset('AuthenticationRequest')->find( { token => $token1->value } )->update( { expires => $expires } );
     $res = $s->verify($token1);
     ok !$res->is_verified, 'right expired';
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';

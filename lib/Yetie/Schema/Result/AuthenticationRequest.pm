@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::AuthorizationRequest;
+package Yetie::Schema::Result::AuthenticationRequest;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
