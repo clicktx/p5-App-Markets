@@ -5,7 +5,7 @@ sub generate_token {
     my ( $self, $email, $opt ) = ( shift, shift, shift || {} );
 
     my $remote_address = $self->controller->remote_address;
-    my $authorization  = $self->factory('entity-authorization')->construct(
+    my $authorization  = $self->factory('entity-auth')->construct(
         email          => $email,
         redirect       => $opt->{redirect},
         remote_address => $remote_address,
@@ -22,7 +22,7 @@ sub find_request {
 
     my $rs = $self->resultset('AuthorizationRequest');
     my $result = $rs->find( { token => $token }, { prefetch => 'email' } ) || return $self->_logging('Not found token');
-    return $self->factory('entity-authorization')->construct( $result->to_data );
+    return $self->factory('entity-auth')->construct( $result->to_data );
 }
 
 # NOTE: アクセス制限が必要？同一IP、時間内回数制限
@@ -31,15 +31,15 @@ sub verify {
     my ( $self, $token ) = @_;
 
     my $authorization = $self->find_request($token);
-    return $self->factory('entity-authorization')->construct() unless $authorization;
+    return $self->factory('entity-auth')->construct() unless $authorization;
 
     # last request
     my $last_result = $self->resultset('AuthorizationRequest')->find_last_by_email( $authorization->email->value );
 
     # verify token
-    $authorization->validate_token( $last_result->token );
+    $authorization->verify_token( $last_result->token );
     return ( $self->_logging( $authorization->error_message ), $authorization )
-      unless $authorization->is_valid;
+      unless $authorization->is_verified;
 
     # passed
     $last_result->update( { is_activated => 1 } );

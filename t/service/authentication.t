@@ -50,20 +50,20 @@ subtest 'verify' => sub {
     my $expires = time - 3600;
     $c->resultset('AuthorizationRequest')->find( { token => $token1->value } )->update( { expires => $expires } );
     $res = $s->verify($token1);
-    ok !$res->is_valid, 'right expired';
+    ok !$res->is_verified, 'right expired';
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 
     my $token2 = $s->generate_token($email);
     my $token3 = $s->generate_token($email);
     $res = $s->verify( $token2->value );
-    ok !$res->is_valid, 'right not last request';
+    ok !$res->is_verified, 'right not last request';
 
     $res = $s->verify( $token3->value );
-    ok $res->is_valid, 'right first validation';
+    ok $res->is_verified, 'right first verify';
     is $res->email->value, $email, 'right request email';
 
     $res = $s->verify( $token3->value );
-    ok !$res->is_valid, 'right second validation';
+    ok !$res->is_verified, 'right second verify';
 };
 
 done_testing();
