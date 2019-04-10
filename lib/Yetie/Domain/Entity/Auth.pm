@@ -8,9 +8,9 @@ has remote_address => 'unknown';
 has is_activated   => 0;
 has expires        => sub { __PACKAGE__->factory('value-expires')->construct() };
 has error_message  => '';
-has _is_valid      => 0;
+has _is_verified   => 0;
 
-sub is_valid { shift->_is_valid(@_) }
+sub is_verified { shift->_is_verified(@_) }
 
 sub verify_token {
     my ( $self, $last_token ) = @_;
@@ -25,13 +25,13 @@ sub verify_token {
     return $self->_fails('Expired') if $self->expires->is_expired;
 
     # All passed
-    $self->_is_valid(1);
+    $self->_is_verified(1);
 }
 
 sub _fails {
     my $self = shift;
 
-    $self->_is_valid(0);
+    $self->_is_verified(0);
     $self->error_message(shift);
 }
 
@@ -70,9 +70,9 @@ the following new ones.
 L<Yetie::Domain::Entity::Auth> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<is_valid>
+=head2 C<is_verified>
 
-    my $bool = $auth->is_valid;
+    my $bool = $auth->is_verified;
 
 Return boolean value.
 

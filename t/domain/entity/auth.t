@@ -14,7 +14,7 @@ subtest 'basic' => sub {
 
     can_ok $auth, 'remote_address';
     can_ok $auth, 'is_activated';
-    can_ok $auth, 'is_valid';
+    can_ok $auth, 'is_verified';
     can_ok $auth, 'error_message';
 };
 
@@ -26,10 +26,10 @@ subtest 'verify_token' => sub {
         expires => time,
     );
     $auth->verify_token('abc');
-    ok $auth->is_valid, 'right validate';
+    ok $auth->is_verified, 'right verified';
 
     $auth->verify_token('aaa');
-    ok !$auth->is_valid, 'right fail';
+    ok !$auth->is_verified, 'right fail';
     like $auth->error_message, qr/Different from last token/, 'right error message';
 
     $auth = $f->construct(
@@ -38,7 +38,7 @@ subtest 'verify_token' => sub {
         is_activated => 1,
     );
     $auth->verify_token('abc');
-    ok !$auth->is_valid, 'right fail';
+    ok !$auth->is_verified, 'right fail';
     like $auth->error_message, qr/Activated/, 'right error message';
 
     $auth = $f->construct(
@@ -47,7 +47,7 @@ subtest 'verify_token' => sub {
         is_activated => 0,
     );
     $auth->verify_token('abc');
-    ok !$auth->is_valid, 'right fail';
+    ok !$auth->is_verified, 'right fail';
     like $auth->error_message, qr/Expired/, 'right error message';
 };
 
