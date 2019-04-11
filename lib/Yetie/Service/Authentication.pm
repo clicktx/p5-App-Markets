@@ -7,7 +7,7 @@ sub generate_token {
 
     my $auth = $self->factory('entity-auth')->construct(
         email          => $email,
-        redirect       => $settings->{redirect},
+        continue_url   => $settings->{continue_url},
         remote_address => $remote_address,
         expires        => $settings->{expires},
     );
@@ -82,13 +82,13 @@ B<OPTIONS>
 
 =over 4
 
-=item redirect
+=item continue_url
 
 Redirect url or route name.
 
 =back
 
-    my $token = $service->generate_token( $email, { redirect => 'RN_foo'} );
+    my $token = $service->generate_token( $email, { continue_url => 'RN_foo'} );
 
 =head2 C<find_request>
 

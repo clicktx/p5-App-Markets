@@ -29,7 +29,7 @@ sub store_token {
             {
                 email_id       => $email_id,
                 token          => $auth->token->value,
-                redirect       => $auth->redirect,
+                continue_url   => $auth->continue_url,
                 remote_address => $auth->remote_address,
                 expires        => $auth->expires->value,
             }

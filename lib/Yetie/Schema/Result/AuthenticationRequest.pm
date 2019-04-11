@@ -18,7 +18,7 @@ unique_column token => {
     is_nullable => 0,
 };
 
-column redirect => {
+column continue_url => {
     data_type   => 'VARCHAR',
     size        => 255,
     is_nullable => 1,
@@ -66,7 +66,7 @@ sub to_data {
         id             => $self->id,
         email          => $self->email->address,
         token          => $self->token,
-        redirect       => $self->redirect,
+        continue_url   => $self->continue_url,
         remote_address => $self->remote_address,
         is_activated   => $self->is_activated,
         expires        => $self->expires,
