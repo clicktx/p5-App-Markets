@@ -2,19 +2,19 @@ package Yetie::Service::Authentication;
 use Mojo::Base 'Yetie::Service';
 
 sub generate_token {
-    my ( $self, $email, $opt ) = ( shift, shift, shift || {} );
-
+    my ( $self, $email, $settings ) = ( shift, shift, shift || {} );
     my $remote_address = $self->controller->remote_address;
-    my $authorization  = $self->factory('entity-auth')->construct(
+
+    my $auth = $self->factory('entity-auth')->construct(
         email          => $email,
-        redirect       => $opt->{redirect},
+        redirect       => $settings->{redirect},
         remote_address => $remote_address,
-        expires        => $opt->{expires},
+        expires        => $settings->{expires},
     );
 
     # Store to DB
-    $self->resultset('AuthenticationRequest')->store_token($authorization);
-    return $authorization->token;
+    $self->resultset('AuthenticationRequest')->store_token($auth);
+    return $auth->token;
 }
 
 sub find_request {
@@ -30,21 +30,21 @@ sub find_request {
 sub verify {
     my ( $self, $token ) = @_;
 
-    my $authorization = $self->find_request($token);
-    return $self->factory('entity-auth')->construct() unless $authorization;
+    my $auth = $self->find_request($token);
+    return $self->factory('entity-auth')->construct() unless $auth;
 
     # last request
-    my $last_result = $self->resultset('AuthenticationRequest')->find_last_by_email( $authorization->email->value );
+    my $last_result = $self->resultset('AuthenticationRequest')->find_last_by_email( $auth->email->value );
 
     # verify token
-    $authorization->verify_token( $last_result->token );
-    return ( $self->_logging( $authorization->error_message ), $authorization )
-      unless $authorization->is_verified;
+    $auth->verify_token( $last_result->token );
+    return ( $self->_logging( $auth->error_message ), $auth )
+      unless $auth->is_verified;
 
     # passed
     $last_result->update( { is_activated => 1 } );
-    $authorization->is_activated(1);
-    return $authorization;
+    $auth->is_activated(1);
+    return $auth;
 }
 
 sub _logging { shift->logging_warn( 'passwordless.authorization.failed', reason => shift ) && 0 }
@@ -92,13 +92,13 @@ Redirect url or route name.
 
 =head2 C<find_request>
 
-    my $authorization = $service->find_request($token);
+    my $auth = $service->find_request($token);
 
 Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
 
 =head2 C<verify>
 
-    my $authorization = $service->verify($token);
+    my $auth = $service->verify($token);
 
 Return Return L<Yetie::Domain::Entity::Authorization>.
 

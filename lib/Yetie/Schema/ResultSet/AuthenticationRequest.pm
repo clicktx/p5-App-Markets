@@ -20,18 +20,18 @@ sub remove_request_by_token {
 }
 
 sub store_token {
-    my ( $self, $authorization ) = @_;
+    my ( $self, $auth ) = @_;
 
     my $cb = sub {
         my $email_id =
-          $self->schema->resultset('Email')->find_or_create( { address => $authorization->email->value } )->id;
+          $self->schema->resultset('Email')->find_or_create( { address => $auth->email->value } )->id;
         $self->create(
             {
                 email_id       => $email_id,
-                token          => $authorization->token->value,
-                redirect       => $authorization->redirect,
-                remote_address => $authorization->remote_address,
-                expires        => $authorization->expires->value,
+                token          => $auth->token->value,
+                redirect       => $auth->redirect,
+                remote_address => $auth->remote_address,
+                expires        => $auth->expires->value,
             }
         );
     };
@@ -76,7 +76,7 @@ Remove token in storage.
 
 =head2 C<store_token>
 
-    $rs->store_token($authorization_entity);
+    $rs->store_token($auth_entity);
 
 Save the token for storage.
 
