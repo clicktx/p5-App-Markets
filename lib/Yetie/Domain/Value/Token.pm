@@ -10,12 +10,6 @@ sub new {
     return $class->SUPER::new( value => $token );
 }
 
-sub is_uuid {
-    my $self = shift;
-    my $r    = qr/[0-9A-F]/;
-    return $self->value =~ qr/$r{8}\-$r{4}\-4$r{3}\-[89AB]$r{3}\-$r{12}/ ? 1 : 0;
-}
-
 1;
 __END__
 
@@ -42,12 +36,6 @@ the following new ones.
 
 L<Yetie::Domain::Value::Token> inherits all methods from L<Yetie::Domain::Value> and implements
 the following new ones.
-
-=head2 C<is_uuid>
-
-    my $bool = $v->is_uuid;
-
-Return boolean value.
 
 =head1 AUTHOR
 
