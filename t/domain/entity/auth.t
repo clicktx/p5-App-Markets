@@ -8,15 +8,15 @@ use_ok $pkg;
 subtest 'basic' => sub {
     my $auth = Yetie::Factory->new('entity-auth')->construct();
     ok $auth;
-    isa_ok $auth->token,   'Yetie::Domain::Value::Token';
     isa_ok $auth->email,   'Yetie::Domain::Value::Email';
     isa_ok $auth->expires, 'Yetie::Domain::Value::Expires';
+    isa_ok $auth->token,   'Yetie::Domain::Value::Token';
 
     can_ok $auth, 'continue_url';
-    can_ok $auth, 'remote_address';
+    can_ok $auth, 'error_message';
     can_ok $auth, 'is_activated';
     can_ok $auth, 'is_verified';
-    can_ok $auth, 'error_message';
+    can_ok $auth, 'remote_address';
 };
 
 subtest 'verify_token' => sub {

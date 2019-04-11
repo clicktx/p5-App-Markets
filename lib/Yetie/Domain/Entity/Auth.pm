@@ -1,14 +1,14 @@
 package Yetie::Domain::Entity::Auth;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
-has token => sub { __PACKAGE__->factory('value-token')->construct() };
-has email => sub { __PACKAGE__->factory('value-email')->construct() };
-has continue_url   => 'RN_home';
-has remote_address => 'unknown';
-has is_activated   => 0;
-has expires        => sub { __PACKAGE__->factory('value-expires')->construct() };
-has error_message  => '';
 has _is_verified   => 0;
+has continue_url   => 'RN_home';
+has email          => sub { __PACKAGE__->factory('value-email')->construct() };
+has error_message  => '';
+has expires        => sub { __PACKAGE__->factory('value-expires')->construct() };
+has is_activated   => 0;
+has remote_address => 'unknown';
+has token          => sub { __PACKAGE__->factory('value-token')->construct() };
 
 sub is_verified { shift->_is_verified(@_) }
 
@@ -51,21 +51,21 @@ Yetie::Domain::Entity::Auth
 L<Yetie::Domain::Entity::Auth> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<token>
-
-=head2 C<email>
-
 =head2 C<continue_url>
 
 Default: RN_home
 
-=head2 C<remote_address>
+=head2 C<email>
 
-=head2 C<is_activated>
+=head2 C<error_message>
 
 =head2 C<expires>
 
-=head2 C<error_message>
+=head2 C<is_activated>
+
+=head2 C<remote_address>
+
+=head2 C<token>
 
 =head1 METHODS
 
