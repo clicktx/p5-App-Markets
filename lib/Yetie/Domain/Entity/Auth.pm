@@ -3,7 +3,7 @@ use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has token => sub { __PACKAGE__->factory('value-token')->construct() };
 has email => sub { __PACKAGE__->factory('value-email')->construct() };
-has continue_url       => '';
+has continue_url   => 'RN_home';
 has remote_address => 'unknown';
 has is_activated   => 0;
 has expires        => sub { __PACKAGE__->factory('value-expires')->construct() };
@@ -56,6 +56,8 @@ the following new ones.
 =head2 C<email>
 
 =head2 C<continue_url>
+
+Default: RN_home
 
 =head2 C<remote_address>
 
