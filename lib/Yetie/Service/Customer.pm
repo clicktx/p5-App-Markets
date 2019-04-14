@@ -33,24 +33,24 @@ sub add_history {
 }
 
 sub create_new_customer {
-    my ( $self, $email ) = @_;
+    my ( $self, $email_addr ) = @_;
 
-    my $result = $self->resultset('Customer')->create_new_customer($email);
+    my $result = $self->resultset('Customer')->create_new_customer($email_addr);
     return unless $result;
 
     return $self->factory('entity-customer')->construct( $result->to_data );
 }
 
 sub find_customer {
-    my ( $self, $email ) = @_;
+    my ( $self, $email_addr ) = @_;
 
-    my $result   = $self->resultset('Customer')->find_by_email($email);
+    my $result   = $self->resultset('Customer')->find_by_email($email_addr);
     my $data     = $result ? $result->to_data : {};
     my $customer = $self->factory('entity-customer')->construct($data);
     return $customer if $customer->is_registered;
 
     # Guset customer
-    my $guest_email = $self->service('email')->find_email($email);
+    my $guest_email = $self->service('email')->find_email($email_addr);
     $customer->emails->append($guest_email);
     return $customer;
 }
@@ -102,13 +102,13 @@ sub login {
 }
 
 sub login_process_remember_me {
-    my ( $self, $email ) = @_;
+    my ( $self, $email_addr ) = @_;
 
-    my $customer = $self->find_customer($email);
+    my $customer = $self->find_customer($email_addr);
     return unless $customer->id;
 
     # Recreate token
-    $self->remember_me_token($email);
+    $self->remember_me_token($email_addr);
 
     # Login
     $self->login( $customer->id );
@@ -130,15 +130,15 @@ sub login_process_with_password {
 }
 
 sub remember_me_token {
-    my ( $self, $email ) = @_;
+    my ( $self, $email_addr ) = @_;
     my $c = $self->controller;
 
     # Getter
-    return $c->cookie('remember_me') unless $email;
+    return $c->cookie('remember_me') unless $email_addr;
 
     # Setter
     my $expires = time + $c->pref('cookie_expires_long');
-    my $token   = $c->service('authorization')->generate_token( $email, { expires => $expires } );
+    my $token   = $c->service('authorization')->generate_token( $email_addr, { expires => $expires } );
     my $path    = $c->match->root->lookup('RN_customer_login_remember_me')->to_string;
     $c->cookie( remember_me => $token, { expires => $expires, path => $path } );
     $c->cookie( has_remember_me => 1, { expires => $expires } );
@@ -183,12 +183,12 @@ sub search_customers {
 sub send_authorization_mail {
     my ( $self, $form ) = @_;
 
-    my $c        = $self->controller;
-    my $redirect = $c->flash('ref') || 'RN_home';
-    my $email    = $form->param('email');
-    my $token    = $c->service('authorization')->generate_token( $email, { redirect => $redirect } );
+    my $c          = $self->controller;
+    my $redirect   = $c->flash('ref') || 'RN_home';
+    my $email_addr = $form->param('email');
+    my $token      = $c->service('authorization')->generate_token( $email_addr, { redirect => $redirect } );
 
-    my $customer       = $self->find_customer($email);
+    my $customer       = $self->find_customer($email_addr);
     my $callback_route = $customer->is_registered ? 'RN_callback_customer_login' : 'RN_callback_customer_signup';
     my $url            = $c->url_for( $callback_route, token => $token );
 
@@ -267,13 +267,13 @@ the following new ones.
 
     Create new customer.
 
-    my $customer_id = $service->create_new_customer($email);
+    my $customer_id = $service->create_new_customer('foo@bar.baz');
 
 Return L<Yetie::Domain::Entity::Customer> object or C<undef>.
 
 =head2 C<find_customer>
 
-    my $entity = $service->find_customer($email);
+    my $entity = $service->find_customer('foo@bar.baz');
 
 Return L<Yetie::Domain::Entity::Customer> object.
 
@@ -297,7 +297,7 @@ Return customer ID.
 
 =head2 C<login_process_remember_me>
 
-    my $customer_id = $service->login_process_with_password($email);
+    my $customer_id = $service->login_process_with_password('foo@bar.baz');
 
 Return customer ID if log-in succeeded or C<undefined>.
 
@@ -310,7 +310,7 @@ Return customer ID if log-in succeeded or C<undefined>.
 =head2 C<remember_me_token>
 
     # Setter
-    $service->remember_me_token($email);
+    $service->remember_me_token('foo@bar.baz');
 
     # Getter
     my $token = $service->remember_me_token;
@@ -333,7 +333,7 @@ Return L<Yetie::Domain::Entity::Page::Customers> Object.
 
 =head2 C<send_authorization_mail>
 
-    $service->send_authorization_mail($email);
+    $service->send_authorization_mail('foo@bar.baz');
 
 Will send an magic link email for log-in or sign-up.
 
