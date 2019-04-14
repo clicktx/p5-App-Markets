@@ -1,6 +1,13 @@
 package Yetie::Schema::ResultSet::Email;
 use Mojo::Base 'Yetie::Schema::ResultSet';
 
+sub verified {
+    my ( $self, $email_addr ) = @_;
+    return unless $email_addr;
+
+    $self->single( { address => $email_addr } )->update( { is_verified => 1 } );
+}
+
 1;
 __END__
 =encoding utf8
@@ -26,6 +33,10 @@ L<Yetie::Schema::ResultSet::Email> inherits all methods from L<Yetie::Schema::Re
 the following new ones.
 
 =head2 C<verified>
+
+    $resultset->verified( 'foo@bar.baz' );
+
+Set is_vefified => 1.
 
 =head1 AUTHOR
 
