@@ -123,6 +123,9 @@ sub add_catalog_routes {
     # Logout
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
 
+    # Magic link
+    $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.verify');
+
     # Remember me
     $r->get('/login/remember-me')->to('login#remember_me')->name('RN_customer_login_remember_me');
     $r = $r->under('/')->to('account#remember_me_handler')->name('RN_customer_remember_me_handler');

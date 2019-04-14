@@ -16,8 +16,8 @@ sub send_magic_link {
     # WIP: 送信制限、エラー等
     # return $c->reply->error();
 
-    my $token = $c->service('authorization')->generate_token( $email_addr, { redirect => $callback_route } );
-    my $url = $c->url_for( 'RN_magic_link', token => $token->value );
+    my $token = $c->service('authentication')->generate_token( $email_addr, { redirect => $callback_route } );
+    my $url = $c->url_for( 'rn.auth.magic_link.verify', token => $token->value );
 
     # WIP: Send email
     say $url->to_abs;
