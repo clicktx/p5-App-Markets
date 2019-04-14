@@ -19,6 +19,16 @@ subtest 'basic' => sub {
     can_ok $auth, 'remote_address';
 };
 
+subtest 'continue' => sub {
+    my $f = Yetie::Factory->new('entity-auth');
+
+    my $auth = $f->construct();
+    is $auth->continue, 'RN_home', 'right default';
+
+    $auth = $f->construct( continue_url => 'foo' );
+    is $auth->continue, 'foo', 'right continue_url';
+};
+
 subtest 'verify_token' => sub {
     my $f = Yetie::Factory->new('entity-auth');
 

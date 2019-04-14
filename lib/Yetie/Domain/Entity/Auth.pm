@@ -2,13 +2,15 @@ package Yetie::Domain::Entity::Auth;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has _is_verified   => 0;
-has continue_url   => 'RN_home';
+has continue_url   => '';
 has email          => sub { __PACKAGE__->factory('value-email')->construct() };
 has error_message  => '';
 has expires        => sub { __PACKAGE__->factory('value-expires')->construct() };
 has is_activated   => 0;
 has remote_address => 'unknown';
 has token          => sub { __PACKAGE__->factory('value-token')->construct() };
+
+sub continue { shift->{continue_url} // 'RN_home' }
 
 sub is_verified { shift->_is_verified(@_) }
 
@@ -53,8 +55,6 @@ the following new ones.
 
 =head2 C<continue_url>
 
-Default: RN_home
-
 =head2 C<email>
 
 =head2 C<error_message>
@@ -71,6 +71,12 @@ Default: RN_home
 
 L<Yetie::Domain::Entity::Auth> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<continue>
+
+    my $continue_url = $auth->continue;
+
+Return L</continue_url> or 'RN_home'.
 
 =head2 C<is_verified>
 
