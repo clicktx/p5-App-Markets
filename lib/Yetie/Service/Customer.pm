@@ -55,6 +55,15 @@ sub find_customer {
     return $customer;
 }
 
+sub find_or_create_customer {
+    my ( $self, $email_addr ) = @_;
+
+    my $customer = $self->find_customer($email_addr);
+    return $customer if $customer->is_registered;
+
+    $self->create_new_customer($email_addr);
+}
+
 sub get_address_list {
     my ( $self, $customer_id ) = @_;
 
@@ -274,6 +283,12 @@ Return L<Yetie::Domain::Entity::Customer> object or C<undef>.
 =head2 C<find_customer>
 
     my $entity = $service->find_customer('foo@bar.baz');
+
+Return L<Yetie::Domain::Entity::Customer> object.
+
+=head2 C<find_or_create_customer>
+
+    my $entity = $service->find_or_create_customer('foo@bar.baz');
 
 Return L<Yetie::Domain::Entity::Customer> object.
 
