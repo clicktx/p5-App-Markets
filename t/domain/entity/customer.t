@@ -30,12 +30,12 @@ subtest 'is_guest' => sub {
     is $customer->is_guest, 0, 'right guest customer';
 };
 
-subtest 'is_registered' => sub {
+subtest 'is_member' => sub {
     my $customer = $pkg->new();
-    is $customer->is_registered, 0, 'right not register';
+    is $customer->is_member, 0, 'right not register';
 
     $customer = Yetie::Factory->new('entity-customer')->construct( id => 1 );
-    is $customer->is_registered, 1, 'right register';
+    is $customer->is_member, 1, 'right register';
 };
 
 done_testing();

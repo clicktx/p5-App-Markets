@@ -46,7 +46,7 @@ sub with_link {
 
     # 登録済みのemailの場合は不正なリクエスト
     my $customer = $customer_service->find_customer( $email->value );
-    return $c->reply->error(%error_messages) if $customer->is_registered;
+    return $c->reply->error(%error_messages) if $customer->is_member;
 
     # Create customer
     my $new_customer = $customer_service->create_customer( $email->value );

@@ -47,7 +47,7 @@ sub find_customer {
     my $result   = $self->resultset('Customer')->find_by_email($email_addr);
     my $data     = $result ? $result->to_data : {};
     my $customer = $self->factory('entity-customer')->construct($data);
-    return $customer if $customer->is_registered;
+    return $customer if $customer->is_member;
 
     # Guset customer
     my $guest_email = $self->service('email')->find_email($email_addr);
@@ -59,7 +59,7 @@ sub find_or_create_customer {
     my ( $self, $email_addr ) = @_;
 
     my $customer = $self->find_customer($email_addr);
-    return $customer if $customer->is_registered;
+    return $customer if $customer->is_member;
 
     $self->create_customer($email_addr);
 }
@@ -129,7 +129,7 @@ sub login_process_with_password {
     # Find account
     my $customer = $self->find_customer( $form->param('email') );
     return $self->_login_failed( 'login.failed.not_found', $form )
-      unless $customer->is_registered;
+      unless $customer->is_member;
 
     # Authentication
     return $self->_login_failed( 'login.failed.password', $form )
@@ -198,7 +198,7 @@ sub send_authorization_mail {
     my $token      = $c->service('authorization')->generate_token( $email_addr, { redirect => $redirect } );
 
     my $customer       = $self->find_customer($email_addr);
-    my $callback_route = $customer->is_registered ? 'RN_callback_customer_login' : 'RN_callback_customer_signup';
+    my $callback_route = $customer->is_member ? 'RN_callback_customer_login' : 'RN_callback_customer_signup';
     my $url            = $c->url_for( $callback_route, token => $token );
 
     # Add remember me
@@ -209,7 +209,7 @@ sub send_authorization_mail {
     # NOTE: demo and debug
     $c->flash( callback_url => $url->to_abs );
 
-    my $redirect_route = $customer->is_registered ? 'RN_customer_login_sent_email' : 'RN_customer_signup_sent_email';
+    my $redirect_route = $customer->is_member ? 'RN_customer_login_sent_email' : 'RN_customer_signup_sent_email';
     return $c->redirect_to($redirect_route);
 }
 

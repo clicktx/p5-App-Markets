@@ -75,7 +75,7 @@ sub with_link {
     # Customer
     my $email    = $authorization->email;
     my $customer = $c->service('customer')->find_customer( $email->value );
-    return $c->reply->error(%error_messages) unless $customer->is_registered;
+    return $c->reply->error(%error_messages) unless $customer->is_member;
 
     # Login
     $c->service('customer')->login( $customer->id );
