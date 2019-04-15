@@ -9,8 +9,6 @@ has emails     => sub { __PACKAGE__->factory('list-emails')->construct() };
 
 sub has_password { shift->password->value ? 1 : 0 }
 
-sub is_guest { shift->id ? 0 : 1 }
-
 sub is_member { shift->id ? 1 : 0 }
 
 1;
@@ -57,12 +55,6 @@ the following new ones.
     my $bool = $customer->has_password;
 
 Returns true if a password has been set.
-
-=head2 C<is_guest>
-
-    my $bool = $customer->is_guest;
-
-Returns true if guest customer.
 
 =head2 C<is_member>
 

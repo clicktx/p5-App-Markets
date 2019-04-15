@@ -81,7 +81,7 @@ sub t03_find_customer : Tests() {
     $entity = $s->find_customer('foo@bar.baz');
     isa_ok $entity, 'Yetie::Domain::Entity::Customer';
     is $entity->id, undef, 'right nonexists';
-    ok $entity->is_guest, 'right guest';
+    ok !$entity->is_member, 'right guest';
 }
 
 sub t04_find_or_create_customer : Tests() {
