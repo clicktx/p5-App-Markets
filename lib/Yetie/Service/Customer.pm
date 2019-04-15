@@ -32,10 +32,10 @@ sub add_history {
     $c->server_session->data( history => $history );
 }
 
-sub create_new_customer {
+sub create_customer {
     my ( $self, $email_addr ) = @_;
 
-    my $result = $self->resultset('Customer')->create_new_customer($email_addr);
+    my $result = $self->resultset('Customer')->create_customer($email_addr);
     return unless $result;
 
     return $self->factory('entity-customer')->construct( $result->to_data );
@@ -61,7 +61,7 @@ sub find_or_create_customer {
     my $customer = $self->find_customer($email_addr);
     return $customer if $customer->is_registered;
 
-    $self->create_new_customer($email_addr);
+    $self->create_customer($email_addr);
 }
 
 sub get_address_list {
@@ -272,11 +272,11 @@ the following new ones.
     Add history current URL for server session.
     Unsave list setting in L<Yetie::Routes>.
 
-=head2 C<create_new_customer>
+=head2 C<create_customer>
 
     Create new customer.
 
-    my $customer_id = $service->create_new_customer('foo@bar.baz');
+    my $customer_id = $service->create_customer('foo@bar.baz');
 
 Return L<Yetie::Domain::Entity::Customer> object or C<undef>.
 

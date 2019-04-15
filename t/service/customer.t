@@ -57,15 +57,15 @@ sub t01 : Tests() {
     };
 }
 
-sub t02_create_new_customer : Tests() {
+sub t02_create_customer : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
-    my $new_customer = $s->create_new_customer('new_customer_on_service@example.com');
+    my $new_customer = $s->create_customer('new_customer_on_service@example.com');
     isa_ok $new_customer, 'Yetie::Domain::Entity::Customer';
     ok $new_customer->id, 'right id';
 
-    $new_customer = $s->create_new_customer('new_customer_on_service@example.com');
+    $new_customer = $s->create_customer('new_customer_on_service@example.com');
     is $new_customer, undef, 'right duplicated';
 }
 
@@ -93,7 +93,7 @@ sub t04_find_or_create_customer : Tests() {
     is $entity->id, 111, 'right find customer';
 
     my $last_cid = $c->resultset('Customer')->last_id;
-    $entity = $s->find_or_create_customer('create_new_customer@foo.bar');
+    $entity = $s->find_or_create_customer('find_or_create_customer@foo.bar');
     isa_ok $entity, 'Yetie::Domain::Entity::Customer';
     is $entity->id, $last_cid + 1, 'right create customer';
 }
