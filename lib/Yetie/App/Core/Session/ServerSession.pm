@@ -51,7 +51,7 @@ sub flush {
     return $result;
 }
 
-sub generate_cookie_token {
+sub create_cookie_token {
     my $self = shift;
     Yetie::Util::generate_token( length => $self->cookie_token_length, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
 }
@@ -127,7 +127,7 @@ sub clear {
     return if @_;
 
     # Init Cart
-    $self->_init_cart( $self->generate_cookie_token );
+    $self->_init_cart( $self->create_cookie_token );
 }
 
 # Override method MojoX::Session::create
@@ -147,7 +147,7 @@ sub create {
     }
 
     # cart
-    my $cart_id = $args->{cart_id} || $self->generate_cookie_token;
+    my $cart_id = $args->{cart_id} || $self->create_cookie_token;
     $self->_init_cart($cart_id);
 
     return $sid;
@@ -246,7 +246,7 @@ Alias for L</cart_session>
 
 Default: 40
 
-See L</generate_cookie_token>
+See L</create_cookie_token>
 
 =head1 METHODS
 
@@ -305,9 +305,9 @@ This method override L<MojoX::Session/extend_expires>.
 This method override L<MojoX::Session/flush>.
 Stored session data.
 
-=head2 C<generate_cookie_token>
+=head2 C<create_cookie_token>
 
-    my $token = $session->generate_cookie_token;
+    my $token = $session->create_cookie_token;
 
 =head2 C<is_customer_logged_in>
 
