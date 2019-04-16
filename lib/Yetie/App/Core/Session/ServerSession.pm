@@ -307,7 +307,7 @@ Stored session data.
 
 =head2 C<generate_cookie_token>
 
-    my $token = $session->generate_token;
+    my $token = $session->generate_cookie_token;
 
 =head2 C<is_customer_logged_in>
 
