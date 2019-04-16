@@ -85,8 +85,8 @@ sub directories {
 
 Generate secure token. based L<Session::Token>
 
-    use Yetie::Util qw(genarate_token);
-    my $token = genarate_token( { length => 30 } );
+    use Yetie::Util qw(generate_token);
+    my $token = generate_token( { length => 30 } );
     # -> ZVZdkwIfNrvsk9N8f3jB0zBZ12kePJ
 
 B<options>
