@@ -53,7 +53,7 @@ sub flush {
 
 sub create_cookie_token {
     my $self = shift;
-    Yetie::Util::generate_token( length => $self->cookie_token_length, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
+    Yetie::Util::create_token( length => $self->cookie_token_length, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
 }
 
 sub is_customer_logged_in { return shift->customer_id ? 1 : 0 }

@@ -147,7 +147,7 @@ sub remember_me_token {
 
     # Setter
     my $expires = time + $c->pref('cookie_expires_long');
-    my $token   = $c->service('authorization')->generate_token( $email_addr, { expires => $expires } );
+    my $token   = $c->service('authorization')->create_token( $email_addr, { expires => $expires } );
     my $path    = $c->match->root->lookup('RN_customer_login_remember_me')->to_string;
     $c->cookie( remember_me => $token, { expires => $expires, path => $path } );
     $c->cookie( has_remember_me => 1, { expires => $expires } );
@@ -195,7 +195,7 @@ sub send_authorization_mail {
     my $c          = $self->controller;
     my $redirect   = $c->flash('ref') || 'RN_home';
     my $email_addr = $form->param('email');
-    my $token      = $c->service('authorization')->generate_token( $email_addr, { redirect => $redirect } );
+    my $token      = $c->service('authorization')->create_token( $email_addr, { redirect => $redirect } );
 
     my $customer       = $self->find_customer($email_addr);
     my $callback_route = $customer->is_member ? 'RN_callback_customer_login' : 'RN_callback_customer_signup';

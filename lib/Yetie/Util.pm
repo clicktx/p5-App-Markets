@@ -9,7 +9,7 @@ use List::Util qw/reduce/;
 use Mojo::Loader;
 use Session::Token;
 
-our @EXPORT_OK = (qw(array_to_hash directories generate_token load_class uuid));
+our @EXPORT_OK = (qw(array_to_hash directories create_token load_class uuid));
 
 =head1 FUNCTIONS
 
@@ -81,12 +81,12 @@ sub directories {
 
 =over
 
-=item C<generate_token>
+=item C<create_token>
 
 Generate secure token. based L<Session::Token>
 
-    use Yetie::Util qw(generate_token);
-    my $token = generate_token( { length => 30 } );
+    use Yetie::Util qw(create_token);
+    my $token = create_token( { length => 30 } );
     # -> ZVZdkwIfNrvsk9N8f3jB0zBZ12kePJ
 
 B<options>
@@ -97,7 +97,7 @@ SEE ALSO L<Session::Token>
 
 =cut
 
-sub generate_token { Session::Token->new(@_)->get }
+sub create_token { Session::Token->new(@_)->get }
 
 =over
 

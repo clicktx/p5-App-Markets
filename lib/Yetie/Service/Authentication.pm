@@ -1,7 +1,7 @@
 package Yetie::Service::Authentication;
 use Mojo::Base 'Yetie::Service';
 
-sub generate_token {
+sub create_token {
     my ( $self, $email, $settings ) = ( shift, shift, shift || {} );
     my $remote_address = $self->controller->remote_address;
 
@@ -70,9 +70,9 @@ the following new ones.
 L<Yetie::Service::Authentication> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
-=head2 C<generate_token>
+=head2 C<create_token>
 
-    my $token = $service->generate_token( $email, \%options );
+    my $token = $service->create_token( $email, \%options );
 
 Create one-time token and store it in the DB.
 
@@ -88,7 +88,7 @@ Redirect url or route name.
 
 =back
 
-    my $token = $service->generate_token( $email, { continue_url => 'RN_foo'} );
+    my $token = $service->create_token( $email, { continue_url => 'RN_foo'} );
 
 =head2 C<find_request>
 
