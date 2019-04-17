@@ -3,18 +3,22 @@ use Test::More;
 use Yetie::Domain::Collection qw(c);
 
 my $pkg = 'Yetie::Domain::List::Emails';
+my $vo  = 'Yetie::Domain::Value::Email';
 use_ok $pkg;
+use_ok $vo;
 
-subtest 'primary' => sub {
-    my $vo = 'Yetie::Domain::Value::Email';
-    use_ok $vo;
-    my $emails = $pkg->new(
+sub _init {
+    return $pkg->new(
         list => c(
             $vo->new( is_primary => 0, value => 1 ),
             $vo->new( is_primary => 1, value => 2 ),
             $vo->new( is_primary => 0, value => 3 ),
         )
     );
+}
+
+subtest 'primary' => sub {
+    my $emails = _init();
     is $emails->primary->value, 2, 'right primary';
 
     $emails = $pkg->new( list => c( $vo->new( value => 'foo' ) ) );
