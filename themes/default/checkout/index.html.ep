@@ -25,7 +25,6 @@ OR
 
 <h3>Guest Checkout</h3>
 <div class="">
-    <% form 'customer-dropin'; %>
     <%= form_for 'RN_customer_dropin' => ( method => 'POST' ) => begin %>
         <div class="">
             <%= form_field '#email' %>
