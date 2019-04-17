@@ -23,19 +23,20 @@ sub store_token {
     my ( $self, $auth ) = @_;
 
     my $cb = sub {
-        my $email_id =
-          $self->schema->resultset('Email')->find_or_create( { address => $auth->email->value } )->id;
+        my $rs = $self->schema->resultset('Email');
+        my $email_id = $rs->find_or_create( { address => $auth->email->value } )->id;
         $self->create(
             {
                 email_id       => $email_id,
                 token          => $auth->token->value,
+                action         => $auth->action,
                 continue_url   => $auth->continue_url,
                 remote_address => $auth->remote_address,
                 expires        => $auth->expires->value,
             }
         );
     };
-    $self->schema->txn($cb);
+    return $self->schema->txn($cb);
 }
 
 1;

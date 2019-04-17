@@ -2,17 +2,18 @@ package Yetie::Domain::Entity::Auth;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has _is_verified   => 0;
-has continue_url   => '';
+has action         => q{};
+has continue_url   => q{};
 has email          => sub { __PACKAGE__->factory('value-email')->construct() };
-has error_message  => '';
+has error_message  => q{};
 has expires        => sub { __PACKAGE__->factory('value-expires')->construct() };
 has is_activated   => 0;
 has remote_address => 'unknown';
 has token          => sub { __PACKAGE__->factory('value-token')->construct() };
 
-sub continue { shift->{continue_url} // 'RN_home' }
+sub continue { return shift->{continue_url} // 'RN_home' }
 
-sub is_verified { shift->_is_verified(@_) }
+sub is_verified { return shift->_is_verified(@_) }
 
 sub verify_token {
     my ( $self, $last_token ) = @_;
@@ -27,14 +28,14 @@ sub verify_token {
     return $self->_fails('Expired') if $self->expires->is_expired;
 
     # All passed
-    $self->_is_verified(1);
+    return $self->_is_verified(1);
 }
 
 sub _fails {
     my $self = shift;
 
     $self->_is_verified(0);
-    $self->error_message(shift);
+    return $self->error_message(shift);
 }
 
 1;

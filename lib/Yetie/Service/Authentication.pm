@@ -7,6 +7,7 @@ sub create_token {
 
     my $auth = $self->factory('entity-auth')->construct(
         email          => $email,
+        action         => $settings->{action},
         continue_url   => $settings->{continue_url},
         remote_address => $remote_address,
         expires        => $settings->{expires},
