@@ -5,21 +5,24 @@ sub index {
     my $c = shift;
 
     # Redirect logged-in customer
+    # return $c->confirm_handler if $c->auth->is_member;
     return $c->confirm_handler if $c->is_logged_in;
 
     # Guest or a customer not logged in
-    my $form = $c->form('checkout-index');
-    $c->flash( ref => 'RN_checkout' );
-    return $c->render() unless $form->has_data;
+    my $form = $c->form('auth-dropin');
+    return $c->render() if $c->is_get_request;
 
-    # Check guest email
+    # Validation form
+    return $c->render() if !$form->do_validate;
+
+    # Check email
     # NOTE: 登録済みの顧客ではないか？
     # 認証済みのメールアドレスか？
-    $form->do_validate;
     my $email = $c->factory('value-email')->construct( value => $form->param('guest-email') );
-    $c->cart->email($email);
-
-    return $c->render();
+    # $c->cart->email($email);
+    use DDP;
+    p $email;
+    die;
 }
 
 sub shipping_address {
