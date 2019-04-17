@@ -3,10 +3,7 @@ use Yetie::Domain::Base 'Yetie::Domain::List';
 
 sub primary {
     my $self = shift;
-
-    my $primary;
-    $self->each( sub { $primary = $_ if $_->is_primary } );
-    return $primary ? $primary : $self->first;
+    return $self->first( sub { shift->is_primary } ) || $self->first;
 }
 
 1;
@@ -37,6 +34,12 @@ Collection is an array composed of L<Yetie::Domain::Value::Email>.
 
 L<Yetie::Domain::List::Emails> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
+
+=head2 C<find>
+
+    my $email_vo = $emails->find($value);
+
+Return L<Yetie::Domain::Value::Email> object.
 
 =head2 C<primary>
 
