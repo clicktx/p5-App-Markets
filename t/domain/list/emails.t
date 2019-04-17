@@ -17,6 +17,12 @@ sub _init {
     );
 }
 
+subtest 'find' => sub {
+    my $emails = _init();
+    isa_ok $emails->find(1), $vo;
+    is $emails->find(2)->value, 2, 'right find';
+};
+
 subtest 'primary' => sub {
     my $emails = _init();
     is $emails->primary->value, 2, 'right primary';

@@ -1,6 +1,11 @@
 package Yetie::Domain::List::Emails;
 use Yetie::Domain::Base 'Yetie::Domain::List';
 
+sub find {
+    my ( $self, $str ) = @_;
+    return $self->first( sub { shift->value eq $str } );
+}
+
 sub primary {
     my $self = shift;
     return $self->first( sub { shift->is_primary } ) || $self->first;
