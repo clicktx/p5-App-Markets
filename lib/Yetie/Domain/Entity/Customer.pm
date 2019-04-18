@@ -7,9 +7,9 @@ has updated_at => undef;
 has password   => sub { __PACKAGE__->factory('value-password')->construct() };
 has emails     => sub { __PACKAGE__->factory('list-emails')->construct() };
 
-sub has_password { shift->password->value ? 1 : 0 }
+sub has_password { return shift->password->value ? 1 : 0 }
 
-sub is_member { shift->id ? 1 : 0 }
+sub is_member { return shift->id ? 1 : 0 }
 
 1;
 __END__
