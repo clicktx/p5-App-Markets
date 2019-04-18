@@ -15,14 +15,22 @@ sub index {
     # Validation form
     return $c->render() if !$form->do_validate;
 
-    # Check email
-    # NOTE: 登録済みの顧客ではないか？
-    # 認証済みのメールアドレスか？
-    my $email = $c->factory('value-email')->construct( value => $form->param('guest-email') );
-    # $c->cart->email($email);
-    use DDP;
-    p $email;
-    die;
+    # Check customer
+    my $email_addr = $form->param('email');
+    my $customer   = $c->service('customer')->find_customer($email_addr);
+    my $action     = $customer->is_member ? 'login' : 'create_customer';
+
+    # magic link
+    my $settings = {
+        action       => $action,
+        continue_url => 'RN_checkout',
+    };
+    my $magic_link = $c->service('authentication')->create_magic_link( $email_addr, $settings );
+
+    # WIP
+    say $magic_link->to_abs;
+
+    return $c->reply->message( title => 'foofoo', message => 'message.sent.email.checkout.process' );
 }
 
 sub shipping_address {
