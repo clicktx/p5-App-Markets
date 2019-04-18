@@ -1,6 +1,13 @@
 package Yetie::Service::Authentication;
 use Mojo::Base 'Yetie::Service';
 
+sub create_magic_link {
+    my ( $self, $email_addr, $settings ) = ( shift, shift, shift || {} );
+
+    my $token = $self->create_token( $email_addr, $settings );
+    return $self->controller->url_for( 'rn.auth.magic_link.verify', token => $token->value );
+}
+
 sub create_token {
     my ( $self, $email_addr, $settings ) = ( shift, shift, shift || {} );
     my $remote_address = $self->controller->remote_address;
@@ -69,6 +76,14 @@ the following new ones.
 
 L<Yetie::Service::Authentication> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
+
+=head2 C<create_magic_link>
+
+    my $url = $service->create_magic_link( $email_addr, \%settings );
+
+Return L<Mojo::URL> object.
+
+See L</create_token>
 
 =head2 C<create_token>
 

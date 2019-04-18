@@ -13,6 +13,14 @@ sub _init {
     return ( $controller, $service );
 }
 
+subtest 'create_magic_link' => sub {
+    my ( $c, $s ) = _init();
+
+    my $url = $s->create_magic_link( 'foo@example.org', { action => 'bar', continue_url => 'baz' }, expires => 112233 );
+    isa_ok $url, 'Mojo::URL';
+    like $url->to_abs, qr(/magic-link/*.), 'right magic link';
+};
+
 subtest 'create_token' => sub {
     my ( $c, $s ) = _init();
     my $rs      = $c->resultset('AuthenticationRequest');
