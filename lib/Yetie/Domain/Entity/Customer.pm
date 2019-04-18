@@ -62,12 +62,6 @@ Returns true if a password has been set.
 
 Returns true if registered.
 
-=head2 C<verify_password>
-
-    my $bool = $customer->verify_password($password);
-
-Returns true if authenticated.
-
 =head1 AUTHOR
 
 Yetie authors.
