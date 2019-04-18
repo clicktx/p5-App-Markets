@@ -72,23 +72,32 @@ the following new ones.
 
 =head2 C<create_token>
 
-    my $token = $service->create_token( $email_addr, \%options );
+    my $token = $service->create_token( $email_addr, \%settings );
 
 Create one-time token and store it in the DB.
 
-Return token string.
+Return L<Yetie::Domain::Value::Token> object.
 
-B<OPTIONS>
+B<SETTINGS>
 
 =over 4
+
+=item action
+
+Action after click url.
 
 =item continue_url
 
 Redirect url or route name.
 
-=back
-
     my $token = $service->create_token( $email_addr, { continue_url => 'RN_foo'} );
+
+=item expires
+
+C<optional>
+expiration unix time.
+
+=back
 
 =head2 C<find_request>
 
