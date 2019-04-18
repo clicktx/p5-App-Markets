@@ -32,15 +32,14 @@ sub verify {
     my ( $self, $token ) = @_;
 
     my $auth = $self->find_request($token);
-    return $self->factory('entity-auth')->construct() unless $auth;
+    return $self->factory('entity-auth')->construct() if !$auth;
 
     # last request
     my $last_result = $self->resultset('AuthenticationRequest')->find_last_by_email( $auth->email->value );
 
     # verify token
     $auth->verify_token( $last_result->token );
-    return ( $self->_logging( $auth->error_message ), $auth )
-      unless $auth->is_verified;
+    return ( $self->_logging( $auth->error_message ), $auth ) if !$auth->is_verified;
 
     # passed
     $last_result->update( { is_activated => 1 } );
