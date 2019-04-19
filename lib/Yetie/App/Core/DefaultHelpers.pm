@@ -21,6 +21,7 @@ sub register {
     $app->helper( addons           => sub { shift->app->addons(@_) } );
     $app->helper( cache            => sub { _cache(@_) } );
     $app->helper( cart             => sub { _cart(@_) } );
+    $app->helper( continue_url     => sub { _continue_url(@_) } );
     $app->helper( cookie_session   => sub { shift->session(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( is_admin_route   => sub { _is_admin_route(@_) } );
@@ -55,6 +56,11 @@ sub _cache {
 }
 
 sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
+
+sub _continue_url {
+    my $c = shift;
+    return @_ ? $c->flash( continue_url => $_[0] ) : $c->flash('continue_url');
+}
 
 sub _factory {
     my $c = shift;
@@ -185,6 +191,17 @@ SEE L<Yetie::App::Core::Cache>
 
     my $cart = $c->cart;
     $c->cart($cart);
+
+=head2 C<continue_url>
+
+    my $continue_url = $c->continue_url;
+    my $c->continue_url('foo');
+
+    # Longer version
+    my $continue_url = $c->flash('continue_url');
+    $c->flash( continue_url => 'foo' );
+
+Get/Set to flash data with keyword "continue_url".
 
 =head2 C<cookie_session>
 
