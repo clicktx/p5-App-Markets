@@ -4,6 +4,12 @@ use Mojo::Base 'Yetie::Service';
 sub create_magic_link {
     my ( $self, $email_addr, $settings ) = ( shift, shift, shift || {} );
 
+    # action
+    if ( !$settings->{action} ) {
+        my $customer = $self->service('customer')->find_customer($email_addr);
+        $settings->{action} = $customer->is_member ? 'login' : 'create_customer';
+    }
+
     my $token = $self->create_token( $email_addr, $settings );
     return $self->controller->url_for( 'rn.auth.magic_link.verify', token => $token->value );
 }

@@ -15,17 +15,9 @@ sub index {
     # Validation form
     return $c->render() if !$form->do_validate;
 
-    # Check customer
-    my $email_addr = $form->param('email');
-    my $customer   = $c->service('customer')->find_customer($email_addr);
-    my $action     = $customer->is_member ? 'login' : 'create_customer';
-
     # magic link
-    my $settings = {
-        action       => $action,
-        continue_url => 'RN_checkout',
-    };
-    my $magic_link = $c->service('authentication')->create_magic_link( $email_addr, $settings );
+    my $magic_link =
+      $c->service('authentication')->create_magic_link( $form->param('email'), { continue_url => 'RN_checkout' } );
 
     # WIP
     say $magic_link->to_abs;
