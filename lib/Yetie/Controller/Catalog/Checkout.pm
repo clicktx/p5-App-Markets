@@ -8,6 +8,10 @@ sub index {
     # return $c->confirm_handler if $c->auth->is_member;
     return $c->confirm_handler if $c->is_logged_in;
 
+    $c->continue_url('RN_checkout');
+
+    # return $c->redirect_to('RN_customer_dropin');
+
     # Guest or a customer not logged in
     my $form = $c->form('auth-dropin');
     return $c->render() if $c->is_get_request;
@@ -16,8 +20,11 @@ sub index {
     return $c->render() if !$form->do_validate;
 
     # magic link
-    my $magic_link =
-      $c->service('authentication')->create_magic_link( $form->param('email'), { continue_url => 'RN_checkout' } );
+    my $settings = {
+        email        => $form->param('email'),
+        continue_url => 'RN_checkout',
+    };
+    my $magic_link = $c->service('authentication')->create_magic_link($settings);
 
     # WIP
     say $magic_link->to_abs;

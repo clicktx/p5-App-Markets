@@ -16,7 +16,14 @@ sub _init {
 subtest 'create_magic_link' => sub {
     my ( $c, $s ) = _init();
 
-    my $url = $s->create_magic_link( 'foo@example.org', { action => 'bar', continue_url => 'baz' }, expires => 112233 );
+    my $url = $s->create_magic_link(
+        {
+            email        => 'foo@example.org',
+            action       => 'bar',
+            continue_url => 'baz',
+            expires      => 112233,
+        }
+    );
     isa_ok $url, 'Mojo::URL';
     like $url->to_abs, qr(/magic-link/*.), 'right magic link';
 };

@@ -2,7 +2,8 @@ package Yetie::Service::Authentication;
 use Mojo::Base 'Yetie::Service';
 
 sub create_magic_link {
-    my ( $self, $email_addr, $settings ) = ( shift, shift, shift || {} );
+    my ( $self, $settings ) = ( shift, shift || {} );
+    my $email_addr = $settings->{email};
 
     # action
     if ( !$settings->{action} ) {
@@ -85,21 +86,25 @@ the following new ones.
 
 =head2 C<create_magic_link>
 
-    my $url = $service->create_magic_link( $email_addr, \%settings );
+    my %settings = (
+        email           => 'foo@bar.baz',
+        action          => 'login',
+        continue_url    => 'RN_home',
+        expires         => 111222333444,
+    );
+    my $url = $service->create_magic_link( \%settings );
 
 Return L<Mojo::URL> object.
 
-See L</create_token>
-
 =head2 C<create_token>
 
-    my $token = $service->create_token( $email_addr, \%settings );
+    my $token = $service->create_token( $email_addr, \%options );
 
 Create one-time token and store it in the DB.
 
 Return L<Yetie::Domain::Value::Token> object.
 
-B<SETTINGS>
+B<OPTIONS>
 
 =over 4
 
@@ -115,7 +120,6 @@ Redirect url or route name.
 
 =item expires
 
-C<optional>
 expiration unix time.
 
 =back
