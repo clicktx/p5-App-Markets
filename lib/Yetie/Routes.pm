@@ -123,6 +123,9 @@ sub add_catalog_routes {
     # Logout
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
 
+    # Email
+    $r->get('/email/sent-magic-link')->to('email#sent_magic_link')->name('RN_email_sent_magic_link');
+
     # Magic link
     $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.verify');
 

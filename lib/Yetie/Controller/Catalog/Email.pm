@@ -1,12 +1,11 @@
 package Yetie::Controller::Catalog::Email;
 use Mojo::Base 'Yetie::Controller::Catalog';
 
-sub sent {
+sub sent_magic_link {
     my $c = shift;
 
-    my $title   = $c->flash('title')   || 'email.sent.title';
-    my $message = $c->flash('message') || 'email.sent.message';
-
+    my $title   = 'email.sent.title';
+    my $message = 'email.sent.message';
     return $c->reply->message( title => $title, message => $message );
 }
 
