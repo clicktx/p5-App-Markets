@@ -10,16 +10,16 @@
         <%= form_label '#email' %><%= form_widget '#email' %>
         <%= form_error '#email' %>
         <div class="">
-            <%= form_widget '#remember_me' %>
-        </div>
-        <div class="">
             <%= submit_button __('Send Magic Link') %>
         </div>
     <% end %>
 </p>
 
 <p>
-    Has password? <%= link_to 'Login with password' => 'RN_customer_login_toggle' %>
+    Has password? <%= link_to 'Login with password' => 'RN_customer_login_with_password' %>
+</p>
+<p>
+    Are you a member? <%= link_to 'Login with magic-link' => 'RN_customer_login_magic_link' %>
 </p>
 
 <p>

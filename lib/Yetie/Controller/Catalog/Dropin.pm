@@ -3,21 +3,32 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 
 sub index {
     my $c = shift;
-    $c->flash( ref => $c->flash('ref') );
+    $c->continue_url( $c->continue_url );
 
-    my $route = $c->flash('ref') || 'RN_home';
-    return $c->redirect_to($route) if $c->is_logged_in;
+    my $continue_url = $c->continue_url || 'RN_home';
+    return $c->redirect_to($continue_url) if $c->is_logged_in;
 
     # Initialize form
-    my $form = $c->form('customer-dropin');
+    my $form = $c->form('auth-dropin');
 
     # Get request
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
-    $c->service('email')->send_magic_link( $form->param('email'), $route );
+    # magic link
+    my $settings = {
+        email        => $form->param('email'),
+        continue_url => $continue_url
+    };
+    my $magic_link = $c->service('authentication')->create_magic_link($settings);
+
+    # WIP: send email
+    say $magic_link->to_abs;
+    $c->flash( magic_link => $magic_link->to_abs );
+
+    return $c->redirect_to('RN_email_sent_magic_link');
 }
 
 1;
