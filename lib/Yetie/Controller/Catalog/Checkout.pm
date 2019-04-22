@@ -5,31 +5,11 @@ sub index {
     my $c = shift;
 
     # Redirect logged-in customer
-    # return $c->confirm_handler if $c->auth->is_member;
     return $c->confirm_handler if $c->is_logged_in;
 
-    $c->continue_url('RN_checkout');
-
-    # return $c->redirect_to('RN_customer_dropin');
-
     # Guest or a customer not logged in
-    my $form = $c->form('auth-dropin');
-    return $c->render() if $c->is_get_request;
-
-    # Validation form
-    return $c->render() if !$form->do_validate;
-
-    # magic link
-    my $settings = {
-        email        => $form->param('email'),
-        continue_url => 'RN_checkout',
-    };
-    my $magic_link = $c->service('authentication')->create_magic_link($settings);
-
-    # WIP
-    say $magic_link->to_abs;
-
-    return $c->reply->message( title => 'foofoo', message => 'message.sent.email.checkout.process' );
+    $c->continue_url('RN_checkout');
+    return $c->render();
 }
 
 sub shipping_address {
