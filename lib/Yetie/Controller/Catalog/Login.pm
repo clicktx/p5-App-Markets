@@ -65,8 +65,8 @@ sub with_link {
     my $token = $c->stash('token');
 
     my %error_messages = (
-        title         => 'authorization.request.error.title',
-        error_message => 'authorization.request.error.message'
+        title         => 'auth.request.error.title',
+        error_message => 'auth.request.error.message'
     );
 
     my $authorization = $c->service('authorization')->validate($token);
