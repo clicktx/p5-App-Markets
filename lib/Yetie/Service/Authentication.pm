@@ -8,7 +8,7 @@ sub create_magic_link {
     # action
     if ( !$settings->{action} ) {
         my $customer = $self->service('customer')->find_customer($email_addr);
-        $settings->{action} = $customer->is_member ? 'login' : 'create_customer';
+        $settings->{action} = $customer->is_member ? 'login' : 'signup';
     }
 
     my $token = $self->create_token( $email_addr, $settings );
