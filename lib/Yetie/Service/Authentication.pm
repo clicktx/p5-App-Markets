@@ -61,7 +61,7 @@ sub verify {
     return $auth;
 }
 
-sub _logging { shift->logging_warn( 'passwordless.authorization.failed', reason => shift ) && 0 }
+sub _logging { shift->logging_warn( 'passwordless.authentication.failed', reason => shift ) && 0 }
 
 1;
 __END__
