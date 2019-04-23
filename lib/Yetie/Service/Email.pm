@@ -9,6 +9,14 @@ sub find_email {
     return $self->factory('value-email')->construct($data);
 }
 
+sub to_verified {
+    my ( $self, $email ) = @_;
+    return if $email->is_verified;
+
+    $self->resultset('email')->verified( $email->value );
+    return $self->find_email( $email->value );
+}
+
 1;
 __END__
 
@@ -33,6 +41,14 @@ the following new ones.
 =head2 C<find_email>
 
     my $domain_value = $service->find_email('foo@bar.baz');
+
+Return L<Yetie::Domain::Value::Email> object.
+
+=head2 C<to_verified>
+
+    $service->to_verified($value_email_obj);
+
+Change the status of the email address to verified.
 
 Return L<Yetie::Domain::Value::Email> object.
 

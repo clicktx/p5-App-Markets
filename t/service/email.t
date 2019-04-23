@@ -33,4 +33,17 @@ sub t01_find_email : Tests() {
     ok !$e->is_verified, 'right not verified';
 }
 
+sub to_verified : Tests() {
+    my $self = shift;
+    my ( $c, $s ) = $self->_init;
+
+    my $email_addr = 'to_verified_test@example.org';
+    $c->schema->resultset('Email')->find_or_create( { address => $email_addr } );
+    my $e = $s->find_email($email_addr);
+    ok !$e->is_verified, 'right unverified';
+
+    $e = $s->to_verified($e);
+    ok $e->is_verified, 'right verified';
+}
+
 __PACKAGE__->runtests;
