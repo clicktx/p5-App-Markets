@@ -7,9 +7,9 @@ has updated_at => undef;
 has password   => sub { __PACKAGE__->factory('value-password')->construct() };
 has emails     => sub { __PACKAGE__->factory('list-emails')->construct() };
 
-sub has_password { shift->password->value ? 1 : 0 }
+sub has_password { return shift->password->value ? 1 : 0 }
 
-sub is_registered { shift->id ? 1 : 0 }
+sub is_member { return shift->id ? 1 : 0 }
 
 1;
 __END__
@@ -56,17 +56,11 @@ the following new ones.
 
 Returns true if a password has been set.
 
-=head2 C<is_registered>
+=head2 C<is_member>
 
-    my $bool = $customer->is_registered;
+    my $bool = $customer->is_member;
 
 Returns true if registered.
-
-=head2 C<verify_password>
-
-    my $bool = $customer->verify_password($password);
-
-Returns true if authenticated.
 
 =head1 AUTHOR
 

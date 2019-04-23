@@ -6,7 +6,7 @@ has prefetch => sub {
     [ { customer_password => 'password' }, { emails => 'email' } ];
 };
 
-sub create_new_customer {
+sub create_customer {
     my ( $self, $email ) = @_;
 
     my $result;
@@ -41,7 +41,13 @@ sub find_by_email {
 
 sub find_by_id {
     my ( $self, $customer_id ) = @_;
-    return $self->find( $customer_id, { prefetch => $self->prefetch } );
+    return $self->find(
+        $customer_id,
+        {
+            prefetch => $self->prefetch,
+            order_by => [ { '-desc' => 'password.created_at' } ],
+        }
+    );
 }
 
 sub get_id_by_email {
@@ -115,9 +121,9 @@ the following new ones.
 L<Yetie::Schema::ResultSet::Customer> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
-=head2 C<create_new_customer>
+=head2 C<create_customer>
 
-    my $customer_id = $resultset->create_new_customer($email);
+    my $customer_id = $resultset->create_customer($email);
 
 =head2 C<find_by_email>
 

@@ -14,7 +14,8 @@ sub warn  { shift->_convert_message( warn  => @_ ) }
 
 sub _convert_message {
     my ( $self, $level ) = ( shift, shift );
-    my $message = $self->app->__x(@_);
+
+    my $message = $self->app->__dx( 'log_messages', @_ );
     $self->_log( $level, $message );
 }
 

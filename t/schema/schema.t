@@ -23,12 +23,6 @@ subtest 'methods' => sub {
     ok $schema->today, 'right today()';
 };
 
-subtest 'sequence' => sub {
-    my $cnt = $schema->sequence('Order');
-    is $schema->sequence('Order'), $cnt + 1, 'right sequence';
-    is $schema->sequence('order'), $cnt + 2, 'right sequence';
-};
-
 subtest 'txn_failed' => sub {
     my ( $err, $history );
 

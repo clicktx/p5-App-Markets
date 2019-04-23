@@ -10,13 +10,13 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('Customer');
 
-subtest 'create_new_customer' => sub {
+subtest 'create_customer' => sub {
     my $last_id = $rs->last_id;
 
-    my $customer = $rs->create_new_customer('new_customer_on_schema@example.com');
+    my $customer = $rs->create_customer('new_customer_on_schema@example.com');
     is $customer->id, $last_id + 1, 'right create new customer';
 
-    $customer = $rs->create_new_customer('new_customer_on_schema@example.com');
+    $customer = $rs->create_customer('new_customer_on_schema@example.com');
     is $customer, undef, 'right duplicated';
 };
 
@@ -43,7 +43,7 @@ subtest 'find_by_email' => sub {
       },
       'right related_resultsets';
 
-    $res = $rs->find_by_email('g@example.org');
+    $res = $rs->find_by_email('d@example.org');
     isnt $res->id, 111, 'right other customer';
 
     $res = $rs->find_by_email('xx@xx.org');

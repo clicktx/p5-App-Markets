@@ -1,8 +1,22 @@
 package Yetie::Domain::Value::Email;
 use Yetie::Domain::Base 'Yetie::Domain::Value';
 
+has _in_storage => 0;
 has is_primary  => 0;
 has is_verified => 0;
+
+sub in_storage { shift->_in_storage ? 1 : 0 }
+
+sub to_data {
+    my $self = shift;
+
+    return {
+        _in_storage => $self->_in_storage,
+        is_primary  => $self->is_primary,
+        is_verified => $self->is_verified,
+        value       => $self->value,
+    };
+}
 
 1;
 __END__
@@ -32,6 +46,12 @@ Return boolean.
 
 L<Yetie::Domain::Value::Email> inherits all methods from L<Yetie::Domain::Value> and implements
 the following new ones.
+
+=head2 C<in_storage>
+
+    my $bool = $value->in_storage;
+
+Return boolean value.
 
 =head1 AUTHOR
 

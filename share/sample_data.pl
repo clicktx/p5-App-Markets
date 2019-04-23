@@ -54,8 +54,6 @@
         [ 5, 'e@example.org', 1 ],
         [ 6, 'f@example.org', 0 ],
         [ 7, 'g@example.org', 0 ],
-        [ 8, 'h@example.org', 0 ],
-        [ 9, 'i@example.org', 0 ],
     ],
     'Address' => [
         [qw/id country_code line1 line2 city state postal_code personal_name organization phone hash/],
@@ -68,18 +66,22 @@
 
     # Password
     'Password' => [
-        [qw/id hash created_at updated_at/],
+        [qw/id hash created_at/],
         # Staff
         # 12345678
-        [ 1, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
-        [ 2, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
-        # Customer
-        # 12345678
-        [ 3, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-06-06 19:50:05', '2017-06-06 19:50:05' ],
-        # 22334455
-        [ 4, 'SCRYPT:16384:8:1:VGcabum1/mW1UQ207AZL4Abdj96TtHYtFWJRjBIuYv8=:5lLK4OF1oG9mdI9G89hgh4kvcXJ8jVnCqIAy8QXwluE=', '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
+        [ 1, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-01 20:50:25' ],
         # 44556677
-        [ 5, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY=', '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
+        [ 2, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY=', '2017-05-02 22:31:17' ],
+        # 12345678
+        [ 3, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-05-03 20:50:25' ],
+
+        # Customer
+        # 44556677
+        [ 4, 'SCRYPT:16384:8:1:waCmMNvB2R8Al+WUeJmVxRqn32RfcyZaG0QHoqB+Sjs=:N11GEz66NK2xOmsE6imxtQmHxaKV8c32hgL1mTvWJnY=', '2017-07-07 08:01:02' ],
+        # 22334455
+        [ 5, 'SCRYPT:16384:8:1:VGcabum1/mW1UQ207AZL4Abdj96TtHYtFWJRjBIuYv8=:5lLK4OF1oG9mdI9G89hgh4kvcXJ8jVnCqIAy8QXwluE=', '2017-07-08 07:02:15' ],
+        # 12345678
+        [ 6, 'SCRYPT:16384:8:1:+u8IxV+imJ1wVnZqwMQn8lO5NWozQZJesUTI8P+LGNQ=:FxG/e03NIEGMaEoF5qWNCPeR1ULu+UTfhYrJ2cbIPp4=', '2017-07-09 19:50:05' ],
     ],
 
     # Staffs
@@ -92,34 +94,40 @@
         [qw/staff_id password_id/],
         [ 222, 1 ],
         [ 223, 2 ],
+        [ 223, 3 ],
     ],
 
     # Customers
+    # ---------------------------------------------------------------------------------------
+    # customer_id     email           is_verified     is_primary    password login
+    # ---------------------------------------------------------------------------------------
+    # 111             a@example.org       1               0             yes
+    #                 b@example.org       1               0             yes
+    #                 c@example.org       1               1             yes
+    # 112             d@example.org       1               1             yes
+    # 113             e@example.org       1               1             no(has not password)
+    # ---             f@example.org       0               -
+    # ---             g@example.org       0               -
+
     'Customer' => [
         [qw/id created_at updated_at/],
         [ 111, '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
         [ 112, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
         [ 113, '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
-        [ 114, '2017-07-10 10:11:02', '2017-07-10 10:11:02' ],
-        [ 115, '2017-07-10 10:20:21', '2017-07-10 10:20:21' ],
     ],
     'Customer::Password' => [
         [qw/customer_id password_id/],
-        [ 111, 3 ],
-        [ 112, 4 ],
-        [ 113, 5 ],
+        [ 111, 4 ],
+        [ 112, 5 ],
+        [ 111, 6 ],
     ],
     'Customer::Email' => [
         [qw/customer_id email_id is_primary/],
-        [ 111, 3, 1 ],
         [ 111, 1, 0 ],
-        [ 112, 2, 1 ],
-        [ 112, 4, 0 ],
-        [ 112, 5, 0 ],
-        [ 112, 6, 0 ],
-        [ 113, 7, 1 ],
-        [ 114, 8, 1 ],
-        [ 115, 9, 1 ],
+        [ 111, 2, 0 ],
+        [ 111, 3, 1 ],
+        [ 112, 4, 1 ],
+        [ 113, 5, 1 ],
     ],
     'Customer::Address' => [
         [qw/customer_id address_id/],

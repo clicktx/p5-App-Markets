@@ -63,4 +63,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Service::Activity::Customer>, L<Yetie::Service::Activity::Staff>, L<Yetie::Service>
+L<Yetie::Service>

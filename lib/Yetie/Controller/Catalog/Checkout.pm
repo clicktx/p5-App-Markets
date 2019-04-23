@@ -8,17 +8,7 @@ sub index {
     return $c->confirm_handler if $c->is_logged_in;
 
     # Guest or a customer not logged in
-    my $form = $c->form('checkout-index');
-    $c->flash( ref => 'RN_checkout' );
-    return $c->render() unless $form->has_data;
-
-    # Check guest email
-    # NOTE: 登録済みの顧客ではないか？
-    # 認証済みのメールアドレスか？
-    $form->do_validate;
-    my $email = $c->factory('value-email')->construct( value => $form->param('guest-email') );
-    $c->cart->email($email);
-
+    $c->continue_url('RN_checkout');
     return $c->render();
 }
 

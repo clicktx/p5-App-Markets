@@ -11,7 +11,7 @@ sub index {
     $c->cookie('login_with_password') ? $c->with_password : $c->magic_link;
 }
 
-sub email_sended {
+sub sent_email {
     my $c = shift;
     return $c->render();
 }
@@ -65,8 +65,8 @@ sub with_link {
     my $token = $c->stash('token');
 
     my %error_messages = (
-        title         => 'authorization.request.error.title',
-        error_message => 'authorization.request.error.message'
+        title         => 'auth.request.error.title',
+        error_message => 'auth.request.error.message'
     );
 
     my $authorization = $c->service('authorization')->validate($token);
@@ -75,7 +75,7 @@ sub with_link {
     # Customer
     my $email    = $authorization->email;
     my $customer = $c->service('customer')->find_customer( $email->value );
-    return $c->reply->error(%error_messages) unless $customer->is_registered;
+    return $c->reply->error(%error_messages) unless $customer->is_member;
 
     # Login
     $c->service('customer')->login( $customer->id );

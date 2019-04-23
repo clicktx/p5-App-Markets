@@ -57,15 +57,15 @@ sub t01 : Tests() {
     };
 }
 
-sub t02_create_new_customer : Tests() {
+sub t02_create_customer : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
-    my $new_customer = $s->create_new_customer('new_customer_on_service@example.com');
+    my $new_customer = $s->create_customer('new_customer_on_service@example.com');
     isa_ok $new_customer, 'Yetie::Domain::Entity::Customer';
     ok $new_customer->id, 'right id';
 
-    $new_customer = $s->create_new_customer('new_customer_on_service@example.com');
+    $new_customer = $s->create_customer('new_customer_on_service@example.com');
     is $new_customer, undef, 'right duplicated';
 }
 
@@ -73,15 +73,32 @@ sub t03_find_customer : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
-    my $entity = $s->find_customer('foo@bar.baz');
+    my $entity = $s->find_customer('a@example.org');
+    isa_ok $entity, 'Yetie::Domain::Entity::Customer';
+    is $entity->id, 111, 'right customer';
+
+    # Guest customer
+    $entity = $s->find_customer('foo@bar.baz');
     isa_ok $entity, 'Yetie::Domain::Entity::Customer';
     is $entity->id, undef, 'right nonexists';
-
-    $entity = $s->find_customer('a@example.org');
-    is $entity->id, 111, 'right customer';
+    ok !$entity->is_member, 'right guest';
 }
 
-sub t04_get_address_list : Tests() {
+sub t04_find_or_create_customer : Tests() {
+    my $self = shift;
+    my ( $c, $s ) = $self->_init();
+
+    my $entity = $s->find_or_create_customer('a@example.org');
+    isa_ok $entity, 'Yetie::Domain::Entity::Customer';
+    is $entity->id, 111, 'right find customer';
+
+    my $last_cid = $c->resultset('Customer')->last_id;
+    $entity = $s->find_or_create_customer('find_or_create_customer@foo.bar');
+    isa_ok $entity, 'Yetie::Domain::Entity::Customer';
+    is $entity->id, $last_cid + 1, 'right create customer';
+}
+
+sub t05_get_address_list : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
@@ -93,7 +110,7 @@ sub t04_get_address_list : Tests() {
     is $e->list->size, 0, 'right not found customer';
 }
 
-sub t05_remember_me : Tests() {
+sub t06_remember_me : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
@@ -115,7 +132,7 @@ sub t05_remember_me : Tests() {
     is $c->tx->res->cookies->[1]->name, 'has_remember_me', 'right cookie remove';
 }
 
-sub t06_search_customers : Tests() {
+sub t07_search_customers : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
@@ -126,7 +143,7 @@ sub t06_search_customers : Tests() {
     isa_ok $e, 'Yetie::Domain::Entity::Page::Customers';
 }
 
-sub t07_send_authorization_mail : Tests() {
+sub t08_send_authorization_mail : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
@@ -167,7 +184,7 @@ sub store_address {
         my $res = $s->store_address(1);
         ok !$res, 'right no data';
 
-        $c->server_session->customer_id(115);
+        $c->server_session->customer_id(113);
         $res = $s->store_address(1);
         ok $res, 'right store address';
 

@@ -18,8 +18,7 @@ subtest 'basic' => sub {
 
 subtest 'operators' => sub {
     my $v = $pkg->new( value => 'foo' );
-    ok !!$v;
-    is "$v", 'foo', 'right stringify';
+    ok !!$v, 'right bool';
 };
 
 subtest 'equals' => sub {

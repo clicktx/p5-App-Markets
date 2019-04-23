@@ -32,8 +32,11 @@ sub t00_login_process_with_password : Tests() {
 
     # password failure
     $t->post_ok( '/login/with-password',
-        form => { csrf_token => $csrf_token, email => 'c@example.org', password => '11223344' } )
-      ->status_is( 401, 'password failure' );
+        form => { csrf_token => $csrf_token, email => 'c@example.org', password => 'xxxxxxxx' } )
+      ->status_is( 401, 'password failure, bad password' );
+    $t->post_ok( '/login/with-password',
+        form => { csrf_token => $csrf_token, email => 'c@example.org', password => '44556677' } )
+      ->status_is( 401, 'password failure, old password' );
 
     # accept and redirect to wishlist?
     $t->get_ok('/account/wishlist');

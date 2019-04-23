@@ -4,10 +4,7 @@ use Mojo::Base 'Yetie::Factory';
 sub cook {
     my $self = shift;
 
-    # email
-    $self->aggregate( email => ( 'value-email', $self->{email} || '' ) );
-
-    # billing_address
+    # Aggregate billing address
     $self->aggregate( billing_address => ( 'entity-address', $self->{billing_address} || {} ) );
 
     # Aggregate items

@@ -14,24 +14,40 @@ sub register {
 # Routes for Admin
 sub add_admin_routes {
     my ( $self, $app ) = @_;
+
+    # Default prefix '/admin'
     my $r = $app->routes->any( $app->pref('admin_uri_prefix') )->to( namespace => 'Yetie::Controller' );
 
-    # Not authorization required
-    my $login = $r->any('login')->to( controller => 'admin-staff' );
+    # Not authentication required
+    my $login = $r->any('/login')->to( controller => 'admin-staff' );
     $login->any('/')->to('#login')->name('RN_admin_login');
 
-    # Authorization required
-    $r = $r->under->to('admin-staff#authorize')->name('RN_admin_bridge');
+    # Authentication required
+    my $if_staff = $r->under(
+        sub {
+            my $c = shift;
+            return 1 if $c->server_session->is_staff_logged_in;
+
+            # NOTE: 最終リクエストがPOSTの場合はhistoryから最後のGETリクエストを取得する？
+            #       sessionが切れている（はず）なのでhistoryから取得は難しいか？
+            #       cookie_session のlanding_pageで良い？
+            #       catalog/staff 両方で必要
+            $c->flash( ref => $c->req->url->to_string ) if $c->is_get_request;
+
+            $c->redirect_to( $c->url_for('RN_admin_login') );
+            return 0;
+        }
+    );
 
     # Dashboard
-    $r->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
-    $r->get('/dashboard')->to('admin-dashboard#index')->name('RN_admin_dashboard');
+    $if_staff->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
+    $if_staff->get('/dashboard')->to('admin-dashboard#index')->name('RN_admin_dashboard');
 
     # Logout
-    $r->get('/logout')->to('admin-staff#logout')->name('RN_admin_logout');
+    $if_staff->get('/logout')->to('admin-staff#logout')->name('RN_admin_logout');
 
     # Settings
-    my $settings = $r->any('/settings')->to( controller => 'admin-setting' );
+    my $settings = $if_staff->any('/settings')->to( controller => 'admin-setting' );
     $settings->get('/')->to('#index')->name('RN_admin_settings');
     {
         my $addons = $settings->any('/addon')->to( controller => 'admin-addon' );
@@ -40,20 +56,20 @@ sub add_admin_routes {
     }
 
     # Preferences
-    my $pref = $r->any('/preferences')->to( controller => 'admin-preference' );
+    my $pref = $if_staff->any('/preferences')->to( controller => 'admin-preference' );
     $pref->any('/')->to('#index')->name('RN_admin_preferences');
 
     # Category
-    my $category = $r->any('/category')->to( controller => 'admin-category' );
+    my $category = $if_staff->any('/category')->to( controller => 'admin-category' );
     $category->get('/')->to('#index')->name('RN_admin_category');
     $category->post('/')->to('#index')->name('RN_admin_category_create');
     $category->any('/:category_id/edit')->to('#edit')->name('RN_admin_category_edit');
 
     # Products
-    $r->any('/products')->to('admin-products#index')->name('RN_admin_products');
+    $if_staff->any('/products')->to('admin-products#index')->name('RN_admin_products');
 
     # Product
-    my $product = $r->any('/product')->to( controller => 'admin-product' )->name('RN_admin_product');
+    my $product = $if_staff->any('/product')->to( controller => 'admin-product' )->name('RN_admin_product');
     $product->post('/create')->to('#create')->name('RN_admin_product_create');
     $product->post('/:product_id/delete')->to('#delete')->name('RN_admin_product_delete');
     $product->post('/:product_id/duplicate')->to('#duplicate')->name('RN_admin_product_duplicate');
@@ -61,11 +77,11 @@ sub add_admin_routes {
     $product->any('/:product_id/edit/category')->to('#category')->name('RN_admin_product_category');
 
     # Orders
-    $r->any('/orders')->to('admin-orders#index')->name('RN_admin_orders');
+    $if_staff->any('/orders')->to('admin-orders#index')->name('RN_admin_orders');
 
     # Order
     # NOTE: create, delete, duplicate はPOST requestのみにするべき
-    my $order = $r->any('/order')->to( controller => 'admin-order' );
+    my $order = $if_staff->any('/order')->to( controller => 'admin-order' );
     $order->get('/:id')->to('#details')->name('RN_admin_order_details');
     $order->any('/create')->to('#create')->name('RN_admin_order_create');
     $order->post('/delete')->to('#delete')->name('RN_admin_order_delete');
@@ -79,7 +95,7 @@ sub add_admin_routes {
     $order->any('/:id/duplicate')->to('#duplicate')->name('RN_admin_order_duplicate');
 
     # Customers
-    $r->any('/customers')->to('admin-customers#index')->name('RN_admin_customers');
+    $if_staff->any('/customers')->to('admin-customers#index')->name('RN_admin_customers');
 }
 
 # Routes for Catalog
@@ -88,9 +104,30 @@ sub add_admin_routes {
 sub add_catalog_routes {
     my ( $self, $app ) = @_;
     my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
+    my $if_customer = $r->under(
+        sub {
+            my $c = shift;
+            return 1 if $c->server_session->is_customer_logged_in;
+
+            # NOTE: 最終リクエストがPOSTの場合はhistoryから最後のGETリクエストを取得する？
+            #       sessionが切れている（はず）なのでhistoryから取得は難しいか？
+            #       cookie_session のlanding_pageで良い？
+            #       catalog/staff 両方で必要
+            $c->flash( ref => $c->req->url->to_string ) if $c->is_get_request;
+
+            $c->redirect_to( $c->url_for('RN_customer_login') );
+            return 0;
+        }
+    );
 
     # Logout
     $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
+
+    # Email
+    $r->get('/email/sent-magic-link')->to('email#sent_magic_link')->name('RN_email_sent_magic_link');
+
+    # Magic link
+    $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.verify');
 
     # Remember me
     $r->get('/login/remember-me')->to('login#remember_me')->name('RN_customer_login_remember_me');
@@ -106,11 +143,10 @@ sub add_catalog_routes {
     $r->post('/cart/delete')->to('cart#delete')->name('RN_cart_delete');
 
     # Checkout
-    $r->any('/checkout')->to('checkout#index')->name('RN_checkout');
+    $r->get('/checkout')->to('checkout#index')->name('RN_checkout');
     $r->get('/checkout/complete')->to('checkout#complete')->name('RN_checkout_complete');
     {
-        my $authorize = $r->under('/checkout')->to('account#authorize')->name('RN_checkout_bridge');
-        my $checkout  = $authorize->any('/')->to('checkout#');
+        my $checkout = $if_customer->any('/checkout')->to('checkout#');
         $checkout->any('/shipping-address')->to('#shipping_address')->name('RN_checkout_shipping_address');
         $checkout->post('/shipping-address/select')->to('#shipping_address_select')
           ->name('RN_checkout_shipping_address_select');
@@ -126,29 +162,31 @@ sub add_catalog_routes {
 
     # For Customers
     {
+        # Drop-in
+        my $dropin = $r->any('/dropin')->to( controller => 'dropin' );
+        $dropin->any('/')->to('#index')->name('RN_customer_dropin');
+
         # Log-in
         my $login = $r->any('/login')->to( controller => 'login' );
         $login->any('/')->to('#index')->name('RN_customer_login');
-        $login->get('/email-sended')->to('#email_sended')->name('RN_customer_login_email_sended');
+        $login->get('/sent-email')->to('#sent_email')->name('RN_customer_login_sent_email');
         $login->get('/toggle')->to('#toggle')->name('RN_customer_login_toggle');
         $login->get('/token/:token')->to('#with_link')->name('RN_callback_customer_login');
         $login->any('/magic-link')->to('#magic_link')->name('RN_customer_login_magic_link');
         $login->any('/with-password')->to('#with_password')->name('RN_customer_login_with_password');
-    }
-    {
+
         # Sign-up
         my $signup = $r->any('/signup')->to( controller => 'signup' );
         $signup->any('/')->to('#index')->name('RN_customer_signup');
-        $signup->get('/email-sended')->to('#email_sended')->name('RN_customer_signup_email_sended');
+        $signup->get('/sent-email')->to('#sent_email')->name('RN_customer_signup_sent_email');
         $signup->get('/done')->to('#done')->name('RN_customer_signup_done');
         $signup->get('/get-started/:token')->to('#with_link')->name('RN_callback_customer_signup');
-    }
-    {
-        # Authorization required
-        my $account = $r->under('/account')->to('account#authorize')->name('RN_customer_bridge');
-        $account->get('/home')->to('account#home')->name('RN_customer_home');
-        $account->get('/orders')->to('account#orders')->name('RN_customer_orders');
-        $account->get('/wishlist')->to('account#wishlist')->name('RN_customer_wishlist');
+
+        # Account page
+        my $account = $if_customer->any('/account')->to('account#');
+        $account->get('/home')->to('#home')->name('RN_customer_home');
+        $account->get('/orders')->to('#orders')->name('RN_customer_orders');
+        $account->get('/wishlist')->to('#wishlist')->name('RN_customer_wishlist');
     }
 
     # Product

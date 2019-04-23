@@ -9,7 +9,8 @@ sub find_by_login_id {
             'me.login_id' => $login_id
         },
         {
-            prefetch => { staff_password => 'password' }
+            prefetch => { staff_password => 'password' },
+            order_by => [ { '-desc' => 'password.created_at' } ],
         },
     );
 }
