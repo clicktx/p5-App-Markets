@@ -19,7 +19,7 @@ sub index {
     # magic link
     my $settings = {
         email        => $form->param('email'),
-        continue_url => $continue_url
+        continue_url => $c->continue_url,
     };
     my $magic_link = $c->service('authentication')->create_magic_link($settings);
 
