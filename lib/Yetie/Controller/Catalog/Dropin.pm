@@ -3,10 +3,9 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 
 sub index {
     my $c = shift;
-    $c->continue_url( $c->continue_url );
 
-    my $continue_url = $c->continue_url || 'RN_home';
-    return $c->redirect_to($continue_url) if $c->is_logged_in;
+    $c->continue_url( $c->continue_url );
+    return $c->redirect_to( $c->continue ) if $c->is_logged_in;
 
     # Initialize form
     my $form = $c->form('auth-dropin');
