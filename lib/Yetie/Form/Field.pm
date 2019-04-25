@@ -5,8 +5,8 @@ use Mojo::Util qw(decamelize);
 has error_messages => sub { +{} };
 has id             => sub { shift->_id };
 has _fieldset      => '';
-has [qw(field_key default_value choices help label multiple expanded required)];
-has [qw(name type value placeholder checked selected choiced)];
+has [qw(checked choiced choices class default_value expanded field_key help)];
+has [qw(label multiple name placeholder required selected type value)];
 
 sub append_class {
     my ( $self, $class ) = @_;
