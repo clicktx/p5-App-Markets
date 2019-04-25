@@ -205,7 +205,7 @@ sub store_address {
 sub _login_failed {
     my ( $self, $message, $form ) = @_;
 
-    $form->field($_)->append_error_class for qw(email password);
+    $form->append_error_classes(qw(email password));
     $self->controller->stash( status => 401 );
 
     # Logging
