@@ -169,7 +169,6 @@ sub add_catalog_routes {
         # Log-in
         my $login = $r->any('/login')->to( controller => 'login' );
         $login->any('/')->to('#index')->name('RN_customer_login');
-        $login->get('/sent-email')->to('#sent_email')->name('RN_customer_login_sent_email');
         $login->get('/toggle')->to('#toggle')->name('RN_customer_login_toggle');
         $login->get('/token/:token')->to('#with_link')->name('RN_callback_customer_login');
         $login->any('/magic-link')->to('#magic_link')->name('RN_customer_login_magic_link');

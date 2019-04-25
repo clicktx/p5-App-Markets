@@ -3,35 +3,35 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 
 sub index {
     my $c = shift;
-    $c->flash( ref => $c->flash('ref') );
 
-    my $url = $c->flash('ref') || 'RN_home';
-    return $c->redirect_to($url) if $c->is_logged_in;
+    $c->continue_url( $c->continue_url );
+    return $c->redirect_to( $c->continue ) if $c->is_logged_in;
 
-    $c->cookie('login_with_password') ? $c->with_password : $c->magic_link;
-}
-
-sub sent_email {
-    my $c = shift;
-    return $c->render();
-}
-
-# NOTE: メール送信リクエストに一定期間の時間制限をかける？
-sub magic_link {
-    my $c = shift;
-    $c->flash( ref => $c->flash('ref') );
-    $c->stash( action => 'magic_link' );
+    # Link login
+    return $c->redirect_to('RN_customer_dropin') if !$c->cookie('login_with_password');
 
     # Initialize form
-    my $form = $c->form('account-magic_link');
+    my $form = $c->form('auth-login');
+    $form->field('remember_me')->checked( $c->cookie('remember_me') );
 
     # Get request
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
-    return $c->service('customer')->send_authorization_mail($form);
+    my $remember_me = $form->param('remember_me') ? 1 : 0;
+    $c->cookie(
+        remember_me => $remember_me,
+        { expires => time + $c->pref('cookie_expires_long') }
+    );
+
+    # Login failure
+    return $c->render( login_failure => 1 ) if !$c->service('customer')->login_process_with_password($form);
+
+    # Login success
+    if ($remember_me) { $c->service('customer')->remember_me_token( $form->param('email') ) }
+    return $c->redirect_to( $c->continue );
 }
 
 sub remember_me {
@@ -59,8 +59,55 @@ sub toggle {
     return $c->redirect_to('RN_customer_login');
 }
 
-# NOTE: remember_me はどうするか
+# NOTE: メール送信リクエストに一定期間の時間制限をかける？
+# sub magic_link {
+#     my $c = shift;
+#     $c->flash( ref => $c->flash('ref') );
+#     $c->stash( action => 'magic_link' );
+
+#     # Initialize form
+#     my $form = $c->form('account-magic_link');
+
+#     # Get request
+#     return $c->render() if $c->is_get_request;
+
+#     # Validation form
+#     return $c->render() unless $form->do_validate;
+
+#     return $c->service('customer')->send_authorization_mail($form);
+# }
 sub with_link {
+    my $c = shift;
+    $c->stash( action => 'with_link' );
+
+    $c->continue_url( $c->continue_url );
+    return $c->redirect_to( $c->continue ) if $c->is_logged_in;
+
+    # Initialize form
+    my $form = $c->form('auth-dropin');
+
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
+    return $c->render() if !$form->do_validate;
+
+    # magic link
+    my $settings = {
+        email        => $form->param('email'),
+        continue_url => $c->continue,
+    };
+    my $magic_link = $c->service('authentication')->create_magic_link($settings);
+
+    # WIP: send email
+    say $magic_link->to_abs;
+    $c->flash( magic_link => $magic_link->to_abs );
+
+    return $c->redirect_to('RN_email_sent_magic_link');
+}
+
+# NOTE: remember_me はどうするか
+sub _with_link_auth {
     my $c     = shift;
     my $token = $c->stash('token');
 
