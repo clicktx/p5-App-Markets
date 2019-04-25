@@ -79,7 +79,7 @@ sub get_address_list {
 sub load_history {
     my $self = shift;
     my $c    = $self->controller;
-    $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
+    return $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
 sub login {
@@ -114,7 +114,7 @@ sub login_process_remember_me {
     my ( $self, $email_addr ) = @_;
 
     my $customer = $self->find_customer($email_addr);
-    return unless $customer->id;
+    return if !$customer->id;
 
     # Recreate token
     $self->remember_me_token($email_addr);
@@ -129,11 +129,11 @@ sub login_process_with_password {
     # Find account
     my $customer = $self->find_customer( $form->param('email') );
     return $self->_login_failed( 'login.failed.not_found', $form )
-      unless $customer->is_member;
+      if !$customer->is_member;
 
     # Authentication
     return $self->_login_failed( 'login.failed.password', $form )
-      unless $customer->password->is_verify( $form->param('password') );
+      if !$customer->password->is_verify( $form->param('password') );
 
     return $self->login( $customer->id );
 }
@@ -142,8 +142,8 @@ sub search_customers {
     my ( $self, $form ) = @_;
 
     my $conditions = {
-        where    => '',
-        order_by => '',
+        where    => q{},
+        order_by => q{},
         page_no  => $form->param('page') || 1,
         per_page => $form->param('per_page') || 5,
     };
@@ -172,7 +172,7 @@ sub send_authorization_mail {
     my $url            = $c->url_for( $callback_route, token => $token );
 
     # Add remember me
-    $url->query( remember_me => 1 ) if $form->param('remember_me');
+    if ( $form->param('remember_me') ) { $url->query( remember_me => 1 ) }
 
     # WIP: Send email
 
@@ -199,6 +199,7 @@ sub store_address {
     return if $result->in_storage;
 
     $result->insert;
+    return 1;
 }
 
 sub _login_failed {
