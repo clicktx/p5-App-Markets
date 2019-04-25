@@ -1,5 +1,6 @@
 package Yetie::Service::Authentication;
 use Mojo::Base 'Yetie::Service';
+use Carp qw(croak);
 
 sub create_magic_link {
     my ( $self, $settings ) = ( shift, shift || {} );
@@ -19,9 +20,12 @@ sub create_token {
     my ( $self, $email_addr, $settings ) = ( shift, shift, shift || {} );
     my $remote_address = $self->controller->remote_address;
 
+    my $action = $settings->{action};
+    croak 'Not set action value' if !$action;
+
     my $auth = $self->factory('entity-auth')->construct(
         email          => $email_addr,
-        action         => $settings->{action},
+        action         => $action,
         continue_url   => $settings->{continue_url},
         remote_address => $remote_address,
         expires        => $settings->{expires},
@@ -98,7 +102,7 @@ sub verify {
 }
 
 sub _get_path_of_remember_me {
-    return $self->controller->match->root->lookup('RN_customer_login_remember_me')->to_string;
+    return shift->controller->match->root->lookup('RN_customer_login_remember_me')->to_string;
 }
 
 sub _logging {

@@ -3,6 +3,7 @@ use Mojo::Base -strict;
 use t::Util;
 use Test::More;
 use Test::Mojo;
+use Test::Exception;
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
@@ -33,8 +34,10 @@ subtest 'create_token' => sub {
     my $rs      = $c->resultset('AuthenticationRequest');
     my $last_id = $rs->last_id;
 
+    dies_ok { $s->create_token( 'foo@example.org', {} ) }, 'right not set action value';
+
     my $r = qr/[0-9A-F]/;
-    my $token = $s->create_token( 'foo@example.org', { continue_url => 'foo' } );
+    my $token = $s->create_token( 'foo@example.org', { action => 'foo', continue_url => 'bar' } );
     like $token->value, qr/$r{8}\-$r{4}\-4$r{3}\-[89AB]$r{3}\-$r{12}/, 'right token';
     isnt $last_id, $rs->last_id, 'right store to DB';
 };
@@ -44,7 +47,7 @@ subtest 'find_request' => sub {
 
     my $rs    = $c->resultset('AuthenticationRequest');
     my $email = 'foo@bar.baz';
-    my $token = $s->create_token($email);
+    my $token = $s->create_token( $email, { action => 'foo' } );
 
     my $auth = $s->find_request( $token->value );
     ok $auth, 'right find request';
@@ -80,17 +83,18 @@ subtest 'verify' => sub {
 
     my $res;
     my $email = 'foo@bar.baz';
+    my $settings = { action => 'foo' };
 
     # Hack expired
-    my $token1  = $s->create_token($email);
+    my $token1 = $s->create_token( $email, $settings );
     my $expires = time - 3600;
     $c->resultset('AuthenticationRequest')->find( { token => $token1->value } )->update( { expires => $expires } );
     $res = $s->verify($token1);
     ok !$res->is_verified, 'right expired';
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 
-    my $token2 = $s->create_token($email);
-    my $token3 = $s->create_token($email);
+    my $token2 = $s->create_token( $email, $settings );
+    my $token3 = $s->create_token( $email, $settings );
     $res = $s->verify( $token2->value );
     ok !$res->is_verified, 'right not last request';
 
