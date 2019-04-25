@@ -54,6 +54,27 @@ subtest 'find_request' => sub {
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 };
 
+subtest 'remember_me_token' => sub {
+    my ( $c, $s ) = _init();
+
+    ok !$s->remember_me_token, 'right getter';
+    ok $s->remember_me_token('foo@bar.baz'), 'right setter';
+    my $cookie = $c->tx->res->cookies->[0];
+    is $cookie->name, 'remember_me',        'right set cookie';
+    is $cookie->path, '/login/remember-me', 'right cookie path';
+    is $c->tx->res->cookies->[1]->name, 'has_remember_me', 'right set cookie';
+
+    # Remove token
+    ( $c, $s ) = _init();
+    $c->tx->req->cookies( { name => $cookie->name, value => $cookie->value } );
+    my $res = $s->remove_remember_me_token;
+    ok $res, 'right remove remember_me';
+    $cookie = $c->tx->res->cookies->[0];
+    is $cookie->name,    'remember_me', 'right cookie name';
+    is $cookie->expires, 0,             'right cookie remove';
+    is $c->tx->res->cookies->[1]->name, 'has_remember_me', 'right cookie remove';
+};
+
 subtest 'verify' => sub {
     my ( $c, $s ) = _init();
 

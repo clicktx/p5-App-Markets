@@ -138,36 +138,6 @@ sub login_process_with_password {
     return $self->login( $customer->id );
 }
 
-sub remember_me_token {
-    my ( $self, $email_addr ) = @_;
-    my $c = $self->controller;
-
-    # Getter
-    return $c->cookie('remember_me') unless $email_addr;
-
-    # Setter
-    my $expires = time + $c->pref('cookie_expires_long');
-    my $token   = $c->service('authorization')->create_token( $email_addr, { expires => $expires } );
-    my $path    = $c->match->root->lookup('RN_customer_login_remember_me')->to_string;
-    $c->cookie( remember_me => $token, { expires => $expires, path => $path } );
-    $c->cookie( has_remember_me => 1, { expires => $expires } );
-    return $token;
-}
-
-sub remove_remember_me_token {
-    my $self = shift;
-    my $c    = $self->controller;
-
-    # Remove cookies
-    my $path = $c->match->root->lookup('RN_customer_login_remember_me')->to_string;
-    $c->cookie( remember_me => '', { expires => 0, path => $path } );
-    $c->cookie( has_remember_me => '', { expires => 0 } );
-
-    my $token = $self->remember_me_token;
-    $c->resultset('AuthorizationRequest')->remove_request_by_token($token) if $token;
-    return 1;
-}
-
 sub search_customers {
     my ( $self, $form ) = @_;
 
@@ -321,24 +291,6 @@ Return customer ID if log-in succeeded or C<undefined>.
     my $customer_id = $service->login_process_with_password($form_object);
 
 Return customer ID if log-in succeeded or C<undefined>.
-
-=head2 C<remember_me_token>
-
-    # Setter
-    $service->remember_me_token('foo@bar.baz');
-
-    # Getter
-    my $token = $service->remember_me_token;
-
-Set/Get cookie "remember_me".
-
-Setter method create auto log-in token.
-
-=head2 C<remove_remember_me_token>
-
-    $service->remove_remember_me_token;
-
-Remove "remember_me" cookie and disable the auto log-in token.
 
 =head2 C<search_customers>
 

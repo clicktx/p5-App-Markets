@@ -110,29 +110,7 @@ sub t05_get_address_list : Tests() {
     is $e->list->size, 0, 'right not found customer';
 }
 
-sub t06_remember_me : Tests() {
-    my $self = shift;
-    my ( $c, $s ) = $self->_init();
-
-    ok !$s->remember_me_token, 'right getter';
-    ok $s->remember_me_token('foo@bar.baz'), 'right setter';
-    my $cookie = $c->tx->res->cookies->[0];
-    is $cookie->name, 'remember_me',        'right set cookie';
-    is $cookie->path, '/login/remember-me', 'right cookie path';
-    is $c->tx->res->cookies->[1]->name, 'has_remember_me', 'right set cookie';
-
-    # Remove token
-    ( $c, $s ) = $self->_init();
-    $c->tx->req->cookies( { name => $cookie->name, value => $cookie->value } );
-    my $res = $s->remove_remember_me_token;
-    ok $res, 'right remove remember_me';
-    $cookie = $c->tx->res->cookies->[0];
-    is $cookie->name,    'remember_me', 'right cookie name';
-    is $cookie->expires, 0,             'right cookie remove';
-    is $c->tx->res->cookies->[1]->name, 'has_remember_me', 'right cookie remove';
-}
-
-sub t07_search_customers : Tests() {
+sub t06_search_customers : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 
@@ -143,7 +121,7 @@ sub t07_search_customers : Tests() {
     isa_ok $e, 'Yetie::Domain::Entity::Page::Customers';
 }
 
-sub t08_send_authorization_mail : Tests() {
+sub t07_send_authorization_mail : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 

@@ -40,6 +40,42 @@ sub find_request {
     return $self->factory('entity-auth')->construct( $result->to_data );
 }
 
+sub remember_me_token {
+    my ( $self, $email_addr ) = @_;
+    my $c = $self->controller;
+
+    # Getter
+    return $c->cookie('remember_me') if !$email_addr;
+
+    # Setter
+    my $expires  = time + $c->pref('cookie_expires_long');
+    my $settings = {
+        action  => 'login',
+        expires => $expires,
+    };
+    my $token = $self->create_token( $email_addr, $settings );
+
+    # Set cookies.
+    $c->cookie( remember_me => $token, { expires => $expires, path => $self->_get_path_of_remember_me } );
+    $c->cookie( has_remember_me => 1, { expires => $expires } );
+    return $token;
+}
+
+sub remove_remember_me_token {
+    my $self = shift;
+    my $c    = $self->controller;
+
+    # Remove cookies
+    $c->cookie( remember_me => q{}, { expires => 0, path => $self->_get_path_of_remember_me } );
+    $c->cookie( has_remember_me => q{}, { expires => 0 } );
+
+    my $token = $self->remember_me_token;
+    return if !$token;
+
+    $c->resultset('AuthenticationRequest')->remove_request_by_token($token);
+    return 1;
+}
+
 # NOTE: アクセス制限が必要？同一IP、時間内回数制限
 # email sha1を引数にして判定を追加する？
 sub verify {
@@ -61,7 +97,13 @@ sub verify {
     return $auth;
 }
 
-sub _logging { shift->logging_warn( 'passwordless.authentication.failed', reason => shift ) && 0 }
+sub _get_path_of_remember_me {
+    return $self->controller->match->root->lookup('RN_customer_login_remember_me')->to_string;
+}
+
+sub _logging {
+    return shift->logging_warn( 'passwordless.authentication.failed', reason => shift ) && 0;
+}
 
 1;
 __END__
@@ -129,6 +171,24 @@ expiration unix time.
     my $auth = $service->find_request($token);
 
 Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
+
+=head2 C<remember_me_token>
+
+    # Setter
+    $service->remember_me_token('foo@bar.baz');
+
+    # Getter
+    my $token = $service->remember_me_token;
+
+Set/Get cookie "remember_me".
+
+Setter method create auto log-in token.
+
+=head2 C<remove_remember_me_token>
+
+    $service->remove_remember_me_token;
+
+Remove "remember_me" cookie and disable the auto log-in token.
 
 =head2 C<verify>
 
