@@ -5,7 +5,7 @@ sub index {
     my $c = shift;
 
     $c->continue_url( $c->continue_url );
-    return $c->redirect_to( $c->continue ) if $c->is_logged_in;
+    return $c->redirect_to( $c->continue_url ) if $c->is_logged_in;
 
     # Link login
     return $c->redirect_to('RN_customer_dropin') if !$c->cookie('login_with_password');
@@ -31,7 +31,7 @@ sub index {
 
     # Login success
     if ($remember_me) { $c->service('customer')->remember_me_token( $form->param('email') ) }
-    return $c->redirect_to( $c->continue );
+    return $c->redirect_to( $c->continue_url );
 }
 
 sub remember_me {
