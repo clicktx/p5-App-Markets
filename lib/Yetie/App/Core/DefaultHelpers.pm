@@ -58,8 +58,14 @@ sub _cache {
 sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
 
 sub _continue_url {
-    my $c = shift;
-    return @_ ? $c->flash( continue_url => $_[0] ) : $c->flash('continue_url');
+    my ( $c, $arg ) = @_;
+
+    # Set
+    return $c->flash( continue_url => $arg ) if $arg;
+
+    # Get
+    my $default_continue_url = $c->is_admin_route ? 'RN_admin_dashboard' : 'RN_home';
+    return $c->flash('continue_url') || $default_continue_url;
 }
 
 sub _factory {
@@ -202,6 +208,8 @@ SEE L<Yetie::App::Core::Cache>
     $c->flash( continue_url => 'foo' );
 
 Get/Set to flash data with keyword "continue_url".
+
+Default url: C<RN_admin_dashboard> or C<RN_home>
 
 =head2 C<cookie_session>
 
