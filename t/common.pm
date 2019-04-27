@@ -47,6 +47,8 @@ sub customer_loggin {
         csrf_token => $self->csrf_token,
     };
 
+    # HACK: set a login_with_password cookie
+    $self->t->get_ok( $self->app->url_for('RN_customer_login_with_password') );
     $self->t->post_ok( $self->app->url_for('RN_customer_login'), form => $post_data );
     is $self->server_session->customer_id, 111, 'right customer logged in';
 }

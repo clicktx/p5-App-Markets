@@ -52,7 +52,7 @@ sub remember_me {
 
 sub toggle {
     my $c = shift;
-    $c->flash( ref => $c->flash('ref') );
+    $c->continue_url( $c->continue_url );
 
     my $value = $c->cookie('login_with_password') ? 0 : 1;
     $c->cookie( login_with_password => $value, { expires => time + $c->pref('cookie_expires_long') } );
@@ -114,7 +114,7 @@ sub _with_link_auth {
     return $c->redirect_to($redirect_route);
 }
 
-sub with_password {
+sub _with_password {
     my $c = shift;
     $c->flash( ref => $c->flash('ref') );
     $c->stash( action => 'with_password' );
@@ -141,6 +141,15 @@ sub with_password {
 
     my $route = $c->flash('ref') || 'RN_home';
     return $c->redirect_to($route);
+}
+
+sub with_password {
+    my $c = shift;
+    $c->continue_url( $c->continue_url );
+
+    # Set a cookie
+    $c->cookie( login_with_password => 1, { expires => time + $c->pref('cookie_expires_long') } );
+    return $c->redirect_to('RN_customer_login');
 }
 
 1;
