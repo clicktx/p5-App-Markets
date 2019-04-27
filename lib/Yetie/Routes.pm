@@ -121,7 +121,7 @@ sub add_catalog_routes {
     );
 
     # Logout
-    $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
+    $r->get('/logout')->to('auth#logout')->name('RN_customer_logout');
 
     # Email
     $r->get('/email/sent-magic-link')->to('email#sent_magic_link')->name('RN_email_sent_magic_link');
@@ -131,7 +131,7 @@ sub add_catalog_routes {
 
     # Remember me
     $r->get('/login/remember-me')->to('login#remember_me')->name('RN_customer_login_remember_me');
-    $r = $r->under('/')->to('account#remember_me_handler')->name('RN_customer_remember_me_handler');
+    $r = $r->under('/')->to('auth#remember_me_handler')->name('RN_customer_remember_me_handler');
 
     # Route Examples
     $r->get('/')->to('example#welcome')->name('RN_home');
@@ -171,7 +171,6 @@ sub add_catalog_routes {
         $login->any('/')->to('#index')->name('RN_customer_login');
         $login->get('/toggle')->to('#toggle')->name('RN_customer_login_toggle');
         $login->get('/token/:token')->to('#with_link')->name('RN_callback_customer_login');
-        # $login->any('/magic-link')->to('#magic_link')->name('RN_customer_login_magic_link');
         $login->any('/with-password')->to('#with_password')->name('RN_customer_login_with_password');
 
         # Sign-up
