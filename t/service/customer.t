@@ -156,7 +156,7 @@ sub login_process_remember_me {
 
 sub login_process_with_password {
     my $c = shift;
-    my $f = $c->form('account-login');
+    my $f = $c->form('auth-login');
     $f->do_validate;
 
     my $customer_id = $c->service('customer')->login_process_with_password($f);

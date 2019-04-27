@@ -97,8 +97,7 @@ sub login {
     my $merged_cart = $self->service('cart')->merge_cart($customer_id);
 
     # Regenerate sid and set cart id
-    $session->create( { cart_id => $customer_id } );
-    $session->cart->data( $merged_cart->to_data );
+    $session->recreate( { cart_id => $customer_id, cart_data => $merged_cart->to_data } );
 
     # NOTE: ログインログに記録する方が良い？
     # Update last login date
@@ -117,7 +116,7 @@ sub login_process_remember_me {
     return if !$customer->id;
 
     # Recreate token
-    $self->remember_me_token($email_addr);
+    $self->service('authentication')->remember_me_token($email_addr);
 
     # Login
     $self->login( $customer->id );
