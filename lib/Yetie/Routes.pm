@@ -171,7 +171,7 @@ sub add_catalog_routes {
         $login->any('/')->to('#index')->name('RN_customer_login');
         $login->get('/toggle')->to('#toggle')->name('RN_customer_login_toggle');
         $login->get('/token/:token')->to('#with_link')->name('RN_callback_customer_login');
-        $login->any('/magic-link')->to('#magic_link')->name('RN_customer_login_magic_link');
+        # $login->any('/magic-link')->to('#magic_link')->name('RN_customer_login_magic_link');
         $login->any('/with-password')->to('#with_password')->name('RN_customer_login_with_password');
 
         # Sign-up

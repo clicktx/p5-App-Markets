@@ -59,23 +59,6 @@ sub toggle {
     return $c->redirect_to('RN_customer_login');
 }
 
-# NOTE: メール送信リクエストに一定期間の時間制限をかける？
-# sub magic_link {
-#     my $c = shift;
-#     $c->flash( ref => $c->flash('ref') );
-#     $c->stash( action => 'magic_link' );
-
-#     # Initialize form
-#     my $form = $c->form('account-magic_link');
-
-#     # Get request
-#     return $c->render() if $c->is_get_request;
-
-#     # Validation form
-#     return $c->render() unless $form->do_validate;
-
-#     return $c->service('customer')->send_authorization_mail($form);
-# }
 sub with_link {
     my $c = shift;
     $c->stash( action => 'with_link' );

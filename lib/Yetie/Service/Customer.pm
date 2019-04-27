@@ -159,30 +159,6 @@ sub search_customers {
     return $self->factory('entity-page-customers')->construct($data);
 }
 
-sub send_authorization_mail {
-    my ( $self, $form ) = @_;
-
-    my $c          = $self->controller;
-    my $redirect   = $c->flash('ref') || 'RN_home';
-    my $email_addr = $form->param('email');
-    my $token      = $c->service('authorization')->create_token( $email_addr, { redirect => $redirect } );
-
-    my $customer       = $self->find_customer($email_addr);
-    my $callback_route = $customer->is_member ? 'RN_callback_customer_login' : 'RN_callback_customer_signup';
-    my $url            = $c->url_for( $callback_route, token => $token );
-
-    # Add remember me
-    if ( $form->param('remember_me') ) { $url->query( remember_me => 1 ) }
-
-    # WIP: Send email
-
-    # NOTE: demo and debug
-    $c->flash( callback_url => $url->to_abs );
-
-    my $redirect_route = $customer->is_member ? 'RN_customer_login_sent_email' : 'RN_customer_signup_sent_email';
-    return $c->redirect_to($redirect_route);
-}
-
 sub store_address {
     my ( $self, $address_id ) = @_;
     my $c = $self->controller;
@@ -298,14 +274,6 @@ Return customer ID if log-in succeeded or C<undefined>.
     my $customers = $service->search_customers($form_object);
 
 Return L<Yetie::Domain::Entity::Page::Customers> Object.
-
-=head2 C<send_authorization_mail>
-
-    $service->send_authorization_mail('foo@bar.baz');
-
-Will send an magic link email for log-in or sign-up.
-
-Retuen C<render_to('RN_customer_login_sent_email')> or C<render_to('RN_customer_signup_sent_email')>
 
 =head2 C<store_address>
 

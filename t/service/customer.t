@@ -121,32 +121,6 @@ sub t06_search_customers : Tests() {
     isa_ok $e, 'Yetie::Domain::Entity::Page::Customers';
 }
 
-sub t07_send_authorization_mail : Tests() {
-    my $self = shift;
-    my ( $c, $s ) = $self->_init();
-
-    my $f = $c->form('account-magic_link');
-    $c->req->param( email => 'foo-bar@exapmle.org' );
-    $f->do_validate;
-    $s->send_authorization_mail($f);
-    like $c->session('new_flash')->{callback_url}->to_string, qr|/signup/get-started|, 'right singup';
-
-    ( $c, $s ) = $self->_init();
-    $f = $c->form('account-magic_link');
-    $c->req->param( email => 'a@example.org' );
-    $f->do_validate;
-    $s->send_authorization_mail($f);
-    like $c->session('new_flash')->{callback_url}->to_string, qr|/login/token|, 'right login';
-
-    ( $c, $s ) = $self->_init();
-    $f = $c->form('account-magic_link');
-    $c->req->param( email       => 'a@example.org' );
-    $c->req->param( remember_me => 1 );
-    $f->do_validate;
-    $s->send_authorization_mail($f);
-    is $c->session('new_flash')->{callback_url}->query, 'remember_me=1', 'right remember_me';
-}
-
 __PACKAGE__->runtests;
 
 package Yetie::Controller::Catalog::Test;
