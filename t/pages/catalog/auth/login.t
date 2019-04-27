@@ -1,4 +1,4 @@
-package t::pages::catalog::login;
+package t::pages::catalog::auth::login;
 
 use Mojo::Base 't::common';
 use t::Util;
@@ -25,22 +25,26 @@ sub t00_login_process_with_password : Tests() {
     my $tx         = $t->tx;
     my $csrf_token = $self->csrf_token;
 
+    # check cookie
+    $t->get_ok('/login')->status_is('302');
+    $t->get_ok('/login/toggle')->status_is('302');
+
     # not found customer
-    $t->post_ok( '/login/with-password',
+    $t->post_ok( '/login',
         form => { csrf_token => $csrf_token, email => 'xx@xxxx.xxx', password => '12345678' } )
       ->status_is( 401, 'not found customer' );
 
     # password failure
-    $t->post_ok( '/login/with-password',
+    $t->post_ok( '/login',
         form => { csrf_token => $csrf_token, email => 'c@example.org', password => 'xxxxxxxx' } )
       ->status_is( 401, 'password failure, bad password' );
-    $t->post_ok( '/login/with-password',
+    $t->post_ok( '/login',
         form => { csrf_token => $csrf_token, email => 'c@example.org', password => '44556677' } )
       ->status_is( 401, 'password failure, old password' );
 
     # accept and redirect to wishlist?
     $t->get_ok('/account/wishlist');
-    $t->post_ok( '/login/with-password',
+    $t->post_ok( '/login',
         form => { csrf_token => $csrf_token, email => 'c@example.org', password => '12345678' } )
       ->status_is( 302, 'right accepr to redirect' )
       ->header_like( location => qr/wishlist/, 'right location after redirect' );

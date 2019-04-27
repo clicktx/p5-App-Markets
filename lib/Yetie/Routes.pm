@@ -113,8 +113,7 @@ sub add_catalog_routes {
             #       sessionが切れている（はず）なのでhistoryから取得は難しいか？
             #       cookie_session のlanding_pageで良い？
             #       catalog/staff 両方で必要
-            $c->flash( ref => $c->req->url->to_string ) if $c->is_get_request;
-
+            if ( $c->is_get_request ) { $c->continue_url( $c->req->url->to_string ) }
             $c->redirect_to( $c->url_for('RN_customer_login') );
             return 0;
         }
@@ -170,8 +169,9 @@ sub add_catalog_routes {
         my $login = $r->any('/login')->to( controller => 'login' );
         $login->any('/')->to('#index')->name('RN_customer_login');
         $login->get('/toggle')->to('#toggle')->name('RN_customer_login_toggle');
-        $login->get('/token/:token')->to('#with_link')->name('RN_callback_customer_login');
-        $login->any('/with-password')->to('#with_password')->name('RN_customer_login_with_password');
+
+        # $login->get('/token/:token')->to('#with_link')->name('RN_callback_customer_login');
+        # $login->any('/with-password')->to('#with_password')->name('RN_customer_login_with_password');
 
         # Sign-up
         my $signup = $r->any('/signup')->to( controller => 'signup' );
