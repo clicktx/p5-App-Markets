@@ -14,7 +14,7 @@ has server_session => sub {
     return $server_session;
 };
 
-sub admin_logged_in {
+sub admin_loggin {
     my $self = shift;
 
     my $post_data = {
@@ -38,7 +38,7 @@ sub cookie_value {
 
 sub csrf_token { t::Util::get_csrf_token( shift->t ) }
 
-sub customer_logged_in {
+sub customer_loggin {
     my $self = shift;
 
     my $post_data = {
@@ -123,9 +123,9 @@ the following new ones.
 L<t::common> inherits all methods from L<Test::Class> and implements
 the following new ones.
 
-=head2 C<admin_logged_in>
+=head2 C<admin_loggin>
 
-    $self->admin_logged_in;
+    $self->admin_loggin;
 
 Stuff logged-in.
 
@@ -139,9 +139,9 @@ Get cookie value.
 
     my $token = $self->csrf_token;
 
-=head2 C<customer_logged_in>
+=head2 C<customer_loggin>
 
-    $self->customer_logged_in;
+    $self->customer_loggin;
 
 Customer logged-in.
 

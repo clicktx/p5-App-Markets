@@ -26,7 +26,7 @@ sub t00_basic : Tests() {
     $t->get_ok('/login')->status_is( 200, 'right login with-password' )->content_like(qr/auth-login-password/)
       ->element_exists('input[name=password]');
 
-    $self->customer_logged_in;
+    $self->customer_loggin;
     $t->get_ok('/login')->status_is( 302, 'right after logged-in' );
 }
 

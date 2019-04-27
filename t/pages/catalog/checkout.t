@@ -53,7 +53,7 @@ sub test_01_02_index_after_logged_in : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $self->customer_logged_in;
+    $self->customer_loggin;
 
     $t->get_ok('/checkout')->status_is(200);
     my ($url) = map { $_->req->url->path } @{ $t->tx->redirects };
