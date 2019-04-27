@@ -25,8 +25,8 @@
 <p>
     <%= form_for 'RN_customer_login' => ( method => 'POST', style => 'border:1px solid gray' ) => begin %>
         <h5><%= __('login') %> Form</h5>
-        <%= form_widget 'account-login#email' %>
-        <%= form_widget 'account-login#password' %>
+        <%= form_widget 'auth-login#email' %>
+        <%= form_widget 'auth-login#password' %>
         <%= csrf_field %>
         <%= submit_button __('Login') %>
     <% end %>
