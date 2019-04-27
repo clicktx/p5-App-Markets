@@ -166,7 +166,7 @@ Redirect url or route name.
 
 =item expires
 
-expiration unix time.
+expiration UNIX time.
 
 =back
 
