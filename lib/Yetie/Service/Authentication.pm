@@ -49,7 +49,7 @@ sub remember_me_token {
     my $c = $self->controller;
 
     # Getter
-    return $c->cookie('remember_me') if !$email_addr;
+    return $c->cookie('remember_me_token') if !$email_addr;
 
     # Setter
     my $expires  = time + $c->pref('cookie_expires_long');
@@ -60,7 +60,7 @@ sub remember_me_token {
     my $token = $self->create_token( $email_addr, $settings );
 
     # Set cookies.
-    $c->cookie( remember_me => $token, { expires => $expires, path => $self->_get_path_of_remember_me } );
+    $c->cookie( remember_me_token => $token, { expires => $expires, path => $self->_get_path_of_remember_me } );
     $c->cookie( has_remember_me => 1, { expires => $expires } );
     return $token;
 }
@@ -70,7 +70,7 @@ sub remove_remember_me_token {
     my $c    = $self->controller;
 
     # Remove cookies
-    $c->cookie( remember_me => q{}, { expires => 0, path => $self->_get_path_of_remember_me } );
+    $c->cookie( remember_me_token => q{}, { expires => 0, path => $self->_get_path_of_remember_me } );
     $c->cookie( has_remember_me => q{}, { expires => 0 } );
 
     my $token = $self->remember_me_token;
@@ -102,7 +102,7 @@ sub verify {
 }
 
 sub _get_path_of_remember_me {
-    return shift->controller->match->root->lookup('RN_customer_login_remember_me')->to_string;
+    return shift->controller->match->root->lookup('RN_customer_auth_remember_me')->to_string;
 }
 
 sub _logging {
@@ -184,7 +184,7 @@ Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
     # Getter
     my $token = $service->remember_me_token;
 
-Set/Get cookie "remember_me".
+Set/Get cookie "remember_me_token".
 
 Setter method create auto log-in token.
 
@@ -192,7 +192,7 @@ Setter method create auto log-in token.
 
     $service->remove_remember_me_token;
 
-Remove "remember_me" cookie and disable the auto log-in token.
+Remove "remember_me_token" cookie and disable the auto log-in token.
 
 =head2 C<verify>
 
