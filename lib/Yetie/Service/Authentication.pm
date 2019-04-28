@@ -77,7 +77,7 @@ sub remove_remember_me_token {
     return if !$token;
 
     $c->resultset('AuthenticationRequest')->remove_request_by_token($token);
-    return 1;
+    return;
 }
 
 # NOTE: アクセス制限が必要？同一IP、時間内回数制限
