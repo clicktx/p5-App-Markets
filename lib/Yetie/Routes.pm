@@ -100,7 +100,7 @@ sub add_admin_routes {
 
 # Routes for Catalog
 # NOTE: No site map route
-# qw(RN_customer_login_remember_me)
+# qw(RN_customer_auth_remember_me)
 sub add_catalog_routes {
     my ( $self, $app ) = @_;
     my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
@@ -129,7 +129,7 @@ sub add_catalog_routes {
     $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.verify');
 
     # Remember me
-    $r->get('/login/remember-me')->to('login#remember_me')->name('RN_customer_login_remember_me');
+    $r->get('/auth/remember-me')->to('auth#remember_me')->name('RN_customer_auth_remember_me');
     $r = $r->under('/')->to('auth#remember_me_handler')->name('RN_customer_remember_me_handler');
 
     # Route Examples

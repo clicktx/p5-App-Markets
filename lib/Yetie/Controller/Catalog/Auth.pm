@@ -1,16 +1,6 @@
 package Yetie::Controller::Catalog::Auth;
 use Mojo::Base 'Yetie::Controller::Catalog';
 
-sub remember_me_handler {
-    my $c = shift;
-    return 1 if $c->is_logged_in;
-    return 1 unless $c->is_get_request;
-    return 1 unless $c->cookie('has_remember_me');
-
-    $c->flash( return_path => $c->req->url->to_string );
-    return $c->redirect_to('RN_customer_login_remember_me');
-}
-
 sub logout {
     my $c = shift;
     $c->template('logout');
@@ -42,6 +32,25 @@ sub logout {
     $c->service('activity')->add( logout => { customer_id => $customer_id } );
 
     return $c->render();
+}
+
+sub remember_me_handler {
+    my $c = shift;
+    return 1 if $c->is_logged_in;
+    return 1 if !$c->is_get_request;
+    return 1 if !$c->cookie('has_remember_me');
+
+    $c->continue_url( $c->req->url->to_string );
+    return $c->redirect_to('RN_customer_auth_remember_me');
+}
+
+sub remember_me {
+    my $c            = shift;
+    my $continue_url = $c->continue_url;
+
+    # NOTE: ADD logging??
+    $c->service('customer')->login_process_remember_me;
+    return $c->redirect_to($continue_url);
 }
 
 1;

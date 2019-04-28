@@ -34,22 +34,6 @@ sub index {
     return $c->redirect_to( $c->continue_url );
 }
 
-sub remember_me {
-    my $c       = shift;
-    my $service = $c->service('customer');
-
-    # Auto login
-    my $token         = $service->remember_me_token;
-    my $authorization = $c->service('authorization')->validate($token);
-
-    # NOTE: ADD logging??
-    if   ( $authorization->is_valid ) { $service->login_process_remember_me( $authorization->email ) }
-    else                              { $service->remove_remember_me_token }
-
-    my $return_path = $c->flash('return_path') // 'RN_home';
-    return $c->redirect_to($return_path);
-}
-
 sub toggle {
     my $c = shift;
     $c->continue_url( $c->continue_url );

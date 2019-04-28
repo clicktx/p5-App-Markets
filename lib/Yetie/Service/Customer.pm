@@ -110,16 +110,22 @@ sub login {
 }
 
 sub login_process_remember_me {
-    my ( $self, $email_addr ) = @_;
+    my $self = shift;
 
-    my $customer = $self->find_customer($email_addr);
-    return if !$customer->id;
+    # Verify token
+    my $authen_service = $self->service('authentication');
+    my $token          = $authen_service->remember_me_token;
+    my $auth           = $authen_service->verify($token);
+    return $authen_service->remove_remember_me_token if !$auth->is_verified;
 
-    # Recreate token
-    $self->service('authentication')->remember_me_token($email_addr);
+    # Customer
+    my $email_addr  = $auth->email->value;
+    my $customer_id = $self->find_customer($email_addr)->id;
+    return $authen_service->remove_remember_me_token if !$customer_id;
 
-    # Login
-    $self->login( $customer->id );
+    # Reset token and Login
+    $authen_service->remember_me_token($email_addr);
+    return $self->login($customer_id);
 }
 
 sub login_process_with_password {
@@ -258,7 +264,7 @@ Return customer ID.
 
 =head2 C<login_process_remember_me>
 
-    my $customer_id = $service->login_process_with_password('foo@bar.baz');
+    my $customer_id = $service->login_process_with_password;
 
 Return customer ID if log-in succeeded or C<undefined>.
 
