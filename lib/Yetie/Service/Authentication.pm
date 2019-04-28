@@ -60,7 +60,7 @@ sub remember_me_token {
     my $token = $self->create_token( $email_addr, $settings );
 
     # Set cookies.
-    $c->cookie( remember_me_token => $token, { expires => $expires, path => $self->_get_path_of_remember_me } );
+    $c->cookie( remember_me_token => $token->value, { expires => $expires, path => $self->_get_path_of_remember_me } );
     $c->cookie( has_remember_me => 1, { expires => $expires } );
     return $token;
 }
