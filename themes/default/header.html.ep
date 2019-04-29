@@ -1,6 +1,13 @@
 header
 <div>session-id: <%= $self->server_session->sid %></div>
 <div>flash ref: <%= $self->flash('ref') %></div>
+<div>cid: <%= $self->server_session->customer_id %>
+    <% if ($self->is_logged_in){ %>
+        Logged in
+    <% } else { %>
+        anonymouse
+    <% } %>
+</div>
 <ul>
     <li><%= link_to 'Category1' => 'RN_category' => { category_id => 1 } %></li>
     <li><%= link_to 'My Cart' => 'RN_cart' %></li>
