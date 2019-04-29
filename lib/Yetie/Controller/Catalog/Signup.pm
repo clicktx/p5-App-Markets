@@ -12,9 +12,21 @@ sub index {
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
-    return $c->service('customer')->send_authorization_mail($form);
+    # magic link
+    my $settings = {
+        email        => $form->param('email'),
+        action       => 'signup',
+        continue_url => 'RN_customer_signup_set_password',
+    };
+    my $magic_link = $c->service('authentication')->create_magic_link($settings);
+
+    # WIP: send email
+    say $magic_link->to_abs;
+    $c->flash( magic_link => $magic_link->to_abs );
+
+    return $c->redirect_to('RN_email_sent_magic_link');
 }
 
 sub done {
