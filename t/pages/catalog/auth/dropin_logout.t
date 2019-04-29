@@ -1,4 +1,4 @@
-package t::pages::catalog::auth::dropin;
+package t::pages::catalog::auth::dropin_logout;
 
 use Mojo::Base 't::common';
 use t::Util;
