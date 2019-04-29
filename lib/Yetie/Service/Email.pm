@@ -10,11 +10,9 @@ sub find_email {
 }
 
 sub to_verified {
-    my ( $self, $email ) = @_;
-    return if $email->is_verified;
-
-    $self->resultset('email')->verified( $email->value );
-    return $self->find_email( $email->value );
+    my ( $self, $email_addr ) = @_;
+    $self->resultset('email')->verified($email_addr);
+    return $self->find_email($email_addr);
 }
 
 1;
@@ -46,7 +44,7 @@ Return L<Yetie::Domain::Value::Email> object.
 
 =head2 C<to_verified>
 
-    $service->to_verified($value_email_obj);
+    $service->to_verified('foo@bar.baz);
 
 Change the status of the email address to verified.
 
