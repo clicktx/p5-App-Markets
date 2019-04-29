@@ -110,12 +110,11 @@ sub login {
 }
 
 sub login_process_remember_me {
-    my $self = shift;
+    my ( $self, $token ) = @_;
+    my $authen_service = $self->service('authentication');
 
     # Verify token
-    my $authen_service = $self->service('authentication');
-    my $token          = $authen_service->remember_me_token;
-    my $auth           = $authen_service->verify($token);
+    my $auth = $authen_service->verify($token);
     return $authen_service->remove_remember_me_token if !$auth->is_verified;
 
     # Customer
