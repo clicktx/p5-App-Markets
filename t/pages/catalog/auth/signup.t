@@ -18,6 +18,7 @@ sub t01_register_form : Tests() {
     my $t    = $self->t;
 
     $t->get_ok('/signup')->status_is( 200, 'right registration form page' );
+    $t->get_ok('/signup/done')->status_is( 200, 'right complete page' );
 
     my $post_data = { csrf_token => $self->csrf_token };
     $t->post_ok( '/signup', form => $post_data )->status_is( 200, 'right form validate error' );
