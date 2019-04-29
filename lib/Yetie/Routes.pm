@@ -184,7 +184,6 @@ sub add_catalog_routes {
         # Sign-up
         my $signup = $r->any('/signup')->to( controller => 'signup' );
         $signup->any('/')->to('#index')->name('RN_customer_signup');
-        $signup->get('/sent-email')->to('#sent_email')->name('RN_customer_signup_sent_email');
         $signup->get('/done')->to('#done')->name('RN_customer_signup_done');
         $signup->get('/get-started/:token')->to('#with_link')->name('RN_callback_customer_signup');
 
