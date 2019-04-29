@@ -99,11 +99,25 @@ sub add_admin_routes {
 }
 
 # Routes for Catalog
-# NOTE: No site map route
-# qw(RN_customer_auth_remember_me)
 sub add_catalog_routes {
     my ( $self, $app ) = @_;
-    my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
+    my $routes = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
+
+    $routes->get('/auth/remember-me')->to('auth#remember_me')->name('RN_customer_auth_remember_me');
+
+    # Check remember_me token before all routes.
+    my $r = $routes->under(
+        sub {
+            my $c = shift;
+            return 1 if $c->is_logged_in;
+            return 1 if !$c->is_get_request;
+            return 1 if !$c->cookie('has_remember_me');
+
+            $c->continue_url( $c->req->url->to_string );
+            $c->redirect_to('RN_customer_auth_remember_me');
+            return 0;
+        }
+    );
     my $if_customer = $r->under(
         sub {
             my $c = shift;
@@ -127,10 +141,6 @@ sub add_catalog_routes {
 
     # Magic link
     $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.verify');
-
-    # Remember me
-    $r->get('/auth/remember-me')->to('auth#remember_me')->name('RN_customer_auth_remember_me');
-    $r = $r->under('/')->to('auth#remember_me_handler')->name('RN_customer_remember_me_handler');
 
     # Route Examples
     $r->get('/')->to('example#welcome')->name('RN_home');

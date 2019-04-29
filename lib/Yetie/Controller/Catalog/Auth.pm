@@ -34,22 +34,14 @@ sub logout {
     return $c->render();
 }
 
-sub remember_me_handler {
-    my $c = shift;
-    return 1 if $c->is_logged_in;
-    return 1 if !$c->is_get_request;
-    return 1 if !$c->cookie('has_remember_me');
-
-    $c->continue_url( $c->req->url->to_string );
-    return $c->redirect_to('RN_customer_auth_remember_me');
-}
-
 sub remember_me {
     my $c            = shift;
     my $continue_url = $c->continue_url;
 
-    # NOTE: ADD logging??
-    $c->service('customer')->login_process_remember_me;
+    my $token = $c->cookie('remember_me_token');
+    return $c->redirect_to($continue_url) if !$token;
+
+    $c->service('customer')->login_process_remember_me($token);
     return $c->redirect_to($continue_url);
 }
 
