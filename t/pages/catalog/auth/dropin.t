@@ -47,12 +47,16 @@ sub t02_magic_link : Tests() {
     # signup
     my $token = $rs->find_last_by_email('not-member-dropin@example.org')->token;
     $t->get_ok("/magic-link/$token")->status_is( 302, 'right signup' );
+    $t->get_ok("/account/wishlist")->status_is( 200, 'right member page access' );
     $t->get_ok("/logout");
+    $t->get_ok("/account/wishlist")->status_is( 302, 'right member page not access' );
 
     # login
     $token = $rs->find_last_by_email('a@example.org')->token;
     $t->get_ok("/magic-link/$token")->status_is( 302, 'right login' );
+    $t->get_ok("/account/wishlist")->status_is( 200, 'right member page access' );
     $t->get_ok("/logout");
+    $t->get_ok("/account/wishlist")->status_is( 302, 'right member page not access' );
 }
 
 __PACKAGE__->runtests;
