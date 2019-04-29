@@ -1,4 +1,4 @@
-package t::pages::catalog::auth::login;
+package t::pages::catalog::auth::login_logout;
 
 use Mojo::Base 't::common';
 use t::Util;
@@ -11,7 +11,7 @@ sub startup : Test(startup) {
     $self->t->ua->max_redirects(0);
 }
 
-sub t00_login_process_with_password : Tests() {
+sub t00_login_logout : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
