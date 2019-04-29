@@ -34,6 +34,11 @@ sub done {
     return $c->render();
 }
 
+sub set_password {
+    my $c = shift;
+    return $c->reply->message();
+}
+
 # Create account, login, and disable token after validate.
 sub with_link {
     my $c     = shift;
