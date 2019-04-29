@@ -15,7 +15,7 @@ sub startup : Test(startup) {
     # $self->app->routes->get('/set_remember_me')->to(
     #     cb => sub {
     #         my $c     = shift;
-    #         my $token = $c->service('customer')->remember_me_token('c@example.org');
+    #         my $token = $c->service('customer')->remember_token('c@example.org');
     #         $c->render( json => { token => $token } );
     #     }
     # );

@@ -115,15 +115,15 @@ sub login_process_remember_me {
 
     # Verify token
     my $auth = $authen_service->verify($token);
-    return $authen_service->remove_remember_me_token if !$auth->is_verified;
+    return $authen_service->remove_remember_token if !$auth->is_verified;
 
     # Customer
     my $email_addr  = $auth->email->value;
     my $customer_id = $self->find_customer($email_addr)->id;
-    return $authen_service->remove_remember_me_token if !$customer_id;
+    return $authen_service->remove_remember_token if !$customer_id;
 
     # Reset token and Login
-    $authen_service->remember_me_token($email_addr);
+    $authen_service->remember_token($email_addr);
     return $self->login($customer_id);
 }
 

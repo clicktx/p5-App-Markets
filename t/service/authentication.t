@@ -57,13 +57,13 @@ subtest 'find_request' => sub {
     is $c->logging->history->[-1]->[1], 'warn', 'right logging';
 };
 
-subtest 'remember_me_token' => sub {
+subtest 'remember_token' => sub {
     my ( $c, $s ) = _init();
 
-    ok !$s->remember_me_token, 'right getter';
-    ok $s->remember_me_token('foo@bar.baz'), 'right setter';
+    ok !$s->remember_token, 'right getter';
+    ok $s->remember_token('foo@bar.baz'), 'right setter';
     my $cookie = $c->tx->res->cookies->[0];
-    is $cookie->name, 'remember_me_token', 'right set cookie';
+    is $cookie->name, 'remember_token', 'right set cookie';
     my $token = $c->resultset('AuthenticationRequest')->find_last_by_email('foo@bar.baz')->token;
     is $cookie->value, $token, 'right cookie value';
     is $cookie->path, '/auth/remember-me', 'right cookie path';
@@ -72,10 +72,10 @@ subtest 'remember_me_token' => sub {
     # Remove token
     ( $c, $s ) = _init();
     $c->tx->req->cookies( { name => $cookie->name, value => $cookie->value } );
-    my $res = $s->remove_remember_me_token;
+    my $res = $s->remove_remember_token;
     ok !$res, 'right remove remember_me';
     $cookie = $c->tx->res->cookies->[0];
-    is $cookie->name, 'remember_me_token', 'right cookie name';
+    is $cookie->name, 'remember_token', 'right cookie name';
     is $cookie->expires, 0, 'right cookie remove';
     is $c->tx->res->cookies->[1]->name, 'has_remember_me', 'right cookie remove';
 };

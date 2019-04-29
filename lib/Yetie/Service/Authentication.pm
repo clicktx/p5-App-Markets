@@ -44,12 +44,12 @@ sub find_request {
     return $self->factory('entity-auth')->construct( $result->to_data );
 }
 
-sub remember_me_token {
+sub remember_token {
     my ( $self, $email_addr ) = @_;
     my $c = $self->controller;
 
     # Getter
-    return $c->cookie('remember_me_token') if !$email_addr;
+    return $c->cookie('remember_token') if !$email_addr;
 
     # Setter
     my $expires  = time + $c->pref('cookie_expires_long');
@@ -60,20 +60,20 @@ sub remember_me_token {
     my $token = $self->create_token( $email_addr, $settings );
 
     # Set cookies.
-    $c->cookie( remember_me_token => $token->value, { expires => $expires, path => $self->_get_path_of_remember_me } );
+    $c->cookie( remember_token => $token->value, { expires => $expires, path => $self->_get_path_of_remember_me } );
     $c->cookie( has_remember_me => 1, { expires => $expires } );
     return $token;
 }
 
-sub remove_remember_me_token {
+sub remove_remember_token {
     my $self = shift;
     my $c    = $self->controller;
 
     # Remove cookies
-    $c->cookie( remember_me_token => q{}, { expires => 0, path => $self->_get_path_of_remember_me } );
+    $c->cookie( remember_token => q{}, { expires => 0, path => $self->_get_path_of_remember_me } );
     $c->cookie( has_remember_me => q{}, { expires => 0 } );
 
-    my $token = $self->remember_me_token;
+    my $token = $self->remember_token;
     return if !$token;
 
     $c->resultset('AuthenticationRequest')->remove_request_by_token($token);
@@ -176,23 +176,23 @@ expiration UNIX time.
 
 Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
 
-=head2 C<remember_me_token>
+=head2 C<remember_token>
 
     # Setter
-    $service->remember_me_token('foo@bar.baz');
+    $service->remember_token('foo@bar.baz');
 
     # Getter
-    my $token = $service->remember_me_token;
+    my $token = $service->remember_token;
 
-Set/Get cookie "remember_me_token".
+Set/Get cookie "remember_token".
 
 Setter method create auto log-in token.
 
-=head2 C<remove_remember_me_token>
+=head2 C<remove_remember_token>
 
-    $service->remove_remember_me_token;
+    $service->remove_remember_token;
 
-Remove "remember_me_token" cookie and disable the auto log-in token.
+Remove "remember_token" cookie and disable the auto log-in token.
 
 =head2 C<verify>
 
