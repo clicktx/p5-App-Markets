@@ -1,4 +1,4 @@
-package Yetie::Form::FieldSet::Auth::Dropin;
+package Yetie::Form::FieldSet::Auth::MagicLink;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 

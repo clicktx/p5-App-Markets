@@ -8,7 +8,7 @@ sub index {
     return $c->redirect_to( $c->continue_url ) if $c->is_logged_in;
 
     # Initialize form
-    my $form = $c->form('auth-dropin');
+    my $form = $c->form('auth-magic_link');
 
     # Get request
     return $c->render() if $c->is_get_request;

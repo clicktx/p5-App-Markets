@@ -34,7 +34,7 @@ sub t02_callback : Tests() {
     my $t    = $self->t;
 
     # token
-    my $token = $t->app->resultset('AuthorizationRequest')->find_last_by_email($register_email)->token;
+    my $token = $t->app->resultset('AuthenticationRequest')->find_last_by_email($register_email)->token;
     $t->get_ok( '/signup/get-started/' . $token )->status_is(302);
 
     my $customer_id = $self->app->resultset('Customer')->last_id;
@@ -55,7 +55,7 @@ sub t02_callback : Tests() {
         email      => $register_email,
     };
     $t->post_ok( '/signup', form => $post_data );
-    $token = $t->app->resultset('AuthorizationRequest')->find_last_by_email($register_email)->token;
+    $token = $t->app->resultset('AuthenticationRequest')->find_last_by_email($register_email)->token;
     $t->get_ok( '/signup/get-started/' . $token )->status_is( 400, 'right re-signup' );
 }
 

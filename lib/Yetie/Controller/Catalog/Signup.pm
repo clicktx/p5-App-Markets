@@ -6,7 +6,7 @@ sub index {
     my $c = shift;
 
     # Initialize form
-    my $form = $c->form('base-email');
+    my $form = $c->form('auth-magic_link');
 
     # Get request
     return $c->render() if $c->is_get_request;
@@ -15,11 +15,6 @@ sub index {
     return $c->render() unless $form->do_validate;
 
     return $c->service('customer')->send_authorization_mail($form);
-}
-
-sub sent_email {
-    my $c = shift;
-    return $c->render();
 }
 
 sub done {
