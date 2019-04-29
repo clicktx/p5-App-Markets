@@ -25,20 +25,27 @@ sub action_login {
 
     my $customer = $c->service('customer')->find_customer( $auth->email->value );
     $c->service('customer')->login( $customer->id );
-    return;
+    return 1;
 }
 
 sub action_signup {
     my ( $c, $auth ) = @_;
 
-    # Email to vefified
-    my $email = $auth->email;
-    $c->service('email')->to_verified($email);
+    # Make it Verified
+    my $email_addr = $auth->email->value;
+    $c->service('email')->to_verified($email_addr);
 
-    # Create customer & login
-    my $customer = $c->service('customer')->create_customer( $email->value );
-    $c->service('customer')->login( $customer->id );
-    return;
+    # Check customer
+    my $customer_service = $c->service('customer');
+    my $customer         = $customer_service->find_customer($email_addr);
+    return if $customer->is_member;
+
+    # Create customer
+    my $new_customer = $customer_service->create_customer($email_addr);
+
+    # Login
+    $customer_service->login( $new_customer->id );
+    return 1;
 }
 
 sub verify {
@@ -54,7 +61,8 @@ sub verify {
 
     # Run the action
     my $action = 'action_' . $auth->action;
-    $c->$action($auth);
+    return $c->reply->error(%error_messages) if !$c->$action($auth);
+
     return $c->redirect_to( $auth->continue );
 }
 
