@@ -1,4 +1,4 @@
-package t::pages::catalog::signup;
+package t::pages::catalog::auth::signup;
 
 use Mojo::Base 't::common';
 use t::Util;
