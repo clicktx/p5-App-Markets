@@ -23,14 +23,15 @@ sub t01 : Tests() {
     subtest login_process_remember_me => sub {
 
         # right not argument
-        $t->get_ok('/test/login_process_remember_me?email=')->status_is(200)->json_is( { customer_id => undef } );
+        $t->get_ok('/test/login_process_remember_me?token=')->status_is(200)->json_is( { customer_id => undef } );
 
-        # right not found customer
-        $t->get_ok('/test/login_process_remember_me?email=foo@bar.baz')->status_is(200)
+        # right bad token
+        $t->get_ok('/test/login_process_remember_me?token=foo-bar-baz')->status_is(200)
           ->json_is( { customer_id => undef } );
 
         # right login
-        $t->get_ok('/test/login_process_remember_me?email=c@example.org')->status_is(200)
+        my $token = $self->app->service('authentication')->create_token( 'c@example.org', { action => 'foo' } );
+        $t->get_ok( '/test/login_process_remember_me?token=' . $token->value )->status_is(200)
           ->json_is( { customer_id => 111 } );
     };
 
@@ -148,9 +149,9 @@ sub store_address {
 
 sub login_process_remember_me {
     my $c     = shift;
-    my $email = $c->param('email');
+    my $token = $c->param('token');
 
-    my $customer_id = $c->service('customer')->login_process_remember_me($email);
+    my $customer_id = $c->service('customer')->login_process_remember_me($token);
     $c->render( json => { customer_id => $customer_id } );
 }
 
