@@ -103,7 +103,7 @@ sub verify {
 }
 
 sub _path_to_remember_me {
-    return shift->controller->url_for('RN_customer_auth_remember_me')->to_string;
+    return shift->controller->url_for('rn.auth.remember_me')->to_string;
 }
 
 sub _logging {
@@ -135,9 +135,9 @@ the following new ones.
 
     my %settings = (
         email           => 'foo@bar.baz',
-        route           => 'RN_foo_bar',    # optional: default "rn.auth.magic_link"
+        route           => 'rn.foo.bar',    # optional: default "rn.auth.magic_link"
         action          => 'login',         # optional:
-        continue_url    => 'RN_home',       # optional:
+        continue_url    => 'rn.home',       # optional:
         expires         => 111222333444,    # optional:
     );
     my $url = $service->create_magic_link( \%settings );
@@ -164,7 +164,7 @@ Action after click url.
 
 Redirect url or route name.
 
-    my $token = $service->create_token( $email_addr, { continue_url => 'RN_foo'} );
+    my $token = $service->create_token( $email_addr, { continue_url => 'rn.foo.bar'} );
 
 =item expires
 

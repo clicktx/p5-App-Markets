@@ -3,7 +3,7 @@
 
 <h1><%= title %></h1>
 
-<%= form_for 'RN_admin_preferences_update' => begin %>
+<%= form_for 'rn.admin.preferences.update' => begin %>
     <% $preferences->each( sub { %>
         <div class="">
             <%= $a %>

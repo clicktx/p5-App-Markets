@@ -44,7 +44,7 @@ subtest 'cache' => sub {
 subtest 'continue_url' => sub {
     my $t = Test::Mojo->new;
     $t->ua->max_redirects(1);
-    $t->get_ok('/continue_none')->json_is( { continue_url => 'RN_home' } );
+    $t->get_ok('/continue_none')->json_is( { continue_url => 'rn.home' } );
     $t->get_ok('/continue_foobar')->json_is( { continue_url => 'foobar' } );
 };
 

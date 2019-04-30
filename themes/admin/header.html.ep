@@ -1,8 +1,8 @@
 header
 <p>session-id: <%= $self->server_session->sid %></p>
 <ul>
-    <li><%= link_to 'Dashboard' => 'RN_admin_dashboard' %></li>
-    <li><%= link_to 'Catalog' => 'RN_home' %></li>
-    <li><%= link_to 'Logout' => 'RN_admin_logout' %></li>
+    <li><%= link_to 'Dashboard' => 'rn.admin.dashboard' %></li>
+    <li><%= link_to 'Catalog' => 'rn.home' %></li>
+    <li><%= link_to 'Logout' => 'rn.admin.logout' %></li>
 </ul>
 <hr>

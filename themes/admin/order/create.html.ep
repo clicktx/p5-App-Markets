@@ -6,5 +6,5 @@
 <h2><%= __('Order ID') . ':' . stash('id') %></h2>
 
 <ul>
-    <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
+    <li><%= link_to __('Orders') => 'rn.admin.orders' %></li>
 </ul>

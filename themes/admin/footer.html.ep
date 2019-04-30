@@ -1,5 +1,5 @@
 footer
 
 <ul>
-    <li><%= link_to 'top page' => 'RN_admin_dashboard' %></li>
+    <li><%= link_to 'top page' => 'rn.admin.dashboard' %></li>
 </ul>

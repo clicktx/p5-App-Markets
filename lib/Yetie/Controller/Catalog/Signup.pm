@@ -18,7 +18,7 @@ sub index {
     my $settings = {
         email        => $form->param('email'),
         action       => 'signup',
-        continue_url => 'RN_customer_signup_set_password',
+        continue_url => 'rn.signup.password',
     };
     my $magic_link = $c->service('authentication')->create_magic_link($settings);
 
@@ -26,7 +26,7 @@ sub index {
     say $magic_link->to_abs;
     $c->flash( magic_link => $magic_link->to_abs );
 
-    return $c->redirect_to('RN_email_sent_magic_link');
+    return $c->redirect_to('rn.email.sent.magic_link');
 }
 
 sub done {
@@ -34,7 +34,7 @@ sub done {
     return $c->render();
 }
 
-sub set_password {
+sub password {
     my $c = shift;
     return $c->reply->message();
 }
@@ -65,7 +65,7 @@ sub with_link {
 
     # Login
     $c->service('customer')->login( $new_customer->id );
-    return $c->redirect_to('RN_customer_signup_done');
+    return $c->redirect_to('rn.signup.done');
 }
 
 1;

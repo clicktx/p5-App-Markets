@@ -1,10 +1,10 @@
 % layout 'admin-default';
 % title __('Edit Category');
 
-<%= link_to 'back to categories' => 'RN_admin_category' %>
+<%= link_to 'back to categories' => 'rn.admin.category' %>
 
 <h1><%= title %></h1>
-<%= form_for 'RN_admin_category_edit' => ( method => 'POST' ) => begin %>
+<%= form_for 'rn.admin.category.edit' => ( method => 'POST' ) => begin %>
     <div class="">
         <%= form_field 'admin-category#title' %>
         <%= form_label %>

@@ -37,7 +37,7 @@ sub delete {
         $order->delete;
     }
 
-    return $c->redirect_to('RN_admin_orders');
+    return $c->redirect_to('rn.admin.orders');
 }
 
 sub details {
@@ -68,7 +68,7 @@ sub duplicate {
 
     # my $order = $c->schema->resultset('Sales::Order')->find_by_id($order_id);
 
-    # return $c->redirect_to('RN_admin_orders');
+    # return $c->redirect_to('rn.admin.orders');
     $c->stash( entity => $order );
     return $c->render('admin/order/edit');
 }

@@ -3,7 +3,7 @@
 
 <h1><%= title %></h1>
 
-<%= form_for 'RN_admin_preferences' => ( method => 'POST' ) => begin %>
+<%= form_for 'rn.admin.preferences' => ( method => 'POST' ) => begin %>
     <% $preferences->each( sub { %>
         <div class="">
             % my $name = "admin-preference#$a";

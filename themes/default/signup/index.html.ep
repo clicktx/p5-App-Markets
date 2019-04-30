@@ -4,7 +4,7 @@
 <h2>Create account</h2>
 
 <div class="">
-    <%= form_for 'RN_customer_signup' => ( method => 'POST' ) => begin %>
+    <%= form_for 'rn.signup' => ( method => 'POST' ) => begin %>
         <%= csrf_field %>
         <div class="">
             <%= form_field '#email' =%>
@@ -17,5 +17,5 @@
 </div>
 
 <div class="">
-    Already have an account? <%= link_to 'Sign in' => 'RN_customer_login' %>
+    Already have an account? <%= link_to 'Sign in' => 'rn.login' %>
 </div>

@@ -8,7 +8,7 @@ sub index {
     return $c->redirect_to( $c->continue_url ) if $c->is_logged_in;
 
     # Link login
-    return $c->redirect_to('RN_customer_dropin') if !$c->cookie('login_with_password');
+    return $c->redirect_to('rn.dropin') if !$c->cookie('login_with_password');
 
     # Initialize form
     my $form = $c->form('auth-login');
@@ -40,7 +40,7 @@ sub toggle {
 
     my $value = $c->cookie('login_with_password') ? 0 : 1;
     $c->cookie( login_with_password => $value, { expires => time + $c->pref('cookie_expires_long') } );
-    return $c->redirect_to('RN_customer_login');
+    return $c->redirect_to('rn.login');
 }
 
 sub with_password {
@@ -49,7 +49,7 @@ sub with_password {
 
     # Set a cookie
     $c->cookie( login_with_password => 1, { expires => time + $c->pref('cookie_expires_long') } );
-    return $c->redirect_to('RN_customer_login');
+    return $c->redirect_to('rn.login');
 }
 
 1;

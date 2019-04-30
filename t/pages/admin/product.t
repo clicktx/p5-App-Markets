@@ -8,7 +8,7 @@ use Test::Mojo;
 sub t01_not_loggedin_request : Tests() {
     my $self   = shift;
     my $t      = $self->t;
-    my $routes = $self->app->routes->find('RN_admin_product')->children;
+    my $routes = $self->app->routes->find('rn.admin.product')->children;
 
     $t->ua->max_redirects(0);
 

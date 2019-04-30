@@ -6,10 +6,10 @@
 <h2><%= __('Product') %></h2>
 
 <ul>
-    <li><%= link_to __('Products') => 'RN_admin_products' %></li>
+    <li><%= link_to __('Products') => 'rn.admin.products' %></li>
 </ul>
 
-<%= form_for url_for( 'RN_admin_product_edit' => { product_id => stash('product_id') } ) => ( method => 'POST' ) => begin %>
+<%= form_for url_for( 'rn.admin.product.edit' => { product_id => stash('product_id') } ) => ( method => 'POST' ) => begin %>
     % my $field;
     <div class="">
         % $field = 'admin-product#title';
@@ -29,7 +29,7 @@
 
     <h3>Primary Category</h3>
     <div class="">
-        <%= link_to 'Add Category' => 'RN_admin_product_category' => { product_id => $product_id } %>
+        <%= link_to 'Add Category' => 'rn.admin.product.category' => { product_id => $product_id } %>
     </div>
     <div class="">
         % $field = 'admin-product#primary_category';

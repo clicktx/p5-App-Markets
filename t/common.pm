@@ -23,7 +23,7 @@ sub admin_loggin {
         csrf_token => $self->csrf_token,
     };
 
-    $self->t->post_ok( $self->app->url_for('RN_admin_login'), form => $post_data );
+    $self->t->post_ok( $self->app->url_for('rn.admin.login'), form => $post_data );
     is $self->server_session->staff_id, 223, 'right staff logged in';
 }
 
@@ -48,8 +48,8 @@ sub customer_loggin {
     };
 
     # HACK: set a login_with_password cookie
-    $self->t->get_ok( $self->app->url_for('RN_customer_login_with_password') );
-    $self->t->post_ok( $self->app->url_for('RN_customer_login'), form => $post_data );
+    $self->t->get_ok( $self->app->url_for('rn.login.with_password') );
+    $self->t->post_ok( $self->app->url_for('rn.login'), form => $post_data );
     is $self->server_session->customer_id, 111, 'right customer logged in';
 }
 

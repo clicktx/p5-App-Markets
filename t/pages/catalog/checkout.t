@@ -57,7 +57,7 @@ sub test_01_02_index_after_logged_in : Tests() {
 
     $t->get_ok('/checkout')->status_is(200);
     my ($url) = map { $_->req->url->path } @{ $t->tx->redirects };
-    is $url, $self->app->url_for('RN_checkout'), 'right redirect';
+    is $url, $self->app->url_for('rn.checkout'), 'right redirect';
 }
 
 sub test_02_shipping_address : Tests() {

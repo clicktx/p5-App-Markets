@@ -16,9 +16,9 @@
 </p>
 
 <p>
-    Has password? <%= link_to 'Login with password' => 'RN_customer_login_toggle' %>
+    Has password? <%= link_to 'Login with password' => 'rn.login.toggle' %>
 </p>
 
 <p>
-    New Customer? <%= link_to 'Create Your Account' => 'RN_customer_signup' %>
+    New Customer? <%= link_to 'Create Your Account' => 'rn.signup' %>
 </p>

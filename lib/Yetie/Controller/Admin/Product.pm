@@ -26,7 +26,7 @@ sub delete {
 
     my $delete_product = $c->service('product')->remove_product($product_id);
     return $delete_product
-      ? $c->redirect_to('RN_admin_products')
+      ? $c->redirect_to('rn.admin.products')
       : $c->reply->not_found();
 }
 
@@ -35,7 +35,7 @@ sub duplicate {
 
     my $product_id = $c->stash('product_id');
     my $result     = $c->service('product')->duplicate_product($product_id);
-    return $result ? $c->redirect_to('RN_admin_products') : $c->reply->not_found();
+    return $result ? $c->redirect_to('rn.admin.products') : $c->reply->not_found();
 }
 
 sub edit {

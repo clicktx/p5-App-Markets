@@ -4,14 +4,14 @@
     <%= content content_header => begin =%>
         <h1><%= __(title) %></h1>
         <ul>
-            <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
+            <li><%= link_to __('Orders') => 'rn.admin.orders' %></li>
         </ul>
     <% end =%>
 </div>
 <div class="">
     <h3>Shipping Address</h3>
     <%= content shipping_address => begin =%>
-        <%= link_to 'RN_admin_order_edit_shipping_address' => begin %>
+        <%= link_to 'rn.admin.order.edit.shipping_address' => begin %>
             Edit
         <% end %>
         <%= include 'common/elements/address', address => $order->shipping_address %>
@@ -20,7 +20,7 @@
 <div class="">
     <h3>Billing Address</h3>
     <%= content billing_address => begin =%>
-        <%= link_to 'RN_admin_order_edit_billing_address' => begin %>
+        <%= link_to 'rn.admin.order.edit.billing_address' => begin %>
             Edit
         <% end %>
         <%= include 'common/elements/address', address => $order->billing_address %>
@@ -29,7 +29,7 @@
 <div class="">
     <h3>Items Ordered</h3>
     <%= content items_ordered => begin =%>
-        <%= link_to 'RN_admin_order_edit_items' => begin %>
+        <%= link_to 'rn.admin.order.edit.items' => begin %>
             Edit
         <% end %>
         <ol>
@@ -46,16 +46,16 @@
 </div>
 <div class="">
     <%= content main => begin =%>
-        <%= link_to 'RN_admin_order_edit' => ( order_id => $id, class => 'btn btn-primary' ) => begin %>
+        <%= link_to 'rn.admin.order.edit' => ( order_id => $id, class => 'btn btn-primary' ) => begin %>
             Edit this Order
         <% end %>
-        <%= form_for 'RN_admin_order_delete' => ( method => 'POST' ) => begin %>
+        <%= form_for 'rn.admin.order.delete' => ( method => 'POST' ) => begin %>
             <%= csrf_field %>
             <%= form_widget 'admin-order#id', value => $id %>
             <%= submit_button 'Delete this Order' %>
         <% end %>
         <ul>
-            <li><%= link_to __('Orders') => 'RN_admin_orders' %></li>
+            <li><%= link_to __('Orders') => 'rn.admin.orders' %></li>
         </ul>
     <% end =%>
 </div>

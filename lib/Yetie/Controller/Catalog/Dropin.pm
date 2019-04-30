@@ -27,7 +27,7 @@ sub index {
     say $magic_link->to_abs;
     $c->flash( magic_link => $magic_link->to_abs );
 
-    return $c->redirect_to('RN_email_sent_magic_link');
+    return $c->redirect_to('rn.email.sent.magic_link');
 }
 
 1;

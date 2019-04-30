@@ -64,7 +64,7 @@ sub _continue_url {
     return $c->flash( continue_url => $arg ) if $arg;
 
     # Get
-    my $default_continue_url = $c->is_admin_route ? 'RN_admin_dashboard' : 'RN_home';
+    my $default_continue_url = $c->is_admin_route ? 'rn.admin.dashboard' : 'rn.home';
     return $c->flash('continue_url') || $default_continue_url;
 }
 
@@ -209,7 +209,7 @@ SEE L<Yetie::App::Core::Cache>
 
 Get/Set to flash data with keyword "continue_url".
 
-Default url: C<RN_admin_dashboard> or C<RN_home>
+Default url: C<rn.admin.dashboard> or C<rn.home>
 
 =head2 C<cookie_session>
 
