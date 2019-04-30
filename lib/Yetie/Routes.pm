@@ -111,7 +111,7 @@ sub add_catalog_routes {
             my $c = shift;
             return 1 if $c->is_logged_in;
             return 1 if !$c->is_get_request;
-            return 1 if !$c->cookie('has_remember_me');
+            return 1 if !$c->cookie('has_remember_token');
 
             $c->continue_url( $c->req->url->to_string );
             $c->redirect_to('RN_customer_auth_remember_me');

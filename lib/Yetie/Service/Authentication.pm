@@ -61,7 +61,7 @@ sub remember_token {
 
     # Set cookies.
     $c->cookie( remember_token => $token->value, { expires => $expires, path => $self->_get_path_of_remember_me } );
-    $c->cookie( has_remember_me => 1, { expires => $expires } );
+    $c->cookie( has_remember_token => 1, { expires => $expires } );
     return $token;
 }
 
@@ -71,7 +71,7 @@ sub remove_remember_token {
 
     # Remove cookies
     $c->cookie( remember_token => q{}, { expires => 0, path => $self->_get_path_of_remember_me } );
-    $c->cookie( has_remember_me => q{}, { expires => 0 } );
+    $c->cookie( has_remember_token => q{}, { expires => 0 } );
 
     my $token = $self->remember_token;
     return if !$token;
