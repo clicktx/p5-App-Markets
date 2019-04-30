@@ -60,7 +60,7 @@ sub remember_token {
     my $token = $self->create_token( $email_addr, $settings );
 
     # Set cookies.
-    $c->cookie( remember_token => $token->value, { expires => $expires, path => $self->_get_path_of_remember_me } );
+    $c->cookie( remember_token => $token->value, { expires => $expires, path => $self->_path_to_remember_me } );
     $c->cookie( has_remember_token => 1, { expires => $expires } );
     return $token;
 }
@@ -70,7 +70,7 @@ sub remove_remember_token {
     my $c    = $self->controller;
 
     # Remove cookies
-    $c->cookie( remember_token => q{}, { expires => 0, path => $self->_get_path_of_remember_me } );
+    $c->cookie( remember_token => q{}, { expires => 0, path => $self->_path_to_remember_me } );
     $c->cookie( has_remember_token => q{}, { expires => 0 } );
 
     my $token = $self->remember_token;
@@ -101,8 +101,8 @@ sub verify {
     return $auth;
 }
 
-sub _get_path_of_remember_me {
-    return shift->controller->match->root->lookup('RN_customer_auth_remember_me')->to_string;
+sub _path_to_remember_me {
+    return shift->controller->url_for('RN_customer_auth_remember_me')->to_string;
 }
 
 sub _logging {
