@@ -5,7 +5,7 @@ use Carp qw(croak);
 sub create_magic_link {
     my ( $self, $settings ) = ( shift, shift || {} );
     my $email_addr = delete $settings->{email};
-    my $route = delete $settings->{route} || 'rn.auth.magic_link.verify';
+    my $route = delete $settings->{route} || 'rn.auth.magic_link';
 
     # action
     if ( !$settings->{action} ) {
@@ -135,7 +135,7 @@ the following new ones.
 
     my %settings = (
         email           => 'foo@bar.baz',
-        route           => 'RN_foo_bar',    # optional: default "rn.auth.magic_link.verify"
+        route           => 'RN_foo_bar',    # optional: default "rn.auth.magic_link"
         action          => 'login',         # optional:
         continue_url    => 'RN_home',       # optional:
         expires         => 111222333444,    # optional:

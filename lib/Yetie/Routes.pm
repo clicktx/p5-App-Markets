@@ -169,8 +169,8 @@ sub add_catalog_routes {
     # For Customers
     {
         # Magic link
-        $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.verify');
-        $r->get('/get-started/:token')->to('auth-magic_link#verify')->name('RN_customer_signup_link');
+        $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link');
+        $r->get('/get-started/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.signup');
 
         # Drop-in
         my $dropin = $r->any('/dropin')->to( controller => 'dropin' );

@@ -32,7 +32,7 @@ subtest 'create_magic_link' => sub {
         {
             email  => 'foo@example.org',
             action => 'bar',
-            route  => 'RN_customer_signup_link',
+            route  => 'rn.auth.magic_link.signup',
         }
     );
     like $url->to_string, qr{/get-started/*.}, 'right change path';
