@@ -4,7 +4,7 @@ use Carp qw(croak);
 
 sub create_magic_link {
     my ( $self, $settings ) = ( shift, shift || {} );
-    my $email_addr = $settings->{email};
+    my $email_addr = delete $settings->{email};
 
     # action
     if ( !$settings->{action} ) {
