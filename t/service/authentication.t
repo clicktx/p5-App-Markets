@@ -26,7 +26,16 @@ subtest 'create_magic_link' => sub {
         }
     );
     isa_ok $url, 'Mojo::URL';
-    like $url->to_abs, qr(/magic-link/*.), 'right magic link';
+    like $url->to_string, qr{/magic-link/*.}, 'right default path';
+
+    $url = $s->create_magic_link(
+        {
+            email  => 'foo@example.org',
+            action => 'bar',
+            route  => 'RN_customer_signup_link',
+        }
+    );
+    like $url->to_string, qr{/get-started/*.}, 'right change path';
 };
 
 subtest 'create_token' => sub {

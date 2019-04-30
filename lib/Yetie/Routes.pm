@@ -139,9 +139,6 @@ sub add_catalog_routes {
     # Email
     $r->get('/email/sent-magic-link')->to('email#sent_magic_link')->name('RN_email_sent_magic_link');
 
-    # Magic link
-    $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.verify');
-
     # Route Examples
     $r->get('/')->to('example#welcome')->name('RN_home');
     $r->any('/login-example')->to('login_example#index');
@@ -171,6 +168,10 @@ sub add_catalog_routes {
 
     # For Customers
     {
+        # Magic link
+        $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.verify');
+        $r->get('/get-started/:token')->to('auth-magic_link#verify')->name('RN_customer_signup_link');
+
         # Drop-in
         my $dropin = $r->any('/dropin')->to( controller => 'dropin' );
         $dropin->any('/')->to('#index')->name('RN_customer_dropin');
@@ -186,7 +187,6 @@ sub add_catalog_routes {
         $signup->any('/')->to('#index')->name('RN_customer_signup');
         $signup->any('/set-password')->to('#set_password')->name('RN_customer_signup_set_password');
         $signup->get('/done')->to('#done')->name('RN_customer_signup_done');
-        $signup->get('/get-started/:token')->to('#with_link')->name('RN_callback_customer_signup');
 
         # Account page
         my $account = $if_customer->any('/account')->to('account#');
