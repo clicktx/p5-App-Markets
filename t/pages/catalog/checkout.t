@@ -30,14 +30,14 @@ sub startup : Test(startup) {
 }
 
 # NOTE: カートが空の場合のtestも必要
-sub test_01_01_no_logged_in : Tests() {
+sub test_01_no_logged_in : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
     $t->get_ok('/checkout')->status_is(200);
     is_deeply $t->tx->redirects, [], 'right no redirects';
 
-    $t->get_ok($_)->status_is(200)->element_exists('form[action=/login]')
+    $t->get_ok($_)->status_is(302)->header_is( Location => '/dropin' )
       for (
         qw(
         /checkout/shipping-address
@@ -49,7 +49,7 @@ sub test_01_01_no_logged_in : Tests() {
       );
 }
 
-sub test_01_02_index_after_logged_in : Tests() {
+sub test_02_index_after_logged_in : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -60,7 +60,7 @@ sub test_01_02_index_after_logged_in : Tests() {
     is $url, $self->app->url_for('rn.checkout'), 'right redirect';
 }
 
-sub test_02_shipping_address : Tests() {
+sub test_03_shipping_address : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -80,7 +80,7 @@ sub test_02_shipping_address : Tests() {
     $t->post_ok( '/checkout/shipping-address', form => $post_data )->status_is(200)->content_like(qr/billing address/);
 }
 
-sub test_03_billing_address : Tests() {
+sub test_04_billing_address : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -100,7 +100,7 @@ sub test_03_billing_address : Tests() {
     $t->post_ok( '/checkout/billing-address', form => $post_data )->status_is(200)->content_like(qr/confirm/);
 }
 
-sub test_04_select_address : Tests() {
+sub test_05_select_address : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
