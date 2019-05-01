@@ -36,7 +36,7 @@ sub t02_callback : Tests() {
 
     # token
     my $token = $t->app->resultset('AuthenticationRequest')->find_last_by_email($register_email)->token;
-    $t->get_ok( '/signup/get-started/' . $token )->status_is(302);
+    $t->get_ok( '/get-started/' . $token )->status_is(302);
 
     my $customer_id = $self->app->resultset('Customer')->last_id;
     my $customer    = $self->app->service('customer')->find_customer($register_email);
@@ -45,10 +45,10 @@ sub t02_callback : Tests() {
     ok $customer->emails->primary->is_verified, 'right email verified';
 
     # re-request
-    $t->get_ok( '/signup/get-started/' . $token )->status_is( 400, 'right re-request' );
+    $t->get_ok( '/get-started/' . $token )->status_is( 400, 'right re-request' );
 
     # illegal token
-    $t->get_ok('/signup/get-started/badtoken')->status_is( 400, 'illegal token' );
+    $t->get_ok('/get-started/bad-token')->status_is( 400, 'illegal token' );
 
     # re-singup
     my $post_data = {
@@ -57,7 +57,7 @@ sub t02_callback : Tests() {
     };
     $t->post_ok( '/signup', form => $post_data );
     $token = $t->app->resultset('AuthenticationRequest')->find_last_by_email($register_email)->token;
-    $t->get_ok( '/signup/get-started/' . $token )->status_is( 400, 'right re-signup' );
+    $t->get_ok( '/get-started/' . $token )->status_is( 400, 'right re-signup' );
 }
 
 __PACKAGE__->runtests;
