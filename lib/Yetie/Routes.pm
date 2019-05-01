@@ -183,13 +183,19 @@ sub add_catalog_routes {
         # Signup
         $r->any('/signup')->to('signup#index')->name('rn.signup');
         $if_customer->any('/signup/password')->to('signup#password')->name('rn.signup.password');
-        $if_customer->get('/signup/done')->to('signup#done')->name('rn.signup.done');
+        $r->get('/signup/done')->to('signup#done')->name('rn.signup.done');
 
         # Account page
         my $account = $if_customer->any('/account')->to('account#');
         $account->get('/home')->to('#home')->name('rn.account.home');
         $account->get('/orders')->to('#orders')->name('rn.account.orders');
         $account->get('/wishlist')->to('#wishlist')->name('rn.account.wishlist');
+        {
+            # Account settings
+            my $settings = $account->any('/settings')->to('account-settings#');
+            $settings->get('/')->to('#index')->name('rn.account.settings');
+            $settings->get('/password')->to('#password')->name('rn.account.settings.password');
+        }
     }
 
     # Product
