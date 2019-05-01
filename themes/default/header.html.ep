@@ -1,6 +1,7 @@
 header
 <div>session-id: <%= $self->server_session->sid %></div>
 <div>flash ref: <%= $self->flash('ref') %></div>
+<div>continue url: <%= $self->continue_url %></div>
 <div>cid: <%= $self->server_session->customer_id %>
     <% if ($self->is_logged_in){ %>
         Logged in
