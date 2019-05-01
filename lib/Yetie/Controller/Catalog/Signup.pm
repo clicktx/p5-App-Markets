@@ -18,7 +18,7 @@ sub index {
     my $settings = {
         email        => $form->param('email'),
         action       => 'signup',
-        continue_url => 'rn.signup.password',
+        continue_url => 'rn.signup.done',
     };
     my $magic_link = $c->service('authentication')->create_magic_link($settings);
 
