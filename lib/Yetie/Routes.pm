@@ -171,21 +171,19 @@ sub add_catalog_routes {
         $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link');
         $r->get('/get-started/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.signup');
 
-        # Drop-in
-        my $dropin = $r->any('/dropin')->to( controller => 'dropin' );
-        $dropin->any('/')->to('#index')->name('rn.dropin');
-
-        # Log-in
+        # Login
         my $login = $r->any('/login')->to( controller => 'login' );
         $login->any('/')->to('#index')->name('rn.login');
         $login->get('/toggle')->to('#toggle')->name('rn.login.toggle');
         $login->any('/with-password')->to('#with_password')->name('rn.login.with_password');
 
-        # Sign-up
-        my $signup = $r->any('/signup')->to( controller => 'signup' );
-        $signup->any('/')->to('#index')->name('rn.signup');
-        $signup->any('/password')->to('#password')->name('rn.signup.password');
-        $signup->get('/done')->to('#done')->name('rn.signup.done');
+        # Dropin
+        $r->any('/dropin')->to('dropin#index')->name('rn.dropin');
+
+        # Signup
+        $r->any('/signup')->to('signup#index')->name('rn.signup');
+        $if_customer->any('/signup/password')->to('signup#password')->name('rn.signup.password');
+        $if_customer->get('/signup/done')->to('signup#done')->name('rn.signup.done');
 
         # Account page
         my $account = $if_customer->any('/account')->to('account#');
