@@ -1,4 +1,4 @@
-package t::pages::catalog::login;
+package t::pages::catalog::autn::login_remember_me;
 
 use Mojo::Base 't::common';
 use t::Util;
@@ -10,12 +10,12 @@ sub startup : Test(startup) {
     $self->SUPER::startup;
 
     # Add routes
-    $self->app->routes->get('/login/remember-me')->to('login#remember_me');
+    $self->app->routes->get('/auth/remember-me')->to('auth#remember_me');
 
     # $self->app->routes->get('/set_remember_me')->to(
     #     cb => sub {
     #         my $c     = shift;
-    #         my $token = $c->service('customer')->remember_me_token('c@example.org');
+    #         my $token = $c->service('customer')->remember_token('c@example.org');
     #         $c->render( json => { token => $token } );
     #     }
     # );
@@ -28,7 +28,7 @@ sub t00_remember_me : Tests() {
     my $t    = $self->t;
 
     $t->get_ok('/')->get_ok('/account/wishlist')->status_is(302);
-    $t->get_ok('/login/remember-me')->status_is(302);
+    $t->get_ok('/auth/remember-me')->status_is(302);
     my $session = t::Util::server_session( $self->app );
     $session->tx( $t->tx );
     $session->load;

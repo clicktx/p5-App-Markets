@@ -8,14 +8,14 @@
 % my @root_nodes = $rs->search( { level => 0 } );
 % foreach my $node (@root_nodes) {
     <div class="">
-        <%= link_to 'RN_admin_category_edit' => { category_id => $node->id } => begin %>
+        <%= link_to 'rn.admin.category.edit' => { category_id => $node->id } => begin %>
             id=<%= $node->id %> field1=<%= $node->title %>
         <% end %>
     </div>
     % my $desc_rs = $node->descendants;
     % while ( my $desc = $desc_rs->next ) {
         <div class="">
-            <%= link_to 'RN_admin_category_edit' => { category_id => $desc->id } => begin %>
+            <%= link_to 'rn.admin.category.edit' => { category_id => $desc->id } => begin %>
                 <%= '**' x $desc->level %> id=<%= $desc->id %> field1=<%= $desc->title %>
             <% end %>
         </div>
@@ -23,7 +23,7 @@
 % }
 
 <h1>Create Category</h1>
-<%= form_for 'RN_admin_category_create' => ( method => 'POST' ) => begin %>
+<%= form_for 'rn.admin.category.create' => ( method => 'POST' ) => begin %>
     <div class="">
         <%= form_field 'admin-category#parent_id' %>
         <%= form_label %>

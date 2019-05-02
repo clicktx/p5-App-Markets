@@ -3,7 +3,7 @@
 
 <h1><%= title %></h1>
 
-<%= link_to 'Edit Cart' => 'RN_cart' %>
+<%= link_to 'Edit Cart' => 'rn.cart' %>
 
 <h3>ORDER SUMMARY</h3>
 
@@ -20,7 +20,7 @@
 <div class="">
     <h3>Shipping Address</h3>
     <%= content shipping_address => begin =%>
-        <%= link_to 'RN_checkout_shipping_address' => begin %>
+        <%= link_to 'rn.checkout.shipping_address' => begin %>
             Change
         <% end %>
         <!-- NOTE: とりあえず通常配送のみ -->
@@ -31,7 +31,7 @@
 <div class="">
     <h3>Billing Address</h3>
     <%= content billing_address => begin =%>
-        <%= link_to 'RN_checkout_billing_address' => begin %>
+        <%= link_to 'rn.checkout.billing_address' => begin %>
             Change
         <% end %>
         <%= include 'common/elements/address', address => $cart->billing_address %>
@@ -41,7 +41,7 @@
 <div class="">
     <h3>Items Ordered</h3>
     <%= content items_ordered => begin =%>
-        <%= link_to 'RN_cart' => begin %>
+        <%= link_to 'rn.cart' => begin %>
             Change
         <% end %>
         <ol>
@@ -50,7 +50,7 @@
                     ID: <%= $_->id %> | PRODUCT ID: <%= $_->product_id %>
                     | product_title: <%= $_->product_title %>
                     | QTY: <%= $_->quantity %>
-                    <%= link_to 'RN_check_out_change_item_quantity' => begin %>
+                    <%= link_to 'rn.checkout.change.item_quantity' => begin %>
                         Change
                     <% end %>
                     | price: <%= $_->price %>
@@ -61,7 +61,7 @@
     <% end =%>
 </div>
 
-<%= form_for 'RN_checkout_confirm' => ( method => 'post' ) => begin %>
+<%= form_for 'rn.checkout.confirm' => ( method => 'post' ) => begin %>
     <%= csrf_field %>
     <%= submit_button 'BUY NOW' %>
 <% end %>
@@ -70,4 +70,4 @@
 <%= dumper $cart->to_data %>
 </pre>
 
-<%= link_to 'Back to page' => 'RN_cart' %>
+<%= link_to 'Back to page' => 'rn.cart' %>

@@ -1,6 +1,20 @@
 use Mojolicious::Lite;
 plugin 'Yetie::App::Core::DefaultHelpers';
 
+any '/continue_none' => sub {
+    my $c = shift;
+    return $c->redirect_to('/continue_redirect');
+};
+any '/continue_foobar' => sub {
+    my $c = shift;
+    $c->continue_url('foobar');
+    return $c->redirect_to('/continue_redirect');
+};
+any '/continue_redirect' => sub {
+    my $c = shift;
+    $c->render( json => { continue_url => $c->continue_url } );
+};
+
 any '/req' => sub {
     my $c = shift;
     $c->render( json => { req => $c->is_get_request } );
@@ -25,6 +39,13 @@ subtest 'cache' => sub {
 
     $c->cache( 'bar' => 7 );
     is $c->cache('bar'), 7, 'right other cache';
+};
+
+subtest 'continue_url' => sub {
+    my $t = Test::Mojo->new;
+    $t->ua->max_redirects(1);
+    $t->get_ok('/continue_none')->json_is( { continue_url => 'rn.home' } );
+    $t->get_ok('/continue_foobar')->json_is( { continue_url => 'foobar' } );
 };
 
 subtest 'is_admin_route' => sub {

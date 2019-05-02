@@ -6,9 +6,9 @@
 
 <h1><%= stash 'title' %><%= stash 'product_id' %></h1>
 <ul>
-    <li><%= link_to 'product1' => 'RN_product' => { product_id => 1} %></li>
-    <li><%= link_to 'product2' => 'RN_product' => { product_id => 2} %></li>
-    <li><%= link_to 'product3' => 'RN_product' => { product_id => 3} %></li>
+    <li><%= link_to 'product1' => 'rn.product' => { product_id => 1} %></li>
+    <li><%= link_to 'product2' => 'rn.product' => { product_id => 2} %></li>
+    <li><%= link_to 'product3' => 'rn.product' => { product_id => 3} %></li>
 </ul>
 
 <h1><%= $entity->title %></h1>
@@ -19,7 +19,7 @@
     <%= $entity->price %>
 </div>
 
-<%= form_for 'RN_product' => ( method => 'POST' ) => begin %>
+<%= form_for 'rn.product' => ( method => 'POST' ) => begin %>
     % my $field;
     <%= csrf_field %>
     <%= form_widget('product#product_id') %>

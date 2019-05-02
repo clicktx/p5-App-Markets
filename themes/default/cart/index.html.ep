@@ -7,7 +7,7 @@
 <%= __nx('{cnt :num} item', '{cnt :num} items', $cart->total_item_count, cnt => $cart->total_item_count) %>
 (Total QTY: <%= $cart->total_quantity %>) in your cart.
 
-<%= form_for 'RN_cart' => ( method => 'POST' ) => begin %>
+<%= form_for 'rn.cart' => ( method => 'POST' ) => begin %>
     <ul>
         <li>
             Product Name | Unit Price | QTY | Subtotal
@@ -17,14 +17,14 @@
             % my ( $item, $num ) = @_;
             % my $i = $num - 1;
             <li class="cart-item">
-                <a href="<%= url_for 'RN_product' => { product_id => $item->product_id } %>">
+                <a href="<%= url_for 'rn.product' => { product_id => $item->product_id } %>">
                     <%= $item->product_title %>
                 </a>
                  | <%= $item->price %>
                  | QTY:<%= $item->quantity %><%= form_widget("cart#quantity.$i") %><%= form_error("cart#item.$i.quantity") %>
                  | <%= $item->subtotal %>
                 <div class="cart-item-control">
-                    <%= link_to 'RN_cart_delete' => ( name => "button.delete.$i", class => 'btn btn-link submit-post', 'data-name' => 'target_item_id', 'data-value' => $item->id ) => begin %>
+                    <%= link_to 'rn.cart.delete' => ( name => "button.delete.$i", class => 'btn btn-link submit-post', 'data-name' => 'target_item_id', 'data-value' => $item->id ) => begin %>
                         Delete
                     <% end %>
                     <i class="separater-icon">|</i>
@@ -39,7 +39,7 @@
     <%= csrf_field %>
     <%= submit_button 'Update Cart' %>
 <% end %>
-<%= csrf_button_to 'Remove All Items' => 'RN_cart_clear' => ( id => 'form-cart-clear') %>
+<%= csrf_button_to 'Remove All Items' => 'rn.cart.clear' => ( id => 'form-cart-clear') %>
 
 <hr>
 <div class="">
@@ -54,8 +54,8 @@
     % my $ref = $self->flash('ref') || '/';
     <li><%= link_to 'Continue Shopping' => $ref %></li>
     <li>Clear Cart</li>
-    <li><%= link_to 'Edit Cart' => 'RN_cart' %></li>
-    <li><%= link_to 'Proceed to Checkout' => 'RN_checkout', ( class => 'btn btn-primary' ) %></li>
+    <li><%= link_to 'Edit Cart' => 'rn.cart' %></li>
+    <li><%= link_to 'Proceed to Checkout' => 'rn.checkout', ( class => 'btn btn-primary' ) %></li>
 </ul>
 
 <pre>

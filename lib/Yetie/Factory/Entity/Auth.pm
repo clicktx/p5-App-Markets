@@ -1,4 +1,4 @@
-package Yetie::Factory::Entity::Authorization;
+package Yetie::Factory::Entity::Auth;
 use Mojo::Base 'Yetie::Factory';
 
 sub cook {
@@ -19,25 +19,25 @@ __END__
 
 =head1 NAME
 
-Yetie::Factory::Entity::Authorization
+Yetie::Factory::Entity::Auth
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Factory::Entity::Authorization->new( %args )->construct();
+    my $entity = Yetie::Factory::Entity::Auth->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-authorization')->construct(%args);
+    my $entity = $c->factory('entity-auth')->construct(%args);
 
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
-L<Yetie::Factory::Entity::Authorization> inherits all attributes from L<Yetie::Factory> and implements
+L<Yetie::Factory::Entity::Auth> inherits all attributes from L<Yetie::Factory> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Factory::Entity::Authorization> inherits all methods from L<Yetie::Factory> and implements
+L<Yetie::Factory::Entity::Auth> inherits all methods from L<Yetie::Factory> and implements
 the following new ones.
 
 =head1 AUTHOR

@@ -3,7 +3,6 @@ use Yetie::Domain::Base 'Yetie::Domain::Value';
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
 has created_at => undef;
-has updated_at => undef;
 
 sub is_verify {
     my ( $self, $raw_password ) = @_;

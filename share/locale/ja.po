@@ -37,6 +37,13 @@ msgid "Delete"
 msgstr "削除"
 
 
+# Email
+msgid "email.sent.title"
+msgstr "メールを送信しました"
+
+msgid "email.sent.message"
+msgstr "お送りしたメールを確認して下さい。"
+
 # Login
 msgid "login"
 msgstr "サインイン"
@@ -66,9 +73,9 @@ msgstr "{length}文字以下で入力して下さい。"
 msgid "Must be between {min} and {max} symbols"
 msgstr "{min}〜{max}文字で入力して下さい。"
 
-# password-less authorization
-msgid "authorization.request.error.title"
+# password-less authentication
+msgid "auth.request.error.title"
 msgstr "Bad request"
 
-msgid "authorization.request.error.message"
+msgid "auth.request.error.message"
 msgstr "期限切れまたは無効なリクエストです。"

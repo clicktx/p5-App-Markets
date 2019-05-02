@@ -17,7 +17,7 @@ column is_enabled => {
 
 has_many
   triggers => 'Yetie::Schema::Result::Addon::Trigger',
-  'addon_id',
-  { cascade_delete => 1 };
+  { 'foreign.addon_id' => 'self.id' },
+  { cascade_delete     => 0 };
 
 1;

@@ -1,0 +1,6 @@
+% layout 'default';
+
+<h2><%= __(title) %></h2>
+<p>
+    <%= __($message) %>
+</p>

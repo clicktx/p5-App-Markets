@@ -414,4 +414,12 @@ subtest 'do_validate with filter' => sub {
     is_deeply $dom->at('*')->attr->{value}, 'aaa', 'right filtering value';
 };
 
+subtest 'append_error_classes' => sub {
+    my $c = $t->app->build_controller;
+    my $f = Yetie::Form::Base->new( 'test', controller => $c );
+    $f->append_error_classes( 'email', 'nickname' );
+    is $f->field('email')->class,    'field-with-error', 'right append error class';
+    is $f->field('nickname')->class, 'field-with-error', 'right append error class';
+};
+
 done_testing();

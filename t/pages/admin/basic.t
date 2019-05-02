@@ -10,11 +10,6 @@ sub t01_not_loggedin_request : Tests() {
     my $t    = $self->t;
 
     $t->ua->max_redirects(0);
-
-    my $paths = $self->make_paths( $self->app->routes->find('RN_admin_bridge')->children, {} );
-    foreach my $path ( @{$paths} ) {
-        $t->get_ok($path)->status_is( 302, 'right redirect' );
-    }
 }
 
 sub t02_admin_login_process_with_password : Tests() {
@@ -36,7 +31,9 @@ sub t02_admin_login_process_with_password : Tests() {
 
     # password failure
     $t->post_ok( '/admin/login', form => { csrf_token => $csrf_token, login_id => 'staff', password => '1111' } )
-      ->status_is( 401, 'password failure' )->text_like( 'title' => qr/login/i, 'failure login' );
+      ->status_is( 401, 'password failure' )->text_like( 'title' => qr/login/i, 'failure login, old password' );
+    $t->post_ok( '/admin/login', form => { csrf_token => $csrf_token, login_id => 'staff', password => '44556677' } )
+      ->status_is( 401, 'password failure' )->text_like( 'title' => qr/login/i, 'failure login, bad password' );
 
     $t->ua->max_redirects(1);
     $t->post_ok( '/admin/login', form => { csrf_token => $csrf_token, login_id => 'staff', password => '12345678' } )

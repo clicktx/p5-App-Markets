@@ -11,25 +11,21 @@ sub startup : Test(startup) {
     my $self = shift;
     $self->SUPER::startup;
 
-    foreach my $r ( @{ $self->t->app->routes->find('RN_customer_bridge')->children } ) {
-        push @paths, $r->render() if $r->is_endpoint;
-    }
-
     $self->t->ua->max_redirects(0);
 }
 
-sub t01_required_authrization : Tests() {
+sub t01_required_authentication : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
     $t->get_ok($_)->status_is( 302, 'right redirect' )->header_is( Location => '/login' ) for @paths;
 }
 
-sub t02_required_authrization_after_login : Tests() {
+sub t02_required_authentication_after_login : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $self->customer_logged_in;
+    $self->customer_loggin;
     $t->get_ok($_)->status_is( 200, 'right redirect' ) for @paths;
 }
 

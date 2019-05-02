@@ -8,17 +8,7 @@ sub index {
     return $c->confirm_handler if $c->is_logged_in;
 
     # Guest or a customer not logged in
-    my $form = $c->form('checkout-index');
-    $c->flash( ref => 'RN_checkout' );
-    return $c->render() unless $form->has_data;
-
-    # Check guest email
-    # NOTE: 登録済みの顧客ではないか？
-    # 認証済みのメールアドレスか？
-    $form->do_validate;
-    my $email = $c->factory('value-email')->construct( value => $form->param('guest-email') );
-    $c->cart->email($email);
-
+    $c->continue_url('rn.checkout');
     return $c->render();
 }
 
@@ -66,12 +56,12 @@ sub shipping_address_select {
 
 sub delivery_option {
     my $c = shift;
-    return $c->redirect_to('RN_checkout_payment_method');
+    return $c->redirect_to('rn.checkout.payment_method');
 }
 
 sub payment_method {
     my $c = shift;
-    return $c->redirect_to('RN_checkout_billing_address');
+    return $c->redirect_to('rn.checkout.billing_address');
 }
 
 sub billing_address {
@@ -132,19 +122,19 @@ sub confirm_handler {
     my $cart = $c->cart;
 
     # No items
-    return $c->redirect_to('RN_cart') unless $cart->has_item;
+    return $c->redirect_to('rn.cart') unless $cart->has_item;
 
     # Shipping address
-    return $c->redirect_to('RN_checkout_shipping_address') unless $cart->has_shipping_address;
+    return $c->redirect_to('rn.checkout.shipping_address') unless $cart->has_shipping_address;
 
     # ship items to one place
     $cart->move_items_to_first_shipment if !$cart->has_shipping_item and !$cart->shipments->is_multiple;
 
     # Billing address
-    return $c->redirect_to('RN_checkout_billing_address') unless $cart->has_billing_address;
+    return $c->redirect_to('rn.checkout.billing_address') unless $cart->has_billing_address;
 
     # Redirect confirm
-    return $c->redirect_to('RN_checkout_confirm') if $c->stash('action') ne 'confirm';
+    return $c->redirect_to('rn.checkout.confirm') if $c->stash('action') ne 'confirm';
 }
 
 sub complete_handler {
@@ -221,7 +211,7 @@ sub complete_handler {
     $cart->clear_items;
 
     # redirect_to thank you page
-    $c->redirect_to('RN_checkout_complete');
+    $c->redirect_to('rn.checkout.complete');
 }
 
 sub _select_address {

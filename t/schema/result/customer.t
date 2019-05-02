@@ -14,7 +14,7 @@ subtest 'to_data' => sub {
     my $res = $rs->find(111);
     ok $res->to_data, 'right registered customer';
 
-    $res = $rs->find(115);
+    $res = $rs->find(113);
     my $data = $res->to_data;
     ok $data, 'right not registered customer';
     is $data->{password}, '', 'right password';

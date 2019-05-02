@@ -7,7 +7,7 @@
 % $entity->customer_list->each( sub {
     <li>
         <%= $_->id %>
-        <%= link_to 'Edit' => 'RN_admin_customer_detail' => { customer_id => $_->id } %>
+        <%= link_to 'Edit' => 'rn.admin.customer.detail' => { customer_id => $_->id } %>
         Name: xxx
         Primary Email: <%= $_->emails->primary %>
         has_password?: <%= $_->has_password ? 'Yse' : 'No' %>
@@ -20,5 +20,5 @@
 <%= include 'admin/components/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>
 
 <ul>
-    <li><%= link_to __('Create New Customer') => 'RN_admin_customer_create' %></li>
+    <li><%= link_to __('Create New Customer') => 'rn.admin.customer.create' %></li>
 </ul>

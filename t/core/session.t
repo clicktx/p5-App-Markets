@@ -197,4 +197,18 @@ subtest 'cookie_expires' => sub {
     ok $session->cookie_expires, 'right get cookie expires';
 };
 
+subtest 'recreate' => sub {
+    my $session = t::Util::server_session($app);
+    $session->create;
+
+    my $sid     = $session->sid;
+    my $cart_id = $session->cart->cart_id;
+
+    $session->recreate( { cart_id => 123, cart_data => { foo => 'bar' } } );
+    isnt $sid, $session->sid, 'right regenerate sid';
+    isnt $cart_id, $session->cart->cart_id, 'right change cart id';
+    is $session->cart->cart_id, '123', 'right set cart id';
+    is_deeply $session->cart->data, { foo => 'bar' }, 'right set cart data';
+};
+
 done_testing();

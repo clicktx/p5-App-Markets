@@ -5,37 +5,37 @@
 
 <h2><%= __('Settings') %></h2>
 <ul>
-    <li><%= link_to 'preferences' => 'RN_admin_preferences' %></li>
-    <li><%= link_to 'addon settings' => 'RN_admin_settings_addon' %></li>
+    <li><%= link_to 'preferences' => 'rn.admin.preferences' %></li>
+    <li><%= link_to 'addon settings' => 'rn.admin.settings.addon' %></li>
 </ul>
 <h2><%= __('Categories') %></h2>
 <ul>
-    <li><%= link_to 'Category index' => 'RN_admin_category' %></li>
+    <li><%= link_to 'Category index' => 'rn.admin.category' %></li>
 </ul>
 
 <h2><%= __('Products') %></h2>
 <ul>
-    <li><%= link_to 'Products index' => 'RN_admin_products' %></li>
-    <li><%= link_to 'Products index' => 'RN_admin_products' %></li>
-    <li><%= link_to 'Products index' => 'RN_admin_products' %></li>
+    <li><%= link_to 'Products index' => 'rn.admin.products' %></li>
+    <li><%= link_to 'Products index' => 'rn.admin.products' %></li>
+    <li><%= link_to 'Products index' => 'rn.admin.products' %></li>
 </ul>
 
 <h2><%= __('Orders') %></h2>
 <ul>
-    <li><%= link_to 'Orders index' => 'RN_admin_orders' %></li>
-    <li><%= link_to 'Create New Order' => 'RN_admin_order_create' %></li>
+    <li><%= link_to 'Orders index' => 'rn.admin.orders' %></li>
+    <li><%= link_to 'Create New Order' => 'rn.admin.order.create' %></li>
 </ul>
 
 <h2><%= __('Customre') %></h2>
 <ul>
-    <li><%= link_to 'Customre index' => 'RN_admin_customers' %></li>
-    <li><%= link_to 'Customre index' => 'RN_admin_customers' %></li>
-    <li><%= link_to 'Customre index' => 'RN_admin_customers' %></li>
+    <li><%= link_to 'Customre index' => 'rn.admin.customers' %></li>
+    <li><%= link_to 'Customre index' => 'rn.admin.customers' %></li>
+    <li><%= link_to 'Customre index' => 'rn.admin.customers' %></li>
 </ul>
 
 <h2><%= __('Staff') %></h2>
 <ul>
-    <li><%= link_to 'Staff index' => 'RN_admin_staffs' %></li>
-    <li><%= link_to 'Staff index' => 'RN_admin_staffs' %></li>
-    <li><%= link_to 'Staff index' => 'RN_admin_staffs' %></li>
+    <li><%= link_to 'Staff index' => 'rn.admin.staffs' %></li>
+    <li><%= link_to 'Staff index' => 'rn.admin.staffs' %></li>
+    <li><%= link_to 'Staff index' => 'rn.admin.staffs' %></li>
 </ul>

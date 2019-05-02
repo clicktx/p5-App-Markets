@@ -14,7 +14,7 @@ has server_session => sub {
     return $server_session;
 };
 
-sub admin_logged_in {
+sub admin_loggin {
     my $self = shift;
 
     my $post_data = {
@@ -23,7 +23,7 @@ sub admin_logged_in {
         csrf_token => $self->csrf_token,
     };
 
-    $self->t->post_ok( $self->app->url_for('RN_admin_login'), form => $post_data );
+    $self->t->post_ok( $self->app->url_for('rn.admin.login'), form => $post_data );
     is $self->server_session->staff_id, 223, 'right staff logged in';
 }
 
@@ -38,7 +38,7 @@ sub cookie_value {
 
 sub csrf_token { t::Util::get_csrf_token( shift->t ) }
 
-sub customer_logged_in {
+sub customer_loggin {
     my $self = shift;
 
     my $post_data = {
@@ -47,7 +47,9 @@ sub customer_logged_in {
         csrf_token => $self->csrf_token,
     };
 
-    $self->t->post_ok( $self->app->url_for('RN_customer_login_with_password'), form => $post_data );
+    # HACK: set a login_with_password cookie
+    $self->t->get_ok( $self->app->url_for('rn.login.with_password') );
+    $self->t->post_ok( $self->app->url_for('rn.login'), form => $post_data );
     is $self->server_session->customer_id, 111, 'right customer logged in';
 }
 
@@ -123,9 +125,9 @@ the following new ones.
 L<t::common> inherits all methods from L<Test::Class> and implements
 the following new ones.
 
-=head2 C<admin_logged_in>
+=head2 C<admin_loggin>
 
-    $self->admin_logged_in;
+    $self->admin_loggin;
 
 Stuff logged-in.
 
@@ -139,9 +141,9 @@ Get cookie value.
 
     my $token = $self->csrf_token;
 
-=head2 C<customer_logged_in>
+=head2 C<customer_loggin>
 
-    $self->customer_logged_in;
+    $self->customer_loggin;
 
 Customer logged-in.
 

@@ -32,22 +32,36 @@ sub add_history {
     $c->server_session->data( history => $history );
 }
 
-sub create_new_customer {
-    my ( $self, $email ) = @_;
+sub create_customer {
+    my ( $self, $email_addr ) = @_;
 
-    my $result = $self->resultset('Customer')->create_new_customer($email);
+    my $result = $self->resultset('Customer')->create_customer($email_addr);
     return unless $result;
 
     return $self->factory('entity-customer')->construct( $result->to_data );
 }
 
 sub find_customer {
-    my ( $self, $email ) = @_;
+    my ( $self, $email_addr ) = @_;
 
-    my $result = $self->resultset('Customer')->find_by_email($email);
-    my $data = $result ? $result->to_data : {};
+    my $result   = $self->resultset('Customer')->find_by_email($email_addr);
+    my $data     = $result ? $result->to_data : {};
+    my $customer = $self->factory('entity-customer')->construct($data);
+    return $customer if $customer->is_member;
 
-    return $self->factory('entity-customer')->construct($data);
+    # Guset customer
+    my $guest_email = $self->service('email')->find_email($email_addr);
+    $customer->emails->append($guest_email);
+    return $customer;
+}
+
+sub find_or_create_customer {
+    my ( $self, $email_addr ) = @_;
+
+    my $customer = $self->find_customer($email_addr);
+    return $customer if $customer->is_member;
+
+    $self->create_customer($email_addr);
 }
 
 sub get_address_list {
@@ -65,7 +79,7 @@ sub get_address_list {
 sub load_history {
     my $self = shift;
     my $c    = $self->controller;
-    $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
+    return $c->server_session->data('history') || [ $c->cookie_session('landing_page') ];
 }
 
 sub login {
@@ -83,8 +97,7 @@ sub login {
     my $merged_cart = $self->service('cart')->merge_cart($customer_id);
 
     # Regenerate sid and set cart id
-    $session->create( { cart_id => $customer_id } );
-    $session->cart->data( $merged_cart->to_data );
+    $session->recreate( { cart_id => $customer_id, cart_data => $merged_cart->to_data } );
 
     # NOTE: ログインログに記録する方が良い？
     # Update last login date
@@ -97,16 +110,21 @@ sub login {
 }
 
 sub login_process_remember_me {
-    my ( $self, $email ) = @_;
+    my ( $self, $token ) = @_;
+    my $authen_service = $self->service('authentication');
 
-    my $customer = $self->find_customer($email);
-    return unless $customer->id;
+    # Verify token
+    my $auth = $authen_service->verify($token);
+    return $authen_service->remove_remember_token if !$auth->is_verified;
 
-    # Recreate token
-    $self->remember_me_token($email);
+    # Customer
+    my $email_addr  = $auth->email->value;
+    my $customer_id = $self->find_customer($email_addr)->id;
+    return $authen_service->remove_remember_token if !$customer_id;
 
-    # Login
-    $self->login( $customer->id );
+    # Reset token and Login
+    $authen_service->remember_token($email_addr);
+    return $self->login($customer_id);
 }
 
 sub login_process_with_password {
@@ -115,51 +133,21 @@ sub login_process_with_password {
     # Find account
     my $customer = $self->find_customer( $form->param('email') );
     return $self->_login_failed( 'login.failed.not_found', $form )
-      unless $customer->is_registered;
+      if !$customer->is_member;
 
     # Authentication
     return $self->_login_failed( 'login.failed.password', $form )
-      unless $customer->password->is_verify( $form->param('password') );
+      if !$customer->password->is_verify( $form->param('password') );
 
     return $self->login( $customer->id );
-}
-
-sub remember_me_token {
-    my ( $self, $email ) = @_;
-    my $c = $self->controller;
-
-    # Getter
-    return $c->cookie('remember_me') unless $email;
-
-    # Setter
-    my $expires = time + $c->pref('cookie_expires_long');
-    my $token   = $c->service('authorization')->generate_token( $email, { expires => $expires } );
-    my $path    = $c->match->root->lookup('RN_customer_login_remember_me')->to_string;
-    $c->cookie( remember_me => $token, { expires => $expires, path => $path } );
-    $c->cookie( has_remember_me => 1, { expires => $expires } );
-    return $token;
-}
-
-sub remove_remember_me_token {
-    my $self = shift;
-    my $c    = $self->controller;
-
-    # Remove cookies
-    my $path = $c->match->root->lookup('RN_customer_login_remember_me')->to_string;
-    $c->cookie( remember_me => '', { expires => 0, path => $path } );
-    $c->cookie( has_remember_me => '', { expires => 0 } );
-
-    my $token = $self->remember_me_token;
-    $c->resultset('AuthorizationRequest')->remove_request_by_token($token) if $token;
-    return 1;
 }
 
 sub search_customers {
     my ( $self, $form ) = @_;
 
     my $conditions = {
-        where    => '',
-        order_by => '',
+        where    => q{},
+        order_by => q{},
         page_no  => $form->param('page') || 1,
         per_page => $form->param('per_page') || 5,
     };
@@ -173,31 +161,6 @@ sub search_customers {
         pager         => $rs->pager,
     };
     return $self->factory('entity-page-customers')->construct($data);
-}
-
-sub send_authorization_mail {
-    my ( $self, $form ) = @_;
-
-    my $c        = $self->controller;
-    my $redirect = $c->flash('ref') || 'RN_home';
-    my $email    = $form->param('email');
-    my $token    = $c->service('authorization')->generate_token( $email, { redirect => $redirect } );
-
-    my $customer       = $self->find_customer($email);
-    my $callback_route = $customer->is_registered ? 'RN_callback_customer_login' : 'RN_callback_customer_signup';
-    my $url            = $c->url_for( $callback_route, token => $token );
-
-    # Add remember me
-    $url->query( remember_me => 1 ) if $form->param('remember_me');
-
-    # WIP: Send email
-
-    # NOTE: demo and debug
-    $c->flash( callback_url => $url->to_abs );
-
-    my $redirect_route =
-      $customer->is_registered ? 'RN_customer_login_email_sended' : 'RN_customer_signup_email_sended';
-    return $c->redirect_to($redirect_route);
 }
 
 sub store_address {
@@ -216,12 +179,13 @@ sub store_address {
     return if $result->in_storage;
 
     $result->insert;
+    return 1;
 }
 
 sub _login_failed {
     my ( $self, $message, $form ) = @_;
 
-    $form->field($_)->append_error_class for qw(email password);
+    $form->append_error_classes(qw(email password));
     $self->controller->stash( status => 401 );
 
     # Logging
@@ -259,17 +223,23 @@ the following new ones.
     Add history current URL for server session.
     Unsave list setting in L<Yetie::Routes>.
 
-=head2 C<create_new_customer>
+=head2 C<create_customer>
 
     Create new customer.
 
-    my $customer_id = $service->create_new_customer($email);
+    my $customer_id = $service->create_customer('foo@bar.baz');
 
 Return L<Yetie::Domain::Entity::Customer> object or C<undef>.
 
 =head2 C<find_customer>
 
-    my $entity = $service->find_customer($email);
+    my $entity = $service->find_customer('foo@bar.baz');
+
+Return L<Yetie::Domain::Entity::Customer> object.
+
+=head2 C<find_or_create_customer>
+
+    my $entity = $service->find_or_create_customer('foo@bar.baz');
 
 Return L<Yetie::Domain::Entity::Customer> object.
 
@@ -293,7 +263,7 @@ Return customer ID.
 
 =head2 C<login_process_remember_me>
 
-    my $customer_id = $service->login_process_with_password($email);
+    my $customer_id = $service->login_process_with_password;
 
 Return customer ID if log-in succeeded or C<undefined>.
 
@@ -303,37 +273,11 @@ Return customer ID if log-in succeeded or C<undefined>.
 
 Return customer ID if log-in succeeded or C<undefined>.
 
-=head2 C<remember_me_token>
-
-    # Setter
-    $service->remember_me_token($email);
-
-    # Getter
-    my $token = $service->remember_me_token;
-
-Set/Get cookie "remember_me".
-
-Setter method create auto log-in token.
-
-=head2 C<remove_remember_me_token>
-
-    $service->remove_remember_me_token;
-
-Remove "remember_me" cookie and disable the auto log-in token.
-
 =head2 C<search_customers>
 
     my $customers = $service->search_customers($form_object);
 
 Return L<Yetie::Domain::Entity::Page::Customers> Object.
-
-=head2 C<send_authorization_mail>
-
-    $service->send_authorization_mail($email);
-
-Will send an magic link email for log-in or sign-up.
-
-Retuen C<render_to('RN_customer_login_email_sended')> or C<render_to('RN_customer_signup_email_sended')>
 
 =head2 C<store_address>
 

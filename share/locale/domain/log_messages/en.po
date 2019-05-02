@@ -44,8 +44,8 @@ msgstr "[{remote_address}] Login failed:account not found. email:{email}"
 msgid "login.failed.password"
 msgstr "[{remote_address}] Login failed:password mismatch. email:{email}"
 
-msgid "passwordless.authorization.failed"
-msgstr "[{remote_address}] Failed to authorization request:{reason}"
+msgid "passwordless.authentication.failed"
+msgstr "[{remote_address}] Failed to authentication request:{reason}"
 
 # Log messages for App
 msgid "schema.rollback.failed"
@@ -56,11 +56,3 @@ msgstr "Did rollback transaction:{error}"
 
 msgid "pref.update.failed"
 msgstr "Could not update preference"
-
-
-# Error messages
-msgid "authorization.request.error.title"
-msgstr "Invalid Authorization Request"
-
-msgid "authorization.request.error.message"
-msgstr "authorization　request　error　message"

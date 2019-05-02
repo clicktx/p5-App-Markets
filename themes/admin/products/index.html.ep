@@ -4,10 +4,10 @@
 <h1><%= title %></h1>
 
 <ul>
-    <li><%= link_to 'RN_admin_product_create' => ( class => 'submit-post' ) => begin %><%= __('Add New Product') %><% end %></li>
+    <li><%= link_to 'rn.admin.product.create' => ( class => 'submit-post' ) => begin %><%= __('Add New Product') %><% end %></li>
 </ul>
 
-<%= form_for 'RN_admin_products' => ( method => 'GET' ) => begin %>
+<%= form_for 'rn.admin.products' => ( method => 'GET' ) => begin %>
     <%= form_widget 'search#q' %>
     <%= submit_button __('Search') %>
 <% end %>
@@ -19,13 +19,13 @@
         % my $product = shift;
         % my $id = $product->id;
         <li>ID:<%= $id %>
-            <%= link_to 'RN_admin_product_edit' => { product_id => $id } => begin %>
+            <%= link_to 'rn.admin.product.edit' => { product_id => $id } => begin %>
                 <%= $product->title %>
             <% end %>
              - <%= $product->description %> <%= $product->price %>
-            [<%= link_to 'RN_admin_product_edit' => { product_id => $id } =>begin %><%= __('Edit') %><% end %>]
-            [<%= link_to 'RN_admin_product_duplicate' => { product_id => $id } => ( class => 'submit-post' ) => begin %><%= __('Duplicate') %><% end %>]
-            [<%= link_to 'RN_admin_product_delete' => { product_id => $id } => ( class => 'submit-post' ) => begin %><%= __('Delete') %><% end %>]
+            [<%= link_to 'rn.admin.product.edit' => { product_id => $id } =>begin %><%= __('Edit') %><% end %>]
+            [<%= link_to 'rn.admin.product.duplicate' => { product_id => $id } => ( class => 'submit-post' ) => begin %><%= __('Duplicate') %><% end %>]
+            [<%= link_to 'rn.admin.product.delete' => { product_id => $id } => ( class => 'submit-post' ) => begin %><%= __('Delete') %><% end %>]
         </li>
     % });
 </ul>

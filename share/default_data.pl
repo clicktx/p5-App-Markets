@@ -1,7 +1,4 @@
 (
-    # sequence
-    'Order::Sequence' => { id => 1 },
-
     # preferences
     'Preference' => [
         [ 'name', 'default_value', 'title', 'summary', 'position', 'group_id' ],

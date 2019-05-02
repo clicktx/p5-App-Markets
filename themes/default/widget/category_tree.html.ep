@@ -2,7 +2,7 @@
     % $tree->children->each( sub {
         % my $node = shift;
         <%= tag 'li' => begin =%>
-            <%= link_to 'RN_category' => { category_id => $node->id } => begin =%>
+            <%= link_to 'rn.category' => { category_id => $node->id } => begin =%>
                 <%= $node->title =%>
             <% end =%>
         <%= end =%>

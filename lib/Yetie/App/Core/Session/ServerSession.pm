@@ -12,7 +12,7 @@ has _cookie_expires      => 0;
 has cookie_expires_delta => 3600 * 24 * 365;
 has cookie_token_length  => 40;
 
-sub cart_id { shift->data('cart_id') }
+sub cart_id { return shift->data('cart_id') }
 
 sub customer_id {
     my ( $self, $id ) = @_;
@@ -51,9 +51,9 @@ sub flush {
     return $result;
 }
 
-sub generate_cookie_token {
+sub create_cookie_token {
     my $self = shift;
-    Yetie::Util::generate_token( length => $self->cookie_token_length, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
+    Yetie::Util::create_token( length => $self->cookie_token_length, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
 }
 
 sub is_customer_logged_in { return shift->customer_id ? 1 : 0 }
@@ -105,7 +105,7 @@ sub remove_session {
 
     # 2重ログアウト対策
     $self->_is_flushed(1);
-    return 0 unless $self->_is_stored;
+    return 0 if !$self->_is_stored;
 
     $self->expire;
     $self->_is_flushed(0);
@@ -127,7 +127,7 @@ sub clear {
     return if @_;
 
     # Init Cart
-    $self->_init_cart( $self->generate_cookie_token );
+    $self->_init_cart( $self->create_cookie_token );
 }
 
 # Override method MojoX::Session::create
@@ -147,7 +147,7 @@ sub create {
     }
 
     # cart
-    my $cart_id = $args->{cart_id} || $self->generate_cookie_token;
+    my $cart_id = $args->{cart_id} || $self->create_cookie_token;
     $self->_init_cart($cart_id);
 
     return $sid;
@@ -157,13 +157,23 @@ sub load {
     my $self = shift;
     my $sid  = $self->SUPER::load(@_);
 
-    $self->data( cart => {} ) unless $self->data('cart');
+    if ( !$self->data('cart') ) { $self->data( cart => {} ) }
     return $sid;
+}
+
+sub recreate {
+    my ( $self, $args ) = ( shift, shift || {} );
+
+    my $new_sid = $self->create( { cart_id => $args->{cart_id} } );
+
+    my $cart_data = $args->{cart_data};
+    if ($cart_data) { $self->cart->data($cart_data) }
+    return $new_sid;
 }
 
 sub _init_cart {
     my ( $self, $cart_id ) = @_;
-    croak 'Need an argument "cart_id".' unless $cart_id;
+    croak 'Need an argument "cart_id".' if !$cart_id;
 
     my $cart = {
         data         => {},
@@ -246,7 +256,7 @@ Alias for L</cart_session>
 
 Default: 40
 
-See L</generate_cookie_token>
+See L</create_cookie_token>
 
 =head1 METHODS
 
@@ -305,9 +315,9 @@ This method override L<MojoX::Session/extend_expires>.
 This method override L<MojoX::Session/flush>.
 Stored session data.
 
-=head2 C<generate_cookie_token>
+=head2 C<create_cookie_token>
 
-    my $token = $session->genarate_token;
+    my $token = $session->create_cookie_token;
 
 =head2 C<is_customer_logged_in>
 
@@ -324,6 +334,14 @@ Return boolean value.
 =head2 C<load>
 
     my $sid = $session->load;
+
+=head2 C<recreate>
+
+    my $sid = $session->recreate( {  cart_id => '123',  cart_data => {} } );
+
+Regenereate C<sid> and set C<cart id>.
+
+OPTION: Change cart data.
 
 =head2 C<regenerate_sid>
 

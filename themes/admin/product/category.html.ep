@@ -5,12 +5,12 @@
 
 <h2><%= __('Products') %></h2>
 <ul>
-    <li><%= link_to __('Products') => 'RN_admin_products' %></li>
+    <li><%= link_to __('Products') => 'rn.admin.products' %></li>
 </ul>
 
 <h2><%= __('Edit Product') %></h2>
 <ul>
-    <li><%= link_to __('Edit Product') => 'RN_admin_product_edit' => { product_id => $product_id } %></li>
+    <li><%= link_to __('Edit Product') => 'rn.admin.product.edit' => { product_id => $product_id } %></li>
 </ul>
 
 <%= form_for current_route() => ( method => 'POST' ) => begin %>

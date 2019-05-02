@@ -26,8 +26,8 @@
 </p>
 
 <p>
-    Has not password? <%= link_to 'Send magic link' => 'RN_customer_login_toggle' %>
+    Has not password? <%= link_to 'Send magic link' => 'rn.login.toggle' %>
 </p>
 <p>
-    New Customer? <%= link_to 'Create Your Account' => 'RN_customer_signup' %>
+    New Customer? <%= link_to 'Create Your Account' => 'rn.signup' %>
 </p>

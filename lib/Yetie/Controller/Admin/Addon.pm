@@ -29,7 +29,7 @@ sub enable {
     # trigger routes有効化
     $c->app->addons->to_enable($addon);
 
-    $c->redirect_to('RN_admin_settings_addon');
+    $c->redirect_to('rn.admin.settings.addon');
 }
 
 sub disable {
@@ -44,7 +44,7 @@ sub disable {
     # trigger routes無効化
     $c->app->addons->to_disable($addon);
 
-    $c->redirect_to('RN_admin_settings_addon');
+    $c->redirect_to('rn.admin.settings.addon');
 }
 
 1;

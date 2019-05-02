@@ -2,7 +2,7 @@
 % extends 'admin/order/details';
 
 % content billing_address => begin
-    <%= form_for 'RN_admin_order_edit' => ( method => 'POST' ) => begin %>
+    <%= form_for 'rn.admin.order.edit' => ( method => 'POST' ) => begin %>
         <div class="">
             <%= form_widget 'base-address#line1' %>
         </div>

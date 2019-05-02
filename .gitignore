@@ -27,3 +27,4 @@ MYMETA.yml
 .perl-version
 *.pid
 cpanfile.snapshot
+.vstags

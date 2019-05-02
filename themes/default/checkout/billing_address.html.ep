@@ -3,7 +3,7 @@
 
 <h1><%= title %></h1>
 
-<%= link_to 'Edit Cart' => 'RN_cart' %>
+<%= link_to 'Edit Cart' => 'rn.cart' %>
 
 <h3>ORDER SUMMARY</h3>
 
@@ -19,7 +19,7 @@
 
 <h3>Select a billing address</h3>
 <div class="">
-    <%= form_for 'RN_checkout_billing_address_select' => ( method => 'POST' ) => begin %>
+    <%= form_for 'rn.checkout.billing_address.select' => ( method => 'POST' ) => begin %>
     % $addresses->each( sub {
         % my ($address, $n) = @_;
         <%= include 'common/elements/address', address => $address %>
@@ -41,4 +41,4 @@
     <% end =%>
 </div>
 
-<%= link_to 'Back to page' => 'RN_cart' %>
+<%= link_to 'Back to page' => 'rn.cart' %>

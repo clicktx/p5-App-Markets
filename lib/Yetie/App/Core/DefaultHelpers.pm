@@ -21,6 +21,7 @@ sub register {
     $app->helper( addons           => sub { shift->app->addons(@_) } );
     $app->helper( cache            => sub { _cache(@_) } );
     $app->helper( cart             => sub { _cart(@_) } );
+    $app->helper( continue_url     => sub { _continue_url(@_) } );
     $app->helper( cookie_session   => sub { shift->session(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( is_admin_route   => sub { _is_admin_route(@_) } );
@@ -28,7 +29,8 @@ sub register {
     $app->helper( is_logged_in     => sub { _is_logged_in(@_) } );
     $app->helper( j                => sub { _j(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
-    $app->helper( 'reply.error'    => sub { _error(@_) } );
+    $app->helper( 'reply.error'    => sub { _reply_error(@_) } );
+    $app->helper( 'reply.message'  => sub { _reply_message(@_) } );
     $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
     $app->helper( remote_address   => sub { _remote_address(@_) } );
     $app->helper( schema           => sub { shift->app->schema } );
@@ -55,16 +57,15 @@ sub _cache {
 
 sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
 
-sub _error {
-    my $c = shift;
+sub _continue_url {
+    my ( $c, $arg ) = @_;
 
-    my %options = (
-        status        => 400,
-        template      => 'error',
-        title         => 'Bad Request',
-        error_message => '',
-    );
-    $c->render( %options, @_ );
+    # Set
+    return $c->flash( continue_url => $arg ) if $arg;
+
+    # Get
+    my $default_continue_url = $c->is_admin_route ? 'rn.admin.dashboard' : 'rn.home';
+    return $c->flash('continue_url') || $default_continue_url;
 }
 
 sub _factory {
@@ -100,6 +101,30 @@ sub _remote_address {
     # NOTE: 'X-Real-IP', 'X-Forwarded-For'はどうする？
     my $remote_address = $c->tx->remote_address || 'unknown';
     return $remote_address;
+}
+
+sub _reply_error {
+    my $c = shift;
+
+    my %options = (
+        status        => 400,
+        template      => 'error',
+        title         => 'Bad Request',
+        error_message => '',
+    );
+    $c->render( %options, @_ );
+}
+
+sub _reply_message {
+    my $c = shift;
+
+    my %options = (
+        status   => 200,
+        template => 'message',
+        title    => '',
+        message  => '',
+    );
+    $c->render( %options, @_ );
 }
 
 sub _service {
@@ -173,6 +198,19 @@ SEE L<Yetie::App::Core::Cache>
     my $cart = $c->cart;
     $c->cart($cart);
 
+=head2 C<continue_url>
+
+    my $continue_url = $c->continue_url;
+    my $c->continue_url('foo');
+
+    # Longer version
+    my $continue_url = $c->flash('continue_url');
+    $c->flash( continue_url => 'foo' );
+
+Get/Set to flash data with keyword "continue_url".
+
+Default url: C<rn.admin.dashboard> or C<rn.home>
+
 =head2 C<cookie_session>
 
     $c->cookie_session( key => 'value' );
@@ -235,6 +273,12 @@ Get/Set preference.
     $c->reply->error( title => 'foo', error_message => 'bar' );
 
 Render the error template and set the response status code to 400.
+
+=head2 C<reply-E<gt>message>
+
+    $c->reply->message( title => 'foo', message => 'bar' );
+
+Render the message template.
 
 =head2 C<schema>
 

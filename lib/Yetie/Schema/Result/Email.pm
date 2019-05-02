@@ -27,8 +27,17 @@ might_have
   { cascade_delete     => 0 };
 
 has_many
-  authorization_requests => 'Yetie::Schema::Result::AuthorizationRequest',
+  authentication_requests => 'Yetie::Schema::Result::AuthenticationRequest',
   { 'foreign.email_id' => 'self.id' },
   { cascade_delete     => 0 };
 
+sub to_data {
+    my $self = shift;
+
+    return {
+        value       => $self->address,
+        is_verified => $self->is_verified,
+        _in_storage => 1,
+    };
+}
 1;

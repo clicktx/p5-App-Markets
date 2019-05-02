@@ -1,0 +1,17 @@
+% layout 'default';
+% title __('email.sent.title');
+
+<h1><%= title %></h1>
+
+<p><%= __('email.sent.message') %></p>
+
+<div class="">
+    A mail has been sent.
+    Please follow the procedure from the link in the text.
+</div>
+
+<h3>Link example</h3>
+<div class="">
+    <% my $magic_link = flash('magic_link'); %>
+    <%= link_to $magic_link => $magic_link %>
+</div>
