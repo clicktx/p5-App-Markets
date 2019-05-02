@@ -34,15 +34,4 @@ sub logout {
     return $c->render();
 }
 
-sub remember_me {
-    my $c            = shift;
-    my $continue_url = $c->continue_url;
-
-    my $token = $c->cookie('remember_token');
-    return $c->redirect_to($continue_url) if !$token;
-
-    $c->service('customer')->login_process_remember_me($token);
-    return $c->redirect_to($continue_url);
-}
-
 1;
