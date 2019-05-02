@@ -10,10 +10,10 @@ sub register {
     my $r = $self->routes;
 
     # or $r->get('/')->to('Newpage::Example#welcome');
-    $r->get('/newpage')->to('newpage-example#welcome')->name('RN_newpage');
+    $r->get('/newpage')->to('newpage-example#welcome')->name('rn.newpage');
 
     $r->get('/newpage/page')
-      ->to( 'Newpage::Example#welcome', template => 'newpage/new/page', )->name('RN_newpage_page');
+      ->to( 'Newpage::Example#welcome', template => 'newpage/new/page', )->name('rn.newpage.page');
 
     # Add "templates" directory path.
     # push @{$app->renderer->paths}, 'addons/Newpage/templates';
@@ -53,7 +53,7 @@ __DATA__
 <p>
     <li>link: <%= link_to 'top' => '/' %></li>
     <li>link: <%= link_to 'ja' => '/ja' %> <%= link_to 'en' => '/en' %></li>
-    <li>link: <%= link_to 'page' => 'RN_newpage_page' %></li>
+    <li>link: <%= link_to 'page' => 'rn.newpage.page' %></li>
 </p>
 
 @@ newpage/new/page.html.ep
@@ -64,5 +64,5 @@ __DATA__
 <p>
     <li>link: <%= link_to 'top' => '/' %></li>
     <li>link: <%= link_to 'ja' => '/ja' %> <%= link_to 'en' => '/en' %></li>
-    <li>link: <%= link_to 'newpage' => 'RN_newpage' %></li>
+    <li>link: <%= link_to 'newpage' => 'rn.newpage' %></li>
 </p>

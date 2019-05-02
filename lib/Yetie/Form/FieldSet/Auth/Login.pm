@@ -1,4 +1,4 @@
-package Yetie::Form::FieldSet::Account::Login;
+package Yetie::Form::FieldSet::Auth::Login;
 use Mojo::Base -strict;
 use Yetie::Form::FieldSet;
 

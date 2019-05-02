@@ -4,21 +4,22 @@ use Mojo::Util qw(decamelize);
 
 has error_messages => sub { +{} };
 has id             => sub { shift->_id };
-has _fieldset      => '';
-has [qw(field_key default_value choices help label multiple expanded required)];
-has [qw(name type value placeholder checked selected choiced)];
+has _fieldset      => q{};
+has [qw(checked choiced choices class default_value expanded field_key help)];
+has [qw(label multiple name placeholder required selected type value)];
 
 sub append_class {
     my ( $self, $class ) = @_;
-    $self->{class} .= $self->{class} ? " $class" : $class;
+    return $self->{class} .= $self->{class} ? " $class" : $class;
 }
 
-sub append_error_class { shift->append_class('field-with-error') }
+sub append_error_class { return shift->append_class('field-with-error') }
 
 sub data {
     my $self = shift;
     @_ > 1 ? my %pair = @_ : return $self->{ 'data-' . $_[0] };
     $self->{ 'data-' . $_ } = $pair{$_} for keys %pair;
+    return;
 }
 
 sub error_message {
@@ -32,6 +33,7 @@ sub error_message {
     my %messages = %{ $self->error_messages };
     $messages{$_} = $args{$_} for keys %args;
     $self->error_messages( \%messages );
+    return;
 }
 
 sub _id {
@@ -88,19 +90,33 @@ Yetie::Form::Field
 
 =head1 ATTRIBUTES
 
-=head2 C<id>
+=head2 C<checked>
 
-=head2 C<field_key>
+=head2 C<choiced>
 
-=head2 C<default_value>
+Alias C<checked> and C<selected>.
+
+If set C<checked> or C<selected> together, this parameter takes precedence.
 
 =head2 C<choices>
 
+=head2 C<class>
+
+=head2 C<default_value>
+
+=head2 C<error_messages>
+
+=head2 C<expanded>
+
+=head2 C<field_key>
+
 =head2 C<help>
+
+=head2 C<id>
 
 =head2 C<label>
 
-=head2 C<error_messages>
+=head2 C<name>
 
 =head2 C<multiple>
 
@@ -113,11 +129,11 @@ This field always has multiple values.
         'city[]' => [ 'value1', 'value2' ]
     }
 
-=head2 C<expanded>
+=head2 C<placeholder>
 
 =head2 C<required>
 
-=head2 C<name>
+=head2 C<selected>
 
 =head2 C<type>
 
@@ -144,18 +160,6 @@ C<url>,
 C<week>,
 
 =head2 C<value>
-
-=head2 C<placeholder>
-
-=head2 C<checked>
-
-=head2 C<selected>
-
-=head2 C<choiced>
-
-Alias C<checked> and C<selected>.
-
-If set C<checked> or C<selected> together, this parameter takes precedence.
 
 =head1 METHODS
 

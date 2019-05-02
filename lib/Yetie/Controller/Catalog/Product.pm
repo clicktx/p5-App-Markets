@@ -35,7 +35,7 @@ sub index {
     $c->service('cart')->add_item( $form->params->to_hash );
 
     $c->flash( ref => $c->req->url->to_string );
-    return $c->redirect_to('RN_cart');
+    return $c->redirect_to('rn.cart');
 }
 
 1;

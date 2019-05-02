@@ -1,9 +1,11 @@
 package Yetie::Service::Authentication;
 use Mojo::Base 'Yetie::Service';
+use Carp qw(croak);
 
 sub create_magic_link {
     my ( $self, $settings ) = ( shift, shift || {} );
-    my $email_addr = $settings->{email};
+    my $email_addr = delete $settings->{email};
+    my $route = delete $settings->{route} || 'rn.auth.magic_link';
 
     # action
     if ( !$settings->{action} ) {
@@ -12,16 +14,19 @@ sub create_magic_link {
     }
 
     my $token = $self->create_token( $email_addr, $settings );
-    return $self->controller->url_for( 'rn.auth.magic_link.verify', token => $token->value );
+    return $self->controller->url_for( $route, token => $token->value );
 }
 
 sub create_token {
     my ( $self, $email_addr, $settings ) = ( shift, shift, shift || {} );
     my $remote_address = $self->controller->remote_address;
 
+    my $action = $settings->{action};
+    croak 'Not set action value' if !$action;
+
     my $auth = $self->factory('entity-auth')->construct(
         email          => $email_addr,
-        action         => $settings->{action},
+        action         => $action,
         continue_url   => $settings->{continue_url},
         remote_address => $remote_address,
         expires        => $settings->{expires},
@@ -38,6 +43,42 @@ sub find_request {
     my $rs = $self->resultset('AuthenticationRequest');
     my $result = $rs->find( { token => $token }, { prefetch => 'email' } ) || return $self->_logging('Not found token');
     return $self->factory('entity-auth')->construct( $result->to_data );
+}
+
+sub remember_token {
+    my ( $self, $email_addr ) = @_;
+    my $c = $self->controller;
+
+    # Getter
+    return $c->cookie('remember_token') if !$email_addr;
+
+    # Setter
+    my $expires  = time + $c->pref('cookie_expires_long');
+    my $settings = {
+        action  => 'login',
+        expires => $expires,
+    };
+    my $token = $self->create_token( $email_addr, $settings );
+
+    # Set cookies.
+    $c->cookie( remember_token => $token->value, { expires => $expires, path => $self->_path_to_remember_me } );
+    $c->cookie( has_remember_token => 1, { expires => $expires } );
+    return $token;
+}
+
+sub remove_remember_token {
+    my $self = shift;
+    my $c    = $self->controller;
+
+    # Remove cookies
+    $c->cookie( remember_token => q{}, { expires => 0, path => $self->_path_to_remember_me } );
+    $c->cookie( has_remember_token => q{}, { expires => 0 } );
+
+    my $token = $self->remember_token;
+    return if !$token;
+
+    $c->resultset('AuthenticationRequest')->remove_request_by_token($token);
+    return;
 }
 
 # NOTE: アクセス制限が必要？同一IP、時間内回数制限
@@ -61,7 +102,13 @@ sub verify {
     return $auth;
 }
 
-sub _logging { shift->logging_warn( 'passwordless.authorization.failed', reason => shift ) && 0 }
+sub _path_to_remember_me {
+    return shift->controller->url_for('rn.auth.remember_me')->to_string;
+}
+
+sub _logging {
+    return shift->logging_warn( 'passwordless.authentication.failed', reason => shift ) && 0;
+}
 
 1;
 __END__
@@ -88,9 +135,10 @@ the following new ones.
 
     my %settings = (
         email           => 'foo@bar.baz',
-        action          => 'login',
-        continue_url    => 'RN_home',
-        expires         => 111222333444,
+        route           => 'rn.foo.bar',    # optional: default "rn.auth.magic_link"
+        action          => 'login',         # optional:
+        continue_url    => 'rn.home',       # optional:
+        expires         => 111222333444,    # optional:
     );
     my $url = $service->create_magic_link( \%settings );
 
@@ -116,11 +164,11 @@ Action after click url.
 
 Redirect url or route name.
 
-    my $token = $service->create_token( $email_addr, { continue_url => 'RN_foo'} );
+    my $token = $service->create_token( $email_addr, { continue_url => 'rn.foo.bar'} );
 
 =item expires
 
-expiration unix time.
+expiration UNIX time.
 
 =back
 
@@ -129,6 +177,24 @@ expiration unix time.
     my $auth = $service->find_request($token);
 
 Return L<Yetie::Domain::Entity::Authorization> object or C<undef>.
+
+=head2 C<remember_token>
+
+    # Setter
+    $service->remember_token('foo@bar.baz');
+
+    # Getter
+    my $token = $service->remember_token;
+
+Set/Get cookie "remember_token".
+
+Setter method create auto log-in token.
+
+=head2 C<remove_remember_token>
+
+    $service->remove_remember_token;
+
+Remove "remember_token" cookie and disable the auto log-in token.
 
 =head2 C<verify>
 

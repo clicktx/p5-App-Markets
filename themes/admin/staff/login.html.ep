@@ -10,7 +10,7 @@
     </div>
 % }
 <p>
-    <%= form_for 'RN_admin_login' => ( method => 'POST' ) => begin %>
+    <%= form_for 'rn.admin.login' => ( method => 'POST' ) => begin %>
         <div class="">
             <%= form_field '#login_id' %>
             <%= form_label %>

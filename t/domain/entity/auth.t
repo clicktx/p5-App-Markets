@@ -23,7 +23,7 @@ subtest 'continue' => sub {
     my $f = Yetie::Factory->new('entity-auth');
 
     my $auth = $f->construct();
-    is $auth->continue, 'RN_home', 'right default';
+    is $auth->continue, 'rn.home', 'right default';
 
     $auth = $f->construct( continue_url => 'foo' );
     is $auth->continue, 'foo', 'right continue_url';

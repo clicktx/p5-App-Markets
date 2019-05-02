@@ -42,8 +42,11 @@ sub to_verified : Tests() {
     my $e = $s->find_email($email_addr);
     ok !$e->is_verified, 'right unverified';
 
-    $e = $s->to_verified($e);
+    $e = $s->to_verified($email_addr);
     ok $e->is_verified, 'right verified';
+
+    $e = $s->to_verified('');
+    ok !$e->is_verified, 'right argument empty';
 }
 
 __PACKAGE__->runtests;

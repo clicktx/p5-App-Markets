@@ -15,8 +15,8 @@ sub t01_sent : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $t->get_ok('/email/sent')->status_is( 200, 'right sent email' );
-    $t->post_ok('/email/sent')->status_is( 404, 'right sent email' );
+    $t->get_ok('/email/sent-magic-link')->status_is(200);
+    $t->post_ok('/email/sent-magic-link')->status_is(404);
 }
 
 __PACKAGE__->runtests;

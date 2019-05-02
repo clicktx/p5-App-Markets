@@ -46,7 +46,7 @@ sub index {
 sub clear {
     my $c = shift;
     $c->cart->clear_items;
-    return $c->redirect_to('RN_cart');
+    return $c->redirect_to('rn.cart');
 }
 
 sub delete {
@@ -59,7 +59,7 @@ sub delete {
     my $target = $form->param('target_item_id');
     $c->cart->remove_item($target);
 
-    return $c->redirect_to('RN_cart');
+    return $c->redirect_to('rn.cart');
 }
 
 1;

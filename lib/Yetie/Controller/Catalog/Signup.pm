@@ -6,25 +6,37 @@ sub index {
     my $c = shift;
 
     # Initialize form
-    my $form = $c->form('base-email');
+    my $form = $c->form('auth-magic_link');
 
     # Get request
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
-    return $c->service('customer')->send_authorization_mail($form);
-}
+    # magic link
+    my $settings = {
+        email        => $form->param('email'),
+        action       => 'signup',
+        continue_url => 'rn.signup.done',
+    };
+    my $magic_link = $c->service('authentication')->create_magic_link($settings);
 
-sub sent_email {
-    my $c = shift;
-    return $c->render();
+    # WIP: send email
+    say $magic_link->to_abs;
+    $c->flash( magic_link => $magic_link->to_abs );
+
+    return $c->redirect_to('rn.email.sent.magic_link');
 }
 
 sub done {
     my $c = shift;
     return $c->render();
+}
+
+sub password {
+    my $c = shift;
+    return $c->reply->message();
 }
 
 # Create account, login, and disable token after validate.
@@ -53,7 +65,7 @@ sub with_link {
 
     # Login
     $c->service('customer')->login( $new_customer->id );
-    return $c->redirect_to('RN_customer_signup_done');
+    return $c->redirect_to('rn.signup.done');
 }
 
 1;

@@ -1,4 +1,4 @@
-package t::pages::catalog::signup;
+package t::pages::catalog::auth::signup;
 
 use Mojo::Base 't::common';
 use t::Util;
@@ -18,6 +18,7 @@ sub t01_register_form : Tests() {
     my $t    = $self->t;
 
     $t->get_ok('/signup')->status_is( 200, 'right registration form page' );
+    $t->get_ok('/signup/done')->status_is( 200, 'right complete page' );
 
     my $post_data = { csrf_token => $self->csrf_token };
     $t->post_ok( '/signup', form => $post_data )->status_is( 200, 'right form validate error' );
@@ -34,8 +35,8 @@ sub t02_callback : Tests() {
     my $t    = $self->t;
 
     # token
-    my $token = $t->app->resultset('AuthorizationRequest')->find_last_by_email($register_email)->token;
-    $t->get_ok( '/signup/get-started/' . $token )->status_is(302);
+    my $token = $t->app->resultset('AuthenticationRequest')->find_last_by_email($register_email)->token;
+    $t->get_ok( '/get-started/' . $token )->status_is(302);
 
     my $customer_id = $self->app->resultset('Customer')->last_id;
     my $customer    = $self->app->service('customer')->find_customer($register_email);
@@ -44,10 +45,10 @@ sub t02_callback : Tests() {
     ok $customer->emails->primary->is_verified, 'right email verified';
 
     # re-request
-    $t->get_ok( '/signup/get-started/' . $token )->status_is( 400, 'right re-request' );
+    $t->get_ok( '/get-started/' . $token )->status_is( 400, 'right re-request' );
 
     # illegal token
-    $t->get_ok('/signup/get-started/badtoken')->status_is( 400, 'illegal token' );
+    $t->get_ok('/get-started/bad-token')->status_is( 400, 'illegal token' );
 
     # re-singup
     my $post_data = {
@@ -55,8 +56,8 @@ sub t02_callback : Tests() {
         email      => $register_email,
     };
     $t->post_ok( '/signup', form => $post_data );
-    $token = $t->app->resultset('AuthorizationRequest')->find_last_by_email($register_email)->token;
-    $t->get_ok( '/signup/get-started/' . $token )->status_is( 400, 'right re-signup' );
+    $token = $t->app->resultset('AuthenticationRequest')->find_last_by_email($register_email)->token;
+    $t->get_ok( '/get-started/' . $token )->status_is( 400, 'right re-signup' );
 }
 
 __PACKAGE__->runtests;

@@ -5,7 +5,7 @@ sub register {
     my ( $self, $app ) = @_;
 
     # TODO: 別の場所に移す
-    $app->config( history_disable_route_names => [ 'RN_customer_login', 'RN_example' ] );
+    $app->config( history_disable_route_names => [ 'rn.login', 'rn.example' ] );
 
     $self->add_admin_routes($app);
     $self->add_catalog_routes($app);
@@ -20,7 +20,7 @@ sub add_admin_routes {
 
     # Not authentication required
     my $login = $r->any('/login')->to( controller => 'admin-staff' );
-    $login->any('/')->to('#login')->name('RN_admin_login');
+    $login->any('/')->to('#login')->name('rn.admin.login');
 
     # Authentication required
     my $if_staff = $r->under(
@@ -34,76 +34,89 @@ sub add_admin_routes {
             #       catalog/staff 両方で必要
             $c->flash( ref => $c->req->url->to_string ) if $c->is_get_request;
 
-            $c->redirect_to( $c->url_for('RN_admin_login') );
+            $c->redirect_to( $c->url_for('rn.admin.login') );
             return 0;
         }
     );
 
     # Dashboard
-    $if_staff->get( '/' => sub { shift->redirect_to('RN_admin_dashboard') } );
-    $if_staff->get('/dashboard')->to('admin-dashboard#index')->name('RN_admin_dashboard');
+    $if_staff->get( '/' => sub { shift->redirect_to('rn.admin.dashboard') } );
+    $if_staff->get('/dashboard')->to('admin-dashboard#index')->name('rn.admin.dashboard');
 
     # Logout
-    $if_staff->get('/logout')->to('admin-staff#logout')->name('RN_admin_logout');
+    $if_staff->get('/logout')->to('admin-staff#logout')->name('rn.admin.logout');
 
     # Settings
     my $settings = $if_staff->any('/settings')->to( controller => 'admin-setting' );
-    $settings->get('/')->to('#index')->name('RN_admin_settings');
+    $settings->get('/')->to('#index')->name('rn.admin.settings');
     {
         my $addons = $settings->any('/addon')->to( controller => 'admin-addon' );
-        $addons->get('/:action')->to('addon#')->name('RN_admin_settings_addon_action');
-        $addons->get('/')->to('#index')->name('RN_admin_settings_addon');
+        $addons->get('/:action')->to('addon#')->name('rn.admin.settings.addon.actions');
+        $addons->get('/')->to('#index')->name('rn.admin.settings.addon');
     }
 
     # Preferences
     my $pref = $if_staff->any('/preferences')->to( controller => 'admin-preference' );
-    $pref->any('/')->to('#index')->name('RN_admin_preferences');
+    $pref->any('/')->to('#index')->name('rn.admin.preferences');
 
     # Category
     my $category = $if_staff->any('/category')->to( controller => 'admin-category' );
-    $category->get('/')->to('#index')->name('RN_admin_category');
-    $category->post('/')->to('#index')->name('RN_admin_category_create');
-    $category->any('/:category_id/edit')->to('#edit')->name('RN_admin_category_edit');
+    $category->get('/')->to('#index')->name('rn.admin.category');
+    $category->post('/')->to('#index')->name('rn.admin.category.create');
+    $category->any('/:category_id/edit')->to('#edit')->name('rn.admin.category.edit');
 
     # Products
-    $if_staff->any('/products')->to('admin-products#index')->name('RN_admin_products');
+    $if_staff->any('/products')->to('admin-products#index')->name('rn.admin.products');
 
     # Product
-    my $product = $if_staff->any('/product')->to( controller => 'admin-product' )->name('RN_admin_product');
-    $product->post('/create')->to('#create')->name('RN_admin_product_create');
-    $product->post('/:product_id/delete')->to('#delete')->name('RN_admin_product_delete');
-    $product->post('/:product_id/duplicate')->to('#duplicate')->name('RN_admin_product_duplicate');
-    $product->any('/:product_id/edit')->to('#edit')->name('RN_admin_product_edit');
-    $product->any('/:product_id/edit/category')->to('#category')->name('RN_admin_product_category');
+    my $product = $if_staff->any('/product')->to( controller => 'admin-product' )->name('rn.admin.product');
+    $product->post('/create')->to('#create')->name('rn.admin.product.create');
+    $product->post('/:product_id/delete')->to('#delete')->name('rn.admin.product.delete');
+    $product->post('/:product_id/duplicate')->to('#duplicate')->name('rn.admin.product.duplicate');
+    $product->any('/:product_id/edit')->to('#edit')->name('rn.admin.product.edit');
+    $product->any('/:product_id/edit/category')->to('#category')->name('rn.admin.product.category');
 
     # Orders
-    $if_staff->any('/orders')->to('admin-orders#index')->name('RN_admin_orders');
+    $if_staff->any('/orders')->to('admin-orders#index')->name('rn.admin.orders');
 
     # Order
     # NOTE: create, delete, duplicate はPOST requestのみにするべき
     my $order = $if_staff->any('/order')->to( controller => 'admin-order' );
-    $order->get('/:id')->to('#details')->name('RN_admin_order_details');
-    $order->any('/create')->to('#create')->name('RN_admin_order_create');
-    $order->post('/delete')->to('#delete')->name('RN_admin_order_delete');
-    $order->any('/:id/edit')->to('#edit')->name('RN_admin_order_edit');
+    $order->get('/:id')->to('#details')->name('rn.admin.order.details');
+    $order->any('/create')->to('#create')->name('rn.admin.order.create');
+    $order->post('/delete')->to('#delete')->name('rn.admin.order.delete');
+    $order->any('/:id/edit')->to('#edit')->name('rn.admin.order.edit');
     my $order_edit = $order->any('/:id/edit')->to( controller => 'admin-order-edit' );
-    $order_edit->any('/billing_address')->to('#billing_address')->name('RN_admin_order_edit_billing_address');
-    $order_edit->any('/shipping_address')->to('#shipping_address')->name('RN_admin_order_edit_shipping_address');
-    $order_edit->any('/items')->to('#items')->name('RN_admin_order_edit_items');
-
-    # $order->any('/create')->to('#create')->name('RN_admin_order_create');
-    $order->any('/:id/duplicate')->to('#duplicate')->name('RN_admin_order_duplicate');
+    $order_edit->any('/billing_address')->to('#billing_address')->name('rn.admin.order.edit.billing_address');
+    $order_edit->any('/shipping_address')->to('#shipping_address')->name('rn.admin.order.edit.shipping_address');
+    $order_edit->any('/items')->to('#items')->name('rn.admin.order.edit.items');
+    $order->any('/:id/duplicate')->to('#duplicate')->name('rn.admin.order.duplicate');
 
     # Customers
-    $if_staff->any('/customers')->to('admin-customers#index')->name('RN_admin_customers');
+    $if_staff->any('/customers')->to('admin-customers#index')->name('rn.admin.customers');
 }
 
 # Routes for Catalog
-# NOTE: No site map route
-# qw(RN_customer_login_remember_me)
 sub add_catalog_routes {
     my ( $self, $app ) = @_;
-    my $r = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
+    my $routes = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
+
+    # remember me
+    $routes->get('/auth/remember-me')->to('auth#remember_me')->name('rn.auth.remember_me');
+
+    # Check remember_me token before all routes.
+    my $r = $routes->under(
+        sub {
+            my $c = shift;
+            return 1 if $c->is_logged_in;
+            return 1 if !$c->is_get_request;
+            return 1 if !$c->cookie('has_remember_token');
+
+            $c->continue_url( $c->req->url->to_string );
+            $c->redirect_to('rn.auth.remember_me');
+            return 0;
+        }
+    );
     my $if_customer = $r->under(
         sub {
             my $c = shift;
@@ -113,88 +126,84 @@ sub add_catalog_routes {
             #       sessionが切れている（はず）なのでhistoryから取得は難しいか？
             #       cookie_session のlanding_pageで良い？
             #       catalog/staff 両方で必要
-            $c->flash( ref => $c->req->url->to_string ) if $c->is_get_request;
-
-            $c->redirect_to( $c->url_for('RN_customer_login') );
+            if ( $c->is_get_request ) { $c->continue_url( $c->req->url->to_string ) }
+            $c->redirect_to( $c->url_for('rn.login') );
             return 0;
         }
     );
 
-    # Logout
-    $r->get('/logout')->to('account#logout')->name('RN_customer_logout');
-
     # Email
-    $r->get('/email/sent-magic-link')->to('email#sent_magic_link')->name('RN_email_sent_magic_link');
-
-    # Magic link
-    $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.verify');
-
-    # Remember me
-    $r->get('/login/remember-me')->to('login#remember_me')->name('RN_customer_login_remember_me');
-    $r = $r->under('/')->to('account#remember_me_handler')->name('RN_customer_remember_me_handler');
+    $r->get('/email/sent-magic-link')->to('email#sent_magic_link')->name('rn.email.sent.magic_link');
 
     # Route Examples
-    $r->get('/')->to('example#welcome')->name('RN_home');
+    $r->get('/')->to('example#welcome')->name('rn.home');
     $r->any('/login-example')->to('login_example#index');
 
     # Cart
-    $r->any('/cart')->to('cart#index')->name('RN_cart');
-    $r->post('/cart/clear')->to('cart#clear')->name('RN_cart_clear');
-    $r->post('/cart/delete')->to('cart#delete')->name('RN_cart_delete');
+    $r->any('/cart')->to('cart#index')->name('rn.cart');
+    $r->post('/cart/clear')->to('cart#clear')->name('rn.cart.clear');
+    $r->post('/cart/delete')->to('cart#delete')->name('rn.cart.delete');
 
     # Checkout
-    $r->get('/checkout')->to('checkout#index')->name('RN_checkout');
-    $r->get('/checkout/complete')->to('checkout#complete')->name('RN_checkout_complete');
+    $r->get('/checkout')->to('checkout#index')->name('rn.checkout');
+    $r->get('/checkout/complete')->to('checkout#complete')->name('rn.checkout.complete');
     {
         my $checkout = $if_customer->any('/checkout')->to('checkout#');
-        $checkout->any('/shipping-address')->to('#shipping_address')->name('RN_checkout_shipping_address');
+        $checkout->any('/shipping-address')->to('#shipping_address')->name('rn.checkout.shipping_address');
         $checkout->post('/shipping-address/select')->to('#shipping_address_select')
-          ->name('RN_checkout_shipping_address_select');
-        $checkout->any('/delivery-options')->to('#delivery_option')->name('RN_checkout_delivery_option');
-        $checkout->any('/payment-option')->to('#payment_method')->name('RN_checkout_payment_method');
-        $checkout->any('/billing-address')->to('#billing_address')->name('RN_checkout_billing_address');
+          ->name('rn.checkout.shipping_address.select');
+        $checkout->any('/delivery-options')->to('#delivery_option')->name('rn.checkout.delivery_option');
+        $checkout->any('/payment-option')->to('#payment_method')->name('rn.checkout.payment_method');
+        $checkout->any('/billing-address')->to('#billing_address')->name('rn.checkout.billing_address');
         $checkout->post('/billing-address/select')->to('#billing_address_select')
-          ->name('RN_checkout_billing_address_select');
-        $checkout->any('/confirm')->to('#confirm')->name('RN_checkout_confirm');
+          ->name('rn.checkout.billing_address.select');
+        $checkout->any('/confirm')->to('#confirm')->name('rn.checkout.confirm');
     }
     my $guest_checkout = $r->any('/checkout/guest')->to('checkout#');
-    $guest_checkout->any('/shipping-address')->to('#shipping_address')->name('RN_guest_checkout_shipping_address');
+    $guest_checkout->any('/shipping-address')->to('#shipping_address')->name('rn.checkout.guest.shipping_address');
 
     # For Customers
     {
-        # Drop-in
-        my $dropin = $r->any('/dropin')->to( controller => 'dropin' );
-        $dropin->any('/')->to('#index')->name('RN_customer_dropin');
+        # Logout
+        $r->get('/logout')->to('auth#logout')->name('rn.customer.logout');
 
-        # Log-in
+        # Magic link
+        $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link');
+        $r->get('/get-started/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.signup');
+
+        # Login
         my $login = $r->any('/login')->to( controller => 'login' );
-        $login->any('/')->to('#index')->name('RN_customer_login');
-        $login->get('/sent-email')->to('#sent_email')->name('RN_customer_login_sent_email');
-        $login->get('/toggle')->to('#toggle')->name('RN_customer_login_toggle');
-        $login->get('/token/:token')->to('#with_link')->name('RN_callback_customer_login');
-        $login->any('/magic-link')->to('#magic_link')->name('RN_customer_login_magic_link');
-        $login->any('/with-password')->to('#with_password')->name('RN_customer_login_with_password');
+        $login->any('/')->to('#index')->name('rn.login');
+        $login->get('/toggle')->to('#toggle')->name('rn.login.toggle');
+        $login->any('/with-password')->to('#with_password')->name('rn.login.with_password');
 
-        # Sign-up
-        my $signup = $r->any('/signup')->to( controller => 'signup' );
-        $signup->any('/')->to('#index')->name('RN_customer_signup');
-        $signup->get('/sent-email')->to('#sent_email')->name('RN_customer_signup_sent_email');
-        $signup->get('/done')->to('#done')->name('RN_customer_signup_done');
-        $signup->get('/get-started/:token')->to('#with_link')->name('RN_callback_customer_signup');
+        # Dropin
+        $r->any('/dropin')->to('dropin#index')->name('rn.dropin');
+
+        # Signup
+        $r->any('/signup')->to('signup#index')->name('rn.signup');
+        $if_customer->any('/signup/password')->to('signup#password')->name('rn.signup.password');
+        $r->get('/signup/done')->to('signup#done')->name('rn.signup.done');
 
         # Account page
         my $account = $if_customer->any('/account')->to('account#');
-        $account->get('/home')->to('#home')->name('RN_customer_home');
-        $account->get('/orders')->to('#orders')->name('RN_customer_orders');
-        $account->get('/wishlist')->to('#wishlist')->name('RN_customer_wishlist');
+        $account->get('/home')->to('#home')->name('rn.account.home');
+        $account->get('/orders')->to('#orders')->name('rn.account.orders');
+        $account->get('/wishlist')->to('#wishlist')->name('rn.account.wishlist');
+        {
+            # Account settings
+            my $settings = $account->any('/settings')->to('account-settings#');
+            $settings->get('/')->to('#index')->name('rn.account.settings');
+            $settings->get('/password')->to('#password')->name('rn.account.settings.password');
+        }
     }
 
     # Product
-    $r->any('/product/:product_id')->to('product#index')->name('RN_product');
+    $r->any('/product/:product_id')->to('product#index')->name('rn.product');
 
     # Category
-    # $r->get('/:category_name/c/:category_id')->to('category#index')->name('RN_category_name_base');
-    $r->get('/category/:category_id')->to('category#index')->name('RN_category');
+    # $r->get('/:category_name/c/:category_id')->to('category#index')->name('rn.category.name_base');
+    $r->get('/category/:category_id')->to('category#index')->name('rn.category');
 }
 
 1;

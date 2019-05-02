@@ -32,7 +32,7 @@ sub index {
 
     # Logging
     $c->logging_info('admin.category.created');
-    $c->redirect_to('RN_admin_category');
+    $c->redirect_to('rn.admin.category');
 }
 
 sub edit {

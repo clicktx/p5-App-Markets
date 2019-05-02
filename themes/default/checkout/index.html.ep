@@ -3,7 +3,7 @@
 
 <h1><%= title %></h1>
 
-<%= link_to 'Edit Cart' => 'RN_cart' %>
+<%= link_to 'Edit Cart' => 'rn.cart' %>
 
 <h3>ORDER SUMMARY</h3>
 
@@ -16,8 +16,8 @@
     <li>Order Confirmation</li>
 </ol>
 
-<%= link_to 'Login' => 'RN_customer_login', class => 'btn btn-primary' %>
-<%= link_to 'Signup' => 'RN_customer_signup', class => 'btn btn-primary' %>
+<%= link_to 'Login' => 'rn.login', class => 'btn btn-primary' %>
+<%= link_to 'Signup' => 'rn.signup', class => 'btn btn-primary' %>
 
 <hr>
 OR
@@ -25,8 +25,8 @@ OR
 
 <h3>Guest Checkout</h3>
 <div class="">
-    <%= form_for 'RN_customer_dropin' => ( method => 'POST' ) => begin %>
-    <% form 'auth-dropin'; %>
+    <%= form_for 'rn.dropin' => ( method => 'POST' ) => begin %>
+    <% form 'auth-magic_link'; %>
         <div class="">
             <%= form_field '#email' %>
             <%= form_label %><%= form_widget %>
@@ -40,10 +40,10 @@ OR
 </div>
 
 <div class="">
-    <%= csrf_button_to 'Continue as a Guest' => 'RN_checkout' => ( method => 'POST') %>
+    <%= csrf_button_to 'Continue as a Guest' => 'rn.checkout' => ( method => 'POST') %>
 </div>
 
 <h3>Link to drop in page.</h3>
 <div class="">
-    <%= link_to 'Drop in' => 'RN_customer_dropin', class => 'btn btn-primary' %>
+    <%= link_to 'Drop in' => 'rn.dropin', class => 'btn btn-primary' %>
 </div>

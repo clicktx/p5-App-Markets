@@ -5,7 +5,7 @@
     <h1><%= __(title) %></h1>
     <ul>
         <li>
-            <%= link_to 'RN_admin_order_details' => ( order_id => $order_id ) => begin %>Back to Order Details<% end %>
+            <%= link_to 'rn.admin.order.details' => ( order_id => $order_id ) => begin %>Back to Order Details<% end %>
         </li>
     </ul>
 <% end =%>

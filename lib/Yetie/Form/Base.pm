@@ -15,6 +15,14 @@ has name_space   => 'Yetie::Form::FieldSet';
 has tag_helpers  => sub { Yetie::App::Core::Form::TagHelpers->new( shift->controller ) };
 has [qw(fieldset validated_parameters)];
 
+sub append_error_classes {
+    my $self = shift;
+    return if !@_;
+
+    foreach my $name (@_) { $self->field($name)->append_error_class }
+    return;
+}
+
 sub do_validate {
     my $self     = shift;
     my $c        = $self->controller;
@@ -256,6 +264,17 @@ Return L<Yetie::App::Core::Parameters> object or C<undefined>.
 
 L<Yetie::Form::Base> inherits all methods from L<Mojo::Base> and implements the following new ones.
 
+=head2 C<append_error_classes>
+
+    $form->append_error_classes( 'foo', 'bar', 'baz' );
+
+    # Longer version
+    $form->field($_)->append_error_class for qw(foo bar baz);
+
+Add class "field-with-error" to all fields.
+
+See L<Yetie::Form::Field/append_error_class>
+
 =head2 C<do_validate>
 
     my $bool = $form->do_validate;
@@ -308,7 +327,7 @@ L<Mojolicious::Validator::Validation/has_data>
     my $param = $form->param('favorite[]')
 
 The parameter is a validated values.
-This method should be called after the L</do_validate> method.
+This method should be called after the L</append_error_classes> method.
 
 =head2 C<params>
 

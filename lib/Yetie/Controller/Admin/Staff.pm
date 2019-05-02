@@ -17,11 +17,11 @@ sub login {
     my $login_id = $form->param('login_id');
     my $password = $form->param('password');
 
-    my $route = $c->flash('ref') || 'RN_admin_dashboard';
+    my $route = $c->flash('ref') || 'rn.admin.dashboard';
     return $c->redirect_to($route) if $c->service('staff')->login_process_with_password( $login_id, $password );
 
     # Set error class
-    $form->field($_)->append_error_class for qw(login_id password);
+    $form->append_error_classes(qw(login_id password));
     return $c->render( login_failure => 1 );
 }
 
@@ -31,7 +31,7 @@ sub logout {
     my $session = $c->server_session;
     $session->remove_session;
 
-    return $c->redirect_to('RN_admin_login');
+    return $c->redirect_to('rn.admin.login');
 }
 
 sub profile {

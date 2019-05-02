@@ -11,7 +11,7 @@ has is_activated   => 0;
 has remote_address => 'unknown';
 has token          => sub { __PACKAGE__->factory('value-token')->construct() };
 
-sub continue { return shift->{continue_url} // 'RN_home' }
+sub continue { return shift->{continue_url} // 'rn.home' }
 
 sub is_verified { return shift->_is_verified(@_) }
 
@@ -77,7 +77,7 @@ the following new ones.
 
     my $continue_url = $auth->continue;
 
-Return L</continue_url> or 'RN_home'.
+Return L</continue_url> or 'rn.home'.
 
 =head2 C<is_verified>
 
