@@ -168,8 +168,8 @@ sub add_catalog_routes {
         $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link');
         $r->get('/get-started/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.signup');
 
-        # Login remember me(not under)
-        $routes->get('/login/remember-me')->to('auth#remember_me')->name('rn.login.remember_me');
+        # Login remember me(not under route)
+        $routes->get('/login/remember-me')->to('login#remember_me')->name('rn.login.remember_me');
 
         # Login
         my $login = $r->any('/login')->to( controller => 'login' );
