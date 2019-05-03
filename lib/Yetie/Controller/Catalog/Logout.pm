@@ -1,11 +1,11 @@
-package Yetie::Controller::Catalog::Auth;
+package Yetie::Controller::Catalog::Logout;
 use Mojo::Base 'Yetie::Controller::Catalog';
 
-sub logout {
+sub index {
     my $c = shift;
-    $c->template('logout');
+    return $c->render() if !$c->is_logged_in;
 
-  # logout時にカスタマーカートの削除処理を入れるか？
+  # WIP: logout時にカスタマーカートの削除処理を入れるか？
   # e.g. ３日間経過していたら後で買うリストにカート商品を移動して、カートを空にする
 
     # logoutは自分の意志で行い、ブラウザから完全に個人情報を削除したい意思がある
