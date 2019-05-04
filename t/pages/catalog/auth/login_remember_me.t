@@ -10,37 +10,35 @@ sub startup : Test(startup) {
     $self->SUPER::startup;
 
     # Add routes
-    $self->app->routes->get('/auth/remember-me')->to('auth#remember_me');
-
-    # $self->app->routes->get('/set_remember_me')->to(
-    #     cb => sub {
-    #         my $c     = shift;
-    #         my $token = $c->service('customer')->remember_token('c@example.org');
-    #         $c->render( json => { token => $token } );
-    #     }
-    # );
-
+    my $r = $self->app->routes;
+    $r->get('/set_remember_me')->to(
+        cb => sub {
+            my $c     = shift;
+            my $token = $c->service('authentication')->remember_token('c@example.org');
+            $c->render( json => {} );
+        }
+    );
+    $r->get('/check_logged_in')->to(
+        cb => sub {
+            my $c = shift;
+            $c->render( json => { customer_id => $c->server_session->customer_id } );
+        }
+    );
     $self->t->ua->max_redirects(0);
 }
 
-sub t00_remember_me : Tests() {
+sub t00_basic : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $t->get_ok('/')->get_ok('/account/wishlist')->status_is(302);
-    $t->get_ok('/auth/remember-me')->status_is(302);
-    my $session = t::Util::server_session( $self->app );
-    $session->tx( $t->tx );
-    $session->load;
-    ok !$session->is_customer_logged_in, 'right customer not logged in';
+    $t->get_ok('/account/wishlist')->get_ok('/login/remember-me')->status_is(302)
+      ->header_is( Location => '/account/wishlist' );
 
-    # FIXME: can not get a token ;(
+    # FIXME: can not get a token(cookie path) ;(
+    # $self->t->ua->max_redirects(3);
     # $t->get_ok('/set_remember_me')->status_is(200);
-    # $t->get_ok('/login/remember-me')->status_is(302);
-    # $session = t::Util::server_session( $self->app );
-    # $session->tx( $t->tx );
-    # $session->load;
-    # ok $session->is_customer_logged_in, 'right customer logged in';
+    # $t->get_ok('/account/wishlist')->status_is(200);
+    # $t->get_ok('/check_logged_in')->json_is( { customer_id => 111 } );
 }
 
 __PACKAGE__->runtests;

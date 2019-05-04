@@ -75,7 +75,7 @@ subtest 'remember_token' => sub {
     is $cookie->name, 'remember_token', 'right set cookie';
     my $token = $c->resultset('AuthenticationRequest')->find_last_by_email('foo@bar.baz')->token;
     is $cookie->value, $token, 'right cookie value';
-    is $cookie->path, '/auth/remember-me', 'right cookie path';
+    is $cookie->path, '/login/remember-me', 'right cookie path';
     is $c->tx->res->cookies->[1]->name, 'has_remember_token', 'right set cookie';
 
     # Remove token

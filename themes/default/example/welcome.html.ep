@@ -32,7 +32,7 @@
     <% end %>
 </p>
 <p>
-    <%= link_to __('logout') => 'rn.customer.logout' %>
+    <%= link_to __('logout') => 'rn.logout' %>
 </p>
 
 <p>

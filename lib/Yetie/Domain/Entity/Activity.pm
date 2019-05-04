@@ -3,8 +3,8 @@ use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Carp qw(croak);
 
 has [qw(customer_id staff_id)];
-has name           => undef;
 has action         => undef;
+has method         => undef;
 has status         => 'success';
 has message        => undef;
 has remote_address => 'unkown';
@@ -23,8 +23,8 @@ sub to_data {
     $self->status;    # dump default attributes
 
     my $data = $self->SUPER::to_data(@_);
-    croak 'Undefined attribute "name"'   unless $data->{name};
     croak 'Undefined attribute "action"' unless $data->{action};
+    croak 'Undefined attribute "method"' unless $data->{method};
     croak 'Undefined attribute "customer_id" or "staff_id"' if !$data->{customer_id} && !$data->{staff_id};
 
     return $data;

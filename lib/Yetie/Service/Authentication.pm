@@ -103,7 +103,7 @@ sub verify {
 }
 
 sub _path_to_remember_me {
-    return shift->controller->url_for('rn.auth.remember_me')->to_string;
+    return shift->controller->url_for('rn.login.remember_me')->to_string;
 }
 
 sub _logging {

@@ -1,5 +1,6 @@
 package Yetie::Service::Customer;
 use Mojo::Base 'Yetie::Service';
+use Carp qw(croak);
 use Try::Tiny;
 
 # getアクセスのみ履歴として保存する
@@ -36,7 +37,7 @@ sub create_customer {
     my ( $self, $email_addr ) = @_;
 
     my $result = $self->resultset('Customer')->create_customer($email_addr);
-    return unless $result;
+    return if !$result;
 
     return $self->factory('entity-customer')->construct( $result->to_data );
 }
@@ -61,7 +62,7 @@ sub find_or_create_customer {
     my $customer = $self->find_customer($email_addr);
     return $customer if $customer->is_member;
 
-    $self->create_customer($email_addr);
+    return $self->create_customer($email_addr);
 }
 
 sub get_address_list {
@@ -84,11 +85,11 @@ sub load_history {
 
 sub login {
     my ( $self, $customer_id ) = @_;
-    my $session = $self->controller->server_session;
+    croak 'required argument "customer_id"' if !$customer_id;
 
     # Logged in
-    my $loggedin_customer_id = $session->customer_id // '';
-    return $customer_id if $loggedin_customer_id eq $customer_id;
+    my $session = $self->controller->server_session;
+    return $customer_id if $customer_id eq $session->customer_id;
 
     # Set customer id (logged-in flag)
     $session->customer_id($customer_id);
@@ -99,13 +100,8 @@ sub login {
     # Regenerate sid and set cart id
     $session->recreate( { cart_id => $customer_id, cart_data => $merged_cart->to_data } );
 
-    # NOTE: ログインログに記録する方が良い？
-    # Update last login date
+    # Update last login time
     $self->resultset('Customer')->last_logged_in_now($customer_id);
-
-    # Activity
-    $self->service('activity')->add( login => { customer_id => $customer_id } );
-
     return $customer_id;
 }
 
@@ -124,6 +120,9 @@ sub login_process_remember_me {
 
     # Reset token and Login
     $authen_service->remember_token($email_addr);
+
+    # Activity
+    $self->service('activity')->add( login => { customer_id => $customer_id, method => 'remember_me' } );
     return $self->login($customer_id);
 }
 
@@ -139,6 +138,8 @@ sub login_process_with_password {
     return $self->_login_failed( 'login.failed.password', $form )
       if !$customer->password->is_verify( $form->param('password') );
 
+    # Activity
+    $self->service('activity')->add( login => { customer_id => $customer->id, method => 'with_password' } );
     return $self->login( $customer->id );
 }
 
@@ -148,8 +149,8 @@ sub search_customers {
     my $conditions = {
         where    => q{},
         order_by => q{},
-        page_no  => $form->param('page') || 1,
-        per_page => $form->param('per_page') || 5,
+        page_no  => $form->param('page') || '1',
+        per_page => $form->param('per_page') || '5',
     };
     my $rs = $self->resultset('Customer')->search_customers($conditions);
 
@@ -165,10 +166,11 @@ sub search_customers {
 
 sub store_address {
     my ( $self, $address_id ) = @_;
-    my $c = $self->controller;
+    return if !$address_id;
 
+    my $c           = $self->controller;
     my $customer_id = $c->server_session->customer_id;
-    return if !$customer_id or !$address_id;
+    return if !$customer_id;
 
     my $result = $c->resultset('Customer::Address')->find_or_new(
         {

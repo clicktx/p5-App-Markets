@@ -33,14 +33,14 @@ subtest to_data => sub {
     dies_ok { $e->to_data } 'right croak';
 
     $e = $pkg->new(
-        name        => 'foo',
         customer_id => 111,
+        method      => 'foo',
     );
     dies_ok { $e->to_data } 'right croak';
 
     $e = $pkg->new(
-        name   => 'foo',
         action => 'bar',
+        method => 'foo',
     );
     dies_ok { $e->to_data } 'right croak';
 };

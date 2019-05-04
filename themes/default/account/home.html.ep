@@ -9,5 +9,5 @@
 
 <h2><%= __('logout') %></h2>
 <p>
-    <%= link_to __('logout') => 'rn.customer.logout' %>
+    <%= link_to __('logout') => 'rn.logout' %>
 </p>

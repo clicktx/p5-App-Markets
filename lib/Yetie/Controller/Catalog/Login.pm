@@ -26,12 +26,24 @@ sub index {
         { expires => time + $c->pref('cookie_expires_long') }
     );
 
-    # Login failure
-    return $c->render( login_failure => 1 ) if !$c->service('customer')->login_process_with_password($form);
+    my $customer_id = $c->service('customer')->login_process_with_password($form);
+    return $c->render( login_failure => 1 ) if !$customer_id;
 
     # Login success
     if ($remember_me) { $c->service('authentication')->remember_token( $form->param('email') ) }
     return $c->redirect_to( $c->continue_url );
+}
+
+sub remember_me {
+    my $c            = shift;
+    my $continue_url = $c->continue_url;
+
+    my $token = $c->cookie('remember_token');
+    return $c->redirect_to($continue_url) if !$token;
+
+    # Login
+    my $customer_id = $c->service('customer')->login_process_remember_me($token);
+    return $c->redirect_to($continue_url);
 }
 
 sub toggle {
