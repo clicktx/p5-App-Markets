@@ -1,5 +1,6 @@
 package Yetie::Service::Customer;
 use Mojo::Base 'Yetie::Service';
+use Carp qw(croak);
 use Try::Tiny;
 
 # getアクセスのみ履歴として保存する
@@ -61,7 +62,7 @@ sub find_or_create_customer {
     my $customer = $self->find_customer($email_addr);
     return $customer if $customer->is_member;
 
-    $self->create_customer($email_addr);
+    return $self->create_customer($email_addr);
 }
 
 sub get_address_list {
@@ -84,9 +85,10 @@ sub load_history {
 
 sub login {
     my ( $self, $customer_id ) = @_;
-    my $session = $self->controller->server_session;
+    croak 'required argument "customer_id"' if !$customer_id;
 
     # Logged in
+    my $session = $self->controller->server_session;
     return $customer_id if $customer_id eq $session->customer_id;
 
     # Set customer id (logged-in flag)
@@ -147,8 +149,8 @@ sub search_customers {
     my $conditions = {
         where    => q{},
         order_by => q{},
-        page_no  => $form->param('page') || 1,
-        per_page => $form->param('per_page') || 5,
+        page_no  => $form->param('page') || '1',
+        per_page => $form->param('per_page') || '5',
     };
     my $rs = $self->resultset('Customer')->search_customers($conditions);
 
