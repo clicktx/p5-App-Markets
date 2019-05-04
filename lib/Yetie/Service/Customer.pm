@@ -87,8 +87,7 @@ sub login {
     my $session = $self->controller->server_session;
 
     # Logged in
-    my $loggedin_customer_id = $session->customer_id // '';
-    return $customer_id if $loggedin_customer_id eq $customer_id;
+    return $customer_id if $customer_id eq $session->customer_id;
 
     # Set customer id (logged-in flag)
     $session->customer_id($customer_id);
@@ -99,8 +98,7 @@ sub login {
     # Regenerate sid and set cart id
     $session->recreate( { cart_id => $customer_id, cart_data => $merged_cart->to_data } );
 
-    # NOTE: ログインログに記録する方が良い？
-    # Update last login date
+    # Update last login time
     $self->resultset('Customer')->last_logged_in_now($customer_id);
     return $customer_id;
 }
