@@ -36,7 +36,7 @@ sub create_customer {
     my ( $self, $email_addr ) = @_;
 
     my $result = $self->resultset('Customer')->create_customer($email_addr);
-    return unless $result;
+    return if !$result;
 
     return $self->factory('entity-customer')->construct( $result->to_data );
 }
@@ -166,10 +166,11 @@ sub search_customers {
 
 sub store_address {
     my ( $self, $address_id ) = @_;
-    my $c = $self->controller;
+    return if !$address_id;
 
+    my $c           = $self->controller;
     my $customer_id = $c->server_session->customer_id;
-    return if !$customer_id or !$address_id;
+    return if !$customer_id;
 
     my $result = $c->resultset('Customer::Address')->find_or_new(
         {
