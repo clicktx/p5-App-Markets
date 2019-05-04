@@ -114,28 +114,28 @@ subtest 'remove cart data' => sub {
 };
 
 subtest 'for customer' => sub {
-    is $session->customer_id, undef, 'right load customer_id';
+    is $session->customer_id, q{}, 'right load customer_id';
     ok !$session->is_customer_logged_in, 'right not logged in';
 
     $session->customer_id('123456');
-    is $session->customer_id, 123456, 'right changed customer_id';
+    is $session->customer_id, '123456', 'right changed customer_id';
 
     $session->flush;
     $session->load;
-    is $session->customer_id, 123456, 'right changed customer_id';
+    is $session->customer_id, '123456', 'right changed customer_id';
     ok $session->is_customer_logged_in, 'right logged in';
 };
 
 subtest 'for staff' => sub {
-    is $session->staff_id, undef, 'right load staff_id';
+    is $session->staff_id, q{}, 'right load staff_id';
     ok !$session->is_staff_logged_in, 'right not logged in';
 
     $session->staff_id('123456');
-    is $session->staff_id, 123456, 'right changed staff_id';
+    is $session->staff_id, '123456', 'right changed staff_id';
 
     $session->flush;
     $session->load;
-    is $session->staff_id, 123456, 'right changed staff_id';
+    is $session->staff_id, '123456', 'right changed staff_id';
     ok $session->is_staff_logged_in, 'right logged in';
 };
 

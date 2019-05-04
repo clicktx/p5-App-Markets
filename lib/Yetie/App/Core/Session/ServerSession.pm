@@ -16,7 +16,7 @@ sub cart_id { return shift->data('cart_id') }
 
 sub customer_id {
     my ( $self, $id ) = @_;
-    return $id ? $self->data( customer_id => $id ) : $self->data('customer_id') || undef;
+    return $id ? $self->data( customer_id => $id ) : $self->data('customer_id') || q{};
 }
 
 sub cookie_expires {
@@ -41,6 +41,7 @@ sub extend_expires {
         $self->transport->tx( $self->tx );
         $self->transport->set( $self->sid, $self->cookie_expires );
     }
+    return;
 }
 
 sub flush {
@@ -53,7 +54,7 @@ sub flush {
 
 sub create_cookie_token {
     my $self = shift;
-    Yetie::Util::create_token( length => $self->cookie_token_length, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
+    return Yetie::Util::create_token( length => $self->cookie_token_length, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
 }
 
 sub is_customer_logged_in { return shift->customer_id ? 1 : 0 }
@@ -115,7 +116,7 @@ sub remove_session {
 
 sub staff_id {
     my ( $self, $id ) = @_;
-    return $id ? $self->data( staff_id => $id ) : $self->data('staff_id') || undef;
+    return $id ? $self->data( staff_id => $id ) : $self->data('staff_id') || q{};
 }
 
 # Override method MojoX::Session::clear
@@ -127,7 +128,7 @@ sub clear {
     return if @_;
 
     # Init Cart
-    $self->_init_cart( $self->create_cookie_token );
+    return $self->_init_cart( $self->create_cookie_token );
 }
 
 # Override method MojoX::Session::create
@@ -179,7 +180,7 @@ sub _init_cart {
         data         => {},
         _is_modified => 0,
     };
-    $self->data( cart_id => $cart_id, cart => $cart );
+    return $self->data( cart_id => $cart_id, cart => $cart );
 }
 
 1;
@@ -302,7 +303,7 @@ This method override L<MojoX::Session/create>.
 
 Get/Set customer id.
 
-Return customer ID or C<undefined>.
+Return customer ID or C<empty character>.
 
 =head2 C<extend_expires>
 
@@ -367,7 +368,7 @@ Return C<boolean> value.
 
 Get/Set staff id.
 
-Return customer ID or C<undefined>.
+Return customer ID or C<empty character>.
 
 =head1 SEE ALSO
 
