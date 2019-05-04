@@ -13,8 +13,8 @@ my $rs     = $schema->resultset('Activity');
 subtest 'add_activity' => sub {
     my $e = $app->factory('entity-activity')->construct(
         {
-            name           => 'foo',
-            action         => 'bar',
+            action         => 'foo',
+            method         => 'bar',
             remote_address => '1.1.1.1',
             user_agent     => 'baz',
             customer_id    => 111,

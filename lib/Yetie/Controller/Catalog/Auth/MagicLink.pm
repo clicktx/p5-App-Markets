@@ -25,6 +25,9 @@ sub action_login {
 
     my $customer = $c->service('customer')->find_customer( $auth->email->value );
     $c->service('customer')->login( $customer->id );
+
+    # Activity
+    $c->service('activity')->add( login => { customer_id => $customer->id, method => 'magic_link' } );
     return 1;
 }
 
@@ -42,6 +45,9 @@ sub action_signup {
 
     # Create customer
     my $new_customer = $customer_service->create_customer($email_addr);
+
+    # Activity
+    $c->service('activity')->add( signup => { customer_id => $new_customer->id, method => 'magic_link' } );
 
     # Login
     $customer_service->login( $new_customer->id );

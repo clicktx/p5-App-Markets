@@ -2,19 +2,19 @@ package Yetie::Service::Activity;
 use Mojo::Base 'Yetie::Service';
 
 sub add {
-    my ( $self, $name, $args ) = @_;
+    my ( $self, $action, $args ) = @_;
 
-    my $domain_entity = $self->create_domain_entity( $name, $args );
+    my $domain_entity = $self->create_domain_entity( $action, $args );
     return $self->resultset('Activity')->add_activity($domain_entity);
 }
 
 sub create_domain_entity {
-    my ( $self, $name, $args ) = @_;
+    my ( $self, $action, $args ) = @_;
     my $c = $self->controller;
 
     my $data = {
-        name           => $name,
-        action         => $args->{action} // $c->stash('action'),
+        action         => $action,
+        method         => $args->{method} // $c->stash('action'),
         remote_address => $c->remote_address // 'unknown',
         user_agent     => $c->req->env->{HTTP_USER_AGENT} // 'unknown',
     };
@@ -49,11 +49,11 @@ the following new ones.
 
 =head2 C<add>
 
-    $service->add( $activity_name => { \%args } );
+    $service->add( $activity_action => \%args );
 
 =head2 C<create_domain_entity>
 
-    my $entity = $service->create_domain_entity( $activity_name => { \%args } );
+    my $entity = $service->create_domain_entity( $activity_action => \%args );
 
 Return L<Yetie::Domain::Entity::Activity> object.
 
