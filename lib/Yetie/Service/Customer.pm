@@ -102,10 +102,6 @@ sub login {
     # NOTE: ログインログに記録する方が良い？
     # Update last login date
     $self->resultset('Customer')->last_logged_in_now($customer_id);
-
-    # Activity
-    $self->service('activity')->add( login => { customer_id => $customer_id } );
-
     return $customer_id;
 }
 
@@ -124,6 +120,9 @@ sub login_process_remember_me {
 
     # Reset token and Login
     $authen_service->remember_token($email_addr);
+
+    # Activity
+    $self->service('activity')->add( login => { customer_id => $customer_id, method => 'remember_me' } );
     return $self->login($customer_id);
 }
 
@@ -139,6 +138,8 @@ sub login_process_with_password {
     return $self->_login_failed( 'login.failed.password', $form )
       if !$customer->password->is_verify( $form->param('password') );
 
+    # Activity
+    $self->service('activity')->add( login => { customer_id => $customer->id, method => 'with_password' } );
     return $self->login( $customer->id );
 }
 

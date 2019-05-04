@@ -8,13 +8,13 @@ primary_column id => {
     extra             => { unsigned => 1 },
 };
 
-column name => {
+column action => {
     data_type   => 'VARCHAR',
     size        => 32,
     is_nullable => 0,
 };
 
-column action => {
+column method => {
     data_type   => 'VARCHAR',
     size        => 32,
     is_nullable => 0,

@@ -26,8 +26,8 @@ sub index {
         { expires => time + $c->pref('cookie_expires_long') }
     );
 
-    # Login failure
-    return $c->render( login_failure => 1 ) if !$c->service('customer')->login_process_with_password($form);
+    my $customer_id = $c->service('customer')->login_process_with_password($form);
+    return $c->render( login_failure => 1 ) if !$customer_id;
 
     # Login success
     if ($remember_me) { $c->service('authentication')->remember_token( $form->param('email') ) }
@@ -41,7 +41,8 @@ sub remember_me {
     my $token = $c->cookie('remember_token');
     return $c->redirect_to($continue_url) if !$token;
 
-    $c->service('customer')->login_process_remember_me($token);
+    # Login
+    my $customer_id = $c->service('customer')->login_process_remember_me($token);
     return $c->redirect_to($continue_url);
 }
 
