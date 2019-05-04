@@ -101,9 +101,6 @@ sub add_catalog_routes {
     my ( $self, $app ) = @_;
     my $routes = $app->routes->namespaces( ['Yetie::Controller::Catalog'] );
 
-    # remember me
-    $routes->get('/auth/remember-me')->to('auth#remember_me')->name('rn.auth.remember_me');
-
     # Check remember_me token before all routes.
     my $r = $routes->under(
         sub {
@@ -113,7 +110,7 @@ sub add_catalog_routes {
             return 1 if !$c->cookie('has_remember_token');
 
             $c->continue_url( $c->req->url->to_string );
-            $c->redirect_to('rn.auth.remember_me');
+            $c->redirect_to('rn.login.remember_me');
             return 0;
         }
     );
@@ -165,11 +162,14 @@ sub add_catalog_routes {
     # For Customers
     {
         # Logout
-        $r->get('/logout')->to('auth#logout')->name('rn.customer.logout');
+        $r->get('/logout')->to('logout#index')->name('rn.logout');
 
         # Magic link
         $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link');
         $r->get('/get-started/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link.signup');
+
+        # Login remember me(not under route)
+        $routes->get('/login/remember-me')->to('login#remember_me')->name('rn.login.remember_me');
 
         # Login
         my $login = $r->any('/login')->to( controller => 'login' );
