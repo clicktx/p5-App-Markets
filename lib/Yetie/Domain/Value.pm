@@ -1,5 +1,6 @@
 package Yetie::Domain::Value;
 use Yetie::Domain::Base -readonly;
+use Mojo::Util qw();
 use overload
   q(bool)  => sub { 1 },
   fallback => 1;
@@ -7,10 +8,24 @@ use overload
 has value => '';
 
 sub equals {
-    my ( $self, $arg ) = @_;
+    my ( $self, $obj ) = @_;
+    return $self->hash_code eq $obj->hash_code ? 1 : 0;
+}
 
-    my $value = ref $arg ? $arg->value : $arg;
-    return $self->value eq $value ? 1 : 0;
+sub hash_code {
+    my $self = shift;
+
+    my %attrs = %{$self};
+    my @keys  = keys %attrs;
+    my $str;
+    foreach my $key ( sort @keys ) {
+
+        # private attribute
+        next if $key =~ /\A_.*/sxm;
+
+        $str .= "$key:$attrs{$key},";
+    }
+    return Mojo::Util::sha1_sum($str);
 }
 
 sub new {
@@ -20,7 +35,7 @@ sub new {
     return $class->SUPER::new($args);
 }
 
-sub to_data { shift->value }
+sub to_data { return shift->value }
 
 1;
 
@@ -61,11 +76,16 @@ the following new ones.
 
 =head2 C<equals>
 
-Compare strings.
-
-    my $bool = $obj->equals($string);
+    my $bool = $obj->equals($object);
 
 Return boolean value.
+
+=head2 C<hash_code>
+
+    # "960167e90089e5ebe6a583e86b4c77507afb70b7"
+    my $sha1_sum = $obj->hash_code;
+
+Return sha1 string.
 
 =head2 C<to_data>
 
