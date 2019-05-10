@@ -1,7 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Yetie::Domain::Collection;
-use Yetie::Domain::Entity::CartItem;
+use Yetie::Domain::Entity::LineItem;
 use Yetie::Factory;
 
 my $pkg = 'Yetie::Domain::Entity::Shipment';
@@ -21,7 +21,7 @@ subtest 'basic' => sub {
     can_ok $shipment, 'item_count';
 
     isa_ok $shipment->shipping_address, 'Yetie::Domain::Entity::Address';
-    isa_ok $shipment->items,            'Yetie::Domain::List::CartItems';
+    isa_ok $shipment->items,            'Yetie::Domain::List::LineItems';
 
     is $shipment->hash_code, '356a192b7913b04c54574d18c28d46e6395428ab', 'right hash_code';
     is $shipment->id, 1, 'right id';
@@ -48,9 +48,9 @@ subtest 'item_count' => sub {
 subtest 'subtotal' => sub {
     my $shipment = construct( id => 1 );
     $shipment->{items} = Yetie::Domain::Collection->new(
-        Yetie::Domain::Entity::CartItem->new( quantity => 1, price => 100 ),
-        Yetie::Domain::Entity::CartItem->new( quantity => 2, price => 100 ),
-        Yetie::Domain::Entity::CartItem->new( quantity => 3, price => 100 ),
+        Yetie::Domain::Entity::LineItem->new( quantity => 1, price => 100 ),
+        Yetie::Domain::Entity::LineItem->new( quantity => 2, price => 100 ),
+        Yetie::Domain::Entity::LineItem->new( quantity => 3, price => 100 ),
     );
     is $shipment->subtotal, 600, 'right subtotal';
 };

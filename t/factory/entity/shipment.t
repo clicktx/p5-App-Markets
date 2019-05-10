@@ -10,7 +10,7 @@ subtest 'argument empty' => sub {
 
     isa_ok $e, 'Yetie::Domain::Entity::Shipment';
     isa_ok $e->shipping_address, 'Yetie::Domain::Entity::Address';
-    isa_ok $e->items,            'Yetie::Domain::List::CartItems';
+    isa_ok $e->items,            'Yetie::Domain::List::LineItems';
 };
 
 subtest 'data' => sub {
@@ -23,7 +23,7 @@ subtest 'data' => sub {
     );
     my $e = $factory->construct();
     is $e->shipping_address->line1, 'Silicon Valley', 'right data';
-    isa_ok $e->items->first, 'Yetie::Domain::Entity::CartItem';
+    isa_ok $e->items->first, 'Yetie::Domain::Entity::LineItem';
 };
 
 done_testing;

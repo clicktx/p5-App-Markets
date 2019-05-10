@@ -30,6 +30,15 @@ sub subtotal {
     $self->list->reduce( sub { $a + $b->subtotal }, 0 );
 }
 
+sub total_amount {
+    my $self = shift;
+    warn '!!DEPRECATED!!';
+
+    my $total_amount = 0;
+    $self->each( sub { $total_amount += $_->subtotal } );
+    return $total_amount;
+}
+
 sub _append_item {
     my ( $self, $item ) = @_;
     my $new = $self->list->append($item);
@@ -93,6 +102,12 @@ the following new ones.
 =head2 C<subtotal>
 
     my $subtotal = $items->subtotal;
+
+=head2 C<total_amount>
+
+DEPRECATED
+
+    my $total_amount = $items->total_amount;
 
 =head1 AUTHOR
 
