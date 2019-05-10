@@ -1,4 +1,4 @@
-package Yetie::Domain::List::SellingItems;
+package Yetie::Domain::List::LineItems;
 use Yetie::Domain::Base 'Yetie::Domain::List';
 
 sub total_amount {
@@ -14,7 +14,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::List::SellingItems
+Yetie::Domain::List::LineItems
 
 =head1 SYNOPSIS
 
@@ -22,12 +22,12 @@ Yetie::Domain::List::SellingItems
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::List::SellingItems> inherits all attributes from L<Yetie::Domain::List> and implements
+L<Yetie::Domain::List::LineItems> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::List::SellingItems> inherits all methods from L<Yetie::Domain::List> and implements
+L<Yetie::Domain::List::LineItems> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
 
 =head2 C<total_amount>
