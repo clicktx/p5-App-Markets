@@ -19,7 +19,7 @@ sub verify_token {
     my ( $self, $last_token ) = @_;
 
     # Last request token
-    return $self->_fails('Different from last token') if !$self->token->equals($last_token);
+    return $self->_fails('Different from last token') if $self->token->value ne $last_token;
 
     # Activated
     return $self->_fails('Activated') if $self->is_activated;
