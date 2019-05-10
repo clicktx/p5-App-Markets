@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::SellingItem;
+package Yetie::Domain::Entity::LineItem;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
 has product_id    => '';
@@ -19,7 +19,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::SellingItem
+Yetie::Domain::Entity::LineItem
 
 =head1 SYNOPSIS
 
@@ -27,7 +27,7 @@ Yetie::Domain::Entity::SellingItem
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::SellingItem> inherits all attributes from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::LineItem> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<product_id>
@@ -40,7 +40,7 @@ the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::SellingItem> inherits all methods from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::LineItem> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<subtotal>

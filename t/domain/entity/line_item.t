@@ -1,10 +1,10 @@
 use Mojo::Base -strict;
 use Test::More;
 
-use_ok 'Yetie::Domain::Entity::SellingItem';
+use_ok 'Yetie::Domain::Entity::LineItem';
 
 subtest 'basic' => sub {
-    my $item = Yetie::Domain::Entity::SellingItem->new(
+    my $item = Yetie::Domain::Entity::LineItem->new(
         {
             id            => 2,
             product_id    => 111,
@@ -29,7 +29,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'subtotal' => sub {
-    my $item = Yetie::Domain::Entity::SellingItem->new(
+    my $item = Yetie::Domain::Entity::LineItem->new(
         {
             quantity => 2,
             price    => 300,
