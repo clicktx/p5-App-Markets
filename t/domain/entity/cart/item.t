@@ -1,10 +1,10 @@
 use Mojo::Base -strict;
 use Test::More;
 
-use_ok 'Yetie::Domain::Entity::CartItem';
+use_ok 'Yetie::Domain::Entity::LineItem';
 
 subtest 'basic' => sub {
-    my $item = Yetie::Domain::Entity::CartItem->new(
+    my $item = Yetie::Domain::Entity::LineItem->new(
         {
             product_id    => 111,
             product_title => 'test product',
@@ -25,7 +25,7 @@ subtest 'basic' => sub {
     $item->quantity(5);
     is $item->is_modified, 1, 'right modified';
 
-    my $item2 = Yetie::Domain::Entity::CartItem->new(
+    my $item2 = Yetie::Domain::Entity::LineItem->new(
         {
             product_id => 110,
             quantity   => 1,
@@ -37,7 +37,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'hash_code' => sub {
-    my $item = Yetie::Domain::Entity::CartItem->new(
+    my $item = Yetie::Domain::Entity::LineItem->new(
         {
             product_id => 111,
         }
@@ -47,7 +47,7 @@ subtest 'hash_code' => sub {
 };
 
 subtest 'to_data' => sub {
-    my $item = Yetie::Domain::Entity::CartItem->new(
+    my $item = Yetie::Domain::Entity::LineItem->new(
         {
             hash       => 'foobar',
             product_id => 110,

@@ -6,7 +6,7 @@ sub cook {
 
     $self->aggregate( billing_address  => 'entity-address',   $self->{billing_address}  || {} );
     $self->aggregate( shipping_address => 'entity-address',   $self->{shipping_address} || {} );
-    $self->aggregate( items            => 'list-order_items', $self->param('items')     || [] );
+    $self->aggregate( items            => 'list-line_items', $self->param('items')     || [] );
 }
 
 1;
@@ -41,4 +41,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
- L<Yetie::Factory>
+L<Yetie::Factory>

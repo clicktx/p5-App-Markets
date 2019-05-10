@@ -1,4 +1,4 @@
-package Yetie::Domain::List::CartItems;
+package Yetie::Domain::List::LineItems;
 use Yetie::Domain::Base 'Yetie::Domain::List';
 
 sub append {
@@ -30,6 +30,15 @@ sub subtotal {
     $self->list->reduce( sub { $a + $b->subtotal }, 0 );
 }
 
+sub total_amount {
+    my $self = shift;
+    warn '!!DEPRECATED!!';
+
+    my $total_amount = 0;
+    $self->each( sub { $total_amount += $_->subtotal } );
+    return $total_amount;
+}
+
 sub _append_item {
     my ( $self, $item ) = @_;
     my $new = $self->list->append($item);
@@ -53,7 +62,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::List::CartItems
+Yetie::Domain::List::LineItems
 
 =head1 SYNOPSIS
 
@@ -61,12 +70,12 @@ Yetie::Domain::List::CartItems
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::List::CartItems> inherits all attributes from L<Yetie::Domain::List> and implements
+L<Yetie::Domain::List::LineItems> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::List::CartItems> inherits all methods from L<Yetie::Domain::List> and implements
+L<Yetie::Domain::List::LineItems> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
 
 =head2 C<append>
@@ -93,6 +102,12 @@ the following new ones.
 =head2 C<subtotal>
 
     my $subtotal = $items->subtotal;
+
+=head2 C<total_amount>
+
+DEPRECATED
+
+    my $total_amount = $items->total_amount;
 
 =head1 AUTHOR
 

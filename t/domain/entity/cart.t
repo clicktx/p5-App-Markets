@@ -70,12 +70,12 @@ sub _create_entity {
 }
 
 use_ok 'Yetie::Domain::Entity::Cart';
-use_ok 'Yetie::Domain::Entity::CartItem';
+use_ok 'Yetie::Domain::Entity::LineItem';
 
 subtest 'basic' => sub {
     my $cart = Yetie::Domain::Entity::Cart->new;
     ok $cart->id;
-    isa_ok $cart->items,           'Yetie::Domain::List::CartItems';
+    isa_ok $cart->items,           'Yetie::Domain::List::LineItems';
     isa_ok $cart->shipments,       'Yetie::Domain::List::Shipments';
     isa_ok $cart->billing_address, 'Yetie::Domain::Entity::Address';
 };
@@ -84,8 +84,8 @@ subtest 'attributes' => sub {
     my $cart = _create_entity;
     is $cart->cart_id, '12345', 'right cart_id';
 
-    isa_ok $cart->items, 'Yetie::Domain::List::CartItems', 'right items';
-    isa_ok $cart->items->first, 'Yetie::Domain::Entity::CartItem', 'right items';
+    isa_ok $cart->items, 'Yetie::Domain::List::LineItems', 'right items';
+    isa_ok $cart->items->first, 'Yetie::Domain::Entity::LineItem', 'right items';
 
     isa_ok $cart->shipments, 'Yetie::Domain::List::Shipments', 'right shipments';
     isa_ok $cart->shipments->first, 'Yetie::Domain::Entity::Shipment', 'right shipments';
@@ -117,24 +117,24 @@ subtest 'methods' => sub {
 
 subtest 'add_item' => sub {
     my $cart = _create_entity;
-    $cart->add_item( Yetie::Domain::Entity::CartItem->new( product_id => 11 ) );
+    $cart->add_item( Yetie::Domain::Entity::LineItem->new( product_id => 11 ) );
     cmp_deeply $cart->items->last->to_data, { product_id => 11 }, 'right item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
-    $cart->add_item( Yetie::Domain::Entity::CartItem->new( product_id => 1, quantity => 1, price => 100 ) );
+    $cart->add_item( Yetie::Domain::Entity::LineItem->new( product_id => 1, quantity => 1, price => 100 ) );
     cmp_deeply $cart->items->first->to_data, { product_id => 1, quantity => 2, price => 100 }, 'right item';
     is $cart->is_modified, 1, 'right modified';
 };
 
 subtest 'add_shipping_item' => sub {
     my $cart = _create_entity;
-    $cart->add_shipping_item( 0, Yetie::Domain::Entity::CartItem->new( product_id => 11 ) );
+    $cart->add_shipping_item( 0, Yetie::Domain::Entity::LineItem->new( product_id => 11 ) );
     cmp_deeply $cart->shipments->first->items->last->to_data, { product_id => 11 }, 'right shipping_item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
-    $cart->add_shipping_item( 0, Yetie::Domain::Entity::CartItem->new( product_id => 4, quantity => 4, price => 100 ) );
+    $cart->add_shipping_item( 0, Yetie::Domain::Entity::LineItem->new( product_id => 4, quantity => 4, price => 100 ) );
     cmp_deeply $cart->shipments->first->items->first->to_data,
       { product_id => 4, quantity => 8, price => 100 }, 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
@@ -251,7 +251,7 @@ subtest 'merge' => sub {
 
 subtest 'remove_item' => sub {
     my $cart      = _create_entity;
-    my $item      = Yetie::Domain::Entity::CartItem->new( product_id => 2, quantity => 1 );
+    my $item      = Yetie::Domain::Entity::LineItem->new( product_id => 2, quantity => 1 );
     my $hash_code = $item->hash;
 
     $cart->remove_item($hash_code);
@@ -262,7 +262,7 @@ subtest 'remove_item' => sub {
 
     # Unremove. not found item.
     $cart      = _create_entity;
-    $item      = Yetie::Domain::Entity::CartItem->new( product_id => 123, quantity => 1 );
+    $item      = Yetie::Domain::Entity::LineItem->new( product_id => 123, quantity => 1 );
     $hash_code = $item->hash;
 
     $cart->remove_item($hash_code);
@@ -278,7 +278,7 @@ subtest 'remove_item' => sub {
 
 subtest 'remove_shipping_item' => sub {
     my $cart      = _create_entity;
-    my $item      = Yetie::Domain::Entity::CartItem->new( product_id => 4 );
+    my $item      = Yetie::Domain::Entity::LineItem->new( product_id => 4 );
     my $hash_code = $item->hash;
 
     $cart->remove_shipping_item( 1, $hash_code );
@@ -289,7 +289,7 @@ subtest 'remove_shipping_item' => sub {
 
     # Unremove. not found item.
     $cart      = _create_entity;
-    $item      = Yetie::Domain::Entity::CartItem->new( product_id => 123 );
+    $item      = Yetie::Domain::Entity::LineItem->new( product_id => 123 );
     $hash_code = $item->hash;
 
     $cart->remove_shipping_item( 1, $hash_code );

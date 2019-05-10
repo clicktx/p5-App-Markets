@@ -3,10 +3,10 @@ use Test::More;
 use Test::Deep;
 use Yetie::Factory;
 
-my $pkg = 'Yetie::Domain::List::CartItems';
+my $pkg = 'Yetie::Domain::List::LineItems';
 use_ok $pkg;
 
-my $construct = sub { Yetie::Factory->new('list-cart_items')->construct(@_) };
+my $construct = sub { Yetie::Factory->new('list-line_items')->construct(@_) };
 
 subtest 'basic' => sub {
     my $list = $construct->();
@@ -14,7 +14,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'append' => sub {
-    my $f = Yetie::Factory->new('entity-cart_item');
+    my $f = Yetie::Factory->new('entity-line_item');
     my $data = [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 } ];
     my ( $list, $item );
 

@@ -6,7 +6,7 @@ use Yetie::Util;
 has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
 has cart_id         => '';
 has billing_address => sub { __PACKAGE__->factory('entity-address')->construct() };
-has items           => sub { __PACKAGE__->factory('list-cart_items')->construct() };
+has items           => sub { __PACKAGE__->factory('list-line_items')->construct() };
 has shipments       => sub { __PACKAGE__->factory('list-shipments')->construct() };
 
 my @needless_attrs = (qw/cart_id items/);
@@ -211,8 +211,8 @@ the following new ones.
     my $items = $cart->items;
     $items->each( sub { ... } );
 
-Return L<Yetie::Domain::List::CartItems> object.
-Elements is L<Yetie::Domain::Entity::CartItem> object.
+Return L<Yetie::Domain::List::LineItems> object.
+Elements is L<Yetie::Domain::Entity::LineItem> object.
 
 =head2 C<shipments>
 
@@ -352,5 +352,5 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::List::CartItems>, L<Yetie::Domain::Entity::CartItem>,
+L<Yetie::Domain::Entity>, L<Yetie::Domain::List::Linetems>, L<Yetie::Domain::Entity::LineItem>,
 L<Yetie::Domain::Entity::Shipment>
