@@ -1,10 +1,22 @@
 package Yetie::Domain::Entity::LineItem;
 use Yetie::Domain::Base 'Yetie::Domain::Entity';
 
+has hash => sub { shift->hash_code };
 has product_id    => '';
 has product_title => '';
 has price         => 0;
 has quantity      => 0;
+
+sub equals { shift->hash eq shift->hash ? 1 : 0 }
+
+sub hash_code {
+    my $self = shift;
+
+    my $str = '';
+    $str .= $self->product_id;
+
+    return $self->SUPER::hash_code($str);
+}
 
 sub subtotal {
     my $self     = shift;
@@ -12,6 +24,14 @@ sub subtotal {
 
     $subtotal = $self->price * $self->quantity;
     return $subtotal;
+}
+
+sub to_data {
+    my $self = shift;
+
+    my $data = $self->SUPER::to_data;
+    delete $data->{hash};
+    return $data;
 }
 
 1;
@@ -30,6 +50,10 @@ Yetie::Domain::Entity::LineItem
 L<Yetie::Domain::Entity::LineItem> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<hash>
+
+See L</hash_code>
+
 =head2 C<product_id>
 
 =head2 C<product_title>
@@ -42,6 +66,17 @@ the following new ones.
 
 L<Yetie::Domain::Entity::LineItem> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<equals>
+
+    my $bool = $item->equals($other_item);
+
+=head2 C<hash_code>
+
+    my $hash_code = $item->hash_code;
+
+Return SHA1 string.
+This method gets a string identifying items.
 
 =head2 C<subtotal>
 
