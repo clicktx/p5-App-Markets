@@ -1,11 +1,13 @@
 package Yetie::Domain::Value;
-use Yetie::Domain::Base -readonly;
+use Moo;
 use Mojo::Util qw();
-use overload
-  q(bool)  => sub { 1 },
-  fallback => 1;
 
-has value => '';
+extends 'Yetie::Domain::BaseMoo';
+
+has value => (
+    is       => 'ro',
+    required => 1,
+);
 
 sub equals {
     my ( $self, $obj ) = @_;
@@ -28,13 +30,6 @@ sub hash_code {
     return Mojo::Util::sha1_sum($str);
 }
 
-sub new {
-    my $class = shift;
-
-    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
-    return $class->SUPER::new($args);
-}
-
 sub to_data { return shift->value }
 
 1;
@@ -53,17 +48,10 @@ Yetie::Domain::Value
 
 Immutable value object base class.
 
-=head1 FUNCTIONS
-
-L<Yetie::Domain::Value> inherits all functions from L<Yetie::Domain::Base> and implements
-the following new ones.
-
 =head1 ATTRIBUTES
 
 L<Yetie::Domain::Value> inherits all attributes from L<Yetie::Domain::Base> and implements
 the following new ones.
-
-The value can not be set.This object is immutable.
 
 =head2 C<value>
 
@@ -93,20 +81,10 @@ Return sha1 string.
 
 L</value> alias method.
 
-=head1 OPERATORS
-
-L<Yetie::Domain::Value> overloads the following operators.
-
-=head2 C<bool>
-
-    my $bool = !!$obj;
-
-Always true.
-
 =head1 AUTHOR
 
 Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Base>
+L<Yetie::Domain::Base>, L<Moo>
