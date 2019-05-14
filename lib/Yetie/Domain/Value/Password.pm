@@ -1,8 +1,9 @@
 package Yetie::Domain::Value::Password;
-use Yetie::Domain::Base 'Yetie::Domain::Value';
+use Moo;
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
+extends 'Yetie::Domain::Value';
 
-has created_at => undef;
+has created_at => ( is => 'ro' );
 
 sub is_verify {
     my ( $self, $raw_password ) = @_;
@@ -24,6 +25,8 @@ Yetie::Domain::Value::Password
 
 L<Yetie::Domain::Value::Password> inherits all attributes from L<Yetie::Domain::Value> and implements
 the following new ones.
+
+=head2 C<created_at>
 
 =head1 METHODS
 
