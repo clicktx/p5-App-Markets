@@ -8,14 +8,17 @@ my $test_pkg = 't::domain::value';
 use_ok $test_pkg;
 
 subtest 'basic' => sub {
-    dies_ok { $pkg->new() } 'right has not argument(s)';
-
     my $v;
     $v = $pkg->new( value => 'foo' );
     is $v->value, 'foo', 'right array arguments';
 
     $v = $pkg->new( { value => 'bar' } );
     is $v->value, 'bar', 'right hash refference argument';
+
+    $v = $pkg->new();
+    is $v->value, q{}, 'right not argument';
+    $v = $pkg->new( value => undef );
+    is $v->value, q{}, 'right argument undefined';
 };
 
 subtest 'equals' => sub {

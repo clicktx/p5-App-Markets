@@ -5,9 +5,18 @@ use Mojo::Util qw();
 extends 'Yetie::Domain::BaseMoo';
 
 has value => (
-    is       => 'ro',
-    required => 1,
+    is      => 'ro',
+    default => q{},
 );
+
+# Do not created an undefined attribute "value"
+around BUILDARGS => sub {
+    ( shift, shift );    # $orig, $class
+    my %args = @_ ? @_ > 1 ? @_ : %{ $_[0] } : ();
+
+    if ( !defined $args{value} ) { delete $args{value} }
+    return \%args;
+};
 
 sub equals {
     my ( $self, $obj ) = @_;
