@@ -6,7 +6,9 @@ my $pkg = 'Yetie::Domain::BaseMoo';
 use_ok $pkg;
 
 subtest 'base' => sub {
-    throws_ok { $pkg->new( foo => 1 ) } qr/has not 'foo' attribute/, 'right do not have attribute';
+    my $obj = $pkg->new;
+    isa_ok $obj, $pkg;
+    dies_ok { $pkg->new( foo => 1 ) } 'right do not have attribute';
 };
 
 done_testing();

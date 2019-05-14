@@ -1,7 +1,8 @@
 package Yetie::Domain::BaseMoo;
 use Moo;
+use MooX::StrictConstructor;
 use strictures 2;
-use namespace::clean;
+use namespace::clean -except => ['new','meta'];
 
 1;
 
@@ -37,4 +38,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Moo>
+L<Moo>, L<MooX::StrictConstructor>
