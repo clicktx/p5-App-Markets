@@ -1,8 +1,8 @@
 package Yetie::Domain::Value;
 use Moo;
-use Mojo::Util qw();
-
 extends 'Yetie::Domain::BaseMoo';
+
+use Mojo::Util qw();
 
 has value => (
     is      => 'ro',
