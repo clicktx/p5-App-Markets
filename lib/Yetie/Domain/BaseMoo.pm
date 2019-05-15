@@ -10,6 +10,13 @@ has _hash_sum => ( is => 'lazy' );
 
 sub _build__hash_sum { return shift->hash_code }
 
+sub BUILD {
+    my $self = shift;
+
+    # Lazy build
+    $self->_hash_sum;
+}
+
 sub equals {
     my ( $self, $obj ) = @_;
     return $self->hash_code eq $obj->hash_code ? 1 : 0;

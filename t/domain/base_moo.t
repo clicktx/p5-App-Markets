@@ -13,6 +13,18 @@ subtest 'base' => sub {
     dies_ok { $pkg->new( foo => 1 ) } 'right do not have attribute';
 };
 
+subtest '_hash_sum' => sub {
+    my $obj      = $test_pkg->new;
+    my $hash_sum = 'e3274511720b789b54e8e68c1506a97fd3645cac';
+    is $obj->_hash_sum, $hash_sum, 'right hash_sum';
+    $obj->foo(1);
+    is $obj->_hash_sum, $hash_sum, 'right modify attribute after call "_hash_sum"';
+
+    $obj = $test_pkg->new;
+    $obj->foo(1);
+    is $obj->_hash_sum, $hash_sum, 'right modify attribute before call "_hash_sum"';
+};
+
 subtest 'dump' => sub {
     my $obj = $test_pkg->new;
     is $obj->dump, q{bless( {}, 't::domain::base' )}, 'right dump strings';
