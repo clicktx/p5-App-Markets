@@ -48,4 +48,15 @@ subtest 'hash_code' => sub {
     isnt $v->hash_code, $hash_code, 'right hash_code';
 };
 
+subtest 'is_modified' => sub {
+
+    my $obj = t::domain::base->new( foo => 1, bar => 2, _foo => 11, _bar => 22 );
+    is $obj->is_modified, '0', 'right unmodified';
+    $obj->_foo(111);
+    is $obj->is_modified, '0', 'right modify private attribute';
+
+    $obj->foo(3);
+    is $obj->is_modified, 1, 'right modify public attribute';
+};
+
 done_testing();
