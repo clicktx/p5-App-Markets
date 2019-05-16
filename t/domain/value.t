@@ -2,6 +2,18 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Exception;
 
+{
+
+    package t::domain::value;
+    use Moo;
+    extends 'Yetie::Domain::Value';
+
+    has foo  => ( is => 'ro' );
+    has bar  => ( is => 'ro' );
+    has _foo => ( is => 'ro' );
+    has _bar => ( is => 'ro' );
+}
+
 my $pkg = 'Yetie::Domain::Value';
 use_ok $pkg;
 my $test_pkg = 't::domain::value';
