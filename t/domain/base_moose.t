@@ -5,13 +5,13 @@ use Test::Exception;
 {
 
     package t::domain::base;
-    use Moo;
-    extends 'Yetie::Domain::BaseMoo';
+    use Moose;
+    extends 'Yetie::Domain::MooseBase';
 
     has [qw{foo bar _foo _bar}] => ( is => 'rw' );
 }
 
-my $pkg      = 'Yetie::Domain::BaseMoo';
+my $pkg      = 'Yetie::Domain::MooseBase';
 my $test_pkg = 't::domain::base';
 use_ok $pkg;
 use_ok $test_pkg;

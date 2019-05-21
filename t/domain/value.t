@@ -5,7 +5,7 @@ use Test::Exception;
 {
 
     package t::domain::value;
-    use Moo;
+    use Moose;
     extends 'Yetie::Domain::Value';
 
     has foo  => ( is => 'ro' );

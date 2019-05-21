@@ -1,6 +1,6 @@
 package Yetie::Domain::Value;
-use Moo;
-extends 'Yetie::Domain::BaseMoo';
+use Moose;
+extends 'Yetie::Domain::MooseBase';
 
 has value => (
     is      => 'ro',
@@ -18,6 +18,8 @@ around BUILDARGS => sub {
 
 sub to_data { return shift->value }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
 
 =encoding utf8
@@ -60,4 +62,6 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Base>, L<Moo>
+L<Yetie::Domain::Base>, L<Moose>
+__PACKAGE__->meta->make_immutable;
+__PACKAGE__->meta->make_immutable;

@@ -1,12 +1,10 @@
-package Yetie::Domain::BaseMoo;
-use Moo;
-use MooX::StrictConstructor;
+package Yetie::Domain::MooseBase;
+use Moose;
+use MooseX::StrictConstructor;
 use Data::Dumper;
 use Mojo::Util qw{};
-use strictures 2;
-use namespace::clean -except => [ 'new', 'meta' ];
 
-has _hash_sum => ( is => 'lazy' );
+has _hash_sum => ( is => 'ro', lazy_build => 1 );
 
 sub _build__hash_sum { return shift->hash_code }
 
@@ -40,6 +38,8 @@ sub is_modified {
     return $self->_hash_sum ne $self->hash_code ? 1 : 0;
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
 
 =encoding utf8
@@ -51,12 +51,13 @@ Yetie::Domain::Base
 =head1 SYNOPSIS
 
     package Yetie::Domain::Foo;
-    use Moo;
+    use Moose;
     extends 'Yetie::Domain::Base';
 
-    has value => ( is => 'rw' );
+    has foo => ( is => 'ro' );
 
-    sub dump { return shift->value }
+    no Moose;
+    __PACKAGE__->meta->make_immutable;
     1;
 
 =head1 DESCRIPTION
@@ -65,7 +66,7 @@ Domain object base class.
 
 =head1 METHODS
 
-L<Yetie::Domain::Base> inherits all methods from L<Moo> and implements
+L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements
 the following new ones.
 
 =head2 C<dump>
@@ -92,4 +93,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Moo>, L<MooX::StrictConstructor>
+L<Moose>, L<MooseX::StrictConstructor>
