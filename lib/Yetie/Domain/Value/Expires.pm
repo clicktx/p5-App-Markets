@@ -1,20 +1,19 @@
 package Yetie::Domain::Value::Expires;
-use Moo;
+use Moose;
 extends 'Yetie::Domain::Value';
 
-our $default_expires_delta = 600;
-
-has expires_delta => ( is => 'ro', default => 600 );
-
-has '+value' => (
-    default => sub { time + shift->expires_delta },
+has expires_delta => (
+    is      => 'ro',
+    default => 600
 );
+
+has '+value' => ( default => sub { time + shift->expires_delta } );
 
 sub is_expired {
     my $self = shift;
 
-    my $expires = $self->value // 0;
-    my $now = time;
+    my $expires = $self->value;
+    my $now     = time;
     return $expires - $now < 0 ? 1 : 0;
 }
 
@@ -67,4 +66,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Value>, L<Moo>
+L<Yetie::Domain::Value>, L<Moose>

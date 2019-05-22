@@ -1,5 +1,5 @@
 package Yetie::Domain::Value::Email;
-use Moo;
+use Moose;
 extends 'Yetie::Domain::Value';
 
 has _in_storage => ( is => 'ro', default => 0 );
@@ -60,4 +60,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Value>, L<Moo>
+L<Yetie::Domain::Value>, L<Moose>

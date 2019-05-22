@@ -1,7 +1,8 @@
 package Yetie::Domain::Value::Token;
-use Moo;
-use Yetie::Util qw(uuid);
+use Moose;
 extends 'Yetie::Domain::Value';
+
+use Yetie::Util qw(uuid);
 
 has '+value' => ( default => sub { uuid() } );
 
@@ -38,4 +39,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Value>, L<Moo>
+L<Yetie::Domain::Value>, L<Moose>
