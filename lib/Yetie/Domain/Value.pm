@@ -4,6 +4,7 @@ extends 'Yetie::Domain::MooseBase';
 
 has value => (
     is      => 'ro',
+    lazy    => 1,
     default => q{},
 );
 
@@ -63,5 +64,3 @@ Yetie authors.
 =head1 SEE ALSO
 
 L<Yetie::Domain::Base>, L<Moose>
-__PACKAGE__->meta->make_immutable;
-__PACKAGE__->meta->make_immutable;
