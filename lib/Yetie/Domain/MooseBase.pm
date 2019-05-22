@@ -20,7 +20,14 @@ sub equals {
     return $self->hash_code eq $obj->hash_code ? 1 : 0;
 }
 
-sub dump {
+sub hash_code { return Mojo::Util::sha1_sum( shift->_dump_public_attr ) }
+
+sub is_modified {
+    my $self = shift;
+    return $self->_hash_sum ne $self->hash_code ? 1 : 0;
+}
+
+sub _dump_public_attr {
     local $Data::Dumper::Terse    = 1;
     local $Data::Dumper::Indent   = 0;
     local $Data::Dumper::Sortkeys = sub {
@@ -29,13 +36,6 @@ sub dump {
         return \@keys;
     };
     return Dumper(shift);
-}
-
-sub hash_code { return Mojo::Util::sha1_sum( shift->dump ) }
-
-sub is_modified {
-    my $self = shift;
-    return $self->_hash_sum ne $self->hash_code ? 1 : 0;
 }
 
 no Moose;
@@ -68,11 +68,6 @@ Domain object base class.
 
 L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements
 the following new ones.
-
-=head2 C<dump>
-
-    # bless( {}, 'Yetie::Domain::Foo::Bar' )
-    my $dump_string = $obj->dump;
 
 =head2 C<equals>
 

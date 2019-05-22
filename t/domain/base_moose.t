@@ -34,13 +34,12 @@ subtest '_hash_sum' => sub {
     is $obj->_hash_sum, $hash_sum, 'right modify attribute before call "_hash_sum"';
 };
 
-subtest 'dump' => sub {
+subtest '_dump_public_attr' => sub {
     my $obj = $test_pkg->new;
-    is $obj->dump, q{bless( {}, 't::domain::base' )}, 'right dump strings';
+    is $obj->_dump_public_attr, q{bless( {}, 't::domain::base' )}, 'right dump strings';
 
     $obj = $test_pkg->new( foo => 1, bar => 2, _foo => 11, _bar => 22 );
-    is $obj->dump, q{bless( {'bar' => 2,'foo' => 1}, 't::domain::base' )}, 'right dump strings';
-
+    is $obj->_dump_public_attr, q{bless( {'bar' => 2,'foo' => 1}, 't::domain::base' )}, 'right dump strings';
 };
 
 subtest 'equals' => sub {
