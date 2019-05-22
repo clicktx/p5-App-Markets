@@ -20,6 +20,14 @@ sub equals {
     return $self->hash_code eq $obj->hash_code ? 1 : 0;
 }
 
+sub get_all_attribute_names {
+    return sort map { $_->name } shift->meta->get_all_attributes;
+}
+
+sub get_public_attribute_names {
+    return grep { /\A(?!_).*/sxm } shift->get_all_attribute_names;
+}
+
 sub hash_code { return Mojo::Util::sha1_sum( shift->_dump_public_attr ) }
 
 sub is_modified {
@@ -74,6 +82,18 @@ the following new ones.
     my $bool = $obj->equals($object);
 
 Return boolean value.
+
+=head2 C<get_all_attribute_names>
+
+    my @names = $obj->get_all_attribute_names;
+
+Return all attribute name list.
+
+=head2 C<get_public_attribute_names>
+
+    my @names = $obj->get_public_attribute_names;
+
+Return all public attribute name list.
 
 =head2 C<hash_code>
 

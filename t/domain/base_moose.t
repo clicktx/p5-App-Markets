@@ -58,6 +58,26 @@ subtest 'equals' => sub {
     is $v->equals($v6), 0, 'right not equal';
 };
 
+subtest 'get_all_attribute_names' => sub {
+    my $obj   = $test_pkg->new;
+    my @names = $obj->get_all_attribute_names;
+    is_deeply \@names, [qw{_bar _foo _hash_sum bar foo}], 'right not arguments';
+
+    $obj = $test_pkg->new( foo => 1, bar => 2 );
+    @names = $obj->get_all_attribute_names;
+    is_deeply \@names, [qw{_bar _foo _hash_sum bar foo}], 'right arguments';
+};
+
+subtest 'get_public_attribute_names' => sub {
+    my $obj   = $test_pkg->new;
+    my @names = $obj->get_public_attribute_names;
+    is_deeply \@names, [qw{bar foo}], 'right not arguments';
+
+    $obj = $test_pkg->new( foo => 1, bar => 2 );
+    @names = $obj->get_public_attribute_names;
+    is_deeply \@names, [qw{bar foo}], 'right arguments';
+};
+
 subtest 'hash_code' => sub {
     my $hash_code = 'db18e17f06b3fbd43916234e598060f203bb734e';
     my $v = $test_pkg->new( foo => 1, bar => 2, _foo => 11, _bar => 22 );
