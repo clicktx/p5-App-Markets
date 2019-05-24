@@ -1,6 +1,7 @@
 package Yetie::Domain::Value::Password;
-use Moo;
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
+
+use Moose;
 extends 'Yetie::Domain::Value';
 
 has created_at => ( is => 'ro' );
