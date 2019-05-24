@@ -1,7 +1,6 @@
 package Yetie::Domain::MooseBase;
 use Moose;
 use MooseX::StrictConstructor;
-use Mojo::Util qw{};
 
 sub get_all_attribute_names {
     return sort map { $_->name } shift->meta->get_all_attributes;
@@ -13,6 +12,7 @@ sub get_public_attribute_names {
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
+
 1;
 
 =encoding utf8
