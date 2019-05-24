@@ -4,11 +4,11 @@ use namespace::autoclean;
 use MooseX::StrictConstructor;
 
 sub get_all_attribute_names {
-    return sort map { $_->name } shift->meta->get_all_attributes;
+    return ( sort map { $_->name } shift->meta->get_all_attributes );
 }
 
 sub get_public_attribute_names {
-    return grep { /\A(?!_).*/sxm } shift->get_all_attribute_names;
+    return ( grep { /\A(?!_).*/sxm } shift->get_all_attribute_names );
 }
 
 no Moose;
