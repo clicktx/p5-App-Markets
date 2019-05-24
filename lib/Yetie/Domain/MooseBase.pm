@@ -1,5 +1,6 @@
 package Yetie::Domain::MooseBase;
 use Moose;
+use namespace::autoclean;
 use MooseX::StrictConstructor;
 
 sub get_all_attribute_names {

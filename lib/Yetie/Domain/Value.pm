@@ -1,8 +1,9 @@
 package Yetie::Domain::Value;
-use Moose;
-extends 'Yetie::Domain::MooseBase';
-
 use Data::Dumper;
+
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::MooseBase';
 
 has _hash_sum => ( is => 'ro', lazy_build => 1 );
 sub _build__hash_sum { return shift->hash_code }

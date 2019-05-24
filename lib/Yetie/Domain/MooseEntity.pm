@@ -8,6 +8,7 @@ use Data::Clone qw();
 use Data::Dumper;
 
 use Moose;
+use namespace::autoclean;
 extends 'Yetie::Domain::MooseBase';
 
 my @not_dump_attrs_defautls = (qw/created_at updated_at/);
