@@ -2,6 +2,8 @@ package Yetie::Domain::Value::Expires;
 use Moose;
 extends 'Yetie::Domain::Value';
 
+has '+value' => ( isa => 'Int' );
+
 has expires_delta => (
     is      => 'ro',
     default => 600

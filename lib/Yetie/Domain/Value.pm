@@ -10,6 +10,7 @@ sub _build__hash_sum { return shift->hash_code }
 
 has value => (
     is      => 'ro',
+    isa     => 'Str',
     lazy    => 1,
     default => q{},
 );
