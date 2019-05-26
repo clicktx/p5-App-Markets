@@ -1,7 +1,12 @@
 package Yetie::Domain::Entity::Page::Customers;
-use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity::Page';
 
-has customer_list => sub { __PACKAGE__->factory('list-customers')->construct() };
+has customer_list => ( is => 'ro', default => sub { __PACKAGE__->factory('list-customers')->construct() } );
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

@@ -1,7 +1,15 @@
 package Yetie::Domain::Entity::Page::Products;
-use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity::Page';
 
-has product_list => sub { __PACKAGE__->factory('list-products')->construct() };
+has product_list => (
+    is      => 'ro',
+    default => sub { __PACKAGE__->factory('list-products')->construct() }
+);
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

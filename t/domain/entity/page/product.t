@@ -31,7 +31,7 @@ use_ok 'Yetie::Domain::Entity::Page::Product';
 
 subtest 'basic' => sub {
     my $e = Yetie::Domain::Entity::Page::Product->new();
-    isa_ok $e, 'Yetie::Domain::Entity';
+    isa_ok $e, 'Yetie::Domain::Entity::Page';
 
     can_ok $e, 'title';
     can_ok $e, 'description';

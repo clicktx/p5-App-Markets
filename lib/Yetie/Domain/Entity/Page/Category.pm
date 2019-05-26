@@ -1,10 +1,15 @@
 package Yetie::Domain::Entity::Page::Category;
-use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity::Page';
 
-has level    => 0;
-has root_id  => 0;
-has title    => '';
-has products => sub { __PACKAGE__->factory('list-products')->construct() };
+has level    => ( is => 'ro', default => 0 );
+has root_id  => ( is => 'ro', default => 0 );
+has title    => ( is => 'ro', default => q{} );
+has products => ( is => 'ro', default => sub { __PACKAGE__->factory('list-products')->construct() } );
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

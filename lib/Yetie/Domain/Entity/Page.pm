@@ -1,16 +1,38 @@
 package Yetie::Domain::Entity::Page;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Yetie::Form::Base;
 use Data::Page;
 
-has meta_title => sub { shift->page_title };
-has meta_description => '';
-has meta_keywords    => '';
-has meta_robots      => '';
-has page_title       => '';
-has breadcrumbs      => sub { __PACKAGE__->factory('list-breadcrumbs')->construct() };
-has form             => sub { Yetie::Form::Base->new };
-has pager            => sub { Data::Page->new };
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::MooseEntity';
+
+has meta_title => (
+    is      => 'ro',
+    lazy    => 1,
+    default => sub { shift->page_title }
+);
+has meta_description => ( is => 'ro', default => q{} );
+has meta_keywords    => ( is => 'ro', default => q{} );
+has meta_robots      => ( is => 'ro', default => q{} );
+has page_title       => ( is => 'ro', default => q{} );
+has breadcrumbs      => (
+    is      => 'ro',
+    lazy    => 1,
+    default => sub { __PACKAGE__->factory('list-breadcrumbs')->construct() }
+);
+has form => (
+    is      => 'ro',
+    lazy    => 1,
+    default => sub { Yetie::Form::Base->new }
+);
+has pager => (
+    is      => 'ro',
+    lazy    => 1,
+    default => sub { Data::Page->new }
+);
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

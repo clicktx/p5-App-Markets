@@ -1,7 +1,12 @@
 package Yetie::Domain::Entity::Page::Orders;
-use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity::Page';
 
-has order_list => sub { __PACKAGE__->factory('list-order_details')->construct() };
+has order_list => ( is => 'ro', default => sub { __PACKAGE__->factory('list-order_details')->construct() } );
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

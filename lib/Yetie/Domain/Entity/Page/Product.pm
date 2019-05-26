@@ -1,12 +1,21 @@
 package Yetie::Domain::Entity::Page::Product;
-use Yetie::Domain::Base 'Yetie::Domain::Entity::Page';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity::Page';
 
-has title              => '';
-has description        => '';
-has price              => 0;
-has created_at         => undef;
-has updated_at         => undef;
-has product_categories => sub { __PACKAGE__->factory('list-product_categories')->construct() };
+has title       => ( is => 'ro', default => '' );
+has description => ( is => 'ro', default => '' );
+has price       => ( is => 'ro', default => 0 );
+has created_at  => ( is => 'ro' );
+has updated_at  => ( is => 'ro' );
+has product_categories => (
+    is      => 'ro',
+    lazy    => 1,
+    default => sub { __PACKAGE__->factory('list-product_categories')->construct() }
+);
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
