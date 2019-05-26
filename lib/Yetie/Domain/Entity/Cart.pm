@@ -1,13 +1,20 @@
 package Yetie::Domain::Entity::Cart;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Carp qw(croak);
 use Yetie::Util;
 
-has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
-has cart_id         => '';
-has billing_address => sub { __PACKAGE__->factory('entity-address')->construct() };
-has items           => sub { __PACKAGE__->factory('list-line_items')->construct() };
-has shipments       => sub { __PACKAGE__->factory('list-shipments')->construct() };
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::MooseEntity';
+
+has id => (
+    is      => 'ro',
+    lazy    => 1,
+    default => sub { $_[0]->hash_code( $_[0]->cart_id ) }
+);
+has cart_id         => ( is => 'ro', default => '' );
+has billing_address => ( is => 'rw', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
+has items           => ( is => 'ro', default => sub { __PACKAGE__->factory('list-line_items')->construct() } );
+has shipments       => ( is => 'ro', default => sub { __PACKAGE__->factory('list-shipments')->construct() } );
 
 my @needless_attrs = (qw/cart_id items/);
 
@@ -81,7 +88,7 @@ sub merge {
     # - ログアウト後に未ログイン状態でshipments設定まで進んだ後にログインする
     # 通常はその前にログインを促すのでありえない状態ではあるが...
 
-    $stored->_is_modified(1);
+    # $stored->_is_modified(1);
     return $stored;
 }
 
@@ -183,6 +190,9 @@ sub total_quantity {
     my $self = shift;
     $self->items->total_quantity + $self->shipments->total_quantity;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable( inline_constructor => 0 );
 
 1;
 __END__

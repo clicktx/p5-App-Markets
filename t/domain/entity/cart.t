@@ -228,7 +228,18 @@ subtest 'merge' => sub {
     $d->{billing_address} = { hash => '20f551adf8c892c32845022b874e0763ecf68788', };
     $d->{shipments}->[0]->{shipping_address} = { hash => '20f551adf8c892c32845022b874e0763ecf68788' };
     my $stored_cart_data = $stored_cart->to_data;
-    cmp_deeply $stored_cart_data, $d, 'right stored';
+    cmp_deeply $stored_cart_data,
+      {
+        cart_id         => '99999',
+        billing_address => ignore(),
+        items           => [
+            { product_id => 4, quantity => 4, price => 100 },
+            { product_id => 1, quantity => 1, price => 100 },
+            { product_id => 5, quantity => 5, price => 100 },
+        ],
+        shipments => [ { shipping_address => ignore(), items => [] } ],
+      },
+      'right stored';
     my $merged_cart      = $cart->merge($stored_cart);
     my $merged_cart_data = $merged_cart->to_data;
 
@@ -348,9 +359,16 @@ subtest 'set_billing_address' => sub {
         line1        => 'Tokyo',
     );
     my $valid_data = {
-        hash         => ignore(),
-        country_code => 'jp',
-        line1        => 'Tokyo',
+        hash          => ignore(),
+        country_code  => 'jp',
+        city          => q{},
+        line1         => 'Tokyo',
+        line2         => q{},
+        organization  => q{},
+        personal_name => q{},
+        phone         => q{},
+        postal_code   => q{},
+        state         => q{},
     };
 
     my $cart = _create_entity;
@@ -375,9 +393,16 @@ subtest 'set_shipping_address' => sub {
         line1        => 'Shimane',
     );
     my $valid_data = {
-        hash         => ignore(),
-        country_code => 'jp',
-        line1        => 'Shimane',
+        hash          => ignore(),
+        country_code  => 'jp',
+        city          => q{},
+        line1         => 'Shimane',
+        line2         => q{},
+        organization  => q{},
+        personal_name => q{},
+        phone         => q{},
+        postal_code   => q{},
+        state         => q{},
     };
 
     my $cart = _create_entity;

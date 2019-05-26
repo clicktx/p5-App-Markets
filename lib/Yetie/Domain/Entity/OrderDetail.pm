@@ -1,20 +1,26 @@
 package Yetie::Domain::Entity::OrderDetail;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::MooseEntity';
 
-has page_title       => 'Order Details';
-has created_at       => undef;
-has updated_at       => undef;
-has customer         => sub { __PACKAGE__->factory('entity-customer')->construct() };
-has billing_address  => sub { __PACKAGE__->factory('entity-address')->construct() };
-has shipping_address => sub { __PACKAGE__->factory('entity-address')->construct() };
-has items            => sub { __PACKAGE__->factory('list-line_items')->construct() };
+has page_title => ( is => 'ro', default => 'Order Details' );
+has created_at => ( is => 'ro' );
+has updated_at => ( is => 'ro' );
+has customer         => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-customer')->construct() } );
+has billing_address  => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
+has shipping_address => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
+has items            => ( is => 'ro', default => sub { __PACKAGE__->factory('list-line_items')->construct() } );
+has purchased_on     => ( is => 'ro', default => q{} );
+has order_status     => ( is => 'ro', default => q{} );
 
-has purchased_on => '';
-has order_status => '';
+sub bill_to_name { return shift->billing_address->line1 }
 
-sub bill_to_name { shift->billing_address->line1 }
-sub ship_to_name { shift->shipping_address->line1 }
-sub total_amount { shift->items->total_amount }
+sub ship_to_name { return shift->shipping_address->line1 }
+
+sub total_amount { return shift->items->total_amount }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

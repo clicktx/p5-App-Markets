@@ -5,7 +5,7 @@ use_ok 'Yetie::Domain::Entity::Breadcrumb';
 
 subtest 'basic' => sub {
     my $e = Yetie::Domain::Entity::Breadcrumb->new();
-    isa_ok $e, 'Yetie::Domain::Entity';
+    isa_ok $e, 'Yetie::Domain::MooseEntity';
 
     can_ok $e, 'class';
     can_ok $e, 'title';

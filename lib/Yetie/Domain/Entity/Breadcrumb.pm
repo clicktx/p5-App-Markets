@@ -1,10 +1,16 @@
 package Yetie::Domain::Entity::Breadcrumb;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Mojo::URL;
 
-has class => '';
-has title => '';
-has url   => sub { Mojo::URL->new };
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::MooseEntity';
+
+has class => ( is => 'ro', default => '' );
+has title => ( is => 'ro', default => '' );
+has url   => ( is => 'ro', default => sub { Mojo::URL->new } );
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

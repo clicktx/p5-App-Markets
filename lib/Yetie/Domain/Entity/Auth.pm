@@ -1,17 +1,19 @@
 package Yetie::Domain::Entity::Auth;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::MooseEntity';
 
-has _is_verified   => 0;
-has action         => q{};
-has continue_url   => q{};
-has email          => sub { __PACKAGE__->factory('value-email')->construct() };
-has error_message  => q{};
-has expires        => sub { __PACKAGE__->factory('value-expires')->construct() };
-has is_activated   => 0;
-has remote_address => 'unknown';
-has token          => sub { __PACKAGE__->factory('value-token')->construct() };
+has _is_verified   => ( is => 'rw', default => 0 );
+has action         => ( is => 'ro', default => q{} );
+has continue_url   => ( is => 'ro', default => q{} );
+has email          => ( is => 'ro', default => sub { __PACKAGE__->factory('value-email')->construct() } );
+has error_message  => ( is => 'rw', default => q{} );
+has expires        => ( is => 'ro', default => sub { __PACKAGE__->factory('value-expires')->construct() } );
+has is_activated   => ( is => 'ro', default => 0 );
+has remote_address => ( is => 'ro', default => 'unknown' );
+has token          => ( is => 'ro', default => sub { __PACKAGE__->factory('value-token')->construct() } );
 
-sub continue { return shift->{continue_url} // 'rn.home' }
+sub continue { return shift->continue_url || 'rn.home' }
 
 sub is_verified { return shift->_is_verified(@_) }
 
@@ -37,6 +39,9 @@ sub _fails {
     $self->_is_verified(0);
     return $self->error_message(shift);
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

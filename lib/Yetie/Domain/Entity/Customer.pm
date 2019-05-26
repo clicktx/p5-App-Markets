@@ -1,15 +1,21 @@
 package Yetie::Domain::Entity::Customer;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
-has created_at => undef;
-has updated_at => undef;
-has password   => sub { __PACKAGE__->factory('value-password')->construct() };
-has emails     => sub { __PACKAGE__->factory('list-emails')->construct() };
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::MooseEntity';
+
+has created_at => ( is => 'ro' );
+has updated_at => ( is => 'ro' );
+has password   => ( is => 'ro', default => sub { __PACKAGE__->factory('value-password')->construct() } );
+has emails     => ( is => 'ro', default => sub { __PACKAGE__->factory('list-emails')->construct() } );
 
 sub has_password { return shift->password->value ? 1 : 0 }
 
 sub is_member { return shift->id ? 1 : 0 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

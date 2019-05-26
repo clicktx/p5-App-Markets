@@ -28,6 +28,29 @@ subtest 'basic' => sub {
     is $item->is_modified, 1, 'right modified';
 };
 
+subtest 'equals' => sub {
+    my $item1 = Yetie::Domain::Entity::LineItem->new(
+        {
+            product_id => 1,
+        }
+    );
+    my $item2 = Yetie::Domain::Entity::LineItem->new(
+        {
+            product_id => 1,
+        }
+    );
+    my $item3 = Yetie::Domain::Entity::LineItem->new(
+        {
+            product_id => 2,
+        }
+    );
+
+    is $item1->equals($item2), 1, 'right equals';
+    is $item1->equals($item3), 0, 'right not equals';
+    is $item2->equals($item1), 1, 'right equals';
+    is $item2->equals($item3), 0, 'right not equals';
+};
+
 subtest 'subtotal' => sub {
     my $item = Yetie::Domain::Entity::LineItem->new(
         {

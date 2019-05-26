@@ -1,15 +1,16 @@
 package Yetie::Domain::Entity::LineItem;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::MooseEntity';
 
-has hash => sub { shift->hash_code };
-has product_id    => '';
-has product_title => '';
-has price         => 0;
-has quantity      => 0;
+has product_id    => ( is => 'rw', default => q{} );
+has product_title => ( is => 'ro', default => q{} );
+has price         => ( is => 'ro', default => 0 );
+has quantity      => ( is => 'rw', default => 0 );
 
-sub equals { shift->hash eq shift->hash ? 1 : 0 }
+sub equals { return $_[0]->product_hash_code eq $_[1]->product_hash_code ? 1 : 0 }
 
-sub hash_code {
+sub product_hash_code {
     my $self = shift;
 
     my $str = '';
@@ -26,13 +27,8 @@ sub subtotal {
     return $subtotal;
 }
 
-sub to_data {
-    my $self = shift;
-
-    my $data = $self->SUPER::to_data;
-    delete $data->{hash};
-    return $data;
-}
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
@@ -49,10 +45,6 @@ Yetie::Domain::Entity::LineItem
 
 L<Yetie::Domain::Entity::LineItem> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
-
-=head2 C<hash>
-
-See L</hash_code>
 
 =head2 C<product_id>
 
@@ -71,12 +63,12 @@ the following new ones.
 
     my $bool = $item->equals($other_item);
 
-=head2 C<hash_code>
+=head2 C<product_hash_code>
 
-    my $hash_code = $item->hash_code;
+    my $product_hash_code = $item->product_hash_code;
 
 Return SHA1 string.
-This method gets a string identifying items.
+This method gets a string identifying product item.
 
 =head2 C<subtotal>
 

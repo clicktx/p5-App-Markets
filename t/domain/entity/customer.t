@@ -7,9 +7,9 @@ use_ok $pkg;
 
 subtest 'basic' => sub {
     my $customer = $pkg->new( { id => 1 } );
-    isa_ok $customer, 'Yetie::Domain::Entity';
+    isa_ok $customer, 'Yetie::Domain::MooseEntity';
 
-    is $customer->id,           1;
+    is $customer->id, 1, 'right id';
     isa_ok $customer->password, 'Yetie::Domain::Value::Password';
     isa_ok $customer->emails,   'Yetie::Domain::List::Emails';
 };
