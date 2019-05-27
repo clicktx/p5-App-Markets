@@ -7,7 +7,7 @@ my $pkg = 'Yetie::Domain::Entity::Staff';
 
 subtest 'basic' => sub {
     my $staff = $pkg->new( id => 1 );
-    isa_ok $staff, 'Yetie::Domain::Entity';
+    isa_ok $staff, 'Yetie::Domain::MooseEntity';
 
     is $staff->id, 1, 'right staff ID';
     isa_ok $staff->password, 'Yetie::Domain::Value::Password';

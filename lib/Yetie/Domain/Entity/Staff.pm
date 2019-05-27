@@ -1,13 +1,20 @@
 package Yetie::Domain::Entity::Staff;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
-use Crypt::ScryptKDF qw(scrypt_hash_verify);
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::MooseEntity';
 
-has login_id   => undef;
-has created_at => undef;
-has updated_at => undef;
-has password   => sub { __PACKAGE__->factory('value-password')->construct() };
+has login_id   => ( is => 'ro' );
+has created_at => ( is => 'ro' );
+has updated_at => ( is => 'ro' );
+has password   => (
+    is      => 'ro',
+    default => sub { __PACKAGE__->factory('value-password')->construct() }
+);
 
-sub is_staff { shift->id ? 1 : 0 }
+sub is_staff { return shift->id ? 1 : 0 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
@@ -55,12 +62,6 @@ the following new ones.
     my $bool = $staff->is_staff;
 
 Return boolean value.
-
-=head2 C<verify_password>
-
-    my $bool = $staff->verify_password($password);
-
-Returns true if authenticated.
 
 =head1 AUTHOR
 
