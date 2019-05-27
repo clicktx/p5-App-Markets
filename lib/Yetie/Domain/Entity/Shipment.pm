@@ -1,24 +1,19 @@
 package Yetie::Domain::Entity::Shipment;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
-use Data::Clone qw/data_clone/;
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::MooseEntity';
 
-has items            => sub { __PACKAGE__->factory('list-line_items')->construct() };
-has shipping_address => sub { __PACKAGE__->factory('entity-address')->construct() };
+has items            => ( is => 'ro', default => sub { __PACKAGE__->factory('list-line_items')->construct() } );
+has shipping_address => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
 
-sub clone {
-    my $self  = shift;
-    my $clone = data_clone($self);
-    $clone->items( $self->items->map( sub { $_->clone } ) )
-      if $self->items->can('map');
-    $clone->_is_modified(0);
-    return $clone;
-}
-
-sub item_count { shift->items->count }
+sub item_count { return shift->items->count }
 
 sub subtotal {
-    shift->items->reduce( sub { $a + $b->subtotal }, 0 );
+    return shift->items->reduce( sub { $a + $b->subtotal }, 0 );
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
@@ -48,8 +43,6 @@ Return L<Yetie::Domain::Collection> object.
 
 L<Yetie::Domain::Entity::Shipment> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
-
-=head2 C<clone>
 
 =head2 C<item_count>
 
