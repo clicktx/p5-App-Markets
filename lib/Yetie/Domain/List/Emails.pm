@@ -1,5 +1,7 @@
 package Yetie::Domain::List::Emails;
-use Yetie::Domain::Base 'Yetie::Domain::List';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::List';
 
 sub find {
     my ( $self, $str ) = @_;
@@ -10,6 +12,9 @@ sub primary {
     my $self = shift;
     return $self->first( sub { shift->is_primary } ) || $self->first;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
