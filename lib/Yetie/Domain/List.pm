@@ -1,38 +1,48 @@
 package Yetie::Domain::List;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Yetie::Domain::Collection;
 
-has list => sub { Yetie::Domain::Collection->new };
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::MooseEntity';
+
+has list => (
+    is      => 'rw',
+    isa     => 'Yetie::Domain::Collection',
+    default => sub { Yetie::Domain::Collection->new }
+);
 
 sub append {
     my $self = shift;
     my $new  = $self->list->append(@_);
-    $self->list($new);
+    return $self->list($new);
 }
 
-sub clear { shift->list( Yetie::Domain::Collection->new ) }
+sub clear { return shift->list( Yetie::Domain::Collection->new ) }
 
-sub count { shift->list->size }
+sub count { return shift->list->size }
 
 sub each {
     my ( $self, $cb ) = @_;
-    return @{ $self->list } unless $cb;
+    return @{ $self->list } if !$cb;
 
     $self->list->each($cb);
     return $self;
 }
 
-sub first { shift->list->first(@_) }
+sub first { return shift->list->first(@_) }
 
-sub get { shift->list->get(shift) }
+sub get { return shift->list->get(shift) }
 
-sub get_by_id { shift->list->get_by_id(shift) }
+sub get_by_id { return shift->list->get_by_id(shift) }
 
-sub last { shift->list->last }
+sub last { return shift->list->last }
 
-sub to_array { shift->list->to_array }
+sub to_array { return shift->list->to_array }
 
-sub to_data { shift->list->to_data }
+sub to_data { return shift->list->to_data }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
