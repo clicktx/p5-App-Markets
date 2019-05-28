@@ -24,13 +24,13 @@ my $test_data = {
 };
 
 sub _create_entity {
-    Yetie::Factory->new('entity-page-product')->construct($test_data);
+    Yetie::Factory->new('entity-product')->construct($test_data);
 }
 
-use_ok 'Yetie::Domain::Entity::Page::Product';
+use_ok 'Yetie::Domain::Entity::Product';
 
 subtest 'basic' => sub {
-    my $e = Yetie::Domain::Entity::Page::Product->new();
+    my $e = Yetie::Domain::Entity::Product->new();
     isa_ok $e, 'Yetie::Domain::Entity::Page';
 
     can_ok $e, 'title';

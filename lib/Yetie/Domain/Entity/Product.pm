@@ -1,9 +1,9 @@
-package Yetie::Domain::Entity::Page::Product;
+package Yetie::Domain::Entity::Product;
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity::Page';
 
-has title       => ( is => 'rw', default => '' );
+has title       => ( is => 'ro', default => '' );
 has description => ( is => 'ro', default => '' );
 has price       => ( is => 'ro', default => 0 );
 has created_at  => ( is => 'ro' );
@@ -22,7 +22,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Page::Product
+Yetie::Domain::Entity::Product
 
 =head1 SYNOPSIS
 
@@ -30,7 +30,7 @@ Yetie::Domain::Entity::Page::Product
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Page::Product> inherits all attributes from L<Yetie::Domain::Entity::Page> and implements
+L<Yetie::Domain::Entity::Product> inherits all attributes from L<Yetie::Domain::Entity::Page> and implements
 the following new ones.
 
 =head2 C<title>
@@ -53,7 +53,7 @@ Return L<DateTime> object or C<undef>.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Page::Product> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
+L<Yetie::Domain::Entity::Product> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
 the following new ones.
 
 =head1 AUTHOR

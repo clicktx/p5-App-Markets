@@ -1,4 +1,4 @@
-package Yetie::Factory::Entity::Page::Product;
+package Yetie::Factory::Entity::Product;
 use Mojo::Base 'Yetie::Factory';
 
 sub cook {
@@ -16,25 +16,25 @@ __END__
 
 =head1 NAME
 
-Yetie::Factory::Entity::Page::Product
+Yetie::Factory::Entity::Product
 
 =head1 SYNOPSIS
 
-    my $entity = Yetie::Factory::Entity::Page::Product->new( %args )->construct();
+    my $entity = Yetie::Factory::Entity::Product->new( %args )->construct();
 
     # In controller
-    my $entity = $c->factory('entity-page-product')->construct(%args);
+    my $entity = $c->factory('entity-product')->construct(%args);
 
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
-L<Yetie::Factory::Entity::Page::Product> inherits all attributes from L<Yetie::Factory> and implements
+L<Yetie::Factory::Entity::Product> inherits all attributes from L<Yetie::Factory> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Factory::Entity::Page::Product> inherits all methods from L<Yetie::Factory> and implements
+L<Yetie::Factory::Entity::Product> inherits all methods from L<Yetie::Factory> and implements
 the following new ones.
 
 =head1 AUTHOR
