@@ -7,7 +7,8 @@ subtest 'basic' => sub {
     {
 
         package Yetie::Domain::List::Items;
-        use Yetie::Domain::Base 'Yetie::Domain::List';
+        use Moose;
+        extends 'Yetie::Domain::List';
 
         package Yetie::Domain::Set::Pref;
         use Moose;
