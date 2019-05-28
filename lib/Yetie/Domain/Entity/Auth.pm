@@ -3,15 +3,59 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-has _is_verified   => ( is => 'rw', default => 0 );
-has action         => ( is => 'ro', default => q{} );
-has continue_url   => ( is => 'ro', default => q{} );
-has email          => ( is => 'ro', default => sub { __PACKAGE__->factory('value-email')->construct() } );
-has error_message  => ( is => 'rw', default => q{} );
-has expires        => ( is => 'ro', default => sub { __PACKAGE__->factory('value-expires')->construct() } );
-has is_activated   => ( is => 'ro', default => 0 );
-has remote_address => ( is => 'ro', default => 'unknown' );
-has token          => ( is => 'ro', default => sub { __PACKAGE__->factory('value-token')->construct() } );
+has _is_verified => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0
+);
+
+has action => (
+    is      => 'ro',
+    isa     => 'Str',
+    default => q{}
+);
+
+has continue_url => (
+    is      => 'ro',
+    isa     => 'Str | Undef',
+    default => q{}
+);
+
+has email => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Value::Email',
+    default => sub { __PACKAGE__->factory('value-email')->construct() }
+);
+
+has error_message => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => q{}
+);
+
+has expires => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Value::Expires',
+    default => sub { __PACKAGE__->factory('value-expires')->construct() }
+);
+
+has is_activated => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0
+);
+
+has remote_address => (
+    is      => 'ro',
+    isa     => 'Str',
+    default => 'unknown'
+);
+
+has token => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Value::Token',
+    default => sub { __PACKAGE__->factory('value-token')->construct() }
+);
 
 sub continue { return shift->continue_url || 'rn.home' }
 
