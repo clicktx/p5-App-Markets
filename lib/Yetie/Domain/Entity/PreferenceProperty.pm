@@ -3,7 +3,8 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::MooseEntity';
 
-has [qw/name value default_value title summary position group_id/] => ( is => 'ro' );
+has [qw/name default_value title summary position group_id/] => ( is => 'ro' );
+has value => ( is => 'rw' );
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

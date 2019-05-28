@@ -3,8 +3,19 @@ use Test::More;
 
 use_ok 'Yetie::Domain::Entity::PreferenceProperty';
 
+my $data = {
+    id            => 1,
+    name          => 'pref1',
+    value         => '',
+    default_value => '11',
+    title         => 'pref title',
+    summary       => 'pref summary',
+    position      => 500,
+    group_id      => 1,
+};
+
 subtest 'default attributes' => sub {
-    my $o = Yetie::Domain::Entity::PreferenceProperty->new();
+    my $o = Yetie::Domain::Entity::PreferenceProperty->new($data);
 
     isa_ok $o, 'Yetie::Domain::MooseEntity', 'right customer';
 
