@@ -6,7 +6,7 @@ use_ok 'Yetie::Domain::Entity::Page';
 
 subtest 'basic' => sub {
     my $e = Yetie::Domain::Entity::Page->new();
-    isa_ok $e, 'Yetie::Domain::MooseEntity';
+    isa_ok $e, 'Yetie::Domain::Entity';
 
     can_ok $e, 'meta_title';
     can_ok $e, 'meta_description';

@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::Test;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has [qw(email name address favorite_color luky_number)] => ( is => 'rw' );
 has billing => ( is => 'rw', default => sub { __PACKAGE__->factory('entity-billing')->construct() } );

@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::PreferenceProperty;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has [qw/name default_value title summary position group_id/] => ( is => 'ro' );
 has value => ( is => 'rw' );

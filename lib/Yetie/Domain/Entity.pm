@@ -1,4 +1,4 @@
-package Yetie::Domain::MooseEntity;
+package Yetie::Domain::Entity;
 use Yetie::Factory;
 use Yetie::Domain::Collection qw();
 use Yetie::Domain::IxHash qw();

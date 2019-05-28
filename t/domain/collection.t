@@ -39,7 +39,7 @@ subtest 'get' => sub {
 
     package t::domain::entity;
     use Moose;
-    extends 'Yetie::Domain::MooseEntity';
+    extends 'Yetie::Domain::Entity';
     has hoge => ( is => 'ro' );
 }
 my @data = ( { id => 1, hoge => 1 }, { id => 2, hoge => 2 }, { id => 3, hoge => 3 }, );

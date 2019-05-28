@@ -3,7 +3,7 @@ use Mojo::URL;
 
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has class => ( is => 'ro', default => '' );
 has title => ( is => 'ro', default => '' );

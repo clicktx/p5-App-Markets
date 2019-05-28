@@ -8,7 +8,7 @@ use_ok $pkg;
 
 subtest basic => sub {
     my $e = $pkg->new();
-    isa_ok $e, 'Yetie::Domain::MooseEntity';
+    isa_ok $e, 'Yetie::Domain::Entity';
 };
 
 subtest type => sub {

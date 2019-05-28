@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::OrderDetail;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has page_title => ( is => 'ro', default => 'Order Details' );
 has created_at => ( is => 'ro' );

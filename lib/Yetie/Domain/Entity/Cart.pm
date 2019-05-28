@@ -4,7 +4,7 @@ use Yetie::Util;
 
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has id => (
     is      => 'ro',

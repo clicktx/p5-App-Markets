@@ -4,7 +4,7 @@ use Data::Page;
 
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has meta_title => (
     is      => 'ro',

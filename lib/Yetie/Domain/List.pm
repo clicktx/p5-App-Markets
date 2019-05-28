@@ -3,7 +3,7 @@ use Yetie::Domain::Collection;
 
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has list => (
     is      => 'rw',

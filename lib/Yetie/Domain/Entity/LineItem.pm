@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::LineItem;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has _product_hash_code => (
     is      => 'ro',

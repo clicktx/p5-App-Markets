@@ -7,20 +7,20 @@ use Yetie::Domain::IxHash qw/ixhash/;
 use Yetie::Domain::Value;
 use Mojo::URL;
 
-my $pkg = 'Yetie::Domain::MooseEntity';
+my $pkg = 'Yetie::Domain::Entity';
 use_ok $pkg;
 
 {
 
     package t::entity::foo;
     use Moose;
-    extends 'Yetie::Domain::MooseEntity';
+    extends 'Yetie::Domain::Entity';
 
     has [qw(hoge fuga)] => ( is => 'rw' );
 
     package t::entity::bar;
     use Moose;
-    extends 'Yetie::Domain::MooseEntity';
+    extends 'Yetie::Domain::Entity';
 
     has [qw(hoge fuga)] => ( is => 'rw' );
 }
@@ -125,7 +125,7 @@ subtest 'to_data method' => sub {
 
         package t::entity::to_data;
         use Moose;
-        extends 'Yetie::Domain::MooseEntity';
+        extends 'Yetie::Domain::Entity';
 
         has [qw(a b h1 h2 h3 url v)] => ( is => 'rw' );
     }
@@ -163,7 +163,7 @@ subtest 'is_modified' => sub {
 
         package t::entity::modified;
         use Moose;
-        extends 'Yetie::Domain::MooseEntity';
+        extends 'Yetie::Domain::Entity';
 
         has [qw(a b c d e f g x y z)] => ( is => 'rw' );
     }

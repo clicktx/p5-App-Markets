@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::CategoryTree;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has level    => ( is => 'ro', default => 0 );
 has root_id  => ( is => 'ro', default => 0 );

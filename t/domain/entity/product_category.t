@@ -6,7 +6,7 @@ use_ok 'Yetie::Domain::Entity::ProductCategory';
 subtest 'default attributes' => sub {
     my $o = Yetie::Domain::Entity::ProductCategory->new();
 
-    isa_ok $o, 'Yetie::Domain::MooseEntity', 'right customer';
+    isa_ok $o, 'Yetie::Domain::Entity', 'right customer';
 
     can_ok $o, 'id';
     can_ok $o, 'category_id';

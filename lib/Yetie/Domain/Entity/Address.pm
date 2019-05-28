@@ -3,7 +3,7 @@ use Mojo::Util qw(encode);
 
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 my $attrs = [qw(country_code line1 line2 state city postal_code personal_name organization phone)];
 has $attrs => ( is => 'rw', default => q{} );

@@ -3,7 +3,7 @@ use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has created_at => ( is => 'ro' );
 has updated_at => ( is => 'ro' );

@@ -1,7 +1,7 @@
 package Yetie::Domain::Set;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has hash_set => (
     is      => 'rw',

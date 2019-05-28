@@ -3,7 +3,7 @@ use Carp qw(croak);
 
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has [qw(customer_id staff_id)] => ( is => 'ro' );
 has action         => ( is => 'ro' );

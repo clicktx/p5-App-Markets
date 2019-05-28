@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::Staff;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has login_id   => ( is => 'ro' );
 has created_at => ( is => 'ro' );

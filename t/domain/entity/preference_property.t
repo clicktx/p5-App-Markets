@@ -17,7 +17,7 @@ my $data = {
 subtest 'default attributes' => sub {
     my $o = Yetie::Domain::Entity::PreferenceProperty->new($data);
 
-    isa_ok $o, 'Yetie::Domain::MooseEntity', 'right customer';
+    isa_ok $o, 'Yetie::Domain::Entity', 'right customer';
 
     can_ok $o, 'name';
     can_ok $o, 'value';

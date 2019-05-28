@@ -11,7 +11,7 @@ sub construct { Yetie::Factory->new('entity-shipment')->construct(@_) }
 
 subtest 'basic' => sub {
     my $shipment = construct( id => 1 );
-    isa_ok $shipment, 'Yetie::Domain::MooseEntity';
+    isa_ok $shipment, 'Yetie::Domain::Entity';
 
     ok $shipment->id;
 

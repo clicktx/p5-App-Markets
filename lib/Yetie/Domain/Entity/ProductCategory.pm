@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::ProductCategory;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has id => ( is => 'ro', default => sub { shift->category_id } );
 has category_id => ( is => 'ro', default => 0 );

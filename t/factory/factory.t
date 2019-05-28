@@ -82,7 +82,7 @@ subtest 'has not cook' => sub {
 
         package Yetie::Domain::Entity::Hoge;
         use Moose;
-        extends 'Yetie::Domain::MooseEntity';
+        extends 'Yetie::Domain::Entity';
         has [qw(hoge fuga)] => ( is => 'rw' );
 
         package Yetie::Domain::Value::Fuga;
@@ -120,7 +120,7 @@ subtest 'has cook' => sub {
 
         package Yetie::Domain::Entity::Foo;
         use Moose;
-        extends 'Yetie::Domain::MooseEntity';
+        extends 'Yetie::Domain::Entity';
         has [qw(a b f h)] => ( is => 'rw' );
     }
 
@@ -137,7 +137,7 @@ subtest 'no factory' => sub {
 
         package Yetie::Domain::Entity::Nofactory;
         use Moose;
-        extends 'Yetie::Domain::MooseEntity';
+        extends 'Yetie::Domain::Entity';
         sub text { 'no factory' }
     }
 
@@ -160,7 +160,7 @@ subtest 'factory method using' => sub {
 
         package Yetie::Domain::Entity::Bar;
         use Moose;
-        extends 'Yetie::Domain::MooseEntity';
+        extends 'Yetie::Domain::Entity';
         has hoge => ( is => 'rw' );
     }
 
@@ -179,7 +179,7 @@ subtest 'aggregate method' => sub {
 
         package Yetie::Domain::Entity::Agg;
         use Moose;
-        extends 'Yetie::Domain::MooseEntity';
+        extends 'Yetie::Domain::Entity';
         has [qw(hoge fuga foos bars)] => ( is => 'rw' );
     }
 
@@ -194,7 +194,7 @@ subtest 'aggregate method' => sub {
     $f->aggregate_ixhash( 'bars', 'entity-bar', [ { a => {} } ] );
 
     my $entity = $f->construct();
-    isa_ok $entity->hoge, 'Yetie::Domain::MooseEntity';
+    isa_ok $entity->hoge, 'Yetie::Domain::Entity';
     is_deeply $entity->hoge->to_data, {}, 'right aggregate entity object';
 
     isa_ok $entity->fuga, 'Yetie::Domain::Value';

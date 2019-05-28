@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::Auth;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseEntity';
+extends 'Yetie::Domain::Entity';
 
 has _is_verified   => ( is => 'rw', default => 0 );
 has action         => ( is => 'ro', default => q{} );
