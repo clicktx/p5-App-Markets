@@ -41,7 +41,7 @@ subtest 'basic' => sub {
 
 subtest 'hash_code' => sub {
     my $e = $pkg->new( id => 1 );
-    is $e->hash_code, '6fb2e88e2a0a6400b34ba5a0e8586f099203d1b2', 'right hash code';
+    is $e->hash_code, '7a931690f7f4b4d8a9bde975237221a4a8db123e', 'right hash code';
     is $e->hash_code(2), sha1_sum(2), 'right hash code';
 };
 
