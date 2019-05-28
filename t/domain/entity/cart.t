@@ -6,9 +6,9 @@ use Yetie::Factory;
 
 my %example_data = (
     items => [
-        { product_id => 1, quantity => 1, price => 100 },
-        { product_id => 2, quantity => 2, price => 100 },
-        { product_id => 3, quantity => 3, price => 100 },
+        { product_id => 1, product_title => 'a', quantity => 1, price => 100 },
+        { product_id => 2, product_title => 'b', quantity => 2, price => 100 },
+        { product_id => 3, product_title => 'c', quantity => 3, price => 100 },
     ],
     shipments => [
         {
@@ -23,7 +23,7 @@ my %example_data = (
                 organization  => '',
                 phone         => '',
             },
-            items => [ { product_id => 4, quantity => 4, price => 100 } ]
+            items => [ { product_id => 4, product_title => 'd', quantity => 4, price => 100 } ]
         },
         {
             shipping_address => {
@@ -38,9 +38,9 @@ my %example_data = (
                 phone         => '',
             },
             items => [
-                { product_id => 4, quantity => 4, price => 100 },
-                { product_id => 5, quantity => 5, price => 100 },
-                { product_id => 6, quantity => 6, price => 100 },
+                { product_id => 4, product_title => 'd', quantity => 4, price => 100 },
+                { product_id => 5, product_title => 'e', quantity => 5, price => 100 },
+                { product_id => 6, product_title => 'f', quantity => 6, price => 100 },
             ]
         },
     ],
@@ -101,8 +101,8 @@ subtest 'methods' => sub {
     $d->{shipments}->[1]->{shipping_address}->{hash} = 'e49e00abbdbcaa37c27e8af5ca11fe33c24703ce';
     cmp_deeply $cart_data, { cart_id => ignore(), %{$d} }, 'right data structure';
     is $cart->id,               '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
-    is $cart->total_item_count, 7,                                          'right total item count';
-    is $cart->total_quantity,   25,                                         'right total quantity count';
+    is $cart->total_item_count, '7',                                        'right total item count';
+    is $cart->total_quantity,   '25',                                       'right total quantity count';
 
     my $cart2 = Yetie::Factory->new('entity-cart')->construct(
         {
@@ -118,25 +118,24 @@ subtest 'methods' => sub {
 subtest 'add_item' => sub {
     my $cart = _create_entity;
     $cart->add_item( Yetie::Domain::Entity::LineItem->new( product_id => 11 ) );
-    cmp_deeply $cart->items->last->to_data, { product_id => 11 }, 'right item';
+    is $cart->items->last->product_id, '11', 'right last item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
     $cart->add_item( Yetie::Domain::Entity::LineItem->new( product_id => 1, quantity => 1, price => 100 ) );
-    cmp_deeply $cart->items->first->to_data, { product_id => 1, quantity => 2, price => 100 }, 'right item';
+    is $cart->items->first->quantity, '2', 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
 };
 
 subtest 'add_shipping_item' => sub {
     my $cart = _create_entity;
     $cart->add_shipping_item( 0, Yetie::Domain::Entity::LineItem->new( product_id => 11 ) );
-    cmp_deeply $cart->shipments->first->items->last->to_data, { product_id => 11 }, 'right shipping_item';
+    is $cart->shipments->first->items->last->product_id, '11', 'right add shipping_item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
     $cart->add_shipping_item( 0, Yetie::Domain::Entity::LineItem->new( product_id => 4, quantity => 4, price => 100 ) );
-    cmp_deeply $cart->shipments->first->items->first->to_data,
-      { product_id => 4, quantity => 8, price => 100 }, 'right sum quantity';
+    is $cart->shipments->first->items->first->quantity, '8', 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
 };
 
@@ -233,9 +232,9 @@ subtest 'merge' => sub {
         cart_id         => '99999',
         billing_address => ignore(),
         items           => [
-            { product_id => 4, quantity => 4, price => 100 },
-            { product_id => 1, quantity => 1, price => 100 },
-            { product_id => 5, quantity => 5, price => 100 },
+            { product_id => 4, quantity => 4, price => 100, product_title => ignore() },
+            { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
+            { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
         ],
         shipments => [ { shipping_address => ignore(), items => [] } ],
       },
@@ -248,11 +247,11 @@ subtest 'merge' => sub {
         cart_id         => '99999',
         billing_address => ignore(),
         items           => [
-            { product_id => 4, quantity => 4, price => 100 },
-            { product_id => 1, quantity => 2, price => 100 },
-            { product_id => 5, quantity => 5, price => 100 },
-            { product_id => 2, quantity => 2, price => 100 },
-            { product_id => 3, quantity => 3, price => 100 },
+            { product_id => 4, quantity => 4, price => 100, product_title => ignore() },
+            { product_id => 1, quantity => 2, price => 100, product_title => ignore() },
+            { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
+            { product_id => 2, quantity => 2, price => 100, product_title => ignore() },
+            { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
         ],
         shipments => [ { shipping_address => ignore(), items => [] } ],
       },
@@ -263,26 +262,29 @@ subtest 'merge' => sub {
 subtest 'remove_item' => sub {
     my $cart      = _create_entity;
     my $item      = Yetie::Domain::Entity::LineItem->new( product_id => 2, quantity => 1 );
-    my $hash_code = $item->hash;
+    my $hash_code = $item->product_hash_code;
 
     $cart->remove_item($hash_code);
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{items},
-      [ { product_id => 1, quantity => 1, price => 100 }, { product_id => 3, quantity => 3, price => 100 }, ],
+      [
+        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
+        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
+      ],
       'right remove item';
 
     # Unremove. not found item.
     $cart      = _create_entity;
     $item      = Yetie::Domain::Entity::LineItem->new( product_id => 123, quantity => 1 );
-    $hash_code = $item->hash;
+    $hash_code = $item->product_hash_code;
 
     $cart->remove_item($hash_code);
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{items},
       [
-        { product_id => 1, quantity => 1, price => 100 },
-        { product_id => 2, quantity => 2, price => 100 },
-        { product_id => 3, quantity => 3, price => 100 },
+        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
+        { product_id => 2, quantity => 2, price => 100, product_title => ignore() },
+        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
       ],
       'right not removed';
 };
@@ -290,26 +292,29 @@ subtest 'remove_item' => sub {
 subtest 'remove_shipping_item' => sub {
     my $cart      = _create_entity;
     my $item      = Yetie::Domain::Entity::LineItem->new( product_id => 4 );
-    my $hash_code = $item->hash;
+    my $hash_code = $item->product_hash_code;
 
     $cart->remove_shipping_item( 1, $hash_code );
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
-      [ { product_id => 5, quantity => 5, price => 100 }, { product_id => 6, quantity => 6, price => 100 }, ],
+      [
+        { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
+        { product_id => 6, quantity => 6, price => 100, product_title => ignore() },
+      ],
       'right remove shipping item';
 
     # Unremove. not found item.
     $cart      = _create_entity;
     $item      = Yetie::Domain::Entity::LineItem->new( product_id => 123 );
-    $hash_code = $item->hash;
+    $hash_code = $item->product_hash_code;
 
     $cart->remove_shipping_item( 1, $hash_code );
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
-        { product_id => 4, quantity => 4, price => 100 },
-        { product_id => 5, quantity => 5, price => 100 },
-        { product_id => 6, quantity => 6, price => 100 },
+        { product_id => 4, quantity => 4, price => 100, product_title => ignore() },
+        { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
+        { product_id => 6, quantity => 6, price => 100, product_title => ignore() },
       ],
       'right not removed';
 };
@@ -319,11 +324,11 @@ subtest 'remove_shipping_item' => sub {
 subtest 'revert' => sub {
     my $cart = _create_entity;
     ok $cart->revert, 'right cart revert';
-    is_deeply $cart->items->to_data,
+    cmp_deeply $cart->items->to_data,
       [
-        { product_id => 1, quantity => 1, price => 100 },
-        { product_id => 2, quantity => 2, price => 100 },
-        { product_id => 3, quantity => 3, price => 100 },
+        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
+        { product_id => 2, quantity => 2, price => 100, product_title => ignore() },
+        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
       ],
       'right items';
 
@@ -408,25 +413,25 @@ subtest 'set_shipping_address' => sub {
     my $cart = _create_entity;
     dies_ok { $cart->set_shipping_address() } 'right not arguments';
 
-    my $obj = $cart->factory('entity-address')->construct(%address);
-    my $i   = $cart->set_shipping_address($obj);
+    my $obj           = $cart->factory('entity-address')->construct(%address);
+    my $shipment_addr = $cart->shipments->get(1)->shipping_address->to_data;
+
+    $cart->set_shipping_address($obj);
     cmp_deeply $cart->shipments->first->shipping_address->to_data, $valid_data, 'right single update';
-    is $i, 1, 'right update quantity';
+    cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $shipment_addr, 'right not update';
     is $cart->is_modified, 1, 'right modified';
 
-    $cart = _create_entity;
-    my $shipment_addr = $cart->shipments->get(0)->shipping_address->to_data;
-    $i = $cart->set_shipping_address( 1 => $obj );
+    $cart          = _create_entity;
+    $shipment_addr = $cart->shipments->get(0)->shipping_address->to_data;
+    $cart->set_shipping_address( 1 => $obj );
     cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $shipment_addr, 'right not update';
     cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $valid_data,    'right specify update';
-    is $i, 1, 'right update quantity';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
-    $i = $cart->set_shipping_address( [ $obj, $obj ] );
+    $cart->set_shipping_address( [ $obj, $obj ] );
     cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $valid_data, 'right multi update';
     cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $valid_data, 'right multi update';
-    is $i, 2, 'right update quantity';
     is $cart->is_modified, 1, 'right modified';
 
     # first set(create and set)

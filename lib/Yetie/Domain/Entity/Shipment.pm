@@ -3,8 +3,16 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::MooseEntity';
 
-has items            => ( is => 'ro', default => sub { __PACKAGE__->factory('list-line_items')->construct() } );
-has shipping_address => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
+has items => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::List::LineItems',
+    default => sub { __PACKAGE__->factory('list-line_items')->construct() }
+);
+has shipping_address => (
+    is      => 'rw',
+    isa     => 'Yetie::Domain::Entity::Address',
+    default => sub { __PACKAGE__->factory('entity-address')->construct() }
+);
 
 sub item_count { return shift->items->count }
 
@@ -46,7 +54,11 @@ the following new ones.
 
 =head2 C<item_count>
 
+    my $count = $shipment->item_count;
+
 =head2 C<subtotal>
+
+    my $subtotal = $shipment->subtotal;
 
 =head1 AUTHOR
 
