@@ -14,7 +14,7 @@ has meta_title => (
 has meta_description => ( is => 'ro', default => q{} );
 has meta_keywords    => ( is => 'ro', default => q{} );
 has meta_robots      => ( is => 'ro', default => q{} );
-has page_title       => ( is => 'ro', default => q{} );
+has page_title       => ( is => 'rw', default => q{} );
 has breadcrumbs      => (
     is      => 'ro',
     lazy    => 1,

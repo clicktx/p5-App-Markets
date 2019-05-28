@@ -3,7 +3,7 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity::Page';
 
-has title       => ( is => 'ro', default => '' );
+has title       => ( is => 'rw', default => '' );
 has description => ( is => 'ro', default => '' );
 has price       => ( is => 'ro', default => 0 );
 has created_at  => ( is => 'ro' );
