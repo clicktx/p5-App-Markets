@@ -5,7 +5,11 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::MooseBase';
 
-has _hash_sum => ( is => 'ro', lazy_build => 1 );
+has _hash_sum => (
+    is         => 'ro',
+    isa        => 'Str',
+    lazy_build => 1,
+);
 sub _build__hash_sum { return shift->hash_code }
 
 has value => (
