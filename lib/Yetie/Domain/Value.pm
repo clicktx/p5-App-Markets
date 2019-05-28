@@ -3,7 +3,7 @@ use Data::Dumper;
 
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseBase';
+extends 'Yetie::Domain::Base';
 
 has _hash_sum => (
     is         => 'ro',

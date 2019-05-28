@@ -9,7 +9,7 @@ use Data::Dumper;
 
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::MooseBase';
+extends 'Yetie::Domain::Base';
 
 my @not_dump_attrs_defautls = (qw/created_at updated_at/);
 

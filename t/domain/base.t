@@ -6,12 +6,12 @@ use Test::Exception;
 
     package t::domain::base;
     use Moose;
-    extends 'Yetie::Domain::MooseBase';
+    extends 'Yetie::Domain::Base';
 
     has [qw{foo bar _foo _bar}] => ( is => 'rw' );
 }
 
-my $pkg      = 'Yetie::Domain::MooseBase';
+my $pkg      = 'Yetie::Domain::Base';
 my $test_pkg = 't::domain::base';
 use_ok $pkg;
 use_ok $test_pkg;

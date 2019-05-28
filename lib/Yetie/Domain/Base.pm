@@ -1,4 +1,4 @@
-package Yetie::Domain::MooseBase;
+package Yetie::Domain::Base;
 use Moose;
 use namespace::autoclean;
 use MooseX::StrictConstructor;
