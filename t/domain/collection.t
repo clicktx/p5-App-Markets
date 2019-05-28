@@ -2,12 +2,8 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
 
-use_ok 'Yetie::Domain::Entity';
-
 my $pkg = 'Yetie::Domain::Collection';
 use_ok $pkg;
-
-my @data = ( { id => 1, hoge => 1 }, { id => 2, hoge => 2 }, { id => 3, hoge => 3 }, );
 
 subtest 'basic' => sub {
     isa_ok $pkg->new(), 'Mojo::Collection';
@@ -39,10 +35,18 @@ subtest 'get' => sub {
     is $c->get(''), undef, 'right has not element';
 };
 
+{
+
+    package t::domain::entity;
+    use Moose;
+    extends 'Yetie::Domain::MooseEntity';
+    has hoge => ( is => 'ro' );
+}
+my @data = ( { id => 1, hoge => 1 }, { id => 2, hoge => 2 }, { id => 3, hoge => 3 }, );
+
 subtest 'get_by_id' => sub {
     my @entities;
-    Yetie::Domain::Entity->attr( [qw(hoge)] );
-    push @entities, Yetie::Domain::Entity->new($_) for @data;
+    push @entities, t::domain::entity->new($_) for @data;
 
     my $c = $pkg->new(@entities);
     is $c->get_by_id(2)->{hoge}, 2, 'right found entity';
@@ -55,8 +59,7 @@ subtest 'get_by_id' => sub {
 
 subtest 'has_element' => sub {
     my @entities;
-    Yetie::Domain::Entity->attr( [qw(hoge)] );
-    push @entities, Yetie::Domain::Entity->new($_) for @data;
+    push @entities, t::domain::entity->new($_) for @data;
 
     my $c = $pkg->new(@entities);
     is $c->has_element(2), 1, 'right has element';
