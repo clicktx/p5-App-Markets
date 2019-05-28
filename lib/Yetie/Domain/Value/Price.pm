@@ -1,5 +1,47 @@
 package Yetie::Domain::Value::Price;
-use Yetie::Domain::Base 'Yetie::Domain::Value';
+use Moo;
+extends 'Yetie::Domain::Value';
+
+use Carp qw(croak);
+
+has tax_rate => ( is => 'ro' );
+has tax      => ( is => 'ro' );
+
+sub add_price {
+    my ( $self, $value ) = @_;
+    return $self->value + $value;
+}
+
+# without_tax
+# tax_included
+# displayPriceIncludingTax
+# excluding
+sub exclude_tax {
+    my $self = shift;
+    return $self->value;
+}
+
+# $price->including_tax;
+sub include_tax {
+    my $self = shift;
+
+    # return $self->value + $self->tax;
+    $self->add_price( $self->tax );
+}
+
+# sub new {
+#     my $class = shift;
+#     my $self  = $class->SUPER::new(@_);
+
+#     croak 'Argument cannot be less than zero' if $self->value < 0;
+
+#     return $self;
+# }
+sub validate {
+    my $self = shift;
+    croak 'Argument cannot be less than zero' if $self->value < 0;
+    return;
+}
 
 1;
 __END__
