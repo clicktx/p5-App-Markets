@@ -66,10 +66,12 @@ sub is_empty { shift->id ? 0 : 1 }
 
 sub is_modified {
     my $self = shift;
-    return 1 if $self->_hash_sum ne $self->hash_code;
+    return $self->_hash_sum ne $self->hash_code ? 1 : 0;
 
-    # Recursive call for attributes
-    return $self->_recursive_call( sub { return 1 if shift->is_modified } ) ? 1 : 0;
+    # return 1 if $self->_hash_sum ne $self->hash_code;
+
+    # # Recursive call for attributes
+    # return $self->_recursive_call( sub { return 1 if shift->is_modified } ) ? 1 : 0;
 }
 
 sub reset_modified { warn 'reset_modified() is deprecated' }
@@ -116,23 +118,23 @@ sub _dump_public_attr {
     return Dumper(shift);
 }
 
-sub _recursive_call {
-    my ( $self, $cb ) = @_;
-    foreach my $attr ( keys %{$self} ) {
-        next if !$self->can($attr);
-        next if !Scalar::Util::blessed( $self->$attr );
+# sub _recursive_call {
+#     my ( $self, $cb ) = @_;
+#     foreach my $attr ( keys %{$self} ) {
+#         next if !$self->can($attr);
+#         next if !Scalar::Util::blessed( $self->$attr );
 
-        if ( $self->$attr->isa('Yetie::Domain::Entity') ) {
-            $cb->( $self->$attr );
-        }
-        elsif ( $self->$attr->isa('Yetie::Domain::Collection') ) {
-            $self->$attr->each( sub { $cb->($_) } );
-        }
-        elsif ( $self->$attr->isa('Yetie::Domain::IxHash') ) {
-            $self->$attr->each( sub { $cb->($b) } );
-        }
-    }
-}
+#         if ( $self->$attr->isa('Yetie::Domain::Entity') ) {
+#             $cb->( $self->$attr );
+#         }
+#         elsif ( $self->$attr->isa('Yetie::Domain::Collection') ) {
+#             $self->$attr->each( sub { $cb->($_) } );
+#         }
+#         elsif ( $self->$attr->isa('Yetie::Domain::IxHash') ) {
+#             $self->$attr->each( sub { $cb->($b) } );
+#         }
+#     }
+# }
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

@@ -2,21 +2,44 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Exception;
 
-my $pkg = 'Yetie::Domain::Base';
+{
+
+    package t::domain::base;
+    use Moose;
+    extends 'Yetie::Domain::MooseBase';
+
+    has [qw{foo bar _foo _bar}] => ( is => 'rw' );
+}
+
+my $pkg      = 'Yetie::Domain::MooseBase';
+my $test_pkg = 't::domain::base';
 use_ok $pkg;
+use_ok $test_pkg;
 
 subtest 'base' => sub {
-    throws_ok { $pkg->new( foo => 1 ) } qr/has not 'foo' attribute/, 'right do not have attribute';
+    my $obj = $pkg->new;
+    isa_ok $obj, $pkg;
+    dies_ok { $pkg->new( foo => 1 ) } 'right do not have attribute';
+};
+
+subtest 'get_all_attribute_names' => sub {
+    my $obj   = $test_pkg->new;
+    my @names = $obj->get_all_attribute_names;
+    is_deeply \@names, [qw{_bar _foo bar foo}], 'right not arguments';
+
+    $obj = $test_pkg->new( foo => 1, bar => 2 );
+    @names = $obj->get_all_attribute_names;
+    is_deeply \@names, [qw{_bar _foo bar foo}], 'right arguments';
+};
+
+subtest 'get_public_attribute_names' => sub {
+    my $obj   = $test_pkg->new;
+    my @names = $obj->get_public_attribute_names;
+    is_deeply \@names, [qw{bar foo}], 'right not arguments';
+
+    $obj = $test_pkg->new( foo => 1, bar => 2 );
+    @names = $obj->get_public_attribute_names;
+    is_deeply \@names, [qw{bar foo}], 'right arguments';
 };
 
 done_testing();
-
-# Strict
-package Foo::Strict;
-use Yetie::Domain::Base -strict;
-
-# Role
-package Foo::Role;
-use Yetie::Domain::Base -role;
-
-# Signatures
