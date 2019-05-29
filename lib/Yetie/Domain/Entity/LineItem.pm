@@ -4,10 +4,10 @@ use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
 has _product_hash_code => (
+    reader  => 'product_hash_code',
     is      => 'ro',
     lazy    => 1,
     builder => '_build__product_hash_code',
-    reader  => 'product_hash_code',
 );
 has product_id    => ( is => 'rw', default => q{} );
 has product_title => ( is => 'ro', default => q{} );
