@@ -106,22 +106,22 @@ sub move_items_to_first_shipment {
 
 # NOTE: 数量は未考慮
 sub remove_item {
-    my ( $self, $product_hash_code ) = @_;
-    croak 'Argument was not a Scalar' if ref \$product_hash_code ne 'SCALAR';
+    my ( $self, $line_num ) = @_;
+    croak 'Argument was not a Scalar' if $line_num =~ /\D/sxm;
 
-    $self->items->remove($product_hash_code);
-    return $self;
+    return $self->items->remove($line_num);
 }
 
 # NOTE: 数量は未考慮
 sub remove_shipping_item {
-    my ( $self, $index, $product_hash_code ) = @_;
-    croak 'First argument was not a Digit'   if $index =~ /\D/;
-    croak 'Second argument was not a Scalar' if ref \$product_hash_code ne 'SCALAR';
+    my ( $self, $index, $line_num ) = @_;
+    croak 'First argument was not a Digit'   if $index =~ /\D/sxm;
+    croak 'Second argument was not a Scalar' if $line_num =~ /\D/sxm;
 
     my $shipment = $self->shipments->get($index);
-    $shipment->items->remove($product_hash_code);
-    return $self;
+    return 0 if !$shipment;
+
+    return $shipment->items->remove($line_num);
 }
 
 sub revert {
@@ -313,11 +313,15 @@ Move all items to the first element of C<Yetie::Domain::List::Shipments>.
 
 =head2 C<remove_item>
 
-    $cart->remove_item($product_hash_code);
+    $cart->remove_item($line_num);
+
+Return true if removed item.
 
 =head2 C<remove_shipping_item>
 
-    $cart->remove_shipping_item($shipment_index, $product_hash_code);
+    $cart->remove_shipping_item($shipment_index => $line_num);
+
+Return true if removed item.
 
 =head2 C<revert>
 

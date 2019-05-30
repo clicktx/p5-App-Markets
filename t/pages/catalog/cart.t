@@ -17,7 +17,7 @@ sub basic : Tests() {
         '/cart/item/delete',
         form => {
             csrf_token     => $self->csrf_token,
-            line_no => 1,
+            line_num => 1,
         }
     )->status_is(200);
 }

@@ -56,9 +56,8 @@ sub delete {
     return $c->reply->exception('Bad request') if !$form->do_validate;
 
     # NOTE: 複数配送時の場合はitemsのitemを削除する必要がありそう（未実装）
-    my $line_no           = $form->param('line_no');
-    my $product_hash_code = $c->cart->items->get( $line_no - 1 )->product_hash_code;
-    $c->cart->remove_item($product_hash_code);
+    my $line_num = $form->param('line_num');
+    $c->cart->remove_item($line_num);
 
     return $c->redirect_to('rn.cart');
 }

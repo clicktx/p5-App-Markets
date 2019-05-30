@@ -24,7 +24,7 @@
                  | QTY:<%= $item->quantity %><%= form_widget("cart#quantity.$i") %><%= form_error("cart#item.$i.quantity") %>
                  | <%= $item->subtotal %>
                 <div class="cart-item-control">
-                    <%= link_to 'rn.cart.item.delete' => ( name => "button.delete.$i", class => 'btn btn-link submit-post', 'data-name' => 'line_no', 'data-value' => $num ) => begin %>
+                    <%= link_to 'rn.cart.item.delete' => ( name => "button.delete.$i", class => 'btn btn-link submit-post', 'data-name' => 'line_num', 'data-value' => $num ) => begin %>
                         Delete
                     <% end %>
                     <i class="separater-icon">|</i>

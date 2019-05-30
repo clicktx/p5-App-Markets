@@ -232,9 +232,9 @@ subtest 'merge' => sub {
         cart_id         => '99999',
         billing_address => ignore(),
         items           => [
-            { product_id => 4, quantity => 4, price => 100, product_title => ignore() },
-            { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
-            { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
+            { product_id => 4, quantity => 4, price => 100, id => ignore(), product_title => ignore() },
+            { product_id => 1, quantity => 1, price => 100, id => ignore(), product_title => ignore() },
+            { product_id => 5, quantity => 5, price => 100, id => ignore(), product_title => ignore() },
         ],
         shipments => [ { shipping_address => ignore(), items => [] } ],
       },
@@ -247,11 +247,11 @@ subtest 'merge' => sub {
         cart_id         => '99999',
         billing_address => ignore(),
         items           => [
-            { product_id => 4, quantity => 4, price => 100, product_title => ignore() },
-            { product_id => 1, quantity => 2, price => 100, product_title => ignore() },
-            { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
-            { product_id => 2, quantity => 2, price => 100, product_title => ignore() },
-            { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
+            { product_id => 4, quantity => 4, price => 100, id => ignore(), product_title => ignore() },
+            { product_id => 1, quantity => 2, price => 100, id => ignore(), product_title => ignore() },
+            { product_id => 5, quantity => 5, price => 100, id => ignore(), product_title => ignore() },
+            { product_id => 2, quantity => 2, price => 100, id => ignore(), product_title => ignore() },
+            { product_id => 3, quantity => 3, price => 100, id => ignore(), product_title => ignore() },
         ],
         shipments => [ { shipping_address => ignore(), items => [] } ],
       },
@@ -260,61 +260,64 @@ subtest 'merge' => sub {
 };
 
 subtest 'remove_item' => sub {
-    my $cart              = _create_entity;
-    my $item              = Yetie::Domain::Entity::LineItem->new( product_id => 2, quantity => 1 );
-    my $product_hash_code = $item->product_hash_code;
+    my $cart = _create_entity;
+    dies_ok { $cart->remove_item('foo'); } 'right argument srt';
 
-    $cart->remove_item($product_hash_code);
+    $cart->remove_item(2);
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{items},
       [
-        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
-        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
+        { product_id => 1, quantity => 1, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 3, quantity => 3, price => 100, id => ignore(), product_title => ignore() },
       ],
       'right remove item';
 
     # Unremove. not found item.
-    $cart              = _create_entity;
-    $item              = Yetie::Domain::Entity::LineItem->new( product_id => 123, quantity => 1 );
-    $product_hash_code = $item->product_hash_code;
-
-    $cart->remove_item($product_hash_code);
+    $cart = _create_entity;
+    $cart->remove_item(4);
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{items},
       [
-        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
-        { product_id => 2, quantity => 2, price => 100, product_title => ignore() },
-        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
+        { product_id => 1, quantity => 1, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 2, quantity => 2, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 3, quantity => 3, price => 100, id => ignore(), product_title => ignore() },
       ],
       'right not removed';
 };
 
 subtest 'remove_shipping_item' => sub {
-    my $cart              = _create_entity;
-    my $item              = Yetie::Domain::Entity::LineItem->new( product_id => 4 );
-    my $product_hash_code = $item->product_hash_code;
+    my $cart = _create_entity;
+    dies_ok { $cart->remove_shipping_item( 'foo', 2 ) } 'right first argument str';
+    dies_ok { $cart->remove_shipping_item( 1,     'foo' ) } 'right second argument str';
 
-    $cart->remove_shipping_item( 1, $product_hash_code );
+    $cart->remove_shipping_item( 1 => 1 );
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
-        { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
-        { product_id => 6, quantity => 6, price => 100, product_title => ignore() },
+        { product_id => 5, quantity => 5, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 6, quantity => 6, price => 100, id => ignore(), product_title => ignore() },
       ],
       'right remove shipping item';
 
     # Unremove. not found item.
-    $cart              = _create_entity;
-    $item              = Yetie::Domain::Entity::LineItem->new( product_id => 123 );
-    $product_hash_code = $item->product_hash_code;
-
-    $cart->remove_shipping_item( 1, $product_hash_code );
+    $cart = _create_entity;
+    $cart->remove_shipping_item( 1 => 4 );
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
-        { product_id => 4, quantity => 4, price => 100, product_title => ignore() },
-        { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
-        { product_id => 6, quantity => 6, price => 100, product_title => ignore() },
+        { product_id => 4, quantity => 4, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 5, quantity => 5, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 6, quantity => 6, price => 100, id => ignore(), product_title => ignore() },
+      ],
+      'right not removed';
+
+    $cart->remove_shipping_item( 2 => 1 );
+    is $cart->is_modified, 0, 'right not modified';
+    cmp_deeply $cart->to_data->{shipments}->[1]->{items},
+      [
+        { product_id => 4, quantity => 4, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 5, quantity => 5, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 6, quantity => 6, price => 100, id => ignore(), product_title => ignore() },
       ],
       'right not removed';
 };
@@ -326,9 +329,9 @@ subtest 'revert' => sub {
     ok $cart->revert, 'right cart revert';
     cmp_deeply $cart->items->to_data,
       [
-        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
-        { product_id => 2, quantity => 2, price => 100, product_title => ignore() },
-        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
+        { product_id => 1, quantity => 1, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 2, quantity => 2, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 3, quantity => 3, price => 100, id => ignore(), product_title => ignore() },
       ],
       'right items';
 
