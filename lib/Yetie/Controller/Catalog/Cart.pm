@@ -52,12 +52,13 @@ sub clear {
 sub delete {
     my $c = shift;
 
-    my $form = $c->form('cart-delete');
+    my $form = $c->form('cart-delete_item');
     return $c->reply->exception('Bad request') if !$form->do_validate;
 
     # NOTE: 複数配送時の場合はitemsのitemを削除する必要がありそう（未実装）
-    my $target = $form->param('target_item_id');
-    $c->cart->remove_item($target);
+    my $line_no           = $form->param('line_no');
+    my $product_hash_code = $c->cart->items->get( $line_no - 1 )->product_hash_code;
+    $c->cart->remove_item($product_hash_code);
 
     return $c->redirect_to('rn.cart');
 }

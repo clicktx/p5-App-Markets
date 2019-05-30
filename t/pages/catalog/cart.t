@@ -14,10 +14,10 @@ sub basic : Tests() {
 
     $t->post_ok( '/cart/clear', form => { csrf_token => $self->csrf_token } )->status_is(200);
     $t->post_ok(
-        '/cart/delete',
+        '/cart/item/delete',
         form => {
             csrf_token     => $self->csrf_token,
-            target_item_id => 'aaabbbccc',
+            line_no => 1,
         }
     )->status_is(200);
 }
