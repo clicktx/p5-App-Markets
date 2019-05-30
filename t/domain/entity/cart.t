@@ -260,11 +260,11 @@ subtest 'merge' => sub {
 };
 
 subtest 'remove_item' => sub {
-    my $cart      = _create_entity;
-    my $item      = Yetie::Domain::Entity::LineItem->new( product_id => 2, quantity => 1 );
-    my $hash_code = $item->product_hash_code;
+    my $cart              = _create_entity;
+    my $item              = Yetie::Domain::Entity::LineItem->new( product_id => 2, quantity => 1 );
+    my $product_hash_code = $item->product_hash_code;
 
-    $cart->remove_item($hash_code);
+    $cart->remove_item($product_hash_code);
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{items},
       [
@@ -274,11 +274,11 @@ subtest 'remove_item' => sub {
       'right remove item';
 
     # Unremove. not found item.
-    $cart      = _create_entity;
-    $item      = Yetie::Domain::Entity::LineItem->new( product_id => 123, quantity => 1 );
-    $hash_code = $item->product_hash_code;
+    $cart              = _create_entity;
+    $item              = Yetie::Domain::Entity::LineItem->new( product_id => 123, quantity => 1 );
+    $product_hash_code = $item->product_hash_code;
 
-    $cart->remove_item($hash_code);
+    $cart->remove_item($product_hash_code);
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{items},
       [
@@ -290,11 +290,11 @@ subtest 'remove_item' => sub {
 };
 
 subtest 'remove_shipping_item' => sub {
-    my $cart      = _create_entity;
-    my $item      = Yetie::Domain::Entity::LineItem->new( product_id => 4 );
-    my $hash_code = $item->product_hash_code;
+    my $cart              = _create_entity;
+    my $item              = Yetie::Domain::Entity::LineItem->new( product_id => 4 );
+    my $product_hash_code = $item->product_hash_code;
 
-    $cart->remove_shipping_item( 1, $hash_code );
+    $cart->remove_shipping_item( 1, $product_hash_code );
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
@@ -304,11 +304,11 @@ subtest 'remove_shipping_item' => sub {
       'right remove shipping item';
 
     # Unremove. not found item.
-    $cart      = _create_entity;
-    $item      = Yetie::Domain::Entity::LineItem->new( product_id => 123 );
-    $hash_code = $item->product_hash_code;
+    $cart              = _create_entity;
+    $item              = Yetie::Domain::Entity::LineItem->new( product_id => 123 );
+    $product_hash_code = $item->product_hash_code;
 
-    $cart->remove_shipping_item( 1, $hash_code );
+    $cart->remove_shipping_item( 1, $product_hash_code );
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
