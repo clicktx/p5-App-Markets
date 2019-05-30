@@ -26,11 +26,14 @@ sub total_quantity {
 }
 
 sub remove {
-    my ( $self, $hash_code ) = @_;
-    return if !$self->has_element_by_hash($hash_code);
+    my ( $self, $line_num ) = @_;
 
-    my $new = $self->list->grep( sub { $_->product_hash_code ne $hash_code } );
-    return $self->list($new);
+    my $item = $self->get_by_line_num($line_num);
+    return 0 if !$item;
+
+    my $new = $self->list->grep( sub { !$_->equals($item) } );
+    $self->list($new);
+    return 1;
 }
 
 sub subtotal {
@@ -107,7 +110,9 @@ the following new ones.
 
 =head2 C<remove>
 
-    $items->remove($hash_code);
+    $items->remove($line_num);
+
+Return true if remove item.
 
 =head2 C<subtotal>
 

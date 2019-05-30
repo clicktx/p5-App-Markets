@@ -67,8 +67,7 @@ subtest 'total_quantity' => sub {
 subtest 'remove' => sub {
     my $data = [ { product_id => 1 }, { product_id => 2 }, { product_id => 3 } ];
     my $list = $construct->( list => $data );
-    my $hash = $list->get(1)->product_hash_code;
-    $list->remove($hash);
+    my $res = $list->remove(2);
     cmp_deeply $list->to_data,
       [
         { product_id => 1, quantity => ignore(), product_title => ignore(), price => ignore() },
@@ -76,10 +75,11 @@ subtest 'remove' => sub {
       ],
       'right remove item';
     is $list->is_modified, 1, 'right modified';
+    is $res, 1, 'right removed';
 
     # Unremove. not found item.
     $list = $construct->( list => $data );
-    $list->remove('foo');
+    $res = $list->remove(4);
     cmp_deeply $list->to_data,
       [
         { product_id => 1, quantity => ignore(), product_title => ignore(), price => ignore() },
@@ -88,6 +88,7 @@ subtest 'remove' => sub {
       ],
       'right not remove item';
     is $list->is_modified, 0, 'right not modified';
+    is $res, 0, 'right not removed';
 };
 
 subtest 'subtotal' => sub {
