@@ -19,7 +19,7 @@ sub get {
 
 sub get_by_id {
     my ( $self, $str ) = @_;
-    return $self->first( sub { $_->id eq $str } ) or undef;
+    ( return $self->first( sub { $_->id eq $str } ) ) or undef;
 }
 
 sub get_by_line_num {
