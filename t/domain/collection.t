@@ -29,7 +29,7 @@ subtest 'append' => sub {
 subtest 'get' => sub {
     my $c = $pkg->new( 1, 2, 3 );
     is $c->get(0), 1,     'right get element';
-    is $c->get(1), 2,     'right get element';
+    is $c->get(2), 3,     'right get element';
     is $c->get(4), undef, 'right has not element';
     is $c->get(), undef, 'right has not element';
     is $c->get(''), undef, 'right has not element';
@@ -55,6 +55,15 @@ subtest 'get_by_id' => sub {
     # Empty array
     $c = $pkg->new();
     is $c->get_by_id(1), undef, 'right empty collection';
+};
+
+subtest 'get_by_line_num' => sub {
+    my $c = $pkg->new( 1, 2, 3 );
+    is $c->get_by_line_num(1), 1,     'right get element';
+    is $c->get_by_line_num(3), 3,     'right get element';
+    is $c->get_by_line_num(4), undef, 'right has not element';
+    is $c->get_by_line_num(), undef, 'right has not element';
+    is $c->get_by_line_num(''), undef, 'right has not element';
 };
 
 subtest 'has_element' => sub {

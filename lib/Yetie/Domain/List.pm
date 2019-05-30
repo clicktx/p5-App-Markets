@@ -35,6 +35,8 @@ sub get { return shift->list->get(shift) }
 
 sub get_by_id { return shift->list->get_by_id(shift) }
 
+sub get_by_line_num { return shift->list->get_by_line_num(shift) }
+
 sub last { return shift->list->last }
 
 sub to_array { return shift->list->to_array }
@@ -130,6 +132,14 @@ See L<Yetie::Domain::Collection/get>.
     my $element = $domain->list->get_by_id($element_id);
 
 See L<Yetie::Domain::Collection/get_by_id>.
+
+=head2 C<get_by_line_num>
+
+    my $element = $domain->get_by_line_num($line_num);
+
+Return $element or undef.
+
+See L<Yetie::Domain::Collection/get_by_line_num>.
 
 =head2 C<last>
 
