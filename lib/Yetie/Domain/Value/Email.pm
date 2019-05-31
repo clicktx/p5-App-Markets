@@ -6,7 +6,7 @@ has _in_storage => ( is => 'ro', default => 0 );
 has is_primary  => ( is => 'ro', default => 0 );
 has is_verified => ( is => 'ro', default => 0 );
 
-sub in_storage { shift->_in_storage ? 1 : 0 }
+sub in_storage { return shift->_in_storage ? 1 : 0 }
 
 sub to_data {
     my $self = shift;
