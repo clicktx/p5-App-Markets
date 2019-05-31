@@ -3,14 +3,17 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-has id => ( is => 'ro', default => sub { shift->category_id } );
+has id => (
+    is       => 'ro',
+    init_arg => 'category_id',
+);
 has category_id => ( is => 'ro', default => 0 );
 has is_primary  => ( is => 'ro', default => 0 );
 has title       => ( is => 'ro', default => q{} );
 
 override to_hash => sub {
     my $hash = super();
-    delete $hash->{title};
+    for (qw(id title)) { delete $hash->{$_} }
     return $hash;
 };
 
