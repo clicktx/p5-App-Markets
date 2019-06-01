@@ -6,16 +6,20 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-has meta_title => (
+has meta_info => (
     is      => 'ro',
-    lazy    => 1,
-    default => sub { shift->page_title }
+    default => sub {
+        {
+            title       => sub { shift->page_title },
+            description => q{},
+            keywords    => q{},
+            robots      => q{}
+        };
+    }
 );
-has meta_description => ( is => 'ro', default => q{} );
-has meta_keywords    => ( is => 'ro', default => q{} );
-has meta_robots      => ( is => 'ro', default => q{} );
-has page_title       => ( is => 'rw', default => q{} );
-has breadcrumbs      => (
+
+has page_title => ( is => 'rw', default => q{} );
+has breadcrumbs => (
     is      => 'ro',
     lazy    => 1,
     default => sub { __PACKAGE__->factory('list-breadcrumbs')->construct() }
