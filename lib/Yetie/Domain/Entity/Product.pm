@@ -1,10 +1,10 @@
 package Yetie::Domain::Entity::Product;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::Entity::Page';
+extends 'Yetie::Domain::Entity';
 
-has title       => ( is => 'ro', default => '' );
-has description => ( is => 'ro', default => '' );
+has title       => ( is => 'rw', default => q{} );
+has description => ( is => 'ro', default => q{} );
 has price       => ( is => 'ro', default => 0 );
 has created_at  => ( is => 'ro' );
 has updated_at  => ( is => 'ro' );

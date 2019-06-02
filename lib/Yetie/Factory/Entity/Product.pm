@@ -6,9 +6,6 @@ sub cook {
 
     # product_categories
     $self->aggregate( product_categories => 'list-product_categories', $self->param('product_categories') || [] );
-
-    # breadcrumbs
-    $self->aggregate( breadcrumbs => 'list-breadcrumbs', $self->param('breadcrumbs') || [] );
 }
 
 1;
@@ -43,4 +40,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
- L<Yetie::Factory>
+L<Yetie::Factory>
