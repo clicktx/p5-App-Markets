@@ -16,13 +16,7 @@ use_ok $pkg;
     use Moose;
     extends 'Yetie::Domain::Entity';
 
-    has [qw(hoge fuga)] => ( is => 'rw' );
-
-    package t::entity::bar;
-    use Moose;
-    extends 'Yetie::Domain::Entity';
-
-    has [qw(hoge fuga)] => ( is => 'rw' );
+    has [qw(hoge fuga)] => ( is => 'rw', default => 1 );
 }
 
 subtest 'basic' => sub {
@@ -37,6 +31,9 @@ subtest 'basic' => sub {
     $e = t::entity::foo->new( id => 1, hoge => 1, fuga => 2 );
     $e->hoge(111);
     is $e->is_modified, 1, 'right modified of update attribute';
+
+    $e = t::entity::foo->new( id => undef, hoge => undef, fuga => undef );
+    cmp_deeply $e->to_hash, { hoge => 1, fuga => 1 }, 'right default not undef';
 };
 
 subtest 'hash_code' => sub {
@@ -101,6 +98,14 @@ subtest 'to_array method' => sub {
     cmp_deeply $e->to_array, [ [qw/fuga hoge id/], [qw/2 1 1/] ], 'right to_array';
 };
 
+{
+
+    package t::entity::bar;
+    use Moose;
+    extends 'Yetie::Domain::Entity';
+
+    has [qw(hoge fuga)] => ( is => 'rw' );
+}
 subtest 'Entity object base' => sub {
     my $e1   = t::entity::foo->new( id => 1 );
     my $e1_1 = t::entity::foo->new( id => 1 );
@@ -109,7 +114,7 @@ subtest 'Entity object base' => sub {
     is $e1->id, 1, 'right entity id';
     is $e1->equals($e1_1), 1, 'right equals object';
     is $e1->equals($e2),   0, 'right not equals object';
-    is $e1->hash_code, 'c03af602dd7314097b2b90227c92e262b8e913a8', 'right hash code';
+    is $e1->hash_code, '6501d3cd541524d95d0a5939ebfeb457807451fc', 'right hash code';
 
     $e1->id(1);
     is $e1->is_modified, 0, 'right not modified';

@@ -23,6 +23,17 @@ sub _build__hash_sum { return shift->hash_code }
 
 has id => ( is => 'rw' );
 
+# Do not created an undefined attributes
+around BUILDARGS => sub {
+    ( shift, shift );    # $orig, $class
+    my %args = @_ ? @_ > 1 ? @_ : %{ $_[0] } : ();
+
+    foreach my $key ( keys %args ) {
+        if ( !defined $args{$key} ) { delete $args{$key} }
+    }
+    return \%args;
+};
+
 sub BUILD {
     my $self = shift;
 
@@ -36,9 +47,12 @@ sub clone {
 
     my @attributes = keys %{$self};
     foreach my $attr (@attributes) {
-        next unless $self->can($attr);
-        next unless Scalar::Util::blessed( $self->$attr );
-        $clone->$attr( $self->$attr->map( sub { $_->clone } ) ) if $self->$attr->can('map');
+        next if !$self->can($attr);
+        next if !Scalar::Util::blessed( $self->$attr );
+
+        if ( $self->$attr->can('map') ) {
+            $clone->$attr( $self->$attr->map( sub { $_->clone } ) );
+        }
     }
 
     # Reset object hash_sum
@@ -51,7 +65,7 @@ sub equals {
     return $self->hash_code eq $obj->hash_code ? 1 : 0;
 }
 
-sub factory { Yetie::Factory->new( $_[1] ) }
+sub factory { return Yetie::Factory->new( $_[1] ) }
 
 sub has_id { return shift->id ? 1 : 0 }
 
@@ -62,7 +76,7 @@ sub hash_code {
     return Mojo::Util::sha1_sum( shift->_dump_public_attr );
 }
 
-sub is_empty { shift->id ? 0 : 1 }
+sub is_empty { return shift->id ? 0 : 1 }
 
 sub is_modified {
     my $self = shift;
