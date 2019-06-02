@@ -10,7 +10,7 @@ has meta_info => (
     is      => 'ro',
     default => sub {
         {
-            title       => sub { shift->page_title },
+            title       => sub { shift->title },
             description => q{},
             keywords    => q{},
             robots      => q{}
@@ -18,17 +18,20 @@ has meta_info => (
     }
 );
 
-has page_title => ( is => 'rw', default => q{} );
+has title => ( is => 'rw', default => q{} );
+
 has breadcrumbs => (
     is      => 'ro',
     lazy    => 1,
     default => sub { __PACKAGE__->factory('list-breadcrumbs')->construct() }
 );
+
 has form => (
     is      => 'ro',
     lazy    => 1,
     default => sub { Yetie::Form::Base->new }
 );
+
 has pager => (
     is      => 'ro',
     lazy    => 1,
@@ -54,18 +57,12 @@ Yetie::Domain::Entity::Page
 L<Yetie::Domain::Entity::Page> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<meta_title>
+=head2 C<meta_info>
 
-=head2 C<meta_description>
-
-=head2 C<meta_keywords>
-
-=head2 C<meta_robots>
-
-=head2 C<page_title>
+=head2 C<title>
 
     # In templates
-    <%= $page->page_title %>
+    <%= $page->title %>
 
 =head2 C<breadcrumbs>
 
@@ -73,11 +70,7 @@ the following new ones.
 
 Return L<Yetie::Domain::List::Breadcrumbs> object.
 
-=head2 C<form_params>
-
-Return L<Yetie::App::Core::Parameters> object.
-
-NOTE: These values are validated form parameters.
+=head2 C<form>
 
 =head2 C<pager>
 
