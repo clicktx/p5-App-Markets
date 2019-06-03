@@ -1,5 +1,5 @@
 % layout 'admin-default';
-% title $entity->page_title;
+% title $page->title;
 
 <h1><%= title %></h1>
 
@@ -15,7 +15,7 @@
 <h2><%= __('Products') %></h2>
 
 <ul>
-    % $entity->product_list->each( sub {
+    % $products->each( sub {
         % my $product = shift;
         % my $id = $product->id;
         <li>ID:<%= $id %>
@@ -30,4 +30,4 @@
     % });
 </ul>
 
-<%= include 'admin/components/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>
+<%= include 'admin/components/pagination', pager => $page->pager, params => $page->form->params->to_hash %>
