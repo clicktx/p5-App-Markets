@@ -42,9 +42,13 @@ sub duplicate_product {
 sub find_product_with_breadcrumbs {
     my ( $self, $product_id ) = @_;
 
-    my $product = $self->resultset('Product')->find_product($product_id);
-    my $data = $product ? $product->to_data : {};
-    return $self->factory('entity-product')->construct($data);
+    my $result = $self->resultset('Product')->find_product($product_id);
+    my $data = $result ? $result->to_data : {};
+
+    my $data_breadcrumbs = delete $data->{breadcrumbs};
+    my $breadcrumbs      = $self->factory('list-breadcrumbs')->construct( list => $data_breadcrumbs );
+    my $product          = $self->factory('entity-product')->construct($data);
+    return ( $product, $breadcrumbs );
 }
 
 sub find_product {
@@ -149,11 +153,9 @@ Return L<Yetie::Schema::Result::Product> object or C<undefined>.
 
 =head2 C<find_product_with_breadcrumbs>
 
-    my $product = $service->find_product($product_id);
+    my ( $product, $breadcrumbs ) = $service->find_product($product_id);
 
-Return L<Yetie::Domain::Entity::Product> object.
-
-Data does include C<breadcrumbs>.
+Return L<Yetie::Domain::Entity::Product> object and L<Yetie::Domain::List::Breadcrumbs> object.
 
 =head2 C<find_product>
 
