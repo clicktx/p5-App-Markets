@@ -1,15 +1,15 @@
 % layout 'admin-default';
-% title $entity->page_title;
+% title $page->title;
 
 <h1><%= title %></h1>
 
 <ul>
-% $entity->customer_list->each( sub {
+% $customers->each( sub {
     <li>
         <%= $_->id %>
         <%= link_to 'Edit' => 'rn.admin.customer.detail' => { customer_id => $_->id } %>
         Name: xxx
-        Primary Email: <%= $_->emails->primary %>
+        Primary Email: <%= $_->emails->primary->value %>
         has_password?: <%= $_->has_password ? 'Yse' : 'No' %>
         <br>
         Last Logged in: xxx
@@ -17,7 +17,7 @@
 % });
 </ul>
 
-<%= include 'admin/components/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>
+<%= include 'admin/components/pagination', pager => $page->pager, params => $page->form->params->to_hash %>
 
 <ul>
     <li><%= link_to __('Create New Customer') => 'rn.admin.customer.create' %></li>
