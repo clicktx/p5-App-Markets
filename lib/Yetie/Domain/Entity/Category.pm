@@ -1,7 +1,7 @@
-package Yetie::Domain::Entity::Page::Category;
+package Yetie::Domain::Entity::Category;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::Entity::Page';
+extends 'Yetie::Domain::Entity';
 
 has level    => ( is => 'ro', default => 0 );
 has root_id  => ( is => 'ro', default => 0 );
@@ -16,7 +16,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Page::Category
+Yetie::Domain::Entity::Category
 
 =head1 SYNOPSIS
 
@@ -24,7 +24,7 @@ Yetie::Domain::Entity::Page::Category
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Page::Category> inherits all attributes from L<Yetie::Domain::Entity::Page> and implements
+L<Yetie::Domain::Entity::Category> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<level>
@@ -39,7 +39,7 @@ Return L<Yetie::Schema::ResultSet::Product> object or C<undefined>.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Page::Category> inherits all methods from L<Yetie::Domain::Entity::Page> and implements
+L<Yetie::Domain::Entity::Category> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head1 AUTHOR
@@ -48,4 +48,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity::Page>, L<Yetie::Domain::Entity>
+L<Yetie::Domain::Entity>
