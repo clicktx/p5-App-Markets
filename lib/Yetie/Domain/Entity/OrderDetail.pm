@@ -3,7 +3,6 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-has page_title => ( is => 'ro', default => 'Order Details' );
 has created_at => ( is => 'ro' );
 has updated_at => ( is => 'ro' );
 has customer         => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-customer')->construct() } );
