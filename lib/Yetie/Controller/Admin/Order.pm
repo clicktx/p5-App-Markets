@@ -70,8 +70,8 @@ sub duplicate {
     # my $order = $c->schema->resultset('Sales::Order')->find_by_id($order_id);
 
     # return $c->redirect_to('rn.admin.orders');
-    $c->stash( entity => $order );
-    return $c->render('admin/order/edit');
+    # $c->stash( entity => $order );
+    return $c->render('admin/order/create');
 }
 
 sub _find_order {
