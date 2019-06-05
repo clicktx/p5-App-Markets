@@ -7,28 +7,28 @@
         </ul>
     <% end =%>
 </div>
-<div class="">
+<div id="shipping_address" class="">
     <h3>Shipping Address</h3>
     <%= content shipping_address => begin =%>
-        <%= link_to 'rn.admin.order.edit.shipping_address' => begin %>
+        <%= link_to url_for('rn.admin.order.edit.shipping_address')->fragment('shipping_address') => begin %>
             Edit
         <% end %>
         <%= include 'common/elements/address', address => $order->shipping_address %>
     <% end =%>
 </div>
-<div class="">
+<div id="billing_address" class="">
     <h3>Billing Address</h3>
     <%= content billing_address => begin =%>
-        <%= link_to 'rn.admin.order.edit.billing_address' => begin %>
+        <%= link_to url_for('rn.admin.order.edit.billing_address')->fragment('billing_address') => begin %>
             Edit
         <% end %>
         <%= include 'common/elements/address', address => $order->billing_address %>
     <% end =%>
 </div>
-<div class="">
+<div id="items" class="">
     <h3>Items Ordered</h3>
     <%= content items_ordered => begin =%>
-        <%= link_to 'rn.admin.order.edit.items' => begin %>
+        <%= link_to url_for('rn.admin.order.edit.items')->fragment('items') => begin %>
             Edit
         <% end %>
         <ol>
