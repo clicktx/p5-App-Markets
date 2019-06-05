@@ -8,7 +8,7 @@
     % my $order_summary = shift;
     <li>
         [
-        <%= link_to url_for( 'rn.admin.order.edit', id => $order_summary->id ) => begin %>
+        <%= link_to url_for( 'rn.admin.order.index', id => $order_summary->id ) => begin %>
             edit
         <% end %>
         ]
