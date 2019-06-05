@@ -1,6 +1,17 @@
 package Yetie::Controller::Admin::Order;
 use Mojo::Base 'Yetie::Controller::Admin';
 
+sub index {
+    my $c = shift;
+
+    my $order = $c->_find_order;
+    return $c->reply->not_found if $order->is_empty;
+
+    # Page
+    my $page = $c->factory('entity-page')->construct( title => 'Order Details', );
+    return $c->render( page => $page, order => $order );
+}
+
 sub create {
     my $c = shift;
     return $c->render();
@@ -38,17 +49,6 @@ sub delete {
     }
 
     return $c->redirect_to('rn.admin.orders');
-}
-
-sub details {
-    my $c = shift;
-
-    my $order = $c->_find_order;
-    return $c->reply->not_found if $order->is_empty;
-
-    # Page
-    my $page = $c->factory('entity-page')->construct( title => 'Order Details', );
-    return $c->render( page => $page, order => $order );
 }
 
 sub duplicate {

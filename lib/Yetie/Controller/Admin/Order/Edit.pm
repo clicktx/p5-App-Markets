@@ -26,7 +26,7 @@ sub items {
         my $values = $params->{$key};
         $c->resultset('Sales::Order::Item')->search( { id => $id } )->update($values);
     }
-    return $c->redirect_to( 'rn.admin.order.details', order_id => $order_id );
+    return $c->redirect_to( 'rn.admin.order.index', order_id => $order_id );
 }
 
 # NOTE: Catalog::Checkoutに関連する実装がある。
@@ -76,7 +76,7 @@ sub _edit_address {
     # $form->params->to_hash が空文字を出力しないため例えば会社名を消す事ができない
     $c->service('address')->update_address( $form->params->to_hash );
 
-    return $c->redirect_to( 'rn.admin.order.details', order_id => $order_id );
+    return $c->redirect_to( 'rn.admin.order.index', order_id => $order_id );
 }
 
 sub _init_form {
