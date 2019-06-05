@@ -46,8 +46,9 @@ sub details {
     my $order = $c->_find_order;
     return $c->reply->not_found if $order->is_empty;
 
-    $c->stash( entity => $order );
-    $c->render();
+    # Page
+    my $page = $c->factory('entity-page')->construct( title => 'Order Details', );
+    return $c->render( page => $page, order => $order );
 }
 
 sub duplicate {
@@ -98,7 +99,7 @@ sub _find_order {
     my $c = shift;
 
     my $order_id = $c->stash('id');
-    $c->service('order')->find_order($order_id);
+    return $c->service('order')->find_order($order_id);
 }
 
 1;
