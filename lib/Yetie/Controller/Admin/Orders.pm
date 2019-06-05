@@ -8,15 +8,18 @@ sub index {
     $c->init_form();
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->redirect_to( $c->current_route ) if !$form->do_validate;
 
-    my $orders = $c->service('order')->search_orders($form);
-    $c->stash( entity => $orders );
+    # Orders
+    my ( $orders, $pager ) = $c->service('order')->search_orders($form);
 
-    # Page Data
-    $orders->page_title('Orders');
-
-    $c->render();
+    # Page
+    my $page = $c->factory('entity-page')->construct(
+        title => 'Orders',
+        form  => $form,
+        pager => $pager,
+    );
+    return $c->render( page => $page, orders => $orders );
 }
 
-1
+1;
