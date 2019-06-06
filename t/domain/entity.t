@@ -38,7 +38,7 @@ subtest 'basic' => sub {
 
 subtest 'hash_code' => sub {
     my $e = $pkg->new( id => 1 );
-    is $e->hash_code, '7a931690f7f4b4d8a9bde975237221a4a8db123e', 'right hash code';
+    is $e->hash_code, 'f7f98e54dabc3d04e8c71e09405b14268a0f0ad4', 'right hash code';
     is $e->hash_code(2), sha1_sum(2), 'right hash code';
 };
 
@@ -114,7 +114,7 @@ subtest 'Entity object base' => sub {
     is $e1->id, 1, 'right entity id';
     is $e1->equals($e1_1), 1, 'right equals object';
     is $e1->equals($e2),   0, 'right not equals object';
-    is $e1->hash_code, '6501d3cd541524d95d0a5939ebfeb457807451fc', 'right hash code';
+    is $e1->hash_code, '6ca65f8d83d4a82d0a13787b073002e08551ee49', 'right hash code';
 
     $e1->id(1);
     is $e1->is_modified, 0, 'right not modified';

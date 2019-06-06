@@ -5,7 +5,6 @@ use Yetie::Domain::IxHash qw();
 use Mojo::Util qw();
 use Scalar::Util qw();
 use Data::Clone qw();
-use Data::Dumper;
 
 use Moose;
 use namespace::autoclean;
@@ -80,12 +79,10 @@ sub is_empty { return shift->id ? 0 : 1 }
 
 sub is_modified {
     my $self = shift;
-    return $self->_hash_sum ne $self->hash_code ? 1 : 0;
+    return 1 if $self->_hash_sum ne $self->hash_code;
 
-    # return 1 if $self->_hash_sum ne $self->hash_code;
-
-    # # Recursive call for attributes
-    # return $self->_recursive_call( sub { return 1 if shift->is_modified } ) ? 1 : 0;
+    # Recursive call for attributes
+    return $self->_recursive_call( sub { return 1 if shift->is_modified } ) ? 1 : 0;
 }
 
 sub reset_modified { warn 'reset_modified() is deprecated' }
@@ -122,33 +119,46 @@ sub to_hash {
 }
 
 sub _dump_public_attr {
-    local $Data::Dumper::Terse    = 1;
-    local $Data::Dumper::Indent   = 0;
-    local $Data::Dumper::Sortkeys = sub {
-        my ($hash) = @_;
-        my @keys = grep { /\A(?!_).*/sxm } ( sort keys %{$hash} );
-        return \@keys;
-    };
-    return Dumper(shift);
+    my $self = shift;
+
+    my $dump = '({';
+    foreach my $attr ( $self->get_public_attribute_names ) {
+        my $value = $self->$attr || q{};
+        $dump .= "$attr=" . $value . q{,};
+    }
+    $dump .= '},' . ref($self) . ')';
+    return $dump;
 }
 
-# sub _recursive_call {
-#     my ( $self, $cb ) = @_;
-#     foreach my $attr ( keys %{$self} ) {
-#         next if !$self->can($attr);
-#         next if !Scalar::Util::blessed( $self->$attr );
+sub _recursive_call {
+    my ( $self, $cb ) = @_;
+    foreach my $attr ( $self->get_public_attribute_names ) {
+        next if !Scalar::Util::blessed( $self->$attr );
 
-#         if ( $self->$attr->isa('Yetie::Domain::Entity') ) {
-#             $cb->( $self->$attr );
-#         }
-#         elsif ( $self->$attr->isa('Yetie::Domain::Collection') ) {
-#             $self->$attr->each( sub { $cb->($_) } );
-#         }
-#         elsif ( $self->$attr->isa('Yetie::Domain::IxHash') ) {
-#             $self->$attr->each( sub { $cb->($b) } );
-#         }
-#     }
-# }
+        if ( $self->$attr->isa('Yetie::Domain::Entity') ) {
+            return 1 if $cb->( $self->$attr );
+        }
+        elsif ( $self->$attr->isa('Yetie::Domain::Collection') ) {
+            my $cnt = 0;
+            $self->$attr->each(
+                sub {
+                    if ( $cb->($_) ) { $cnt++ }
+                }
+            );
+            return 1 if $cnt;
+        }
+        elsif ( $self->$attr->isa('Yetie::Domain::IxHash') ) {
+            my $cnt = 0;
+            $self->$attr->each(
+                sub {
+                    if ( $cb->($b) ) { $cnt++ }
+                }
+            );
+            return 1 if $cnt;
+        }
+    }
+    return;
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
