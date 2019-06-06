@@ -1,6 +1,4 @@
 <% extends 'admin/order/edit/base'; =%>
-<% my $action = stash('action'); =%>
-<% my $order = stash('entity'); =%>
 <% content 'items_ordered' => begin =%>
     <%= form_for '' => ( method => 'POST' ) => begin %>
         <%= csrf_field %>
