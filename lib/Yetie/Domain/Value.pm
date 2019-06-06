@@ -50,14 +50,15 @@ sub is_modified {
 sub to_data { return shift->value }
 
 sub _dump_public_attr {
-    local $Data::Dumper::Terse    = 1;
-    local $Data::Dumper::Indent   = 0;
-    local $Data::Dumper::Sortkeys = sub {
-        my ($hash) = @_;
-        my @keys = grep { /\A(?!_).*/sxm } ( sort keys %{$hash} );
-        return \@keys;
-    };
-    return Dumper(shift);
+    my $self = shift;
+
+    my $dump = '({';
+    foreach my $attr ( $self->get_public_attribute_names ) {
+        my $value = $self->$attr || q{};
+        $dump .= "$attr=" . $value . q{,};
+    }
+    $dump .= '},' . ref($self) . ')';
+    return $dump;
 }
 
 no Moose;

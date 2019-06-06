@@ -33,17 +33,9 @@ subtest 'basic' => sub {
     is $v->value, q{}, 'right argument undefined';
 };
 
-subtest '_dump_public_attr' => sub {
-    my $obj = $test_pkg->new;
-    is $obj->_dump_public_attr, q{bless( {}, 't::domain::value' )}, 'right dump strings';
-
-    $obj = $test_pkg->new( foo => 1, bar => 2, _foo => 11, _bar => 22 );
-    is $obj->_dump_public_attr, q{bless( {'bar' => 2,'foo' => 1}, 't::domain::value' )}, 'right dump strings';
-};
-
 subtest '_hash_sum' => sub {
     my $obj      = $test_pkg->new;
-    my $hash_sum = '565744a38263900bb971695a09a09799ce825f18';
+    my $hash_sum = '4d307fef71be148cb0768c96b17b64455d0347a9';
     is $obj->_hash_sum, $hash_sum, 'right hash_sum';
     $obj->foo(1);
     is $obj->_hash_sum, $hash_sum, 'right modify attribute after call "_hash_sum"';
@@ -70,7 +62,7 @@ subtest 'equals' => sub {
 };
 
 subtest 'hash_code' => sub {
-    my $hash_code = '957dcf386c1af5d3300c1f7d5095c71c8c019c8b';
+    my $hash_code = '7fae0568a5cddaf9be4cfa7c41b606d3fd266621';
     my $v = $test_pkg->new( foo => 1, bar => 2, _foo => 11, _bar => 22 );
     is $v->hash_code, $hash_code, 'right hash_code';
     $v = $test_pkg->new( foo => 1, bar => 2, _foo => 0, _bar => 0 );
