@@ -1,7 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
-use Mojo::Util qw/sha1_sum/;
 use Yetie::Domain::Collection qw/collection/;
 use Yetie::Domain::IxHash qw/ixhash/;
 use Yetie::Domain::Value;
@@ -34,12 +33,6 @@ subtest 'basic' => sub {
 
     $e = t::entity::foo->new( id => undef, hoge => undef, fuga => undef );
     cmp_deeply $e->to_hash, { hoge => 1, fuga => 1 }, 'right default not undef';
-};
-
-subtest 'hash_code' => sub {
-    my $e = $pkg->new( id => 1 );
-    is $e->hash_code, 'f7f98e54dabc3d04e8c71e09405b14268a0f0ad4', 'right hash code';
-    is $e->hash_code(2), sha1_sum(2), 'right hash code';
 };
 
 subtest 'factory' => sub {

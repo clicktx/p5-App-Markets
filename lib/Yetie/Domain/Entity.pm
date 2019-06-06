@@ -68,13 +68,6 @@ sub factory { return Yetie::Factory->new( $_[1] ) }
 
 sub has_id { return shift->id ? 1 : 0 }
 
-sub hash_code {
-    my ( $self, $arg ) = @_;
-    return Mojo::Util::sha1_sum($arg) if $arg;
-
-    return Mojo::Util::sha1_sum( shift->_dump_public_attr );
-}
-
 sub is_empty { return shift->id ? 0 : 1 }
 
 sub is_modified {
@@ -223,13 +216,6 @@ Return Yetie::Factory object.
     my $bool = $entity->has_id;
 
 Return boolean value.
-
-=head2 C<hash_code>
-
-    my $sha1_sum = $entity->hash_code;
-    my $sha1_sum = $entity->hash_code($bytes);
-
-Return SHA1 checksum. Default bytes is L<Yetie::Domain::Entity/id>.
 
 =head2 C<id>
 

@@ -61,16 +61,6 @@ subtest 'equals' => sub {
     is $v->equals($v6), 0, 'right not equal';
 };
 
-subtest 'hash_code' => sub {
-    my $hash_code = '7fae0568a5cddaf9be4cfa7c41b606d3fd266621';
-    my $v = $test_pkg->new( foo => 1, bar => 2, _foo => 11, _bar => 22 );
-    is $v->hash_code, $hash_code, 'right hash_code';
-    $v = $test_pkg->new( foo => 1, bar => 2, _foo => 0, _bar => 0 );
-    is $v->hash_code, $hash_code, 'right hash_code';
-    $v = $test_pkg->new( foo => 0, bar => 2, _foo => 11, _bar => 22 );
-    isnt $v->hash_code, $hash_code, 'right hash_code';
-};
-
 subtest 'is_modified' => sub {
     my $obj = $test_pkg->new( foo => 1, bar => 2, _foo => 11, _bar => 22 );
     is $obj->is_modified, '0', 'right unmodified';

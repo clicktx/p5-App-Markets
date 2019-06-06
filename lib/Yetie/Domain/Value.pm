@@ -40,26 +40,12 @@ sub equals {
     return $self->hash_code eq $obj->hash_code ? 1 : 0;
 }
 
-sub hash_code { return Mojo::Util::sha1_sum( shift->_dump_public_attr ) }
-
 sub is_modified {
     my $self = shift;
     return $self->_hash_sum ne $self->hash_code ? 1 : 0;
 }
 
 sub to_data { return shift->value }
-
-sub _dump_public_attr {
-    my $self = shift;
-
-    my $dump = '({';
-    foreach my $attr ( $self->get_public_attribute_names ) {
-        my $value = $self->$attr || q{};
-        $dump .= "$attr=" . $value . q{,};
-    }
-    $dump .= '},' . ref($self) . ')';
-    return $dump;
-}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
@@ -98,13 +84,6 @@ the following new ones.
     my $bool = $obj->equals($object);
 
 Return boolean value.
-
-=head2 C<hash_code>
-
-    # "960167e90089e5ebe6a583e86b4c77507afb70b7"
-    my $sha1_sum = $obj->hash_code;
-
-Return sha1 string.
 
 =head2 C<is_modified>
 

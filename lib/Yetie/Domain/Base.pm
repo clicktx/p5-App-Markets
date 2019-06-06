@@ -11,6 +11,25 @@ sub get_public_attribute_names {
     return ( grep { /\A(?!_).*/sxm } shift->get_all_attribute_names );
 }
 
+sub hash_code {
+    my ( $self, $arg ) = @_;
+    return Mojo::Util::sha1_sum($arg) if $arg;
+
+    return Mojo::Util::sha1_sum( shift->_dump_by_public_attributes );
+}
+
+sub _dump_by_public_attributes {
+    my $self = shift;
+
+    my $dump = '({';
+    foreach my $attr ( $self->get_public_attribute_names ) {
+        my $value = $self->$attr || q{};
+        $dump .= "$attr=" . $value . q{,};
+    }
+    $dump .= '},' . ref($self) . ')';
+    return $dump;
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -54,6 +73,13 @@ Return all attribute name list.
     my @names = $obj->get_public_attribute_names;
 
 Return all public attribute name list.
+
+=head2 C<hash_code>
+
+    my $sha1_sum = $entity->hash_code;
+    my $sha1_sum = $entity->hash_code($bytes);
+
+Return SHA1 checksum.
 
 =head1 AUTHOR
 
