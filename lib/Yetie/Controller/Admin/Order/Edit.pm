@@ -7,8 +7,7 @@ sub billing_address {
     my $c = shift;
     return $c->_edit_address(
         {
-            address_type => 'billing_address',
-            title        => 'Edit Billing Address',
+            title => 'Edit Billing Address',
         }
     );
 }
@@ -56,8 +55,7 @@ sub shipping_address {
     my $c = shift;
     return $c->_edit_address(
         {
-            address_type => 'shipping_address',
-            title        => 'Edit Shipping Address',
+            title => 'Edit Shipping Address',
         }
     );
 }
@@ -71,7 +69,7 @@ sub _edit_address {
     return $c->reply->not_found if $order->is_empty;
 
     # Init form
-    my $address = $order->{ $args->{address_type} };
+    my $address = $order->{ $c->stash('action') };
     my $form    = $c->_init_form($address);
 
     # Page
