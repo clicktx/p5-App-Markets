@@ -78,12 +78,10 @@ subtest 'to_data' => sub {
             quantity   => 1,
         }
     );
-    is_deeply $item->to_data, {
-        product_id    => 110,
-        product_title => q{},
-        quantity      => 1,
-        price         => 0,
-
+    is_deeply $item->to_data,
+      {
+        product_id => 110,
+        quantity   => 1,
       },
       'right dump data';
 };

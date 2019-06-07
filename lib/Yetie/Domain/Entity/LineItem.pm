@@ -9,10 +9,10 @@ has _product_hash_code => (
     lazy    => 1,
     builder => '_build__product_hash_code',
 );
-has product_id    => ( is => 'rw', default => q{} );
-has product_title => ( is => 'ro', default => q{} );
-has price         => ( is => 'rw', default => 0 );
-has quantity      => ( is => 'rw', default => 0 );
+has product_id    => ( is => 'rw' );
+has product_title => ( is => 'rw' );
+has price         => ( is => 'rw' );
+has quantity      => ( is => 'rw' );
 
 sub _build__product_hash_code {
     my $self = shift;
