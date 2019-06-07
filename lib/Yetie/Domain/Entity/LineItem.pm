@@ -11,7 +11,7 @@ has _product_hash_code => (
 );
 has product_id    => ( is => 'rw', default => q{} );
 has product_title => ( is => 'ro', default => q{} );
-has price         => ( is => 'ro', default => 0 );
+has price         => ( is => 'rw', default => 0 );
 has quantity      => ( is => 'rw', default => 0 );
 
 sub _build__product_hash_code {
