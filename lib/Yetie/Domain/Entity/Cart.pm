@@ -17,8 +17,6 @@ has billing_address => ( is => 'rw', default => sub { __PACKAGE__->factory('enti
 has items           => ( is => 'ro', default => sub { __PACKAGE__->factory('list-line_items')->construct() } );
 has shipments       => ( is => 'ro', default => sub { __PACKAGE__->factory('list-shipments')->construct() } );
 
-my @needless_attrs = (qw/cart_id items/);
-
 sub add_item {
     my ( $self, $item ) = @_;
     croak 'Argument was not a Object' if ref $item =~ /::/sxm;
@@ -172,7 +170,7 @@ sub to_order_data {
     my $data = $self->to_data;
 
     # Remove needless data
-    for (@needless_attrs) { delete $data->{$_} }
+    for (qw/cart_id items/) { delete $data->{$_} }
 
     # Billing Address
     $data->{billing_address} = { id => $data->{billing_address}->{id} };
