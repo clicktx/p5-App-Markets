@@ -1,6 +1,7 @@
 package Yetie::Domain::Entity::Cart;
 use Carp qw(croak);
 use Yetie::Util;
+use Mojo::Util qw/sha1_sum/;
 
 use Moose;
 use namespace::autoclean;
@@ -9,7 +10,7 @@ extends 'Yetie::Domain::Entity';
 has id => (
     is      => 'ro',
     lazy    => 1,
-    default => sub { $_[0]->hash_code( $_[0]->cart_id ) }
+    default => sub { sha1_sum( shift->cart_id ) }
 );
 has cart_id         => ( is => 'ro', default => q{} );
 has billing_address => ( is => 'rw', default => sub { __PACKAGE__->factory('entity-address')->construct() } );

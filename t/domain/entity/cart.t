@@ -99,7 +99,7 @@ subtest 'methods' => sub {
     $d->{billing_address}->{hash}                    = 'f42001ccd9c7f10d05bfd8a9da91674635daba8c';
     $d->{shipments}->[0]->{shipping_address}->{hash} = 'a38d44916394e4d5289b8e5e2cc7b66bcd3f1722';
     $d->{shipments}->[1]->{shipping_address}->{hash} = 'e49e00abbdbcaa37c27e8af5ca11fe33c24703ce';
-    cmp_deeply $cart_data, { cart_id => ignore(), %{$d} }, 'right data structure';
+    cmp_deeply $cart_data, { id => ignore(), cart_id => ignore(), %{$d} }, 'right data structure';
     is $cart->id,               '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->total_item_count, '7',                                        'right total item count';
     is $cart->total_quantity,   '25',                                       'right total quantity count';
@@ -219,7 +219,7 @@ subtest 'merge' => sub {
     $d->{shipments}->[0]->{shipping_address}->{hash} = 'a38d44916394e4d5289b8e5e2cc7b66bcd3f1722';
     $d->{shipments}->[1]->{shipping_address}->{hash} = 'e49e00abbdbcaa37c27e8af5ca11fe33c24703ce';
     my $cart_data = $cart->to_data;
-    cmp_deeply $cart_data, $d, 'right non-destructive';
+    cmp_deeply $cart_data, { id => ignore(), %{$d} }, 'right non-destructive';
 
     %d            = %stored_data;
     $d            = \%d;
@@ -229,6 +229,7 @@ subtest 'merge' => sub {
     my $stored_cart_data = $stored_cart->to_data;
     cmp_deeply $stored_cart_data,
       {
+        id              => ignore(),
         cart_id         => '99999',
         billing_address => ignore(),
         items           => [
@@ -244,6 +245,7 @@ subtest 'merge' => sub {
 
     cmp_deeply $merged_cart_data,
       {
+        id              => ignore(),
         cart_id         => '99999',
         billing_address => ignore(),
         items           => [
@@ -463,6 +465,7 @@ subtest 'to_order_data' => sub {
     my $cart = _create_entity;
     cmp_deeply $cart->to_order_data,
       {
+        id              => ignore(),
         billing_address => { id => ignore() },
         orders          => [
             {
