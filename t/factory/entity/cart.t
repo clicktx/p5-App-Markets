@@ -35,17 +35,7 @@ subtest 'argument items data only' => sub {
         }
     )->construct();
     isa_ok $e->items->first, 'Yetie::Domain::Entity::LineItem';
-    is $e->items->first->id, 1, 'right id';
-};
-
-subtest 'argument shipments data only' => sub {
-    my $e = $pkg->new( 'entity-cart', { shipments => [ { items => [ {}, {} ] } ] }, )->construct();
-    $e->shipments->first->items->each(
-        sub {
-            isa_ok $_, 'Yetie::Domain::Entity::LineItem';
-            ok $_->id, 'right id';
-        }
-    );
+    is $e->items->count, 2, 'right items count';
 };
 
 done_testing;

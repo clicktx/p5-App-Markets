@@ -233,9 +233,9 @@ subtest 'merge' => sub {
         cart_id         => '99999',
         billing_address => ignore(),
         items           => [
-            { product_id => 4, quantity => 4, price => 100, id => ignore(), product_title => ignore() },
-            { product_id => 1, quantity => 1, price => 100, id => ignore(), product_title => ignore() },
-            { product_id => 5, quantity => 5, price => 100, id => ignore(), product_title => ignore() },
+            { product_id => 4, quantity => 4, price => 100 },
+            { product_id => 1, quantity => 1, price => 100 },
+            { product_id => 5, quantity => 5, price => 100 },
         ],
         shipments => [ { shipping_address => ignore(), items => [] } ],
       },
@@ -249,11 +249,11 @@ subtest 'merge' => sub {
         cart_id         => '99999',
         billing_address => ignore(),
         items           => [
-            { product_id => 4, quantity => 4, price => 100, id => ignore(), product_title => ignore() },
-            { product_id => 1, quantity => 2, price => 100, id => ignore(), product_title => ignore() },
-            { product_id => 5, quantity => 5, price => 100, id => ignore(), product_title => ignore() },
-            { product_id => 2, quantity => 2, price => 100, id => ignore(), product_title => ignore() },
-            { product_id => 3, quantity => 3, price => 100, id => ignore(), product_title => ignore() },
+            { product_id => 4, quantity => 4, price => 100 },
+            { product_id => 1, quantity => 2, price => 100 },
+            { product_id => 5, quantity => 5, price => 100 },
+            { product_id => 2, quantity => 2, price => 100, product_title => 'b' },
+            { product_id => 3, quantity => 3, price => 100, product_title => 'c' },
         ],
         shipments => [ { shipping_address => ignore(), items => [] } ],
       },
@@ -269,8 +269,8 @@ subtest 'remove_item' => sub {
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{items},
       [
-        { product_id => 1, quantity => 1, price => 100, id => ignore(), product_title => ignore() },
-        { product_id => 3, quantity => 3, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
+        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
       ],
       'right remove item';
 
@@ -280,9 +280,9 @@ subtest 'remove_item' => sub {
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{items},
       [
-        { product_id => 1, quantity => 1, price => 100, id => ignore(), product_title => ignore() },
-        { product_id => 2, quantity => 2, price => 100, id => ignore(), product_title => ignore() },
-        { product_id => 3, quantity => 3, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
+        { product_id => 2, quantity => 2, price => 100, product_title => ignore() },
+        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
       ],
       'right not removed';
 };
@@ -296,8 +296,8 @@ subtest 'remove_shipping_item' => sub {
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
-        { product_id => 5, quantity => 5, price => 100, id => ignore(), product_title => ignore() },
-        { product_id => 6, quantity => 6, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
+        { product_id => 6, quantity => 6, price => 100, product_title => ignore() },
       ],
       'right remove shipping item';
 
@@ -307,9 +307,9 @@ subtest 'remove_shipping_item' => sub {
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
-        { product_id => 4, quantity => 4, price => 100, id => ignore(), product_title => ignore() },
-        { product_id => 5, quantity => 5, price => 100, id => ignore(), product_title => ignore() },
-        { product_id => 6, quantity => 6, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 4, quantity => 4, price => 100, product_title => ignore() },
+        { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
+        { product_id => 6, quantity => 6, price => 100, product_title => ignore() },
       ],
       'right not removed';
 
@@ -317,9 +317,9 @@ subtest 'remove_shipping_item' => sub {
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
-        { product_id => 4, quantity => 4, price => 100, id => ignore(), product_title => ignore() },
-        { product_id => 5, quantity => 5, price => 100, id => ignore(), product_title => ignore() },
-        { product_id => 6, quantity => 6, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 4, quantity => 4, price => 100, product_title => ignore() },
+        { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
+        { product_id => 6, quantity => 6, price => 100, product_title => ignore() },
       ],
       'right not removed';
 };
@@ -331,9 +331,9 @@ subtest 'revert' => sub {
     ok $cart->revert, 'right cart revert';
     cmp_deeply $cart->items->to_data,
       [
-        { product_id => 1, quantity => 1, price => 100, id => ignore(), product_title => ignore() },
-        { product_id => 2, quantity => 2, price => 100, id => ignore(), product_title => ignore() },
-        { product_id => 3, quantity => 3, price => 100, id => ignore(), product_title => ignore() },
+        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
+        { product_id => 2, quantity => 2, price => 100, product_title => ignore() },
+        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
       ],
       'right items';
 
@@ -465,7 +465,6 @@ subtest 'to_order_data' => sub {
     my $cart = _create_entity;
     cmp_deeply $cart->to_order_data,
       {
-        id              => ignore(),
         billing_address => { id => ignore() },
         orders          => [
             {

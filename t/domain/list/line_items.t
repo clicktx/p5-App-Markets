@@ -23,11 +23,7 @@ subtest 'append' => sub {
     $item = $f->construct( { product_id => 3, quantity => 3 } );
     $list->append($item);
     cmp_deeply $list->to_data,
-      [
-        { product_id => 1, quantity => 1, product_title => ignore(), price => ignore() },
-        { product_id => 2, quantity => 2, product_title => ignore(), price => ignore() },
-        { product_id => 3, quantity => 3, product_title => ignore(), price => ignore() }
-      ],
+      [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 }, { product_id => 3, quantity => 3 } ],
       'right single append';
     is $list->is_modified, 1, 'right modified';
 
@@ -36,10 +32,7 @@ subtest 'append' => sub {
     $item = $f->construct( { product_id => 2, quantity => 2 } );
     $list->append($item);
     cmp_deeply $list->to_data,
-      [
-        { product_id => 1, quantity => 1, product_title => ignore(), price => ignore() },
-        { product_id => 2, quantity => 4, product_title => ignore(), price => ignore() }
-      ],
+      [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 4 } ],
       'right sum quantity';
     is $list->is_modified, 1, 'right modified';
 
@@ -50,11 +43,7 @@ subtest 'append' => sub {
     my $item3 = $f->construct( { product_id => 3, quantity => 3 } );
     $list->append( $item, $item2, $item3 );
     cmp_deeply $list->to_data,
-      [
-        { product_id => 1, quantity => 2, product_title => ignore(), price => ignore() },
-        { product_id => 2, quantity => 4, product_title => ignore(), price => ignore() },
-        { product_id => 3, quantity => 3, product_title => ignore(), price => ignore() }
-      ],
+      [ { product_id => 1, quantity => 2 }, { product_id => 2, quantity => 4 }, { product_id => 3, quantity => 3 } ],
       'right multi append';
     is $list->is_modified, 1, 'right modified';
 };
@@ -68,12 +57,7 @@ subtest 'remove' => sub {
     my $data = [ { product_id => 1 }, { product_id => 2 }, { product_id => 3 } ];
     my $list = $construct->( list => $data );
     my $res = $list->remove(2);
-    cmp_deeply $list->to_data,
-      [
-        { product_id => 1, quantity => ignore(), product_title => ignore(), price => ignore() },
-        { product_id => 3, quantity => ignore(), product_title => ignore(), price => ignore() }
-      ],
-      'right remove item';
+    cmp_deeply $list->to_data, [ { product_id => 1 }, { product_id => 3 } ], 'right remove item';
     is $list->is_modified, 1, 'right modified';
     is $res, 1, 'right removed';
 
@@ -81,11 +65,7 @@ subtest 'remove' => sub {
     $list = $construct->( list => $data );
     $res = $list->remove(4);
     cmp_deeply $list->to_data,
-      [
-        { product_id => 1, quantity => ignore(), product_title => ignore(), price => ignore() },
-        { product_id => 2, quantity => ignore(), product_title => ignore(), price => ignore() },
-        { product_id => 3, quantity => ignore(), product_title => ignore(), price => ignore() }
-      ],
+      [ { product_id => 1 }, { product_id => 2 }, { product_id => 3 } ],
       'right not remove item';
     is $list->is_modified, 0, 'right not modified';
     is $res, 0, 'right not removed';

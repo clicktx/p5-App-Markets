@@ -8,13 +8,7 @@ sub cook {
     $self->aggregate( billing_address => ( 'entity-address', $self->{billing_address} || {} ) );
 
     # Aggregate items
-    my $items = $self->param('items') || [];
-    my $line_num = 1;
-    foreach my $item ( @{$items} ) {
-        $item->{id} = $line_num;
-        $line_num++;
-    }
-    $self->aggregate( items => ( 'list-line_items', $items ) );
+    $self->aggregate( items => ( 'list-line_items', $self->param('items') || [] ) );
 
     # Aggregate shipments
     $self->aggregate( shipments => ( 'list-shipments', $self->param('shipments') || [] ) );
