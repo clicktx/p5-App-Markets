@@ -1,11 +1,12 @@
 package Yetie::Domain::Value::Email;
-use Yetie::Domain::Base 'Yetie::Domain::Value';
+use Moose;
+extends 'Yetie::Domain::Value';
 
-has _in_storage => 0;
-has is_primary  => 0;
-has is_verified => 0;
+has _in_storage => ( is => 'ro', default => 0 );
+has is_primary  => ( is => 'ro', default => 0 );
+has is_verified => ( is => 'ro', default => 0 );
 
-sub in_storage { shift->_in_storage ? 1 : 0 }
+sub in_storage { return shift->_in_storage ? 1 : 0 }
 
 sub to_data {
     my $self = shift;
@@ -59,4 +60,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Value>
+L<Yetie::Domain::Value>, L<Moose>

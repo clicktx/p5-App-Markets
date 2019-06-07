@@ -17,7 +17,7 @@ sub finalize {
     my $c = shift;
 
     # cartが変更されていた場合はセッションカートのデータを変更
-    $c->cart_session->data( $c->cart->to_data ) if $c->cart->is_modified;
+    if ( $c->cart->is_modified ) { $c->cart_session->data( $c->cart->to_data ) }
 
     $c->SUPER::finalize();
     return $c;

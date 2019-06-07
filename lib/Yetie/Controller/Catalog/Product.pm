@@ -16,20 +16,28 @@ sub index {
     my $product_id = $c->stash('product_id');
     $c->init_form( $form, $product_id );
 
-    my $product = $c->service('product')->find_product_with_breadcrumbs($product_id);
-    $c->stash( entity => $product );
-
-    # Page data
-    $product->page_title( $product->title );
+    my ( $product, $breadcrumbs ) = $c->service('product')->find_product_with_breadcrumbs($product_id);
 
     # 404
-    return $c->reply->not_found unless $product->has_id;
+    return $c->reply->not_found if !$product->has_id;
+
+    # Page
+    my $page = $c->factory('entity-page')->construct(
+        title       => $product->title,
+        form        => $form,
+        breadcrumbs => $breadcrumbs,
+    );
+
+    $c->stash( page => $page, product => $product );
+
+    # Page data
+    # $product->page_title( $product->title );
 
     # Get request
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     # Add to cart
     $c->service('cart')->add_item( $form->params->to_hash );

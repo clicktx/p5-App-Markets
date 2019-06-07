@@ -6,15 +6,21 @@ sub index {
 
     my $form = $c->form('search');
     $c->init_form();    # hook point
-    return $c->render() unless $form->do_validate;
 
-    my $customers = $c->service('customer')->search_customers($form);
-    $c->stash( entity => $customers );
+    # FIXME: bug
+    return $c->render() if !$form->do_validate;
 
-    # Page data
-    $customers->page_title('Customers');
+    my ( $customers, $pager ) = $c->service('customer')->search_customers($form);
 
-    $c->render();
+    # Page
+    my $page = $c->factory('entity-page')->construct(
+        title => 'Customers',
+        form  => $form,
+
+        # breadcrumbs => $breadcrumbs,
+        pager => $pager,
+    );
+    return $c->render( page => $page, customers => $customers );
 }
 
 1;

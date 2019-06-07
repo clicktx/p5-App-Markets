@@ -6,18 +6,18 @@ sub index {
 
     my $form = $c->form('search');
     $c->init_form();
-
-    # return $c->render() unless $form->has_data;
     $form->do_validate;
 
-    # use service
-    my $products = $c->service('product')->search_products($form);
-    $c->stash( entity => $products );
+    # Products
+    my ( $products, $pager ) = $c->service('product')->search_products($form);
 
-    # Page Data
-    $products->page_title('Products');
-
-    $c->render();
+    # Page
+    my $page = $c->factory('entity-page')->construct(
+        title => 'Products',
+        form  => $form,
+        pager => $pager,
+    );
+    return $c->render( page => $page, products => $products );
 }
 
 1;

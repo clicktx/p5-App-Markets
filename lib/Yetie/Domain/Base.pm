@@ -1,119 +1,47 @@
 package Yetie::Domain::Base;
-use Carp qw();
-use Mojo::Base -base;
-use Mojo::Util ();
+use Moose;
+use namespace::autoclean;
+use MooseX::StrictConstructor;
 
-# Override "attr" method and "has" function of Mojo::Base
-sub attr {
-    my ( $self, $attrs, $value ) = @_;
-    return unless ( my $class = ref $self || $self ) && $attrs;
-
-    Carp::croak 'Default has to be a code reference or constant value'
-      if ref $value && ref $value ne 'CODE';
-
-    for my $attr ( @{ ref $attrs eq 'ARRAY' ? $attrs : [$attrs] } ) {
-        Carp::croak qq{Attribute "$attr" invalid} unless $attr =~ /^[a-zA-Z_]\w*$/;
-
-        # Very performance-sensitive code with lots of micro-optimizations
-        # NOTE: Automatic update of "_is_modified" in case of setter
-        if ( ref $value ) {
-            my $sub = sub {
-                return exists $_[0]{$attr} ? $_[0]{$attr} : ( $_[0]{$attr} = $value->( $_[0] ) )
-                  if @_ == 1;
-                $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
-                $_[0]{$attr} = $_[1];
-                $_[0];
-            };
-            Mojo::Util::monkey_patch( $class, $attr, $sub );
-        }
-        elsif ( defined $value ) {
-            my $sub = sub {
-                return exists $_[0]{$attr} ? $_[0]{$attr} : ( $_[0]{$attr} = $value )
-                  if @_ == 1;
-                $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
-                $_[0]{$attr} = $_[1];
-                $_[0];
-            };
-            Mojo::Util::monkey_patch( $class, $attr, $sub );
-        }
-        else {
-            my $sub = sub {
-                return $_[0]{$attr} if @_ == 1;
-                $_[0]{_is_modified} = 1 if _is_changed( $attr, @_ );
-                $_[0]{$attr} = $_[1];
-                $_[0];
-            };
-            Mojo::Util::monkey_patch( $class, $attr, $sub );
-        }
-    }
+sub get_all_attribute_names {
+    return ( sort map { $_->name } shift->meta->get_all_attributes );
 }
 
-sub import {
-    my ( $class, $caller ) = ( shift, caller );
-    my @flags = @_ ? @_ : ('');
-
-    # Base
-    if ( $flags[0] eq '-base' or !$flags[0] ) { $flags[0] = $class }
-
-    # Read Only
-    my $readonly;
-    if ( $flags[0] eq '-readonly' ) {
-        $flags[0] = $class;
-        $readonly = 1;
-    }
-
-    # Role
-    if ( $flags[0] eq '-role' ) {
-        Carp::croak 'Role::Tiny 2.000001+ is required for roles' unless Mojo::Base->ROLES;
-        Mojo::Util::monkey_patch( $caller, 'has', sub { attr( $caller, @_ ) } );
-        eval "package $caller; use Role::Tiny; 1" or die $@;
-    }
-
-    # Module and not -strict
-    elsif ( $flags[0] !~ /^-/ ) {
-        no strict 'refs';
-        require( Mojo::Util::class_to_path( $flags[0] ) ) unless $flags[0]->can('new');
-        push @{"${caller}::ISA"}, $flags[0];
-        Mojo::Util::monkey_patch( $caller, 'has', sub { attr( $caller, @_ ) } );
-
-        # Add default attributes
-        $caller->attr( _is_modified => 0 );
-        $readonly ? $caller->attr( _readonly => 1 ) : $caller->attr( _readonly => 0 );
-    }
-
-    # Mojo modules are strict!
-    $_->import for qw(strict warnings utf8);
-    feature->import(':5.10');
-
-    # Signatures (Perl 5.20+)
-    if ( ( $flags[1] || '' ) eq '-signatures' ) {
-        Carp::croak 'Subroutine signatures require Perl 5.20+' if $] < 5.020;
-        require experimental;
-        experimental->import('signatures');
-    }
+sub get_public_attribute_names {
+    return ( grep { /\A(?!_).*/sxm } shift->get_all_attribute_names );
 }
 
-sub new {
-    my $class = shift;
-    $class = ref $class || $class;
+sub hash_code {
+    my ( $self, $arg ) = @_;
+    return Mojo::Util::sha1_sum($arg) if $arg;
 
-    my $args = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+    return Mojo::Util::sha1_sum( shift->_dump_by_public_attributes );
+}
 
-    my $params = {};
-    foreach my $key ( keys %{$args} ) {
-        if ( $class->can($key) ) { $params->{$key} = $args->{$key} }
-        else                     { Carp::croak "$class has not '$key' attribute" }
+sub set_attributes {
+    my ( $self, $params ) = @_;
+
+    foreach my $key ( keys %{$params} ) {
+        my $value = $params->{$key};
+        $self->$key($value);
     }
-    bless $params, $class;
+    return $self;
 }
 
-sub _is_changed {
-    my ( $attr, $obj, $value ) = ( shift, shift, shift // '' );
+sub _dump_by_public_attributes {
+    my $self = shift;
 
-    Carp::croak 'Value can not be set.This object is immutable.' if $obj->_readonly;
-    $obj->{$attr} = '' unless defined $obj->{$attr};    # undef to ''
-    return exists $obj->{$attr} ? $obj->{$attr} eq $value ? 0 : 1 : 1;
+    my $dump = '({';
+    foreach my $attr ( $self->get_public_attribute_names ) {
+        my $value = $self->$attr || q{};
+        $dump .= "$attr=" . $value . q{,};
+    }
+    $dump .= '},' . ref($self) . ')';
+    return $dump;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 
@@ -125,25 +53,47 @@ Yetie::Domain::Base
 
 =head1 SYNOPSIS
 
+    package Yetie::Domain::Foo;
+    use Moose;
+    extends 'Yetie::Domain::Base';
+
+    has foo => ( is => 'ro' );
+
+    no Moose;
+    __PACKAGE__->meta->make_immutable;
+    1;
+
 =head1 DESCRIPTION
 
-Override C<attr> method and C<has> function of L<Mojo::Base>.
-Using setter will automatically update "_is_modified" to true.
-
-=head1 FUNCTIONS
-
-L<Yetie::Domain::Base> inherits all functions from L<Mojo::Base> and implements
-the following new ones.
-
-=head1 ATTRIBUTES
-
-L<Yetie::Domain::Base> inherits all attributes from L<Mojo::Base> and implements
-the following new ones.
+Domain object base class.
 
 =head1 METHODS
 
-L<Yetie::Domain::Base> inherits all methods from L<Mojo::Base> and implements
+L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements
 the following new ones.
+
+=head2 C<get_all_attribute_names>
+
+    my @names = $obj->get_all_attribute_names;
+
+Return all attribute name list.
+
+=head2 C<get_public_attribute_names>
+
+    my @names = $obj->get_public_attribute_names;
+
+Return all public attribute name list.
+
+=head2 C<hash_code>
+
+    my $sha1_sum = $obj->hash_code;
+    my $sha1_sum = $obj->hash_code($bytes);
+
+Return SHA1 checksum.
+
+=head2 C<set_attributes>
+
+    $obj->set_attributes( \%parameters );
 
 =head1 AUTHOR
 
@@ -151,4 +101,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Mojo::Base>
+L<Moose>, L<MooseX::StrictConstructor>

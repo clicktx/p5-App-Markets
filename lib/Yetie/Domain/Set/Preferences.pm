@@ -1,6 +1,9 @@
 package Yetie::Domain::Set::Preferences;
-use Yetie::Domain::Base 'Yetie::Domain::Set';
 use Carp qw/croak/;
+
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Set';
 
 sub properties { shift->hash_set(@_) }
 
@@ -25,6 +28,9 @@ sub value {
         return $value ? $value : $self->hash_set->{$name}->default_value;
     }
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

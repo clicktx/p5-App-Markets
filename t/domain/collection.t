@@ -2,12 +2,8 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
 
-use_ok 'Yetie::Domain::Entity';
-
 my $pkg = 'Yetie::Domain::Collection';
 use_ok $pkg;
-
-my @data = ( { id => 1, hoge => 1 }, { id => 2, hoge => 2 }, { id => 3, hoge => 3 }, );
 
 subtest 'basic' => sub {
     isa_ok $pkg->new(), 'Mojo::Collection';
@@ -33,16 +29,24 @@ subtest 'append' => sub {
 subtest 'get' => sub {
     my $c = $pkg->new( 1, 2, 3 );
     is $c->get(0), 1,     'right get element';
-    is $c->get(1), 2,     'right get element';
+    is $c->get(2), 3,     'right get element';
     is $c->get(4), undef, 'right has not element';
     is $c->get(), undef, 'right has not element';
     is $c->get(''), undef, 'right has not element';
 };
 
+{
+
+    package t::domain::entity;
+    use Moose;
+    extends 'Yetie::Domain::Entity';
+    has hoge => ( is => 'ro' );
+}
+my @data = ( { id => 1, hoge => 1 }, { id => 2, hoge => 2 }, { id => 3, hoge => 3 }, );
+
 subtest 'get_by_id' => sub {
     my @entities;
-    Yetie::Domain::Entity->attr( [qw(hoge)] );
-    push @entities, Yetie::Domain::Entity->new($_) for @data;
+    push @entities, t::domain::entity->new($_) for @data;
 
     my $c = $pkg->new(@entities);
     is $c->get_by_id(2)->{hoge}, 2, 'right found entity';
@@ -53,10 +57,18 @@ subtest 'get_by_id' => sub {
     is $c->get_by_id(1), undef, 'right empty collection';
 };
 
+subtest 'get_by_line_num' => sub {
+    my $c = $pkg->new( 1, 2, 3 );
+    is $c->get_by_line_num(1), 1,     'right get element';
+    is $c->get_by_line_num(3), 3,     'right get element';
+    is $c->get_by_line_num(4), undef, 'right has not element';
+    is $c->get_by_line_num(), undef, 'right has not element';
+    is $c->get_by_line_num(''), undef, 'right has not element';
+};
+
 subtest 'has_element' => sub {
     my @entities;
-    Yetie::Domain::Entity->attr( [qw(hoge)] );
-    push @entities, Yetie::Domain::Entity->new($_) for @data;
+    push @entities, t::domain::entity->new($_) for @data;
 
     my $c = $pkg->new(@entities);
     is $c->has_element(2), 1, 'right has element';

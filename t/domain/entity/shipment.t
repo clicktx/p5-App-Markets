@@ -23,7 +23,6 @@ subtest 'basic' => sub {
     isa_ok $shipment->shipping_address, 'Yetie::Domain::Entity::Address';
     isa_ok $shipment->items,            'Yetie::Domain::List::LineItems';
 
-    is $shipment->hash_code, '356a192b7913b04c54574d18c28d46e6395428ab', 'right hash_code';
     is $shipment->id, 1, 'right id';
 };
 
@@ -34,8 +33,6 @@ subtest 'equals' => sub {
     is $shipment->equals($shipment),  1, 'right equals item';
     is $shipment->equals($shipment2), 0, 'right not equals item';
 };
-
-# subtest 'clone' => sub {};
 
 subtest 'item_count' => sub {
     my $shipment = construct( id => 1 );

@@ -1,19 +1,19 @@
 % layout 'admin-default';
-% title $entity->page_title;
+% title $page->title;
 
 <h1><%= title %></h1>
 
 <ul>
-% $entity->order_list->each( sub {
+% $orders->each( sub {
     % my $order_summary = shift;
     <li>
         [
-        <%= link_to url_for( 'rn.admin.order.edit', id => $order_summary->id ) => begin %>
+        <%= link_to url_for( 'rn.admin.order.index', id => $order_summary->id ) => begin %>
             edit
         <% end %>
         ]
         [ <%= link_to 'duplicate' => url_for( 'rn.admin.order.duplicate', id => $order_summary->id ) %> ]
-        <%= link_to url_for( 'rn.admin.order.details', id => $order_summary->id ) => begin %>
+        <%= link_to url_for( 'rn.admin.order.index', id => $order_summary->id ) => begin %>
             order id: <%= $order_summary->id %>
             purchased_on: <%= $order_summary->purchased_on %>
             bill_to_name: <%= $order_summary->bill_to_name %>
@@ -25,7 +25,7 @@
 % });
 </ul>
 
-<%= include 'admin/components/pagination', pager => $entity->pager, params => $entity->form->params->to_hash %>
+<%= include 'admin/components/pagination', pager => $page->pager, params => $page->form->params->to_hash %>
 
 <h2><%= __('Orders') %></h2>
 

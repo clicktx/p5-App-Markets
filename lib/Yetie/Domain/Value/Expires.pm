@@ -1,23 +1,22 @@
 package Yetie::Domain::Value::Expires;
-use Yetie::Domain::Base 'Yetie::Domain::Value';
+use Moose;
+extends 'Yetie::Domain::Value';
 
-our $default_expires_delta = 600;
+has '+value' => ( isa => 'Int' );
+
+has expires_delta => (
+    is      => 'ro',
+    default => 600
+);
+
+has '+value' => ( default => sub { time + shift->expires_delta } );
 
 sub is_expired {
     my $self = shift;
 
-    my $expires = $self->value // 0;
-    my $now = time;
+    my $expires = $self->value;
+    my $now     = time;
     return $expires - $now < 0 ? 1 : 0;
-}
-
-sub new {
-    my $class = shift;
-    my $args = @_ ? @_ > 1 ? {@_} : $_[0] : {};
-
-    my $expires_delta = $args->{expires_delta} // $default_expires_delta;
-    my $expires       = $args->{value}         // time + $expires_delta;
-    return $class->SUPER::new( value => $expires );
 }
 
 1;
@@ -45,6 +44,10 @@ Yetie::Domain::Value::Expires
 L<Yetie::Domain::Value::Expires> inherits all attributes from L<Yetie::Domain::Value> and implements
 the following new ones.
 
+=head2 C<expires_delta>
+
+    my $delta = $expires->expires_delta;
+
 =head1 METHODS
 
 L<Yetie::Domain::Value::Expires> inherits all methods from L<Yetie::Domain::Value> and implements
@@ -65,4 +68,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Value>
+L<Yetie::Domain::Value>, L<Moose>

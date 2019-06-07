@@ -1,13 +1,22 @@
 package Yetie::Domain::Set;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity';
 
-has hash_set => sub { Yetie::Domain::IxHash->new };
+has hash_set => (
+    is      => 'rw',
+    isa     => 'Yetie::Domain::IxHash',
+    default => sub { Yetie::Domain::IxHash->new },
+);
 
-sub each { shift->hash_set->each(@_) }
+sub each { return shift->hash_set->each(@_) }
 
-sub get { shift->hash_set->{ +shift } }
+sub get { return shift->hash_set->{ +shift } }
 
-sub to_data { shift->hash_set->to_data }
+sub to_data { return shift->hash_set->to_data }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

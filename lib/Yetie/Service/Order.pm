@@ -6,13 +6,7 @@ sub find_order {
 
     my $result = $self->resultset('Sales::Order')->find_by_id($order_id);
     my $data = $result ? $result->to_data : {};
-
-    # Set address type
-    do { $data->{$_}->{type} = $_ if $data->{$_} }
-      for qw(billing_address shipping_address);
-
-    my $order_detail = $self->factory('entity-order_detail')->construct($data);
-    return $order_detail;
+    return $self->factory('entity-order_detail')->construct($data);
 }
 
 sub search_orders {
@@ -24,16 +18,9 @@ sub search_orders {
         page_no  => $form->param('page') || 1,
         per_page => $form->param('per_page') || 5,
     };
-    my $result = $self->resultset('Sales::Order')->search_sales_orders($conditions);
-
-    my $data = {
-        meta_title  => 'Orders',
-        form        => $form,
-        breadcrumbs => [],
-        order_list  => $result->to_data,
-        pager       => $result->pager,
-    };
-    return $self->factory('entity-page-orders')->construct($data);
+    my $rs = $self->resultset('Sales::Order')->search_sales_orders($conditions);
+    my $orders = $self->factory('list-order_details')->construct( list => $rs->to_data );
+    return ( $orders, $rs->pager );
 }
 
 1;

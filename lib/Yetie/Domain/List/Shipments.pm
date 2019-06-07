@@ -1,8 +1,10 @@
 package Yetie::Domain::List::Shipments;
-use Yetie::Domain::Base 'Yetie::Domain::List';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::List';
 
 sub clear_items {
-    shift->each( sub { $_->items->clear } );
+    return shift->each( sub { $_->items->clear } );
 }
 
 sub create_shipment {
@@ -13,34 +15,37 @@ sub create_shipment {
     return $shipment;
 }
 
-sub has_item { shift->total_item_count ? 1 : 0 }
+sub has_item { return shift->total_item_count ? 1 : 0 }
 
-sub has_shipment { shift->count ? 1 : 0 }
+sub has_shipment { return shift->count ? 1 : 0 }
 
-sub is_multiple { shift->count > 1 ? 1 : 0 }
+sub is_multiple { return shift->count > 1 ? 1 : 0 }
 
 sub total_item_count {
-    shift->list->map( sub { $_->items->each } )->size;
+    return shift->list->map( sub { $_->items->each } )->size;
 }
 
 sub total_quantity {
-    shift->list->reduce( sub { $a + $b->items->total_quantity }, 0 );
+    return shift->list->reduce( sub { $a + $b->items->total_quantity }, 0 );
 }
 
 sub revert {
     my $self = shift;
 
     my $shipment_first = $self->first;
-    return unless $shipment_first;
+    return if !$shipment_first;
 
     $shipment_first->items->clear;
     my $shipments = $self->list->new($shipment_first);
-    $self->list($shipments);
+    return $self->list($shipments);
 }
 
 sub subtotal {
-    shift->list->reduce( sub { $a + $b->items->subtotal }, 0 );
+    return shift->list->reduce( sub { $a + $b->items->subtotal }, 0 );
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

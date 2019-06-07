@@ -20,6 +20,8 @@ requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';
 requires 'Mojolicious::Plugin::Scrypt',             '0.01';
 requires 'MojoX::Session',                          '0.33';
 requires 'Mojo::Log::Clearable',                    '1.000';
+requires 'Moose',                                   '2.2011';
+requires 'MooseX::StrictConstructor',               '0.21';
 requires 'Scalar::Util',                            '1.47';
 requires 'Session::Token',                          '1.503';
 requires 'Server::Starter',                         '0.32';

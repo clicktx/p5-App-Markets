@@ -4,8 +4,8 @@ use Yetie::Form::FieldSet;
 
 my $product = fieldset('base-product');
 
-has_field 'item.{}.price' => $product->field_info('price');
+has_field 'item.[].price' => $product->field_info('price');
 
-has_field 'item.{}.quantity' => $product->field_info('quantity');
+has_field 'item.[].quantity' => $product->field_info('quantity');
 
 1;

@@ -118,8 +118,9 @@ sub t06_search_customers : Tests() {
     my $form = $c->form('search');
     $form->do_validate;
 
-    my $e = $s->search_customers($form);
-    isa_ok $e, 'Yetie::Domain::Entity::Page::Customers';
+    my ( $e, $pager ) = $s->search_customers($form);
+    isa_ok $e,     'Yetie::Domain::List::Customers';
+    isa_ok $pager, 'DBIx::Class::ResultSet::Pager';
 }
 
 __PACKAGE__->runtests;

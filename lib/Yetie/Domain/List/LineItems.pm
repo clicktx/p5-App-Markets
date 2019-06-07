@@ -1,33 +1,44 @@
 package Yetie::Domain::List::LineItems;
-use Yetie::Domain::Base 'Yetie::Domain::List';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::List';
 
 sub append {
     my $self = shift;
-    $self->get_by_hash( $_->hash ) ? $self->_update_quantity($_) : $self->_append_item($_) for @_;
+
+    foreach my $item (@_) {
+        $self->get_by_product_hash_code( $item->product_hash_code )
+          ? $self->_update_quantity($item)
+          : $self->_append_item($item);
+    }
+    return $self;
 }
 
-sub get_by_hash {
+sub get_by_product_hash_code {
     my ( $self, $hash_code ) = @_;
-    return $self->list->first( sub { $_->hash eq $hash_code } );
+    return $self->list->first( sub { $_->product_hash_code eq $hash_code } );
 }
 
-sub has_element_by_hash { shift->get_by_hash(shift) ? 1 : 0 }
+sub has_element_by_hash { return shift->get_by_product_hash_code(shift) ? 1 : 0 }
 
 sub total_quantity {
-    shift->list->reduce( sub { $a + $b->quantity }, 0 );
+    return shift->list->reduce( sub { $a + $b->quantity }, 0 );
 }
 
 sub remove {
-    my ( $self, $hash_code ) = @_;
-    return unless $self->has_element_by_hash($hash_code);
+    my ( $self, $line_num ) = @_;
 
-    my $new = $self->list->grep( sub { $_->hash ne $hash_code } );
+    my $item = $self->get_by_line_num($line_num);
+    return 0 if !$item;
+
+    my $new = $self->list->grep( sub { !$_->equals($item) } );
     $self->list($new);
+    return 1;
 }
 
 sub subtotal {
     my $self = shift;
-    $self->list->reduce( sub { $a + $b->subtotal }, 0 );
+    return $self->list->reduce( sub { $a + $b->subtotal }, 0 );
 }
 
 sub total_amount {
@@ -42,20 +53,22 @@ sub total_amount {
 sub _append_item {
     my ( $self, $item ) = @_;
     my $new = $self->list->append($item);
-    $self->list($new);
+    return $self->list($new);
 }
 
 sub _update_quantity {
     my ( $self, $item ) = @_;
     my $new = $self->list->map(
         sub {
-            $item->hash eq $_->hash
-              ? $item->quantity( $item->quantity + $_->quantity )
-              : $_;
+            if ( $_->equals($item) ) { $_->quantity( $_->quantity + $item->quantity ) }
+            return $_;
         }
     );
-    $self->list($new);
+    return $self->list($new);
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
@@ -83,9 +96,9 @@ the following new ones.
     $items->append($item);
     $items->append( $item, $item, ... );
 
-=head2 C<get_by_hash>
+=head2 C<get_by_product_hash_code>
 
-    my $item = $items->get_by_hash($hash_code);
+    my $item = $items->get_by_product_hash_code($product_hash_code);
 
 =head2 C<has_element_by_hash>
 
@@ -97,7 +110,9 @@ the following new ones.
 
 =head2 C<remove>
 
-    $items->remove($hash_code);
+    $items->remove($line_num);
+
+Return true if remove item.
 
 =head2 C<subtotal>
 

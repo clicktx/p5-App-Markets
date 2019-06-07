@@ -1,5 +1,4 @@
-<% my $order = stash('entity'); =%>
-<% extends 'admin/layouts/default', title => $order->page_title; =%>
+<% extends 'admin/layouts/default', title => $page->title; =%>
 <div class="">
     <%= content content_header => begin =%>
         <h1><%= __(title) %></h1>
@@ -8,28 +7,28 @@
         </ul>
     <% end =%>
 </div>
-<div class="">
+<div id="shipping_address" class="">
     <h3>Shipping Address</h3>
     <%= content shipping_address => begin =%>
-        <%= link_to 'rn.admin.order.edit.shipping_address' => begin %>
+        <%= link_to url_for('rn.admin.order.edit.shipping_address')->fragment('shipping_address') => begin %>
             Edit
         <% end %>
         <%= include 'common/elements/address', address => $order->shipping_address %>
     <% end =%>
 </div>
-<div class="">
+<div id="billing_address" class="">
     <h3>Billing Address</h3>
     <%= content billing_address => begin =%>
-        <%= link_to 'rn.admin.order.edit.billing_address' => begin %>
+        <%= link_to url_for('rn.admin.order.edit.billing_address')->fragment('billing_address') => begin %>
             Edit
         <% end %>
         <%= include 'common/elements/address', address => $order->billing_address %>
     <% end =%>
 </div>
-<div class="">
+<div id="items" class="">
     <h3>Items Ordered</h3>
     <%= content items_ordered => begin =%>
-        <%= link_to 'rn.admin.order.edit.items' => begin %>
+        <%= link_to url_for('rn.admin.order.edit.items')->fragment('items') => begin %>
             Edit
         <% end %>
         <ol>
@@ -44,15 +43,13 @@
         </ol>
     <% end =%>
 </div>
+<hr>
 <div class="">
     <%= content main => begin =%>
-        <%= link_to 'rn.admin.order.edit' => ( order_id => $id, class => 'btn btn-primary' ) => begin %>
-            Edit this Order
-        <% end %>
         <%= form_for 'rn.admin.order.delete' => ( method => 'POST' ) => begin %>
             <%= csrf_field %>
             <%= form_widget 'admin-order#id', value => $id %>
-            <%= submit_button 'Delete this Order' %>
+            <%= submit_button 'Delete this Order', ( class => 'btn btn-danger' ) %>
         <% end %>
         <ul>
             <li><%= link_to __('Orders') => 'rn.admin.orders' %></li>

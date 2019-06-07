@@ -1,15 +1,18 @@
 package Yetie::Domain::Entity::Activity;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Carp qw(croak);
 
-has [qw(customer_id staff_id)];
-has action         => undef;
-has method         => undef;
-has status         => 'success';
-has message        => undef;
-has remote_address => 'unkown';
-has user_agent     => 'unkown';
-has created_at     => undef;
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity';
+
+has [qw(customer_id staff_id)] => ( is => 'ro' );
+has action         => ( is => 'ro' );
+has method         => ( is => 'ro' );
+has status         => ( is => 'ro', default => 'success' );
+has message        => ( is => 'ro' );
+has remote_address => ( is => 'ro', default => 'unkown' );
+has user_agent     => ( is => 'ro', default => 'unkown' );
+has created_at     => ( is => 'ro' );
 
 sub type {
     return 'customer' if $_[0]->customer_id;
@@ -29,6 +32,9 @@ sub to_data {
 
     return $data;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

@@ -2,7 +2,7 @@
 <% content $action => begin =%>
     <%= form_for '' => ( method => 'POST' ) => begin %>
         <%= csrf_field %>
-        <%= hidden_field "id" => $entity->$action->id %>
+        <%= hidden_field "id" => $order->$action->id %>
         <%= include 'common/components/form/address', fieldset => 'customer_address' %>
         <div class="">
             <%= submit_button __("save.$action") %>

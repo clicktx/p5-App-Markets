@@ -13,7 +13,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'to_data' => sub {
-    my $v = $pkg->new();
+    my $v = $pkg->new( value => '' );
 
     is_deeply $v->to_data,
       {

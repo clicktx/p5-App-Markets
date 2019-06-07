@@ -30,7 +30,7 @@ sub index {
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     # Edit cart
     $cart->items->each(
@@ -52,12 +52,12 @@ sub clear {
 sub delete {
     my $c = shift;
 
-    my $form = $c->form('cart-delete');
-    return $c->reply->exception('Bad request') unless $form->do_validate;
+    my $form = $c->form('cart-delete_item');
+    return $c->reply->exception('Bad request') if !$form->do_validate;
 
     # NOTE: 複数配送時の場合はitemsのitemを削除する必要がありそう（未実装）
-    my $target = $form->param('target_item_id');
-    $c->cart->remove_item($target);
+    my $line_num = $form->param('line_num');
+    $c->cart->remove_item($line_num);
 
     return $c->redirect_to('rn.cart');
 }
