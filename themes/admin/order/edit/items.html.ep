@@ -27,12 +27,12 @@
                 </td>
                 <td class=""><%= $item->product_title %></td>
                 <td class="">
-                    <%= form_field "item.{$item_id}.price" =%>
+                    <%= form_field "item.$i.price" =%>
                     <%= form_widget value => $item->price %>
                     <%= form_error %>
                 </td>
                 <td class="">
-                    <%= form_field "item.{$item_id}.quantity" =%>
+                    <%= form_field "item.$i.quantity" =%>
                     <%= form_widget value => $item->quantity %>
                     <%= form_error %>
                 </td>

@@ -37,15 +37,18 @@ sub items {
     # Validation form
     return $c->render() if !$form->do_validate;
 
-    # FIXME:
+    my $list_param = $form->scope_param('item') || [];
+    my $items = $order->items;
+    $items->each(
+        sub {
+            my ( $item, $num ) = @_;
+            my $params = $list_param->[$num];
+            $item->set_attributes($params);
+        }
+    );
+
     # Update
-    my $params = $form->param('item') || {};
-    foreach my $key ( keys %{$params} ) {
-        my $id = $key;
-        $id =~ s/\*//g;
-        my $values = $params->{$key};
-        $c->resultset('Sales::Order::Item')->search( { id => $id } )->update($values);
-    }
+    if ( $order->is_modified ) { $c->resultset('Sales::Order::Item')->store_items($order) }
 
     my $url = $c->url_for( 'rn.admin.order.index', order_id => $order_id )->fragment('items');
     return $c->redirect_to($url);
