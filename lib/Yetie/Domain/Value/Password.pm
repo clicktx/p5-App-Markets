@@ -11,6 +11,9 @@ sub is_verify {
     return scrypt_hash_verify( $raw_password, $self->value ) ? 1 : 0;
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
+
 1;
 __END__
 

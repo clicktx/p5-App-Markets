@@ -1,5 +1,5 @@
 package Yetie::Domain::Value::Price;
-use Moo;
+use Moose;
 extends 'Yetie::Domain::Value';
 
 use Carp qw(croak);
@@ -42,6 +42,9 @@ sub validate {
     croak 'Argument cannot be less than zero' if $self->value < 0;
     return;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

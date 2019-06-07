@@ -19,6 +19,9 @@ sub is_expired {
     return $expires - $now < 0 ? 1 : 0;
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
+
 1;
 __END__
 

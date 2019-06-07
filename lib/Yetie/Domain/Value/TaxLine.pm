@@ -1,5 +1,5 @@
 package Yetie::Domain::Value::TaxLine;
-use Moo;
+use Moose;
 extends 'Yetie::Domain::Value';
 
 has rate  => ( is => 'ro' );
@@ -8,6 +8,9 @@ has title => ( is => 'ro' );
 sub price { return shift->value }
 
 sub rate_percentage { return shift->rate * 100 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
