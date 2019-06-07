@@ -170,7 +170,7 @@ sub to_order_data {
     my $data = $self->to_data;
 
     # Remove needless data
-    for (qw/cart_id items/) { delete $data->{$_} }
+    for (qw/id cart_id items/) { delete $data->{$_} }
 
     # Billing Address
     $data->{billing_address} = { id => $data->{billing_address}->{id} };
