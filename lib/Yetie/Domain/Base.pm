@@ -18,6 +18,16 @@ sub hash_code {
     return Mojo::Util::sha1_sum( shift->_dump_by_public_attributes );
 }
 
+sub set_attributes {
+    my ( $self, $params ) = @_;
+
+    foreach my $key ( keys %{$params} ) {
+        my $value = $params->{$key};
+        $self->$key($value);
+    }
+    return $self;
+}
+
 sub _dump_by_public_attributes {
     my $self = shift;
 
@@ -76,10 +86,14 @@ Return all public attribute name list.
 
 =head2 C<hash_code>
 
-    my $sha1_sum = $entity->hash_code;
-    my $sha1_sum = $entity->hash_code($bytes);
+    my $sha1_sum = $obj->hash_code;
+    my $sha1_sum = $obj->hash_code($bytes);
 
 Return SHA1 checksum.
+
+=head2 C<set_attributes>
+
+    $obj->set_attributes( \%parameters );
 
 =head1 AUTHOR
 

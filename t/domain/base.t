@@ -62,4 +62,20 @@ subtest 'hash_code' => sub {
     is $obj->hash_code(2), sha1_sum(2), 'right create hash code';
 };
 
+subtest 'set_attributes' => sub {
+    my $obj = $test_pkg->new();
+    $obj->set_attributes(
+        {
+            foo  => 1,
+            bar  => 2,
+            _foo => 3,
+            _bar => 4,
+        }
+    );
+    is $obj->foo,  1, 'right attr';
+    is $obj->bar,  2, 'right attr';
+    is $obj->_foo, 3, 'right attr';
+    is $obj->_bar, 4, 'right attr';
+};
+
 done_testing();
