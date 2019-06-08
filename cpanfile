@@ -21,6 +21,7 @@ requires 'Mojolicious::Plugin::Scrypt',             '0.01';
 requires 'MojoX::Session',                          '0.33';
 requires 'Mojo::Log::Clearable',                    '1.000';
 requires 'Moose',                                   '2.2011';
+requires 'MooseX::Clone',                           '0.06';
 requires 'MooseX::StrictConstructor',               '0.21';
 requires 'Scalar::Util',                            '1.47';
 requires 'Session::Token',                          '1.503';
