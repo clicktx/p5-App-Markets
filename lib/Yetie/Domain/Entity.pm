@@ -75,7 +75,7 @@ sub is_modified {
     return 1 if $self->_hash_sum ne $self->hash_code;
 
     # Recursive call for attributes
-    return $self->_recursive_call( sub { return 1 if shift->is_modified } ) ? 1 : 0;
+    return $self->_recursive_call() ? 1 : 0;
 }
 
 sub reset_modified { warn 'reset_modified() is deprecated' }
@@ -124,20 +124,24 @@ sub _dump_public_attr {
 }
 
 sub _recursive_call {
-    my ( $self, $cb ) = @_;
+    my $self = shift;
+
     foreach my $attr ( $self->get_public_attribute_names ) {
         next if !Scalar::Util::blessed( $self->$attr );
 
-        if ( $self->$attr->isa('Yetie::Domain::Entity') ) {
-            return 1 if $cb->( $self->$attr );
-        }
-        elsif ( $self->$attr->isa('Yetie::Domain::Collection') ) {
+        if ( $self->$attr->isa('Yetie::Domain::Collection') ) {
             my $list = $self->$attr->grep( sub { $_->is_modified } );
             return 1 if $list->size;
         }
         elsif ( $self->$attr->isa('Yetie::Domain::IxHash') ) {
             my $kv = $self->$attr->grep( sub { $b->is_modified } );
             return 1 if $kv->size;
+        }
+        elsif ( !$self->$attr->can('is_modified') ) {
+            next;
+        }
+        else {    # entity object or value object
+            return 1 if $self->$attr->is_modified;
         }
     }
     return;

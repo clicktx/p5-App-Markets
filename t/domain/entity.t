@@ -158,63 +158,77 @@ subtest 'to_data method' => sub {
 
 subtest 'is_modified' => sub {
     {
+        use DateTime;
 
         package t::entity::modified;
         use Moose;
         extends 'Yetie::Domain::Entity';
+        has [qw(a b c d e f g v x y z)] => ( is => 'rw' );
 
-        has [qw(a b c d e f g x y z)] => ( is => 'rw' );
+        package t::vo;
+        use Moose;
+        extends 'Yetie::Domain::Value';
+        has value => ( is => 'rw' );
     }
     my $make_entity = sub {
         my $e = t::entity::modified->new(
             a => 1,
             b => 1,
-            e => t::entity::modified->new( x => 1 ),
             c => collection(
                 t::entity::modified->new( y => 1 ),
                 t::entity::modified->new( e => t::entity::modified->new( z => 1 ) )
             ),
-            d => ixhash( aa => t::entity::modified->new( f => 1, g => 1 ) ),
+            d => ixhash( aa                  => t::entity::modified->new( f => 1, g => 1 ) ),
+            e => t::entity::modified->new( x => 1 ),
+            v => t::vo->new( value           => 'foo' ),
+            z => DateTime->now(),
         );
         return $e;
     };
 
     my $e = $make_entity->();
-    is $e->is_modified, 0;
+    is $e->is_modified, 0, 'right not mofified';
     $e->{b} = 2;    # bad setter
-    is $e->is_modified, 1;
+    is $e->is_modified, 1, 'right modified';
 
     $e = $make_entity->();
     $e->a(2);
-    is $e->is_modified, 1;
+    is $e->is_modified, 1, 'right modified';
 
     # Entity
     subtest 'has entity' => sub {
         $e = $make_entity->();
         $e->e->x(2);
-        is $e->is_modified, 1;
+        is $e->is_modified, 1, 'right modified entity';
+    };
+
+    # Value
+    subtest 'has value' => sub {
+        $e = $make_entity->();
+        $e->v->value('bar');
+        is $e->is_modified, 1, 'right modified value object';
     };
 
     # Collection
     subtest 'has collection' => sub {
         $e = $make_entity->();
         $e->c->[0]->y(2);
-        is $e->is_modified, 1;
+        is $e->is_modified, 1, 'right modified in collection';
 
         $e = $make_entity->();
         $e->c->[1]->e->z(2);
-        is $e->is_modified, 1;
+        is $e->is_modified, 1, 'right modified in collection';
     };
 
     # IxHash
     subtest 'has IxHash' => sub {
         $e = $make_entity->();
         $e->d->aa->f(2);
-        is $e->is_modified, 1;
+        is $e->is_modified, 1, 'right modified in IxHash';
 
         $e = $make_entity->();
         $e->d->aa->g(2);
-        is $e->is_modified, 1;
+        is $e->is_modified, 1, 'right modified in IxHash';
     };
 };
 
