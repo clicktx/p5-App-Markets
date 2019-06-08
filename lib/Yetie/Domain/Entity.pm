@@ -132,13 +132,8 @@ sub _recursive_call {
             return 1 if $cb->( $self->$attr );
         }
         elsif ( $self->$attr->isa('Yetie::Domain::Collection') ) {
-            my $cnt = 0;
-            $self->$attr->each(
-                sub {
-                    if ( $cb->($_) ) { $cnt++ }
-                }
-            );
-            return 1 if $cnt;
+            my $list = $self->$attr->grep( sub { $_->is_modified } );
+            return 1 if $list->size;
         }
         elsif ( $self->$attr->isa('Yetie::Domain::IxHash') ) {
             my $cnt = 0;
