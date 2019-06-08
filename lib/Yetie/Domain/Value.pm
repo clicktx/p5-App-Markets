@@ -1,6 +1,4 @@
 package Yetie::Domain::Value;
-use Data::Dumper;
-
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Base';
