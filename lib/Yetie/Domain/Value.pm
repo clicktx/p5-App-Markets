@@ -18,22 +18,6 @@ has value => (
     default => q{},
 );
 
-# Do not created an undefined attribute "value"
-around BUILDARGS => sub {
-    ( shift, shift );    # $orig, $class
-    my %args = @_ ? @_ > 1 ? @_ : %{ $_[0] } : ();
-
-    if ( !defined $args{value} ) { delete $args{value} }
-    return \%args;
-};
-
-sub BUILD {
-    my $self = shift;
-
-    # Lazy build
-    $self->_hash_sum;
-}
-
 sub equals {
     my ( $self, $obj ) = @_;
     return $self->hash_code eq $obj->hash_code ? 1 : 0;

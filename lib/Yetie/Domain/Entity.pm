@@ -22,24 +22,6 @@ sub _build__hash_sum { return shift->hash_code }
 
 has id => ( is => 'rw' );
 
-# Do not created an undefined attributes
-around BUILDARGS => sub {
-    ( shift, shift );    # $orig, $class
-    my %args = @_ ? @_ > 1 ? @_ : %{ $_[0] } : ();
-
-    foreach my $key ( keys %args ) {
-        if ( !defined $args{$key} ) { delete $args{$key} }
-    }
-    return \%args;
-};
-
-sub BUILD {
-    my $self = shift;
-
-    # Lazy build
-    $self->_hash_sum;
-}
-
 sub clone {
     my $self  = shift;
     my $clone = Data::Clone::data_clone($self);

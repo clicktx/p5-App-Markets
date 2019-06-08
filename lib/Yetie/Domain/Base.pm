@@ -3,6 +3,24 @@ use Moose;
 use namespace::autoclean;
 use MooseX::StrictConstructor;
 
+# Do not created an undefined attributes
+around BUILDARGS => sub {
+    my ( $orig, $class ) = ( shift, shift );
+    my %args = @_ ? @_ > 1 ? @_ : %{ $_[0] } : ();
+
+    foreach my $key ( keys %args ) {
+        if ( !defined $args{$key} ) { delete $args{$key} }
+    }
+    return $class->$orig(%args);
+};
+
+sub BUILD {
+    my $self = shift;
+
+    # Lazy build
+    $self->_hash_sum;
+}
+
 sub get_all_attribute_names {
     return ( sort map { $_->name } shift->meta->get_all_attributes );
 }
