@@ -44,6 +44,12 @@ sub hash_code {
     return Mojo::Util::sha1_sum( shift->_dump_by_public_attributes );
 }
 
+sub rehash {
+    my $self = shift;
+    $self->_set_hash_sum( $self->hash_code );
+    return $self;
+}
+
 sub set_attributes {
     my ( $self, $params ) = @_;
 

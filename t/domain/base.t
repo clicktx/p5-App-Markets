@@ -62,6 +62,15 @@ subtest 'hash_code' => sub {
     is $obj->hash_code(2), sha1_sum(2), 'right create hash code';
 };
 
+subtest 'rehash' => sub {
+    my $obj = $test_pkg->new( foo => 1 );
+    my $hash_sum = $obj->_hash_sum;
+    $obj->foo(2);
+    is $hash_sum, $obj->_hash_sum, 'right hash_sum';
+    $obj->rehash;
+    isnt $hash_sum, $obj->_hash_sum, 'right rehash';
+};
+
 subtest 'set_attributes' => sub {
     my $obj = $test_pkg->new();
     $obj->set_attributes(
