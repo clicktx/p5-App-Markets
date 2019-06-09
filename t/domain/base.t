@@ -34,11 +34,11 @@ subtest '_dump_by_public_attributes' => sub {
 subtest 'get_all_attribute_names' => sub {
     my $obj   = $test_pkg->new;
     my @names = $obj->get_all_attribute_names;
-    is_deeply \@names, [qw{_bar _foo bar foo}], 'right not arguments';
+    is_deeply \@names, [qw{_bar _foo _hash_sum bar foo}], 'right not arguments';
 
     $obj = $test_pkg->new( foo => 1, bar => 2 );
     @names = $obj->get_all_attribute_names;
-    is_deeply \@names, [qw{_bar _foo bar foo}], 'right arguments';
+    is_deeply \@names, [qw{_bar _foo _hash_sum bar foo}], 'right arguments';
 };
 
 subtest 'get_public_attribute_names' => sub {

@@ -3,6 +3,14 @@ use Moose;
 use namespace::autoclean;
 use MooseX::StrictConstructor;
 
+has _hash_sum => (
+    is         => 'ro',
+    isa        => 'Str',
+    lazy_build => 1,
+    writer     => '_set_hash_sum',
+);
+sub _build__hash_sum { return shift->hash_code }
+
 # Do not created an undefined attributes
 around BUILDARGS => sub {
     my ( $orig, $class ) = ( shift, shift );

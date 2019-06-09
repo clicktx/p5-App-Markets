@@ -12,14 +12,6 @@ extends 'Yetie::Domain::Base';
 
 my @not_dump_attrs_defautls = (qw/created_at updated_at/);
 
-has _hash_sum => (
-    is         => 'ro',
-    isa        => 'Str',
-    lazy_build => 1,
-    writer     => '_set_hash_sum',
-);
-sub _build__hash_sum { return shift->hash_code }
-
 has id => ( is => 'rw' );
 
 sub clone {
