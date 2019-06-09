@@ -59,7 +59,7 @@ subtest 'clone' => sub {
     my $clone = $e->clone;
     is $clone->is_modified, 0, 'right modified flag';
 
-    isnt $e, $clone, 'right clone';
+    isnt $e, $clone, 'right different object';
     cmp_deeply $e->to_hash, $clone->to_hash, 'right clone data structure';
 
     isnt $e->{hoge}, $clone->{hoge}, 'right another reference';
