@@ -127,6 +127,12 @@ Return all public attribute name list.
 
 Return SHA1 checksum.
 
+=head2 C<rehash>
+
+    $obj->rehash;
+
+Recreate object hash sum.
+
 =head2 C<set_attributes>
 
     $obj->set_attributes( \%parameters );
