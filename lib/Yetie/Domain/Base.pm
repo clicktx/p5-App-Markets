@@ -50,6 +50,8 @@ sub hash_code {
 
 sub rehash {
     my $self = shift;
+
+    # FIXME: need recursive rehash
     $self->_set_hash_sum( $self->hash_code );
     return $self;
 }
