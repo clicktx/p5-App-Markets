@@ -17,6 +17,10 @@ around BUILDARGS => sub {
     my %args = @_ ? @_ > 1 ? @_ : %{ $_[0] } : ();
 
     foreach my $key ( keys %args ) {
+        my $ref = ref $args{$key};
+        die 'Array and hash refference can not be used as arguments.' if $ref eq 'ARRAY' || $ref eq 'HASH';
+
+        # Delete undefined
         if ( !defined $args{$key} ) { delete $args{$key} }
     }
     return $class->$orig(%args);

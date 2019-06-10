@@ -21,6 +21,9 @@ subtest 'base' => sub {
     my $obj = $pkg->new;
     isa_ok $obj, $pkg;
     dies_ok { $pkg->new( foo => 1 ) } 'right do not have attribute';
+
+    dies_ok { $pkg->new( foo => [] ) } 'right arguments has array refference';
+    dies_ok { $pkg->new( foo => {} ) } 'right arguments has hash refference';
 };
 
 subtest '_dump_by_public_attributes' => sub {
