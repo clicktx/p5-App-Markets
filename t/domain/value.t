@@ -61,6 +61,19 @@ subtest 'equals' => sub {
     is $v->equals($v6), 0, 'right not equal';
 };
 
+subtest 'clone' => sub {
+    my $obj = $test_pkg->new( value => 'foo', foo => 1, bar => 2, _foo => 11, _bar => 22 );
+    my $clone = $obj->clone;
+    ok $obj->equals($clone), 'right equals object';
+    isnt $obj, $clone, 'right different object';
+
+    $obj->foo(2);
+    ok !$clone->is_modified, 'right not modified';
+
+    $clone = $obj->clone;
+    ok !$clone->is_modified, 'right not modified';
+};
+
 subtest 'is_modified' => sub {
     my $obj = $test_pkg->new( foo => 1, bar => 2, _foo => 11, _bar => 22 );
     is $obj->is_modified, '0', 'right unmodified';

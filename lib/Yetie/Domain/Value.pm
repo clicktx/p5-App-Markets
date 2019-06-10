@@ -11,6 +11,13 @@ has value => (
     default => q{},
 );
 
+around clone => sub {
+    my ( $orig, $class, %params ) = @_;
+
+    my $clone = $class->$orig(%params);
+    return $clone->rehash;
+};
+
 sub equals {
     my ( $self, $obj ) = @_;
     return $self->hash_code eq $obj->hash_code ? 1 : 0;
