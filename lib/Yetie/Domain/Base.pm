@@ -45,7 +45,7 @@ sub hash_code {
     my ( $self, $arg ) = @_;
     return Mojo::Util::sha1_sum($arg) if $arg;
 
-    return Mojo::Util::sha1_sum( shift->_dump_by_public_attributes );
+    return Mojo::Util::sha1_sum( $self->_dump_by_public_attributes );
 }
 
 sub rehash {
