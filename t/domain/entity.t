@@ -51,22 +51,50 @@ subtest 'function' => sub {
     is_deeply $h, { a => 1, b => 2 }, 'right deeply';
 };
 
+{
+
+    package t::domain::list;
+    use Moose;
+    extends 'Yetie::Domain::List';
+
+    package t::line_item;
+    use Moose;
+    extends 'Yetie::Domain::Entity';
+    has _product_hash_code => (
+        reader => 'product_hash_code',
+        is     => 'ro',
+    );
+}
+
 subtest 'clone' => sub {
-    my $data = { id => 1, hoge => [ {}, {} ], fuga => { a => [ {}, {} ] } };
+    my $data = {
+        id   => 1,
+        hoge => t::entity::foo->new(),
+        fuga => t::entity::foo->new(
+            hoge => t::entity::foo->new(),
+            fuga => t::domain::list->new(
+                list => collection( t::line_item->new(), t::line_item->new() )
+            ),
+        ),
+    };
     my $e = t::entity::foo->new($data);
-    $e->id(2);
+
+    # Modify object
+    $e->fuga->fuga->first->id(1);
 
     my $clone = $e->clone;
-    is $clone->is_modified, 0, 'right modified flag';
-
+    ok !$clone->is_modified, 'right not modified';
     isnt $e, $clone, 'right different object';
-    cmp_deeply $e->to_hash, $clone->to_hash, 'right clone data structure';
+    cmp_deeply $e->to_data, $clone->to_data, 'right clone data structure';
 
-    isnt $e->{hoge}, $clone->{hoge}, 'right another reference';
-    $e->{hoge}->[0] = '';
-    cmp_deeply $clone->{hoge}->[0], +{}, 'right two dimensions';
-    $e->{fuga}->{a}->[0] = { b => 1 };
-    cmp_deeply $clone->{fuga}->{a}->[0], {}, 'right three dimensions';
+    isnt $e->hoge, $clone->hoge, 'right another reference';
+    $e->hoge->id(1);
+    is $clone->hoge->id, undef, 'right clone attribute';
+    $e->fuga->hoge->id(1);
+    is $clone->fuga->hoge->id, undef, 'right clone attribute';
+
+    $e->fuga->fuga->first->id(2);
+    is $clone->fuga->fuga->first->id, 1, 'right clone attribute';
 };
 
 subtest 'has_id' => sub {
