@@ -31,6 +31,9 @@ subtest 'basic' => sub {
     is $v->value, q{}, 'right not argument';
     $v = $pkg->new( value => undef );
     is $v->value, q{}, 'right argument undefined';
+
+    $v = $pkg->new('foo');
+    is $v->value, 'foo', 'right single argument';
 };
 
 subtest '_hash_sum' => sub {

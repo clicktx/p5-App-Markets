@@ -11,6 +11,17 @@ has value => (
     default => q{},
 );
 
+around BUILDARGS => sub {
+    my ( $orig, $class ) = ( shift, shift );
+
+    if ( @_ == 1 && !ref $_[0] ) {
+        return $class->$orig( value => $_[0] );
+    }
+    else {
+        return $class->$orig(@_);
+    }
+};
+
 around clone => sub {
     my ( $orig, $class, %params ) = @_;
 
@@ -47,7 +58,12 @@ Yetie::Domain::Value
 
 =head1 SYNOPSIS
 
-    my $vo = Yetie::Domain::Value->new( value => 'foo' );
+    my $vo = Yetie::Domain::Value->new( value => 'foo', ... );
+
+    # Single argument
+    my $vo = Yetie::Domain::Value->new('foo');
+    # foo
+    say $vo->value;
 
 =head1 DESCRIPTION
 
