@@ -1,11 +1,6 @@
 package Yetie::Controller::Admin::Product;
 use Mojo::Base 'Yetie::Controller::Admin';
 
-sub form_default_value {
-    my ( $c, $form, $entity ) = @_;
-    $form->field($_)->default_value( $entity->$_ ) for qw(id price title description);
-}
-
 sub create {
     my $c = shift;
 
@@ -42,14 +37,14 @@ sub edit {
     my $c = shift;
 
     my $product_id = $c->stash('product_id');
-    my $entity     = $c->service('product')->find_product($product_id);
-    return $c->reply->not_found() unless $entity->has_id;
+    my $product    = $c->service('product')->find_product($product_id);
+    return $c->reply->not_found() unless $product->has_id;
 
     # Init form
     my $form = $c->form('admin-product');
-    $c->form_default_value( $form, $entity );
+    $c->_form_default_value( $form, $product );
 
-    my $categories = $c->service('product')->choices_primary_category($entity);
+    my $categories = $c->service('product')->choices_primary_category($product);
     $form->field('primary_category')->choices($categories);
     $c->init_form();
 
@@ -68,14 +63,14 @@ sub category {
     my $c = shift;
 
     my $product_id = $c->stash('product_id');
-    my $entity     = $c->service('product')->find_product($product_id);
-    return $c->reply->not_found() unless $entity->has_id;
+    my $product    = $c->service('product')->find_product($product_id);
+    return $c->reply->not_found() unless $product->has_id;
 
     # Init form
     my $form = $c->form('admin-product-category');
 
     my $category_ids = [];
-    $entity->product_categories->each( sub { push @{$category_ids}, $_->category_id } );
+    $product->product_categories->each( sub { push @{$category_ids}, $_->category_id } );
 
     my $category_choices = $c->schema->resultset('Category')->get_category_choices($category_ids);
     $form->field('categories[]')->choices($category_choices);
@@ -91,9 +86,17 @@ sub category {
     my $selected_categories = $form->every_param('categories[]');
     return $c->render() unless @{$selected_categories};
 
-    my $primary_category_id = @{ $entity->product_categories } ? $entity->product_categories->first->category_id : '';
+    my $primary_category_id = @{ $product->product_categories } ? $product->product_categories->first->category_id : '';
     $c->service('product')->update_product_categories( $product_id, $selected_categories, $primary_category_id );
     return $c->render();
+}
+
+sub _form_default_value {
+    my ( $c, $form, $product ) = @_;
+    foreach my $name (qw/id price title description/) {
+        $form->field($name)->default_value( $product->$name );
+    }
+    return $form;
 }
 
 1;
