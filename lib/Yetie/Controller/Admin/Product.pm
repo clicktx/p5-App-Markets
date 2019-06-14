@@ -38,7 +38,7 @@ sub edit {
 
     my $product_id = $c->stash('product_id');
     my $product    = $c->service('product')->find_product($product_id);
-    return $c->reply->not_found() unless $product->has_id;
+    return $c->reply->not_found() if !$product->has_id;
 
     # Init form
     my $form = $c->form('admin-product');
@@ -52,7 +52,7 @@ sub edit {
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     # Update data
     $c->service('product')->update_product( $product_id, $form );
@@ -64,7 +64,7 @@ sub category {
 
     my $product_id = $c->stash('product_id');
     my $product    = $c->service('product')->find_product($product_id);
-    return $c->reply->not_found() unless $product->has_id;
+    return $c->reply->not_found() if !$product->has_id;
 
     # Init form
     my $form = $c->form('admin-product-category');
@@ -80,11 +80,11 @@ sub category {
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     # Selected categories
     my $selected_categories = $form->every_param('categories[]');
-    return $c->render() unless @{$selected_categories};
+    return $c->render() if !@{$selected_categories};
 
     my $primary_category_id = @{ $product->product_categories } ? $product->product_categories->first->category_id : '';
     $c->service('product')->update_product_categories( $product_id, $selected_categories, $primary_category_id );
