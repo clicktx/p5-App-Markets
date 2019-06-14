@@ -37,6 +37,8 @@ sub get_by_id { return shift->list->get_by_id(shift) }
 
 sub get_by_line_num { return shift->list->get_by_line_num(shift) }
 
+sub has_elements { return shift->list->size ? 1 : 0 }
+
 sub last { return shift->list->last }
 
 sub to_array { return shift->list->to_array }

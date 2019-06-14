@@ -49,6 +49,14 @@ subtest 'each' => sub {
     is_deeply \@array, [ 1, 2, 3 ], 'right function in each';
 };
 
+subtest 'has_elements' => sub {
+    my $l = construct();
+    ok !$l->has_elements, 'right has not elements';
+
+    $l = construct( 1, 2, 3 );
+    ok $l->has_elements, 'right has elements';
+};
+
 subtest 'to_data' => sub {
     my $l = construct( 1, 2, 3 );
     is_deeply $l->to_data, [ 1, 2, 3 ], 'right dump data';

@@ -13,6 +13,8 @@ sub each { return shift->hash_set->each(@_) }
 
 sub get { return shift->hash_set->{ +shift } }
 
+sub has_elements { return shift->hash_set->size ? 1 : 0 }
+
 sub to_data { return shift->hash_set->to_data }
 
 no Moose;
@@ -45,25 +47,31 @@ the following new ones.
 
 =head2 C<each>
 
-    $domain->each( sub{ ... } );
+    $set->each( sub{ ... } );
 
     # Longer version
-    $domain->hash_set->each( sub{ ... } );
+    $set->hash_set->each( sub{ ... } );
 
 =head2 C<get>
 
-    my $element = $domain->get($key);
+    my $element = $set->get($key);
 
 Return $element or undef.
+
+=head2 C<has_elements>
+
+    my $bool = $set->has_elements;
+
+Return true if hash_set attribute has elements.
 
 =head2 C<to_data>
 
 Dump the data of hash set.
 
-    my $data = $domain->to_data;
+    my $data = $set->to_data;
 
     # Longer version
-    my $data = $domain->hash_set->to_data;
+    my $data = $set->hash_set->to_data;
 
 Return Hash reference.
 
