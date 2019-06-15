@@ -3,6 +3,11 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
 
+sub primary_category {
+    my $self = shift;
+    return $self->first( sub { shift->is_primary } );
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -26,6 +31,10 @@ the following new ones.
 
 L<Yetie::Domain::List::ProductCategories> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
+
+=head2 C<primary_category>
+
+    my $category = $categories->primary_category;
 
 =head1 AUTHOR
 
