@@ -86,7 +86,9 @@ sub category {
     my $selected_categories = $form->every_param('categories[]');
     return $c->render() if !@{$selected_categories};
 
-    my $primary_category_id = @{ $product->product_categories } ? $product->product_categories->first->category_id : '';
+    my $product_categories = $product->product_categories;
+    my $primary_category_id =
+      $product_categories->has_elements ? $product_categories->primary_category->category_id : '';
     $c->service('product')->update_product_categories( $product_id, $selected_categories, $primary_category_id );
     return $c->render();
 }

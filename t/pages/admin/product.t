@@ -67,7 +67,8 @@ sub t03_request : Tests() {
     my $res = $t->get_ok('/admin/product/1/edit/category')->status_is(200);
     $res->content_like(qr/form-choice-group/);
     $t->get_ok('/admin/product/999/edit/category')->status_is(404);
-    $t->post_ok( '/admin/product/1/edit/category',   form => $post_data )->status_is(200);
+    $t->post_ok( '/admin/product/1/edit/category', form => { 'categories[]' => 3, 'categories[]' => 5, %{$post_data} } )
+      ->status_is(200);
     $t->post_ok( '/admin/product/999/edit/category', form => $post_data )->status_is(404);
 
     # delete
