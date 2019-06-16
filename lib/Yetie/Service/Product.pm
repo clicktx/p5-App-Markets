@@ -54,8 +54,8 @@ sub find_product_with_breadcrumbs {
 sub find_product {
     my ( $self, $product_id ) = @_;
 
-    my $product = $self->resultset('Product')->find_product($product_id);
-    my $data = $product ? $product->to_data( { no_breadcrumbs => 1 } ) : {};
+    my $result = $self->resultset('Product')->find_product($product_id);
+    my $data = $result ? $result->to_data( { no_breadcrumbs => 1 } ) : {};
     return $self->factory('entity-product')->construct($data);
 }
 
