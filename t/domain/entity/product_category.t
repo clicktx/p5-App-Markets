@@ -9,6 +9,7 @@ subtest 'default attributes' => sub {
     isa_ok $o, 'Yetie::Domain::Entity', 'right customer';
 
     can_ok $o, 'id';
+    can_ok $o, 'ancestors';
     can_ok $o, 'category_id';
     can_ok $o, 'is_primary';
     can_ok $o, 'title';

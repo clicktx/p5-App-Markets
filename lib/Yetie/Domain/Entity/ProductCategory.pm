@@ -7,13 +7,14 @@ has id => (
     is       => 'ro',
     init_arg => 'category_id',
 );
+has ancestors => ( is => 'ro', default => sub { shift->factory('list-category_ancestors')->construct() } );
 has category_id => ( is => 'ro', default => 0 );
 has is_primary  => ( is => 'ro', default => 0 );
 has title       => ( is => 'ro', default => q{} );
 
 override to_hash => sub {
     my $hash = super();
-    for (qw(id title)) { delete $hash->{$_} }
+    for (qw(id title ancestors)) { delete $hash->{$_} }
     return $hash;
 };
 
@@ -37,6 +38,8 @@ L<Yetie::Domain::Entity::ProductCategory> inherits all attributes from L<Yetie::
 the following new ones.
 
 =head2 C<id>
+
+=head2 C<ancestors>
 
 =head2 C<category_id>
 
