@@ -22,6 +22,16 @@ override to_hash => sub {
     return $hash;
 };
 
+sub full_title {
+    my ( $self, $options ) = ( shift, shift || {} );
+
+    my $separator = $options->{separator} || '>';
+    my $ancestors = $self->ancestors->list->reverse;
+    my $title     = $self->title;
+    $ancestors->each( sub { $title = $_->title . " $separator $title" } );
+    return $title;
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 

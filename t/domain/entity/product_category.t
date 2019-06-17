@@ -20,10 +20,19 @@ subtest 'default attributes' => sub {
     is $o->id, '111', 'right id';
 };
 
-subtest 'ancestors' => sub {
-    my $o = construct( ancestors => [ { title => 'foo', id => 1 }, { title => 'bar', id => 2 } ] );
-    isa_ok $o->ancestors, 'Yetie::Domain::List::CategoryAncestors';
-    isa_ok $o->ancestors->first, 'Yetie::Domain::Entity::Category';
+subtest 'full_title' => sub {
+    my $o = construct(
+        title     => 'me',
+        ancestors => [ { title => 'foo', id => 1 }, { title => 'bar', id => 2 } ]
+    );
+    is $o->full_title, 'foo > bar > me', 'right full title';
+    is $o->full_title( { separator => '/' } ), 'foo / bar / me', 'right use option';
+
+    $o = construct( title => 'me' );
+    is $o->full_title, 'me', 'right top category title';
+
+    $o = construct();
+    is $o->full_title, q{}, 'right title none';
 };
 
 subtest 'to_hash' => sub {
