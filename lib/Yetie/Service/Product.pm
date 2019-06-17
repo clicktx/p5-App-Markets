@@ -39,6 +39,7 @@ sub duplicate_product {
     return $result;
 }
 
+# NOTE: Yetie::Domain::Entity::ProductCategoryにancestorsを追加したのでbreadcrumbs生成にSQLを発行する必要はないかも
 sub find_product_with_breadcrumbs {
     my ( $self, $product_id ) = @_;
 
