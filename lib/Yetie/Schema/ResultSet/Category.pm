@@ -4,7 +4,7 @@ use Carp qw(croak);
 
 sub create_category {
     my ( $self, $title, $parent_id ) = @_;
-    return unless $title;
+    return if !$title;
 
     my $result;
     if ($parent_id) {
@@ -45,7 +45,7 @@ sub get_category_choices {
 
 sub has_title {
     my ( $self, $title, $parent_id ) = @_;
-    croak 'Argument empty' unless $title;
+    croak 'Argument empty' if !$title;
 
     my $where = { title => $title };
     if ($parent_id) {
@@ -68,6 +68,7 @@ sub update_category {
     $data->{$_} = $entity->$_ for @{$cols};
 
     $self->search( { id => $entity->id } )->update($data);
+    return $self;
 }
 
 sub _tree {
