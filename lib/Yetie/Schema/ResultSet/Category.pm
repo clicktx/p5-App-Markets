@@ -21,6 +21,7 @@ sub create_category {
     return $result;
 }
 
+# NOTE: キャッシュを考える
 sub get_ancestors_arrayref {
     my ( $self, $category_id ) = @_;
 
