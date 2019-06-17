@@ -1,7 +1,10 @@
 use Mojo::Base -strict;
 use Test::More;
+use Yetie::Factory;
 
 use_ok 'Yetie::Domain::Entity::ProductCategory';
+
+sub construct { return Yetie::Factory->new('entity-product_category')->construct(@_) }
 
 subtest 'default attributes' => sub {
     my $o = Yetie::Domain::Entity::ProductCategory->new( category_id => 111 );
@@ -15,6 +18,12 @@ subtest 'default attributes' => sub {
     can_ok $o, 'title';
 
     is $o->id, '111', 'right id';
+};
+
+subtest 'ancestors' => sub {
+    my $o = construct( ancestors => [ { title => 'foo', id => 1 }, { title => 'bar', id => 2 } ] );
+    isa_ok $o->ancestors, 'Yetie::Domain::List::CategoryAncestors';
+    isa_ok $o->ancestors->first, 'Yetie::Domain::Entity::Category';
 };
 
 subtest 'to_hash' => sub {
