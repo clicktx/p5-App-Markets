@@ -1,22 +1,6 @@
 package Yetie::Service::Product;
 use Mojo::Base 'Yetie::Service';
 
-sub choices_primary_category {
-    my ( $self, $entity ) = @_;
-
-    my @categories;
-    $entity->product_categories->each(
-        sub {
-            my $ancestors = $self->resultset('Category')->get_ancestors_arrayref( $_->id );
-            my $title;
-            foreach my $ancestor ( @{$ancestors} ) { $title .= $ancestor->{title} . ' > ' }
-            $title .= $_->title;
-            push @categories, [ $title, $_->category_id, choiced => $_->is_primary ];
-        }
-    );
-    return wantarray ? @categories : \@categories;
-}
-
 sub duplicate_product {
     my ( $self, $product_id ) = @_;
 
@@ -134,15 +118,6 @@ the following new ones.
 
 L<Yetie::Service::Product> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
-
-=head2 C<choices_primary_category>
-
-    my $product_categories = $service->choices_primary_category($entity);
-    my @product_categories = $service->choices_primary_category($entity);
-
-Argument: L<Yetie::Domain::Entity::Product> object.
-
-Return: Array or Array reference.
 
 =head2 C<duplicate_product>
 

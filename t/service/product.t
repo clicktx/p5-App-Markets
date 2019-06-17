@@ -8,20 +8,6 @@ my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 use_ok 'Yetie::Service::Product';
 
-subtest 'choices_primary_category' => sub {
-    my $c       = $app->build_controller;
-    my $service = $c->service('product');
-    my $e       = $service->find_product(1);
-
-    my $choices = $service->choices_primary_category($e);
-    is ref $choices, 'ARRAY', 'right get array ref';
-
-    my $int     = @{$choices};
-    my @choices = $service->choices_primary_category($e);
-    is @choices, $int, 'right get array';
-
-};
-
 subtest 'duplicate_product' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');

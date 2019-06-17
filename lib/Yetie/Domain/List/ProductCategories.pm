@@ -8,6 +8,18 @@ sub primary_category {
     return $self->first( sub { shift->is_primary } );
 }
 
+sub get_form_choices_data {
+    my $self = shift;
+
+    my @choices;
+    $self->each(
+        sub {
+            push @choices, [ $_->full_title, $_->category_id, choiced => $_->is_primary ? 1 : 0 ];
+        }
+    );
+    return \@choices;
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -35,6 +47,11 @@ the following new ones.
 =head2 C<primary_category>
 
     my $category = $categories->primary_category;
+
+=head2 C<get_form_choices_data>
+
+    # [ [ 'foo > bar', 1, 'choiced' => 1 ], ... ]
+    my $choices_data = $categories->get_form_choices_data;
 
 =head1 AUTHOR
 
