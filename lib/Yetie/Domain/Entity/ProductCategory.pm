@@ -68,6 +68,19 @@ L<Yetie::Domain::List::CategoryAncestors>
 L<Yetie::Domain::Entity::ProductCategory> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<full_title>
+
+    # foo > bar > baz
+    my $full_title = $obj->full_title();
+
+    # foo / bar / baz
+    my %options = ( separetor => '/' );
+    my $full_title = $obj->full_title( \%options );
+
+=head4 OPTIONS
+
+C<separator> default: ">"
+
 =head1 AUTHOR
 
 Yetie authors.
