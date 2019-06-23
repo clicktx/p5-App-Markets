@@ -14,6 +14,7 @@ sub check {
                 register        |
                 to_data         |
                 to_hash         |
+                BUILD           |
                 dummy_dummy
             )/x
             ]

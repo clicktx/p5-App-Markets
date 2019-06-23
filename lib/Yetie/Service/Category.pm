@@ -1,9 +1,12 @@
 package Yetie::Service::Category;
 use Mojo::Base 'Yetie::Service';
 
-sub find_category_with_products { shift->_find_category( @_, 1 ) }
+sub find_category_with_products { return shift->_find_category( @_, 1 ) }
 
-sub find_category { shift->_find_category( @_, undef ) }
+sub find_category {
+    my ($category) = shift->_find_category( @_, undef );
+    return $category;
+}
 
 sub get_category_tree {
     my $self = shift;
@@ -29,36 +32,35 @@ sub _create_tree {
 
 sub _find_category {
     my ( $self, $category_id, $form, $with_products ) = @_;
-    my $category = $self->resultset('Category')->find($category_id);
-    return $self->factory('entity-page-category')->construct( {} ) unless $category;
 
-    my $products_rs = $with_products ? _append_products( $form, $category ) : undef;
-    my $data = _to_data( $form, $category, $products_rs );
-    return $self->factory('entity-page-category')->construct($data);
+    my $result = $self->resultset('Category')->find($category_id);
+    my $data = $result ? $result->to_data( { no_children => 1 } ) : {};
+    return ( $self->factory('entity-category')->construct($data), {} ) if !$result || !$with_products;
+
+    # with products
+    my $products_rs = _get_products( $result, $form );
+    $data->{products} = $products_rs->to_data(
+        {
+            no_datetime    => 1,
+            no_relation    => 1,
+            no_breadcrumbs => 1,
+        }
+    );
+    my $category    = $self->factory('entity-category')->construct($data);
+    my $pager       = $products_rs ? $products_rs->pager : undef;
+    my $breadcrumbs = $self->factory('list-breadcrumbs')->construct( list => $result->to_breadcrumbs );
+
+    return ( $category, $pager, $breadcrumbs );
 }
 
-sub _append_products {
-    my ( $form, $category ) = @_;
+sub _get_products {
+    my ( $category, $form ) = @_;
 
     # TODO: デバッグ用なので削除する
     my $page_no  = $form->param('page')     || 1;
     my $per_page = $form->param('per_page') || 3;
 
     return $category->search_products_in_categories( { page => $page_no, rows => $per_page } );
-}
-
-sub _to_data {
-    my ( $form, $category, $products_rs ) = @_;
-
-    my $data = $category->to_data( { no_children => 1 } );
-    $data->{form}        = $form;
-    $data->{breadcrumbs} = $category->to_breadcrumbs;
-    return $data unless $products_rs;
-
-    # with products
-    $data->{products} = $products_rs->to_data( { no_datetime => 1, no_relation => 1, no_breadcrumbs => 1 } );
-    $data->{pager} = $products_rs->pager;
-    return $data;
 }
 
 1;
@@ -84,9 +86,13 @@ the following new ones.
 
 =head2 C<find_category_with_products>
 
-    my $entity = $service->find_category_with_products( $category_id, $form );
+    my ( $entity, $pager, $breadcrumbs ) = $service->find_category_with_products( $category_id, $form );
 
-Return L<Yetie::Domain::Entity::Page::Category> object.
+Return  L<Yetie::Domain::Entity::Category> object,
+
+        L<DBIx::Class::ResultSet::Pager> object,
+
+        L<Yetie::Domain::List::Breadcrumbs> object,
 
 The attribute "products" has a list of products.
 
@@ -94,7 +100,7 @@ The attribute "products" has a list of products.
 
     my $entity = $service->find_category( $category_id, $form );
 
-Return L<Yetie::Domain::Entity::Page::Category> object.
+Return L<Yetie::Domain::Entity::Category> object.
 
 =head2 C<get_category_tree>
 

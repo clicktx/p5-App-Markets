@@ -6,24 +6,27 @@ sub index {
 
     my $form = $c->form('search');
     $c->init_form();
-
-    # return $c->render() unless $form->has_data;
     $form->do_validate;
 
     my $category_id = $c->stash('category_id');
-    my $category = $c->service('category')->find_category_with_products( $category_id, $form );
-    $c->stash( entity => $category );
+    my ( $category, $pager, $breadcrumbs ) =
+      $c->service('category')->find_category_with_products( $category_id, $form );
 
     # 404
-    return $c->reply->not_found() unless $category->has_id;
+    return $c->reply->not_found() if !$category->has_id;
 
-    # Page Data
-    $category->page_title( $category->title );
+    # Page
+    my $page = $c->factory('entity-page')->construct(
+        title       => $category->title,
+        form        => $form,
+        breadcrumbs => $breadcrumbs,
+        pager       => $pager,
+    );
 
     # widget category tree
     $c->stash( 'yetie.widget.category_tree' => $c->service('category')->get_category_tree );
 
-    return $c->render();
+    return $c->render( page => $page, category => $category );
 }
 
 1;

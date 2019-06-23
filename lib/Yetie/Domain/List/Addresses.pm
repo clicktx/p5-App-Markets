@@ -1,5 +1,10 @@
 package Yetie::Domain::List::Addresses;
-use Yetie::Domain::Base 'Yetie::Domain::List';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::List';
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

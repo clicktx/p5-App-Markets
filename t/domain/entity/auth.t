@@ -20,19 +20,15 @@ subtest 'basic' => sub {
 };
 
 subtest 'continue' => sub {
-    my $f = Yetie::Factory->new('entity-auth');
-
-    my $auth = $f->construct();
+    my $auth = Yetie::Factory->new('entity-auth')->construct();
     is $auth->continue, 'rn.home', 'right default';
 
-    $auth = $f->construct( continue_url => 'foo' );
+    $auth = Yetie::Factory->new('entity-auth')->construct( continue_url => 'foo' );
     is $auth->continue, 'foo', 'right continue_url';
 };
 
 subtest 'verify_token' => sub {
-    my $f = Yetie::Factory->new('entity-auth');
-
-    my $auth = $f->construct(
+    my $auth = Yetie::Factory->new('entity-auth')->construct(
         token   => 'abc',
         expires => time,
     );
@@ -43,7 +39,7 @@ subtest 'verify_token' => sub {
     ok !$auth->is_verified, 'right fail';
     like $auth->error_message, qr/Different from last token/, 'right error message';
 
-    $auth = $f->construct(
+    $auth = Yetie::Factory->new('entity-auth')->construct(
         token        => 'abc',
         expires      => time,
         is_activated => 1,
@@ -52,7 +48,7 @@ subtest 'verify_token' => sub {
     ok !$auth->is_verified, 'right fail';
     like $auth->error_message, qr/Activated/, 'right error message';
 
-    $auth = $f->construct(
+    $auth = Yetie::Factory->new('entity-auth')->construct(
         token        => 'abc',
         expires      => time - 3600,
         is_activated => 0,

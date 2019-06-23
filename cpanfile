@@ -20,6 +20,11 @@ requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';
 requires 'Mojolicious::Plugin::Scrypt',             '0.01';
 requires 'MojoX::Session',                          '0.33';
 requires 'Mojo::Log::Clearable',                    '1.000';
+requires 'Moose',                                   '2.2011';
+requires 'MooseX::Clone',                           '0.06';
+requires 'MooseX::StrictConstructor',               '0.21';
+requires 'MooseX::Types',                           '0.50';
+requires 'MooseX::Types::Common',                   '0.001014';
 requires 'Scalar::Util',                            '1.47';
 requires 'Session::Token',                          '1.503';
 requires 'Server::Starter',                         '0.32';
@@ -41,6 +46,7 @@ requires 'HTTP::Parser::XS',          '0.17';
 requires 'JSON::XS',                  '3.02';
 requires 'List::Util::XS',            '1.47';
 requires 'Time::TZOffset',            '0.04';
+# requires 'Type::Tiny::XS',            '0.014';
 requires 'WWW::Form::UrlEncoded::XS', '0.24';
 
 # NOTE: Mojolicious optional

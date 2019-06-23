@@ -1,36 +1,46 @@
 package Yetie::Domain::Entity::Cart;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
 use Carp qw(croak);
 use Yetie::Util;
+use Mojo::Util qw/sha1_sum/;
 
-has id => sub { $_[0]->hash_code( $_[0]->cart_id ) };
-has cart_id         => '';
-has billing_address => sub { __PACKAGE__->factory('entity-address')->construct() };
-has items           => sub { __PACKAGE__->factory('list-cart_items')->construct() };
-has shipments       => sub { __PACKAGE__->factory('list-shipments')->construct() };
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity';
 
-my @needless_attrs = (qw/cart_id items/);
+has id => (
+    is      => 'ro',
+    lazy    => 1,
+    default => sub { sha1_sum( shift->cart_id ) }
+);
+has cart_id         => ( is => 'ro', default => q{} );
+has billing_address => ( is => 'rw', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
+has items           => ( is => 'ro', default => sub { __PACKAGE__->factory('list-line_items')->construct() } );
+has shipments       => ( is => 'ro', default => sub { __PACKAGE__->factory('list-shipments')->construct() } );
 
 sub add_item {
     my ( $self, $item ) = @_;
-    croak 'Argument was not a Object' if ref $item =~ /::/;
+    croak 'Argument was not a Object' if ref $item =~ /::/sxm;
 
     $self->items->append($item);
+    return $self;
 }
 
 sub add_shipping_item {
     my ( $self, $index, $item ) = @_;
-    croak 'First argument was not a Digit'   if $index =~ /\D/;
-    croak 'Second argument was not a Object' if ref $item =~ /::/;
+    croak 'First argument was not a Digit'   if $index =~ /\D/sxm;
+    croak 'Second argument was not a Object' if ref $item =~ /::/sxm;
 
     my $shipment = $self->shipments->get($index);
     $shipment->items->append($item);
+    return $self;
 }
 
 sub clear_items {
     my $self = shift;
+
     $self->items->clear;
     $self->shipments->clear_items;
+    return $self;
 }
 
 sub grand_total {
@@ -42,18 +52,18 @@ sub grand_total {
     return $grand_total;
 }
 
-sub has_billing_address { shift->billing_address->is_empty ? 0 : 1 }
+sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
 
-sub has_item { shift->items->count ? 1 : 0 }
+sub has_item { return shift->items->count ? 1 : 0 }
 
 sub has_shipping_address {
     my $self = shift;
 
-    return 0 unless $self->shipments->has_shipment;
+    return 0 if !$self->shipments->has_shipment;
     return $self->shipments->first->shipping_address->is_empty ? 0 : 1;
 }
 
-sub has_shipping_item { shift->shipments->has_item }
+sub has_shipping_item { return shift->shipments->has_item }
 
 sub merge {
     my ( $self, $target ) = @_;
@@ -81,7 +91,7 @@ sub merge {
     # - ログアウト後に未ログイン状態でshipments設定まで進んだ後にログインする
     # 通常はその前にログインを促すのでありえない状態ではあるが...
 
-    $stored->_is_modified(1);
+    # $stored->_is_modified(1);
     return $stored;
 }
 
@@ -90,61 +100,64 @@ sub move_items_to_first_shipment {
 
     my $items = $self->items->to_array;
     $self->shipments->first->items->append( @{$items} );
+    return $self;
 }
 
 # NOTE: 数量は未考慮
 sub remove_item {
-    my ( $self, $hash_code ) = @_;
-    croak 'Argument was not a Scalar' if ref \$hash_code ne 'SCALAR';
+    my ( $self, $line_num ) = @_;
+    croak 'Argument was not a Scalar' if $line_num =~ /\D/sxm;
 
-    $self->items->remove($hash_code);
+    return $self->items->remove($line_num);
 }
 
 # NOTE: 数量は未考慮
 sub remove_shipping_item {
-    my ( $self, $index, $hash_code ) = @_;
-    croak 'First argument was not a Digit'   if $index =~ /\D/;
-    croak 'Second argument was not a Scalar' if ref \$hash_code ne 'SCALAR';
+    my ( $self, $index, $line_num ) = @_;
+    croak 'First argument was not a Digit'   if $index =~ /\D/sxm;
+    croak 'Second argument was not a Scalar' if $line_num =~ /\D/sxm;
 
     my $shipment = $self->shipments->get($index);
-    $shipment->items->remove($hash_code);
+    return 0 if !$shipment;
+
+    return $shipment->items->remove($line_num);
 }
 
 sub revert {
     my $self = shift;
-    return unless $self->shipments->has_item;
+    return if !$self->shipments->has_item;
 
     $self->shipments->revert;
+    return $self;
 }
 
 sub set_billing_address {
     my ( $self, $address ) = @_;
-    croak 'Argument is missing.' unless $address;
+    croak 'Argument is missing.' if !$address;
     return if $self->billing_address->equals($address);
 
     $self->billing_address($address);
+    return $self;
 }
 
 sub set_shipping_address {
     my $self = shift;
-    croak 'Argument is missing.' unless @_;
+    croak 'Argument is missing.' if !@_;
 
     # Convert arguments
     my $addresses = @_ > 1 ? +{@_} : Yetie::Util::array_to_hash(@_);
 
     # Has not shipment in shipments
-    $self->shipments->create_shipment unless $self->shipments->has_shipment;
+    if ( !$self->shipments->has_shipment ) { $self->shipments->create_shipment }
 
-    my $cnt = 0;
     foreach my $index ( keys %{$addresses} ) {
         my $address  = $addresses->{$index};
         my $shipment = $self->shipments->get($index);
 
         next if $shipment->shipping_address->equals($address);
         $shipment->shipping_address($address);
-        $cnt++;
     }
-    return $cnt;
+    return $self;
 }
 
 sub subtotal {
@@ -157,7 +170,7 @@ sub to_order_data {
     my $data = $self->to_data;
 
     # Remove needless data
-    delete $data->{$_} for @needless_attrs;
+    for (qw/id cart_id items/) { delete $data->{$_} }
 
     # Billing Address
     $data->{billing_address} = { id => $data->{billing_address}->{id} };
@@ -170,7 +183,6 @@ sub to_order_data {
 
     # Rename shipments to orders
     $data->{orders} = delete $data->{shipments};
-
     return $data;
 }
 
@@ -181,8 +193,11 @@ sub total_item_count {
 
 sub total_quantity {
     my $self = shift;
-    $self->items->total_quantity + $self->shipments->total_quantity;
+    return $self->items->total_quantity + $self->shipments->total_quantity;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable( inline_constructor => 0 );
 
 1;
 __END__
@@ -211,8 +226,8 @@ the following new ones.
     my $items = $cart->items;
     $items->each( sub { ... } );
 
-Return L<Yetie::Domain::List::CartItems> object.
-Elements is L<Yetie::Domain::Entity::CartItem> object.
+Return L<Yetie::Domain::List::LineItems> object.
+Elements is L<Yetie::Domain::Entity::LineItem> object.
 
 =head2 C<shipments>
 
@@ -297,11 +312,15 @@ Move all items to the first element of C<Yetie::Domain::List::Shipments>.
 
 =head2 C<remove_item>
 
-    $cart->remove_item($hash_code);
+    $cart->remove_item($line_num);
+
+Return true if removed item.
 
 =head2 C<remove_shipping_item>
 
-    $cart->remove_shipping_item($shipment_index, $hash_code);
+    $cart->remove_shipping_item($shipment_index => $line_num);
+
+Return true if removed item.
 
 =head2 C<revert>
 
@@ -352,5 +371,5 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::List::CartItems>, L<Yetie::Domain::Entity::CartItem>,
+L<Yetie::Domain::Entity>, L<Yetie::Domain::List::Linetems>, L<Yetie::Domain::Entity::LineItem>,
 L<Yetie::Domain::Entity::Shipment>

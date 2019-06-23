@@ -59,15 +59,19 @@ sub t03_items_orderd : Tests() {
     $t->get_ok('/admin/order/999/edit/items')->status_is(404);
 
     my $post_data = {
-        csrf_token          => $self->csrf_token,
-        'item.{1}.quantity' => '',
-        'item.{1}.price'    => '',
+        csrf_token        => $self->csrf_token,
+        'item.1.quantity' => q{},
+        'item.1.price'    => q{},
     };
     $t->post_ok( '/admin/order/1/edit/items', form => $post_data )->status_is( 200, 'right items post validate error' );
 
-    $post_data->{'item.{1}.quantity'} = 3;
-    $post_data->{'item.{1}.price'}    = 300;
+    $post_data->{'item.1.quantity'} = 55;
+    $post_data->{'item.1.price'}    = 555;
     $t->post_ok( '/admin/order/1/edit/items', form => $post_data )->status_is( 302, 'right items update' );
+
+    my $item = $t->app->resultset('Sales::Order::Item')->find(1);
+    is $item->quantity, 55, 'right update item quantity';
+    ok $item->price == 555, 'right update item price';
 }
 
 __PACKAGE__->runtests;

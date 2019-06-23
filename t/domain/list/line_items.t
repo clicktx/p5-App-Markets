@@ -3,10 +3,10 @@ use Test::More;
 use Test::Deep;
 use Yetie::Factory;
 
-my $pkg = 'Yetie::Domain::List::CartItems';
+my $pkg = 'Yetie::Domain::List::LineItems';
 use_ok $pkg;
 
-my $construct = sub { Yetie::Factory->new('list-cart_items')->construct(@_) };
+my $construct = sub { Yetie::Factory->new('list-line_items')->construct(@_) };
 
 subtest 'basic' => sub {
     my $list = $construct->();
@@ -14,7 +14,7 @@ subtest 'basic' => sub {
 };
 
 subtest 'append' => sub {
-    my $f = Yetie::Factory->new('entity-cart_item');
+    my $f = Yetie::Factory->new('entity-line_item');
     my $data = [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 } ];
     my ( $list, $item );
 
@@ -27,7 +27,7 @@ subtest 'append' => sub {
       'right single append';
     is $list->is_modified, 1, 'right modified';
 
-    # Append same item
+    # Append same item(update quantity)
     $list = $construct->( list => $data );
     $item = $f->construct( { product_id => 2, quantity => 2 } );
     $list->append($item);
@@ -56,18 +56,19 @@ subtest 'total_quantity' => sub {
 subtest 'remove' => sub {
     my $data = [ { product_id => 1 }, { product_id => 2 }, { product_id => 3 } ];
     my $list = $construct->( list => $data );
-    my $hash = $list->get(1)->hash;
-    $list->remove($hash);
+    my $res = $list->remove(2);
     cmp_deeply $list->to_data, [ { product_id => 1 }, { product_id => 3 } ], 'right remove item';
     is $list->is_modified, 1, 'right modified';
+    is $res, 1, 'right removed';
 
     # Unremove. not found item.
     $list = $construct->( list => $data );
-    $list->remove('foo');
+    $res = $list->remove(4);
     cmp_deeply $list->to_data,
       [ { product_id => 1 }, { product_id => 2 }, { product_id => 3 } ],
       'right not remove item';
     is $list->is_modified, 0, 'right not modified';
+    is $res, 0, 'right not removed';
 };
 
 subtest 'subtotal' => sub {

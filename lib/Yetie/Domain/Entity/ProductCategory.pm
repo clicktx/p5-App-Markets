@@ -1,18 +1,39 @@
 package Yetie::Domain::Entity::ProductCategory;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity';
 
-has id => sub { shift->category_id };
-has category_id => 0;
-has is_primary  => 0;
-has title       => '';
+has id => (
+    is       => 'ro',
+    init_arg => 'category_id',
+);
+has ancestors => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::List::CategoryAncestors',
+    default => sub { shift->factory('list-category_ancestors')->construct() }
+);
+has category_id => ( is => 'ro', default => 0 );
+has is_primary  => ( is => 'ro', default => 0 );
+has title       => ( is => 'ro', default => q{} );
 
-sub to_hash {
-    my $self = shift;
-
-    my $hash = $self->SUPER::to_hash;
-    delete $hash->{title};
+override to_hash => sub {
+    my $hash = super();
+    for (qw(id title ancestors)) { delete $hash->{$_} }
     return $hash;
+};
+
+sub full_title {
+    my ( $self, $options ) = ( shift, shift || {} );
+
+    my $separator = $options->{separator} || '>';
+    my $ancestors = $self->ancestors->list->reverse;
+    my $title     = $self->title;
+    $ancestors->each( sub { $title = $_->title . " $separator $title" } );
+    return $title;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
@@ -32,6 +53,10 @@ the following new ones.
 
 =head2 C<id>
 
+=head2 C<ancestors>
+
+L<Yetie::Domain::List::CategoryAncestors>
+
 =head2 C<category_id>
 
 =head2 C<is_primary>
@@ -42,6 +67,19 @@ the following new ones.
 
 L<Yetie::Domain::Entity::ProductCategory> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<full_title>
+
+    # foo > bar > baz
+    my $full_title = $obj->full_title();
+
+    # foo / bar / baz
+    my %options = ( separetor => '/' );
+    my $full_title = $obj->full_title( \%options );
+
+=head4 OPTIONS
+
+C<separator> default: ">"
 
 =head1 AUTHOR
 

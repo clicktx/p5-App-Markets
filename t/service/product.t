@@ -8,20 +8,6 @@ my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 use_ok 'Yetie::Service::Product';
 
-subtest 'choices_primary_category' => sub {
-    my $c       = $app->build_controller;
-    my $service = $c->service('product');
-    my $e       = $service->find_product(1);
-
-    my $choices = $service->choices_primary_category($e);
-    is ref $choices, 'ARRAY', 'right get array ref';
-
-    my $int     = @{$choices};
-    my @choices = $service->choices_primary_category($e);
-    is @choices, $int, 'right get array';
-
-};
-
 subtest 'duplicate_product' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
@@ -38,17 +24,17 @@ subtest 'duplicate_product' => sub {
 };
 
 subtest 'find_product_with_breadcrumbs' => sub {
-    my $e = $app->service('product')->find_product_with_breadcrumbs(1);
-    isa_ok $e, 'Yetie::Domain::Entity::Page::Product';
+    my ( $e, $b ) = $app->service('product')->find_product_with_breadcrumbs(1);
+    isa_ok $e, 'Yetie::Domain::Entity::Product';
     is $e->id, 1, 'right ID';
-    isa_ok $e->breadcrumbs->first, 'Yetie::Domain::Entity::Breadcrumb';
+    isa_ok $b, 'Yetie::Domain::List::Breadcrumbs';
+    isa_ok $b->first, 'Yetie::Domain::Entity::Breadcrumb';
 };
 
 subtest 'find_product' => sub {
     my $e = $app->service('product')->find_product(1);
-    isa_ok $e, 'Yetie::Domain::Entity::Page::Product';
+    isa_ok $e, 'Yetie::Domain::Entity::Product';
     is $e->id, 1, 'right ID';
-    is_deeply $e->breadcrumbs->to_data, [], 'right no breadcrumbs';
 
     $e = $app->service('product')->find_product(999);
     is $e->id, undef, 'right not found product';

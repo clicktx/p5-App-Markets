@@ -7,12 +7,12 @@ use_ok 'Yetie::Factory::Entity::Cart';
 subtest 'argument empty' => sub {
     my $e = $pkg->new('entity-cart')->construct();
     isa_ok $e->billing_address, 'Yetie::Domain::Entity::Address';
-    isa_ok $e->items,           'Yetie::Domain::List::CartItems';
+    isa_ok $e->items,           'Yetie::Domain::List::LineItems';
     isa_ok $e->shipments,       'Yetie::Domain::List::Shipments';
     $e->shipments->each(
         sub {
             isa_ok $_->shipping_address, 'Yetie::Domain::Entity::Address';
-            isa_ok $_->items,            'Yetie::Domain::List::CartItems';
+            isa_ok $_->items,            'Yetie::Domain::List::LineItems';
         }
     );
 };
@@ -31,19 +31,11 @@ subtest 'argument items data only' => sub {
     my $e = $pkg->new(
         'entity-cart',
         {
-            items => [ {} ],
+            items => [ {}, {} ],
         }
     )->construct();
-    isa_ok $e->items->first, 'Yetie::Domain::Entity::CartItem';
-};
-
-subtest 'argument shipments data only' => sub {
-    my $e = $pkg->new( 'entity-cart', { shipments => [ { items => [ {}, {} ] } ] }, )->construct();
-    $e->shipments->first->items->each(
-        sub {
-            isa_ok $_, 'Yetie::Domain::Entity::CartItem';
-        }
-    );
+    isa_ok $e->items->first, 'Yetie::Domain::Entity::LineItem';
+    is $e->items->count, 2, 'right items count';
 };
 
 done_testing;

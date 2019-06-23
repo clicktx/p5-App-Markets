@@ -153,15 +153,8 @@ sub search_customers {
         per_page => $form->param('per_page') || '5',
     };
     my $rs = $self->resultset('Customer')->search_customers($conditions);
-
-    my $data = {
-        meta_title    => 'Customers',
-        form          => $form,
-        breadcrumbs   => [],
-        customer_list => $rs->to_data,
-        pager         => $rs->pager,
-    };
-    return $self->factory('entity-page-customers')->construct($data);
+    my $customers = $self->factory('list-customers')->construct( list => $rs->to_data );
+    return ( $customers, $rs->pager );
 }
 
 sub store_address {
@@ -277,7 +270,7 @@ Return customer ID if log-in succeeded or C<undefined>.
 
 =head2 C<search_customers>
 
-    my $customers = $service->search_customers($form_object);
+    my ( $customers, $pager ) = $service->search_customers($form_object);
 
 Return L<Yetie::Domain::Entity::Page::Customers> Object.
 

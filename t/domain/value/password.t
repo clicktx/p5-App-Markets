@@ -5,7 +5,7 @@ my $pkg = 'Yetie::Domain::Value::Password';
 use_ok $pkg;
 
 subtest 'basic' => sub {
-    my $p = $pkg->new('');
+    my $p = $pkg->new( value => '' );
     isa_ok $p, 'Yetie::Domain::Value';
 };
 

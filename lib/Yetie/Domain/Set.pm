@@ -1,13 +1,24 @@
 package Yetie::Domain::Set;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity';
 
-has hash_set => sub { Yetie::Domain::IxHash->new };
+has hash_set => (
+    is      => 'rw',
+    isa     => 'Yetie::Domain::IxHash',
+    default => sub { Yetie::Domain::IxHash->new },
+);
 
-sub each { shift->hash_set->each(@_) }
+sub each { return shift->hash_set->each(@_) }
 
-sub get { shift->hash_set->{ +shift } }
+sub get { return shift->hash_set->{ +shift } }
 
-sub to_data { shift->hash_set->to_data }
+sub has_elements { return shift->hash_set->size ? 1 : 0 }
+
+sub to_data { return shift->hash_set->to_data }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
@@ -36,25 +47,31 @@ the following new ones.
 
 =head2 C<each>
 
-    $domain->each( sub{ ... } );
+    $set->each( sub{ ... } );
 
     # Longer version
-    $domain->hash_set->each( sub{ ... } );
+    $set->hash_set->each( sub{ ... } );
 
 =head2 C<get>
 
-    my $element = $domain->get($key);
+    my $element = $set->get($key);
 
 Return $element or undef.
+
+=head2 C<has_elements>
+
+    my $bool = $set->has_elements;
+
+Return true if hash_set attribute has elements.
 
 =head2 C<to_data>
 
 Dump the data of hash set.
 
-    my $data = $domain->to_data;
+    my $data = $set->to_data;
 
     # Longer version
-    my $data = $domain->hash_set->to_data;
+    my $data = $set->hash_set->to_data;
 
 Return Hash reference.
 

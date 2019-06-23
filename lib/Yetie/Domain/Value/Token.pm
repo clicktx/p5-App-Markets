@@ -1,14 +1,13 @@
 package Yetie::Domain::Value::Token;
-use Yetie::Domain::Base 'Yetie::Domain::Value';
+use Moose;
+extends 'Yetie::Domain::Value';
+
 use Yetie::Util qw(uuid);
 
-sub new {
-    my $class = shift;
-    my $args = @_ ? @_ > 1 ? {@_} : $_[0] : {};
+has '+value' => ( default => sub { uuid() } );
 
-    my $token = $args->{value} // uuid();
-    return $class->SUPER::new( value => $token );
-}
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
@@ -43,4 +42,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Value>
+L<Yetie::Domain::Value>, L<Moose>

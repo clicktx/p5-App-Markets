@@ -15,15 +15,7 @@ sub t01_index : Tests() {
     $t->get_ok('/admin/order/999')->status_is(404);
 }
 
-sub t02_edit : Tests() {
-    my $self = shift;
-    my $t    = $self->t;
-
-    $t->get_ok('/admin/order/1/edit')->status_is(200);
-    $t->get_ok('/admin/order/999/edit')->status_is(404);
-}
-
-sub t03_duplicate : Tests() {
+sub t02_duplicate : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
@@ -32,7 +24,7 @@ sub t03_duplicate : Tests() {
 }
 
 #
-# sub t04_delete : Tests() {
+# sub t03_delete : Tests() {
 #     my $self = shift;
 #     my $t    = $self->t;
 #

@@ -1,69 +1,58 @@
 package Yetie::Domain::Entity;
-use Yetie::Domain::Base -base;
 use Yetie::Factory;
 use Yetie::Domain::Collection qw();
 use Yetie::Domain::IxHash qw();
-use Mojo::Util qw();
 use Scalar::Util qw();
 use Data::Clone qw();
 
-has 'id';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Base';
 
 my @not_dump_attrs_defautls = (qw/created_at updated_at/);
 
+has id => ( is => 'rw' );
+
+# NOTE: There may be bug?? If reader is set in attribute and the value is object.
 sub clone {
     my $self  = shift;
     my $clone = Data::Clone::data_clone($self);
 
-    my @attributes = keys %{$self};
+    my @attributes = $self->get_all_attribute_names;
     foreach my $attr (@attributes) {
-        next unless $self->can($attr);
-        next unless Scalar::Util::blessed( $self->$attr );
-        $clone->$attr( $self->$attr->map( sub { $_->clone } ) ) if $self->$attr->can('map');
+        next if !$self->can($attr);                       # NOTE: for change attribute reader
+        next if !Scalar::Util::blessed( $self->$attr );
+
+        # Domain List or Set object
+        if ( $self->$attr->can('map') ) {
+            $clone->$attr( $self->$attr->map( sub { $_->clone } ) );
+        }
     }
-    $clone->_is_modified(0);
-    return $clone;
+
+    # Reset object hash_sum
+    return $clone->rehash;
 }
 
-sub equals { shift->id eq shift->id ? 1 : 0 }
+sub equals {
+    my ( $self, $obj ) = @_;
+    return $self->hash_code eq $obj->hash_code ? 1 : 0;
+}
 
-sub factory { Yetie::Factory->new( $_[1] ) }
+sub factory { return Yetie::Factory->new( $_[1] ) }
 
 sub has_id { return shift->id ? 1 : 0 }
 
-sub hash_code {
-    my ( $self, $arg ) = @_;
-    if   ( @_ > 1 ) { return defined $arg      ? Mojo::Util::sha1_sum($arg)        : undef }
-    else            { return defined $self->id ? Mojo::Util::sha1_sum( $self->id ) : undef }
-}
-
-sub is_empty { shift->id ? 0 : 1 }
+sub is_empty { return shift->id ? 0 : 1 }
 
 sub is_modified {
     my $self = shift;
-
-    # Setter
-    if (@_) {
-        return $_[0] ? $self->_is_modified(1) : $self->reset_modified;
-    }
-
-    # Getter
-    return 1 if $self->_is_modified;
+    return 1 if $self->_hash_sum ne $self->hash_code;
 
     # Recursive call for attributes
-    my $is_modified = 0;
-    $self->_recursive_call( sub { $is_modified = 1 if shift->is_modified } );
-    return $is_modified;
+    return $self->_recursive_call() ? 1 : 0;
 }
 
-sub reset_modified {
-    my $self = shift;
-    $self->_is_modified(0);
-
-    # Recursive call for attributes
-    $self->_recursive_call( sub { shift->reset_modified } );
-    return 0;
-}
+sub reset_modified { warn 'reset_modified() is deprecated' }
 
 sub to_array {
     my $self = shift;
@@ -90,34 +79,55 @@ sub to_hash {
     my %hash = %{ +shift };
 
     # Remove needless data
-    my @not_dump = @not_dump_attrs_defautls;
-    my @private = grep { $_ =~ /^_.*/ } keys %hash;
-    push @not_dump, @private;
-
-    delete $hash{$_} for @not_dump;
+    my @not_dump = ();
+    push @not_dump, @not_dump_attrs_defautls, grep { /\A_.*/sxm } keys %hash;
+    foreach (@not_dump) { delete $hash{$_} }
     return \%hash;
 }
 
+sub _dump_public_attr {
+    my $self = shift;
+
+    my $dump = '({';
+    foreach my $attr ( $self->get_public_attribute_names ) {
+        my $value = $self->$attr || q{};
+        $dump .= "$attr=" . $value . q{,};
+    }
+    $dump .= '},' . ref($self) . ')';
+    return $dump;
+}
+
 sub _recursive_call {
-    my ( $self, $cb ) = @_;
-    foreach my $attr ( keys %{$self} ) {
-        next if !$self->can($attr);
+    my $self = shift;
+
+    foreach my $attr ( $self->get_public_attribute_names ) {
         next if !Scalar::Util::blessed( $self->$attr );
 
-        if ( $self->$attr->isa('Yetie::Domain::Entity') ) {
-            $cb->( $self->$attr );
-        }
-        elsif ( $self->$attr->isa('Yetie::Domain::Collection') ) {
-            $self->$attr->each( sub { $cb->($_) } );
+        if ( $self->$attr->isa('Yetie::Domain::Collection') ) {
+            my $list = $self->$attr->grep( sub { $_->is_modified } );
+            return 1 if $list->size;
         }
         elsif ( $self->$attr->isa('Yetie::Domain::IxHash') ) {
-            $self->$attr->each( sub { $cb->($b) } );
+            my $kv = $self->$attr->grep( sub { $b->is_modified } );
+            return 1 if $kv->size;
+        }
+        elsif ( !$self->$attr->can('is_modified') ) {
+            next;
+        }
+        else {    # entity object or value object
+            return 1 if $self->$attr->is_modified;
         }
     }
+    return;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
+
+=encoding utf8
 
 =head1 NAME
 
@@ -174,13 +184,6 @@ Return Yetie::Factory object.
     my $bool = $entity->has_id;
 
 Return boolean value.
-
-=head2 C<hash_code>
-
-    my $sha1_sum = $entity->hash_code;
-    my $sha1_sum = $entity->hash_code($bytes);
-
-Return SHA1 checksum. Default bytes is L<Yetie::Domain::Entity/id>.
 
 =head2 C<id>
 
@@ -266,4 +269,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Base>, L<Mojo::Base>, L<Yetie::Domain::Collection>, L<Yetie::Domain::IxHash>
+L<Yetie::Domain::Base>, L<Moose>, L<Yetie::Domain::Collection>, L<Yetie::Domain::IxHash>

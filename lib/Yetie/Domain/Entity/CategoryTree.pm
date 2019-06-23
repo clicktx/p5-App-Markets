@@ -1,12 +1,17 @@
 package Yetie::Domain::Entity::CategoryTree;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity';
 
-has level    => 0;
-has root_id  => 0;
-has title    => '';
-has children => sub { __PACKAGE__->factory('list-category_trees')->construct() };
+has level    => ( is => 'ro', default => 0 );
+has root_id  => ( is => 'ro', default => 0 );
+has title    => ( is => 'ro', default => q{} );
+has children => ( is => 'ro', default => sub { __PACKAGE__->factory('list-category_trees')->construct() } );
 
 sub has_child { shift->children->count ? 1 : 0 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

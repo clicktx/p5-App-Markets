@@ -1,42 +1,53 @@
 package Yetie::Domain::Value;
-use Yetie::Domain::Base -readonly;
-use Mojo::Util qw();
-use overload
-  q(bool)  => sub { 1 },
-  fallback => 1;
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Base';
 
-has value => '';
+with qw(MooseX::Clone);
+
+has value => (
+    is      => 'ro',
+    isa     => 'Str',
+    default => q{},
+);
+
+around BUILDARGS => sub {
+    my ( $orig, $class ) = ( shift, shift );
+
+    if ( @_ == 1 && !ref $_[0] ) {
+        return $class->$orig( value => $_[0] );
+    }
+    else {
+        return $class->$orig(@_);
+    }
+};
+
+around clone => sub {
+    my ( $orig, $class, %params ) = @_;
+
+    my $clone = $class->$orig(%params);
+    return $clone->rehash;
+};
 
 sub equals {
     my ( $self, $obj ) = @_;
     return $self->hash_code eq $obj->hash_code ? 1 : 0;
 }
 
-sub hash_code {
+sub is_modified {
     my $self = shift;
-
-    my %attrs = %{$self};
-    my @keys  = keys %attrs;
-    my $str;
-    foreach my $key ( sort @keys ) {
-
-        # private attribute
-        next if $key =~ /\A_.*/sxm;
-
-        $str .= "$key:$attrs{$key},";
-    }
-    return Mojo::Util::sha1_sum($str);
+    return $self->_hash_sum ne $self->hash_code ? 1 : 0;
 }
 
-sub new {
-    my $class = shift;
-
-    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
-    return $class->SUPER::new($args);
+sub set_value {
+    my ( $self, $arg ) = @_;
+    return $self->clone( value => $arg );
 }
 
 sub to_data { return shift->value }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
 
 =encoding utf8
@@ -47,27 +58,30 @@ Yetie::Domain::Value
 
 =head1 SYNOPSIS
 
-    my $vo = Yetie::Domain::Value->new( value => 'foo' );
+    my $vo = Yetie::Domain::Value->new( value => 'foo', ... );
+
+    # Single argument
+    my $vo = Yetie::Domain::Value->new('foo');
+    # foo
+    say $vo->value;
 
 =head1 DESCRIPTION
 
 Immutable value object base class.
-
-=head1 FUNCTIONS
-
-L<Yetie::Domain::Value> inherits all functions from L<Yetie::Domain::Base> and implements
-the following new ones.
 
 =head1 ATTRIBUTES
 
 L<Yetie::Domain::Value> inherits all attributes from L<Yetie::Domain::Base> and implements
 the following new ones.
 
-The value can not be set.This object is immutable.
-
 =head2 C<value>
 
+Read only
+
     my $value = $obj->value;
+
+Change of value?
+SEE L</set_value>
 
 =head1 METHODS
 
@@ -80,12 +94,23 @@ the following new ones.
 
 Return boolean value.
 
-=head2 C<hash_code>
+=head2 C<is_modified>
 
-    # "960167e90089e5ebe6a583e86b4c77507afb70b7"
-    my $sha1_sum = $obj->hash_code;
+    my $bool = $obj->is_modified;
 
-Return sha1 string.
+=head2 C<set_value>
+
+    my $obj = Yetie::Domain::Value->new( value => 'foo' );
+    my $new_obj = $obj->set_value('bar');
+
+    # foo
+    say $obj->value;
+    # bar
+    say $new_obj->value;
+
+Set value and clone object.
+
+Return L<Yetie::Domain::Value> object.
 
 =head2 C<to_data>
 
@@ -93,20 +118,10 @@ Return sha1 string.
 
 L</value> alias method.
 
-=head1 OPERATORS
-
-L<Yetie::Domain::Value> overloads the following operators.
-
-=head2 C<bool>
-
-    my $bool = !!$obj;
-
-Always true.
-
 =head1 AUTHOR
 
 Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Base>
+L<Yetie::Domain::Base>, L<Moose>
