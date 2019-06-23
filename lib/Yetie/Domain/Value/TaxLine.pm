@@ -44,7 +44,7 @@ the following new ones.
     # $80
     say '$' . $tax->price;
 
-=head2 C<rate_percenteage>
+=head2 C<rate_percentage>
 
     # 10%
     say $tax->rate_percentage . '%';
