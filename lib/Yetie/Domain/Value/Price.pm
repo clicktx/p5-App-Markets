@@ -1,46 +1,14 @@
 package Yetie::Domain::Value::Price;
+use MooseX::Types::Common::Numeric qw/PositiveNum/;
+
 use Moose;
 extends 'Yetie::Domain::Value';
 
-use Carp qw(croak);
+has '+value' => ( isa => PositiveNum );
 
-has tax_rate => ( is => 'ro' );
-has tax      => ( is => 'ro' );
-
-sub add_price {
+sub sum {
     my ( $self, $value ) = @_;
-    return $self->value + $value;
-}
-
-# without_tax
-# tax_included
-# displayPriceIncludingTax
-# excluding
-sub exclude_tax {
-    my $self = shift;
-    return $self->value;
-}
-
-# $price->including_tax;
-sub include_tax {
-    my $self = shift;
-
-    # return $self->value + $self->tax;
-    $self->add_price( $self->tax );
-}
-
-# sub new {
-#     my $class = shift;
-#     my $self  = $class->SUPER::new(@_);
-
-#     croak 'Argument cannot be less than zero' if $self->value < 0;
-
-#     return $self;
-# }
-sub validate {
-    my $self = shift;
-    croak 'Argument cannot be less than zero' if $self->value < 0;
-    return;
+    return $self->clone( value => $self->value + $value );
 }
 
 no Moose;
@@ -66,6 +34,14 @@ the following new ones.
 
 L<Yetie::Domain::Value::Price> inherits all methods from L<Yetie::Domain::Value> and implements
 the following new ones.
+
+=head2 C<sum>
+
+create a new object with sums an argument to the original value.
+
+    my $new = $price->sum($int);
+
+Return L<Yetie::Domain::Value::Price> object.
 
 =head1 AUTHOR
 
