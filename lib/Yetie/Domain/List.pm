@@ -143,6 +143,14 @@ Return $element or undef.
 
 See L<Yetie::Domain::Collection/get_by_line_num>.
 
+=head2 C<has_elements>
+
+Returns true if there is an element.
+
+    my $bool = $domain->has_elements;
+
+Return boolean value.
+
 =head2 C<last>
 
     my $last = $domain->last;
