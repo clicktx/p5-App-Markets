@@ -129,7 +129,7 @@
         [ 112, 4, 1 ],
         [ 113, 5, 1 ],
     ],
-    'Customer::Address' => [
+    'CustomerAddress' => [
         [qw/customer_id address_id/],
         [qw/111 1/],
         [qw/111 2/],

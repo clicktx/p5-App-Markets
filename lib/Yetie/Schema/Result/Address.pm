@@ -82,7 +82,7 @@ sub sqlt_deploy_hook {
 
 # Relation
 has_many
-  customer_addresses => 'Yetie::Schema::Result::Customer::Address',
+  customer_addresses => 'Yetie::Schema::Result::CustomerAddress',
   { 'foreign.address_id' => 'self.id' },
   { cascade_delete       => 0 };
 

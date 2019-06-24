@@ -37,7 +37,7 @@ has_many
   { cascade_delete        => 0 };
 
 has_many
-  addresses => 'Yetie::Schema::Result::Customer::Address',
+  addresses => 'Yetie::Schema::Result::CustomerAddress',
   { 'foreign.customer_id' => 'self.id' },
   { cascade_delete        => 0 };
 
