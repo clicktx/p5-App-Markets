@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Product::Category;
+package Yetie::Schema::Result::ProductCategory;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 

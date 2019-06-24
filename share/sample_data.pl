@@ -34,7 +34,7 @@
     ],
 
     # Product Category
-    'Product::Category' => [
+    'ProductCategory' => [
         [qw/product_id category_id is_primary/],
         [ 1, 3, 1 ],
         [ 1, 5, 0 ],
