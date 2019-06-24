@@ -47,7 +47,7 @@ has_many
   { cascade_delete        => 0 };
 
 has_many
-  activities => 'Yetie::Schema::Result::Customer::Activity',
+  activities => 'Yetie::Schema::Result::CustomerActivity',
   { 'foreign.customer_id' => 'self.id' },
   { cascade_delete        => 0 };
 
