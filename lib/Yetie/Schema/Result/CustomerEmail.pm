@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Customer::Email;
+package Yetie::Schema::Result::CustomerEmail;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 

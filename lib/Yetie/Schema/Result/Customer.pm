@@ -32,7 +32,7 @@ might_have
   { cascade_delete        => 0 };
 
 has_many
-  emails => 'Yetie::Schema::Result::Customer::Email',
+  emails => 'Yetie::Schema::Result::CustomerEmail',
   { 'foreign.customer_id' => 'self.id' },
   { cascade_delete        => 0 };
 

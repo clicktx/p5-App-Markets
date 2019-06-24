@@ -121,7 +121,7 @@
         [ 112, 5 ],
         [ 111, 6 ],
     ],
-    'Customer::Email' => [
+    'CustomerEmail' => [
         [qw/customer_id email_id is_primary/],
         [ 111, 1, 0 ],
         [ 111, 2, 0 ],
