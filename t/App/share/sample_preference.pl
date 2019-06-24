@@ -14,7 +14,7 @@
         [qw/1 test_addon 1/],
         [qw/2 disable_addon 0/],
     ],
-    # 'Addon::Trigger' => [
+    # 'AddonTrigger' => [
     #     [qw/id addon_id trigger_name priority/],
     #     [qw/100 2 replace_template 333/],
     #     [qw/101 2 filter_form 555/],
