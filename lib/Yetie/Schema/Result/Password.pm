@@ -26,7 +26,7 @@ has_many
   { cascade_delete        => 0 };
 
 has_many
-  staff => 'Yetie::Schema::Result::Staff::Password',
+  staff => 'Yetie::Schema::Result::StaffPassword',
   { 'foreign.password_id' => 'self.id' },
   { cascade_delete        => 0 };
 
