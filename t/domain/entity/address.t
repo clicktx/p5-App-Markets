@@ -30,7 +30,7 @@ subtest 'basic' => sub {
     my $address = Yetie::Domain::Entity::Address->new( {} );
     isa_ok $address, 'Yetie::Domain::Entity';
     can_ok $address, qw(
-      type hash country_code line1 line2 city state personal_name organization phone
+      hash country_code line1 line2 city state personal_name organization phone
     );
     is $address->hash, '20f551adf8c892c32845022b874e0763ecf68788', 'right hash';
 };

@@ -1,6 +1,17 @@
 package Yetie::Controller::Admin::Order;
 use Mojo::Base 'Yetie::Controller::Admin';
 
+sub index {
+    my $c = shift;
+
+    my $order = $c->_find_order;
+    return $c->reply->not_found if $order->is_empty;
+
+    # Page
+    my $page = $c->factory('entity-page')->construct( title => 'Order Details', );
+    return $c->render( page => $page, order => $order );
+}
+
 sub create {
     my $c = shift;
     return $c->render();
@@ -40,16 +51,6 @@ sub delete {
     return $c->redirect_to('rn.admin.orders');
 }
 
-sub details {
-    my $c = shift;
-
-    my $order = $c->_find_order;
-    return $c->reply->not_found if $order->is_empty;
-
-    $c->stash( entity => $order );
-    $c->render();
-}
-
 sub duplicate {
     my $c = shift;
 
@@ -69,36 +70,15 @@ sub duplicate {
     # my $order = $c->schema->resultset('Sales::Order')->find_by_id($order_id);
 
     # return $c->redirect_to('rn.admin.orders');
-    $c->stash( entity => $order );
-    return $c->render('admin/order/edit');
-}
-
-# NOTE: Catalog::Checkoutに関連する実装がある。
-# また、管理者注文も考慮する必要がある。
-sub edit {
-    my $c = shift;
-
-    my $order = $c->_find_order;
-    return $c->reply->not_found if $order->is_empty;
-
-    my $form = $c->form('base-address');
-
-    # $c->form_default_value( $form, $entity );
-    $form->field($_)->default_value( $order->billing_address->$_ ) for qw(line1);
-    use DDP;
-    p $form;
-
-    $c->stash( entity => $order );
-    $c->render();
-
-    return $c->render();
+    # $c->stash( entity => $order );
+    return $c->render('admin/order/create');
 }
 
 sub _find_order {
     my $c = shift;
 
     my $order_id = $c->stash('id');
-    $c->service('order')->find_order($order_id);
+    return $c->service('order')->find_order($order_id);
 }
 
 1;

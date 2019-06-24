@@ -23,7 +23,9 @@ belongs_to
 sub to_data {
     my $self = shift;
 
+    my $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $self->category_id );
     return {
+        ancestors   => $ancestors,
         category_id => $self->category_id,
         is_primary  => $self->is_primary,
         title       => $self->detail->title,

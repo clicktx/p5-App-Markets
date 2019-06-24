@@ -42,7 +42,7 @@ sub remember_me {
     return $c->redirect_to($continue_url) if !$token;
 
     # Login
-    my $customer_id = $c->service('customer')->login_process_remember_me($token);
+    $c->service('customer')->login_process_remember_me($token);
     return $c->redirect_to($continue_url);
 }
 

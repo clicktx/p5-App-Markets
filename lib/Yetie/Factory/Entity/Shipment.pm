@@ -5,7 +5,7 @@ sub cook {
     my $self = shift;
 
     # Aggregate items
-    $self->aggregate( items => ( 'list-cart_items', $self->param('items') || [] ) );
+    $self->aggregate( items => ( 'list-line_items', $self->param('items') || [] ) );
 
     # shipping_address
     $self->aggregate( shipping_address => ( 'entity-address', $self->{shipping_address} || {} ) );

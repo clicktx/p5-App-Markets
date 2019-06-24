@@ -1,17 +1,63 @@
 package Yetie::Domain::Entity::Auth;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity';
 
-has _is_verified   => 0;
-has action         => q{};
-has continue_url   => q{};
-has email          => sub { __PACKAGE__->factory('value-email')->construct() };
-has error_message  => q{};
-has expires        => sub { __PACKAGE__->factory('value-expires')->construct() };
-has is_activated   => 0;
-has remote_address => 'unknown';
-has token          => sub { __PACKAGE__->factory('value-token')->construct() };
+has _is_verified => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0
+);
 
-sub continue { return shift->{continue_url} // 'rn.home' }
+has action => (
+    is      => 'ro',
+    isa     => 'Str',
+    default => q{}
+);
+
+has continue_url => (
+    is      => 'ro',
+    isa     => 'Str | Undef',
+    default => q{}
+);
+
+has email => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Value::Email',
+    default => sub { __PACKAGE__->factory('value-email')->construct() }
+);
+
+has error_message => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => q{}
+);
+
+has expires => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Value::Expires',
+    default => sub { __PACKAGE__->factory('value-expires')->construct() }
+);
+
+has is_activated => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0
+);
+
+has remote_address => (
+    is      => 'ro',
+    isa     => 'Str',
+    default => 'unknown'
+);
+
+has token => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Value::Token',
+    default => sub { __PACKAGE__->factory('value-token')->construct() }
+);
+
+sub continue { return shift->continue_url || 'rn.home' }
 
 sub is_verified { return shift->_is_verified(@_) }
 
@@ -19,7 +65,7 @@ sub verify_token {
     my ( $self, $last_token ) = @_;
 
     # Last request token
-    return $self->_fails('Different from last token') if !$self->token->equals($last_token);
+    return $self->_fails('Different from last token') if $self->token->value ne $last_token;
 
     # Activated
     return $self->_fails('Activated') if $self->is_activated;
@@ -37,6 +83,9 @@ sub _fails {
     $self->_is_verified(0);
     return $self->error_message(shift);
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

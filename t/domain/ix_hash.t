@@ -2,10 +2,10 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
 
-use_ok 'Yetie::Domain::IxHash';
+my $pkg = 'Yetie::Domain::IxHash';
+use_ok $pkg;
 
-use DDP;
-my $h = Yetie::Domain::IxHash->new( a => 10, b => 20, c => 30, d => 40, e => 50 );
+my $h = $pkg->new( a => 10, b => 20, c => 30, d => 40, e => 50 );
 
 subtest 'attributes' => sub {
     can_ok $h, $_ for $h->keys;
@@ -68,7 +68,7 @@ subtest 'grep' => sub {
 
     # Regex
     $new = $h->grep( { key => qr//, value => qr// } );
-    isa_ok $new, 'Yetie::Domain::IxHash';
+    isa_ok $new, $pkg;
     is_deeply \@{ $new->pairs }, [qw/a 10 b 20 c 30 d 40 e 50/];
     $new = $h->grep( { key => qr/c|e/ } );
     is_deeply \@{ $new->pairs }, [qw/c 30 e 50/];
@@ -96,23 +96,23 @@ subtest 'grep' => sub {
 subtest 'keys' => sub {
     my $keys = $h->keys;
     my @keys = $h->keys;
-    is_deeply $keys,  [qw/a b c d e/];
-    is_deeply \@keys, [qw/a b c d e/];
+    is_deeply $keys,  [qw/a b c d e/], 'right return array ref';
+    is_deeply \@keys, [qw/a b c d e/], 'right return array';
 };
 
 subtest 'last' => sub {
     my ( $key, $value ) = $h->last;
-    is $key,   'e';
-    is $value, 50;
+    is $key,   'e',  'right last key';
+    is $value, '50', 'right last value';
 
     my $pair = $h->last;
-    is_deeply $pair, { e => 50 };
+    is_deeply $pair, { e => 50 }, 'right last pair';
 };
 
 subtest 'map' => sub {
     my $new;
     $new = $h->map( sub { } );
-    isa_ok $new, 'Yetie::Domain::IxHash';
+    isa_ok $new, $pkg;
     is_deeply \@{ $new->pairs }, [];
     $new = $h->map( sub { my ( $key, $value ) = @_; $key => $value + 1 } );
     is_deeply \@{ $new->pairs }, [qw/a 11 b 21 c 31 d 41 e 51/];
@@ -129,7 +129,7 @@ subtest 'pairs' => sub {
 
 subtest 'size' => sub {
     my $size = $h->size;
-    is $size, 5;
+    is $size, '5', 'right size';
 };
 
 subtest 'to_hash' => sub {
@@ -151,8 +151,8 @@ subtest 'to_data' => sub {
 subtest 'values' => sub {
     my $values = $h->values;
     my @values = $h->values;
-    is_deeply $values,  [qw/10 20 30 40 50/];
-    is_deeply \@values, [qw/10 20 30 40 50/];
+    is_deeply $values,  [qw/10 20 30 40 50/], 'right return array ref';
+    is_deeply \@values, [qw/10 20 30 40 50/], 'right return array';
 };
 
 done_testing();

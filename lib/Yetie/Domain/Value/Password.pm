@@ -1,13 +1,18 @@
 package Yetie::Domain::Value::Password;
-use Yetie::Domain::Base 'Yetie::Domain::Value';
 use Crypt::ScryptKDF qw(scrypt_hash_verify);
 
-has created_at => undef;
+use Moose;
+extends 'Yetie::Domain::Value';
+
+has created_at => ( is => 'ro' );
 
 sub is_verify {
     my ( $self, $raw_password ) = @_;
     return scrypt_hash_verify( $raw_password, $self->value ) ? 1 : 0;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
@@ -24,6 +29,8 @@ Yetie::Domain::Value::Password
 
 L<Yetie::Domain::Value::Password> inherits all attributes from L<Yetie::Domain::Value> and implements
 the following new ones.
+
+=head2 C<created_at>
 
 =head1 METHODS
 

@@ -1,52 +1,64 @@
 package Yetie::Controller::Admin::Order::Edit;
 use Mojo::Base 'Yetie::Controller::Admin';
 
+# NOTE: Catalog::Checkoutに関連する実装がある。
+# また、管理者注文も考慮する必要がある。
+sub billing_address {
+    my $c = shift;
+    return $c->_edit_address(
+        {
+            title => 'Edit Billing Address',
+        }
+    );
+}
+
 sub items {
     my $c = shift;
 
     my $order_id = $c->stash('id');
     my $order    = $c->service('order')->find_order($order_id);
-    $order->page_title( $order->page_title . '/' . 'Edit Items' );
-    $c->stash( entity => $order );
     return $c->reply->not_found if $order->is_empty;
 
+    # Init form
     my $form = $c->form('admin-order-edit-item');
+
+    # Page
+    my $page = $c->factory('entity-page')->construct(
+        title => 'Edit Items',
+        form  => $form,
+    );
+
+    # Stash
+    $c->stash( page => $page, order => $order );
 
     # Get request
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
-    # Update
-    my $params = $form->param('item') || {};
-    foreach my $key ( keys %{$params} ) {
-        my $id = $key;
-        $id =~ s/\*//g;
-        my $values = $params->{$key};
-        $c->resultset('Sales::Order::Item')->search( { id => $id } )->update($values);
-    }
-    return $c->redirect_to( 'rn.admin.order.details', order_id => $order_id );
-}
-
-# NOTE: Catalog::Checkoutに関連する実装がある。
-# また、管理者注文も考慮する必要がある。
-sub billing_address {
-    my $c = shift;
-    $c->_edit_address(
-        {
-            address_type => 'billing_address',
-            title        => 'Edit Billing Address',
+    my $list_param = $form->scope_param('item') || [];
+    my $items = $order->items;
+    $items->each(
+        sub {
+            my ( $item, $num ) = @_;
+            my $params = $list_param->[$num];
+            $item->set_attributes($params);
         }
     );
+
+    # Update
+    if ( $order->is_modified ) { $c->resultset('Sales::Order::Item')->store_items($order) }
+
+    my $url = $c->url_for( 'rn.admin.order.index', order_id => $order_id )->fragment('items');
+    return $c->redirect_to($url);
 }
 
 sub shipping_address {
     my $c = shift;
-    $c->_edit_address(
+    return $c->_edit_address(
         {
-            address_type => 'shipping_address',
-            title        => 'Edit Shipping Address',
+            title => 'Edit Shipping Address',
         }
     );
 }
@@ -57,26 +69,34 @@ sub _edit_address {
 
     my $order_id = $c->stash('id');
     my $order    = $c->service('order')->find_order($order_id);
-    $order->page_title( $order->page_title . '/' . $args->{title} );
-    $c->stash( entity => $order );
     return $c->reply->not_found if $order->is_empty;
 
     # Init form
-    my $address = $order->{ $args->{address_type} };
+    my $address = $order->{ $c->stash('action') };
     my $form    = $c->_init_form($address);
 
+    # Page
+    my $page = $c->factory('entity-page')->construct(
+        title => $args->{title},
+        form  => $form,
+    );
+
+    # Stash
+    $c->stash( page => $page, order => $order );
+    $c->template('admin/order/edit/address');
+
     # Get request
-    return $c->render('admin/order/edit/address') if $c->is_get_request;
+    return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render('admin/order/edit/address') unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     # Update address
-    # FIXME: 入力済み項目を消す事ができない。
-    # $form->params->to_hash が空文字を出力しないため例えば会社名を消す事ができない
     $c->service('address')->update_address( $form->params->to_hash );
 
-    return $c->redirect_to( 'rn.admin.order.details', order_id => $order_id );
+    my $url = $c->url_for( 'rn.admin.order.index', order_id => $order_id )->fragment( $c->stash('action') );
+    return $c->redirect_to($url);
+
 }
 
 sub _init_form {

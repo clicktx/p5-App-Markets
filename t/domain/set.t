@@ -11,20 +11,28 @@ my $construct = sub {
 };
 
 subtest 'basic' => sub {
-    my $v = $construct->();
-    isa_ok $v->hash_set, 'Yetie::Domain::IxHash', 'right attribute hash_set';
-    can_ok $v, 'each';
+    my $set = $construct->();
+    isa_ok $set->hash_set, 'Yetie::Domain::IxHash', 'right attribute hash_set';
+    can_ok $set, 'each';
 };
 
 subtest 'get' => sub {
-    my $v = $construct->( foo => 1, bar => 2, baz => 3 );
-    is $v->get('bar'), 2,     'right get element';
-    is $v->get('qux'), undef, 'right has not element';
+    my $set = $construct->( foo => 1, bar => 2, baz => 3 );
+    is $set->get('bar'), 2,     'right get element';
+    is $set->get('qux'), undef, 'right has not element';
+};
+
+subtest 'has_elements' => sub {
+    my $set = $construct->();
+    ok !$set->has_elements, 'right not has elements';
+
+    $set = $construct->( foo => 1, bar => 2, baz => 3 );
+    ok $set->has_elements, 'right has elements';
 };
 
 subtest 'to_data' => sub {
-    my $v = $construct->( foo => 1, bar => 2, baz => 3 );
-    is_deeply $v->to_data, { foo => 1, bar => 2, baz => 3 }, 'right dump data';
+    my $set = $construct->( foo => 1, bar => 2, baz => 3 );
+    is_deeply $set->to_data, { foo => 1, bar => 2, baz => 3 }, 'right dump data';
 };
 
 done_testing();

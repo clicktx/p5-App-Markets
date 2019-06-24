@@ -4,24 +4,32 @@ use Scalar::Util qw/blessed/;
 
 our @EXPORT_OK = qw(c collection);
 
-sub append { c( @{ shift->to_array }, @_ ) }
+sub append { return c( @{ shift->to_array }, @_ ) }
 
-sub c { collection(@_) }
+sub c { return collection(@_) }
 
-sub collection { __PACKAGE__->new(@_) }
+sub collection { return __PACKAGE__->new(@_) }
 
 sub get {
-    my ( $self, $index ) = ( shift, shift // '' );
-    return if $index eq '';
-    $self->[$index];
+    my ( $self, $index ) = ( shift, shift // q{} );
+    return if $index eq q{};
+
+    return $self->[$index];
 }
 
 sub get_by_id {
     my ( $self, $str ) = @_;
-    $self->first( sub { $_->id eq $str } ) or undef;
+    ( return $self->first( sub { $_->id eq $str } ) ) or undef;
 }
 
-sub has_element { shift->get_by_id(shift) ? 1 : 0 }
+sub get_by_line_num {
+    my ( $self, $num ) = ( shift, shift // q{} );
+    return if $num eq q{};
+
+    return $self->get( $num - 1 );
+}
+
+sub has_element { return shift->get_by_id(shift) ? 1 : 0 }
 
 sub to_data {
     my $self = shift;
@@ -95,6 +103,15 @@ Return $element or undef.
     my $entity = $collection->get_by_id($entity_id);
 
 Return L<Yetie::Domain::Entity> object or undef.
+
+=head2 C<get_by_line_num>
+
+    my $element = $collection->get($line_num);
+
+    # Equivalent behavior
+    my $element = $collection->[ $line_num - 1 ];
+
+Return $element or undef.
 
 =head2 C<has_element>
 

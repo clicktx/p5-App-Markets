@@ -1,27 +1,11 @@
 package Yetie::Service::Product;
 use Mojo::Base 'Yetie::Service';
 
-sub choices_primary_category {
-    my ( $self, $entity ) = @_;
-
-    my @categories;
-    $entity->product_categories->each(
-        sub {
-            my $ancestors = $self->resultset('Category')->get_ancestors_arrayref( $_->id );
-            my $title;
-            foreach my $ancestor ( @{$ancestors} ) { $title .= $ancestor->{title} . ' > ' }
-            $title .= $_->title;
-            push @categories, [ $title, $_->category_id, choiced => $_->is_primary ];
-        }
-    );
-    return wantarray ? @categories : \@categories;
-}
-
 sub duplicate_product {
     my ( $self, $product_id ) = @_;
 
     my $entity = $self->find_product($product_id);
-    return unless $entity->has_id;
+    return if !$entity->has_id;
 
     my $title = $entity->title . ' ' . $self->controller->__x_default_lang('copy');
     my $rs    = $self->resultset('Product');
@@ -31,6 +15,7 @@ sub duplicate_product {
     my $data = $entity->to_data;
     delete $data->{id};
     delete $data->{breadcrumbs};
+
     my $result = $rs->create($data);
 
     # Logging
@@ -38,20 +23,25 @@ sub duplicate_product {
     return $result;
 }
 
+# NOTE: Yetie::Domain::Entity::ProductCategoryにancestorsを追加したのでbreadcrumbs生成にSQLを発行する必要はないかも
 sub find_product_with_breadcrumbs {
     my ( $self, $product_id ) = @_;
 
-    my $product = $self->resultset('Product')->find_product($product_id);
-    my $data = $product ? $product->to_data : {};
-    return $self->factory('entity-page-product')->construct($data);
+    my $result = $self->resultset('Product')->find_product($product_id);
+    my $data = $result ? $result->to_data : {};
+
+    my $data_breadcrumbs = delete $data->{breadcrumbs};
+    my $breadcrumbs      = $self->factory('list-breadcrumbs')->construct( list => $data_breadcrumbs );
+    my $product          = $self->factory('entity-product')->construct($data);
+    return ( $product, $breadcrumbs );
 }
 
 sub find_product {
     my ( $self, $product_id ) = @_;
 
-    my $product = $self->resultset('Product')->find_product($product_id);
-    my $data = $product ? $product->to_data( { no_breadcrumbs => 1 } ) : {};
-    return $self->factory('entity-page-product')->construct($data);
+    my $result = $self->resultset('Product')->find_product($product_id);
+    my $data = $result ? $result->to_data( { no_breadcrumbs => 1 } ) : {};
+    return $self->factory('entity-product')->construct($data);
 }
 
 sub is_sold {
@@ -98,20 +88,15 @@ sub search_products {
         per_page => $form->param('per_page') || 5,
     };
 
-    my $products_rs = $self->resultset('Product')->search_products($conditions);
-    my $data        = {
-        meta_title   => '',
-        breadcrumbs  => [],
-        form         => $form,
-        product_list => $products_rs->to_data( { no_relation => 1, no_breadcrumbs => 1 } ),
-        pager        => $products_rs->pager,
-    };
-    return $self->factory('entity-page-products')->construct($data);
+    my $rs       = $self->resultset('Product')->search_products($conditions);
+    my $data     = { list => $rs->to_data( { no_relation => 1, no_breadcrumbs => 1 } ) };
+    my $products = $self->factory('list-products')->construct($data);
+    return ( $products, $rs->pager );
 }
 
-sub update_product_categories { shift->resultset('Product')->update_product_categories(@_) }
+sub update_product_categories { return shift->resultset('Product')->update_product_categories(@_) }
 
-sub update_product { shift->resultset('Product')->update_product(@_) }
+sub update_product { return shift->resultset('Product')->update_product(@_) }
 
 1;
 __END__
@@ -134,15 +119,6 @@ the following new ones.
 L<Yetie::Service::Product> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
-=head2 C<choices_primary_category>
-
-    my $product_categories = $service->choices_primary_category($entity);
-    my @product_categories = $service->choices_primary_category($entity);
-
-Argument: L<Yetie::Domain::Entity::Page::Product> object.
-
-Return: Array or Array reference.
-
 =head2 C<duplicate_product>
 
     my $result = $service->duplicate_product($product_id);
@@ -153,17 +129,15 @@ Return L<Yetie::Schema::Result::Product> object or C<undefined>.
 
 =head2 C<find_product_with_breadcrumbs>
 
-    my $product = $service->find_product($product_id);
+    my ( $product, $breadcrumbs ) = $service->find_product($product_id);
 
-Return L<Yetie::Domain::Entity::Page::Product> object.
-
-Data does include C<breadcrumbs>.
+Return L<Yetie::Domain::Entity::Product> object and L<Yetie::Domain::List::Breadcrumbs> object.
 
 =head2 C<find_product>
 
     my $product = $service->find_product($product_id);
 
-Return L<Yetie::Domain::Entity::Page::Product> object.
+Return L<Yetie::Domain::Entity::Product> object.
 
 =head2 C<is_sold>
 
@@ -185,7 +159,7 @@ Return L<Yetie::Schema::Result::Product> object or undefined.
 
 =head2 C<search_products>
 
-    my $entity = $service->search_products($form);
+    my ( $product_list, $pager ) = $service->search_products($form);
 
 =head2 C<update_product_categories>
 

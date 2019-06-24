@@ -1,7 +1,13 @@
 package Yetie::Domain::Entity::PreferenceProperty;
-use Yetie::Domain::Base 'Yetie::Domain::Entity';
+use Moose;
+use namespace::autoclean;
+extends 'Yetie::Domain::Entity';
 
-has [qw/name value default_value title summary position group_id/];
+has [qw/name default_value title summary position group_id/] => ( is => 'ro' );
+has value => ( is => 'rw' );
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
@@ -18,6 +24,20 @@ Yetie::Domain::Entity::PreferenceProperty
 
 L<Yetie::Domain::Entity::PreferenceProperty> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 c<name>
+
+=head2 c<value>
+
+=head2 c<default_value>
+
+=head2 c<title>
+
+=head2 c<summary>
+
+=head2 c<position>
+
+=head2 c<group_id>
 
 =head1 METHODS
 

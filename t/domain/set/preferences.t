@@ -64,8 +64,11 @@ subtest 'properties' => sub {
     can_ok $pref, 'properties';
     isa_ok $pref->properties, 'Yetie::Domain::IxHash';
 
-    $pref->properties(undef);
-    is $pref->properties, undef, 'right set properties';
+    dies_ok { $pref->properties(undef) } 'right not isa';
+
+    my $h = Yetie::Domain::IxHash->new( a => 1, b => 2 );
+    $pref->properties($h);
+    is_deeply $pref->properties, { a => 1, b => 2 }, 'right set properties';
 };
 
 subtest 'value' => sub {
