@@ -50,9 +50,21 @@ sub __x_default_lang {
 
 sub _cache {
     my $c = shift;
+    my ( $key, $value ) = @_;
 
     my $caches = $c->app->caches;
-    return @_ ? @_ > 1 ? $caches->set( $_[0] => $_[1] ) : $caches->get( $_[0] ) : $caches;
+    return $caches if !$key;
+
+    # Set cache
+    my $is_cached = exists $caches->{cache}->{$key};
+    if ($value) {
+        $c->app->log->debug( q{Set new cache key:"} . $key . q{"} ) if !$is_cached;
+        return $caches->set( $key => $value );
+    }
+
+    # Get cache
+    $c->app->log->debug( q{Get cached data key:"} . $key . q{"} ) if $is_cached;
+    return $caches->get($key);
 }
 
 sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
