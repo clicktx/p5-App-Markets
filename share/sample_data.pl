@@ -164,7 +164,7 @@
         [ 11, 6, 4 ],
         [ 12, 7, 5 ],
     ],
-    'Sales::Order::Item' => [
+    'SalesOrderItem' => [
         [qw/order_id product_id quantity price product_title/],
         [ 1, 3, 3, 300, 'product 3' ],
         [ 1, 1, 1, 101, 'product 1' ], # change price

@@ -47,7 +47,7 @@ sub find_product {
 sub is_sold {
     my ( $self, $product_id ) = @_;
 
-    my $cnt = $self->resultset('Sales::Order::Item')->search( { product_id => $product_id } )->count;
+    my $cnt = $self->resultset('SalesOrderItem')->search( { product_id => $product_id } )->count;
     return $cnt ? 1 : 0;
 }
 

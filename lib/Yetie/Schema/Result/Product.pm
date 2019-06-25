@@ -48,7 +48,7 @@ has_many
   { cascade_delete       => 0 };
 
 has_many
-  order_items => 'Yetie::Schema::Result::Sales::Order::Item',
+  order_items => 'Yetie::Schema::Result::SalesOrderItem',
   { 'foreign.product_id' => 'self.id' },
   { cascade_delete       => 0 };
 

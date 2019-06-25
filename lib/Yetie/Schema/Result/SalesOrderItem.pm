@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Sales::Order::Item;
+package Yetie::Schema::Result::SalesOrderItem;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 use Yetie::Schema::Result::Product;
