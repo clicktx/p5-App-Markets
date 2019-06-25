@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Customer::Password;
+package Yetie::Schema::Result::CustomerPassword;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 

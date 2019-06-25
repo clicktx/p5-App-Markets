@@ -27,7 +27,7 @@ column last_logged_in_at => {
 
 # Relation
 might_have
-  customer_password => 'Yetie::Schema::Result::Customer::Password',
+  customer_password => 'Yetie::Schema::Result::CustomerPassword',
   { 'foreign.customer_id' => 'self.id' },
   { cascade_delete        => 0 };
 

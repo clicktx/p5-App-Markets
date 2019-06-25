@@ -21,7 +21,7 @@ column created_at => {
 
 # Relation
 has_many
-  customer => 'Yetie::Schema::Result::Customer::Password',
+  customer => 'Yetie::Schema::Result::CustomerPassword',
   { 'foreign.password_id' => 'self.id' },
   { cascade_delete        => 0 };
 
