@@ -38,7 +38,7 @@ belongs_to
   { 'foreign.id' => 'self.billing_address_id' };
 
 has_many
-  orders => 'Yetie::Schema::Result::Sales::Order',
+  orders => 'Yetie::Schema::Result::SalesOrder',
   { 'foreign.sales_id' => 'self.id' },
   { cascade_delete     => 0 };
 

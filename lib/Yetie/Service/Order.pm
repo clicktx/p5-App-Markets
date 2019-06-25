@@ -4,7 +4,7 @@ use Mojo::Base 'Yetie::Service';
 sub find_order {
     my ( $self, $order_id ) = @_;
 
-    my $result = $self->resultset('Sales::Order')->find_by_id($order_id);
+    my $result = $self->resultset('SalesOrder')->find_by_id($order_id);
     my $data = $result ? $result->to_data : {};
     return $self->factory('entity-order_detail')->construct($data);
 }
@@ -18,7 +18,7 @@ sub search_orders {
         page_no  => $form->param('page') || 1,
         per_page => $form->param('per_page') || 5,
     };
-    my $rs = $self->resultset('Sales::Order')->search_sales_orders($conditions);
+    my $rs = $self->resultset('SalesOrder')->search_sales_orders($conditions);
     my $orders = $self->factory('list-order_details')->construct( list => $rs->to_data );
     return ( $orders, $rs->pager );
 }

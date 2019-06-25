@@ -4,7 +4,7 @@ use Mojo::Base 'Yetie::Schema::ResultSet';
 sub get_id_by_order_id {
     my ( $self, $order_id ) = @_;
 
-    my $result = $self->schema->resultset('Sales::Order')->find($order_id);
+    my $result = $self->schema->resultset('SalesOrder')->find($order_id);
     return $result ? $result->sales_id : undef;
 }
 
