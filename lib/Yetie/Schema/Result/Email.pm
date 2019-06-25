@@ -22,7 +22,7 @@ column is_verified => {
 
 # Relation
 might_have
-  customer_email => 'Yetie::Schema::Result::Customer::Email',
+  customer_email => 'Yetie::Schema::Result::CustomerEmail',
   { 'foreign.email_id' => 'self.id' },
   { cascade_delete     => 0 };
 

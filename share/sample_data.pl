@@ -34,7 +34,7 @@
     ],
 
     # Product Category
-    'Product::Category' => [
+    'ProductCategory' => [
         [qw/product_id category_id is_primary/],
         [ 1, 3, 1 ],
         [ 1, 5, 0 ],
@@ -90,7 +90,7 @@
         [ 222, 'default', '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
         [ 223, 'staff',   '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
     ],
-    'Staff::Password' => [
+    'StaffPassword' => [
         [qw/staff_id password_id/],
         [ 222, 1 ],
         [ 223, 2 ],
@@ -115,13 +115,13 @@
         [ 112, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
         [ 113, '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
     ],
-    'Customer::Password' => [
+    'CustomerPassword' => [
         [qw/customer_id password_id/],
         [ 111, 4 ],
         [ 112, 5 ],
         [ 111, 6 ],
     ],
-    'Customer::Email' => [
+    'CustomerEmail' => [
         [qw/customer_id email_id is_primary/],
         [ 111, 1, 0 ],
         [ 111, 2, 0 ],
@@ -129,7 +129,7 @@
         [ 112, 4, 1 ],
         [ 113, 5, 1 ],
     ],
-    'Customer::Address' => [
+    'CustomerAddress' => [
         [qw/customer_id address_id/],
         [qw/111 1/],
         [qw/111 2/],
@@ -149,7 +149,7 @@
         [ 6, 113, 4, '2017-07-07 07:14:45', '2017-07-07 07:14:45' ],
         [ 7, 113, 4, '2017-07-07 07:15:01', '2017-07-07 07:15:01' ],
     ],
-    'Sales::Order' => [
+    'SalesOrder' => [
         [qw/id sales_id shipping_address_id/],
         [ 1, 1, 1 ],
         [ 2, 1, 3 ],
@@ -164,7 +164,7 @@
         [ 11, 6, 4 ],
         [ 12, 7, 5 ],
     ],
-    'Sales::Order::Item' => [
+    'SalesOrderItem' => [
         [qw/order_id product_id quantity price product_title/],
         [ 1, 3, 3, 300, 'product 3' ],
         [ 1, 1, 1, 101, 'product 1' ], # change price

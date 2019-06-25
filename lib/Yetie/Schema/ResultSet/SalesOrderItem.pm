@@ -1,4 +1,4 @@
-package Yetie::Schema::ResultSet::Sales::Order::Item;
+package Yetie::Schema::ResultSet::SalesOrderItem;
 use Mojo::Base 'Yetie::Schema::ResultSet';
 
 sub store_items {
@@ -22,22 +22,22 @@ __END__
 
 =head1 NAME
 
-Yetie::Schema::ResultSet::Sales::Order::Item
+Yetie::Schema::ResultSet::SalesOrderItem
 
 =head1 SYNOPSIS
 
-    my $result = $schema->resultset('Sales::Order::Item')->method();
+    my $result = $schema->resultset('SalesOrderItem')->method();
 
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::ResultSet::Sales::Order::Item> inherits all attributes from L<Yetie::Schema::ResultSet> and implements
+L<Yetie::Schema::ResultSet::SalesOrderItem> inherits all attributes from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::ResultSet::Sales::Order::Item> inherits all methods from L<Yetie::Schema::ResultSet> and implements
+L<Yetie::Schema::ResultSet::SalesOrderItem> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head2 C<store_items>

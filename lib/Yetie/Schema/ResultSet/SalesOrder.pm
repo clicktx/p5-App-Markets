@@ -1,4 +1,4 @@
-package Yetie::Schema::ResultSet::Sales::Order;
+package Yetie::Schema::ResultSet::SalesOrder;
 use Mojo::Base 'Yetie::Schema::ResultSet';
 
 my $prefetch = [
@@ -45,22 +45,22 @@ __END__
 
 =head1 NAME
 
-Yetie::Schema::ResultSet::Sales::Order
+Yetie::Schema::ResultSet::SalesOrder
 
 =head1 SYNOPSIS
 
-    my $result = $schema->resultset('Sales::Order')->method();
+    my $result = $schema->resultset('SalesOrder')->method();
 
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
 
-L<Yetie::Schema::ResultSet::Sales::Order> inherits all attributes from L<Yetie::Schema::ResultSet> and implements
+L<Yetie::Schema::ResultSet::SalesOrder> inherits all attributes from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Schema::ResultSet::Sales::Order> inherits all methods from L<Yetie::Schema::ResultSet> and implements
+L<Yetie::Schema::ResultSet::SalesOrder> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
 =head2 C<find_by_id>

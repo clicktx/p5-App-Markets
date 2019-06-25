@@ -4,11 +4,11 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
-use_ok 'Yetie::Schema::ResultSet::Sales::Order::Item';
+use_ok 'Yetie::Schema::ResultSet::SalesOrderItem';
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
-my $rs  = $app->schema->resultset('Sales::Order::Item');
+my $rs  = $app->schema->resultset('SalesOrderItem');
 
 subtest store_items => sub {
     my $items = $app->factory('entity-order_detail')->construct(

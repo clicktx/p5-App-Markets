@@ -22,7 +22,7 @@ subtest 'add_activity' => sub {
     );
 
     my $total            = $rs->count;
-    my $c_rs             = $schema->resultset('Customer::Activity');
+    my $c_rs             = $schema->resultset('CustomerActivity');
     my $c_activity_total = $c_rs->count;
 
     my $r = $rs->add_activity($e);

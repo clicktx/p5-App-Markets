@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Staff::Password;
+package Yetie::Schema::Result::CustomerPassword;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -7,20 +7,14 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-column staff_id => {
-    data_type   => 'INT',
-    is_nullable => 0,
-};
+column customer_id => { data_type => 'INT' };
 
-column password_id => {
-    data_type   => 'INT',
-    is_nullable => 0,
-};
+column password_id => { data_type => 'INT' };
 
 # Relation
 belongs_to
-  staff => 'Yetie::Schema::Result::Staff',
-  { 'foreign.id' => 'self.staff_id' };
+  customer => 'Yetie::Schema::Result::Customer',
+  { 'foreign.id' => 'self.customer_id' };
 
 belongs_to
   password => 'Yetie::Schema::Result::Password',
@@ -33,7 +27,7 @@ sub sqlt_deploy_hook {
     # alter index type
     my @indices = $table->get_indices;
     foreach my $index (@indices) {
-        $index->type('unique') if $index->name eq 'staff_passwords_idx_password_id';
+        $index->type('unique') if $index->name eq 'customer_passwords_idx_password_id';
     }
 }
 

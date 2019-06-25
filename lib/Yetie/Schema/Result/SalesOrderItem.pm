@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Sales::Order::Item;
+package Yetie::Schema::Result::SalesOrderItem;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 use Yetie::Schema::Result::Product;
@@ -35,7 +35,7 @@ column price => Yetie::Schema::Result::Product->column_info('price');
 
 # NOTE: 'order' is SQL reserved word.
 belongs_to
-  sales_order => 'Yetie::Schema::Result::Sales::Order',
+  sales_order => 'Yetie::Schema::Result::SalesOrder',
   { 'foreign.id' => 'self.order_id' };
 
 belongs_to

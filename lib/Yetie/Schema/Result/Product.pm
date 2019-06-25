@@ -38,12 +38,17 @@ column updated_at => {
 
 # Relation
 has_many
-  product_categories => 'Yetie::Schema::Result::Product::Category',
+  tax_rules => 'Yetie::Schema::Result::ProductTaxRule',
   { 'foreign.product_id' => 'self.id' },
   { cascade_delete       => 0 };
 
 has_many
-  order_items => 'Yetie::Schema::Result::Sales::Order::Item',
+  product_categories => 'Yetie::Schema::Result::ProductCategory',
+  { 'foreign.product_id' => 'self.id' },
+  { cascade_delete       => 0 };
+
+has_many
+  order_items => 'Yetie::Schema::Result::SalesOrderItem',
   { 'foreign.product_id' => 'self.id' },
   { cascade_delete       => 0 };
 

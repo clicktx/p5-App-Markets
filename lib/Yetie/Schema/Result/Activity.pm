@@ -54,7 +54,7 @@ column created_at => {
 
 # Relation
 has_many
-  customer_activities => 'Yetie::Schema::Result::Customer::Activity',
+  customer_activities => 'Yetie::Schema::Result::CustomerActivity',
   { 'foreign.activity_id' => 'self.id' },
   { cascade_delete        => 0 };
 

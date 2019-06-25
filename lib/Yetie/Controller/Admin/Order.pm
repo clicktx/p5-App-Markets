@@ -32,7 +32,7 @@ sub delete {
     my $order_id = $form->param('id');
 
     # shipmentが1つの場合はorderを削除する。複数の場合はshipmentを削除する。
-    my $rs    = $c->app->schema->resultset('Sales::Order');
+    my $rs    = $c->app->schema->resultset('SalesOrder');
     my $order = $rs->find($order_id);
 
     # NOTE: 400 Bad Request が適切
@@ -67,7 +67,7 @@ sub duplicate {
     # my $order    = $c->schema->resultset('Sales')->find_by_order_id($order_id)->copy;
     # p $order;
 
-    # my $order = $c->schema->resultset('Sales::Order')->find_by_id($order_id);
+    # my $order = $c->schema->resultset('SalesOrder')->find_by_id($order_id);
 
     # return $c->redirect_to('rn.admin.orders');
     # $c->stash( entity => $order );

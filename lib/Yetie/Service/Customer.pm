@@ -165,7 +165,7 @@ sub store_address {
     my $customer_id = $c->server_session->customer_id;
     return if !$customer_id;
 
-    my $result = $c->resultset('Customer::Address')->find_or_new(
+    my $result = $c->resultset('CustomerAddress')->find_or_new(
         {
             customer_id => $customer_id,
             address_id  => $address_id,

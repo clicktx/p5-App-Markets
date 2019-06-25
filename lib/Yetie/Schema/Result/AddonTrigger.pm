@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Addon::Trigger;
+package Yetie::Schema::Result::AddonTrigger;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 

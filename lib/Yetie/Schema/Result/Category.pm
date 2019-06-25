@@ -36,7 +36,7 @@ column title => {
 };
 
 has_many
-  products => 'Yetie::Schema::Result::Product::Category',
+  products => 'Yetie::Schema::Result::ProductCategory',
   { 'foreign.category_id' => 'self.id' },
   { cascade_delete        => 0 };
 

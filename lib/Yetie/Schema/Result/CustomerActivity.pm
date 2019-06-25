@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Customer::Email;
+package Yetie::Schema::Result::CustomerActivity;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -12,15 +12,10 @@ column customer_id => {
     is_nullable => 0,
 };
 
-column email_id => {
+column activity_id => {
     data_type   => 'INT',
     is_nullable => 0,
-};
-
-column is_primary => {
-    data_type     => 'BOOLEAN',
-    is_nullable   => 0,
-    default_value => 0,
+    extra       => { unsigned => 1 },
 };
 
 # Relation
@@ -29,8 +24,8 @@ belongs_to
   { 'foreign.id' => 'self.customer_id' };
 
 belongs_to
-  email => 'Yetie::Schema::Result::Email',
-  { 'foreign.id' => 'self.email_id' };
+  activity => 'Yetie::Schema::Result::Activity',
+  { 'foreign.id' => 'self.activity_id' };
 
 # Index
 sub sqlt_deploy_hook {
@@ -39,14 +34,8 @@ sub sqlt_deploy_hook {
     # alter index type
     my @indices = $table->get_indices;
     foreach my $index (@indices) {
-        $index->type('unique') if $index->name eq 'customer_emails_idx_email_id';
+        $index->type('unique') if $index->name eq 'customer_activities_idx_activity_id';
     }
-}
-
-sub to_data {
-    my $self = shift;
-
-    return { %{ $self->email->to_data }, is_primary => $self->is_primary, };
 }
 
 1;

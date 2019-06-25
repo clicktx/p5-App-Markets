@@ -48,7 +48,7 @@ sub items {
     );
 
     # Update
-    if ( $order->is_modified ) { $c->resultset('Sales::Order::Item')->store_items($order) }
+    if ( $order->is_modified ) { $c->resultset('SalesOrderItem')->store_items($order) }
 
     my $url = $c->url_for( 'rn.admin.order.index', order_id => $order_id )->fragment('items');
     return $c->redirect_to($url);
