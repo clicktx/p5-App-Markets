@@ -24,4 +24,10 @@
         [ 'customer_password_min', '4', 'pref.title.customer_password_min', 'pref.summary.customer_password_min', 100, 2 ],
         [ 'customer_password_max', '8', 'pref.title.customer_password_max', 'pref.summary.customer_password_max', 101, 2 ],
     ],
+
+    # tax rules
+    'TaxRule' => [
+        [ qw/id title tax_rate/],
+        [ 1, 'Tax Exemption', 0 ],
+    ],
 )

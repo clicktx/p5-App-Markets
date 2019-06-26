@@ -44,6 +44,20 @@
         [ 5, 4, 1 ],
     ],
 
+    # Tax rules
+    'TaxRule' => [
+        [ qw/id title tax_rate/],
+        [ 2, 'Tax 5%', 5 ],
+        [ 3, 'Tax 8%', 8 ],
+    ],
+
+    # Product tax rules
+    'ProductTaxRule' => [
+        [qw/product_id tax_rule_id start_at end_at/],
+        [ 1, 2, '1997-04-01 00:00:00', '2014-03-31 23:59:59' ],
+        [ 1, 3, '2014-04-01 00:00:00', undef ],
+    ],
+
     # For Accounts
     'Email' => [
         [qw/id address is_verified/],
