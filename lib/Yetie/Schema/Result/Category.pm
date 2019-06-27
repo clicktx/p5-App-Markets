@@ -33,6 +33,17 @@ column title => {
     is_nullable => 0,
 };
 
+# NOTE: Need a sqlt_deploy_hook
+__PACKAGE__->tree_columns(
+    {
+        root_column  => 'root_id',
+        left_column  => 'lft',
+        right_column => 'rgt',
+        level_column => 'level',
+    }
+);
+
+# Relation
 has_many
   products => 'Yetie::Schema::Result::ProductCategory',
   { 'foreign.category_id' => 'self.id' },
@@ -43,23 +54,16 @@ has_many
   { 'foreign.category_id' => 'self.id' },
   { cascade_delete        => 0 };
 
-# NOTE: 下記に書いた場合deploy_schema時にテーブルデータ挿入時に失敗する（relation設定によるもの？）
-#       tree_columnsを呼ばないとapplicationで動かないため、App::Commonで読み込む。
-# __PACKAGE__->tree_columns(
-#     {
-#         root_column  => 'root_id',
-#         left_column  => 'lft',
-#         right_column => 'rgt',
-#         level_column => 'level',
-#     }
-# );
-
 # Add Index
 sub sqlt_deploy_hook {
     my ( $self, $sqlt_table ) = @_;
 
     $sqlt_table->add_index( name => 'idx_root_id', fields => ['root_id'] );
     $sqlt_table->add_index( name => 'idx_level',   fields => ['level'] );
+
+    # FIX: Create constraints and indexes at schema deployment.
+    $sqlt_table->drop_constraint('categories_fk_root_id');
+    $sqlt_table->drop_index('categories_idx_root_id');
 }
 
 sub descendant_ids {
