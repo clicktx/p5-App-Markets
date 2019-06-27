@@ -17,9 +17,6 @@ has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更�
 has schema => sub {
     my $self = shift;
 
-    # DBIC NestedSet
-    _dbic_nestedset();
-
     say "+++++ DBIC +++++";                               # debug
     my $schema_class = "Yetie::Schema";
     eval "require $schema_class" or die "Could not load Schema Class ($schema_class). $@\n";    ## no critic
@@ -113,18 +110,6 @@ sub _add_hooks {
             say "... This route is dynamic" unless ( $c->stash('mojo.static') );
             $c->app->addons->emit_trigger( filter_form => $c )
               unless $c->stash('mojo.static');
-        }
-    );
-}
-
-sub _dbic_nestedset {
-    require Yetie::Schema::Result::Category;
-    Yetie::Schema::Result::Category->tree_columns(
-        {
-            root_column  => 'root_id',
-            left_column  => 'lft',
-            right_column => 'rgt',
-            level_column => 'level',
         }
     );
 }
