@@ -10,11 +10,10 @@ use Yetie::Schema;
 use Yetie::App::Common;
 use Yetie::Install::Util;
 
-my $conf = Yetie::Install::Util::load_config();
-
 # Deploy schema
-my $dsn = Yetie::App::Common::_dsn( $conf->{db} );
-my $schema = Yetie::Schema->connect( $dsn, $conf->{db}->{user}, $conf->{db}->{password} );
+my $conf   = Yetie::Install::Util::load_config();
+my $app    = Yetie::App::Common->new( config => $conf );
+my $schema = $app->schema;
 $schema->deploy( { add_drop_table => 1 } );
 
 # Insert data
