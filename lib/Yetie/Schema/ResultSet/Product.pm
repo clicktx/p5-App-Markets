@@ -9,7 +9,7 @@ sub find_product {
             'me.id' => $product_id
         },
         {
-            prefetch => { product_categories => 'detail' },
+            prefetch => { product_categories => 'category' },
             order_by => 'lft',
         }
     );
@@ -69,7 +69,7 @@ sub update_product_categories {
 sub update_product {
     my ( $self, $product_id, $form ) = @_;
 
-    my $product = $self->find( $product_id, { prefetch => { product_categories => 'detail' } } );
+    my $product = $self->find( $product_id, { prefetch => { product_categories => 'category' } } );
     my $cb = sub {
 
         # Primary category

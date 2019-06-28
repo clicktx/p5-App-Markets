@@ -17,7 +17,7 @@ belongs_to
   { 'foreign.id' => 'self.product_id' };
 
 belongs_to
-  detail => 'Yetie::Schema::Result::Category',
+  category => 'Yetie::Schema::Result::Category',
   { 'foreign.id' => 'self.category_id' };
 
 sub to_data {
@@ -28,7 +28,7 @@ sub to_data {
         ancestors   => $ancestors,
         category_id => $self->category_id,
         is_primary  => $self->is_primary,
-        title       => $self->detail->title,
+        title       => $self->category->title,
     };
 }
 

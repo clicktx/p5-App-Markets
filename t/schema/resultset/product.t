@@ -15,7 +15,7 @@ subtest 'find_product' => sub {
     isa_ok $result, 'Yetie::Schema::Result::Product';
     isa_ok $result->created_at,         'DateTime';
     isa_ok $result->product_categories, 'Yetie::Schema::ResultSet::ProductCategory';
-    isa_ok $result->product_categories->first->detail, 'Yetie::Schema::Result::Category';
+    isa_ok $result->product_categories->first->category, 'Yetie::Schema::Result::Category';
 };
 
 subtest 'update_product_categories' => sub {
