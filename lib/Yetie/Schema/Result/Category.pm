@@ -50,7 +50,7 @@ has_many
   { cascade_delete        => 0 };
 
 has_many
-  tax_rules => 'Yetie::Schema::Result::ProductTaxRule',
+  tax_rules => 'Yetie::Schema::Result::CategoryTaxRule',
   { 'foreign.category_id' => 'self.id' },
   { cascade_delete        => 0 };
 
@@ -61,7 +61,7 @@ sub sqlt_deploy_hook {
     $sqlt_table->add_index( name => 'idx_root_id', fields => ['root_id'] );
     $sqlt_table->add_index( name => 'idx_level',   fields => ['level'] );
 
-    # FIX: Create constraints and indexes at schema deployment.
+    # HACK: Create constraints and indexes at schema deployment.
     $sqlt_table->drop_constraint('categories_fk_root_id');
     $sqlt_table->drop_index('categories_idx_root_id');
 }
