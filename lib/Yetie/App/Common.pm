@@ -171,6 +171,28 @@ Yetie::App::Common
 L<Yetie::App::Common> inherits all attributes from L<Mojolicious> and implements the
 following new ones.
 
+=head2 C<addons>
+
+    my $addons = $app->addons;
+
+Return L<Yetie::Addon::Handler> object.
+
+=head2 C<region>
+
+    my $region = $app->region;
+
+Default: us
+
+=head2 C<restart_app>
+
+    $app->restart_app;
+
+=head2 C<schema>
+
+    my $schema = $app->schema;
+
+L<Yetie::Schema> object.
+
 =head1 METHODS
 
 L<Yetie::App::Common> inherits all methods from L<Mojolicious> and implements
