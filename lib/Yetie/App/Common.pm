@@ -2,6 +2,7 @@ package Yetie::App::Common;
 use Mojo::Base 'Mojolicious';
 use Mojo::Log;
 use Yetie::Addon::Handler;
+use Yetie::App::Core::DateTime;
 use DBIx::QueryLog;
 
 # $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
@@ -9,8 +10,9 @@ $ENV{DBIC_TRACE}            = 1;
 $ENV{DBIX_QUERYLOG_COMPACT} = 1;
 $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
 
-has addons => sub { Yetie::Addon::Handler->new(@_) };
-has region => 'us';
+has addons    => sub { Yetie::Addon::Handler->new(@_) };
+has date_time => sub { Yetie::App::Core::DateTime->new(@_) };
+has region    => 'us';
 
 # has restart_app => sub { system shift->home . "/script/appctl --restart" };
 has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更する
@@ -84,6 +86,8 @@ sub initialize_app {
     # Add before/after action hook
     # NOTE: Mojoliciou::Controllerの挙動を変更
     $self->_add_hooks;
+
+    return $self;
 }
 
 sub _add_hooks {
@@ -112,6 +116,8 @@ sub _add_hooks {
               unless $c->stash('mojo.static');
         }
     );
+
+    return $app;
 }
 
 sub _dsn {
@@ -152,6 +158,8 @@ sub _load_plugins {
 
     # Password
     $app->plugin('Scrypt');
+
+    return $app;
 }
 
 1;
@@ -176,6 +184,12 @@ following new ones.
     my $addons = $app->addons;
 
 Return L<Yetie::Addon::Handler> object.
+
+=head2 C<date_time>
+
+    my $date_time = $app->date_time;
+
+Return L<Yetie::App::Core::DateTime> object.
 
 =head2 C<region>
 
