@@ -11,10 +11,18 @@ subtest 'basic' => sub {
     my $app = $t->app;
     isa_ok $app->date_time, $pkg;
 
-    my $dt = $pkg->new;
-    is $dt->time_zone, 'UTC', 'right time zone';
-    $dt->time_zone('Asia/Tokyo');
-    is $dt->time_zone, 'Asia/Tokyo', 'right change time zone';
+    subtest 'time_zone' => sub {
+        my $dt = $pkg->new;
+        is $dt->time_zone, 'UTC', 'right default time zone';
+
+        $dt = $pkg->new;
+        $dt->time_zone('Asia/Tokyo');
+        is $dt->time_zone, 'Asia/Tokyo', 'right change time zone';
+
+        $dt = $pkg->new;
+        $dt->time_zone('UTC');
+        is $dt->time_zone, 'UTC', 'right revert time zone';
+    };
 };
 
 subtest 'now' => sub {
@@ -31,10 +39,14 @@ subtest 'today' => sub {
 
 subtest 'TZ' => sub {
     my $dt = $pkg->new;
-    isa_ok $dt->TZ, 'DateTime::TimeZone::UTC';
+    isa_ok $dt->TZ,  'DateTime::TimeZone::UTC', 'right from object';
+    isa_ok $pkg->TZ, 'DateTime::TimeZone::UTC', 'right from package';
 
     $dt->time_zone('Asia/Tokyo');
-    is ref $dt->TZ, 'DateTime::TimeZone::Asia::Tokyo', 'right change object';
+    isa_ok $dt->TZ,  'DateTime::TimeZone::Asia::Tokyo', 'right from object';
+    isa_ok $pkg->TZ, 'DateTime::TimeZone::Asia::Tokyo', 'right from package';
+
+    $dt->time_zone('UTC');
 };
 
 done_testing();

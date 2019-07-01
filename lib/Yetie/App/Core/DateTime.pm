@@ -2,9 +2,14 @@ package Yetie::App::Core::DateTime;
 use Mojo::Base -base;
 use DateTime qw();
 
-has time_zone => 'UTC';
+our $TIME_ZONE = 'UTC';
 
 sub now { return DateTime->now( time_zone => shift->TZ ) }
+
+sub time_zone {
+    my ( $self, $arg ) = @_;
+    return $arg ? $TIME_ZONE = $arg : $TIME_ZONE;
+}
 
 sub today { return shift->now->truncate( to => 'day' ) }
 
@@ -26,6 +31,16 @@ Yetie::App::Core::DateTime
 
 L<Yetie::App::Core::DateTime> inherits all attributes.
 
+=head1 METHODS
+
+L<Yetie::App::Core::DateTime> inherits all methods.
+
+=head2 C<now>
+
+    $now = $dt->now;
+
+Return L<DateTime> object.
+
 =head2 C<time_zone>
 
     # Getter
@@ -36,16 +51,6 @@ L<Yetie::App::Core::DateTime> inherits all attributes.
 
 Get/Set time zone.
 Default time zone C<UTC>
-
-=head1 METHODS
-
-L<Yetie::App::Core::DateTime> inherits all methods.
-
-=head2 C<now>
-
-    $now = $dt->now;
-
-Return L<DateTime> object.
 
 =head2 C<today>
 
