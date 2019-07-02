@@ -45,6 +45,8 @@ sub to_hash {
     return \%pair;
 }
 
+sub TZ { return Yetie::App::Core::DateTime->TZ }
+
 sub update {
     my $self = shift;
 
@@ -140,6 +142,19 @@ Return C<Hash refference>.
     my %data = $result->to_hash( ignore_columns => [qw/foo bar/] );
 
 =back
+
+=head2 C<TZ>
+
+    package Yetie::Schema::Result::Foo;
+
+    column created_at => {
+        data_type   => 'DATETIME',
+        ...
+        timezone    => __PACKAGE__->TZ,
+    };
+
+Return L<DateTime::TimeZone> object.
+See L<Yetie::App::Core::DateTime/TZ>.
 
 =head2 C<update>
 

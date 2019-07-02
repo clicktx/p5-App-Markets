@@ -15,13 +15,13 @@ column data => {
 column created_at => {
     data_type   => 'DATETIME',
     is_nullable => 0,
-    timezone    => Yetie::App::Core::DateTime->TZ,
+    timezone    => __PACKAGE__->TZ,
 };
 
 column updated_at => {
     data_type   => 'DATETIME',
     is_nullable => 1,
-    timezone    => Yetie::App::Core::DateTime->TZ,
+    timezone    => __PACKAGE__->TZ,
 };
 
 has_many

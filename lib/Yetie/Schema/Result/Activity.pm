@@ -49,7 +49,7 @@ column user_agent => {
 column created_at => {
     data_type   => 'DATETIME',
     is_nullable => 0,
-    timezone    => Yetie::App::Core::DateTime->TZ,
+    timezone    => __PACKAGE__->TZ,
 };
 
 # Relation
