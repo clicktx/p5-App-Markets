@@ -81,7 +81,7 @@ sub initialize_app {
 
     # TimeZone
     # my $time_zone = 'Asia/Tokyo';                 # from preference
-    # $self->schema->time_zone($time_zone);
+    # $self->date_time->time_zone($time_zone);
 
     # Add before/after action hook
     # NOTE: Mojoliciou::Controllerの挙動を変更

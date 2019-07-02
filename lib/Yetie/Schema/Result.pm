@@ -1,5 +1,6 @@
 package Yetie::Schema::Result;
 use Mojo::Base 'DBIx::Class::Core';
+use Yetie::App::Core::DateTime;
 
 __PACKAGE__->load_components(qw/InflateColumn::DateTime/);
 
@@ -22,7 +23,7 @@ sub choose_column_name {
 sub insert {
     my $self = shift;
 
-    my $now = $self->schema->now;
+    my $now = Yetie::App::Core::DateTime->now;
     $self->created_at($now) if $self->can('created_at');
 
     $self->next::method(@_);
@@ -47,7 +48,7 @@ sub to_hash {
 sub update {
     my $self = shift;
 
-    $self->updated_at( $self->schema->now ) if $self->can('updated_at');
+    $self->updated_at( Yetie::App::Core::DateTime->now ) if $self->can('updated_at');
     $self->next::method(@_);
 }
 

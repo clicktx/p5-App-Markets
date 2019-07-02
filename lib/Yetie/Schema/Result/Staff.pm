@@ -16,13 +16,13 @@ unique_column login_id => {
 column created_at => {
     data_type   => 'DATETIME',
     is_nullable => 0,
-    timezone    => Yetie::Schema->TZ,
+    timezone    => Yetie::App::Core::DateTime->TZ,
 };
 
 column updated_at => {
     data_type   => 'DATETIME',
     is_nullable => 1,
-    timezone    => Yetie::Schema->TZ,
+    timezone    => Yetie::App::Core::DateTime->TZ,
 };
 
 # Relation

@@ -1,5 +1,6 @@
 package Yetie::Schema::ResultSet;
 use Mojo::Base 'DBIx::Class::ResultSet::HashRef';
+use Yetie::App::Core::DateTime;
 
 has schema => sub { shift->result_source->schema };
 
@@ -9,7 +10,7 @@ has schema => sub { shift->result_source->schema };
 #
 #     my $schema = $self->result_source->schema;
 #     my $table  = $self->result_source;
-#     my $now    = $schema->now;
+#     my $now    = Yetie::App::Core::DateTime->now;
 #     $_[0]->{created_at} = $now if $table->has_column('created_at');
 #     $_[0]->{updated_at} = $now if $table->has_column('updated_at');
 #
@@ -68,7 +69,7 @@ sub to_data {
 sub update {
     my $self = shift;
 
-    $_[0]->{updated_at} = $self->schema->now if $self->result_source->has_column('updated_at');
+    $_[0]->{updated_at} = Yetie::App::Core::DateTime->now if $self->result_source->has_column('updated_at');
     $self->next::method(@_);
 }
 
