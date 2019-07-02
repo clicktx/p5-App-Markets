@@ -1,14 +1,12 @@
 package Yetie::Schema;
+use version; our $VERSION = version->declare('v0.0.1');
+
 use Mojo::Base 'DBIx::Class::Schema';
 use Carp qw/croak/;
 use Try::Tiny;
-use DateTime;
 use Mojo::Util 'camelize';
 use Data::Page::Navigation;
 use DBIx::Sunny;
-
-use version; our $VERSION = version->declare('v0.0.1');
-our $TIME_ZONE = 'UTC';
 
 has 'app';
 
@@ -24,8 +22,6 @@ sub connect {
     my @connect_info = ( $dsn, $user, $password, $dbi_attributes, $extra_attributes );
     return $self->SUPER::connect(@connect_info);
 }
-
-sub now { DateTime->now( time_zone => shift->TZ ) }
 
 # This code is DBIx::Class::Schema::resultset
 sub resultset {
@@ -46,10 +42,6 @@ sub sequence {
     $rs->search->update( { id => \'LAST_INSERT_ID(id + 1)' } );
     $self->storage->last_insert_id;
 }
-
-sub time_zone { shift; return @_ ? $TIME_ZONE = shift : $TIME_ZONE }
-
-sub today { shift->now->truncate( to => 'day' ) }
 
 sub txn_failed {
     my ( $self, $err ) = @_;
@@ -78,8 +70,6 @@ sub txn {
     return 1;
 }
 
-sub TZ { DateTime::TimeZone->new( name => shift->time_zone ) }
-
 1;
 __END__
 =encoding utf8
@@ -102,11 +92,7 @@ L<Yetie::Schema> inherits all methods from L<DBIx::Class::Schema>.
 
 =head2 C<connect>
 
-
-
-=head2 C<now>
-
-Return L<DateTime> object.
+    my $schema = Yetie::Schema->connect( $dsn, $user, $password );
 
 =head2 C<resultset>
 
@@ -122,21 +108,6 @@ But you can use the snake case for C<$source_name>.
 =head2 C<sequence>
 
 DEPRECATED
-
-=head2 C<time_zone>
-
-    # Getter
-    my $time_zone = $schema->time_zone;
-
-    # Setter
-    $schema->time_zone($time_zone);
-
-Get/Set time zone.
-Default time zone C<UTC>
-
-=head2 C<today>
-
-Return L<DateTime> object.
 
 =head2 C<txn_failed>
 
@@ -160,13 +131,6 @@ Return C<true> or exception.
 Execute L<DBIx::Class::Schema/txn_do> in trap an exception.
 
 For exceptions, does L</txn_failed>.
-
-=head2 C<TZ>
-
-    my $tz = $schema->TZ;
-
-Return L<DateTime::TimeZone> object.
-Using time zone L</time_zone>.
 
 =head1 AUTHOR
 

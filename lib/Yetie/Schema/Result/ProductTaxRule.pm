@@ -8,13 +8,13 @@ primary_column tax_rule_id => { data_type => 'INT' };
 column start_at => {
     data_type   => 'DATETIME',
     is_nullable => 1,
-    timezone    => Yetie::Schema->TZ,
+    timezone    => __PACKAGE__->TZ,
 };
 
 column end_at => {
     data_type   => 'DATETIME',
     is_nullable => 1,
-    timezone    => Yetie::Schema->TZ,
+    timezone    => __PACKAGE__->TZ,
 };
 
 # Relation

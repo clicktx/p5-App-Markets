@@ -23,6 +23,7 @@ sub register {
     $app->helper( cart             => sub { _cart(@_) } );
     $app->helper( continue_url     => sub { _continue_url(@_) } );
     $app->helper( cookie_session   => sub { shift->session(@_) } );
+    $app->helper( date_time        => sub { shift->app->date_time(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( is_admin_route   => sub { _is_admin_route(@_) } );
     $app->helper( is_get_request   => sub { _is_get_request(@_) } );
@@ -229,6 +230,15 @@ Default url: C<rn.admin.dashboard> or C<rn.home>
     my $value = $c->cookie_session('key');
 
 Alias for $c->session;
+
+=head2 C<date_time>
+
+    my $date_time = $c->date_time;
+
+    # Longer version
+    $c->app->date_time;
+
+Alias for $app->date_time;
 
 =head2 C<factory>
 
