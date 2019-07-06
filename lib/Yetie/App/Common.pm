@@ -6,6 +6,7 @@ use Yetie::App::Core::DateTime;
 use DBIx::QueryLog;
 
 # $ENV{DBIX_QUERYLOG_EXPLAIN} = 1;
+$ENV{DBIC_DT_SEARCH_OK}     = 1;
 $ENV{DBIC_TRACE}            = 1;
 $ENV{DBIX_QUERYLOG_COMPACT} = 1;
 $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
