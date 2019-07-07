@@ -111,7 +111,8 @@ sub find_tax_rule {
             order_by => { '-DESC' => 'level' },
         }
     );
-    return $category_tax_rules->first ? $category_tax_rules->first->tax_rule : undef;
+    my $category_tax_rules = $category_tax_rules->first;
+    return $category_tax_rules ? $category_tax_rules->tax_rule : undef;
 }
 
 sub find_tax_rule_now {
