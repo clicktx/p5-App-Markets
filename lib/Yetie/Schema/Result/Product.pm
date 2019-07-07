@@ -71,6 +71,56 @@ sub find_primary_category {
     );
 }
 
+sub find_tax_rule {
+    my ( $self, $dt ) = @_;
+
+    my $where = {
+        -or => [
+            -and => [
+                start_at => { '<=' => $dt },
+                end_at   => { '>=' => $dt },
+            ],
+            -and => [
+                start_at => { '<=' => $dt },
+                end_at   => { 'is' => undef },
+            ],
+        ]
+    };
+
+    # product tax rule
+    my $product_tax_rules = $self->tax_rules->search($where);
+    return $product_tax_rules->first->tax_rule if $product_tax_rules->first;
+
+    # category tax rule
+    my $primary_category   = $self->product_categories->get_primary_category;
+    my $category_tax_rules = $self->schema->resultset('CategoryTaxRule')->search(
+        {
+            -and => [
+                $where,
+                {
+                    -and => [
+                        root_id => $primary_category->root_id,
+                        lft     => { '<=' => $primary_category->lft },
+                        rgt     => { '>=' => $primary_category->rgt },
+                    ]
+                },
+            ],
+        },
+        {
+            prefetch => [qw/category tax_rule/],
+            order_by => { '-DESC' => 'level' },
+        }
+    );
+    return $category_tax_rules->first ? $category_tax_rules->first->tax_rule : undef;
+}
+
+sub find_tax_rule_now {
+    my $self = shift;
+
+    my $now = $self->schema->app->date_time->now;
+    return $self->find_tax_rule($now);
+}
+
 sub to_data {
     my ( $self, $options ) = @_;
 
@@ -163,6 +213,21 @@ Data does not include C<product_categories>
 Data does not include C<breadcrumbs>.
 
 =back
+
+=head2 C<find_tax_rule>
+
+    my $tax_rule = $result->find_tax_rule($DateTimeObject);
+
+Return L<Yetie::Schema::Result::TaxRule> object or C<undef>.
+
+=head2 C<find_tax_rule_now>
+
+    my $tax_rule = $result->find_tax_rule_now;
+
+    # Longer version
+    my $tax_rule = $result->find_tax_rule( DateTime->now(...) );
+
+See L</find_tax_rule>
 
 =head1 AUTHOR
 
