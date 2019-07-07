@@ -92,7 +92,9 @@ sub find_tax_rule {
     return $product_tax_rules->first->tax_rule if $product_tax_rules->first;
 
     # category tax rule
-    my $primary_category   = $self->product_categories->get_primary_category;
+    my $primary_category = $self->product_categories->get_primary_category;
+    return if !$primary_category;
+
     my $category_tax_rules = $self->schema->resultset('CategoryTaxRule')->search(
         {
             -and => [
