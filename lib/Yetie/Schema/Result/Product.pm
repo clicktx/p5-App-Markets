@@ -55,17 +55,6 @@ sub sqlt_deploy_hook {
 }
 
 # Methods
-sub find_primary_category {
-    my $self = shift;
-
-    my $rs = $self->product_categories->search( { is_primary => 1 } );
-    my $primary_category = $self->schema->resultset('Category')->find(
-        {
-            id => { '=' => $rs->get_column('category_id')->as_query }
-        }
-    );
-}
-
 sub find_tax_rule {
     my ( $self, $dt ) = @_;
 
@@ -138,7 +127,7 @@ sub to_data {
         $data->{product_categories} = $self->product_categories->to_data;
     }
     if ( !$options->{no_breadcrumbs} ) {
-        $data->{breadcrumbs} = $self->find_primary_category->to_breadcrumbs;
+        $data->{breadcrumbs} = $self->product_categories->get_primary_category->to_breadcrumbs;
     }
     return $data;
 }
@@ -164,12 +153,6 @@ the following new ones.
 
 L<Yetie::Schema::Result::Product> inherits all methods from L<Yetie::Schema::Result> and implements
 the following new ones.
-
-=head2 C<find_primary_category>
-
-    $primary_category = $result->find_primary_category;
-
-Returns L<Yetie::Schema::Result::Category> object.
 
 =head2 C<to_data>
 
