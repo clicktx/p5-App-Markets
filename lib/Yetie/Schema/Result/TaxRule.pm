@@ -20,15 +20,9 @@ column tax_rate => {
 };
 
 # Relation
-
 has_many
   category_tax_rules => 'Yetie::Schema::Result::CategoryTaxRule',
   { 'foreign.category_id' => 'self.id' },
   { cascade_delete        => 0 };
-
-has_many
-  product_tax_rules => 'Yetie::Schema::Result::ProductTaxRule',
-  { 'foreign.product_id' => 'self.id' },
-  { cascade_delete       => 0 };
 
 1;

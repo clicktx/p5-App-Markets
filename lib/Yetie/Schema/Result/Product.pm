@@ -38,11 +38,6 @@ column updated_at => {
 
 # Relation
 has_many
-  tax_rules => 'Yetie::Schema::Result::ProductTaxRule',
-  { 'foreign.product_id' => 'self.id' },
-  { cascade_delete       => 0 };
-
-has_many
   product_categories => 'Yetie::Schema::Result::ProductCategory',
   { 'foreign.product_id' => 'self.id' },
   { cascade_delete       => 0 };

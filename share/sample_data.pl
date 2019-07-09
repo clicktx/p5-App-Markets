@@ -69,14 +69,6 @@
         [ 18, 5, '2014-04-01 00:00:00', undef ],
     ],
 
-    # Product tax rules
-    'ProductTaxRule' => [
-        [qw/product_id tax_rule_id start_at end_at/],
-        [ 1, 2, '1990-04-01 00:00:00', '1997-03-31 23:59:59' ],
-        [ 1, 3, '1997-04-01 00:00:00', '2014-03-31 23:59:59' ],
-        [ 1, 5, '2014-04-01 00:00:00', undef ],
-    ],
-
     # For Accounts
     'Email' => [
         [qw/id address is_verified/],
