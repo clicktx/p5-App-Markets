@@ -14,20 +14,13 @@ sub get_category_tree {
     my $cache = $self->app->cache('category_tree');
     return $cache if $cache;
 
-    my $root = $self->resultset('Category')->search( { level => 0 } );
-    my $tree = _create_tree($root) || [];
-    my $entity = $self->app->factory('entity-category_tree')->construct( children => $tree );
+    my $root   = $self->resultset('Category')->search( { level => 0 } );
+    my $tree   = $root->to_data;
+    my $entity = $self->app->factory('entity-category_tree')->construct( id => 0, title => 'root', children => $tree );
 
     # Set to cache
     $self->app->cache( category_tree => $entity );
     return $entity;
-}
-
-sub _create_tree {
-    my $nodes = shift;
-    my @tree;
-    $nodes->each( sub { push @tree, shift->to_data } );
-    return \@tree;
 }
 
 sub _find_category {
