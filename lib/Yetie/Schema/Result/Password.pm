@@ -16,7 +16,7 @@ column hash => {
 column created_at => {
     data_type   => 'DATETIME',
     is_nullable => 0,
-    timezone    => __PACKAGE__->TZ,
+    timezone    => Yetie::Schema->TZ,
 };
 
 # Relation

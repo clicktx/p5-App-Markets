@@ -7,6 +7,9 @@ use Try::Tiny;
 use Mojo::Util 'camelize';
 use Data::Page::Navigation;
 use DBIx::Sunny;
+use Yetie::App::Core::DateTime;
+
+our $TZ = Yetie::App::Core::DateTime->TZ;
 
 has 'app';
 
@@ -70,6 +73,8 @@ sub txn {
     return 1;
 }
 
+sub TZ { return $TZ }
+
 1;
 __END__
 =encoding utf8
@@ -131,6 +136,19 @@ Return C<true> or exception.
 Execute L<DBIx::Class::Schema/txn_do> in trap an exception.
 
 For exceptions, does L</txn_failed>.
+
+=head2 C<TZ>
+
+    package Yetie::Schema::Result::Foo;
+
+    column created_at => {
+        data_type   => 'DATETIME',
+        ...
+        timezone    => Yetie::Schema->TZ,
+    };
+
+Return L<DateTime::TimeZone> object.
+See L<Yetie::App::Core::DateTime/TZ>.
 
 =head1 AUTHOR
 
