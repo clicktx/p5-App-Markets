@@ -3,9 +3,8 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-has level    => ( is => 'ro', default => 0 );
-has root_id  => ( is => 'ro', default => 0 );
-has title    => ( is => 'ro', default => q{} );
+with 'Yetie::Domain::Role::Category';
+
 has children => ( is => 'ro', default => sub { __PACKAGE__->factory('list-category_trees')->construct() } );
 
 sub has_child { shift->children->count ? 1 : 0 }
@@ -26,14 +25,9 @@ Yetie::Domain::Entity::CategoryTree
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::CategoryTree> inherits all attributes from L<Yetie::Domain::Entity> and implements
-the following new ones.
+L<Yetie::Domain::Entity::CategoryTree> inherits all attributes from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Category>.
 
-=head2 C<level>
-
-=head2 C<root_id>
-
-=head2 C<title>
+implements the following new ones.
 
 =head2 C<children>
 
@@ -56,4 +50,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>
+L<Yetie::Domain::Role::Category>, L<Yetie::Domain::Entity>
