@@ -2,8 +2,6 @@ package Yetie::Domain::Role::Category;
 use Moose::Role;
 
 has level    => ( is => 'ro', default => 0 );
-has lft      => ( is => 'ro', default => 0 );
-has rgt      => ( is => 'ro', default => 0 );
 has root_id  => ( is => 'ro', default => 0 );
 has title    => ( is => 'ro', default => q{} );
 
@@ -24,10 +22,6 @@ L<Yetie::Domain::Role::Category> inherits all attributes from L<Moose::Role> and
 the following new ones.
 
 =head2 C<level>
-
-=head2 C<lft>
-
-=head2 C<rgt>
 
 =head2 C<root_id>
 

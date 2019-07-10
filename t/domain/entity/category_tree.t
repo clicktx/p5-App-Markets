@@ -9,8 +9,6 @@ subtest 'basic' => sub {
     isa_ok $e, 'Yetie::Domain::Entity';
 
     can_ok $e, 'level';
-    can_ok $e, 'lft';
-    can_ok $e, 'rgt';
     can_ok $e, 'root_id';
     can_ok $e, 'title';
 

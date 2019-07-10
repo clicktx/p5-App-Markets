@@ -110,8 +110,6 @@ sub to_data {
     my $data = {
         id      => $self->id,
         root_id => $self->root_id,
-        lft     => $self->lft,
-        rgt     => $self->rgt,
         level   => $self->level,
         title   => $self->title,
     };
