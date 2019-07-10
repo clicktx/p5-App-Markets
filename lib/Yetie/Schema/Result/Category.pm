@@ -115,7 +115,7 @@ sub to_data {
     };
 
     # Options
-    $data->{children} = $self->children->to_data unless $options->{no_children};
+    if ( !$options->{no_children} ) { $data->{children} = $self->children->to_data }
 
     return $data;
 }
