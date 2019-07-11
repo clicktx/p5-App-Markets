@@ -50,8 +50,8 @@ subtest 'get_category_tree' => sub {
     is $app->cache('category_tree'), undef, 'right not cached';
 
     my $tree = $s->get_category_tree();
-    isa_ok $tree, 'Yetie::Domain::Entity::CategoryTree';
-    isa_ok $app->cache('category_tree'), 'Yetie::Domain::Entity::CategoryTree', 'right cached';
+    isa_ok $tree, 'Yetie::Domain::Entity::CategoryTreeNode';
+    isa_ok $app->cache('category_tree'), 'Yetie::Domain::Entity::CategoryTreeNode', 'right cached';
 };
 
 done_testing();

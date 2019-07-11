@@ -3,7 +3,7 @@ use Test::More;
 use Yetie::Factory;
 
 use_ok 'Yetie::Domain::Entity::CategoryTreeRoot';
-use_ok 'Yetie::Domain::Entity::CategoryTree';
+use_ok 'Yetie::Domain::Entity::CategoryTreeNode';
 
 subtest 'basic' => sub {
     subtest 'root' => sub {
@@ -19,7 +19,7 @@ subtest 'basic' => sub {
     };
 
     subtest 'node' => sub {
-        my $e = Yetie::Domain::Entity::CategoryTree->new();
+        my $e = Yetie::Domain::Entity::CategoryTreeNode->new();
         isa_ok $e, 'Yetie::Domain::Entity';
 
         can_ok $e, 'level';

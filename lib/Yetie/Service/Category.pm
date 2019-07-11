@@ -16,7 +16,7 @@ sub get_category_tree {
 
     my $root   = $self->resultset('Category')->search( { level => 0 } );
     my $tree   = $root->to_data;
-    my $entity = $self->app->factory('entity-category_tree')->construct( id => 0, title => 'root', children => $tree );
+    my $entity = $self->app->factory('entity-category_tree_node')->construct( id => 0, title => 'root', children => $tree );
 
     # Set to cache
     $self->app->cache( category_tree => $entity );

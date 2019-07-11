@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::CategoryTree;
+package Yetie::Domain::Entity::CategoryTreeNode;
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
@@ -15,7 +15,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::CategoryTree
+Yetie::Domain::Entity::CategoryTreeNode
 
 =head1 SYNOPSIS
 
@@ -23,7 +23,7 @@ Yetie::Domain::Entity::CategoryTree
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::CategoryTree> inherits all attributes from L<Yetie::Domain::Entity>
+L<Yetie::Domain::Entity::CategoryTreeNode> inherits all attributes from L<Yetie::Domain::Entity>
 and L<Yetie::Domain::Role::Category>, L<Yetie::Domain::Role::CategoryTree>,
 
 and implements the following new ones.
@@ -44,7 +44,7 @@ Return L<Yetie::Domain::List::CategoryTrees> object.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::CategoryTree> inherits all methods from L<Yetie::Domain::Entity>
+L<Yetie::Domain::Entity::CategoryTreeNode> inherits all methods from L<Yetie::Domain::Entity>
 and L<Yetie::Domain::Role::Category>, L<Yetie::Domain::Role::CategoryTree>,
 
 and implements the following new ones.
