@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Deep;
 use Yetie::Factory;
 
 use_ok 'Yetie::Domain::Entity::CategoryTreeRoot';
@@ -12,6 +13,18 @@ subtest 'root' => sub {
 
         can_ok $e, 'children';
         isa_ok $e->children, 'Yetie::Domain::List::CategoryTrees';
+    };
+
+    subtest 'create_index' => sub {
+        my $f     = Yetie::Factory->new('entity-category_tree_root');
+        my $e     = $f->construct( children => [ { id => 1 }, { id => 2 } ] );
+        my $index = $e->_index;
+
+        $e->set_index( {} );
+        ok !eq_deeply( $e->_index, $index ), 'right set index';
+
+        $e->create_index;
+        cmp_deeply $e->_index, $index, 'right create index';
     };
 
     subtest 'get_node' => sub {

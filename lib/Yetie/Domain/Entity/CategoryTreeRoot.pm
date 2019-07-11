@@ -6,15 +6,43 @@ extends 'Yetie::Domain::Entity';
 with qw(Yetie::Domain::Role::CategoryTree);
 
 has _index => (
-    is      => 'ro',
-    isa     => 'HashRef',
-    default => sub { {} },
-    writer  => 'set_index',
+    is         => 'ro',
+    isa        => 'HashRef',
+    lazy_build => 1,
+    writer     => 'set_index',
 );
+
+sub create_index {
+    my $self  = shift;
+    my $index = _create_index($self);
+    $self->set_index($index);
+    return;
+}
 
 sub get_node {
     my ( $self, $id ) = @_;
     return $self->_index->{$id};
+}
+
+sub _build__index {
+    my $self = shift;
+    return _create_index($self);
+}
+
+sub _create_index {
+    my $obj = shift;
+
+    my %index;
+    $obj->children->each(
+        sub {
+            $index{ $_->id } = $_;
+            if ( $_->has_child ) {
+                my $res = _create_index($_);
+                %index = ( %index, %{$res} );
+            }
+        }
+    );
+    return \%index;
 }
 
 no Moose;
@@ -52,6 +80,12 @@ L<Yetie::Domain::Entity::CategoryTreeRoot> inherits all methods from L<Yetie::Do
 and L<Yetie::Domain::Role::CategoryTree>
 
 and implements the following new ones.
+
+=head2 C<create_index>
+
+    $categoty_root->create_index;
+
+Create and re-create category index from L</children>.
 
 =head2 C<get_node>
 
