@@ -14,6 +14,17 @@ subtest 'root' => sub {
         isa_ok $e->children, 'Yetie::Domain::List::CategoryTrees';
     };
 
+    subtest 'get_node' => sub {
+        my $f = Yetie::Factory->new('entity-category_tree_root');
+        my $e = $f->construct( children => [] );
+        is $e->get_node(1), undef, 'right not has node';
+
+        $e = $f->construct( children => [ { id => 1 }, { id => 2 } ] );
+        isa_ok $e->get_node(1), 'Yetie::Domain::Entity::CategoryTreeNode', 'right gets node';
+        is $e->get_node(2)->id, 2, 'right gets node';
+        is $e->get_node(999), undef, 'right not has node';
+    };
+
     subtest 'has_child' => sub {
         my $f = Yetie::Factory->new('entity-category_tree_root');
         my $e = $f->construct( children => [ {} ] );
