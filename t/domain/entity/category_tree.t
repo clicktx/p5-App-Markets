@@ -10,10 +10,6 @@ subtest 'root' => sub {
         my $e = Yetie::Domain::Entity::CategoryTreeRoot->new();
         isa_ok $e, 'Yetie::Domain::Entity';
 
-        can_ok $e, 'level';
-        can_ok $e, 'root_id';
-        can_ok $e, 'title';
-
         can_ok $e, 'children';
         isa_ok $e->children, 'Yetie::Domain::List::CategoryTrees';
     };
