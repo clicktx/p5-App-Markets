@@ -1,7 +1,7 @@
 package Yetie::Domain::Role::CategoryTree;
 use Moose::Role;
 
-has children  => ( is => 'ro', default => sub { __PACKAGE__->factory('list-category_trees')->construct() } );
+has children  => ( is => 'ro', default => sub { shift->factory('list-category_trees')->construct() } );
 
 sub has_child { shift->children->count ? 1 : 0 }
 
