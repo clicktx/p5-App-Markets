@@ -115,7 +115,10 @@ sub to_data {
     };
 
     # Options
-    if ( !$options->{no_children} ) { $data->{children} = $self->children->to_data }
+    if ( !$options->{no_children} ) {
+        $data->{children} = $self->children->to_data;
+        $data->{ancestors} = $self->ancestors->to_data( { no_children => 1 } );
+    }
 
     return $data;
 }
