@@ -13,6 +13,17 @@ sub _init {
     return ( $controller, $service );
 }
 
+### NOTE: Do this test first.
+subtest 'get_category_tree' => sub {
+    my ( $c, $s ) = _init();
+
+    is $app->cache('category_tree'), undef, 'right not cached';
+
+    my $tree = $s->get_category_tree();
+    isa_ok $tree, 'Yetie::Domain::Entity::CategoryTreeRoot';
+    isa_ok $app->cache('category_tree'), 'Yetie::Domain::Entity::CategoryTreeRoot', 'right cached';
+};
+
 subtest 'find_category' => sub {
     my ( $c, $s ) = _init();
     my $form = $c->form('search');
@@ -42,16 +53,6 @@ subtest 'find_category_with_products' => sub {
 
     ( $e, $pager, $breadcrumbs ) = $s->find_category_with_products( 999, $form );
     is $e->id, undef, 'right not found category';
-};
-
-subtest 'get_category_tree' => sub {
-    my ( $c, $s ) = _init();
-
-    is $app->cache('category_tree'), undef, 'right not cached';
-
-    my $tree = $s->get_category_tree();
-    isa_ok $tree, 'Yetie::Domain::Entity::CategoryTreeNode';
-    isa_ok $app->cache('category_tree'), 'Yetie::Domain::Entity::CategoryTreeNode', 'right cached';
 };
 
 done_testing();
