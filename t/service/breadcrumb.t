@@ -23,4 +23,23 @@ sub t01_get_list_by_category_id : Tests() {
     is_deeply $list->to_data, [], 'right not found category';
 }
 
+sub t02_get_list_by_product : Tests() {
+    my $self = shift;
+    my ( $c, $s ) = $self->_init;
+
+    my $product = $c->service('product')->find_product(3);
+    my $list    = $s->get_list_by_product($product);
+    is_deeply $list->to_data,
+      [
+        { class => q{},       title => 'Foods' },
+        { class => q{},       title => 'Alcoholic Drinks' },
+        { class => 'current', title => 'Beer' },
+      ],
+      'right get list';
+
+    $product = $c->service('product')->find_product(10);
+    $list    = $s->get_list_by_product($product);
+    is_deeply $list->to_data, [], 'right not found category';
+}
+
 __PACKAGE__->runtests;

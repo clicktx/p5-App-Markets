@@ -18,6 +18,14 @@ sub get_list_by_category_id {
     return $self->factory('list-breadcrumbs')->construct( list => \@breadcrumbs );
 }
 
+sub get_list_by_product {
+    my ( $self, $product ) = @_;
+
+    my $primary_category    = $product->product_categories->primary_category;
+    my $primary_category_id = $primary_category ? $primary_category->id : undef;
+    return $self->get_list_by_category_id($primary_category_id);
+}
+
 sub _create_breadcrumb_by_category {
     my ( $self, $category, $args ) = @_;
 
@@ -56,6 +64,14 @@ the following new ones.
 =head2 C<get_list_by_category_id>
 
     my $breadcrumb_list = $service->get_list_by_category_id($category_id);
+
+Return L<Yetie::Domain::List::Breadcrumbs> object.
+
+=head2 C<get_list_by_product>
+
+    my $breadcrumb_list = $service->get_list_by_product($product_entity_obj);
+
+Argument L<Yetie::Domain::Entity::Product> object.
 
 Return L<Yetie::Domain::List::Breadcrumbs> object.
 
