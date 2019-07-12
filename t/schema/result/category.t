@@ -33,23 +33,40 @@ subtest 'to_data' => sub {
 
     is_deeply $data,
       {
-        id       => 1,
-        level    => 0,
-        root_id  => 1,
-        title    => 'Sports',
-        children => [
+        id        => 1,
+        level     => 0,
+        root_id   => 1,
+        title     => 'Sports',
+        ancestors => [],
+        children  => [
             {
-                id       => 3,
-                level    => 1,
-                root_id  => 1,
-                title    => 'Golf',
+                id        => 3,
+                level     => 1,
+                root_id   => 1,
+                title     => 'Golf',
+                ancestors => [
+                    {
+                        id      => 1,
+                        level   => 0,
+                        root_id => 1,
+                        title   => 'Sports',
+                    }
+                ],
                 children => [],
             },
             {
-                id       => 4,
-                level    => 1,
-                root_id  => 1,
-                title    => 'Soccer',
+                id        => 4,
+                level     => 1,
+                root_id   => 1,
+                title     => 'Soccer',
+                ancestors => [
+                    {
+                        id      => 1,
+                        level   => 0,
+                        root_id => 1,
+                        title   => 'Sports',
+                    }
+                ],
                 children => [],
             },
         ],
