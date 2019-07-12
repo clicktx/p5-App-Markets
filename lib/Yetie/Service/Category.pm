@@ -38,12 +38,11 @@ sub _find_category {
         {
             no_datetime    => 1,
             no_relation    => 1,
-            no_breadcrumbs => 1,
         }
     );
     my $category    = $self->factory('entity-category')->construct($data);
     my $pager       = $products_rs ? $products_rs->pager : undef;
-    my $breadcrumbs = $self->factory('list-breadcrumbs')->construct( list => $result->to_breadcrumbs );
+    my $breadcrumbs = $self->service('breadcrumb')->get_list_by_category_id($category_id);
 
     return ( $category, $pager, $breadcrumbs );
 }

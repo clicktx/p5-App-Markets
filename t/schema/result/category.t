@@ -67,23 +67,4 @@ subtest 'to_data' => sub {
       'right option';
 };
 
-subtest 'to_breadcrumbs' => sub {
-    my $res    = $rs->find(3);
-    my $crumbs = $res->to_breadcrumbs;
-
-    cmp_deeply $crumbs,
-      [
-        {
-            title => 'Sports',
-            url   => obj_isa('Mojo::URL'),
-        },
-        {
-            class => 'current',
-            title => 'Golf',
-            url   => obj_isa('Mojo::URL'),
-        },
-      ],
-      'right deeply';
-};
-
 done_testing();

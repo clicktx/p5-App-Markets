@@ -126,9 +126,6 @@ sub to_data {
     if ( !$options->{no_relation} ) {
         $data->{product_categories} = $self->product_categories->to_data;
     }
-    if ( !$options->{no_breadcrumbs} ) {
-        $data->{breadcrumbs} = $self->product_categories->get_primary_category->to_breadcrumbs;
-    }
     return $data;
 }
 
@@ -175,7 +172,6 @@ I<OPTIONS>
         {
             no_datetime      => 1,
             no_relation      => 1,
-            no_breadcrumbs   => 1,
         }
     );
 
@@ -188,10 +184,6 @@ Data does not include C<created_at> and C<updated_at>.
 =item * no_relation
 
 Data does not include C<product_categories>
-
-=item * no_breadcrumbs
-
-Data does not include C<breadcrumbs>.
 
 =back
 

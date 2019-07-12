@@ -14,7 +14,6 @@ sub duplicate_product {
 
     my $data = $entity->to_data;
     delete $data->{id};
-    delete $data->{breadcrumbs};
 
     my $result = $rs->create($data);
 
@@ -30,9 +29,10 @@ sub find_product_with_breadcrumbs {
     my $result = $self->resultset('Product')->find_product($product_id);
     my $data = $result ? $result->to_data : {};
 
-    my $data_breadcrumbs = delete $data->{breadcrumbs};
-    my $breadcrumbs      = $self->factory('list-breadcrumbs')->construct( list => $data_breadcrumbs );
-    my $product          = $self->factory('entity-product')->construct($data);
+    my $product             = $self->factory('entity-product')->construct($data);
+    my $primary_category_id = $product->product_categories->primary_category->id;
+    my $breadcrumbs         = $self->service('breadcrumb')->get_list_by_category_id($primary_category_id);
+
     return ( $product, $breadcrumbs );
 }
 
@@ -40,7 +40,7 @@ sub find_product {
     my ( $self, $product_id ) = @_;
 
     my $result = $self->resultset('Product')->find_product($product_id);
-    my $data = $result ? $result->to_data( { no_breadcrumbs => 1 } ) : {};
+    my $data = $result ? $result->to_data() : {};
     return $self->factory('entity-product')->construct($data);
 }
 
@@ -89,7 +89,7 @@ sub search_products {
     };
 
     my $rs       = $self->resultset('Product')->search_products($conditions);
-    my $data     = { list => $rs->to_data( { no_relation => 1, no_breadcrumbs => 1 } ) };
+    my $data     = { list => $rs->to_data( { no_relation => 1 } ) };
     my $products = $self->factory('list-products')->construct($data);
     return ( $products, $rs->pager );
 }
