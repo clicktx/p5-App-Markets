@@ -22,20 +22,6 @@ sub duplicate_product {
     return $result;
 }
 
-# NOTE: Yetie::Domain::Entity::ProductCategoryにancestorsを追加したのでbreadcrumbs生成にSQLを発行する必要はないかも
-sub find_product_with_breadcrumbs {
-    my ( $self, $product_id ) = @_;
-
-    my $result = $self->resultset('Product')->find_product($product_id);
-    my $data = $result ? $result->to_data : {};
-
-    my $product             = $self->factory('entity-product')->construct($data);
-    my $primary_category_id = $product->product_categories->primary_category->id;
-    my $breadcrumbs         = $self->service('breadcrumb')->get_list_by_category_id($primary_category_id);
-
-    return ( $product, $breadcrumbs );
-}
-
 sub find_product {
     my ( $self, $product_id ) = @_;
 
@@ -126,12 +112,6 @@ the following new ones.
 Duplicate from C<$product_id>.
 
 Return L<Yetie::Schema::Result::Product> object or C<undefined>.
-
-=head2 C<find_product_with_breadcrumbs>
-
-    my ( $product, $breadcrumbs ) = $service->find_product($product_id);
-
-Return L<Yetie::Domain::Entity::Product> object and L<Yetie::Domain::List::Breadcrumbs> object.
 
 =head2 C<find_product>
 
