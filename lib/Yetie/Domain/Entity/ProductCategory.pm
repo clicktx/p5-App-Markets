@@ -3,14 +3,11 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
+with qw(Yetie::Domain::Role::CategoryAncestor);
+
 has id => (
     is       => 'ro',
     init_arg => 'category_id',
-);
-has ancestors => (
-    is      => 'ro',
-    isa     => 'Yetie::Domain::List::CategoryTrees',
-    default => sub { shift->factory('list-category_trees')->construct() }
 );
 has category_id => ( is => 'ro', default => 0 );
 has is_primary  => ( is => 'ro', default => 0 );
@@ -48,12 +45,16 @@ Yetie::Domain::Entity::ProductCategory
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::ProductCategory> inherits all attributes from L<Yetie::Domain::Entity> and implements
-the following new ones.
+L<Yetie::Domain::Entity::ProductCategory> inherits all attributes from L<Yetie::Domain::Entity>
+and L<Yetie::Domain::Role::CategoryAncestor>,
+
+and implements the following new ones.
 
 =head2 C<id>
 
 =head2 C<ancestors>
+
+Inherits from L<Yetie::Domain::Role::CategoryAncestor>.
 
 Return L<Yetie::Domain::List::CategoryTrees>
 
@@ -65,8 +66,10 @@ Return L<Yetie::Domain::List::CategoryTrees>
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::ProductCategory> inherits all methods from L<Yetie::Domain::Entity> and implements
-the following new ones.
+L<Yetie::Domain::Entity::ProductCategory> inherits all methods from L<Yetie::Domain::Entity>
+and L<Yetie::Domain::Role::CategoryAncestor>,
+
+and implements the following new ones.
 
 =head2 C<full_title>
 
