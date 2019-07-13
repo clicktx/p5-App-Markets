@@ -9,8 +9,8 @@ has id => (
 );
 has ancestors => (
     is      => 'ro',
-    isa     => 'Yetie::Domain::List::CategoryAncestors',
-    default => sub { shift->factory('list-category_ancestors')->construct() }
+    isa     => 'Yetie::Domain::List::CategoryTrees',
+    default => sub { shift->factory('list-category_trees')->construct() }
 );
 has category_id => ( is => 'ro', default => 0 );
 has is_primary  => ( is => 'ro', default => 0 );
@@ -55,7 +55,7 @@ the following new ones.
 
 =head2 C<ancestors>
 
-L<Yetie::Domain::List::CategoryAncestors>
+Return L<Yetie::Domain::List::CategoryTrees>
 
 =head2 C<category_id>
 
