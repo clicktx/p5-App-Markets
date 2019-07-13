@@ -20,7 +20,7 @@ sub create_index {
 }
 
 sub get_node {
-    my ( $self, $id ) = @_;
+    my ( $self, $id ) = ( shift, shift // q{} );
     return $self->_index->{$id};
 }
 

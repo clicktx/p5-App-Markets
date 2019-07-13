@@ -37,7 +37,7 @@ sub t02_get_list_by_product : Tests() {
       ],
       'right get list';
 
-    $product = $c->service('product')->find_product(10);
+    $product = $c->service('product')->find_product(6);
     $list    = $s->get_list_by_product($product);
     is_deeply $list->to_data, [], 'right not found category';
 }
