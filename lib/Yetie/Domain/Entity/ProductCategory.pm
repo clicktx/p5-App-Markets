@@ -3,7 +3,10 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-with qw(Yetie::Domain::Role::CategoryAncestor);
+with qw(
+  Yetie::Domain::Role::CategoryAncestor
+  Yetie::Domain::Role::CategoryTaxRule
+);
 
 has id => (
     is       => 'ro',

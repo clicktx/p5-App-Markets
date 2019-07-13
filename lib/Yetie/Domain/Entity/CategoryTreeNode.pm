@@ -7,6 +7,7 @@ with qw(
   Yetie::Domain::Role::Category
   Yetie::Domain::Role::CategoryAncestor
   Yetie::Domain::Role::CategoryChild
+  Yetie::Domain::Role::CategoryTaxRule
 );
 
 no Moose;
