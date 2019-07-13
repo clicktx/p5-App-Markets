@@ -6,7 +6,7 @@ extends 'Yetie::Domain::Entity';
 with qw(
   Yetie::Domain::Role::Category
   Yetie::Domain::Role::CategoryAncestor
-  Yetie::Domain::Role::CategoryTreeChildren
+  Yetie::Domain::Role::CategoryChild
 );
 
 no Moose;
@@ -27,7 +27,7 @@ Yetie::Domain::Entity::CategoryTreeNode
 
 L<Yetie::Domain::Entity::CategoryTreeNode> inherits all attributes
 from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Category>,
-L<Yetie::Domain::Role::CategoryAncestor>, L<Yetie::Domain::Role::CategoryTreeChildren>,
+L<Yetie::Domain::Role::CategoryAncestor>, L<Yetie::Domain::Role::CategoryChild>,
 
 and implements the following new ones.
 
@@ -39,7 +39,7 @@ Return L<Yetie::Domain::List::CategoryTrees> object.
 
 =head2 C<children>
 
-Inherits from L<Yetie::Domain::Role::CategoryTreeChildren>
+Inherits from L<Yetie::Domain::Role::CategoryChild>
 
     my $children = $category_tree->children;
 
@@ -49,13 +49,13 @@ Return L<Yetie::Domain::List::CategoryTrees> object.
 
 L<Yetie::Domain::Entity::CategoryTreeNode> inherits all methods
 from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Category>,
-L<Yetie::Domain::Role::CategoryAncestor>, L<Yetie::Domain::Role::CategoryTreeChildren>,
+L<Yetie::Domain::Role::CategoryAncestor>, L<Yetie::Domain::Role::CategoryChild>,
 
 and implements the following new ones.
 
 =head2 C<has_child>
 
-Inherits from L<Yetie::Domain::Role::CategoryTreeChildren>
+Inherits from L<Yetie::Domain::Role::CategoryChild>
 
     my $bool = $category_tree->has_child;
 
@@ -67,4 +67,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Role::Category>, L<Yetie::Domain::Role::CategoryTreeChildren>, L<Yetie::Domain::Entity>
+L<Yetie::Domain::Role::Category>, L<Yetie::Domain::Role::CategoryChild>, L<Yetie::Domain::Entity>

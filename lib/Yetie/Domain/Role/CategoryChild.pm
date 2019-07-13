@@ -1,4 +1,4 @@
-package Yetie::Domain::Role::CategoryTreeChildren;
+package Yetie::Domain::Role::CategoryChild;
 use Moose::Role;
 
 has children => (
@@ -14,7 +14,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Role::CategoryTreeChildren
+Yetie::Domain::Role::CategoryChild
 
 =head1 SYNOPSIS
 
@@ -22,7 +22,7 @@ Yetie::Domain::Role::CategoryTreeChildren
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Role::CategoryTreeChildren> inherits all attributes from L<Moose::Role> and implements
+L<Yetie::Domain::Role::CategoryChild> inherits all attributes from L<Moose::Role> and implements
 the following new ones.
 
 =head2 C<children>
@@ -31,7 +31,7 @@ Return L<Yetie::Domain::List::CategoryTrees> object.
 
 =head1 METHODS
 
-L<Yetie::Domain::Role::CategoryTreeChildren> inherits all methods from L<Moose::Role> and implements
+L<Yetie::Domain::Role::CategoryChild> inherits all methods from L<Moose::Role> and implements
 the following new ones.
 
 =head2 C<has_child>
