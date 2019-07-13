@@ -3,9 +3,11 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-with qw(Yetie::Domain::Role::Category Yetie::Domain::Role::CategoryTreeChildren);
-
-has ancestors => ( is => 'ro', default => sub { shift->factory('list-category_trees')->construct() } );
+with qw(
+  Yetie::Domain::Role::Category
+  Yetie::Domain::Role::CategoryAncestor
+  Yetie::Domain::Role::CategoryTreeChildren
+);
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
@@ -23,8 +25,9 @@ Yetie::Domain::Entity::CategoryTreeNode
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::CategoryTreeNode> inherits all attributes from L<Yetie::Domain::Entity>
-and L<Yetie::Domain::Role::Category>, L<Yetie::Domain::Role::CategoryTreeChildren>,
+L<Yetie::Domain::Entity::CategoryTreeNode> inherits all attributes
+from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Category>,
+L<Yetie::Domain::Role::CategoryAncestor>, L<Yetie::Domain::Role::CategoryTreeChildren>,
 
 and implements the following new ones.
 
@@ -44,8 +47,9 @@ Return L<Yetie::Domain::List::CategoryTrees> object.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::CategoryTreeNode> inherits all methods from L<Yetie::Domain::Entity>
-and L<Yetie::Domain::Role::Category>, L<Yetie::Domain::Role::CategoryTreeChildren>,
+L<Yetie::Domain::Entity::CategoryTreeNode> inherits all methods
+from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Category>,
+L<Yetie::Domain::Role::CategoryAncestor>, L<Yetie::Domain::Role::CategoryTreeChildren>,
 
 and implements the following new ones.
 
