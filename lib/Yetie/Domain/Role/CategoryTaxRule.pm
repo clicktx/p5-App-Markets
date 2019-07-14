@@ -5,6 +5,7 @@ has tax_rules => (
     is      => 'ro',
     isa     => 'Yetie::Domain::List::TaxRules',
     default => sub { shift->factory('list-tax_rules')->construct() },
+    writer  => 'set_tax_rules',
 );
 
 1;
