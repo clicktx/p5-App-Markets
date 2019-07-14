@@ -6,8 +6,9 @@ extends 'Yetie::Domain::Entity';
 with qw(Yetie::Domain::Role::CategoryChild);
 
 has _index => (
+    traits     => ['Hash'],
     is         => 'ro',
-    isa        => 'HashRef',
+    isa        => 'HashRef[Yetie::Domain::Entity::CategoryTreeNode]',
     lazy_build => 1,
     writer     => 'set_index',
 );
