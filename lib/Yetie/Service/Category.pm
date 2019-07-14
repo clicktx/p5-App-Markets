@@ -14,15 +14,13 @@ sub get_category_tree {
     my $cache = $self->app->cache('category_tree');
     return $cache if $cache;
 
+    # Create entity
     my $root = $self->resultset('Category')->search( { level => 0 } );
-    my $tree = $root->to_data;
-
-    # Create category entity
-    my $entity = $self->app->factory('entity-category_tree_root')->construct( children => $tree );
+    my $tree = $self->app->factory('entity-category_tree_root')->construct( children => $root->to_data );
 
     # Set to cache
-    $self->app->cache( category_tree => $entity );
-    return $entity;
+    $self->app->cache( category_tree => $tree );
+    return $tree;
 }
 
 sub _find_category {
@@ -36,8 +34,8 @@ sub _find_category {
     my $products_rs = _get_products( $result, $form );
     $data->{products} = $products_rs->to_data(
         {
-            no_datetime    => 1,
-            no_relation    => 1,
+            no_datetime => 1,
+            no_relation => 1,
         }
     );
     my $category    = $self->factory('entity-category')->construct($data);
