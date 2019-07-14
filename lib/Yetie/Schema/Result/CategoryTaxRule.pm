@@ -26,4 +26,21 @@ belongs_to
   tax_rule => 'Yetie::Schema::Result::TaxRule',
   { 'foreign.id' => 'self.tax_rule_id' };
 
+# Methods
+sub to_data {
+    my $self = shift;
+
+    my $rule = $self->tax_rule;
+    my $data = {
+        start_at => $self->start_at,
+        end_at   => $self->end_at,
+
+        # tax rule
+        title    => $rule->title,
+        tax_rate => $rule->tax_rate,
+    };
+
+    return $data;
+}
+
 1;
