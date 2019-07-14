@@ -3,8 +3,10 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-has tax_rate   => ( is => 'ro' );
-has title => ( is => 'ro' );
+has tax_rate => ( is => 'ro' );
+has title    => ( is => 'ro' );
+has start_at => ( is => 'ro' );
+has end_at   => ( is => 'ro' );
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

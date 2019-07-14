@@ -9,6 +9,8 @@ subtest 'basic' => sub {
 
     can_ok $e, 'tax_rate';
     can_ok $e, 'title';
+    can_ok $e, 'start_at';
+    can_ok $e, 'end_at';
 };
 
 done_testing();
