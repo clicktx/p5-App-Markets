@@ -98,14 +98,14 @@ sub search_products_in_categories {
 }
 
 # search_related with special handling for relationships
-sub search_related {
-    my ( $self, $rel, $cond, @rest ) = @_;
+# sub search_related {
+#     my ( $self, $rel, $cond, @rest ) = @_;
 
-    my $columns = [qw( me.id me.root_id me.level me.title)];
-    push @rest, { columns => $columns, order_by => 'me.lft' };
-    return $self->next::method( $rel, $cond, @rest );
-}
-*search_related_rs = \&search_related;
+#     my $columns = [qw( me.id me.root_id me.level me.title)];
+#     push @rest, { columns => $columns, order_by => 'me.lft' };
+#     return $self->next::method( $rel, $cond, @rest );
+# }
+# *search_related_rs = \&search_related;
 
 sub to_data {
     my ( $self, $options ) = @_;
