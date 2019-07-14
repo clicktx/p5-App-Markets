@@ -52,7 +52,10 @@ has_many
 has_many
   tax_rules => 'Yetie::Schema::Result::CategoryTaxRule',
   { 'foreign.category_id' => 'self.id' },
-  { cascade_delete        => 0 };
+  {
+    cascade_delete => 0,
+    join_type      => 'inner',
+  };
 
 # Add Index
 sub sqlt_deploy_hook {
