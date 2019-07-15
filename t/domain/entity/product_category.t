@@ -23,7 +23,7 @@ subtest 'default attributes' => sub {
 subtest 'full_title' => sub {
 
     my $ancestors = Yetie::Factory->new('list-category_trees')
-      ->construct( list => [ { title => 'foo', id => 1 }, { title => 'bar', id => 2 } ] );
+      ->construct( list => [ { title => 'bar', id => 2 }, { title => 'foo', id => 1 } ] );
     my $o = construct(
         title     => 'me',
         ancestors => $ancestors,

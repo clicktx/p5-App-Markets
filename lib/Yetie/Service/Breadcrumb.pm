@@ -10,7 +10,8 @@ sub get_list_by_category_id {
 
     # Ancestors category
     my @breadcrumbs;
-    $current_category->ancestors->each( sub { push @breadcrumbs, $self->_create_breadcrumb_by_category($_) } );
+    my $ancestors = $current_category->ancestors->list->reverse;
+    $ancestors->each( sub { push @breadcrumbs, $self->_create_breadcrumb_by_category($_) } );
 
     # Current category
     push @breadcrumbs, $self->_create_breadcrumb_by_category( $current_category, { current => 1 } );
@@ -21,7 +22,7 @@ sub get_list_by_category_id {
 sub get_list_by_product {
     my ( $self, $product ) = @_;
 
-    my $primary_category    = $product->product_categories->primary_category;
+    my $primary_category = $product->product_categories->primary_category;
     my $primary_category_id = $primary_category ? $primary_category->id : undef;
     return $self->get_list_by_category_id($primary_category_id);
 }
