@@ -22,6 +22,16 @@ subtest 'get_category_tree' => sub {
     my $tree = $s->get_category_tree();
     isa_ok $tree, 'Yetie::Domain::Entity::CategoryTreeRoot';
     isa_ok $app->cache('category_tree'), 'Yetie::Domain::Entity::CategoryTreeRoot', 'right cached';
+
+    subtest 'Set category tax rules' => sub {
+        my $rules = $tree->get_node(1)->tax_rules;
+        isa_ok $rules, 'Yetie::Domain::List::TaxRules';
+        is $rules->list->size, 0, 'right quantity of rules';
+
+        $rules = $tree->get_node(18)->tax_rules;
+        is $rules->list->size, 2, 'right quantity of rules';
+        ok $rules->list->first->tax_rate == 8, 'right tax rate';
+    };
 };
 
 subtest 'find_category' => sub {

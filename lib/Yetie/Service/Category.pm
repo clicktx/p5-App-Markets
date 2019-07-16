@@ -14,9 +14,20 @@ sub get_category_tree {
     my $cache = $self->app->cache('category_tree');
     return $cache if $cache;
 
-    # Create entity
+    # Create tree entities
     my $root = $self->resultset('Category')->search( { level => 0 } );
     my $tree = $self->app->factory('entity-category_tree_root')->construct( children => $root->to_data );
+
+    # Set category tax rules
+    my $rs = $self->resultset('Category')->search( {}, { prefetch => { tax_rules => 'tax_rule' } } );
+    $rs->each(
+        sub {
+            my $category = shift;
+            my $rules    = $category->tax_rules->to_data;
+            my $node     = $tree->get_node( $category->id );
+            $node->set_tax_rules( $self->factory('list-tax_rules')->construct( list => $rules ) );
+        }
+    );
 
     # Set to cache
     $self->app->cache( category_tree => $tree );
