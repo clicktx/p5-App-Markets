@@ -8,7 +8,7 @@ sub primary_category {
     return $self->first( sub { shift->is_primary } );
 }
 
-sub get_form_choices_data {
+sub get_form_choices_primary_category {
     my $self = shift;
 
     my @choices;
@@ -48,10 +48,10 @@ the following new ones.
 
     my $category = $categories->primary_category;
 
-=head2 C<get_form_choices_data>
+=head2 C<get_form_choices_primary_category>
 
     # [ [ 'foo > bar', 1, 'choiced' => 1 ], ... ]
-    my $choices_data = $categories->get_form_choices_data;
+    my $choices_data = $categories->get_form_choices_primary_category;
 
 =head1 AUTHOR
 

@@ -44,7 +44,7 @@ sub edit {
     my $form = $c->form('admin-product');
     $c->_form_default_value( $form, $product );
 
-    my $choices = $product->product_categories->get_form_choices_data;
+    my $choices = $product->product_categories->get_form_choices_primary_category;
     $form->field('primary_category')->choices($choices);
     $c->init_form();
 
