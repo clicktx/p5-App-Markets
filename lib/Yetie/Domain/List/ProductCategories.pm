@@ -20,6 +20,14 @@ sub get_form_choices_primary_category {
     return \@choices;
 }
 
+sub get_id_list {
+    my $self = shift;
+
+    my @list;
+    $self->each( sub { push @list, $_->category_id } );
+    return \@list;
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -52,6 +60,12 @@ the following new ones.
 
     # [ [ 'foo > bar', 1, 'choiced' => 1 ], ... ]
     my $choices_data = $categories->get_form_choices_primary_category;
+
+=head2 C<get_id_list>
+
+    my $list = $categories->get_id_list;
+
+Return Array reference of category ID.
 
 =head1 AUTHOR
 

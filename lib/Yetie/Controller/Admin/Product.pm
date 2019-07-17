@@ -69,9 +69,7 @@ sub category {
     # Init form
     my $form = $c->form('admin-product-category');
 
-    my $category_ids = [];
-    $product->product_categories->each( sub { push @{$category_ids}, $_->category_id } );
-
+    my $category_ids = $product->product_categories->get_id_list;
     my $category_choices = $c->schema->resultset('Category')->get_category_choices($category_ids);
     $form->field('categories[]')->choices($category_choices);
     $c->init_form();

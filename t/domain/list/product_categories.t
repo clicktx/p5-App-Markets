@@ -11,15 +11,26 @@ sub construct {
 }
 
 subtest 'basic' => sub {
-    my $list = construct();
-    isa_ok $list, 'Yetie::Domain::List';
+    my $categories = construct();
+    isa_ok $categories, 'Yetie::Domain::List';
 };
 
 subtest 'primary_category' => sub {
-    my $list =
+    my $categories =
       construct( list => [ { category_id => 1 }, { category_id => 2, is_primary => 1 }, { category_id => 3 } ] );
-    my $primary = $list->primary_category;
+    my $primary = $categories->primary_category;
     is $primary->category_id, 2, 'right primary category';
+};
+
+subtest 'get_id_list' => sub {
+    my $categories =
+      construct( list => [ { category_id => 1 }, { category_id => 2, is_primary => 1 }, { category_id => 3 } ] );
+    my $list = $categories->get_id_list;
+    is_deeply $list, [ 1, 2, 3 ], 'right list';
+
+    $categories = construct();
+    $list       = $categories->get_id_list;
+    is_deeply $list, [], 'right list';
 };
 
 done_testing();
