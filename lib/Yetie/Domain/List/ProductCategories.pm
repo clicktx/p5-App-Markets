@@ -14,7 +14,7 @@ sub get_form_choices_primary_category {
     my @choices;
     $self->each(
         sub {
-            push @choices, [ $_->full_title, $_->category_id, choiced => $_->is_primary ? 1 : 0 ];
+            push @choices, [ $_->full_title, $_->category_id, _choice_primary( $_->is_primary ) ];
         }
     );
     return \@choices;
@@ -26,6 +26,12 @@ sub get_id_list {
     my @list;
     $self->each( sub { push @list, $_->category_id } );
     return \@list;
+}
+
+sub _choice_primary {
+    my $is_primary = shift;
+    return ( choiced => 1 ) if $is_primary;
+    return;
 }
 
 no Moose;
