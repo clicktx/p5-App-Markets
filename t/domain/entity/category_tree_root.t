@@ -25,6 +25,17 @@ subtest 'create_index' => sub {
     cmp_deeply $e->_index, $index, 'right create index';
 };
 
+subtest 'get_attributes_for_choices_form' => sub {
+    my $f = Yetie::Factory->new('entity-category_tree_root');
+    my $e = $f->construct( children =>
+          [ { id => 1, title => 'foo' }, { id => 2, title => 'bar', children => [ { id => 3, title => 'baz' } ] } ] );
+    my $choices = $e->get_attributes_for_choices_form;
+    is_deeply $choices, [ [ 'foo', 1 ], [ 'bar', 2 ], [ 'baz', 3 ] ], 'right form choices';
+
+    $choices = $e->get_attributes_for_choices_form( [2] );
+    is_deeply $choices, [ [ 'foo', 1 ], [ 'bar', 2, choiced => 1 ], [ 'baz', 3 ] ], 'right form choices';
+};
+
 subtest 'get_node' => sub {
     my $f = Yetie::Factory->new('entity-category_tree_root');
     my $e = $f->construct( children => [] );

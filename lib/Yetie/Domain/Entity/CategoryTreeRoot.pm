@@ -20,6 +20,19 @@ sub create_index {
     return;
 }
 
+sub get_attributes_for_choices_form {
+    my ( $self, $ids ) = @_;
+
+    my @array;
+    $self->children->each(
+        sub {
+            push @array, _choice_property( $_, $ids );
+            push @array, @{ get_attributes_for_choices_form( $_, $ids ) };
+        }
+    );
+    return \@array;
+}
+
 sub get_node {
     my ( $self, $id ) = ( shift, shift // q{} );
     return $self->_index->{$id};
@@ -28,6 +41,18 @@ sub get_node {
 sub _build__index {
     my $self = shift;
     return _create_index($self);
+}
+
+sub _choice_property {
+    my ( $node, $ids ) = @_;
+
+    # my $title = ' ' . '-' x $node->level . ' ' . $node->title;
+    my $title = $node->title;
+    my @data = ( $title, $node->id );
+    foreach my $id ( @{$ids} ) {
+        if ( $id == $node->id ) { push @data, ( 'choiced' => 1 ) }
+    }
+    return \@data;
 }
 
 sub _create_index {
@@ -87,6 +112,15 @@ and implements the following new ones.
     $categoty_root->create_index;
 
 Create and re-create category index from L</children>.
+
+=head2 C<get_attributes_for_choices_form>
+
+    # [ [ 'cate1', 1, 'choiced', 1 ], [ 'cate2', 2, 'choiced', 1 ], [ 'cate3', 3 ], ... ]
+    my $array_ref = $category_root->get_attributes_for_choices_form( [ 1, 2 ] );
+
+Return Array reference.
+
+Attributes for L<Yetie::Form::Field/choices>.
 
 =head2 C<get_node>
 
