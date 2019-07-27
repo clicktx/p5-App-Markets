@@ -9,8 +9,10 @@ sub index {
     $c->stash( rs => $rs );
 
     # Init form
-    my $tree = $rs->get_category_choices;
-    $form->field('parent_id')->choices($tree);
+    my $tree    = $c->service('category')->get_category_tree;
+    my $choices = $tree->get_attributes_for_choices_form();
+    unshift @{$choices}, [ 'None(root)' => '' ];
+    $form->field('parent_id')->choices($choices);
     $c->init_form();
 
     # Get request
