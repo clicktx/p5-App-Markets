@@ -67,11 +67,11 @@ sub category {
     return $c->reply->not_found() if !$product->has_id;
 
     # Init form
-    my $form = $c->form('admin-product-category');
-
+    my $form         = $c->form('admin-product-category');
     my $category_ids = $product->product_categories->get_id_list;
-    my $category_choices = $c->schema->resultset('Category')->get_category_choices($category_ids);
-    $form->field('categories[]')->choices($category_choices);
+    my $tree         = $c->service('category')->get_category_tree;
+    my $choices      = $tree->get_attributes_for_choices_form($category_ids);
+    $form->field('categories[]')->choices($choices);
     $c->init_form();
 
     # Get request
