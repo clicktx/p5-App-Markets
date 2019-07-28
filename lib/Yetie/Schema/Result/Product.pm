@@ -71,10 +71,6 @@ sub find_tax_rule {
         ]
     };
 
-    # product tax rule
-    my $product_tax_rules = $self->tax_rules->search($where);
-    return $product_tax_rules->first->tax_rule if $product_tax_rules->first;
-
     # category tax rule
     my $primary_category = $self->product_categories->get_primary_category;
     return if !$primary_category;
