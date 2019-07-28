@@ -22,16 +22,6 @@ override to_hash => sub {
     return $hash;
 };
 
-sub full_title {
-    my ( $self, $options ) = ( shift, shift || {} );
-
-    my $separator = $options->{separator} || '>';
-    my $ancestors = $self->ancestors->list;
-    my $title     = $self->title;
-    $ancestors->each( sub { $title = $_->title . " $separator $title" } );
-    return $title;
-}
-
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -73,19 +63,6 @@ L<Yetie::Domain::Entity::ProductCategory> inherits all methods from L<Yetie::Dom
 and L<Yetie::Domain::Role::CategoryAncestor>,
 
 and implements the following new ones.
-
-=head2 C<full_title>
-
-    # foo > bar > baz
-    my $full_title = $obj->full_title();
-
-    # foo / bar / baz
-    my %options = ( separetor => '/' );
-    my $full_title = $obj->full_title( \%options );
-
-=head4 OPTIONS
-
-C<separator> default: ">"
 
 =head1 AUTHOR
 

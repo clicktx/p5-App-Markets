@@ -7,6 +7,16 @@ has ancestors => (
     default => sub { shift->factory('list-category_trees')->construct() }
 );
 
+sub full_title {
+    my ( $self, $options ) = ( shift, shift || {} );
+
+    my $separator = $options->{separator} || '>';
+    my $ancestors = $self->ancestors->list;
+    my $title     = $self->title;
+    $ancestors->each( sub { $title = $_->title . " $separator $title" } );
+    return $title;
+}
+
 1;
 __END__
 
@@ -31,6 +41,19 @@ Return L<Yetie::Domain::List::CategoryTrees> object.
 
 L<Yetie::Domain::Role::CategoryAncestor> inherits all methods from L<Moose::Role> and implements
 the following new ones.
+
+=head2 C<full_title>
+
+    # foo > bar > baz
+    my $full_title = $obj->full_title();
+
+    # foo / bar / baz
+    my %options = ( separetor => '/' );
+    my $full_title = $obj->full_title( \%options );
+
+=head4 OPTIONS
+
+C<separator> default: ">"
 
 =head1 AUTHOR
 
