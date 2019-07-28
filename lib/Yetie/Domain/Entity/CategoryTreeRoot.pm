@@ -46,8 +46,7 @@ sub _build__index {
 sub _choice_property {
     my ( $node, $ids ) = @_;
 
-    # my $title = ' ' . '-' x $node->level . ' ' . $node->title;
-    my $title = $node->title;
+    my $title = $node->full_title;
     my @data = ( $title, $node->id );
     foreach my $id ( @{$ids} ) {
         if ( $id == $node->id ) { push @data, ( 'choiced' => 1 ) }
