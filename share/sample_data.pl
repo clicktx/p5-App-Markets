@@ -58,6 +58,12 @@
         [ 5, 'Tax 10%', 10 ],
     ],
 
+    # Default tax rules
+    'DefaultTaxRule' => [
+        [qw/tax_rule_id start_at end_at/],
+        [ 2, '1990-04-01 00:00:00', undef ],
+    ],
+
     # Category tax rules
     'CategoryTaxRule' => [
         [qw/category_id tax_rule_id start_at end_at/],
