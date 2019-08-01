@@ -100,7 +100,7 @@ sub find_tax_rule {
 sub find_tax_rule_now {
     my $self = shift;
 
-    my $now = $self->schema->app->date_time->now;
+    my $now = $self->app->date_time->now;
     return $self->find_tax_rule($now);
 }
 

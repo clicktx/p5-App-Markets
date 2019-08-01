@@ -2,6 +2,7 @@ package Yetie::Schema::ResultSet;
 use Mojo::Base 'DBIx::Class::ResultSet::HashRef';
 use Yetie::App::Core::DateTime;
 
+has app    => sub { shift->result_source->schema->app };
 has schema => sub { shift->result_source->schema };
 
 # Base::Result::insertで対応しているので不要
@@ -89,6 +90,20 @@ Yetie::Schema::ResultSet
 
 L<Yetie::Schema::ResultSet> inherits all attributes from L<DBIx::Class::ResultSet> and implements
 the following new ones.
+
+=head2 C<app>
+
+    my $app = $rs->app;
+
+    # Longer version
+    my $app = $rs->result_source->schema->app;
+
+=head2 C<schema>
+
+    my $schema = $rs->schema;
+
+    # Longer version
+    my $schema = $rs->result_source->schema;
 
 =head1 METHODS
 

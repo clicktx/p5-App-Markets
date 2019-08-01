@@ -3,6 +3,7 @@ use Mojo::Base 'DBIx::Class::Core';
 
 __PACKAGE__->load_components(qw/InflateColumn::DateTime/);
 
+has app    => sub { shift->result_source->schema->app };
 has schema => sub { shift->result_source->schema };
 
 sub choose_column_name {
@@ -67,6 +68,20 @@ Yetie::Schema::Result
 
 L<Yetie::Schema::Result> inherits all attributes from L<DBIx::Class::Core> and implements
 the following new ones.
+
+=head2 C<app>
+
+    my $app = $rs->app;
+
+    # Longer version
+    my $app = $rs->result_source->schema->app;
+
+=head2 C<schema>
+
+    my $schema = $rs->schema;
+
+    # Longer version
+    my $schema = $rs->result_source->schema;
 
 =head1 METHODS
 
