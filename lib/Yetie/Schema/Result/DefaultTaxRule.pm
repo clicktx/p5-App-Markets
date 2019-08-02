@@ -18,12 +18,6 @@ column start_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
-column end_at => {
-    data_type   => 'DATETIME',
-    is_nullable => 1,
-    timezone    => Yetie::Schema->TZ,
-};
-
 # Relation
 belongs_to
   tax_rule => 'Yetie::Schema::Result::TaxRule',
@@ -36,7 +30,6 @@ sub to_data {
     my $rule = $self->tax_rule;
     my $data = {
         start_at => $self->start_at,
-        end_at   => $self->end_at,
 
         # tax rule
         title    => $rule->title,
