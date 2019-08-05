@@ -4,7 +4,7 @@ use Mojo::Base 'Yetie::Schema::ResultSet';
 sub find_by_dt {
     my ( $self, $dt ) = @_;
 
-    my $default_tax_rules = $self->search(
+    my $tax_rules = $self->search(
         {
             start_at => { '<=' => $dt }
         },
@@ -13,7 +13,7 @@ sub find_by_dt {
             order_by => { -desc => 'start_at' },
         }
     );
-    return $default_tax_rules->first;
+    return $tax_rules->first;
 }
 
 sub find_now {

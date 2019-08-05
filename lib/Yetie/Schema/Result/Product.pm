@@ -55,55 +55,6 @@ sub sqlt_deploy_hook {
 }
 
 # Methods
-sub find_tax_rule {
-    my ( $self, $dt ) = @_;
-
-    my $where = {
-        -or => [
-            -and => [
-                start_at => { '<=' => $dt },
-                end_at   => { '>=' => $dt },
-            ],
-            -and => [
-                start_at => { '<=' => $dt },
-                end_at   => { 'is' => undef },
-            ],
-        ]
-    };
-
-    # category tax rule
-    my $primary_category = $self->product_categories->get_primary_category;
-    return if !$primary_category;
-
-    my $category_tax_rules = $self->schema->resultset('CategoryTaxRule')->search(
-        {
-            -and => [
-                $where,
-                {
-                    -and => [
-                        root_id => $primary_category->root_id,
-                        lft     => { '<=' => $primary_category->lft },
-                        rgt     => { '>=' => $primary_category->rgt },
-                    ]
-                },
-            ],
-        },
-        {
-            prefetch => [qw/category tax_rule/],
-            order_by => { '-DESC' => 'level' },
-        }
-    );
-    my $category_tax_rule = $category_tax_rules->first;
-    return $category_tax_rule ? $category_tax_rule->tax_rule : undef;
-}
-
-sub find_tax_rule_now {
-    my $self = shift;
-
-    my $now = $self->app->date_time->now;
-    return $self->find_tax_rule($now);
-}
-
 sub to_data {
     my ( $self, $options ) = @_;
 
