@@ -52,10 +52,10 @@
     # Tax rules
     'TaxRule' => [
         [ qw/id title tax_rate/],
-        [ 2, 'Tax 5%', 5 ],
-        [ 3, 'Tax 8%', 8 ],
-        [ 4, 'Reduced Tax 8%', 8 ],
-        [ 5, 'Tax 10%', 10 ],
+        [ 2, 'Tax 5%', 0.05 ],
+        [ 3, 'Tax 8%', 0.08 ],
+        [ 4, 'Reduced Tax 8%', 0.08 ],
+        [ 5, 'Tax 10%', 0.1 ],
     ],
 
     # Default tax rules
