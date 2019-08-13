@@ -43,7 +43,7 @@ sub __x_default_lang {
     my $c = shift;
 
     my $language = $c->language;
-    $c->language( $c->pref('default_language') );
+    $c->language( $c->pref('locale_language') );
     my $word = $c->__x(@_);
     $c->language($language);
     return $word;
@@ -175,7 +175,7 @@ L<Yetie::App::Core::DefaultHelpers> implements the following helpers.
 
 Word translation using L<Mojolicious::Plugin::LocaleTextDomainOO/__x> in the default language.
 
-The default language uses C<default_language> preference.
+The default language uses C<locale_language> preference.
 
 =head2 C<addons>
 

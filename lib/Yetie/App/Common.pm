@@ -67,7 +67,7 @@ sub initialize_app {
     $self->service('preference')->load;
 
     # Set default language
-    $self->language( $self->pref('default_language') );
+    $self->language( $self->pref('locale_language') );
 
     # Server Session
     $self->plugin(
@@ -144,7 +144,7 @@ sub _load_plugins {
         'Yetie::App::Core::I18N',
         {
             # file_type => 'po',    # or 'mo'. default: po
-            # default   => $self->pref('default_language'),
+            # default   => $self->pref('locale_language'),
             languages => [qw( en ja de )],
 
             # Mojolicious::Plugin::I18N like options
