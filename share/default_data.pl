@@ -6,6 +6,7 @@
         # location
         [ 'locale_language', 'en', 'pref.title.locale_language', 'pref.summary.locale_language', 100, 1 ],
         [ 'locale_country', 'US', 'pref.title.locale_country', 'pref.summary.locale_country', 200, 1 ],
+        [ 'locale_currency', 'USD', 'pref.title.locale_currency', 'pref.summary.locale_currency', 300, 1 ],
 
         # shop master
         [ 'shop_name', 'Yetie Shop', 'pref.title.shop_name', 'pref.summary.shop_name', 100, 2 ],
