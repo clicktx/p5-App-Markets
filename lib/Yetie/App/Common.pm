@@ -1,6 +1,6 @@
 package Yetie::App::Common;
 use Mojo::Base 'Mojolicious';
-use Mojo::Log;
+use Math::Currency;
 use Yetie::Addon::Handler;
 use Yetie::App::Core::DateTime;
 use DBIx::QueryLog;
@@ -68,6 +68,9 @@ sub initialize_app {
 
     # Set default language
     $self->language( $self->pref('locale_language') );
+
+    # Set global currency
+    Math::Currency->format( $self->pref('locale_currency') );
 
     # Server Session
     $self->plugin(
