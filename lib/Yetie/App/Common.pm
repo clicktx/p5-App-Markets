@@ -71,6 +71,7 @@ sub initialize_app {
 
     # Set global currency
     Math::Currency->format( $self->pref('locale_currency') );
+    Math::Currency->round_mode( $self->pref('round_mode') );
 
     # Server Session
     $self->plugin(

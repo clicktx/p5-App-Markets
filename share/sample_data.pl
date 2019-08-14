@@ -35,7 +35,7 @@
         [ 7,  'test product7',  'product description',  333, '2017-08-24 01:02:21', '2017-08-24 01:02:21' ],
         [ 8,  'test product8',  'product description',  333, '2017-08-24 01:02:34', '2017-08-24 01:02:34' ],
         [ 9,  'test product9',  'product description',  333, '2017-08-24 01:02:45', '2017-08-24 01:02:45' ],
-        [ 10, 'test product10', 'product description',  333, '2017-08-24 01:02:56', '2017-08-24 01:02:56' ],
+        [ 10, 'test product10', 'product description',  2.50, '2017-08-24 01:02:56', '2017-08-24 01:02:56' ],
     ],
 
     # Product Category
