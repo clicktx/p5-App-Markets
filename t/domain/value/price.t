@@ -12,12 +12,4 @@ subtest 'basic' => sub {
     lives_ok { $pkg->new( value => 0.1 ) } 'right lives';
 };
 
-subtest 'sum' => sub {
-    my $p  = $pkg->new(1);
-    my $p2 = $p->sum(1);
-    isnt $p, $p2, 'right different object';
-    is $p->value,  1, 'right original';
-    is $p2->value, 2, 'right sum';
-};
-
 done_testing();
