@@ -13,7 +13,6 @@ subtest 'basic' => sub {
 };
 
 subtest 'amount' => sub {
-    Math::Currency->format('USD');
     my $price = $pkg->new(100);
     is $price->amount, '$100.00', 'right amount';
     is $price, '$100.00', 'right operator';

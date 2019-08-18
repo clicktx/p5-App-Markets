@@ -19,9 +19,10 @@ has title => (
 sub caluculate_tax {
     my ( $self, $price ) = @_;
 
+    my $currency = $price->currency;
     return $price->is_tax_included
-      ? Math::Currency->new( $price->amount / ( 1 + $self->tax_rate ) * $self->tax_rate )
-      : Math::Currency->new( $price->amount * $self->tax_rate );
+      ? Math::Currency->new( $price->amount / ( 1 + $self->tax_rate ) * $self->tax_rate, $currency )
+      : Math::Currency->new( $price->amount * $self->tax_rate, $currency );
 }
 
 sub tax_rate_percentage { return shift->tax_rate * 100 }

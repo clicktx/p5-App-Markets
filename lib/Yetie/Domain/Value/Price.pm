@@ -8,13 +8,20 @@ extends 'Yetie::Domain::Value';
 
 has '+value' => ( isa => PositiveNum );
 
+has currency => (
+    is      => 'ro',
+    default => 'USD',
+);
 has is_tax_included => (
     is      => 'ro',
     isa     => 'Bool',
     default => 0,
 );
 
-sub amount { Math::Currency->new( shift->value ) }
+sub amount {
+    my $self = shift;
+    return Math::Currency->new( $self->value, $self->currency );
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
@@ -34,6 +41,10 @@ Yetie::Domain::Value::Price
 
 L<Yetie::Domain::Value::Price> inherits all attributes from L<Yetie::Domain::Value> and implements
 the following new ones.
+
+=head2 C<currency>
+
+Default "USD"
 
 =head2 C<value>
 

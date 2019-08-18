@@ -3,7 +3,6 @@ use Test::More;
 use Yetie::Factory;
 
 use_ok 'Yetie::Domain::Value::Price';
-Math::Currency->format('USD');
 
 my $pkg = 'Yetie::Domain::Entity::TaxRule';
 use_ok $pkg;
