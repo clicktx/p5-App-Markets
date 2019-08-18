@@ -1,12 +1,15 @@
 package Yetie::Domain::Value::Price;
-use MooseX::Types::Common::Numeric qw/PositiveNum/;
+use MooseX::Types::Common::Numeric qw/PositiveOrZeroNum/;
 use Math::Currency;
 use overload q{""} => sub { $_[0]->amount }, fallback => 1;
 
 use Moose;
 extends 'Yetie::Domain::Value';
 
-has '+value' => ( isa => PositiveNum );
+has '+value' => (
+    isa     => PositiveOrZeroNum,
+    default => 0,
+);
 
 has currency => (
     is      => 'ro',
