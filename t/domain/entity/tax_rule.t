@@ -18,12 +18,13 @@ subtest 'caluculate_tax' => sub {
     my $rule = $pkg->new( tax_rate => 0.1 );
 
     my $price = Yetie::Domain::Value::Price->new(100);
-    my $tax   = $rule->caluculate_tax($price);
-    is $tax, '$10.00', 'right outside tax';
+    is $rule->caluculate_tax($price), '$10.00', 'right outside tax';
 
     $price = Yetie::Domain::Value::Price->new( value => 110, is_tax_included => 1 );
-    $tax = $rule->caluculate_tax($price);
-    is $tax, '$10.00', 'right inside tax';
+    is $rule->caluculate_tax($price), '$10.00', 'right inside tax';
+
+    $price = Yetie::Domain::Value::Price->new( value => 0, is_tax_included => 1 );
+    is $rule->caluculate_tax($price), '$0.00', 'right inside tax for zero';
 };
 
 subtest 'tax_rate_percentage' => sub {
