@@ -11,7 +11,7 @@ has '+value' => (
     default => 0,
 );
 
-has currency => (
+has currency_code => (
     is      => 'ro',
     default => 'USD',
 );
@@ -23,7 +23,7 @@ has is_tax_included => (
 
 sub amount {
     my $self = shift;
-    return Math::Currency->new( $self->value, $self->currency );
+    return Math::Currency->new( $self->value, $self->currency_code );
 }
 
 no Moose;
@@ -45,7 +45,7 @@ Yetie::Domain::Value::Price
 L<Yetie::Domain::Value::Price> inherits all attributes from L<Yetie::Domain::Value> and implements
 the following new ones.
 
-=head2 C<currency>
+=head2 C<currency_code>
 
 Default "USD"
 

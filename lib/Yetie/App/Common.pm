@@ -67,10 +67,10 @@ sub initialize_app {
     $self->service('preference')->load;
 
     # Set default language
-    $self->language( $self->pref('locale_language') );
+    $self->language( $self->pref('locale_language_code') );
 
     # Set global currency
-    Math::Currency->format( $self->pref('locale_currency') );
+    Math::Currency->format( $self->pref('locale_currency_code') );
     Math::Currency->round_mode( $self->pref('decimal_rounding_mode') );
 
     # Server Session
@@ -148,7 +148,7 @@ sub _load_plugins {
         'Yetie::App::Core::I18N',
         {
             # file_type => 'po',    # or 'mo'. default: po
-            # default   => $self->pref('locale_language'),
+            # default   => $self->pref('locale_language_code'),
             languages => [qw( en ja de )],
 
             # Mojolicious::Plugin::I18N like options

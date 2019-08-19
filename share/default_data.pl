@@ -4,9 +4,9 @@
         [ 'name', 'default_value', 'title', 'summary', 'position', 'group_id' ],
 
         # location
-        [ 'locale_language', 'en', 'pref.title.locale_language', 'pref.summary.locale_language', 100, 1 ],
-        [ 'locale_country', 'US', 'pref.title.locale_country', 'pref.summary.locale_country', 200, 1 ],
-        [ 'locale_currency', 'USD', 'pref.title.locale_currency', 'pref.summary.locale_currency', 300, 1 ],
+        [ 'locale_language_code', 'en', 'pref.title.locale_language_code', 'pref.summary.locale_language_code', 100, 1 ],
+        [ 'locale_country_code', 'US', 'pref.title.locale_country_code', 'pref.summary.locale_country_code', 200, 1 ],
+        [ 'locale_currency_code', 'USD', 'pref.title.locale_currency_code', 'pref.summary.locale_currency_code', 300, 1 ],
 
         # Decimal rounding mode 'even' or 'trunc'
         [ 'decimal_rounding_mode', 'even', 'pref.title.decimal_rounding_mode', 'pref.summary.decimal_rounding_mode', 400, 1 ],
