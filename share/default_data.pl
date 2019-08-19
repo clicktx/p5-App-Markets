@@ -8,6 +8,9 @@
         [ 'locale_country', 'US', 'pref.title.locale_country', 'pref.summary.locale_country', 200, 1 ],
         [ 'locale_currency', 'USD', 'pref.title.locale_currency', 'pref.summary.locale_currency', 300, 1 ],
 
+        # Decimal rounding mode 'even' or 'trunc'
+        [ 'decimal_rounding_mode', 'even', 'pref.title.decimal_rounding_mode', 'pref.summary.decimal_rounding_mode', 400, 1 ],
+
         # shop master
         [ 'shop_name', 'Yetie Shop', 'pref.title.shop_name', 'pref.summary.shop_name', 100, 2 ],
 
