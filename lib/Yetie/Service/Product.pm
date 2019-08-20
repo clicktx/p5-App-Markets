@@ -26,14 +26,15 @@ sub find_product {
     my ( $self, $product_id ) = @_;
 
     my $result = $self->resultset('Product')->find_product($product_id);
-    my $data = $result ? $result->to_data() : {};
+    return $self->factory('entity-product')->construct() if !$result;
+
+    my $data = $result->to_data();
 
     # tax rule
     my $tax_rule = $self->_get_tax_rule($result);
     $data->{tax_rule} = $tax_rule->to_data;
 
-    my $product = $self->factory('entity-product')->construct($data);
-    return $product;
+    return $self->factory('entity-product')->construct($data);
 }
 
 sub is_sold {
