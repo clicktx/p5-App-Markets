@@ -10,31 +10,6 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('Product');
 
-subtest 'find_tax_rule' => sub {
-    my $dt = DateTime->new(
-        time_zone => $app->date_time->TZ,
-        year      => 2019,
-        month     => 7,
-        day       => 7,
-        hour      => 10,
-        minute    => 10,
-    );
-    my $result   = $rs->find_product(1);
-    my $tax_rule = $result->find_tax_rule($dt);
-    isa_ok $tax_rule, 'Yetie::Schema::Result::TaxRule';
-    is $tax_rule->id, 5, 'right tax rate(from product tax rule)';
-
-    $result   = $rs->find_product(2);
-    $tax_rule = $result->find_tax_rule($dt);
-    isa_ok $tax_rule, 'Yetie::Schema::Result::TaxRule';
-    is $tax_rule->id, 4, 'right tax rate(from category tax rule)';
-
-    $result   = $rs->find_product(3);
-    $tax_rule = $result->find_tax_rule($dt);
-    isa_ok $tax_rule, 'Yetie::Schema::Result::TaxRule';
-    is $tax_rule->id, 5, 'right tax rate(from category tax rule)';
-};
-
 subtest 'to_data' => sub {
     my $res = $rs->find(1);
 

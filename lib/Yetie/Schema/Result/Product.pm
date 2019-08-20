@@ -140,21 +140,6 @@ Data does not include C<product_categories>
 
 =back
 
-=head2 C<find_tax_rule>
-
-    my $tax_rule = $result->find_tax_rule($DateTimeObject);
-
-Return L<Yetie::Schema::Result::TaxRule> object or C<undef>.
-
-=head2 C<find_tax_rule_now>
-
-    my $tax_rule = $result->find_tax_rule_now;
-
-    # Longer version
-    my $tax_rule = $result->find_tax_rule( DateTime->now(...) );
-
-See L</find_tax_rule>
-
 =head1 AUTHOR
 
 Yetie authors.
