@@ -7,9 +7,15 @@ with 'Yetie::Domain::Role::Tax';
 
 has title       => ( is => 'rw', default => q{} );
 has description => ( is => 'ro', default => q{} );
-has price       => ( is => 'ro', default => 0 );
-has created_at  => ( is => 'ro' );
-has updated_at  => ( is => 'ro' );
+
+# FIXME: There are multiple prices!
+has price       => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Value::Price',
+    default => sub { __PACKAGE__->factory('value-price')->construct() },
+);
+has created_at => ( is => 'ro' );
+has updated_at => ( is => 'ro' );
 has product_categories => (
     is      => 'ro',
     lazy    => 1,

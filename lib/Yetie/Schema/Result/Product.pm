@@ -62,7 +62,13 @@ sub to_data {
         id          => $self->id,
         title       => $self->title,
         description => $self->description,
-        price       => $self->price,
+
+        # FIXME: There are multiple prices!
+        price => {
+            value           => $self->price,
+            currency_code   => $self->app->pref('locale_currency_code'),
+            is_tax_included => $self->app->pref('is_price_including_tax'),
+        },
     };
 
     # Options
