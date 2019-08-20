@@ -17,12 +17,12 @@
         [ 'shop_name', 'Yetie Shop', 'pref.title.shop_name', 'pref.summary.shop_name', 10, 2 ],
 
         # staff
-        [ 'staff_password_min', '4', 'pref.title.staff_password_min', 'pref.summary.staff_password_min', 20, 2 ],
-        [ 'staff_password_max', '8', 'pref.title.staff_password_max', 'pref.summary.staff_password_max', 30, 2 ],
+        [ 'staff_password_min', '8', 'pref.title.staff_password_min', 'pref.summary.staff_password_min', 20, 2 ],
+        [ 'staff_password_max', '512', 'pref.title.staff_password_max', 'pref.summary.staff_password_max', 30, 2 ],
 
         # customer
-        [ 'customer_password_min', '4', 'pref.title.customer_password_min', 'pref.summary.customer_password_min', 40, 2 ],
-        [ 'customer_password_max', '8', 'pref.title.customer_password_max', 'pref.summary.customer_password_max', 50, 2 ],
+        [ 'customer_password_min', '8', 'pref.title.customer_password_min', 'pref.summary.customer_password_min', 40, 2 ],
+        [ 'customer_password_max', '512', 'pref.title.customer_password_max', 'pref.summary.customer_password_max', 50, 2 ],
 
         # application
         [ 'admin_uri_prefix', '/admin', 'pref.title.admin_uri_prefix', 'pref.summary.admin_uri_prefix', 10, 9 ],
