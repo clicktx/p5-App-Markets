@@ -1,6 +1,7 @@
 requires 'perl',                                    '5.010';
 requires 'CGI::Expand',                             '2.05';
 requires 'DateTime',                                '1.42';
+requires 'DateTime::Format::MySQL',                 '0.06';
 requires 'DateTime::Format::Strptime',              '1.73';
 requires 'Data::Clone',                             '0.004';
 requires 'Data::Page::Navigation',                  '0.06';
@@ -15,6 +16,7 @@ requires 'File::Find::Rule',                        '0.34';
 requires 'FormValidator::Simple',                   '0.29';
 requires 'Gazelle',                                 '0.46';
 requires 'Hashids',                                 '1.001010';
+requires 'Math::Currency',                          '0.52';
 requires 'Mojolicious',                             '== 8.02';
 requires 'Mojolicious::Plugin::LocaleTextDomainOO', '0.04';
 requires 'Mojolicious::Plugin::Scrypt',             '0.01';
@@ -63,7 +65,6 @@ on configure => sub {
 };
 
 on test => sub {
-    requires 'DateTime::Format::MySQL', '0.06';
     requires 'Harriet',                 '00.05';
     requires 'Test::Class',             '0.50';
     requires 'Test::Deep',              '1.128';

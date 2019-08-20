@@ -21,28 +21,6 @@ sub create_category {
     return $result;
 }
 
-# NOTE: キャッシュを考える
-sub get_ancestors_arrayref {
-    my ( $self, $category_id ) = @_;
-
-    my $result = $self->find($category_id);
-    my $ancestors = $result ? $result->ancestors->hashref_array : [];
-    return $ancestors;
-}
-
-sub get_category_choices {
-    my ( $self, $ids ) = ( shift, shift || [] );
-    $ids = [$ids] unless ref $ids;
-
-    my @tree;
-    my @root_nodes = $self->search( { level => 0 } );
-    foreach my $root (@root_nodes) {
-        push @tree, @{ _tree( $root, $ids ) };
-    }
-    unshift @tree, [ 'None(root)' => 0 ];
-    return \@tree;
-}
-
 sub has_title {
     my ( $self, $title, $parent_id ) = @_;
     croak 'Argument empty' if !$title;
@@ -127,22 +105,6 @@ the following new ones.
 Create category.
 
 Return Value: L<$result|DBIx::Class::Manual::ResultClass> | undef
-
-=head2 C<get_ancestors_arrayref>
-
-    my $array_ref = $rs->get_ancestors_arrayref($category_id);
-
-Return Array reference.
-
-=head2 C<get_category_choices>
-
-    my $tree = $rs->get_category_choices();
-
-    # Arguments choiced category ids
-    my $tree = $rs->get_category_choices(3);
-    my $tree = $rs->get_category_choices( [ 1, 3, 5 ] );
-
-Return Array reference.
 
 =head2 C<has_title>
 

@@ -69,7 +69,7 @@ sub t03_items_orderd : Tests() {
     $post_data->{'item.1.price'}    = 555;
     $t->post_ok( '/admin/order/1/edit/items', form => $post_data )->status_is( 302, 'right items update' );
 
-    my $item = $t->app->resultset('Sales::Order::Item')->find(1);
+    my $item = $t->app->resultset('SalesOrderItem')->find(1);
     is $item->quantity, 55, 'right update item quantity';
     ok $item->price == 555, 'right update item price';
 }

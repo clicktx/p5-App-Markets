@@ -41,7 +41,7 @@ subtest 'limit' => sub {
 };
 
 subtest 'to_array' => sub {
-    my $rs = $schema->resultset('Sales::Order::Item');
+    my $rs = $schema->resultset('SalesOrderItem');
 
     subtest 'basic' => sub {
         my $itr   = $rs->search( { order_id => 1 } );

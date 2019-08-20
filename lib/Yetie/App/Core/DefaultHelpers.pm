@@ -23,6 +23,7 @@ sub register {
     $app->helper( cart             => sub { _cart(@_) } );
     $app->helper( continue_url     => sub { _continue_url(@_) } );
     $app->helper( cookie_session   => sub { shift->session(@_) } );
+    $app->helper( date_time        => sub { shift->app->date_time(@_) } );
     $app->helper( factory          => sub { _factory(@_) } );
     $app->helper( is_admin_route   => sub { _is_admin_route(@_) } );
     $app->helper( is_get_request   => sub { _is_get_request(@_) } );
@@ -42,7 +43,7 @@ sub __x_default_lang {
     my $c = shift;
 
     my $language = $c->language;
-    $c->language( $c->pref('default_language') );
+    $c->language( $c->pref('locale_language_code') );
     my $word = $c->__x(@_);
     $c->language($language);
     return $word;
@@ -50,9 +51,21 @@ sub __x_default_lang {
 
 sub _cache {
     my $c = shift;
+    my ( $key, $value ) = @_;
 
     my $caches = $c->app->caches;
-    return @_ ? @_ > 1 ? $caches->set( $_[0] => $_[1] ) : $caches->get( $_[0] ) : $caches;
+    return $caches if !$key;
+
+    # Set cache
+    my $is_cached = exists $caches->{cache}->{$key};
+    if ($value) {
+        $c->app->log->debug( q{Set new cache key:"} . $key . q{"} ) if !$is_cached;
+        return $caches->set( $key => $value );
+    }
+
+    # Get cache
+    $c->app->log->debug( q{Get cached data key:"} . $key . q{"} ) if $is_cached;
+    return $caches->get($key);
 }
 
 sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
@@ -162,7 +175,7 @@ L<Yetie::App::Core::DefaultHelpers> implements the following helpers.
 
 Word translation using L<Mojolicious::Plugin::LocaleTextDomainOO/__x> in the default language.
 
-The default language uses C<default_language> preference.
+The default language uses C<locale_language_code> preference.
 
 =head2 C<addons>
 
@@ -217,6 +230,15 @@ Default url: C<rn.admin.dashboard> or C<rn.home>
     my $value = $c->cookie_session('key');
 
 Alias for $c->session;
+
+=head2 C<date_time>
+
+    my $date_time = $c->date_time;
+
+    # Longer version
+    $c->app->date_time;
+
+Alias for $app->date_time;
 
 =head2 C<factory>
 

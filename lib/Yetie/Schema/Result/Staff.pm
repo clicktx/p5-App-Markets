@@ -27,7 +27,7 @@ column updated_at => {
 
 # Relation
 has_one
-  staff_password => 'Yetie::Schema::Result::Staff::Password',
+  staff_password => 'Yetie::Schema::Result::StaffPassword',
   { 'foreign.staff_id' => 'self.id' },
   { cascade_delete     => 0 };
 

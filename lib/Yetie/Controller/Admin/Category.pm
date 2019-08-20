@@ -9,15 +9,17 @@ sub index {
     $c->stash( rs => $rs );
 
     # Init form
-    my $tree = $rs->get_category_choices;
-    $form->field('parent_id')->choices($tree);
+    my $tree    = $c->service('category')->get_category_tree;
+    my $choices = $tree->get_attributes_for_choices_form();
+    unshift @{$choices}, [ 'None(root)' => '' ];
+    $form->field('parent_id')->choices($choices);
     $c->init_form();
 
     # Get request
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     # Validation
     # 同階層の同名カテゴリを作成しない
@@ -32,7 +34,7 @@ sub index {
 
     # Logging
     $c->logging_info('admin.category.created');
-    $c->redirect_to('rn.admin.category');
+    return $c->redirect_to('rn.admin.category');
 }
 
 sub edit {
@@ -45,16 +47,16 @@ sub edit {
     my $entity = $c->service('category')->find_category( $category_id, $form );
     $form->fill_in($entity);
 
-    return $c->reply->not_found() unless $entity->has_id;
+    return $c->reply->not_found() if !$entity->has_id;
 
     # Get request
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     $entity->title( $form->param('title') );
-    return $c->render() unless $entity->is_modified;
+    return $c->render() if !$entity->is_modified;
 
     # update
     $c->schema->resultset('Category')->update_category( $entity, [] );

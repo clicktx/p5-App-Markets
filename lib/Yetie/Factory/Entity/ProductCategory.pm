@@ -1,13 +1,6 @@
 package Yetie::Factory::Entity::ProductCategory;
 use Mojo::Base 'Yetie::Factory';
 
-sub cook {
-    my $self = shift;
-
-    # children
-    $self->aggregate( ancestors => 'list-category_ancestors', $self->param('ancestors') || [] );
-}
-
 1;
 __END__
 

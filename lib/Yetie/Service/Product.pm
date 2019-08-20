@@ -14,7 +14,6 @@ sub duplicate_product {
 
     my $data = $entity->to_data;
     delete $data->{id};
-    delete $data->{breadcrumbs};
 
     my $result = $rs->create($data);
 
@@ -23,31 +22,25 @@ sub duplicate_product {
     return $result;
 }
 
-# NOTE: Yetie::Domain::Entity::ProductCategoryにancestorsを追加したのでbreadcrumbs生成にSQLを発行する必要はないかも
-sub find_product_with_breadcrumbs {
-    my ( $self, $product_id ) = @_;
-
-    my $result = $self->resultset('Product')->find_product($product_id);
-    my $data = $result ? $result->to_data : {};
-
-    my $data_breadcrumbs = delete $data->{breadcrumbs};
-    my $breadcrumbs      = $self->factory('list-breadcrumbs')->construct( list => $data_breadcrumbs );
-    my $product          = $self->factory('entity-product')->construct($data);
-    return ( $product, $breadcrumbs );
-}
-
 sub find_product {
     my ( $self, $product_id ) = @_;
 
     my $result = $self->resultset('Product')->find_product($product_id);
-    my $data = $result ? $result->to_data( { no_breadcrumbs => 1 } ) : {};
+    return $self->factory('entity-product')->construct() if !$result;
+
+    my $data = $result->to_data();
+
+    # tax rule
+    my $tax_rule = $self->_get_tax_rule($result);
+    $data->{tax_rule} = $tax_rule->to_data;
+
     return $self->factory('entity-product')->construct($data);
 }
 
 sub is_sold {
     my ( $self, $product_id ) = @_;
 
-    my $cnt = $self->resultset('Sales::Order::Item')->search( { product_id => $product_id } )->count;
+    my $cnt = $self->resultset('SalesOrderItem')->search( { product_id => $product_id } )->count;
     return $cnt ? 1 : 0;
 }
 
@@ -89,7 +82,7 @@ sub search_products {
     };
 
     my $rs       = $self->resultset('Product')->search_products($conditions);
-    my $data     = { list => $rs->to_data( { no_relation => 1, no_breadcrumbs => 1 } ) };
+    my $data     = { list => $rs->to_data( { no_relation => 1 } ) };
     my $products = $self->factory('list-products')->construct($data);
     return ( $products, $rs->pager );
 }
@@ -97,6 +90,21 @@ sub search_products {
 sub update_product_categories { return shift->resultset('Product')->update_product_categories(@_) }
 
 sub update_product { return shift->resultset('Product')->update_product(@_) }
+
+sub _get_tax_rule {
+    my ( $self, $product ) = @_;
+
+    # Category tax rule
+    my $primary_category = $product->product_categories->get_primary_category;
+    if ($primary_category) {
+        my $category_tax_rule = $self->resultset('CategoryTaxRule')->find_now($primary_category);
+        return $category_tax_rule->tax_rule if $category_tax_rule;
+    }
+
+    # Default tax rule
+    my $default_tax_rule = $self->resultset('DefaultTaxRule')->find_now;
+    return $default_tax_rule->tax_rule;
+}
 
 1;
 __END__
@@ -126,12 +134,6 @@ the following new ones.
 Duplicate from C<$product_id>.
 
 Return L<Yetie::Schema::Result::Product> object or C<undefined>.
-
-=head2 C<find_product_with_breadcrumbs>
-
-    my ( $product, $breadcrumbs ) = $service->find_product($product_id);
-
-Return L<Yetie::Domain::Entity::Product> object and L<Yetie::Domain::List::Breadcrumbs> object.
 
 =head2 C<find_product>
 

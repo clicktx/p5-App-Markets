@@ -7,7 +7,7 @@
         [qw/103 disable_addon 0/],
         [qw/104 newpage 1/],
     ],
-    'Addon::Trigger' => [
+    'AddonTrigger' => [
         [qw/id addon_id trigger_name priority/],
         [qw/100 102 replace_template 333/],
         [qw/101 102 filter_form 555/],

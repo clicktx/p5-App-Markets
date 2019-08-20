@@ -18,6 +18,19 @@
 <div class="">
     <%= $product->price %>
 </div>
+<div>
+    TAX rate: <%= $product->tax_rule->tax_rate_percentage %>%
+</div>
+<div>
+    TAX: <%= $product->tax_amount %>
+</div>
+<div>
+    Price(incl. tax): <%= $product->price_incl_tax %>
+</div>
+<div>
+    Price(excl. tax): <%= $product->price_excl_tax %>
+</div>
+
 
 <%= form_for 'rn.product' => ( method => 'POST' ) => begin %>
     % my $field;

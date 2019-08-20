@@ -55,13 +55,13 @@ subtest 'method to_hash()' => sub {
         is ref $hash, 'HASH', 'right variable type';
         is_deeply $hash,
           {
-            default_value => '/admin',
+            default_value => 'en',
             group_id      => 1,
             id            => 1,
-            name          => 'admin_uri_prefix',
-            position      => 100,
-            summary       => 'pref.summary.admin_uri_prefix',
-            title         => 'pref.title.admin_uri_prefix',
+            name          => 'locale_language_code',
+            position      => 10,
+            summary       => 'pref.summary.locale_language_code',
+            title         => 'pref.title.locale_language_code',
             value         => undef,
           },
           'right data';
@@ -70,10 +70,10 @@ subtest 'method to_hash()' => sub {
     subtest 'options' => sub {
         my $result = $rs->search()->first;
         my $ignore = $result->to_hash( ignore_columns => [qw( default_value id position summary title)] );
-        is_deeply $ignore, { group_id => 1, name => 'admin_uri_prefix', value => undef }, 'right ignore columns';
+        is_deeply $ignore, { group_id => 1, name => 'locale_language_code', value => undef }, 'right ignore columns';
 
         my $consider = $result->to_hash( columns => [qw(id position)] );
-        is_deeply $consider, { id => 1, position => 100 }, 'right pick on columns';
+        is_deeply $consider, { id => 1, position => 10 }, 'right pick on columns';
     };
 };
 

@@ -14,20 +14,13 @@ sub get_category_tree {
     my $cache = $self->app->cache('category_tree');
     return $cache if $cache;
 
+    # Create tree entities
     my $root = $self->resultset('Category')->search( { level => 0 } );
-    my $tree = _create_tree($root) || [];
-    my $entity = $self->app->factory('entity-category_tree')->construct( children => $tree );
+    my $tree = $self->app->factory('entity-category_tree_root')->construct( children => $root->to_data );
 
     # Set to cache
-    $self->app->cache( category_tree => $entity );
-    return $entity;
-}
-
-sub _create_tree {
-    my $nodes = shift;
-    my @tree;
-    $nodes->each( sub { push @tree, shift->to_data } );
-    return \@tree;
+    $self->app->cache( category_tree => $tree );
+    return $tree;
 }
 
 sub _find_category {
@@ -41,14 +34,13 @@ sub _find_category {
     my $products_rs = _get_products( $result, $form );
     $data->{products} = $products_rs->to_data(
         {
-            no_datetime    => 1,
-            no_relation    => 1,
-            no_breadcrumbs => 1,
+            no_datetime => 1,
+            no_relation => 1,
         }
     );
     my $category    = $self->factory('entity-category')->construct($data);
     my $pager       = $products_rs ? $products_rs->pager : undef;
-    my $breadcrumbs = $self->factory('list-breadcrumbs')->construct( list => $result->to_breadcrumbs );
+    my $breadcrumbs = $self->service('breadcrumb')->get_list_by_category_id($category_id);
 
     return ( $category, $pager, $breadcrumbs );
 }

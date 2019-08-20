@@ -8,16 +8,30 @@ sub primary_category {
     return $self->first( sub { shift->is_primary } );
 }
 
-sub get_form_choices_data {
+sub get_form_choices_primary_category {
     my $self = shift;
 
     my @choices;
     $self->each(
         sub {
-            push @choices, [ $_->full_title, $_->category_id, choiced => $_->is_primary ? 1 : 0 ];
+            push @choices, [ $_->full_title, $_->category_id, _choice_primary( $_->is_primary ) ];
         }
     );
     return \@choices;
+}
+
+sub get_id_list {
+    my $self = shift;
+
+    my @list;
+    $self->each( sub { push @list, $_->category_id } );
+    return \@list;
+}
+
+sub _choice_primary {
+    my $is_primary = shift;
+    return ( choiced => 1 ) if $is_primary;
+    return;
 }
 
 no Moose;
@@ -48,10 +62,16 @@ the following new ones.
 
     my $category = $categories->primary_category;
 
-=head2 C<get_form_choices_data>
+=head2 C<get_form_choices_primary_category>
 
     # [ [ 'foo > bar', 1, 'choiced' => 1 ], ... ]
-    my $choices_data = $categories->get_form_choices_data;
+    my $choices_data = $categories->get_form_choices_primary_category;
+
+=head2 C<get_id_list>
+
+    my $list = $categories->get_id_list;
+
+Return Array reference of category ID.
 
 =head1 AUTHOR
 

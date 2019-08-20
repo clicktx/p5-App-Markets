@@ -148,7 +148,7 @@ subtest 'number' => sub {
     is $v->error('bar'), undef, 'right valid';
 
     # Locale: RU (Russian; русский язык) / FR (French; français)
-    $t->app->pref( locale_country => 'RU' );
+    $t->app->pref( locale_country_code => 'RU' );
     $t->app->plugin('Yetie::App::Core::Form');
 
     ( $c, $f, $v ) = new_req();
@@ -158,7 +158,7 @@ subtest 'number' => sub {
     is $v->error('bar'), undef, 'right valid';
 
     # Locale: DE (German, Deutsch)
-    $t->app->pref( locale_country => 'DE' );
+    $t->app->pref( locale_country_code => 'DE' );
     $t->app->plugin('Yetie::App::Core::Form');
 
     ( $c, $f, $v ) = new_req();

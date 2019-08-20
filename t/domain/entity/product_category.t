@@ -21,9 +21,12 @@ subtest 'default attributes' => sub {
 };
 
 subtest 'full_title' => sub {
+
+    my $ancestors = Yetie::Factory->new('list-category_trees')
+      ->construct( list => [ { title => 'bar', id => 2 }, { title => 'foo', id => 1 } ] );
     my $o = construct(
         title     => 'me',
-        ancestors => [ { title => 'foo', id => 1 }, { title => 'bar', id => 2 } ]
+        ancestors => $ancestors,
     );
     is $o->full_title, 'foo > bar > me', 'right full title';
     is $o->full_title( { separator => '/' } ), 'foo / bar / me', 'right use option';

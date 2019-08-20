@@ -2,46 +2,78 @@
     # Category
     'Category' => [
         [qw/id root_id lft rgt level title/],
-        [ 1, 1, 1, 6, 0, 'Sports'],
-        [ 2, 2, 1, 22, 0, 'Fashion'],
-        [ 3, 1, 2, 3, 1, 'Golf'],
-        [ 4, 1, 4, 5, 1, 'Soccer'],
-        [ 5, 2, 2, 13, 1, 'Women'],
-        [ 6, 2, 14, 15, 1, 'Men'],
-        [ 7, 2, 16, 17, 1, 'Girls'],
-        [ 8, 2, 18, 19, 1, 'Boys'],
-        [ 9, 2, 20, 21, 1, 'Baby'],
-        [ 10, 2, 3, 12, 2, 'Clothing'],
-        [ 11, 2, 4, 9, 3, 'Dresses'],
-        [ 12, 2, 10, 11, 3, 'Tops & Tees'],
-        [ 13, 2, 5, 6, 4, 'Casual'],
-        [ 14, 2, 7, 8, 4, 'Formal'],
+        [ 1,  1,  1,  6,  0, 'Sports' ],
+        [ 2,  2,  1,  22, 0, 'Fashion' ],
+        [ 3,  1,  2,  3,  1, 'Golf' ],
+        [ 4,  1,  4,  5,  1, 'Soccer' ],
+        [ 5,  2,  2,  13, 1, 'Women' ],
+        [ 6,  2,  14, 15, 1, 'Men' ],
+        [ 7,  2,  16, 17, 1, 'Girls' ],
+        [ 8,  2,  18, 19, 1, 'Boys' ],
+        [ 9,  2,  20, 21, 1, 'Baby' ],
+        [ 10, 2,  3,  12, 2, 'Clothing' ],
+        [ 11, 2,  4,  9,  3, 'Dresses' ],
+        [ 12, 2,  10, 11, 3, 'Tops & Tees' ],
+        [ 13, 2,  5,  6,  4, 'Casual' ],
+        [ 14, 2,  7,  8,  4, 'Formal' ],
+        [ 15, 15, 1, 10,  0, 'Foods' ],
+        [ 16, 15, 2,  5,  1, 'Drinks' ],
+        [ 17, 15, 3,  4,  2, 'Milk' ],
+        [ 18, 15, 6,  9,  1, 'Alcoholic Drinks' ],
+        [ 19, 15, 7,  8,  2, 'Beer' ],
     ],
 
     # Product
     'Product' => [
         [qw/id title description price created_at updated_at/],
-        [ 1, 'test product1', 'product description1', 100, '2017-08-23 23:47:04', '2017-08-23 23:47:04' ],
-        [ 2, 'test product2', 'product description2', 200, '2017-08-23 23:55:12', '2017-08-23 23:55:12' ],
-        [ 3, 'test product3', 'product description', 300, '2017-08-23 23:59:35', '2017-08-23 23:59:35' ],
-        [ 4, 'test product4', 'product description', 333, '2017-08-24 01:01:11', '2017-08-24 01:01:11' ],
-        [ 5, 'test product5', 'product description', 333, '2017-08-24 01:01:35', '2017-08-24 01:01:35' ],
-        [ 6, 'test product6', 'product description', 333, '2017-08-24 01:02:02', '2017-08-24 01:02:02' ],
-        [ 7, 'test product7', 'product description', 333, '2017-08-24 01:02:21', '2017-08-24 01:02:21' ],
-        [ 8, 'test product8', 'product description', 333, '2017-08-24 01:02:34', '2017-08-24 01:02:34' ],
-        [ 9, 'test product9', 'product description', 333, '2017-08-24 01:02:45', '2017-08-24 01:02:45' ],
-        [ 10, 'test product10', 'product description', 333, '2017-08-24 01:02:56', '2017-08-24 01:02:56' ],
+        [ 1,  'test product1',  'product description1', 100, '2017-08-23 23:47:04', '2017-08-23 23:47:04' ],
+        [ 2,  'test product2',  'product description2', 200, '2017-08-23 23:55:12', '2017-08-23 23:55:12' ],
+        [ 3,  'test product3',  'product description',  300, '2017-08-23 23:59:35', '2017-08-23 23:59:35' ],
+        [ 4,  'test product4',  'product description',  333, '2017-08-24 01:01:11', '2017-08-24 01:01:11' ],
+        [ 5,  'test product5',  'product description',  333, '2017-08-24 01:01:35', '2017-08-24 01:01:35' ],
+        [ 6,  'test product6',  'product description',  333, '2017-08-24 01:02:02', '2017-08-24 01:02:02' ],
+        [ 7,  'test product7',  'product description',  333, '2017-08-24 01:02:21', '2017-08-24 01:02:21' ],
+        [ 8,  'test product8',  'product description',  333, '2017-08-24 01:02:34', '2017-08-24 01:02:34' ],
+        [ 9,  'test product9',  'product description',  333, '2017-08-24 01:02:45', '2017-08-24 01:02:45' ],
+        [ 10, 'test product10', 'product description',  2.50, '2017-08-24 01:02:56', '2017-08-24 01:02:56' ],
     ],
 
     # Product Category
-    'Product::Category' => [
+    'ProductCategory' => [
         [qw/product_id category_id is_primary/],
-        [ 1, 3, 1 ],
-        [ 1, 5, 0 ],
-        [ 2, 3, 1 ],
-        [ 3, 3, 1 ],
-        [ 4, 4, 1 ],
-        [ 5, 4, 1 ],
+        [ 1, 3,  1 ],
+        [ 1, 5,  0 ],
+        [ 2, 17, 1 ],
+        [ 3, 19, 1 ],
+        [ 4, 4,  1 ],
+        [ 5, 4,  1 ],
+    ],
+
+    # Tax rules
+    'TaxRule' => [
+        [ qw/id title tax_rate/],
+        [ 2, 'Tax 3%', 0.03 ],
+        [ 3, 'Tax 5%', 0.05 ],
+        [ 4, 'Tax 8%', 0.08 ],
+        [ 5, 'Reduced Tax 8%', 0.08 ],
+        [ 6, 'Tax 10%', 0.1 ],
+    ],
+
+    # Default tax rules
+    'DefaultTaxRule' => [
+        [qw/tax_rule_id start_at/],
+        [ 2, '1990-04-01 00:00:00' ],
+    ],
+
+    # Category tax rules
+    'CategoryTaxRule' => [
+        [qw/category_id tax_rule_id start_at/],
+        [ 15, 3, '1990-04-01 00:00:00' ],
+        [ 15, 4, '1997-04-01 00:00:00' ],
+        [ 15, 5, '2014-04-01 00:00:00' ],
+        [ 15, 6, '2019-10-01 00:00:00' ],
+        [ 18, 4, '1997-04-01 00:00:00' ],
+        [ 18, 6, '2014-04-01 00:00:00' ],
     ],
 
     # For Accounts
@@ -90,7 +122,7 @@
         [ 222, 'default', '2017-05-01 20:50:25', '2017-05-01 20:50:25' ],
         [ 223, 'staff',   '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
     ],
-    'Staff::Password' => [
+    'StaffPassword' => [
         [qw/staff_id password_id/],
         [ 222, 1 ],
         [ 223, 2 ],
@@ -115,13 +147,13 @@
         [ 112, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
         [ 113, '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
     ],
-    'Customer::Password' => [
+    'CustomerPassword' => [
         [qw/customer_id password_id/],
         [ 111, 4 ],
         [ 112, 5 ],
         [ 111, 6 ],
     ],
-    'Customer::Email' => [
+    'CustomerEmail' => [
         [qw/customer_id email_id is_primary/],
         [ 111, 1, 0 ],
         [ 111, 2, 0 ],
@@ -129,7 +161,7 @@
         [ 112, 4, 1 ],
         [ 113, 5, 1 ],
     ],
-    'Customer::Address' => [
+    'CustomerAddress' => [
         [qw/customer_id address_id/],
         [qw/111 1/],
         [qw/111 2/],
@@ -149,7 +181,7 @@
         [ 6, 113, 4, '2017-07-07 07:14:45', '2017-07-07 07:14:45' ],
         [ 7, 113, 4, '2017-07-07 07:15:01', '2017-07-07 07:15:01' ],
     ],
-    'Sales::Order' => [
+    'SalesOrder' => [
         [qw/id sales_id shipping_address_id/],
         [ 1, 1, 1 ],
         [ 2, 1, 3 ],
@@ -164,7 +196,7 @@
         [ 11, 6, 4 ],
         [ 12, 7, 5 ],
     ],
-    'Sales::Order::Item' => [
+    'SalesOrderItem' => [
         [qw/order_id product_id quantity price product_title/],
         [ 1, 3, 3, 300, 'product 3' ],
         [ 1, 1, 1, 101, 'product 1' ], # change price

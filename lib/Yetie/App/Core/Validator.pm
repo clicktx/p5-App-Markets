@@ -83,7 +83,7 @@ sub register {
 
     $app->validator->add_check( $_ => \&{ '_' . $_ } ) for @methods;
 
-    my $country = $app->pref('locale_country') || 'US';
+    my $country = $app->pref('locale_country_code') || 'US';
     $app->validator->add_check( number => sub { _number( $country, @_ ) } );
 }
 

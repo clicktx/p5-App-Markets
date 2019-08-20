@@ -1,14 +1,15 @@
 package Yetie::Schema;
 use Mojo::Base 'DBIx::Class::Schema';
+use version; our $VERSION = version->declare('v0.0.1');
+
 use Carp qw/croak/;
 use Try::Tiny;
-use DateTime;
 use Mojo::Util 'camelize';
 use Data::Page::Navigation;
 use DBIx::Sunny;
+use Yetie::App::Core::DateTime;
 
-use version; our $VERSION = version->declare('v0.0.1');
-our $TIME_ZONE = 'UTC';
+our $TZ = Yetie::App::Core::DateTime->TZ;
 
 has 'app';
 
@@ -24,8 +25,6 @@ sub connect {
     my @connect_info = ( $dsn, $user, $password, $dbi_attributes, $extra_attributes );
     return $self->SUPER::connect(@connect_info);
 }
-
-sub now { DateTime->now( time_zone => shift->TZ ) }
 
 # This code is DBIx::Class::Schema::resultset
 sub resultset {
@@ -46,10 +45,6 @@ sub sequence {
     $rs->search->update( { id => \'LAST_INSERT_ID(id + 1)' } );
     $self->storage->last_insert_id;
 }
-
-sub time_zone { shift; return @_ ? $TIME_ZONE = shift : $TIME_ZONE }
-
-sub today { shift->now->truncate( to => 'day' ) }
 
 sub txn_failed {
     my ( $self, $err ) = @_;
@@ -78,7 +73,7 @@ sub txn {
     return 1;
 }
 
-sub TZ { DateTime::TimeZone->new( name => shift->time_zone ) }
+sub TZ { return $TZ }
 
 1;
 __END__
@@ -102,11 +97,7 @@ L<Yetie::Schema> inherits all methods from L<DBIx::Class::Schema>.
 
 =head2 C<connect>
 
-
-
-=head2 C<now>
-
-Return L<DateTime> object.
+    my $schema = Yetie::Schema->connect( $dsn, $user, $password );
 
 =head2 C<resultset>
 
@@ -122,21 +113,6 @@ But you can use the snake case for C<$source_name>.
 =head2 C<sequence>
 
 DEPRECATED
-
-=head2 C<time_zone>
-
-    # Getter
-    my $time_zone = $schema->time_zone;
-
-    # Setter
-    $schema->time_zone($time_zone);
-
-Get/Set time zone.
-Default time zone C<UTC>
-
-=head2 C<today>
-
-Return L<DateTime> object.
 
 =head2 C<txn_failed>
 
@@ -163,10 +139,16 @@ For exceptions, does L</txn_failed>.
 
 =head2 C<TZ>
 
-    my $tz = $schema->TZ;
+    package Yetie::Schema::Result::Foo;
+
+    column created_at => {
+        data_type   => 'DATETIME',
+        ...
+        timezone    => Yetie::Schema->TZ,
+    };
 
 Return L<DateTime::TimeZone> object.
-Using time zone L</time_zone>.
+See L<Yetie::App::Core::DateTime/TZ>.
 
 =head1 AUTHOR
 

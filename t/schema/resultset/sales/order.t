@@ -8,7 +8,7 @@ use Test::Deep;
 my $t      = Test::Mojo->new('App');
 my $app    = $t->app;
 my $schema = $app->schema;
-my $rs     = $schema->resultset('Sales::Order');
+my $rs     = $schema->resultset('SalesOrder');
 
 subtest 'method find_by_id()' => sub {
     my $res = $rs->find_by_id(1);

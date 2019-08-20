@@ -10,14 +10,6 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('Product');
 
-subtest 'find_primary_category' => sub {
-    my $result  = $rs->find_product(1);
-    my $primary = $result->find_primary_category;
-
-    isa_ok $primary, 'Yetie::Schema::Result::Category';
-    is $primary->id, 3, 'right id';
-};
-
 subtest 'to_data' => sub {
     my $res = $rs->find(1);
 
@@ -31,7 +23,6 @@ subtest 'to_data' => sub {
         created_at         => ignore(),
         updated_at         => ignore(),
         product_categories => ignore(),
-        breadcrumbs        => ignore(),
       },
       'right all data';
 
@@ -43,7 +34,6 @@ subtest 'to_data' => sub {
         description        => ignore(),
         price              => ignore(),
         product_categories => ignore(),
-        breadcrumbs        => ignore(),
       },
       'right option no_datetime';
 
@@ -56,22 +46,8 @@ subtest 'to_data' => sub {
         price       => ignore(),
         created_at  => ignore(),
         updated_at  => ignore(),
-        breadcrumbs => ignore(),
       },
       'right option no_relation';
-
-    $d = $res->to_data( { no_breadcrumbs => 1 } );
-    cmp_deeply $d,
-      {
-        id                 => ignore(),
-        title              => ignore(),
-        description        => ignore(),
-        price              => ignore(),
-        created_at         => ignore(),
-        updated_at         => ignore(),
-        product_categories => ignore(),
-      },
-      'right option no_breadcrumbs';
 };
 
 done_testing();
