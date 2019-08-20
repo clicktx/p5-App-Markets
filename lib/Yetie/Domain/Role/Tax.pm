@@ -8,6 +8,15 @@ has tax_rule => (
     default => sub { Yetie::Factory->new('entity-tax_rule')->construct() },
 );
 
+around to_data => sub {
+    my $orig = shift;
+    my $self = shift;
+
+    my $data = $self->$orig();
+    delete $data->{tax_rule};
+    return $data;
+};
+
 sub price_excl_tax {
     my $self = shift;
 
