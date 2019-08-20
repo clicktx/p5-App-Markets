@@ -16,10 +16,12 @@ sub index {
     my $product_id = $c->stash('product_id');
     $c->init_form( $form, $product_id );
 
-    my ( $product, $breadcrumbs ) = $c->service('product')->find_product_with_breadcrumbs($product_id);
-
-    # 404
+    # Product
+    my $product = $c->service('product')->find_product($product_id);
     return $c->reply->not_found if !$product->has_id;
+
+    # Breadcrumbs
+    my $breadcrumbs = $c->service('breadcrumb')->get_list_by_product($product);
 
     # Page
     my $page = $c->factory('entity-page')->construct(

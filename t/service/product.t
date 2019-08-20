@@ -3,6 +3,7 @@ use Mojo::Base -strict;
 use t::Util;
 use Test::More;
 use Test::Mojo;
+use Test::Exception;
 
 my $t   = Test::Mojo->new('App');
 my $app = $t->app;
@@ -21,14 +22,6 @@ subtest 'duplicate_product' => sub {
     is $product->price,       $orig->price,       'right price';
     like $product->title, qr/copy/, 'copy title';
     is $product->product_categories, $orig->product_categories, 'right product_categories';
-};
-
-subtest 'find_product_with_breadcrumbs' => sub {
-    my ( $e, $b ) = $app->service('product')->find_product_with_breadcrumbs(1);
-    isa_ok $e, 'Yetie::Domain::Entity::Product';
-    is $e->id, 1, 'right ID';
-    isa_ok $b, 'Yetie::Domain::List::Breadcrumbs';
-    isa_ok $b->first, 'Yetie::Domain::Entity::Breadcrumb';
 };
 
 subtest 'find_product' => sub {

@@ -3,11 +3,19 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
+with 'Yetie::Domain::Role::Tax';
+
 has title       => ( is => 'rw', default => q{} );
 has description => ( is => 'ro', default => q{} );
-has price       => ( is => 'ro', default => 0 );
-has created_at  => ( is => 'ro' );
-has updated_at  => ( is => 'ro' );
+
+# FIXME: There are multiple prices!
+has price       => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Value::Price',
+    default => sub { __PACKAGE__->factory('value-price')->construct() },
+);
+has created_at => ( is => 'ro' );
+has updated_at => ( is => 'ro' );
 has product_categories => (
     is      => 'ro',
     lazy    => 1,
@@ -39,6 +47,8 @@ the following new ones.
 
 =head2 C<price>
 
+Return L<Yetie::Domain::Value::Price> object.
+
 =head2 C<product_categories>
 
 Return L<Yetie::Domain::List::ProductCategories> object.
@@ -51,6 +61,10 @@ Return L<DateTime> object or C<undef>.
 
 Return L<DateTime> object or C<undef>.
 
+=head2 C<tax_rule>
+
+from L<Yetie::Domain::Role::Tax>
+
 =head1 METHODS
 
 L<Yetie::Domain::Entity::Product> inherits all methods from L<Yetie::Domain::Entity> and implements
@@ -62,4 +76,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::Entity>
+L<Yetie::Domain::Role::Tax>, L<Yetie::Domain::Entity>, L<Yetie::Domain::Entity>

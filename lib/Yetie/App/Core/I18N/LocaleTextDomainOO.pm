@@ -111,8 +111,8 @@ use Carp qw(confess);
 # Hack. 現在の言語に翻訳がなければデフォルト言語の翻訳を使用
         if ( !defined $msgstr ) {
             my $self_language    = $self->language;
-            my $defalut_language = $self->languages->[-1];
-            $self->language($defalut_language);
+            my $default_language = $self->languages->[-1];
+            $self->language($default_language);
 
             my $lexicon_key = $key_util->join_lexicon_key(
                 {

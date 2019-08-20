@@ -33,23 +33,40 @@ subtest 'to_data' => sub {
 
     is_deeply $data,
       {
-        id       => 1,
-        level    => 0,
-        root_id  => 1,
-        title    => 'Sports',
-        children => [
+        id        => 1,
+        level     => 0,
+        root_id   => 1,
+        title     => 'Sports',
+        ancestors => [],
+        children  => [
             {
-                id       => 3,
-                level    => 1,
-                root_id  => 1,
-                title    => 'Golf',
+                id        => 3,
+                level     => 1,
+                root_id   => 1,
+                title     => 'Golf',
+                ancestors => [
+                    {
+                        id      => 1,
+                        level   => 0,
+                        root_id => 1,
+                        title   => 'Sports',
+                    }
+                ],
                 children => [],
             },
             {
-                id       => 4,
-                level    => 1,
-                root_id  => 1,
-                title    => 'Soccer',
+                id        => 4,
+                level     => 1,
+                root_id   => 1,
+                title     => 'Soccer',
+                ancestors => [
+                    {
+                        id      => 1,
+                        level   => 0,
+                        root_id => 1,
+                        title   => 'Sports',
+                    }
+                ],
                 children => [],
             },
         ],
@@ -65,25 +82,6 @@ subtest 'to_data' => sub {
         title   => 'Sports',
       },
       'right option';
-};
-
-subtest 'to_breadcrumbs' => sub {
-    my $res    = $rs->find(3);
-    my $crumbs = $res->to_breadcrumbs;
-
-    cmp_deeply $crumbs,
-      [
-        {
-            title => 'Sports',
-            url   => obj_isa('Mojo::URL'),
-        },
-        {
-            class => 'current',
-            title => 'Golf',
-            url   => obj_isa('Mojo::URL'),
-        },
-      ],
-      'right deeply';
 };
 
 done_testing();

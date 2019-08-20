@@ -6,6 +6,12 @@ sub cook {
 
     # product_categories
     $self->aggregate( product_categories => 'list-product_categories', $self->param('product_categories') || [] );
+
+    # price
+    $self->aggregate( price => 'value-price', $self->{price} );
+
+    # tax
+    $self->aggregate( tax_rule => 'entity-tax_rule', $self->param('tax_rule') || {} );
 }
 
 1;

@@ -17,18 +17,16 @@ belongs_to
   { 'foreign.id' => 'self.product_id' };
 
 belongs_to
-  detail => 'Yetie::Schema::Result::Category',
+  category => 'Yetie::Schema::Result::Category',
   { 'foreign.id' => 'self.category_id' };
 
 sub to_data {
     my $self = shift;
 
-    my $ancestors = $self->schema->resultset('Category')->get_ancestors_arrayref( $self->category_id );
     return {
-        ancestors   => $ancestors,
         category_id => $self->category_id,
         is_primary  => $self->is_primary,
-        title       => $self->detail->title,
+        title       => $self->category->title,
     };
 }
 

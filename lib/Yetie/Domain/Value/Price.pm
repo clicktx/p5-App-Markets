@@ -1,14 +1,29 @@
 package Yetie::Domain::Value::Price;
-use MooseX::Types::Common::Numeric qw/PositiveNum/;
+use MooseX::Types::Common::Numeric qw/PositiveOrZeroNum/;
+use Math::Currency;
 
 use Moose;
+use overload q{""} => sub { $_[0]->amount }, fallback => 1;
 extends 'Yetie::Domain::Value';
 
-has '+value' => ( isa => PositiveNum );
+has '+value' => (
+    isa     => PositiveOrZeroNum,
+    default => 0,
+);
 
-sub sum {
-    my ( $self, $value ) = @_;
-    return $self->clone( value => $self->value + $value );
+has currency_code => (
+    is      => 'ro',
+    default => 'USD',
+);
+has is_tax_included => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
+sub amount {
+    my $self = shift;
+    return Math::Currency->new( $self->value, $self->currency_code );
 }
 
 no Moose;
@@ -30,18 +45,36 @@ Yetie::Domain::Value::Price
 L<Yetie::Domain::Value::Price> inherits all attributes from L<Yetie::Domain::Value> and implements
 the following new ones.
 
+=head2 C<currency_code>
+
+Default "USD"
+
+=head2 C<value>
+
+PositiveNum only.
+
+=head2 C<is_tax_included>
+
+Return boolean value.
+
 =head1 METHODS
 
 L<Yetie::Domain::Value::Price> inherits all methods from L<Yetie::Domain::Value> and implements
 the following new ones.
 
-=head2 C<sum>
+=head2 C<amount>
 
-create a new object with sums an argument to the original value.
+Return L<Math::Currency> object.
 
-    my $new = $price->sum($int);
+=head1 OPERATOR
 
-Return L<Yetie::Domain::Value::Price> object.
+L<Yetie::Domain::Value::Price> overloads the following operators.
+
+=head2 C<stringify>
+
+    my $amount = "$price";
+
+Alias for L</amount>.
 
 =head1 AUTHOR
 

@@ -12,7 +12,7 @@ has_field 'addons_dir' => (
     validations => [],
 );
 
-has_field 'locale_country' => (
+has_field 'locale_country_code' => (
     type        => 'text',
     validations => [],
 );

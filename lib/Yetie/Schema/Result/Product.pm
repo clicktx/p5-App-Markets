@@ -38,11 +38,6 @@ column updated_at => {
 
 # Relation
 has_many
-  tax_rules => 'Yetie::Schema::Result::ProductTaxRule',
-  { 'foreign.product_id' => 'self.id' },
-  { cascade_delete       => 0 };
-
-has_many
   product_categories => 'Yetie::Schema::Result::ProductCategory',
   { 'foreign.product_id' => 'self.id' },
   { cascade_delete       => 0 };
@@ -60,17 +55,6 @@ sub sqlt_deploy_hook {
 }
 
 # Methods
-sub find_primary_category {
-    my $self = shift;
-
-    my $rs = $self->product_categories->search( { is_primary => 1 } );
-    my $primary_category = $self->schema->resultset('Category')->find(
-        {
-            id => { '=' => $rs->get_column('category_id')->as_query }
-        }
-    );
-}
-
 sub to_data {
     my ( $self, $options ) = @_;
 
@@ -78,7 +62,13 @@ sub to_data {
         id          => $self->id,
         title       => $self->title,
         description => $self->description,
-        price       => $self->price,
+
+        # FIXME: There are multiple prices!
+        price => {
+            value           => $self->price,
+            currency_code   => $self->app->pref('locale_currency_code'),
+            is_tax_included => $self->app->pref('is_price_including_tax'),
+        },
     };
 
     # Options
@@ -88,9 +78,6 @@ sub to_data {
     }
     if ( !$options->{no_relation} ) {
         $data->{product_categories} = $self->product_categories->to_data;
-    }
-    if ( !$options->{no_breadcrumbs} ) {
-        $data->{breadcrumbs} = $self->find_primary_category->to_breadcrumbs;
     }
     return $data;
 }
@@ -117,12 +104,6 @@ the following new ones.
 L<Yetie::Schema::Result::Product> inherits all methods from L<Yetie::Schema::Result> and implements
 the following new ones.
 
-=head2 C<find_primary_category>
-
-    $primary_category = $result->find_primary_category;
-
-Returns L<Yetie::Schema::Result::Category> object.
-
 =head2 C<to_data>
 
     {
@@ -144,7 +125,6 @@ I<OPTIONS>
         {
             no_datetime      => 1,
             no_relation      => 1,
-            no_breadcrumbs   => 1,
         }
     );
 
@@ -157,10 +137,6 @@ Data does not include C<created_at> and C<updated_at>.
 =item * no_relation
 
 Data does not include C<product_categories>
-
-=item * no_breadcrumbs
-
-Data does not include C<breadcrumbs>.
 
 =back
 

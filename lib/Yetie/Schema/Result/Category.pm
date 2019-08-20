@@ -1,8 +1,6 @@
 package Yetie::Schema::Result::Category;
 use Mojo::Base 'Yetie::Schema::Result';
-use DBIx::Class::Candy -autotable => v1;
-
-__PACKAGE__->load_components(qw( Tree::NestedSet ));
+use DBIx::Class::Candy -autotable => v1, -components => [qw( Tree::NestedSet )];
 
 primary_column id => {
     data_type         => 'INT',
@@ -35,21 +33,29 @@ column title => {
     is_nullable => 0,
 };
 
+# NOTE: Need a sqlt_deploy_hook
+__PACKAGE__->tree_columns(
+    {
+        root_column  => 'root_id',
+        left_column  => 'lft',
+        right_column => 'rgt',
+        level_column => 'level',
+    }
+);
+
+# Relation
 has_many
   products => 'Yetie::Schema::Result::ProductCategory',
   { 'foreign.category_id' => 'self.id' },
   { cascade_delete        => 0 };
 
-# NOTE: 下記に書いた場合deploy_schema時にテーブルデータ挿入時に失敗する（relation設定によるもの？）
-#       tree_columnsを呼ばないとapplicationで動かないため、App::Commonで読み込む。
-# __PACKAGE__->tree_columns(
-#     {
-#         root_column  => 'root_id',
-#         left_column  => 'lft',
-#         right_column => 'rgt',
-#         level_column => 'level',
-#     }
-# );
+has_many
+  tax_rules => 'Yetie::Schema::Result::CategoryTaxRule',
+  { 'foreign.category_id' => 'self.id' },
+  {
+    cascade_delete => 0,
+    join_type      => 'inner',
+  };
 
 # Add Index
 sub sqlt_deploy_hook {
@@ -57,6 +63,10 @@ sub sqlt_deploy_hook {
 
     $sqlt_table->add_index( name => 'idx_root_id', fields => ['root_id'] );
     $sqlt_table->add_index( name => 'idx_level',   fields => ['level'] );
+
+    # HACK: Create constraints and indexes at schema deployment.
+    $sqlt_table->drop_constraint('categories_fk_root_id');
+    $sqlt_table->drop_index('categories_idx_root_id');
 }
 
 sub descendant_ids {
@@ -88,52 +98,32 @@ sub search_products_in_categories {
 }
 
 # search_related with special handling for relationships
-sub search_related {
-    my ( $self, $rel, $cond, @rest ) = @_;
+# sub search_related {
+#     my ( $self, $rel, $cond, @rest ) = @_;
 
-    my $columns = [qw( me.id me.root_id me.level me.title)];
-    push @rest, { columns => $columns, order_by => 'me.lft' };
-    return $self->next::method( $rel, $cond, @rest );
-}
-*search_related_rs = \&search_related;
+#     my $columns = [qw( me.id me.root_id me.level me.title)];
+#     push @rest, { columns => $columns, order_by => 'me.lft' };
+#     return $self->next::method( $rel, $cond, @rest );
+# }
+# *search_related_rs = \&search_related;
 
 sub to_data {
     my ( $self, $options ) = @_;
 
     my $data = {
         id      => $self->id,
-        level   => $self->level,
         root_id => $self->root_id,
+        level   => $self->level,
         title   => $self->title,
     };
 
     # Options
-    $data->{children} = $self->children->to_data unless $options->{no_children};
+    if ( !$options->{no_children} ) {
+        $data->{children} = $self->children->to_data;
+        $data->{ancestors} = $self->ancestors->to_data( { no_children => 1 } );
+    }
 
     return $data;
-}
-
-sub to_breadcrumbs {
-    my $self = shift;
-
-    # Ancestors category
-    my @breadcrumbs;
-    $self->ancestors->each( sub { push @breadcrumbs, $_->_breadcrumb } );
-
-    # Current category
-    my $current = $self->_breadcrumb;
-    $current->{class} = 'current';
-    push @breadcrumbs, $current;
-
-    return \@breadcrumbs;
-}
-
-sub _breadcrumb {
-    my $self = shift;
-    return {
-        title => $self->title,
-        url   => $self->schema->app->url_for( 'rn.category', category_id => $self->id ),
-    };
 }
 
 1;
@@ -200,25 +190,6 @@ I<OPTIONS>
 Set to C<true>, returns value does not include C<children>.
 
 =back
-
-=head2 C<to_breadcrumbs>
-
-    my $tree = $result->to_breadcrumbs;
-
-Return C<Array reference>.
-
-    [
-        {
-            title   => '',
-            url     => Mojo::URL,
-        },
-        ...
-        {
-            class   => 'current',
-            title   => '',
-            url     => Mojo::URL,
-        }
-    ]
 
 =head1 AUTHOR
 

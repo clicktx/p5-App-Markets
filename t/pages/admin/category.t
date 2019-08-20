@@ -28,6 +28,13 @@ sub t02_edit : Tests() {
 
     $t->get_ok('/admin/category/1/edit')->status_is(200);
     $t->get_ok('/admin/category/999/edit')->status_is(404);
+
+    my $post_data = {
+        csrf_token => $self->csrf_token,
+        title      => 'Sports'
+    };
+    $t->post_ok( '/admin/category/1/edit',   form => $post_data )->status_is(200);
+    $t->post_ok( '/admin/category/999/edit', form => $post_data )->status_is(404);
 }
 
 __PACKAGE__->runtests;
