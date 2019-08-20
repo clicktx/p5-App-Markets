@@ -9,7 +9,7 @@ sub add_item {
     # キャッシュする場合はservice('product')->load_entity()等としてキャッシュを使うようにする
     # fileキャッシュで全てのproductのキャッシュを生成するのもありか？
     my $product = $self->controller->stash('product');
-    $product = $self->service('product')->find_product( $form_params->{product_id} ) unless $product;
+    if ( !$product ) { $product = $self->service('product')->find_product( $form_params->{product_id} ) }
 
     # NOTE: データマッピングは別のメソッドで行うように
     $form_params->{product_title} = $product->title;
@@ -33,7 +33,7 @@ sub merge_cart {
     my $session = $c->server_session;
 
     my $customer_cart = $self->find_cart($customer_id);
-    return $customer_cart unless $c->cart;    # NOTE: necessary remember_me login
+    return $customer_cart if !$c->cart;    # NOTE: necessary remember_me login
 
     my $merged_cart = $c->cart->merge($customer_cart);
     $session->remove_cart( $session->cart_id );
@@ -45,6 +45,7 @@ sub set_address_id {
 
     my $result = $self->resultset('Address')->find_or_create_address( $address->to_hash );
     $address->id( $result->id );
+    return;
 }
 
 1;
