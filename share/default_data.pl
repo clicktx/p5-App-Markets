@@ -8,8 +8,10 @@
         [ 'locale_country_code', 'US', 'pref.title.locale_country_code', 'pref.summary.locale_country_code', 20, 1 ],
         [ 'locale_currency_code', 'USD', 'pref.title.locale_currency_code', 'pref.summary.locale_currency_code', 30, 1 ],
 
+        # Price including tax
+        [ 'is_price_including_tax', '0', 'pref.title.is_price_including_tax', 'pref.summary.is_price_including_tax', 40, 1 ],
         # Decimal rounding mode 'even' or 'trunc'
-        [ 'decimal_rounding_mode', 'even', 'pref.title.decimal_rounding_mode', 'pref.summary.decimal_rounding_mode', 40, 1 ],
+        [ 'decimal_rounding_mode', 'even', 'pref.title.decimal_rounding_mode', 'pref.summary.decimal_rounding_mode', 50, 1 ],
 
         # shop master
         [ 'shop_name', 'Yetie Shop', 'pref.title.shop_name', 'pref.summary.shop_name', 10, 2 ],
