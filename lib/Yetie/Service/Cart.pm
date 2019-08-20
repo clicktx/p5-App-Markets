@@ -11,7 +11,7 @@ sub add_item {
     my $product = $self->controller->stash('product');
     if ( !$product ) { $product = $self->service('product')->find_product( $form_params->{product_id} ) }
 
-    # NOTE: データマッピングは別のメソッドで行うように
+    # FIXME: データマッピングは別のメソッドで行うように
     $form_params->{product_title} = $product->title;
     $form_params->{price}         = $product->price;
 
