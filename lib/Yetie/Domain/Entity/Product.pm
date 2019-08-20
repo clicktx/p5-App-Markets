@@ -38,8 +38,9 @@ Yetie::Domain::Entity::Product
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Product> inherits all attributes from L<Yetie::Domain::Entity> and implements
-the following new ones.
+L<Yetie::Domain::Entity::Product> inherits all attributes from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Tax>.
+
+Implements the following new ones.
 
 =head2 C<title>
 
@@ -63,12 +64,13 @@ Return L<DateTime> object or C<undef>.
 
 =head2 C<tax_rule>
 
-from L<Yetie::Domain::Role::Tax>
+Inherits from L<Yetie::Domain::Role::Tax>
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Product> inherits all methods from L<Yetie::Domain::Entity> and implements
-the following new ones.
+L<Yetie::Domain::Entity::Product> inherits all methods from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Tax>.
+
+Implements the following new ones.
 
 =head1 AUTHOR
 
