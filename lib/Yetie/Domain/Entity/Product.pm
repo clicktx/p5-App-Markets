@@ -9,7 +9,7 @@ has title       => ( is => 'rw', default => q{} );
 has description => ( is => 'ro', default => q{} );
 
 # FIXME: There are multiple prices!
-has price       => (
+has price => (
     is      => 'ro',
     isa     => 'Yetie::Domain::Value::Price',
     default => sub { __PACKAGE__->factory('value-price')->construct() },
@@ -21,6 +21,15 @@ has product_categories => (
     lazy    => 1,
     default => sub { __PACKAGE__->factory('list-product_categories')->construct() }
 );
+
+# NOTE: admin/productでduplicateする時にDB保存しない場合は不要になる
+override to_data => sub {
+    my $self = shift;
+
+    my $data = super();
+    delete $data->{tax_rule};
+    return $data;
+};
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
