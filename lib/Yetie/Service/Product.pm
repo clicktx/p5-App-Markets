@@ -27,7 +27,13 @@ sub find_product {
 
     my $result = $self->resultset('Product')->find_product($product_id);
     my $data = $result ? $result->to_data() : {};
-    return $self->factory('entity-product')->construct($data);
+
+    # tax rule
+    my $tax_rule = $self->_get_tax_rule($result);
+    $data->{tax_rule} = $tax_rule->to_data;
+
+    my $product = $self->factory('entity-product')->construct($data);
+    return $product;
 }
 
 sub is_sold {
@@ -83,6 +89,21 @@ sub search_products {
 sub update_product_categories { return shift->resultset('Product')->update_product_categories(@_) }
 
 sub update_product { return shift->resultset('Product')->update_product(@_) }
+
+sub _get_tax_rule {
+    my ( $self, $product ) = @_;
+
+    # Category tax rule
+    my $primary_category = $product->product_categories->get_primary_category;
+    if ($primary_category) {
+        my $category_tax_rule = $self->resultset('CategoryTaxRule')->find_now($primary_category);
+        return $category_tax_rule->tax_rule if $category_tax_rule;
+    }
+
+    # Default tax rule
+    my $default_tax_rule = $self->resultset('DefaultTaxRule')->find_now;
+    return $default_tax_rule->tax_rule;
+}
 
 1;
 __END__
