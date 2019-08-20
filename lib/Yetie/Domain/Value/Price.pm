@@ -1,9 +1,9 @@
 package Yetie::Domain::Value::Price;
 use MooseX::Types::Common::Numeric qw/PositiveOrZeroNum/;
 use Math::Currency;
-use overload q{""} => sub { $_[0]->amount }, fallback => 1;
 
 use Moose;
+use overload q{""} => sub { $_[0]->amount }, fallback => 1;
 extends 'Yetie::Domain::Value';
 
 has '+value' => (

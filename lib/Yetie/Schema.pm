@@ -1,7 +1,7 @@
 package Yetie::Schema;
+use Mojo::Base 'DBIx::Class::Schema';
 use version; our $VERSION = version->declare('v0.0.1');
 
-use Mojo::Base 'DBIx::Class::Schema';
 use Carp qw/croak/;
 use Try::Tiny;
 use Mojo::Util 'camelize';

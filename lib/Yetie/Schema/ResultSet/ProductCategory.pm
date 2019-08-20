@@ -4,8 +4,7 @@ use Mojo::Base 'Yetie::Schema::ResultSet';
 sub get_primary_category {
     my $self = shift;
 
-    my $product_category;
-    foreach $product_category ( $self->all ) {
+    foreach my $product_category ( $self->all ) {
         next if !$product_category->is_primary;
         return $product_category->category;
     }
