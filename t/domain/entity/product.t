@@ -14,6 +14,11 @@ my $test_data = {
 
     created_at => undef,
     updated_at => undef,
+
+    tax_rule => {
+        tax_rate => 0.056,
+        title    => 'Sales Tax',
+    },
 };
 
 sub _create_entity {
@@ -23,9 +28,11 @@ sub _create_entity {
 use_ok 'Yetie::Domain::Entity::Product';
 
 subtest 'basic' => sub {
-    my $e = Yetie::Domain::Entity::Product->new();
+    my $e = Yetie::Factory->new('entity-product')->construct( price => 1 );
     isa_ok $e, 'Yetie::Domain::Entity';
+    isa_ok $e->price,              'Yetie::Domain::Value::Price';
     isa_ok $e->product_categories, 'Yetie::Domain::List::ProductCategories';
+    isa_ok $e->tax_rule,           'Yetie::Domain::Entity::TaxRule';
 
     can_ok $e, 'title';
     can_ok $e, 'description';
@@ -42,6 +49,14 @@ subtest 'product_categories' => sub {
     isa_ok $attr, 'Yetie::Domain::List::ProductCategories';
     is $attr->list->size, 3, 'right elements';
     isa_ok $attr->first, 'Yetie::Domain::Entity::ProductCategory';
+};
+
+subtest 'Role::Tax' => sub {
+    my $e = _create_entity();
+
+    is $e->price_excl_tax, '$999.00', 'right price_excl_tax';
+    is $e->tax_amount, '$55.94', 'right tax amount';
+    is $e->price_incl_tax, '$1,054.94', 'right price_incl_tax';
 };
 
 done_testing();
