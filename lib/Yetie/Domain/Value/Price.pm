@@ -26,6 +26,16 @@ sub amount {
     return Math::Currency->new( $self->value, $self->currency_code );
 }
 
+sub to_data {
+    my $self = shift;
+
+    return {
+        value           => $self->value,
+        currency_code   => $self->currency_code,
+        is_tax_included => $self->is_tax_included,
+    };
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 

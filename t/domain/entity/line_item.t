@@ -1,10 +1,16 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Deep;
+use Yetie::Factory;
+
+sub factory {
+    return Yetie::Factory->new('entity-line_item')->construct(@_);
+}
 
 use_ok 'Yetie::Domain::Entity::LineItem';
 
 subtest 'basic' => sub {
-    my $item = Yetie::Domain::Entity::LineItem->new(
+    my $item = factory(
         {
             id            => 2,
             product_id    => 111,
@@ -18,7 +24,7 @@ subtest 'basic' => sub {
     is $item->product_id,    111,            'right product_id';
     is $item->product_title, 'test product', 'right product_title';
     is $item->quantity,      1,              'right quantity';
-    is $item->price,         100,            'right price';
+    is $item->price,         '$100.00',      'right price';
     is $item->is_modified,   0,              'right default modified';
 
     $item->product_id(111);
@@ -29,17 +35,17 @@ subtest 'basic' => sub {
 };
 
 subtest 'equals' => sub {
-    my $item1 = Yetie::Domain::Entity::LineItem->new(
+    my $item1 = factory(
         {
             product_id => 1,
         }
     );
-    my $item2 = Yetie::Domain::Entity::LineItem->new(
+    my $item2 = factory(
         {
             product_id => 1,
         }
     );
-    my $item3 = Yetie::Domain::Entity::LineItem->new(
+    my $item3 = factory(
         {
             product_id => 2,
         }
@@ -52,7 +58,7 @@ subtest 'equals' => sub {
 };
 
 subtest 'product_hash_code' => sub {
-    my $item = Yetie::Domain::Entity::LineItem->new(
+    my $item = factory(
         {
             product_id => 111,
         }
@@ -62,7 +68,7 @@ subtest 'product_hash_code' => sub {
 };
 
 subtest 'subtotal' => sub {
-    my $item = Yetie::Domain::Entity::LineItem->new(
+    my $item = factory(
         {
             quantity => 2,
             price    => 300,
@@ -72,16 +78,18 @@ subtest 'subtotal' => sub {
 };
 
 subtest 'to_data' => sub {
-    my $item = Yetie::Domain::Entity::LineItem->new(
+    my $item = factory(
         {
             product_id => 110,
             quantity   => 1,
         }
     );
-    is_deeply $item->to_data,
+    cmp_deeply $item->to_data,
       {
         product_id => 110,
         quantity   => 1,
+        price      => ignore(),
+        tax_rule   => ignore(),
       },
       'right dump data';
 };

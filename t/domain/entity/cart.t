@@ -6,9 +6,27 @@ use Yetie::Factory;
 
 my %example_data = (
     items => [
-        { product_id => 1, product_title => 'a', quantity => 1, price => 100 },
-        { product_id => 2, product_title => 'b', quantity => 2, price => 100 },
-        { product_id => 3, product_title => 'c', quantity => 3, price => 100 },
+        {
+            product_id    => 1,
+            product_title => 'a',
+            quantity      => 1,
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule => { tax_rate => 0.05 },
+        },
+        {
+            product_id    => 2,
+            product_title => 'b',
+            quantity      => 2,
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule => { tax_rate => 0.05 },
+        },
+        {
+            product_id    => 3,
+            product_title => 'c',
+            quantity      => 3,
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule => { tax_rate => 0.05 },
+        },
     ],
     shipments => [
         {
@@ -23,7 +41,15 @@ my %example_data = (
                 organization  => '',
                 phone         => '',
             },
-            items => [ { product_id => 4, product_title => 'd', quantity => 4, price => 100 } ]
+            items => [
+                {
+                    product_id    => 4,
+                    product_title => 'd',
+                    quantity      => 4,
+                    price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                    tax_rule => { tax_rate => 0.05 },
+                }
+            ]
         },
         {
             shipping_address => {
@@ -38,9 +64,27 @@ my %example_data = (
                 phone         => '',
             },
             items => [
-                { product_id => 4, product_title => 'd', quantity => 4, price => 100 },
-                { product_id => 5, product_title => 'e', quantity => 5, price => 100 },
-                { product_id => 6, product_title => 'f', quantity => 6, price => 100 },
+                {
+                    product_id    => 4,
+                    product_title => 'd',
+                    quantity      => 4,
+                    price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                    tax_rule => { tax_rate => 0.05 },
+                },
+                {
+                    product_id    => 5,
+                    product_title => 'e',
+                    quantity      => 5,
+                    price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                    tax_rule => { tax_rate => 0.05 },
+                },
+                {
+                    product_id    => 6,
+                    product_title => 'f',
+                    quantity      => 6,
+                    price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                    tax_rule => { tax_rate => 0.05 },
+                },
             ]
         },
     ],
@@ -117,24 +161,26 @@ subtest 'methods' => sub {
 
 subtest 'add_item' => sub {
     my $cart = _create_entity;
-    $cart->add_item( Yetie::Domain::Entity::LineItem->new( product_id => 11 ) );
+    $cart->add_item( Yetie::Factory->new('entity-line_item')->construct( product_id => 11 ) );
     is $cart->items->last->product_id, '11', 'right last item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
-    $cart->add_item( Yetie::Domain::Entity::LineItem->new( product_id => 1, quantity => 1, price => 100 ) );
+    $cart->add_item(
+        Yetie::Factory->new('entity-line_item')->construct( product_id => 1, quantity => 1, price => 100 ) );
     is $cart->items->first->quantity, '2', 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
 };
 
 subtest 'add_shipping_item' => sub {
     my $cart = _create_entity;
-    $cart->add_shipping_item( 0, Yetie::Domain::Entity::LineItem->new( product_id => 11 ) );
+    $cart->add_shipping_item( 0, Yetie::Factory->new('entity-line_item')->construct( product_id => 11 ) );
     is $cart->shipments->first->items->last->product_id, '11', 'right add shipping_item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
-    $cart->add_shipping_item( 0, Yetie::Domain::Entity::LineItem->new( product_id => 4, quantity => 4, price => 100 ) );
+    $cart->add_shipping_item( 0,
+        Yetie::Factory->new('entity-line_item')->construct( product_id => 4, quantity => 4, price => 100 ) );
     is $cart->shipments->first->items->first->quantity, '8', 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
 };
@@ -233,9 +279,24 @@ subtest 'merge' => sub {
         cart_id         => '99999',
         billing_address => ignore(),
         items           => [
-            { product_id => 4, quantity => 4, price => 100 },
-            { product_id => 1, quantity => 1, price => 100 },
-            { product_id => 5, quantity => 5, price => 100 },
+            {
+                product_id => 4,
+                quantity   => 4,
+                price      => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                tax_rule   => ignore(),
+            },
+            {
+                product_id => 1,
+                quantity   => 1,
+                price      => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                tax_rule   => ignore(),
+            },
+            {
+                product_id => 5,
+                quantity   => 5,
+                price      => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                tax_rule   => ignore(),
+            },
         ],
         shipments => [ { shipping_address => ignore(), items => [] } ],
       },
@@ -249,11 +310,38 @@ subtest 'merge' => sub {
         cart_id         => '99999',
         billing_address => ignore(),
         items           => [
-            { product_id => 4, quantity => 4, price => 100 },
-            { product_id => 1, quantity => 2, price => 100 },
-            { product_id => 5, quantity => 5, price => 100 },
-            { product_id => 2, quantity => 2, price => 100, product_title => 'b' },
-            { product_id => 3, quantity => 3, price => 100, product_title => 'c' },
+            {
+                product_id => 4,
+                quantity   => 4,
+                price      => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                tax_rule   => ignore(),
+            },
+            {
+                product_id => 1,
+                quantity   => 2,
+                price      => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                tax_rule   => ignore(),
+            },
+            {
+                product_id => 5,
+                quantity   => 5,
+                price      => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                tax_rule   => ignore(),
+            },
+            {
+                product_id    => 2,
+                quantity      => 2,
+                product_title => 'b',
+                price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                tax_rule      => ignore(),
+            },
+            {
+                product_id    => 3,
+                quantity      => 3,
+                product_title => 'c',
+                price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+                tax_rule      => ignore(),
+            },
         ],
         shipments => [ { shipping_address => ignore(), items => [] } ],
       },
@@ -269,8 +357,20 @@ subtest 'remove_item' => sub {
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{items},
       [
-        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
-        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
+        {
+            product_id    => 1,
+            quantity      => 1,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
+        {
+            product_id    => 3,
+            quantity      => 3,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
       ],
       'right remove item';
 
@@ -280,9 +380,27 @@ subtest 'remove_item' => sub {
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{items},
       [
-        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
-        { product_id => 2, quantity => 2, price => 100, product_title => ignore() },
-        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
+        {
+            product_id    => 1,
+            quantity      => 1,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
+        {
+            product_id    => 2,
+            quantity      => 2,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
+        {
+            product_id    => 3,
+            quantity      => 3,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
       ],
       'right not removed';
 };
@@ -296,8 +414,20 @@ subtest 'remove_shipping_item' => sub {
     is $cart->is_modified, 1, 'right modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
-        { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
-        { product_id => 6, quantity => 6, price => 100, product_title => ignore() },
+        {
+            product_id    => 5,
+            quantity      => 5,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
+        {
+            product_id    => 6,
+            quantity      => 6,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
       ],
       'right remove shipping item';
 
@@ -307,9 +437,27 @@ subtest 'remove_shipping_item' => sub {
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
-        { product_id => 4, quantity => 4, price => 100, product_title => ignore() },
-        { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
-        { product_id => 6, quantity => 6, price => 100, product_title => ignore() },
+        {
+            product_id    => 4,
+            quantity      => 4,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
+        {
+            product_id    => 5,
+            quantity      => 5,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
+        {
+            product_id    => 6,
+            quantity      => 6,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
       ],
       'right not removed';
 
@@ -317,9 +465,27 @@ subtest 'remove_shipping_item' => sub {
     is $cart->is_modified, 0, 'right not modified';
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
-        { product_id => 4, quantity => 4, price => 100, product_title => ignore() },
-        { product_id => 5, quantity => 5, price => 100, product_title => ignore() },
-        { product_id => 6, quantity => 6, price => 100, product_title => ignore() },
+        {
+            product_id    => 4,
+            quantity      => 4,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
+        {
+            product_id    => 5,
+            quantity      => 5,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
+        {
+            product_id    => 6,
+            quantity      => 6,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
       ],
       'right not removed';
 };
@@ -331,9 +497,27 @@ subtest 'revert' => sub {
     ok $cart->revert, 'right cart revert';
     cmp_deeply $cart->items->to_data,
       [
-        { product_id => 1, quantity => 1, price => 100, product_title => ignore() },
-        { product_id => 2, quantity => 2, price => 100, product_title => ignore() },
-        { product_id => 3, quantity => 3, price => 100, product_title => ignore() },
+        {
+            product_id    => 1,
+            quantity      => 1,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
+        {
+            product_id    => 2,
+            quantity      => 2,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
+        {
+            product_id    => 3,
+            quantity      => 3,
+            product_title => ignore(),
+            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
+        },
       ],
       'right items';
 

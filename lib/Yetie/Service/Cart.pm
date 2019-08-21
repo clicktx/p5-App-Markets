@@ -13,7 +13,8 @@ sub add_item {
 
     # FIXME: データマッピングは別のメソッドで行うようにする
     $args->{product_title} = $product->title;
-    $args->{price}         = $product->price;
+    $args->{price}         = $product->price->to_data;
+    $args->{tax_rule}      = $product->tax_rule->to_data;
 
     my $item = $self->factory('entity-line_item')->construct($args);
     return $self->controller->cart->add_item($item);
