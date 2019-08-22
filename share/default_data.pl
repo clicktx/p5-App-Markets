@@ -11,7 +11,7 @@
         # Price including tax
         [ 'is_price_including_tax', '0', 'pref.title.is_price_including_tax', 'pref.summary.is_price_including_tax', 40, 1 ],
         # Decimal rounding mode 'even' or 'trunc'
-        [ 'decimal_rounding_mode', 'even', 'pref.title.decimal_rounding_mode', 'pref.summary.decimal_rounding_mode', 50, 1 ],
+        [ 'default_round_mode', 'even', 'pref.title.default_round_mode', 'pref.summary.default_round_mode', 50, 1 ],
 
         # shop master
         [ 'shop_name', 'Yetie Shop', 'pref.title.shop_name', 'pref.summary.shop_name', 10, 2 ],
