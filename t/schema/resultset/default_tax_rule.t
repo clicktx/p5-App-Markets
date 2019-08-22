@@ -8,7 +8,7 @@ use DateTime;
 my $t      = Test::Mojo->new('App');
 my $app    = $t->app;
 my $schema = $app->schema;
-my $rs     = $schema->resultset('DefaultTaxRule');
+my $rs     = $schema->resultset('CommonTaxRule');
 
 subtest 'find_by_dt' => sub {
     my $dt = DateTime->new(
@@ -17,7 +17,7 @@ subtest 'find_by_dt' => sub {
         day   => 1,
     );
     my $result = $rs->find_by_dt($dt);
-    isa_ok $result, 'Yetie::Schema::Result::DefaultTaxRule';
+    isa_ok $result, 'Yetie::Schema::Result::CommonTaxRule';
 
     $dt = DateTime->new(
         year  => 1900,
