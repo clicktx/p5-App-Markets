@@ -2,7 +2,9 @@ package Yetie::Domain::Role::Types;
 use Moose::Role;
 use Moose::Util::TypeConstraints;
 
-enum RoundMode => [qw/even odd +inf -inf zero trunc/];
+enum CurrencyCode => [qw(EUR GBP JPY USD)];
+
+enum RoundMode => [qw(even odd +inf -inf zero trunc)];
 
 1;
 __END__
@@ -16,6 +18,10 @@ Yetie::Domain::Role::Types
 =head1 DESCRIPTION
 
 =head1 SUBTYPES
+
+=head2 C<CurrencyCode>
+
+enum 'EUR', 'GBP', 'JPY', 'USD'
 
 =head2 C<RoundMode>
 
