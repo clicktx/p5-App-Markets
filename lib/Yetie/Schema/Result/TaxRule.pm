@@ -31,4 +31,9 @@ has_many
   { 'foreign.category_id' => 'self.id' },
   { cascade_delete        => 0 };
 
+has_many
+  sales_order_items => 'Yetie::Schema::Result::SalesOrderItem',
+  { 'foreign.tax_rule_id' => 'self.id' },
+  { cascade_delete        => 0 };
+
 1;
