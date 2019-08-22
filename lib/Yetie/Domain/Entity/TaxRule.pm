@@ -3,11 +3,10 @@ use MooseX::Types::Common::Numeric qw/PositiveOrZeroNum/;
 use Math::Currency;
 
 use Moose;
-use Moose::Util::TypeConstraints;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-enum RoundMode => [qw/even odd +inf -inf zero trunc/];
+with 'Yetie::Domain::Role::Types';
 
 has tax_rate => (
     is      => 'ro',
