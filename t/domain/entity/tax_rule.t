@@ -30,6 +30,13 @@ subtest 'caluculate_tax' => sub {
 
     $price = Yetie::Domain::Value::Price->new( value => 0, is_tax_included => 1 );
     is $rule->caluculate_tax($price), '$0.00', 'right inside tax for zero';
+
+    $price = Yetie::Domain::Value::Price->new( value => 1, is_tax_included => 0 );
+    $rule = $pkg->new( tax_rate => 3.5 );
+    is $rule->caluculate_tax($price), '$0.04', 'right round mode even(default)';
+
+    $rule = $pkg->new( tax_rate => 3.5, round_mode => 'trunc' );
+    is $rule->caluculate_tax($price), '$0.03', 'right round mode trunc';
 };
 
 done_testing();

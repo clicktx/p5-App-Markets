@@ -27,11 +27,15 @@ has round_mode => (
 sub caluculate_tax {
     my ( $self, $price ) = @_;
 
-    my $currency_code = $price->currency_code;
     my $rate = $self->tax_rate ? $self->tax_rate / 100 : 0;
-    return $price->is_tax_included
-      ? Math::Currency->new( $price->amount / ( 1 + $rate ) * $rate, $currency_code )
-      : Math::Currency->new( $price->amount * $rate, $currency_code );
+    my $tax =
+        $price->is_tax_included
+      ? $price->amount / ( 1 + $rate ) * $rate
+      : $price->amount * $rate;
+
+    my $mc = Math::Currency->new;
+    $mc->round_mode( $self->round_mode );
+    return $mc->new( $tax, $price->currency_code );
 }
 
 no Moose;
@@ -78,12 +82,12 @@ the following new ones.
 
 =head2 C<caluculate_tax>
 
-    my $amount = $tax_rule->caluculate_tax( Yetie::Domain::Value::Price->new(100) );
-    my $amount = $tax_rule->caluculate_tax( Yetie::Domain::Value::Price->new( value => 100, is_tax_included => 1 ) );
+    my $tax_amount = $tax_rule->caluculate_tax( Yetie::Domain::Value::Price->new(100) );
+    my $tax_amount = $tax_rule->caluculate_tax( Yetie::Domain::Value::Price->new( value => 100, is_tax_included => 1 ) );
+
+Arguments L<Yetie::Domain::Value::Price> object.
 
 Return L<Math::Currency> object.
-
-See L<Yetie::Domain::Value::Price>
 
 =head1 AUTHOR
 
