@@ -35,7 +35,7 @@
 
     # tax rules
     'TaxRule' => [
-        [ qw/id title tax_rate/],
-        [ 1, 'Tax Exemption', 0 ],
+        [ qw/id title tax_rate round_mode/],
+        [ 1, 'Tax Exemption', 0, 'even' ],
     ],
 )

@@ -19,6 +19,12 @@ column tax_rate => {
     is_nullable => 0,
 };
 
+column round_mode => {
+    data_type   => 'VARCHAR',
+    size        => 8,
+    is_nullable => 0,
+};
+
 # Relation
 has_many
   category_tax_rules => 'Yetie::Schema::Result::CategoryTaxRule',
