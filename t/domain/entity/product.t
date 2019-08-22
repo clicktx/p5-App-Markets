@@ -16,7 +16,7 @@ my $test_data = {
     updated_at => undef,
 
     tax_rule => {
-        tax_rate => 0.056,
+        tax_rate => 5.6,
         title    => 'Sales Tax',
     },
 };
@@ -54,8 +54,8 @@ subtest 'product_categories' => sub {
 subtest 'Role::Tax' => sub {
     my $e = _create_entity();
 
-    is $e->price_excl_tax, '$999.00', 'right price_excl_tax';
-    is $e->tax_amount, '$55.94', 'right tax amount';
+    is $e->price_excl_tax, '$999.00',   'right price_excl_tax';
+    is $e->tax_amount,     '$55.94',    'right tax amount';
     is $e->price_incl_tax, '$1,054.94', 'right price_incl_tax';
 };
 

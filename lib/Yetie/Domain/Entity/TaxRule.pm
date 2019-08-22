@@ -20,12 +20,11 @@ sub caluculate_tax {
     my ( $self, $price ) = @_;
 
     my $currency_code = $price->currency_code;
+    my $rate = $self->tax_rate ? $self->tax_rate / 100 : 0;
     return $price->is_tax_included
-      ? Math::Currency->new( $price->amount / ( 1 + $self->tax_rate ) * $self->tax_rate, $currency_code )
-      : Math::Currency->new( $price->amount * $self->tax_rate, $currency_code );
+      ? Math::Currency->new( $price->amount / ( 1 + $rate ) * $rate, $currency_code )
+      : Math::Currency->new( $price->amount * $rate, $currency_code );
 }
-
-sub tax_rate_percentage { return shift->tax_rate * 100 }
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
@@ -51,6 +50,9 @@ implements the following new ones.
 
 Tax rate.
 
+    # 8%
+    say Yetie::Domain::Entity::TaxRule->new( tax_rate => 8.000 )->tax_rate . '%';
+
 =head2 C<title>
 
 Tax rule title.
@@ -68,11 +70,6 @@ the following new ones.
 Return L<Math::Currency> object.
 
 See L<Yetie::Domain::Value::Price>
-
-=head2 C<tax_rate_percentage>
-
-    # 8%
-    say Yetie::Domain::Entity::TaxRule->new( tax_rate => 0.08 )->tax_rate_percentage;
 
 =head1 AUTHOR
 

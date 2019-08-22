@@ -15,7 +15,7 @@ column title => {
 
 column tax_rate => {
     data_type   => 'DECIMAL',
-    size        => [ 6, 4 ],
+    size        => [ 6, 3 ],
     is_nullable => 0,
 };
 
