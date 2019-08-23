@@ -11,21 +11,21 @@ my %example_data = (
             product_title => 'a',
             quantity      => 1,
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule => { tax_rate => 0.05 },
+            tax_rule => { round_mode => 'even', tax_rate => 5 },
         },
         {
             product_id    => 2,
             product_title => 'b',
             quantity      => 2,
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule => { tax_rate => 0.05 },
+            tax_rule => { round_mode => 'even', tax_rate => 5 },
         },
         {
             product_id    => 3,
             product_title => 'c',
             quantity      => 3,
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule => { tax_rate => 0.05 },
+            tax_rule => { round_mode => 'even', tax_rate => 5 },
         },
     ],
     shipments => [
@@ -47,7 +47,7 @@ my %example_data = (
                     product_title => 'd',
                     quantity      => 4,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-                    tax_rule => { tax_rate => 0.05 },
+                    tax_rule => { round_mode => 'even', tax_rate => 5 },
                 }
             ]
         },
@@ -69,21 +69,21 @@ my %example_data = (
                     product_title => 'd',
                     quantity      => 4,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-                    tax_rule => { tax_rate => 0.05 },
+                    tax_rule => { round_mode => 'even', tax_rate => 5 },
                 },
                 {
                     product_id    => 5,
                     product_title => 'e',
                     quantity      => 5,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-                    tax_rule => { tax_rate => 0.05 },
+                    tax_rule => { round_mode => 'even', tax_rate => 5 },
                 },
                 {
                     product_id    => 6,
                     product_title => 'f',
                     quantity      => 6,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-                    tax_rule => { tax_rate => 0.05 },
+                    tax_rule => { round_mode => 'even', tax_rate => 5 },
                 },
             ]
         },

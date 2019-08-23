@@ -19,7 +19,7 @@ subtest 'duplicate_product' => sub {
     my $product = $service->duplicate_product(1);
     is $product->id, $last_id + 1, 'right id';
     is $product->description, $orig->description, 'right description';
-    is $product->price,       $orig->price,       'right price';
+    is $product->price->{value}, $orig->price, 'right price';
     like $product->title, qr/copy/, 'copy title';
     is $product->product_categories, $orig->product_categories, 'right product_categories';
 };
