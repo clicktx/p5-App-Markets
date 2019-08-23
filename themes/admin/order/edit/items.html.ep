@@ -8,6 +8,7 @@
                 <th class="">Product</th>
                 <th class="">Price</th>
                 <th class="">Qty</th>
+                <th class="">Tax Rate</th>
                 <th class="">Subtotal</th>
                 <th class="">Discount</th>
                 <th class="">Row Subtotal</th>
@@ -28,13 +29,18 @@
                 <td class=""><%= $item->product_title %></td>
                 <td class="">
                     <%= form_field "item.$i.price" =%>
-                    <%= form_widget value => $item->price %>
+                    <%= form_widget value => $item->price->value %>
                     <%= form_error %>
                 </td>
                 <td class="">
                     <%= form_field "item.$i.quantity" =%>
                     <%= form_widget value => $item->quantity %>
                     <%= form_error %>
+                </td>
+                <td class="">
+                    ID: <%= $item->tax_rule->id %>/
+                    <%= $item->tax_rule->title %>/
+                    <%= $item->tax_rule->tax_rate %>%
                 </td>
                 <td class=""><%= $item->subtotal %></td>
                 <td class="">a</td>
@@ -44,7 +50,10 @@
         % });
         </table>
         <div class="">
-            <%= submit_button __("save.items_ordered") %>
+            <%= link_to url_for( 'rn.admin.order.index', id => $order->id )->fragment('items') => ( class => 'btn btn-light' ) => begin %>
+                cancel
+            <% end %>
+            <%= submit_button __("save.items_ordered") => ( class => 'btn btn-primary' ) %>
         </div>
     <% end =%>
 <% end =%>
