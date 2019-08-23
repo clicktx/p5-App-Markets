@@ -16,12 +16,14 @@ subtest store_items => sub {
         items => [
             {
                 id       => 1,
-                quantity => 1
+                quantity => 1,
+                tax_rule => { id => 2 },
             },
             {
                 id         => 99,
                 product_id => 2,
-                quantity   => 99
+                quantity   => 99,
+                tax_rule   => { id => 2 },
             },
         ]
     );
