@@ -13,13 +13,23 @@ has _product_hash_code => (
     init_arg => undef,
 );
 has price => (
-    is      => 'ro',
+    is      => 'rw',
     isa     => 'Yetie::Domain::Value::Price',
     default => sub { __PACKAGE__->factory('value-price')->construct() },
 );
 has product_id    => ( is => 'rw' );
 has product_title => ( is => 'rw' );
 has quantity      => ( is => 'rw' );
+
+override set_attributes => sub {
+    my ( $self, $args ) = @_;
+
+    my $price     = delete $args->{price};
+    my $new_price = $self->price->set_value($price);
+    $self->price($new_price);
+
+    return super();
+};
 
 sub _build__product_hash_code {
     my $self = shift;
