@@ -4,7 +4,8 @@ use Mojo::Base 'Yetie::Controller::Admin';
 sub index {
     my $c = shift;
 
-    my $order = $c->_find_order;
+    my $order_id = $c->stash('id');
+    my $order    = $c->service('order')->find_order($order_id);
     return $c->reply->not_found if $order->is_empty;
 
     # Page
@@ -54,7 +55,8 @@ sub delete {
 sub duplicate {
     my $c = shift;
 
-    my $order = $c->_find_order;
+    my $order_id = $c->stash('id');
+    my $order    = $c->service('order')->find_order($order_id);
     return $c->reply->not_found if $order->is_empty;
 
     my $form = $c->form('admin-order');
@@ -72,13 +74,6 @@ sub duplicate {
     # return $c->redirect_to('rn.admin.orders');
     # $c->stash( entity => $order );
     return $c->render('admin/order/create');
-}
-
-sub _find_order {
-    my $c = shift;
-
-    my $order_id = $c->stash('id');
-    return $c->service('order')->find_order($order_id);
 }
 
 1;
