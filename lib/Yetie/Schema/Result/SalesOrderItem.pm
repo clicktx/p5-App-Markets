@@ -57,6 +57,10 @@ sub to_data {
     my @columns = qw(id product_id product_title quantity price);
     my $data    = {};
     $data->{$_} = $self->$_ for @columns;
+
+    # relation
+    $data->{tax_rule} = $self->tax_rule->to_data;
+
     return $data;
 }
 
