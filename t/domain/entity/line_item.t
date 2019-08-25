@@ -1,6 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
+use Test::Exception;
 use Yetie::Factory;
 
 sub factory {
@@ -32,6 +33,19 @@ subtest 'basic' => sub {
 
     $item->quantity(5);
     is $item->is_modified, 1, 'right modified';
+
+    dies_ok {
+        factory(
+            {
+                id            => 2,
+                product_id    => 0,
+                product_title => 'test product',
+                quantity      => 1,
+                price         => 100,
+            }
+          )
+    }
+    'right isa product_id';
 };
 
 subtest 'equals' => sub {

@@ -1,6 +1,7 @@
 package Yetie::Domain::Entity::LineItem;
 use Moose;
 use namespace::autoclean;
+use MooseX::Types::Common::Numeric qw(PositiveInt);
 extends 'Yetie::Domain::Entity';
 
 with 'Yetie::Domain::Role::Tax';
@@ -17,9 +18,18 @@ has price => (
     isa     => 'Yetie::Domain::Value::Price',
     default => sub { __PACKAGE__->factory('value-price')->construct() },
 );
-has product_id    => ( is => 'rw' );
-has product_title => ( is => 'rw' );
-has quantity      => ( is => 'rw' );
+has product_id => (
+    is  => 'rw',
+    isa => PositiveInt,
+);
+has product_title => (
+    is  => 'rw',
+    isa => 'Str',
+);
+has quantity => (
+    is  => 'rw',
+    isa => 'Int',
+);
 
 override set_attributes => sub {
     my ( $self, $args ) = @_;
