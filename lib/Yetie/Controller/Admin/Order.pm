@@ -28,7 +28,7 @@ sub delete {
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     my $order_id = $form->param('id');
 
@@ -37,7 +37,7 @@ sub delete {
     my $order = $rs->find($order_id);
 
     # NOTE: 400 Bad Request が適切
-    return $c->reply->not_found unless $order;
+    return $c->reply->not_found if !$order;
 
     my $sales_id = $order->sales_id;
     my $cnt = $rs->search( { sales_id => $sales_id } )->count;
