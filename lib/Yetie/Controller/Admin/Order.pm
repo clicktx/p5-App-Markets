@@ -36,8 +36,7 @@ sub delete {
     my $rs    = $c->app->schema->resultset('SalesOrder');
     my $order = $rs->find($order_id);
 
-    # NOTE: 400 Bad Request が適切
-    return $c->reply->not_found if !$order;
+    return $c->reply->error() if !$order;
 
     my $sales_id = $order->sales_id;
     my $cnt = $rs->search( { sales_id => $sales_id } )->count;
