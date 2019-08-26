@@ -52,7 +52,7 @@ subtest 'to_array' => sub {
         is ref $array, 'ARRAY', 'right array refference';
 
         my @keys = sort( keys %{ $array[0] } );
-        is_deeply \@keys, [qw(id order_id price product_id product_title quantity)], 'right all columns';
+        is_deeply \@keys, [qw(id order_id price product_id product_title quantity tax_rule_id)], 'right all columns';
     };
 
     subtest 'options' => sub {
@@ -60,7 +60,7 @@ subtest 'to_array' => sub {
 
         my @array = $itr->to_array( ignore_columns => [qw(product_title order_id)] );
         my @keys = sort( keys %{ $array[0] } );
-        is_deeply \@keys, [qw(id price product_id quantity)], 'right option "ignore_columns"';
+        is_deeply \@keys, [qw(id price product_id quantity tax_rule_id)], 'right option "ignore_columns"';
 
         @array = $itr->to_array( columns => [qw(product_title order_id)] );
         @keys = sort( keys %{ $array[0] } );

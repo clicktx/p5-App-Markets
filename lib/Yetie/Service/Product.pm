@@ -101,9 +101,9 @@ sub _get_tax_rule {
         return $category_tax_rule->tax_rule if $category_tax_rule;
     }
 
-    # Default tax rule
-    my $default_tax_rule = $self->resultset('DefaultTaxRule')->find_now;
-    return $default_tax_rule->tax_rule;
+    # Common tax rule
+    my $common_tax_rule = $self->resultset('CommonTaxRule')->find_now;
+    return $common_tax_rule->tax_rule;
 }
 
 1;

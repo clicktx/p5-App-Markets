@@ -6,13 +6,15 @@ use Moose;
 use overload q{""} => sub { $_[0]->amount }, fallback => 1;
 extends 'Yetie::Domain::Value';
 
+with 'Yetie::Domain::Role::Types';
+
 has '+value' => (
     isa     => PositiveOrZeroNum,
     default => 0,
 );
-
 has currency_code => (
     is      => 'ro',
+    isa     => 'CurrencyCode',
     default => 'USD',
 );
 has is_tax_included => (
@@ -24,6 +26,16 @@ has is_tax_included => (
 sub amount {
     my $self = shift;
     return Math::Currency->new( $self->value, $self->currency_code );
+}
+
+sub to_data {
+    my $self = shift;
+
+    return {
+        value           => $self->value,
+        currency_code   => $self->currency_code,
+        is_tax_included => $self->is_tax_included,
+    };
 }
 
 no Moose;

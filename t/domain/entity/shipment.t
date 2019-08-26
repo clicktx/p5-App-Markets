@@ -45,9 +45,9 @@ subtest 'item_count' => sub {
 subtest 'subtotal' => sub {
     my $shipment = construct( id => 1 );
     $shipment->{items} = Yetie::Domain::Collection->new(
-        Yetie::Domain::Entity::LineItem->new( quantity => 1, price => 100 ),
-        Yetie::Domain::Entity::LineItem->new( quantity => 2, price => 100 ),
-        Yetie::Domain::Entity::LineItem->new( quantity => 3, price => 100 ),
+        Yetie::Factory->new('entity-line_item')->construct( quantity => 1, price => 100 ),
+        Yetie::Factory->new('entity-line_item')->construct( quantity => 2, price => 100 ),
+        Yetie::Factory->new('entity-line_item')->construct( quantity => 3, price => 100 ),
     );
     is $shipment->subtotal, 600, 'right subtotal';
 };

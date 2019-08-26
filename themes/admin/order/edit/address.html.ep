@@ -5,7 +5,10 @@
         <%= hidden_field "id" => $order->$action->id %>
         <%= include 'common/components/form/address', fieldset => 'customer_address' %>
         <div class="">
-            <%= submit_button __("save.$action") %>
+            <%= link_to url_for( 'rn.admin.order.index', id => $order->id )->fragment($action) => ( class => 'btn btn-light' ) => begin %>
+                cancel
+            <% end %>
+            <%= submit_button __("save.$action") => ( class => 'btn btn-primary' ) %>
         </div>
     <% end =%>
 <% end =%>

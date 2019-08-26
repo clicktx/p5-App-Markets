@@ -20,9 +20,9 @@
                 <a href="<%= url_for 'rn.product' => { product_id => $item->product_id } %>">
                     <%= $item->product_title %>
                 </a>
-                    | <%= $item->price %>
+                    | price: <%= $item->price %> incl-tax: <%= $item->price_incl_tax %> tax: <%= $item->tax_amount %>
                     | QTY:<%= $item->quantity %><%= form_widget("cart#quantity.$i") %><%= form_error("cart#item.$i.quantity") %>
-                    | <%= $item->subtotal %>
+                    | sub-total: <%= $item->subtotal %>
                 <div class="cart-item-control">
                     <%= link_to 'rn.cart.item.delete' => ( name => "button.delete.$i", class => 'btn btn-link submit-post', 'data-name' => 'line_num', 'data-value' => $num ) => begin %>
                         Delete

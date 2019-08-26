@@ -2,20 +2,21 @@ package Yetie::Service::Cart;
 use Mojo::Base 'Yetie::Service';
 
 sub add_item {
-    my ( $self, $form_params ) = @_;
+    my ( $self, $args ) = @_;
 
     # NOTE: APIで利用する場合にproductがstashに無い場合は生成する。
     # productをMojo::Cache等でキャッシュするか？
     # キャッシュする場合はservice('product')->load_entity()等としてキャッシュを使うようにする
     # fileキャッシュで全てのproductのキャッシュを生成するのもありか？
     my $product = $self->controller->stash('product');
-    $product = $self->service('product')->find_product( $form_params->{product_id} ) unless $product;
+    if ( !$product ) { $product = $self->service('product')->find_product( $args->{product_id} ) }
 
-    # NOTE: データマッピングは別のメソッドで行うように
-    $form_params->{product_title} = $product->title;
-    $form_params->{price}         = $product->price;
+    # FIXME: データマッピングは別のメソッドで行うようにする
+    $args->{product_title} = $product->title;
+    $args->{price}         = $product->price->to_data;
+    $args->{tax_rule}      = $product->tax_rule->to_data;
 
-    my $item = $self->factory('entity-line_item')->construct($form_params);
+    my $item = $self->factory('entity-line_item')->construct($args);
     return $self->controller->cart->add_item($item);
 }
 
@@ -33,7 +34,7 @@ sub merge_cart {
     my $session = $c->server_session;
 
     my $customer_cart = $self->find_cart($customer_id);
-    return $customer_cart unless $c->cart;    # NOTE: necessary remember_me login
+    return $customer_cart if !$c->cart;    # NOTE: necessary remember_me login
 
     my $merged_cart = $c->cart->merge($customer_cart);
     $session->remove_cart( $session->cart_id );
@@ -45,6 +46,7 @@ sub set_address_id {
 
     my $result = $self->resultset('Address')->find_or_create_address( $address->to_hash );
     $address->id( $result->id );
+    return;
 }
 
 1;

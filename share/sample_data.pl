@@ -51,16 +51,16 @@
 
     # Tax rules
     'TaxRule' => [
-        [ qw/id title tax_rate/],
-        [ 2, 'Tax 3%', 0.03 ],
-        [ 3, 'Tax 5%', 0.05 ],
-        [ 4, 'Tax 8%', 0.08 ],
-        [ 5, 'Reduced Tax 8%', 0.08 ],
-        [ 6, 'Tax 10%', 0.1 ],
+        [ qw/id title tax_rate round_mode/],
+        [ 2, 'Tax 3.141%', 3.141, 'even' ],
+        [ 3, 'Tax 5%', 5, 'even' ],
+        [ 4, 'Tax 8%', 8, 'even' ],
+        [ 5, 'Reduced Tax 8%', 8, 'even' ],
+        [ 6, 'Tax 10%', 10, 'even' ],
     ],
 
     # Default tax rules
-    'DefaultTaxRule' => [
+    'CommonTaxRule' => [
         [qw/tax_rule_id start_at/],
         [ 2, '1990-04-01 00:00:00' ],
     ],
@@ -197,10 +197,10 @@
         [ 12, 7, 5 ],
     ],
     'SalesOrderItem' => [
-        [qw/order_id product_id quantity price product_title/],
-        [ 1, 3, 3, 300, 'product 3' ],
-        [ 1, 1, 1, 101, 'product 1' ], # change price
-        [ 2, 2, 2, 200, 'product 2' ],
-        [ 3, 4, 4, 333, 'product 4' ],
+        [qw/order_id product_id quantity product_title price tax_rule_id/],
+        [ 1, 3, 3, 'product 3', 300, 1 ],
+        [ 1, 1, 1, 'product 1', 101, 2 ], # change price
+        [ 2, 2, 2, 'product 2', 200, 5 ],
+        [ 3, 4, 4, 'product 4', 333, 5 ],
     ],
 )

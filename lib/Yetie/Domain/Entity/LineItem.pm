@@ -1,7 +1,10 @@
 package Yetie::Domain::Entity::LineItem;
 use Moose;
 use namespace::autoclean;
+use MooseX::Types::Common::Numeric qw(PositiveInt);
 extends 'Yetie::Domain::Entity';
+
+with 'Yetie::Domain::Role::Tax';
 
 has _product_hash_code => (
     is       => 'ro',
@@ -10,10 +13,33 @@ has _product_hash_code => (
     reader   => 'product_hash_code',
     init_arg => undef,
 );
-has product_id    => ( is => 'rw' );
-has product_title => ( is => 'rw' );
-has price         => ( is => 'rw' );
-has quantity      => ( is => 'rw' );
+has price => (
+    is      => 'rw',
+    isa     => 'Yetie::Domain::Value::Price',
+    default => sub { __PACKAGE__->factory('value-price')->construct() },
+);
+has product_id => (
+    is  => 'rw',
+    isa => PositiveInt,
+);
+has product_title => (
+    is  => 'rw',
+    isa => 'Str',
+);
+has quantity => (
+    is  => 'rw',
+    isa => 'Int',
+);
+
+override set_attributes => sub {
+    my ( $self, $args ) = @_;
+
+    my $price     = delete $args->{price};
+    my $new_price = $self->price->set_value($price);
+    $self->price($new_price);
+
+    return super();
+};
 
 sub _build__product_hash_code {
     my $self = shift;
@@ -52,8 +78,9 @@ Yetie::Domain::Entity::LineItem
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::LineItem> inherits all attributes from L<Yetie::Domain::Entity> and implements
-the following new ones.
+L<Yetie::Domain::Entity::LineItem> inherits all attributes from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Tax>.
+
+Implements the following new ones.
 
 =head2 C<product_hash_code>
 
@@ -72,8 +99,9 @@ This method gets a string identifying product item.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::LineItem> inherits all methods from L<Yetie::Domain::Entity> and implements
-the following new ones.
+L<Yetie::Domain::Entity::LineItem> inherits all methods from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Tax>.
+
+Implements the following new ones.
 
 =head2 C<equals>
 
@@ -92,4 +120,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>
+L<Yetie::Domain::Role::Tax>, L<Yetie::Domain::Entity>
