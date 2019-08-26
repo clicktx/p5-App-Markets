@@ -8,6 +8,7 @@ enum RoundMode => [qw(even odd +inf -inf zero trunc)];
 
 1;
 __END__
+=for stopwords +inf -inf trunc
 
 =head1 NAME
 
