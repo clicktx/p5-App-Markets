@@ -10,10 +10,10 @@ my $prefetch = [
 ];
 
 sub find_by_id {
-    my ( $self, $shipment_id ) = @_;
+    my ( $self, $id ) = @_;
 
     return $self->find(
-        $shipment_id,
+        $id,
         {
             prefetch => $prefetch,
         },
