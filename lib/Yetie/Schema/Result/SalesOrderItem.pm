@@ -18,6 +18,11 @@ column product_id => {
     is_nullable => 0,
 };
 
+column tax_rule_id => {
+    data_type   => 'INT',
+    is_nullable => 0,
+};
+
 column product_title => Yetie::Schema::Result::Product->column_info('title');
 
 # column description => {
@@ -26,14 +31,9 @@ column product_title => Yetie::Schema::Result::Product->column_info('title');
 #     is_nullable => 0,
 # };
 
-column quantity => {
-    data_type   => 'INT',
-    is_nullable => 0,
-};
-
 column price => Yetie::Schema::Result::Product->column_info('price');
 
-column tax_rule_id => {
+column quantity => {
     data_type   => 'INT',
     is_nullable => 0,
 };
