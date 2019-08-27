@@ -21,6 +21,7 @@ column priority => {
     default_value => 100,
 };
 
+# Relation
 belongs_to
   staff => 'Yetie::Schema::Result::Addon',
   { 'foreign.id' => 'self.addon_id' };

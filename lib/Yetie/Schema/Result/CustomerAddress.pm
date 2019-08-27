@@ -12,6 +12,7 @@ primary_column address_id => {
     is_nullable => 0,
 };
 
+# Relation
 belongs_to
   customer => 'Yetie::Schema::Result::Customer',
   { 'foreign.id' => 'self.customer_id' };

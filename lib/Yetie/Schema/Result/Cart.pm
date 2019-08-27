@@ -24,6 +24,7 @@ column updated_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
+# Relation
 has_many
   session => 'Yetie::Schema::Result::Session',
   'cart_id',

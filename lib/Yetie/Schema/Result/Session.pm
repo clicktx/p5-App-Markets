@@ -23,6 +23,7 @@ column expires => {
     is_nullable => 0,
 };
 
+# Relation
 # belongs_to
 #   'cart' => 'Yetie::Schema::Result::Cart',
 #   { 'foreign.cart_id' => 'self.cart_id' };

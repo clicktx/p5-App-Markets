@@ -17,6 +17,7 @@ column shipping_address_id => {
     is_nullable => 0,
 };
 
+# Relation
 belongs_to
   sales => 'Yetie::Schema::Result::Sales',
   { 'foreign.id' => 'self.sales_id' };

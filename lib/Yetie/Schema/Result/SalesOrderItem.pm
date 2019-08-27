@@ -38,6 +38,7 @@ column quantity => {
     is_nullable => 0,
 };
 
+# Relation
 # NOTE: 'order' is SQL reserved word.
 belongs_to
   sales_order => 'Yetie::Schema::Result::SalesOrder',
