@@ -12,21 +12,26 @@ my $prefetch = [
 sub find_by_id {
     my ( $self, $id ) = @_;
 
-    return $self->find(
-        $id,
+    return $self->search(
+        {
+            'me.id'    => $id,
+            trashed_at => \'IS NULL',
+        },
         {
             prefetch => $prefetch,
         },
-    );
+    )->first;
 }
 
 sub search_sales_orders {
     my ( $self, $args ) = @_;
 
     my $where = $args->{where} || {};
+    $where->{trashed_at} = \'IS NULL';
+
     my $order_by = $args->{order_by} || { -desc => 'me.id' };
-    my $page = $args->{page_no};
-    my $rows = $args->{per_page};
+    my $page     = $args->{page_no};
+    my $rows     = $args->{per_page};
 
     return $self->search(
         $where,
@@ -69,7 +74,7 @@ the following new ones.
 
 =head2 C<search_sales_orders>
 
-    my $orders = $rs->search_sales_orders( \%args);
+    my $orders = $rs->search_sales_orders( \%args );
 
     my $orders = $rs->search_sales_orders(
         {
