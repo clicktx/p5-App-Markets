@@ -3,39 +3,42 @@
 
 <h1><%= title %></h1>
 
-<h2><%= __('Settings') %></h2>
+<h2><%= __('Sales') %></h2>
+<ul>
+    <li><%= link_to 'Orders' => 'rn.admin.orders' %></li>
+    <li><%= link_to 'Create New Order' => 'rn.admin.order.create' %></li>
+    <li><%= link_to 'Shipments' => 'rn.admin.shipments' %></li>
+</ul>
+
+<h2><%= __('Catalog') %></h2>
+<ul>
+    <li><%= link_to 'Products' => 'rn.admin.products' %></li>
+    <li><%= link_to 'Categories' => 'rn.admin.category' %></li>
+</ul>
+
+<h2><%= __('Customers') %></h2>
+<ul>
+    <li><%= link_to 'All Customers' => 'rn.admin.customers' %></li>
+    <li><%= link_to 'Customre index' => 'rn.admin.customers' %></li>
+    <li><%= link_to 'Customre index' => 'rn.admin.customers' %></li>
+</ul>
+
+<h2><%= __('Marketing') %></h2>
+
+<h2><%= __('Content') %></h2>
+
+<h2><%= __('Reports') %></h2>
+
+<h2><%= __('Store') %></h2>
+<ul>
+    <li><%= link_to 'Staffs' => 'rn.admin.staffs' %></li>
+    <li><%= link_to 'Staff index' => 'rn.admin.staffs' %></li>
+    <li><%= link_to 'Staff index' => 'rn.admin.staffs' %></li>
+</ul>
+
+<h2><%= __('System') %></h2>
 <ul>
     <li><%= link_to 'preferences' => 'rn.admin.preferences' %></li>
     <li><%= link_to 'addon settings' => 'rn.admin.settings.addon' %></li>
 </ul>
-<h2><%= __('Categories') %></h2>
-<ul>
-    <li><%= link_to 'Category index' => 'rn.admin.category' %></li>
-</ul>
 
-<h2><%= __('Products') %></h2>
-<ul>
-    <li><%= link_to 'Products index' => 'rn.admin.products' %></li>
-    <li><%= link_to 'Products index' => 'rn.admin.products' %></li>
-    <li><%= link_to 'Products index' => 'rn.admin.products' %></li>
-</ul>
-
-<h2><%= __('Orders') %></h2>
-<ul>
-    <li><%= link_to 'Orders index' => 'rn.admin.orders' %></li>
-    <li><%= link_to 'Create New Order' => 'rn.admin.order.create' %></li>
-</ul>
-
-<h2><%= __('Customre') %></h2>
-<ul>
-    <li><%= link_to 'Customre index' => 'rn.admin.customers' %></li>
-    <li><%= link_to 'Customre index' => 'rn.admin.customers' %></li>
-    <li><%= link_to 'Customre index' => 'rn.admin.customers' %></li>
-</ul>
-
-<h2><%= __('Staff') %></h2>
-<ul>
-    <li><%= link_to 'Staff index' => 'rn.admin.staffs' %></li>
-    <li><%= link_to 'Staff index' => 'rn.admin.staffs' %></li>
-    <li><%= link_to 'Staff index' => 'rn.admin.staffs' %></li>
-</ul>
