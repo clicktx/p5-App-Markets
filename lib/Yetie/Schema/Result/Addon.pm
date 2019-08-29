@@ -15,6 +15,7 @@ column is_enabled => {
     default_value => 0,
 };
 
+# Relation
 has_many
   triggers => 'Yetie::Schema::Result::AddonTrigger',
   { 'foreign.addon_id' => 'self.id' },

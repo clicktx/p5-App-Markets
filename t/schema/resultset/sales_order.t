@@ -10,7 +10,7 @@ my $app    = $t->app;
 my $schema = $app->schema;
 my $rs     = $schema->resultset('SalesOrder');
 
-subtest 'method find_by_id()' => sub {
+subtest 'find_by_id' => sub {
     my $res = $rs->find_by_id(1);
     is $res->id,                  1, 'right id';
     is $res->sales_id,            1, 'right sales_id';
@@ -29,11 +29,14 @@ subtest 'method find_by_id()' => sub {
       },
       'right customer lated_resultsets';
 
-    $res = $rs->find_by_id(111);
+    $res = $rs->find_by_id(999);
     ok !$res, 'right not found';
+
+    $res = $rs->find_by_id(9);
+    ok !$res, 'right trashed';
 };
 
-subtest 'method search_sales_orders()' => sub {
+subtest 'search_sales_orders' => sub {
     my $args = {
         where    => '',
         order_by => { -asc => 'me.id' },
@@ -64,7 +67,11 @@ subtest 'method search_sales_orders()' => sub {
 
     $args->{where} = { 'me.id' => 999 };
     $itr = $rs->search_sales_orders($args);
-    is $itr->count, 0, 'right count';
+    is $itr->count, 0, 'right no data';
+
+    $args->{where} = { 'me.id' => 9 };
+    $itr = $rs->search_sales_orders($args);
+    is $itr->count, 0, 'right trashed';
 };
 
 done_testing();
