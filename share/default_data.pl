@@ -13,6 +13,9 @@
         # Decimal rounding mode 'even' or 'trunc'
         [ 'default_round_mode', 'even', 'pref.title.default_round_mode', 'pref.summary.default_round_mode', 50, 1 ],
 
+        # round mode 'even' or 'trunc'
+        [ 'round_mode', 'even', 'pref.title.round_mode', 'pref.summary.round_mode', 400, 1 ],
+
         # shop master
         [ 'shop_name', 'Yetie Shop', 'pref.title.shop_name', 'pref.summary.shop_name', 10, 2 ],
 
