@@ -17,6 +17,13 @@ column shipping_address_id => {
     is_nullable => 0,
 };
 
+column trashed_at => {
+    data_type   => 'DATETIME',
+    is_nullable => 1,
+    timezone    => Yetie::Schema->TZ,
+};
+
+# Relation
 belongs_to
   sales => 'Yetie::Schema::Result::Sales',
   { 'foreign.id' => 'self.sales_id' };

@@ -182,19 +182,19 @@
         [ 7, 113, 4, '2017-07-07 07:15:01', '2017-07-07 07:15:01' ],
     ],
     'SalesOrder' => [
-        [qw/id sales_id shipping_address_id/],
-        [ 1, 1, 1 ],
-        [ 2, 1, 3 ],
-        [ 3, 2, 2 ],
-        [ 4, 3, 3 ],
-        [ 5, 3, 4 ],
-        [ 6, 4, 3 ],
-        [ 7, 4, 4 ],
-        [ 8, 5, 3 ],
-        [ 9, 5, 4 ],
-        [ 10, 6, 3 ],
-        [ 11, 6, 4 ],
-        [ 12, 7, 5 ],
+        [qw/id sales_id shipping_address_id trashed_at/],
+        [ 1, 1, 1, undef ],
+        [ 2, 1, 3, undef ],
+        [ 3, 2, 2, undef ],
+        [ 4, 3, 3, undef ],
+        [ 5, 3, 4, undef ],
+        [ 6, 4, 3, undef ],
+        [ 7, 4, 4, undef ],
+        [ 8, 5, 3, undef ],
+        [ 9, 5, 4, '2017-10-10 09:10:10' ], # trashed on test
+        [ 10, 6, 3, undef ],
+        [ 11, 6, 4, undef ],
+        [ 12, 7, 5, undef ], # trashed on test
     ],
     'SalesOrderItem' => [
         [qw/order_id product_id quantity product_title price tax_rule_id/],
@@ -202,5 +202,7 @@
         [ 1, 1, 1, 'product 1', 101, 2 ], # change price
         [ 2, 2, 2, 'product 2', 200, 5 ],
         [ 3, 4, 4, 'product 4', 333, 5 ],
+        [ 12, 1, 4, 'product 1', 101, 5 ], # trashed on test
+        [ 12, 2, 4, 'product 2', 200, 5 ], # trashed on test
     ],
 )

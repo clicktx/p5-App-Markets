@@ -29,6 +29,7 @@ column updated_at => {
     timezone    => Yetie::Schema->TZ,
 };
 
+# Relation
 belongs_to
   customer => 'Yetie::Schema::Result::Customer',
   { 'foreign.id' => 'self.customer_id' };

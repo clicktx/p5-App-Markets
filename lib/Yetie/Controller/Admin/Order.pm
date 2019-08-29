@@ -18,40 +18,6 @@ sub create {
     return $c->render();
 }
 
-sub delete {
-    my $c = shift;
-
-    # Initialize form
-    my $form = $c->form('admin-order');
-
-    # Get request
-    return $c->render() if $c->is_get_request;
-
-    # Validation form
-    return $c->render() unless $form->do_validate;
-
-    my $order_id = $form->param('id');
-
-    # shipmentが1つの場合はorderを削除する。複数の場合はshipmentを削除する。
-    my $rs    = $c->app->schema->resultset('SalesOrder');
-    my $order = $rs->find($order_id);
-
-    # NOTE: 400 Bad Request が適切
-    return $c->reply->not_found unless $order;
-
-    my $sales_id = $order->sales_id;
-    my $cnt = $rs->search( { sales_id => $sales_id } )->count;
-    if ( $cnt > 1 ) {    # delete shipment
-        $order->delete;
-    }
-    else {               # delete order
-        my $order = $c->app->schema->resultset('Sales')->find($sales_id);
-        $order->delete;
-    }
-
-    return $c->redirect_to('rn.admin.orders');
-}
-
 sub duplicate {
     my $c = shift;
 
@@ -74,6 +40,28 @@ sub duplicate {
     # return $c->redirect_to('rn.admin.orders');
     # $c->stash( entity => $order );
     return $c->render('admin/order/create');
+}
+
+# NOTE: 決済履歴やポイント履歴等が絡むと厄介なことになりそう
+sub trash {
+    my $c = shift;
+
+    # Initialize form
+    my $form = $c->form('admin-order');
+
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
+    return $c->render() if !$form->do_validate;
+
+    my $order_id = $form->param('id');
+    my $rs       = $c->app->schema->resultset('SalesOrder');
+    my $order    = $rs->find($order_id);
+    return $c->reply->error() if !$order;
+
+    $order->update( { trashed_at => $c->date_time->now } );
+    return $c->redirect_to('rn.admin.orders');
 }
 
 1;

@@ -23,21 +23,21 @@ sub t02_duplicate : Tests() {
     $t->get_ok('/admin/order/999/duplicate')->status_is(404);
 }
 
-#
-# sub t03_delete : Tests() {
-#     my $self = shift;
-#     my $t    = $self->t;
-#
-#     my $order_id = 3;    # NOTE: duplicateで生成された最新のidを取得する。
-#     my $post_data   = {
-#         csrf_token => $self->csrf_token,
-#         id         => $order_id,
-#     };
-#
-#     $t->post_ok( '/admin/order/delete', form => $post_data )->status_is( 200, 'right found shipment order' );
-#
-#     $post_data->{id} = 999;
-#     $t->post_ok( '/admin/order/delete', form => $post_data )->status_is( 404, 'right not found shipment order' );
-# }
+sub t03_trash : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    my $order_id  = 12;
+    my $post_data = {
+        csrf_token => $self->csrf_token,
+        id         => $order_id,
+    };
+
+    $t->post_ok( '/admin/order/trash', form => $post_data )->status_is( 200, 'right order trashed' );
+    $t->get_ok('/admin/order/12')->status_is(404);
+
+    $post_data->{id} = 999;
+    $t->post_ok( '/admin/order/trash', form => $post_data )->status_is( 400, 'right bad request' );
+}
 
 __PACKAGE__->runtests;

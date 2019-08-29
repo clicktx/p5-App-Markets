@@ -83,7 +83,7 @@ sub add_admin_routes {
     # NOTE: create, delete, duplicate はPOST requestのみにするべき
     my $order = $if_staff->any('/order')->to( controller => 'admin-order' );
     $order->any('/create')->to('#create')->name('rn.admin.order.create');
-    $order->post('/delete')->to('#delete')->name('rn.admin.order.delete');
+    $order->post('/trash')->to('#trash')->name('rn.admin.order.trash');
     $order->get('/:id')->to('#index')->name('rn.admin.order.index');
     $order->any('/:id/duplicate')->to('#duplicate')->name('rn.admin.order.duplicate');
     my $order_edit = $order->any('/:id/edit')->to( controller => 'admin-order-edit' );
