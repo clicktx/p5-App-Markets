@@ -42,6 +42,7 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 __END__
+=for stopwords +inf -inf trunc
 
 =head1 NAME
 
