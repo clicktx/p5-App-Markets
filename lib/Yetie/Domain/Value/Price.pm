@@ -7,6 +7,7 @@ use Moose;
 use overload
   '""'     => sub { $_[0]->amount },
   '+'      => \&add,
+  '-'      => \&subtract,
   fallback => 1;
 extends 'Yetie::Domain::Value';
 
@@ -38,6 +39,14 @@ sub add {
 sub amount {
     my $self = shift;
     return Math::Currency->new( $self->value, $self->currency_code );
+}
+
+sub subtract {
+    my $self = shift;
+    my $num = shift || 0;
+
+    $self->_validate_error($num);
+    return $self->clone( value => $self->amount->copy->bsub($num)->as_float );
 }
 
 sub to_data {
@@ -77,9 +86,22 @@ Yetie::Domain::Value::Price
 
     # Overloading, returns new instance
     my $p2 = $price + 1;
+    my $p3 = $price - 1;
+    my $p4 = $price * 1;
+    my $p5 = $price / 1;
+    my $p5 = $price % 1;
 
     # Objects work too
-    my $p7 = $price + $price;
+    my $p7 = $p2 + $p3;
+    my $p8 = $p2 - $p3;
+    my $p8 = $p2 * $p3;
+    my $p8 = $p2 / $p3;
+
+    # Modifies in place
+    $price += 1;
+    $price -= 1;
+    $price *= 1;
+    $price /= 1;
 
 =head1 ATTRIBUTES
 
@@ -114,9 +136,16 @@ the following new ones.
 
 Return L<Math::Currency> object.
 
+=head2 C<subtract>
+
+    my $price2 = $price->subtract(1);
+    my $price3 = $price->subtract($price);
+
 =head1 OPERATOR
 
 L<Yetie::Domain::Value::Price> overloads the following operators.
+
+Inspired by L<Data::Money>.
 
 =head2 C<stringify>
 
@@ -130,4 +159,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Value>
+L<Math::Currency>, L<Yetie::Domain::Value>

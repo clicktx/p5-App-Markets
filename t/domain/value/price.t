@@ -40,4 +40,13 @@ subtest 'add' => sub {
     dies_ok { $price + $incl_tax } 'right different including tax';
 };
 
+subtest 'subtract' => sub {
+    my $price = $pkg->new(100);
+    my $res   = $price - 1;
+    ok $res->value == 99, 'right subtract int';
+
+    $res = $price - $price;
+    ok $res->value == 0, 'right subtract obj';
+};
+
 done_testing();
