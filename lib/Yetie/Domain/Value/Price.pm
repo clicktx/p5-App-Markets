@@ -9,6 +9,7 @@ use overload
   '+'      => \&add,
   '-'      => \&subtract,
   '*'      => \&multiply,
+  '/'      => \&divide,
   fallback => 1;
 extends 'Yetie::Domain::Value';
 
@@ -48,6 +49,14 @@ sub amount {
     my $mc = Math::Currency->new( $self->value, $self->currency_code );
     $mc->round_mode( $self->round_mode );
     return $mc;
+}
+
+sub divide {
+    my $self = shift;
+    my $num = shift || 0;
+
+    $self->_validate_error($num);
+    return $self->clone( value => $self->amount->copy->bdiv($num)->as_float );
 }
 
 sub multiply {

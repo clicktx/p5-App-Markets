@@ -46,6 +46,18 @@ subtest 'add' => sub {
     dies_ok { $price + $incl_tax } 'right different including tax';
 };
 
+subtest 'divide' => sub {
+    my $price = $pkg->new(100);
+    my $res   = $price / 1;
+    ok $res->value == 100, 'right divide int';
+
+    $res = $price / $price;
+    ok $res->value == 1, 'right divide obj';
+
+    $res = $price / 7;
+    ok $res->value == 14.29, 'right divide round';
+};
+
 subtest 'multiply' => sub {
     my $price = $pkg->new(100);
     my $res   = $price * 1;
