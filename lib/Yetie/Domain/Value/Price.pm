@@ -8,6 +8,7 @@ use overload
   '""'     => sub { $_[0]->amount },
   '+'      => \&add,
   '-'      => \&subtract,
+  '*'      => \&multiply,
   fallback => 1;
 extends 'Yetie::Domain::Value';
 
@@ -39,6 +40,14 @@ sub add {
 sub amount {
     my $self = shift;
     return Math::Currency->new( $self->value, $self->currency_code );
+}
+
+sub multiply {
+    my $self = shift;
+    my $num = shift || 0;
+
+    $self->_validate_error($num);
+    return $self->clone( value => $self->amount->copy->bmul($num)->as_float );
 }
 
 sub subtract {
