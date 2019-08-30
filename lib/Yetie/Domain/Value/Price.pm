@@ -31,7 +31,7 @@ sub add {
     my $self = shift;
     my $num = shift || 0;
 
-    croak 'unable to perform arithmetic on different currency types' if ref $num && ref $num ne __PACKAGE__;
+    $self->_validate_error($num);
     return $self->clone( value => $self->amount->copy->badd($num)->as_float );
 }
 
@@ -48,6 +48,15 @@ sub to_data {
         currency_code   => $self->currency_code,
         is_tax_included => $self->is_tax_included,
     };
+}
+
+sub _validate_error {
+    my ( $self, $arg ) = @_;
+    return if !ref $arg;
+
+    croak 'unable to perform arithmetic on different currency types' if $self->currency_code ne $arg->currency_code;
+    croak 'unable to perform arithmetic on different including tax'  if $self->is_tax_included != $arg->is_tax_included;
+    return;
 }
 
 no Moose;

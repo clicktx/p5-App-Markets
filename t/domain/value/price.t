@@ -33,7 +33,11 @@ subtest 'add' => sub {
     $res = $price + $price;
     ok $res->value == 200, 'right add obj';
 
-    dies_ok { $price + bless { value => 1 }, 'foo' } 'right different object';
+    my $jpy = $pkg->new( value => 100, currency_code => 'JPY' );
+    dies_ok { $price + $jpy } 'right different currency';
+
+    my $incl_tax = $pkg->new( value => 100, is_tax_included => 1 );
+    dies_ok { $price + $incl_tax } 'right different including tax';
 };
 
 done_testing();
