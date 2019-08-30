@@ -25,4 +25,15 @@ subtest 'is_tax_included' => sub {
     ok $price->is_tax_included, 'right tax included';
 };
 
+subtest 'add' => sub {
+    my $price = $pkg->new(100);
+    my $res   = $price + 1;
+    ok $res->value == 101, 'right add int';
+
+    $res = $price + $price;
+    ok $res->value == 200, 'right add obj';
+
+    dies_ok { $price + bless { value => 1 }, 'foo' } 'right different object';
+};
+
 done_testing();
