@@ -12,7 +12,7 @@ use overload
   fallback => 1;
 extends 'Yetie::Domain::Value';
 
-with 'Yetie::Domain::Role::Types';
+with 'Yetie::Domain::Role::TypesMoney';
 
 has '+value' => (
     isa     => PositiveOrZeroNum,

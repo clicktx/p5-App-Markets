@@ -6,7 +6,7 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-with 'Yetie::Domain::Role::Types';
+with 'Yetie::Domain::Role::TypesMoney';
 
 has tax_rate => (
     is      => 'ro',
