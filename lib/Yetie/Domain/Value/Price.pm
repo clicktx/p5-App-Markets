@@ -28,6 +28,11 @@ has is_tax_included => (
     isa     => 'Bool',
     default => 0,
 );
+has round_mode => (
+    is      => 'ro',
+    isa     => 'RoundMode',
+    default => 'even',
+);
 
 sub add {
     my $self = shift;
@@ -39,7 +44,10 @@ sub add {
 
 sub amount {
     my $self = shift;
-    return Math::Currency->new( $self->value, $self->currency_code );
+
+    my $mc = Math::Currency->new( $self->value, $self->currency_code );
+    $mc->round_mode( $self->round_mode );
+    return $mc;
 }
 
 sub multiply {
@@ -82,6 +90,7 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 __END__
+=for stopwords +inf -inf trunc
 
 =head1 NAME
 
@@ -130,6 +139,12 @@ PositiveNum only.
 Return boolean value.
 
 Default false.
+
+=head2 C<round_mode>
+
+'even', 'odd', '+inf', '-inf', 'zero', 'trunc'
+
+L<Math::BigFloat#Rounding>
 
 =head1 METHODS
 

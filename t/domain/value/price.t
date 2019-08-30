@@ -9,6 +9,12 @@ subtest 'basic' => sub {
     dies_ok { $pkg->new( value => -1 ) } 'right dies';
     lives_ok { $pkg->new( value => 1 ) } 'right lives';
     lives_ok { $pkg->new( value => 0.1 ) } 'right lives';
+
+    my $price = $pkg->new(100);
+    is $price->amount / 7, '$14.29', 'right defaylt round mode';
+
+    $price = $pkg->new( value => 100, round_mode => 'trunc' );
+    is $price->amount / 7, '$14.28', 'right change round mode';
 };
 
 subtest 'amount' => sub {
