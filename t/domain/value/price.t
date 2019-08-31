@@ -49,10 +49,7 @@ subtest 'add' => sub {
 subtest 'add_in_place' => sub {
     my $price = $pkg->new(100);
     my $p2    = $price;
-    ok $price == $p2, 'right same object';
-
     $p2 += 1;
-    ok $price != $p2, 'right different object';
     ok $p2->value == 101, 'right add in place';
 
     $price += $p2;
@@ -150,17 +147,38 @@ subtest 'subtract_in_place' => sub {
 subtest 'compares' => sub {
     my $price = $pkg->new(10);
     ok $price > 9, 'right greater';
+    ok !$price < 9, 'right less';
     ok $price < 11, 'right less';
+    ok $price >= 10, 'right not less';
+    ok $price <= 10, 'right not greater';
 
     my $p2 = $pkg->new(9);
     ok $price > $p2, 'right greater';
-    ok !$price < $p2, 'right less';
+    ok !( $price < $p2 ), 'right less';
+    my $p3 = $pkg->new(11);
+    ok $price < $p3, 'right less';
+    my $p4 = $pkg->new(10);
+    ok $price >= $p4, 'right not less';
+    ok $price <= $p4, 'right not greater';
+
+    ok $price == $p4, 'right equals';
+    ok $price != $p3, 'right not equals';
 
     my $jpy = $pkg->new( value => 100, currency_code => 'JPY' );
     dies_ok { $jpy > $price } 'right different currency';
+    dies_ok { $jpy < $price } 'right different currency';
+    dies_ok { $jpy >= $price } 'right different currency';
+    dies_ok { $jpy <= $price } 'right different currency';
+    dies_ok { $jpy == $price } 'right different currency';
+    dies_ok { $jpy != $price } 'right different currency';
 
     my $incl_tax = $pkg->new( value => 100, is_tax_included => 1 );
     dies_ok { $incl_tax > $price } 'right different including tax';
+    dies_ok { $incl_tax < $price } 'right different including tax';
+    dies_ok { $incl_tax >= $price } 'right different including tax';
+    dies_ok { $incl_tax <= $price } 'right different including tax';
+    dies_ok { $incl_tax == $price } 'right different including tax';
+    dies_ok { $incl_tax != $price } 'right different including tax';
 };
 
 done_testing();
