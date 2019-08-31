@@ -57,6 +57,12 @@ subtest 'add_in_place' => sub {
 
     $price += $p2;
     ok $price->value == 201, 'right add in place object';
+
+    my $jpy = $pkg->new( value => 100, currency_code => 'JPY' );
+    dies_ok { $jpy += $price } 'right different currency';
+
+    my $incl_tax = $pkg->new( value => 100, is_tax_included => 1 );
+    dies_ok { $incl_tax += $price } 'right different including tax';
 };
 
 subtest 'divide' => sub {
@@ -139,6 +145,22 @@ subtest 'subtract_in_place' => sub {
 
     $price -= $p2;
     ok $price->value == 1, 'right subtract in place object';
+};
+
+subtest 'compares' => sub {
+    my $price = $pkg->new(10);
+    ok $price > 9, 'right greater';
+    ok $price < 11, 'right less';
+
+    my $p2 = $pkg->new(9);
+    ok $price > $p2, 'right greater';
+    ok !$price < $p2, 'right less';
+
+    my $jpy = $pkg->new( value => 100, currency_code => 'JPY' );
+    dies_ok { $jpy > $price } 'right different currency';
+
+    my $incl_tax = $pkg->new( value => 100, is_tax_included => 1 );
+    dies_ok { $incl_tax > $price } 'right different including tax';
 };
 
 done_testing();
