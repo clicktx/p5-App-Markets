@@ -44,6 +44,19 @@ subtest 'add' => sub {
 
     my $incl_tax = $pkg->new( value => 100, is_tax_included => 1 );
     dies_ok { $price + $incl_tax } 'right different including tax';
+
+    subtest 'add_in_place' => sub {
+        my $price = $pkg->new(100);
+        my $p2    = $price;
+        ok $price == $p2, 'right same object';
+
+        $p2 += 1;
+        ok $price != $p2, 'right different object';
+        ok $p2->value == 101, 'right add in place';
+
+        $price += $p2;
+        ok $price->value == 201, 'right add in place object';
+    };
 };
 
 subtest 'divide' => sub {
@@ -56,6 +69,19 @@ subtest 'divide' => sub {
 
     $res = $price / 7;
     ok $res->value == 14.29, 'right divide round';
+
+    subtest 'divide_in_place' => sub {
+        my $price = $pkg->new(100);
+        my $p2    = $price;
+        $p2 /= 2;
+        ok $p2->value == 50, 'right divide in place';
+
+        $price /= $p2;
+        ok $price->value == 2, 'right divide in place object';
+
+        $price /= 3;
+        ok $price->value == 0.67, 'right divide round';
+    };
 };
 
 subtest 'multiply' => sub {
@@ -65,6 +91,16 @@ subtest 'multiply' => sub {
 
     $res = $price * $price;
     ok $res->value == 10000, 'right multiply obj';
+
+    subtest 'multiply_in_place' => sub {
+        my $price = $pkg->new(100);
+        my $p2    = $price;
+        $p2 *= 2;
+        ok $p2->value == 200, 'right multiply in place';
+
+        $price *= $p2;
+        ok $price->value == 20000, 'right multiply in place object';
+    };
 };
 
 subtest 'subtract' => sub {
@@ -74,6 +110,16 @@ subtest 'subtract' => sub {
 
     $res = $price - $price;
     ok $res->value == 0, 'right subtract obj';
+
+    subtest 'subtract_in_place' => sub {
+        my $price = $pkg->new(100);
+        my $p2    = $price;
+        $p2 -= 1;
+        ok $p2->value == 99, 'right subtract in place';
+
+        $price -= $p2;
+        ok $price->value == 1, 'right subtract in place object';
+    };
 };
 
 done_testing();
