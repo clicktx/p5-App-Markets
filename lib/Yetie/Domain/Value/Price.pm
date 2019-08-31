@@ -10,6 +10,7 @@ use overload
   '-'      => \&subtract,
   '*'      => \&multiply,
   '/'      => \&divide,
+  '%'      => \&modulo,
   fallback => 1;
 extends 'Yetie::Domain::Value';
 
@@ -57,6 +58,14 @@ sub divide {
 
     $self->_validate_error($num);
     return $self->clone( value => $self->amount->copy->bdiv($num)->as_float );
+}
+
+sub modulo {
+    my $self = shift;
+    my $num = shift || 0;
+
+    $self->_validate_error($num);
+    return $self->clone( value => $self->amount->copy->bmod($num)->as_float );
 }
 
 sub multiply {
@@ -169,6 +178,21 @@ the following new ones.
 
 Return L<Math::Currency> object.
 
+=head2 C<divide>
+
+    my $price2 = $price->divide(1);
+    my $price3 = $price->divide($price);
+
+=head2 C<modulo>
+
+    my $price2 = $price->modulo(1);
+    my $price3 = $price->modulo($price);
+
+=head2 C<multiply>
+
+    my $price2 = $price->multiply(1);
+    my $price3 = $price->multiply($price);
+
 =head2 C<subtract>
 
     my $price2 = $price->subtract(1);
@@ -185,6 +209,26 @@ Inspired by L<Data::Money>.
     my $amount = "$price";
 
 Alias for L</amount>.
+
+=head2 C<+>
+
+=head2 C<->
+
+=head2 C<*>
+
+=head2 C</>
+
+=head2 C<%>
+
+=head2 C<+=>
+
+=head2 C<-=>
+
+=head2 C<*=>
+
+=head2 C</=>
+
+=head2 C<%=>
 
 =head1 AUTHOR
 
