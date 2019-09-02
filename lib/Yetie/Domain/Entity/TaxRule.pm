@@ -6,7 +6,7 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-with 'Yetie::Domain::Role::Types';
+with 'Yetie::Domain::Role::TypesMoney';
 
 has tax_rate => (
     is      => 'ro',
@@ -26,15 +26,14 @@ has round_mode => (
 sub caluculate_tax {
     my ( $self, $price ) = @_;
 
+    my $clone = $price->clone( round_mode => $self->round_mode );
     my $rate = $self->tax_rate ? $self->tax_rate / 100 : 0;
     my $tax =
         $price->is_tax_included
-      ? $price->amount / ( 1 + $rate ) * $rate
-      : $price->amount * $rate;
+      ? $clone / ( 1 + $rate ) * $rate
+      : $clone * $rate;
 
-    my $mc = Math::Currency->new;
-    $mc->round_mode( $self->round_mode );
-    return $mc->new( $tax, $price->currency_code );
+    return $tax;
 }
 
 no Moose;
@@ -87,7 +86,7 @@ the following new ones.
 
 Arguments L<Yetie::Domain::Value::Price> object.
 
-Return L<Math::Currency> object.
+Return L<Yetie::Domain::Value::Price> object.
 
 =head1 AUTHOR
 
