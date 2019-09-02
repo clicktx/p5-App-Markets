@@ -81,7 +81,7 @@ subtest 'product_hash_code' => sub {
     is $item->is_modified, 0, 'right not modified';
 };
 
-subtest 'row_total' => sub {
+subtest 'row_total_incl_tax' => sub {
     my $item = factory(
         {
             price    => 300,
@@ -91,7 +91,7 @@ subtest 'row_total' => sub {
             },
         }
     );
-    is $item->row_total, '$630.00', 'right row_total';
+    is $item->row_total_incl_tax, '$630.00', 'right row total including tax';
 };
 
 subtest 'to_data' => sub {
