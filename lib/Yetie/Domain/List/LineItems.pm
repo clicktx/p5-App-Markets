@@ -38,7 +38,7 @@ sub remove {
 
 sub subtotal {
     my $self = shift;
-    return $self->list->reduce( sub { $a + $b->subtotal }, 0 );
+    return $self->list->reduce( sub { $a + $b->row_total }, 0 );
 }
 
 sub total_amount {

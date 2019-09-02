@@ -13,6 +13,14 @@ has _product_hash_code => (
     reader   => 'product_hash_code',
     init_arg => undef,
 );
+has _row_total => (
+    is       => 'ro',
+    isa      => 'Yetie::Domain::Value::Price',
+    lazy     => 1,
+    builder  => '_build__row_total',
+    reader   => 'row_total',
+    init_arg => undef,
+);
 has price => (
     is      => 'rw',
     isa     => 'Yetie::Domain::Value::Price',
@@ -41,6 +49,8 @@ override set_attributes => sub {
     return super();
 };
 
+sub equals { return $_[0]->product_hash_code eq $_[1]->product_hash_code ? 1 : 0 }
+
 sub _build__product_hash_code {
     my $self = shift;
 
@@ -52,14 +62,9 @@ sub _build__product_hash_code {
     return $self->SUPER::hash_code($str);
 }
 
-sub equals { return $_[0]->product_hash_code eq $_[1]->product_hash_code ? 1 : 0 }
-
-sub subtotal {
-    my $self     = shift;
-    my $subtotal = 0;
-
-    $subtotal = $self->price * $self->quantity;
-    return $subtotal;
+sub _build__row_total {
+    my $self = shift;
+    return $self->price_incl_tax * $self->quantity;
 }
 
 no Moose;
@@ -97,6 +102,12 @@ This method gets a string identifying product item.
 
 =head2 C<price>
 
+Return L<Yetie::Domain::Value::Price> object.
+
+=head2 C<row_total>
+
+Return L<Yetie::Domain::Value::Price> object.
+
 =head1 METHODS
 
 L<Yetie::Domain::Entity::LineItem> inherits all methods from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Tax>.
@@ -106,13 +117,6 @@ Implements the following new ones.
 =head2 C<equals>
 
     my $bool = $item->equals($other_item);
-
-=head2 C<subtotal>
-
-    $item->subtotal
-
-Returns the combined price of all the items in the row.
-This is equal to C< $item-E<gt>price> times C<$item-E<gt>quantity>.
 
 =head1 AUTHOR
 

@@ -99,7 +99,7 @@ subtest 'remove' => sub {
 subtest 'subtotal' => sub {
     my $data = [ { quantity => 1, price => 1 }, { quantity => 2, price => 2 }, { quantity => 3, price => 3 } ];
     my $list = factory( list => $data );
-    is $list->subtotal, 14, 'right subtotal';
+    is $list->subtotal, '$14.00', 'right subtotal';
 };
 
 done_testing();
