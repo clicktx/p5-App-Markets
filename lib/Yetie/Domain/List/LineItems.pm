@@ -3,6 +3,26 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
 
+has _subtotal_incl_tax => (
+    is       => 'ro',
+    isa      => 'Yetie::Domain::Value::Price',
+    lazy     => 1,
+    builder  => '_build__subtotal_incl_tax',
+    reader   => 'subtotal_incl_tax',
+    init_arg => undef,
+);
+
+sub _build__subtotal_incl_tax {
+    my $self = shift;
+
+    my $price =
+        $self->list->size
+      ? $self->list->first->price->clone( value => 0 )
+      : Yetie::Factory->new('value-price')->construct;
+
+    return $self->list->reduce( sub { $a + $b->row_total_incl_tax }, $price );
+}
+
 sub append {
     my $self = shift;
 
@@ -34,11 +54,6 @@ sub remove {
     my $new = $self->list->grep( sub { !$_->equals($item) } );
     $self->list($new);
     return 1;
-}
-
-sub subtotal {
-    my $self = shift;
-    return $self->list->reduce( sub { $a + $b->row_total }, 0 );
 }
 
 sub total_amount {
@@ -86,6 +101,10 @@ Yetie::Domain::List::LineItems
 L<Yetie::Domain::List::LineItems> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
 
+=head2 C<subtotal_incl_tax>
+
+    my $subtotal_incl_tax = $items->subtotal_incl_tax;
+
 =head1 METHODS
 
 L<Yetie::Domain::List::LineItems> inherits all methods from L<Yetie::Domain::List> and implements
@@ -113,10 +132,6 @@ the following new ones.
     $items->remove($line_num);
 
 Return true if remove item.
-
-=head2 C<subtotal>
-
-    my $subtotal = $items->subtotal;
 
 =head2 C<total_amount>
 
