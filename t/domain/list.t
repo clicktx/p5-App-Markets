@@ -49,12 +49,32 @@ subtest 'each' => sub {
     is_deeply \@array, [ 1, 2, 3 ], 'right function in each';
 };
 
+subtest 'grep' => sub {
+    my $l = construct( 1, 2, 3 );
+    is_deeply $l->grep(qr/2/)->to_data, [2], 'right grep';
+};
+
 subtest 'has_elements' => sub {
     my $l = construct();
     ok !$l->has_elements, 'right has not elements';
 
     $l = construct( 1, 2, 3 );
     ok $l->has_elements, 'right has elements';
+};
+
+subtest 'map' => sub {
+    my $l = construct( 1, 2, 3 );
+    is_deeply $l->map( sub { ++$_ } )->to_data, [ 2, 3, 4 ], 'right map';
+};
+
+subtest 'reduce' => sub {
+    my $l = construct( 1, 2, 3 );
+    is $l->reduce( sub { $a + $b } ), 6, 'right reduce';
+};
+
+subtest 'size' => sub {
+    my $l = construct( 1, 2, 3 );
+    is $l->size, 3, 'right size';
 };
 
 subtest 'to_data' => sub {

@@ -19,7 +19,7 @@ sub append {
 
 sub clear { return shift->list( Yetie::Domain::Collection->new ) }
 
-sub count { return shift->list->size }
+sub count { warn 'Deprecated!!'; return shift->list->size }
 
 sub each {
     my ( $self, $cb ) = @_;
@@ -37,9 +37,21 @@ sub get_by_id { return shift->list->get_by_id(shift) }
 
 sub get_by_line_num { return shift->list->get_by_line_num(shift) }
 
+sub grep { return shift->list->grep(@_) }
+
 sub has_elements { return shift->list->size ? 1 : 0 }
 
 sub last { return shift->list->last }
+
+sub map { return shift->list->map(@_) }
+
+sub reduce {
+    my $self = shift;
+    @_ = ( @_, @{ $self->list } );
+    goto &List::Util::reduce;
+}
+
+sub size { return shift->list->size }
 
 sub to_array { return shift->list->to_array }
 
@@ -90,6 +102,8 @@ Create empty collection in L</list>.
 
 =head2 C<count>
 
+B<Deprecated!!>
+
     my $int = $domain->count;
 
     # Longer version
@@ -98,6 +112,8 @@ Create empty collection in L</list>.
 Count elements.
 
 See L<Mojo::Collection/size>.
+
+Alias for L</size>
 
 =head2 C<each>
 
@@ -143,6 +159,15 @@ Return $element or undef.
 
 See L<Yetie::Domain::Collection/get_by_line_num>.
 
+=head2 C<grep>
+
+    my $new = $domain->grep(q/foo/);
+
+    # Longer version
+    my $new = $domain->list->grep(q/foo/);
+
+See L<Mojo::Collection/grep>
+
 =head2 C<has_elements>
 
 Returns true if there is an element.
@@ -159,6 +184,33 @@ Return boolean value.
     my $last = $domain->list->last;
 
 See L<Mojo::Collection/last>.
+
+=head2 C<map>
+
+    my $new = $domain->map( sub {...} );
+
+    # Longer version
+    my $new = $domain->list->map( sub {...} );
+
+See L<Mojo::Collection/map>
+
+=head2 C<reduce>
+
+    my $result = $domain->reduce( sub {...} );
+
+    # Longer version
+    my $result = $domain->list->reduce( sub {...} );
+
+See L<Mojo::Collection/reduce>
+
+=head2 C<size>
+
+    my $size = $domain->size;
+
+    # Longer version
+    my $size = $domain->list->size;
+
+See L<Mojo::Collection/size>
 
 =head2 C<to_array>
 
