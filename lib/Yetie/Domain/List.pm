@@ -19,8 +19,6 @@ sub append {
 
 sub clear { return shift->list( Yetie::Domain::Collection->new ) }
 
-sub count { warn 'Deprecated!!'; return shift->list->size }
-
 sub each {
     my ( $self, $cb ) = @_;
     return @{ $self->list } if !$cb;
@@ -99,21 +97,6 @@ See L<Yetie::Domain::Collection/append>.
 Clear collection.
 
 Create empty collection in L</list>.
-
-=head2 C<count>
-
-B<Deprecated!!>
-
-    my $int = $domain->count;
-
-    # Longer version
-    my $int = $domain->list->size;
-
-Count elements.
-
-See L<Mojo::Collection/size>.
-
-Alias for L</size>
 
 =head2 C<each>
 

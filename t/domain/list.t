@@ -30,12 +30,6 @@ subtest 'clear' => sub {
     is $l->is_modified, 1, 'right modified';
 };
 
-subtest 'count' => sub {
-    my $l = construct( 1, 2, 3 );
-    my $int = $l->count;
-    is $int, 3, 'right count';
-};
-
 subtest 'each' => sub {
     my $l = construct( 1, 2, 3 );
     my @elements = $l->each;

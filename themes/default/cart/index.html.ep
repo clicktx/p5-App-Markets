@@ -4,7 +4,7 @@
 <h1><%= title %></h1>
 
 <% my $cart = $self->cart; %>
-<%= __nx('{cnt :num} item', '{cnt :num} items', $cart->total_item_count, cnt => $cart->total_item_count) %>
+<%= __nx('{cnt :num} item', '{cnt :num} items', $cart->count_total_items, cnt => $cart->count_total_items) %>
 (Total QTY: <%= $cart->total_quantity %>) in your cart.
 
 <%= form_for 'rn.cart' => ( method => 'POST' ) => begin %>

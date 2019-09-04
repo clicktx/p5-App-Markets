@@ -54,7 +54,7 @@ sub grand_total {
 
 sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
 
-sub has_item { return shift->items->count ? 1 : 0 }
+sub has_item { return shift->items->size ? 1 : 0 }
 
 sub has_shipping_address {
     my $self = shift;
@@ -186,9 +186,9 @@ sub to_order_data {
     return $data;
 }
 
-sub total_item_count {
+sub count_total_items {
     my $self = shift;
-    return $self->items->count + $self->shipments->total_item_count;
+    return $self->items->size + $self->shipments->count_total_items;
 }
 
 sub total_quantity {
@@ -353,9 +353,9 @@ Update shipping address.
 
     my $order = $self->to_order_data;
 
-=head2 C<total_item_count>
+=head2 C<count_total_items>
 
-    my $item_count = $cart->total_item_count;
+    my $item_count = $cart->count_total_items;
 
 Return number of items types.
 

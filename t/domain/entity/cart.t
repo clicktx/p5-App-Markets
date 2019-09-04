@@ -145,7 +145,7 @@ subtest 'methods' => sub {
     $d->{shipments}->[1]->{shipping_address}->{hash} = 'e49e00abbdbcaa37c27e8af5ca11fe33c24703ce';
     cmp_deeply $cart_data, { id => ignore(), cart_id => ignore(), %{$d} }, 'right data structure';
     is $cart->id,               '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
-    is $cart->total_item_count, '7',                                        'right total item count';
+    is $cart->count_total_items, '7',                                        'right total item count';
     is $cart->total_quantity,   '25',                                       'right total quantity count';
 
     my $cart2 = Yetie::Factory->new('entity-cart')->construct(
@@ -188,8 +188,8 @@ subtest 'add_shipping_item' => sub {
 subtest 'clear_items' => sub {
     my $cart = _create_entity;
     $cart->clear_items;
-    is $cart->items->count, 0;
-    is $cart->total_item_count, 0;
+    is $cart->items->size, 0;
+    is $cart->count_total_items, 0;
     is $cart->is_modified, 1, 'right modified';
 };
 
@@ -521,7 +521,7 @@ subtest 'revert' => sub {
       ],
       'right items';
 
-    is $cart->shipments->count, 1, 'right shipments';
+    is $cart->shipments->size, 1, 'right shipments';
     cmp_deeply $cart->shipments->first->to_data,
       {
         items            => [],

@@ -24,7 +24,7 @@ subtest 'shipments empty hash ref' => sub {
 
 subtest 'cart data empty' => sub {
     my $e = $pkg->new('entity-cart')->construct();
-    is $e->items->count, 0;
+    is $e->items->size, 0;
 };
 
 subtest 'argument items data only' => sub {
@@ -35,7 +35,7 @@ subtest 'argument items data only' => sub {
         }
     )->construct();
     isa_ok $e->items->first, 'Yetie::Domain::Entity::LineItem';
-    is $e->items->count, 2, 'right items count';
+    is $e->items->size, 2, 'right items size';
 };
 
 done_testing;

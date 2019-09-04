@@ -18,7 +18,7 @@ subtest 'basic' => sub {
     isa_ok $shipment, 'Yetie::Domain::Entity::Shipment';
     can_ok $shipment, 'items';
     can_ok $shipment, 'shipping_address';
-    can_ok $shipment, 'item_count';
+    can_ok $shipment, 'count_items';
 
     isa_ok $shipment->shipping_address, 'Yetie::Domain::Entity::Address';
     isa_ok $shipment->items,            'Yetie::Domain::List::LineItems';
@@ -34,12 +34,12 @@ subtest 'equals' => sub {
     is $shipment->equals($shipment2), 0, 'right not equals item';
 };
 
-subtest 'item_count' => sub {
+subtest 'count_items' => sub {
     my $shipment = construct( id => 1 );
-    is $shipment->item_count, 0, 'right item_count';
+    is $shipment->count_items, 0, 'right count_items';
 
     $shipment = construct( id => 1, items => [ {}, {}, {} ] );
-    is $shipment->item_count, 3, 'right item_count';
+    is $shipment->count_items, 3, 'right count_items';
 };
 
 subtest 'subtotal' => sub {

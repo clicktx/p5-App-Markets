@@ -7,7 +7,7 @@ has children => (
     default => sub { shift->factory('list-category_trees')->construct() },
 );
 
-sub has_child { shift->children->count ? 1 : 0 }
+sub has_child { shift->children->size ? 1 : 0 }
 
 1;
 __END__

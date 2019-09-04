@@ -16,7 +16,7 @@ sub _build__subtotal_incl_tax {
     my $self = shift;
 
     my $price =
-        $self->count
+        $self->size
       ? $self->first->price->clone( value => 0 )
       : Yetie::Factory->new('value-price')->construct;
 

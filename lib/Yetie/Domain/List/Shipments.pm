@@ -15,13 +15,13 @@ sub create_shipment {
     return $shipment;
 }
 
-sub has_item { return shift->total_item_count ? 1 : 0 }
+sub has_item { return shift->count_total_items ? 1 : 0 }
 
-sub has_shipment { return shift->count ? 1 : 0 }
+sub has_shipment { return shift->size ? 1 : 0 }
 
-sub is_multiple { return shift->count > 1 ? 1 : 0 }
+sub is_multiple { return shift->size > 1 ? 1 : 0 }
 
-sub total_item_count {
+sub count_total_items {
     return shift->list->map( sub { $_->items->each } )->size;
 }
 
@@ -98,9 +98,9 @@ Return boolean value.
 
 Return boolean value.
 
-=head2 C<total_item_count>
+=head2 C<count_total_items>
 
-    my $count = $shipments->total_item_count;
+    my $count = $shipments->count_total_items;
 
 =head2 C<total_quantity>
 

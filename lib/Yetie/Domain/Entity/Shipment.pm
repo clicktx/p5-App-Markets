@@ -14,7 +14,7 @@ has shipping_address => (
     default => sub { __PACKAGE__->factory('entity-address')->construct() }
 );
 
-sub item_count { return shift->items->count }
+sub count_items { return shift->items->size }
 
 sub subtotal {
     return shift->items->reduce( sub { $a + $b->subtotal }, 0 );
@@ -52,9 +52,9 @@ Return L<Yetie::Domain::Collection> object.
 L<Yetie::Domain::Entity::Shipment> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<item_count>
+=head2 C<count_items>
 
-    my $count = $shipment->item_count;
+    my $count = $shipment->count_items;
 
 =head2 C<subtotal>
 

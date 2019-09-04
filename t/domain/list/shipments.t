@@ -18,12 +18,12 @@ subtest 'basic' => sub {
 subtest 'create_shipment' => sub {
     my $v        = construct();
     my $shipment = $v->create_shipment;
-    is $v->count, 1, 'right create shipment';
+    is $v->size, 1, 'right create shipment';
     isa_ok $shipment, 'Yetie::Domain::Entity::Shipment';
     isa_ok $v->first, 'Yetie::Domain::Entity::Shipment';
 
     my $shipment2 = $v->create_shipment;
-    is $v->count, 2, 'right recreate shipment';
+    is $v->size, 2, 'right recreate shipment';
     isnt $shipment, $shipment2, 'right compare object';
 };
 
@@ -51,9 +51,9 @@ subtest 'is_multiple' => sub {
     is $bool, 1, 'right multiple shipments';
 };
 
-subtest 'total_item_count' => sub {
+subtest 'count_total_items' => sub {
     my $v = construct( list => [ { items => [ {}, {} ] }, { items => [ {}, {} ] } ] );
-    is $v->total_item_count, 4, 'right total items';
+    is $v->count_total_items, 4, 'right total items';
 };
 
 subtest 'total_quantity' => sub {
