@@ -72,6 +72,12 @@ subtest 'rehash' => sub {
     is $hash_sum, $obj->_hash_sum, 'right hash_sum';
     $obj->rehash;
     isnt $hash_sum, $obj->_hash_sum, 'right rehash';
+
+    $hash_sum = $obj->_hash_sum;
+    my $obj2 = $test_pkg->new( bar => $obj );
+    $obj2->bar->_set_hash_sum('foo');
+    $obj2->rehash;
+    is $hash_sum, $obj2->bar->_hash_sum, 'right recursive rehash';
 };
 
 subtest 'set_attributes' => sub {
