@@ -2,8 +2,7 @@ package Yetie::Domain::Entity;
 use Yetie::Factory;
 use Yetie::Domain::Collection qw();
 use Yetie::Domain::IxHash qw();
-use Scalar::Util qw();
-use Data::Clone qw();
+use Clone qw();
 
 use Moose;
 use namespace::autoclean;
@@ -13,23 +12,10 @@ my @not_dump_attrs_defautls = (qw/created_at updated_at/);
 
 has id => ( is => 'rw' );
 
-# NOTE: There may be bug?? If reader is set in attribute and the value is object.
 sub clone {
-    my $self  = shift;
-    my $clone = Data::Clone::data_clone($self);
+    my $self = shift;
 
-    my @attributes = $self->get_all_attribute_names;
-    foreach my $attr (@attributes) {
-        next if !$self->can($attr);                       # NOTE: for change attribute reader
-        next if !Scalar::Util::blessed( $self->$attr );
-
-        # Domain List or Set object
-        if ( $self->$attr->can('map') ) {
-            $clone->$attr( $self->$attr->map( sub { $_->clone } ) );
-        }
-    }
-
-    # Reset object hash_sum
+    my $clone = Clone::clone($self);
     return $clone->rehash;
 }
 
