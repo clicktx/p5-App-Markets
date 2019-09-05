@@ -22,7 +22,7 @@
                 </a>
                     | price: <%= $item->price %> incl-tax: <%= $item->price_incl_tax %> tax: <%= $item->tax_amount %>
                     | QTY:<%= $item->quantity %><%= form_widget("cart#quantity.$i") %><%= form_error("cart#item.$i.quantity") %>
-                    | row-total: <%= $item->row_total %>
+                    | row-total including tax: <%= $item->row_total_incl_tax %>
                 <div class="cart-item-control">
                     <%= link_to 'rn.cart.item.delete' => ( name => "button.delete.$i", class => 'btn btn-link submit-post', 'data-name' => 'line_num', 'data-value' => $num ) => begin %>
                         Delete
@@ -43,7 +43,13 @@
 
 <hr>
 <div class="">
-    Subtotal: <%= $cart->subtotal %>
+    Subtotal excluding-tax: <%= $cart->subtotal_excl_tax %> / including-tax: <%= $cart->subtotal_incl_tax %>
+</div>
+<div class="">
+    Shipping & Handling:
+</div>
+<div class="">
+    Taxes:
 </div>
 <div class="">
     Grand Total: <%= $cart->grand_total %>

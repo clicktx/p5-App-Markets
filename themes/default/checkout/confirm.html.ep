@@ -54,7 +54,7 @@
                         Change
                     <% end %>
                     | price: <%= $_->price %>
-                    | line total: <%= $_->subtotal %>
+                    | row total(including tax): <%= $_->row_total_incl_tax %>
                 </li>
             % });
         </ol>

@@ -20,7 +20,7 @@ sub _build__subtotal_incl_tax {
       ? $self->first->price->clone( value => 0 )
       : Yetie::Factory->new('value-price')->construct;
 
-    return $self->list->reduce( sub { $a + $b->row_total_incl_tax }, $price );
+    return $self->reduce( sub { $a + $b->row_total_incl_tax }, $price );
 }
 
 sub append {
@@ -36,13 +36,13 @@ sub append {
 
 sub get_by_product_hash_code {
     my ( $self, $hash_code ) = @_;
-    return $self->list->first( sub { $_->product_hash_code eq $hash_code } );
+    return $self->first( sub { $_->product_hash_code eq $hash_code } );
 }
 
 sub has_element_by_hash { return shift->get_by_product_hash_code(shift) ? 1 : 0 }
 
 sub total_quantity {
-    return shift->list->reduce( sub { $a + $b->quantity }, 0 );
+    return shift->reduce( sub { $a + $b->quantity }, 0 );
 }
 
 sub remove {
@@ -51,7 +51,7 @@ sub remove {
     my $item = $self->get_by_line_num($line_num);
     return 0 if !$item;
 
-    my $new = $self->list->grep( sub { !$_->equals($item) } );
+    my $new = $self->grep( sub { !$_->equals($item) } );
     $self->list($new);
     return 1;
 }
@@ -73,7 +73,7 @@ sub _append_item {
 
 sub _update_quantity {
     my ( $self, $item ) = @_;
-    my $new = $self->list->map(
+    my $new = $self->map(
         sub {
             if ( $_->equals($item) ) { $_->quantity( $_->quantity + $item->quantity ) }
             return $_;
