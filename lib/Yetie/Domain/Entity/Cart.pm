@@ -45,7 +45,7 @@ sub clear_items {
 
 sub grand_total {
     my $self        = shift;
-    my $grand_total = $self->subtotal;
+    my $grand_total = $self->subtotal_incl_tax;
 
     # 送料計算等
 
@@ -160,9 +160,9 @@ sub set_shipping_address {
     return $self;
 }
 
-sub subtotal {
+sub subtotal_incl_tax {
     my $self = shift;
-    return $self->items->subtotal + $self->shipments->subtotal;
+    return $self->items->subtotal_incl_tax + $self->shipments->subtotal_incl_tax;
 }
 
 sub to_order_data {
@@ -345,9 +345,9 @@ See L<Yetie::Domain::List::Shipments/revert>.
 
 Update shipping address.
 
-=head2 C<subtotal>
+=head2 C<subtotal_incl_tax>
 
-    my $subtotal = $cart->subtotal;
+    my $subtotal_incl_tax = $cart->subtotal_incl_tax;
 
 =head2 C<to_order_data>
 

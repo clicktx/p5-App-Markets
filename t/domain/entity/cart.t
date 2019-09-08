@@ -144,9 +144,9 @@ subtest 'methods' => sub {
     $d->{shipments}->[0]->{shipping_address}->{hash} = 'a38d44916394e4d5289b8e5e2cc7b66bcd3f1722';
     $d->{shipments}->[1]->{shipping_address}->{hash} = 'e49e00abbdbcaa37c27e8af5ca11fe33c24703ce';
     cmp_deeply $cart_data, { id => ignore(), cart_id => ignore(), %{$d} }, 'right data structure';
-    is $cart->id,               '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
+    is $cart->id,                '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
     is $cart->count_total_items, '7',                                        'right total item count';
-    is $cart->total_quantity,   '25',                                       'right total quantity count';
+    is $cart->total_quantity,    '25',                                       'right total quantity count';
 
     my $cart2 = Yetie::Factory->new('entity-cart')->construct(
         {
@@ -196,9 +196,9 @@ subtest 'clear_items' => sub {
 subtest 'clone' => sub {
     my $cart = _create_entity;
 
-    $cart->is_modified(1);
     my $clone = $cart->clone;
-    is $clone->is_modified, 0, 'right modified';
+    is $cart->is_modified,  0, 'right cart not modified';
+    is $clone->is_modified, 0, 'right clone not modified';
     cmp_deeply $cart->to_data, $clone->to_data, 'right all data';
 
     # items
@@ -636,13 +636,13 @@ subtest 'set_shipping_address' => sub {
     is $cart->is_modified, 0, 'right not modified';
 };
 
-subtest 'subtotal' => sub {
+subtest 'subtotal_incl_tax' => sub {
     my $cart = _create_entity;
-    is $cart->subtotal, 2500, 'right subtotal';
+    ok $cart->subtotal_incl_tax == 2625, 'right subtotal including tax';
 
     # no items
     $cart = Yetie::Factory->new('entity-cart')->construct( cart_id => '12345' );
-    $cart->subtotal, 0, 'right no items';
+    ok $cart->subtotal_incl_tax == 0, 'right no items';
 };
 
 subtest 'to_order_data' => sub {
