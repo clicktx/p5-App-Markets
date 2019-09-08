@@ -72,7 +72,7 @@ subtest 'revert' => sub {
     cmp_deeply $data, [ { shipping_address => ignore(), items => [] } ], 'right revert';
 };
 
-subtest 'subtotal_incl_tax' => sub {
+subtest 'subtotal' => sub {
     my $data = [
         {
             items => [
@@ -102,7 +102,11 @@ subtest 'subtotal_incl_tax' => sub {
     ];
 
     my $v = construct( list => [] );
+    is $v->subtotal_excl_tax, '$0.00', 'right subtotal excluding tax(no shipments)';
     is $v->subtotal_incl_tax, '$0.00', 'right subtotal including tax(no shipments)';
+
+    $v = construct( list => $data );
+    is $v->subtotal_excl_tax, '$14.00', 'right subtotal excluding tax';
 
     $v = construct( list => $data );
     is $v->subtotal_incl_tax, '$14.70', 'right subtotal including tax';
