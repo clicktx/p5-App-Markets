@@ -13,6 +13,14 @@ has _product_hash_code => (
     reader   => 'product_hash_code',
     init_arg => undef,
 );
+has _row_total_excl_tax => (
+    is       => 'ro',
+    isa      => 'Yetie::Domain::Value::Price',
+    lazy     => 1,
+    builder  => '_build__row_total_excl_tax',
+    reader   => 'row_total_excl_tax',
+    init_arg => undef,
+);
 has _row_total_incl_tax => (
     is       => 'ro',
     isa      => 'Yetie::Domain::Value::Price',
@@ -60,6 +68,11 @@ sub _build__product_hash_code {
     return $self->SUPER::hash_code($str);
 }
 
+sub _build__row_total_excl_tax {
+    my $self = shift;
+    return $self->price_excl_tax * $self->quantity;
+}
+
 sub _build__row_total_incl_tax {
     my $self = shift;
     return $self->price_incl_tax * $self->quantity;
@@ -101,6 +114,10 @@ This method gets a string identifying product item.
 =head2 C<quantity>
 
 =head2 C<price>
+
+Return L<Yetie::Domain::Value::Price> object.
+
+=head2 C<row_total_incl_tax>
 
 Return L<Yetie::Domain::Value::Price> object.
 
