@@ -120,7 +120,11 @@ subtest 'subtotal' => sub {
             },
         }
     ];
-    my $list = factory( list => $data );
+    my $list = factory( list => [] );
+    is $list->subtotal_excl_tax, '$0.00', 'right subtotal excluding tax(no items)';
+    is $list->subtotal_incl_tax, '$0.00', 'right subtotal including tax(no items)';
+
+    $list = factory( list => $data );
     is $list->subtotal_excl_tax, '$14.00', 'right subtotal excluding tax';
     is $list->subtotal_incl_tax, '$14.70', 'right subtotal including tax';
 };
