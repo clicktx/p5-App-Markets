@@ -61,10 +61,6 @@ sub revert {
     return $self->list($shipments);
 }
 
-sub subtotal {
-    return shift->list->reduce( sub { $a + $b->items->subtotal }, 0 );
-}
-
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -136,10 +132,6 @@ Return boolean value.
     $shipments->revert;
 
 Delete except the first element. Also delete all items of the first element.
-
-=head2 C<subtotal>
-
-    my $subtotal = $shipments->subtotal;
 
 =head1 AUTHOR
 
