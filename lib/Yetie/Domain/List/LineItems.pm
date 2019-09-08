@@ -3,6 +3,15 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
 
+has _subtotal_excl_tax => (
+    is       => 'ro',
+    isa      => 'Yetie::Domain::Value::Price',
+    lazy     => 1,
+    builder  => '_build__subtotal_excl_tax',
+    reader   => 'subtotal_excl_tax',
+    init_arg => undef,
+);
+
 has _subtotal_incl_tax => (
     is       => 'ro',
     isa      => 'Yetie::Domain::Value::Price',
@@ -12,14 +21,25 @@ has _subtotal_incl_tax => (
     init_arg => undef,
 );
 
+sub _init_price {
+    my $self = shift;
+
+    return $self->size
+      ? $self->first->price->clone( value => 0 )
+      : Yetie::Factory->new('value-price')->construct;
+}
+
+sub _build__subtotal_excl_tax {
+    my $self = shift;
+
+    my $price = $self->_init_price;
+    return $self->reduce( sub { $a + $b->row_total_excl_tax }, $price );
+}
+
 sub _build__subtotal_incl_tax {
     my $self = shift;
 
-    my $price =
-        $self->size
-      ? $self->first->price->clone( value => 0 )
-      : Yetie::Factory->new('value-price')->construct;
-
+    my $price = $self->_init_price;
     return $self->reduce( sub { $a + $b->row_total_incl_tax }, $price );
 }
 
@@ -100,6 +120,10 @@ Yetie::Domain::List::LineItems
 
 L<Yetie::Domain::List::LineItems> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
+
+=head2 C<subtotal_excl_tax>
+
+    my $subtotal_excl_tax = $items->subtotal_excl_tax;
 
 =head2 C<subtotal_incl_tax>
 

@@ -96,7 +96,7 @@ subtest 'remove' => sub {
     is $res, 0, 'right not removed';
 };
 
-subtest 'subtotal_incl_tax' => sub {
+subtest 'subtotal' => sub {
     my $data = [
         {
             price    => 1,
@@ -121,6 +121,7 @@ subtest 'subtotal_incl_tax' => sub {
         }
     ];
     my $list = factory( list => $data );
+    is $list->subtotal_excl_tax, '$14.00', 'right subtotal excluding tax';
     is $list->subtotal_incl_tax, '$14.70', 'right subtotal including tax';
 };
 
