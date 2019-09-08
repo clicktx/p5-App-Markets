@@ -49,8 +49,6 @@ override set_attributes => sub {
     return super();
 };
 
-sub equals { return $_[0]->product_hash_code eq $_[1]->product_hash_code ? 1 : 0 }
-
 sub _build__product_hash_code {
     my $self = shift;
 
@@ -66,6 +64,8 @@ sub _build__row_total_incl_tax {
     my $self = shift;
     return $self->price_incl_tax * $self->quantity;
 }
+
+sub equals { return $_[0]->product_hash_code eq $_[1]->product_hash_code ? 1 : 0 }
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
