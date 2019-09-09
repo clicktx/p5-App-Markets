@@ -3,47 +3,6 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
 
-has _subtotal_excl_tax => (
-    is       => 'ro',
-    isa      => 'Yetie::Domain::Value::Price',
-    lazy     => 1,
-    builder  => '_build__subtotal_excl_tax',
-    reader   => 'subtotal_excl_tax',
-    init_arg => undef,
-);
-
-has _subtotal_incl_tax => (
-    is       => 'ro',
-    isa      => 'Yetie::Domain::Value::Price',
-    lazy     => 1,
-    builder  => '_build__subtotal_incl_tax',
-    reader   => 'subtotal_incl_tax',
-    init_arg => undef,
-);
-
-sub _init_price {
-    my $self = shift;
-
-    my $first_shipment = $self->first;
-    return $first_shipment
-      ? $first_shipment->items->first->price->clone( value => 0 )
-      : Yetie::Factory->new('value-price')->construct;
-}
-
-sub _build__subtotal_excl_tax {
-    my $self = shift;
-
-    my $price = $self->_init_price;
-    return $self->list->reduce( sub { $a + $b->items->subtotal_excl_tax }, $price );
-}
-
-sub _build__subtotal_incl_tax {
-    my $self = shift;
-
-    my $price = $self->_init_price;
-    return $self->list->reduce( sub { $a + $b->items->subtotal_incl_tax }, $price );
-}
-
 sub clear_items {
     return shift->each( sub { $_->items->clear } );
 }
@@ -81,6 +40,29 @@ sub revert {
     return $self->list($shipments);
 }
 
+sub subtotal_excl_tax {
+    my $self = shift;
+
+    my $price = $self->_init_price;
+    return $self->reduce( sub { $a + $b->subtotal_excl_tax }, $price );
+}
+
+sub subtotal_incl_tax {
+    my $self = shift;
+
+    my $price = $self->_init_price;
+    return $self->reduce( sub { $a + $b->subtotal_incl_tax }, $price );
+}
+
+sub _init_price {
+    my $self = shift;
+
+    my $first_shipment = $self->first;
+    return $first_shipment
+      ? $first_shipment->items->first->price->clone( value => 0 )
+      : Yetie::Factory->new('value-price')->construct;
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -99,14 +81,6 @@ Yetie::Domain::List::Shipments
 
 L<Yetie::Domain::List::Shipments> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
-
-=head2 C<subtotal_excl_tax>
-
-    my $subtotal_excl_tax = $items->subtotal_excl_tax;
-
-=head2 C<subtotal_incl_tax>
-
-    my $subtotal_incl_tax = $items->subtotal_incl_tax;
 
 =head1 METHODS
 
@@ -156,6 +130,14 @@ Return boolean value.
     $shipments->revert;
 
 Delete except the first element. Also delete all items of the first element.
+
+=head2 C<subtotal_excl_tax>
+
+    my $subtotal_excl_tax = $items->subtotal_excl_tax;
+
+=head2 C<subtotal_incl_tax>
+
+    my $subtotal_incl_tax = $items->subtotal_incl_tax;
 
 =head1 AUTHOR
 
