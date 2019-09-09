@@ -81,14 +81,30 @@ subtest 'product_hash_code' => sub {
     is $item->is_modified, 0, 'right not modified';
 };
 
-subtest 'subtotal' => sub {
+subtest 'row_total' => sub {
     my $item = factory(
         {
-            quantity => 2,
             price    => 300,
+            quantity => 0,
+            tax_rule => {
+                tax_rate => 5,
+            },
         }
     );
-    is $item->subtotal, 600, 'right subtotal';
+    is $item->row_total_excl_tax, '$0.00', 'right row total excluding tax(no quantity)';
+    is $item->row_total_incl_tax, '$0.00', 'right row total including tax(no quantity)';
+
+    $item = factory(
+        {
+            price    => 300,
+            quantity => 2,
+            tax_rule => {
+                tax_rate => 5,
+            },
+        }
+    );
+    is $item->row_total_excl_tax, '$600.00', 'right row total excluding tax';
+    is $item->row_total_incl_tax, '$630.00', 'right row total including tax';
 };
 
 subtest 'to_data' => sub {

@@ -1,4 +1,4 @@
-package Yetie::Domain::Role::Types;
+package Yetie::Domain::Role::TypesMoney;
 use Moose::Role;
 use Moose::Util::TypeConstraints;
 
@@ -12,7 +12,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Role::Types
+Yetie::Domain::Role::TypesMoney
 
 =head1 SYNOPSIS
 
@@ -30,12 +30,12 @@ enum 'even', 'odd', '+inf', '-inf', 'zero', 'trunc'
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Role::Types> inherits all attributes from L<Moose::Role> and implements
+L<Yetie::Domain::Role::TypesMoney> inherits all attributes from L<Moose::Role> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Role::Types> inherits all methods from L<Moose::Role> and implements
+L<Yetie::Domain::Role::TypesMoney> inherits all methods from L<Moose::Role> and implements
 the following new ones.
 
 =head1 AUTHOR

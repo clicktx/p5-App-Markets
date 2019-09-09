@@ -9,7 +9,7 @@
                 <th class="">Price</th>
                 <th class="">Qty</th>
                 <th class="">Tax Rate</th>
-                <th class="">Subtotal</th>
+                <th class="">Row total(including tax)</th>
                 <th class="">Discount</th>
                 <th class="">Row Subtotal</th>
                 <th class="">Action</th>
@@ -42,7 +42,7 @@
                     <%= $item->tax_rule->title %>/
                     <%= $item->tax_rule->tax_rate %>%
                 </td>
-                <td class=""><%= $item->subtotal %></td>
+                <td class=""><%= $item->row_total_incl_tax %></td>
                 <td class="">a</td>
                 <td class="">b</td>
                 <td class="">c</td>

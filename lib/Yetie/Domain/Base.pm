@@ -1,4 +1,6 @@
 package Yetie::Domain::Base;
+use Scalar::Util qw();
+
 use Moose;
 use namespace::autoclean;
 use MooseX::StrictConstructor;
@@ -51,8 +53,17 @@ sub hash_code {
 sub rehash {
     my $self = shift;
 
-    # FIXME: need recursive rehash
     $self->_set_hash_sum( $self->hash_code );
+
+    # recursive rehash
+    my @attributes = $self->get_all_attribute_names;
+    foreach my $attr (@attributes) {
+        next if !$self->can($attr);                       # NOTE: for change attribute reader
+        next if !Scalar::Util::blessed( $self->$attr );
+        next if !$self->$attr->can('rehash');
+
+        $self->$attr->rehash;
+    }
     return $self;
 }
 
@@ -134,6 +145,8 @@ Return SHA1 checksum.
     $obj->rehash;
 
 Recreate object hash sum.
+
+Recursive call for all attributes.
 
 =head2 C<set_attributes>
 

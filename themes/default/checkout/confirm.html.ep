@@ -54,12 +54,27 @@
                         Change
                     <% end %>
                     | price: <%= $_->price %>
-                    | line total: <%= $_->subtotal %>
+                    | row total(including tax): <%= $_->row_total_incl_tax %>
                 </li>
             % });
         </ol>
     <% end =%>
 </div>
+
+<hr>
+<div class="">
+    Subtotal excluding-tax: <%= $cart->subtotal_excl_tax %> / including-tax: <%= $cart->subtotal_incl_tax %>
+</div>
+<div class="">
+    Shipping & Handling:
+</div>
+<div class="">
+    Taxes:
+</div>
+<div class="">
+    Grand Total: <%= $cart->grand_total %>
+</div>
+<hr>
 
 <%= form_for 'rn.checkout.confirm' => ( method => 'post' ) => begin %>
     <%= csrf_field %>

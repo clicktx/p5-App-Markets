@@ -45,7 +45,7 @@ sub clear_items {
 
 sub grand_total {
     my $self        = shift;
-    my $grand_total = $self->subtotal;
+    my $grand_total = $self->subtotal_incl_tax;
 
     # 送料計算等
 
@@ -54,7 +54,7 @@ sub grand_total {
 
 sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
 
-sub has_item { return shift->items->count ? 1 : 0 }
+sub has_item { return shift->items->size ? 1 : 0 }
 
 sub has_shipping_address {
     my $self = shift;
@@ -160,9 +160,14 @@ sub set_shipping_address {
     return $self;
 }
 
-sub subtotal {
+sub subtotal_excl_tax {
     my $self = shift;
-    return $self->items->subtotal + $self->shipments->subtotal;
+    return $self->items->subtotal_excl_tax + $self->shipments->subtotal_excl_tax;
+}
+
+sub subtotal_incl_tax {
+    my $self = shift;
+    return $self->items->subtotal_incl_tax + $self->shipments->subtotal_incl_tax;
 }
 
 sub to_order_data {
@@ -186,9 +191,9 @@ sub to_order_data {
     return $data;
 }
 
-sub total_item_count {
+sub count_total_items {
     my $self = shift;
-    return $self->items->count + $self->shipments->total_item_count;
+    return $self->items->size + $self->shipments->count_total_items;
 }
 
 sub total_quantity {
@@ -345,17 +350,21 @@ See L<Yetie::Domain::List::Shipments/revert>.
 
 Update shipping address.
 
-=head2 C<subtotal>
+=head2 C<subtotal_excl_tax>
 
-    my $subtotal = $cart->subtotal;
+    my $subtotal_excl_tax = $cart->subtotal_excl_tax;
+
+=head2 C<subtotal_incl_tax>
+
+    my $subtotal_incl_tax = $cart->subtotal_incl_tax;
 
 =head2 C<to_order_data>
 
     my $order = $self->to_order_data;
 
-=head2 C<total_item_count>
+=head2 C<count_total_items>
 
-    my $item_count = $cart->total_item_count;
+    my $item_count = $cart->count_total_items;
 
 Return number of items types.
 

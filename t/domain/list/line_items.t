@@ -97,9 +97,36 @@ subtest 'remove' => sub {
 };
 
 subtest 'subtotal' => sub {
-    my $data = [ { quantity => 1, price => 1 }, { quantity => 2, price => 2 }, { quantity => 3, price => 3 } ];
-    my $list = factory( list => $data );
-    is $list->subtotal, 14, 'right subtotal';
+    my $data = [
+        {
+            price    => 1,
+            quantity => 1,
+            tax_rule => {
+                tax_rate => 5,
+            },
+        },
+        {
+            price    => 2,
+            quantity => 2,
+            tax_rule => {
+                tax_rate => 5,
+            },
+        },
+        {
+            price    => 3,
+            quantity => 3,
+            tax_rule => {
+                tax_rate => 5,
+            },
+        }
+    ];
+    my $list = factory( list => [] );
+    is $list->subtotal_excl_tax, '$0.00', 'right subtotal excluding tax(no items)';
+    is $list->subtotal_incl_tax, '$0.00', 'right subtotal including tax(no items)';
+
+    $list = factory( list => $data );
+    is $list->subtotal_excl_tax, '$14.00', 'right subtotal excluding tax';
+    is $list->subtotal_incl_tax, '$14.70', 'right subtotal including tax';
 };
 
 done_testing();

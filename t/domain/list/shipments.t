@@ -18,12 +18,12 @@ subtest 'basic' => sub {
 subtest 'create_shipment' => sub {
     my $v        = construct();
     my $shipment = $v->create_shipment;
-    is $v->count, 1, 'right create shipment';
+    is $v->size, 1, 'right create shipment';
     isa_ok $shipment, 'Yetie::Domain::Entity::Shipment';
     isa_ok $v->first, 'Yetie::Domain::Entity::Shipment';
 
     my $shipment2 = $v->create_shipment;
-    is $v->count, 2, 'right recreate shipment';
+    is $v->size, 2, 'right recreate shipment';
     isnt $shipment, $shipment2, 'right compare object';
 };
 
@@ -51,9 +51,9 @@ subtest 'is_multiple' => sub {
     is $bool, 1, 'right multiple shipments';
 };
 
-subtest 'total_item_count' => sub {
+subtest 'count_total_items' => sub {
     my $v = construct( list => [ { items => [ {}, {} ] }, { items => [ {}, {} ] } ] );
-    is $v->total_item_count, 4, 'right total items';
+    is $v->count_total_items, 4, 'right total items';
 };
 
 subtest 'total_quantity' => sub {
@@ -70,6 +70,71 @@ subtest 'revert' => sub {
     my $data = $v->to_data;
     is $data->[0]->{shipping_address}->{postal_code}, 12345, 'right shipping_address in first element';
     cmp_deeply $data, [ { shipping_address => ignore(), items => [] } ], 'right revert';
+};
+
+subtest 'subtotal' => sub {
+    my $data = [
+        {
+            items => [
+                {
+                    price    => 1,
+                    quantity => 1,
+                    tax_rule => {
+                        tax_rate => 5,
+                    },
+                },
+                {
+                    price    => 2,
+                    quantity => 2,
+                    tax_rule => {
+                        tax_rate => 5,
+                    },
+                },
+                {
+                    price    => 3,
+                    quantity => 3,
+                    tax_rule => {
+                        tax_rate => 5,
+                    },
+                }
+            ]
+        },
+        {
+            items => [
+                {
+                    price    => 1,
+                    quantity => 1,
+                    tax_rule => {
+                        tax_rate => 5,
+                    },
+                },
+                {
+                    price    => 2,
+                    quantity => 2,
+                    tax_rule => {
+                        tax_rate => 5,
+                    },
+                },
+                {
+                    price    => 3,
+                    quantity => 3,
+                    tax_rule => {
+                        tax_rate => 5,
+                    },
+                }
+            ]
+        }
+    ];
+
+    my $v = construct( list => [] );
+    is $v->subtotal_excl_tax, '$0.00', 'right subtotal excluding tax(no shipments)';
+    is $v->subtotal_incl_tax, '$0.00', 'right subtotal including tax(no shipments)';
+
+    $v = construct( list => $data );
+    is $v->subtotal_excl_tax, '$28.00', 'right subtotal excluding tax';
+
+    $v = construct( list => $data );
+    is $v->subtotal_incl_tax, '$29.40', 'right subtotal including tax';
 };
 
 done_testing();

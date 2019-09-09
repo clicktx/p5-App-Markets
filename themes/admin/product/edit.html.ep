@@ -23,7 +23,7 @@
     </div>
     <div class="">
         % $field = 'admin-product#price';
-        <%= form_label $field %> <%= form_widget $field %>
+        <%= form_label $field %> <%= form_widget $field %> <%= $product->price->currency_code %>
         <%= form_error $field %>
     </div>
 

@@ -18,7 +18,7 @@ subtest 'basic' => sub {
     isa_ok $shipment, 'Yetie::Domain::Entity::Shipment';
     can_ok $shipment, 'items';
     can_ok $shipment, 'shipping_address';
-    can_ok $shipment, 'item_count';
+    can_ok $shipment, 'count_items';
 
     isa_ok $shipment->shipping_address, 'Yetie::Domain::Entity::Address';
     isa_ok $shipment->items,            'Yetie::Domain::List::LineItems';
@@ -34,22 +34,48 @@ subtest 'equals' => sub {
     is $shipment->equals($shipment2), 0, 'right not equals item';
 };
 
-subtest 'item_count' => sub {
+subtest 'count_items' => sub {
     my $shipment = construct( id => 1 );
-    is $shipment->item_count, 0, 'right item_count';
+    is $shipment->count_items, 0, 'right count_items';
 
     $shipment = construct( id => 1, items => [ {}, {}, {} ] );
-    is $shipment->item_count, 3, 'right item_count';
+    is $shipment->count_items, 3, 'right count_items';
 };
 
 subtest 'subtotal' => sub {
-    my $shipment = construct( id => 1 );
-    $shipment->{items} = Yetie::Domain::Collection->new(
-        Yetie::Factory->new('entity-line_item')->construct( quantity => 1, price => 100 ),
-        Yetie::Factory->new('entity-line_item')->construct( quantity => 2, price => 100 ),
-        Yetie::Factory->new('entity-line_item')->construct( quantity => 3, price => 100 ),
+    my $shipment = construct(
+        id    => 1,
+        items => [
+            {
+                price    => 1,
+                quantity => 1,
+                tax_rule => {
+                    tax_rate => 5,
+                },
+            },
+            {
+                price    => 2,
+                quantity => 2,
+                tax_rule => {
+                    tax_rate => 5,
+                },
+            },
+            {
+                price    => 3,
+                quantity => 3,
+                tax_rule => {
+                    tax_rate => 5,
+                },
+            }
+        ]
     );
-    is $shipment->subtotal, 600, 'right subtotal';
+
+    subtest 'excluding tax' => sub {
+        is $shipment->subtotal_excl_tax, '$14.00', 'right subtotal excluding tax';
+    };
+    subtest 'including tax' => sub {
+        is $shipment->subtotal_incl_tax, '$14.70', 'right subtotal including tax';
+    };
 };
 
 done_testing();
