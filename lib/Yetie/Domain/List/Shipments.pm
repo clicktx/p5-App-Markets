@@ -33,16 +33,14 @@ sub _init_price {
 sub _build__subtotal_excl_tax {
     my $self = shift;
 
-    my $first_shipment = $self->first;
-    my $price          = $self->_init_price;
+    my $price = $self->_init_price;
     return $self->list->reduce( sub { $a + $b->items->subtotal_excl_tax }, $price );
 }
 
 sub _build__subtotal_incl_tax {
     my $self = shift;
 
-    my $first_shipment = $self->first;
-    my $price          = $self->_init_price;
+    my $price = $self->_init_price;
     return $self->list->reduce( sub { $a + $b->items->subtotal_incl_tax }, $price );
 }
 
