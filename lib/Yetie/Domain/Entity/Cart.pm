@@ -160,6 +160,11 @@ sub set_shipping_address {
     return $self;
 }
 
+sub subtotal_excl_tax {
+    my $self = shift;
+    return $self->items->subtotal_excl_tax + $self->shipments->subtotal_excl_tax;
+}
+
 sub subtotal_incl_tax {
     my $self = shift;
     return $self->items->subtotal_incl_tax + $self->shipments->subtotal_incl_tax;
@@ -344,6 +349,10 @@ See L<Yetie::Domain::List::Shipments/revert>.
     $cart->set_shipping_address( [ $address_obj, $address_obj, ... ] );
 
 Update shipping address.
+
+=head2 C<subtotal_excl_tax>
+
+    my $subtotal_excl_tax = $cart->subtotal_excl_tax;
 
 =head2 C<subtotal_incl_tax>
 
