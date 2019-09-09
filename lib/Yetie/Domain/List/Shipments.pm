@@ -22,11 +22,11 @@ sub has_shipment { return shift->size ? 1 : 0 }
 sub is_multiple { return shift->size > 1 ? 1 : 0 }
 
 sub count_total_items {
-    return shift->list->map( sub { $_->items->each } )->size;
+    return shift->map( sub { $_->items->each } )->size;
 }
 
 sub total_quantity {
-    return shift->list->reduce( sub { $a + $b->items->total_quantity }, 0 );
+    return shift->reduce( sub { $a + $b->items->total_quantity }, 0 );
 }
 
 sub revert {
