@@ -58,9 +58,12 @@ sub _init_price {
     my $self = shift;
 
     my $first_shipment = $self->first;
-    return $first_shipment
-      ? $first_shipment->items->first->price->clone( value => 0 )
-      : Yetie::Factory->new('value-price')->construct;
+    return Yetie::Factory->new('value-price')->construct() if !$first_shipment;
+
+    my $items = $first_shipment->items;
+    return Yetie::Factory->new('value-price')->construct() if !$items->size;
+
+    return $items->first->price->clone( value => 0 );
 }
 
 no Moose;

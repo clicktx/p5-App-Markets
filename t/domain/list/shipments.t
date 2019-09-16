@@ -130,6 +130,10 @@ subtest 'subtotal' => sub {
     is $v->subtotal_excl_tax, '$0.00', 'right subtotal excluding tax(no shipments)';
     is $v->subtotal_incl_tax, '$0.00', 'right subtotal including tax(no shipments)';
 
+    $v = construct( list => [ {} ] );
+    is $v->subtotal_excl_tax, '$0.00', 'right subtotal excluding tax(no shipment items)';
+    is $v->subtotal_incl_tax, '$0.00', 'right subtotal including tax(no shipment items)';
+
     $v = construct( list => $data );
     is $v->subtotal_excl_tax, '$28.00', 'right subtotal excluding tax';
 
