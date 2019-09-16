@@ -1,5 +1,6 @@
 package Yetie::Domain::Base;
 use Scalar::Util qw();
+use Yetie::Factory;
 
 use Moose;
 use namespace::autoclean;
@@ -34,6 +35,8 @@ sub BUILD {
     # Lazy build
     $self->_hash_sum;
 }
+
+sub factory { return Yetie::Factory->new( $_[1] ) }
 
 sub get_all_attribute_names {
     return ( sort map { $_->name } shift->meta->get_all_attributes );
@@ -120,6 +123,14 @@ Domain object base class.
 
 L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements
 the following new ones.
+
+=head2 C<factory>
+
+    __PACKAGE__->factory('entity-foo');
+
+    my $factory = $obj->factory('value-bar');
+
+Return L<Yetie::Factory> object.
 
 =head2 C<get_all_attribute_names>
 
