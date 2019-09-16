@@ -11,29 +11,38 @@ my $app = $t->app;
 my $rs  = $app->schema->resultset('SalesOrderItem');
 
 subtest store_items => sub {
-    my $items = $app->factory('entity-order_detail')->construct(
+    my $detail = $app->factory('entity-order_detail')->construct(
         id    => 1,
         items => [
             {
-                id       => 1,
+                id         => 1,
+                product_id => 3,
+                price      => {
+                    value => 300,
+                },
                 quantity => 1,
                 tax_rule => { id => 2 },
             },
             {
                 id         => 99,
                 product_id => 2,
-                quantity   => 99,
-                tax_rule   => { id => 2 },
+                price      => {
+                    value => 100,
+                },
+                quantity => 99,
+                tax_rule => { id => 2 },
             },
         ]
     );
-    $rs->store_items($items);
+    $rs->store_items($detail);
 
     my $item = $rs->find(1);
     is $item->quantity, 1, 'right update';
 
     $item = $rs->find(99);
-    is $item->quantity, 99, 'right create';
+    ok $item->price == 100, 'right create';
+    is $item->currency_code, 'USD', 'right create';
+    is $item->quantity,      99,    'right create';
 };
 
 done_testing();

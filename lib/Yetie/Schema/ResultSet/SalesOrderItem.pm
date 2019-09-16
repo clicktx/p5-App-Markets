@@ -9,27 +9,12 @@ sub store_items {
     $items->each(
         sub {
             my $item = shift;
-            my $data = _to_data( $order_id, $item );
+            my $data = $item->to_data;
+            $data->{order_id} = $order_id;
             $self->update_or_create($data);
         }
     );
     return $self;
-}
-
-sub _to_data {
-    my ( $order_id, $item ) = @_;
-
-    my $item_data = $item->to_data;
-    my $tax_rule  = delete $item_data->{tax_rule};
-    my $price     = delete $item_data->{price};
-
-    my %data = (
-        order_id    => $order_id,
-        price       => $price->{value},
-        tax_rule_id => $tax_rule->{id},
-        %{$item_data},
-    );
-    return \%data;
 }
 
 1;
