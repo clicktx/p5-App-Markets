@@ -11,14 +11,14 @@ has tax_rule => (
 sub price_excl_tax {
     my $self = shift;
 
-    my $price = $self->price;
+    my $price = $self->price->clone;
     return $price->is_tax_included ? $price - $self->tax_amount : $price;
 }
 
 sub price_incl_tax {
     my $self = shift;
 
-    my $price = $self->price;
+    my $price = $self->price->clone;
     return $price->is_tax_included ? $price : $price + $self->tax_amount;
 }
 
