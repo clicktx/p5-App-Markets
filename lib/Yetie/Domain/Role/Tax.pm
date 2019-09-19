@@ -29,6 +29,8 @@ sub tax_amount {
     return $tax_amount;
 }
 
+sub tax_rate { return shift->tax_rule->tax_rate }
+
 1;
 __END__
 
@@ -63,6 +65,12 @@ the following new ones.
 =head2 C<tax_amount>
 
     my $tax_amount = $product->tax_amount;
+
+=head2 C<tax_rate>
+
+    my $tax_amount = $product->tax_rate;
+
+Return tax rate percentage.
 
 =head1 AUTHOR
 
