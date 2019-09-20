@@ -11,15 +11,17 @@ has tax_rule => (
 sub price_excl_tax {
     my $self = shift;
 
-    my $price = $self->price->clone;
-    return $price->is_tax_included ? $price - $self->tax_amount : $price;
+    return $self->price->is_tax_included
+      ? $self->price->clone( is_tax_included => 0 ) - $self->tax_amount
+      : $self->price;
 }
 
 sub price_incl_tax {
     my $self = shift;
 
-    my $price = $self->price->clone;
-    return $price->is_tax_included ? $price : $price + $self->tax_amount;
+    return $self->price->is_tax_included
+      ? $self->price
+      : $self->price->clone( is_tax_included => 1 ) + $self->tax_amount->clone( is_tax_included => 1 );
 }
 
 sub tax_amount {
