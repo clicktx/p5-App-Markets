@@ -81,6 +81,21 @@ subtest 'product_hash_code' => sub {
     is $item->is_modified, 0, 'right not modified';
 };
 
+subtest 'row_tax_amount' => sub {
+    my $item = factory(
+        {
+            price    => 1,
+            quantity => 5,
+            tax_rule => {
+                tax_rate => 3.5,
+            },
+        }
+    );
+    my $tax = $item->row_tax_amount;
+    isa_ok $tax, 'Yetie::Domain::Value::Tax';
+    is $tax, '$0.20', 'right tax amount';
+};
+
 subtest 'row_total' => sub {
     my $item = factory(
         {
