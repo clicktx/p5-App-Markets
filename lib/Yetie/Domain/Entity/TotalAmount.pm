@@ -20,6 +20,18 @@ has total_incl_tax => (
     isa => 'Yetie::Domain::Value::Price',
 );
 
+sub add {
+    my ( $self, $item ) = @_;
+    return if $self->tax_rate != $item->tax_rate;
+
+    return $self->new(
+        tax_rate       => $self->tax_rate,
+        tax            => $self->tax + $item->tax_amount,
+        total_excl_tax => $self->total_excl_tax + $item->row_total_excl_tax,
+        total_incl_tax => $self->total_incl_tax + $item->row_total_incl_tax,
+    );
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -43,6 +55,14 @@ the following new ones.
 
 L<Yetie::Domain::Entity::TotalAmount> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<add>
+
+    my $new = $total->add($line_item);
+
+Arguments L<Yetie::Domain::Entity::LineItem> object.
+
+Return L<Yetie::Domain::Entity::TotalAmount> object.
 
 =head1 AUTHOR
 
