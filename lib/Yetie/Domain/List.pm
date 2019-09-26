@@ -14,7 +14,8 @@ has list => (
 sub append {
     my $self = shift;
     my $new  = $self->list->append(@_);
-    return $self->list($new);
+    $self->list($new);
+    return;
 }
 
 sub clear { return shift->list( Yetie::Domain::Collection->new ) }
@@ -89,6 +90,8 @@ the following new ones.
     $domain->append(@elements);
 
 See L<Yetie::Domain::Collection/append>.
+
+Return C<undefined>
 
 =head2 C<clear>
 
