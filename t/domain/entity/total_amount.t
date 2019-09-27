@@ -15,7 +15,7 @@ subtest 'basic' => sub {
     can_ok $total, 'total_incl_tax';
 };
 
-subtest 'add' => sub {
+subtest 'sum' => sub {
     my $total = $f->construct(
         tax_rate       => 3,
         tax            => $f->factory('value-tax')->construct(),
@@ -30,7 +30,7 @@ subtest 'add' => sub {
             },
         }
     );
-    my $new = $total->add($line_item);
+    my $new = $total->sum($line_item);
     is $new, undef, 'right different tax rate';
 
     $line_item = $f->factory('entity-line_item')->construct(
@@ -42,7 +42,7 @@ subtest 'add' => sub {
             },
         }
     );
-    $new = $total->add($line_item);
+    $new = $total->sum($line_item);
     is $new->tax,            '$3.00',   'right tax';
     is $new->total_excl_tax, '$100.00', 'right total excluding tax';
     is $new->total_incl_tax, '$103.00', 'right tax total including tax';

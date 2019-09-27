@@ -6,7 +6,7 @@ use_ok 'Yetie::Domain::List::TotalAmounts';
 
 my $f = Yetie::Factory->new('list-total_amounts');
 
-subtest 'add' => sub {
+subtest 'sum' => sub {
     my $line_item3 = $f->factory('entity-line_item')->construct(
         {
             quantity => 1,
@@ -17,7 +17,7 @@ subtest 'add' => sub {
         }
     );
     my $totals = $f->construct();
-    $totals->add($line_item3);
+    $totals->sum($line_item3);
     my $first = $totals->first;
     is $first->tax_rate,       3,         'right new tax rate';
     is $first->tax,            '$3.00',   'right new tax';
@@ -33,7 +33,7 @@ subtest 'add' => sub {
             },
         }
     );
-    $totals->add($line_item5);
+    $totals->sum($line_item5);
     is $totals->size, 2, 'right size';
     $first = $totals->first;
     is $first->tax_rate,       5,         'right new tax rate';
@@ -41,7 +41,7 @@ subtest 'add' => sub {
     is $first->total_excl_tax, '$100.00', 'right new total excluding tax';
     is $first->total_incl_tax, '$105.00', 'right new total including tax';
 
-    $totals->add($line_item5);
+    $totals->sum($line_item5);
     $first = $totals->first;
     is $first->tax_rate,       5,         'right tax rate';
     is $first->tax,            '$10.00',  'right total tax';

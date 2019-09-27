@@ -20,7 +20,7 @@ has total_incl_tax => (
     isa => 'Yetie::Domain::Value::Price',
 );
 
-sub add {
+sub sum {
     my ( $self, $item ) = @_;
     return if $self->tax_rate != $item->tax_rate;
 
@@ -56,9 +56,9 @@ the following new ones.
 L<Yetie::Domain::Entity::TotalAmount> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<add>
+=head2 C<sum>
 
-    my $new = $total->add($line_item);
+    my $new = $total->sum($line_item);
 
 Arguments L<Yetie::Domain::Entity::LineItem> object.
 

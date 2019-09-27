@@ -3,7 +3,7 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
 
-sub add {
+sub sum {
     my ( $self, $item ) = @_;
 
     my $first_row = $self->first( sub { $_->tax_rate == $item->tax_rate } );
@@ -18,7 +18,7 @@ sub add {
         );
     }
     else {
-        my $total = $first_row->add($item);
+        my $total = $first_row->sum($item);
         my $new_list = $self->list->grep( sub { $_->tax_rate != $total->tax_rate } );
         $self->list( $new_list->append($total) );
     }
@@ -53,11 +53,11 @@ the following new ones.
 L<Yetie::Domain::List::TotalAmounts> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
 
-=head2 C<add>
+=head2 C<sum>
 
 Calculate total amount by tax bracket.
 
-    $total->add( $line_item );
+    $total->sum( $line_item );
 
 =head1 AUTHOR
 
