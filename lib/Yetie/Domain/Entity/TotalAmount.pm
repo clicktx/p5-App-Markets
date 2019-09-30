@@ -10,16 +10,19 @@ has tax_rate => (
     default => 0,
 );
 has tax => (
-    is  => 'ro',
-    isa => 'Yetie::Domain::Value::Tax',
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Value::Tax',
+    default => sub { shift->factory('value-tax')->construct() },
 );
 has total_excl_tax => (
-    is  => 'ro',
-    isa => 'Yetie::Domain::Value::Price',
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Value::Price',
+    default => sub { shift->factory('value-price')->construct() },
 );
 has total_incl_tax => (
-    is  => 'ro',
-    isa => 'Yetie::Domain::Value::Price',
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Value::Price',
+    default => sub { shift->factory('value-price')->construct( is_tax_included => 1 ) },
 );
 
 sub sum {
@@ -52,6 +55,20 @@ Yetie::Domain::Entity::TotalAmount
 
 L<Yetie::Domain::Entity::TotalAmount> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<tax_rate>
+
+=head2 C<tax>
+
+L<Yetie::Domain::Value::Tax> object.
+
+=head2 C<total_excl_tax>
+
+L<Yetie::Domain::Value::Price> object.
+
+=head2 C<total_incl_tax>
+
+L<Yetie::Domain::Value::Price> object.
 
 =head1 METHODS
 

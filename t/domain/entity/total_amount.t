@@ -14,6 +14,10 @@ subtest 'basic' => sub {
     can_ok $total, 'tax';
     can_ok $total, 'total_excl_tax';
     can_ok $total, 'total_incl_tax';
+
+    isa_ok $total->tax, 'Yetie::Domain::Value::Tax';
+    isa_ok $total->total_excl_tax, 'Yetie::Domain::Value::Price';
+    isa_ok $total->total_incl_tax, 'Yetie::Domain::Value::Price';
 };
 
 subtest 'sum' => sub {
