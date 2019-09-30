@@ -70,14 +70,8 @@ sub clear_items {
     return $self;
 }
 
-sub grand_total {
-    my $self        = shift;
-    my $grand_total = $self->subtotal_incl_tax;
-
-    # 送料計算等
-
-    return $grand_total;
-}
+# NOTE: 送料計算等はどうなる？
+sub grand_total { shift->total_amounts->grand_total }
 
 sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
 
@@ -197,6 +191,8 @@ sub subtotal_incl_tax {
     return $self->items->subtotal_incl_tax + $self->shipments->subtotal_incl_tax;
 }
 
+sub taxes { return shift->total_amounts->taxes }
+
 sub to_order_data {
     my $self = shift;
     my $data = $self->to_data;
@@ -306,6 +302,12 @@ Remove all items.
 
 =head2 C<grand_total>
 
+Calculate the total amount of all.
+
+    my $grand_total = $cart->grand_total;
+
+Return L<Yetie::Domain::Value::Price> object.
+
 =head2 C<has_billing_address>
 
     my $bool = $cart->has_billing_address;
@@ -401,6 +403,14 @@ Update shipping address.
 
 Return number of items types.
 
+=head2 C<taxes>
+
+All tax calculation result.
+
+    my $taxes = $cart->taxes;
+
+Return L<Yetie::Domain::Value::Tax> object.
+
 =head2 C<total_quantity>
 
     my $total_qty = $cart->total_quantity;
@@ -414,4 +424,4 @@ Yetie authors.
 =head1 SEE ALSO
 
 L<Yetie::Domain::Entity>, L<Yetie::Domain::List::Linetems>, L<Yetie::Domain::Entity::LineItem>,
-L<Yetie::Domain::Entity::Shipment>
+L<Yetie::Domain::Entity::Shipment>, L<Yetie::Domain::List::TotalAmounts>
