@@ -1,4 +1,6 @@
 package Yetie::Domain::Entity::TotalAmount;
+use Carp qw(croak);
+
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
@@ -22,7 +24,7 @@ has total_incl_tax => (
 
 sub sum {
     my ( $self, $item ) = @_;
-    return if $self->tax_rate != $item->tax_rate;
+    croak 'Tax rate is different.' if $self->tax_rate != $item->tax_rate;
 
     return $self->new(
         tax_rate       => $self->tax_rate,

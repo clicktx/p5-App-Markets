@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Exception;
 use Yetie::Factory;
 
 my $pkg = 'Yetie::Domain::Entity::TotalAmount';
@@ -30,8 +31,7 @@ subtest 'sum' => sub {
             },
         }
     );
-    my $new = $total->sum($line_item);
-    is $new, undef, 'right different tax rate';
+    dies_ok { $total->sum($line_item) } 'right different tax rate';
 
     $line_item = $f->factory('entity-line_item')->construct(
         {
@@ -42,7 +42,7 @@ subtest 'sum' => sub {
             },
         }
     );
-    $new = $total->sum($line_item);
+    my $new = $total->sum($line_item);
     is $new->tax,            '$3.00',   'right tax';
     is $new->total_excl_tax, '$100.00', 'right total excluding tax';
     is $new->total_incl_tax, '$103.00', 'right tax total including tax';
