@@ -12,10 +12,37 @@ has id => (
     lazy    => 1,
     default => sub { sha1_sum( shift->cart_id ) }
 );
-has cart_id         => ( is => 'ro', default => q{} );
-has billing_address => ( is => 'rw', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
-has items           => ( is => 'ro', default => sub { __PACKAGE__->factory('list-line_items')->construct() } );
-has shipments       => ( is => 'ro', default => sub { __PACKAGE__->factory('list-shipments')->construct() } );
+has cart_id => (
+    is      => 'ro',
+    default => q{}
+);
+has billing_address => (
+    is      => 'rw',
+    default => sub { __PACKAGE__->factory('entity-address')->construct() }
+);
+has items => (
+    is      => 'ro',
+    default => sub { __PACKAGE__->factory('list-line_items')->construct() }
+);
+has shipments => (
+    is      => 'ro',
+    default => sub { __PACKAGE__->factory('list-shipments')->construct() }
+);
+has _total_amounts => (
+    is         => 'ro',
+    isa        => 'Yetie::Domain::List::TotalAmounts',
+    lazy_build => 1,
+    reader     => 'total_amounts',
+    init_arg   => undef,
+);
+
+sub _build__total_amounts {
+    my $self = shift;
+
+    my $total_amounts = $self->factory('list-total_amounts')->construct();
+    $self->items->each( sub { $total_amounts->sum($_) } );
+    return $total_amounts;
+}
 
 sub add_item {
     my ( $self, $item ) = @_;
@@ -241,6 +268,12 @@ Elements is L<Yetie::Domain::Entity::LineItem> object.
 
 Return L<Yetie::Domain::Collection> object.
 Elements is L<Yetie::Domain::Entity::Shipment> object.
+
+=head2 C<total_amounts>
+
+    my $total_amounts = $cart->total_amounts;
+
+Return L<Yetie::Domain::List::TotalAmounts> object.
 
 =head1 METHODS
 
