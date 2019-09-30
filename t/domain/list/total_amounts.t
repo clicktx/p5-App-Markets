@@ -51,6 +51,10 @@ subtest 'sum' => sub {
     my $grand_total = $totals->grand_total;
     isa_ok $grand_total, 'Yetie::Domain::Value::Price';
     is $grand_total, '$313.00', 'right grand total';
+
+    my $taxes = $totals->taxes;
+    isa_ok $taxes, 'Yetie::Domain::Value::Tax';
+    is $taxes, '$13.00', 'right taxes';
 };
 
 subtest 'grand_total' => sub {
@@ -63,6 +67,18 @@ subtest 'grand_total' => sub {
     $grand_total = $totals->grand_total;
     isa_ok $grand_total, 'Yetie::Domain::Value::Price';
     is $grand_total, '$105.00', 'right grand total';
+};
+
+subtest 'taxes' => sub {
+    my $totals = $f->construct();
+    my $taxes  = $totals->taxes;
+    isa_ok $taxes, 'Yetie::Domain::Value::Tax';
+    is $taxes, '$0.00', 'right taxes';
+
+    $totals->sum($line_item_tax5);
+    $taxes = $totals->taxes;
+    isa_ok $taxes, 'Yetie::Domain::Value::Tax';
+    is $taxes, '$5.00', 'right taxes';
 };
 
 done_testing();

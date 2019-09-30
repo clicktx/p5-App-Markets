@@ -37,6 +37,14 @@ sub grand_total {
     return $grand_total || $self->factory('value-price')->construct;
 }
 
+sub taxes {
+    my $self = shift;
+
+    my $taxes;
+    $self->list->each( sub { $taxes += $_->tax } );
+    return $taxes || $self->factory('value-tax')->construct;
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -70,6 +78,12 @@ Calculate total amount by tax bracket.
 =head2 C<grand_total>
 
     my $grand_total = $total_amounts->grand_total;
+
+Return L<Yetie::Domain::Value::Price> object.
+
+=head2 C<taxes>
+
+    my $taxes = $total_amounts->taxes;
 
 Return L<Yetie::Domain::Value::Price> object.
 
