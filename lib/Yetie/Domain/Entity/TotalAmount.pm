@@ -37,6 +37,13 @@ sub sum {
     );
 }
 
+sub tax_rate_percentage {
+    my $self = shift;
+
+    my $rate += $self->tax_rate;
+    return $rate . q{%};
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 

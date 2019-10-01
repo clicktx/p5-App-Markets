@@ -15,7 +15,7 @@ subtest 'basic' => sub {
     can_ok $total, 'total_excl_tax';
     can_ok $total, 'total_incl_tax';
 
-    isa_ok $total->tax, 'Yetie::Domain::Value::Tax';
+    isa_ok $total->tax,            'Yetie::Domain::Value::Tax';
     isa_ok $total->total_excl_tax, 'Yetie::Domain::Value::Price';
     isa_ok $total->total_incl_tax, 'Yetie::Domain::Value::Price';
 };
@@ -50,6 +50,11 @@ subtest 'sum' => sub {
     is $new->tax,            '$3.00',   'right tax';
     is $new->total_excl_tax, '$100.00', 'right total excluding tax';
     is $new->total_incl_tax, '$103.00', 'right tax total including tax';
+};
+
+subtest 'tax_rate_percentage' => sub {
+    my $total = $f->construct( tax_rate => 3.000 );
+    is $total->tax_rate_percentage, '3%', 'right percentage';
 };
 
 done_testing();
