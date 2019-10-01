@@ -181,15 +181,9 @@ sub set_shipping_address {
     return $self;
 }
 
-sub subtotal_excl_tax {
-    my $self = shift;
-    return $self->items->subtotal_excl_tax + $self->shipments->subtotal_excl_tax;
-}
+sub subtotal_excl_tax { return shift->items->subtotal_excl_tax }
 
-sub subtotal_incl_tax {
-    my $self = shift;
-    return $self->items->subtotal_incl_tax + $self->shipments->subtotal_incl_tax;
-}
+sub subtotal_incl_tax { return shift->items->subtotal_incl_tax }
 
 sub taxes { return shift->total_amounts->taxes }
 

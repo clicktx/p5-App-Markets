@@ -639,7 +639,7 @@ subtest 'set_shipping_address' => sub {
 subtest 'subtotal' => sub {
     subtest 'excluding tax' => sub {
         my $cart = _create_entity;
-        ok $cart->subtotal_excl_tax == 2500, 'right subtotal excluding tax';
+        ok $cart->subtotal_excl_tax == 600, 'right subtotal excluding tax';
 
         # no items
         $cart = Yetie::Factory->new('entity-cart')->construct( cart_id => '12345' );
@@ -648,7 +648,7 @@ subtest 'subtotal' => sub {
 
     subtest 'including tax' => sub {
         my $cart = _create_entity;
-        ok $cart->subtotal_incl_tax == 2625, 'right subtotal including tax';
+        ok $cart->subtotal_incl_tax == 630, 'right subtotal including tax';
 
         # no items
         $cart = Yetie::Factory->new('entity-cart')->construct( cart_id => '12345' );
