@@ -69,6 +69,17 @@ subtest 'grand_total' => sub {
     is $grand_total, '$105.00', 'right grand total';
 };
 
+subtest 'has_many' => sub {
+    my $totals = $f->construct();
+    ok !$totals->has_many, 'right has not many';
+
+    $totals->sum($line_item_tax3);
+    ok !$totals->has_many, 'right has not many';
+
+    $totals->sum($line_item_tax5);
+    ok $totals->has_many, 'right has many';
+};
+
 subtest 'taxes' => sub {
     my $totals = $f->construct();
     my $taxes  = $totals->taxes;

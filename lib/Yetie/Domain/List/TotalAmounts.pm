@@ -37,6 +37,8 @@ sub grand_total {
     return $grand_total || $self->factory('value-price')->construct;
 }
 
+sub has_many { return shift->list->size > 1 ? 1 : 0 }
+
 sub taxes {
     my $self = shift;
 
@@ -80,6 +82,10 @@ Calculate total amount by tax bracket.
     my $grand_total = $total_amounts->grand_total;
 
 Return L<Yetie::Domain::Value::Price> object.
+
+=head2 C<has_many>
+
+    my $bool = $total_amounts->has_many;
 
 =head2 C<taxes>
 
