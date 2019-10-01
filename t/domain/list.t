@@ -18,7 +18,8 @@ subtest 'basic' => sub {
 
 subtest 'append' => sub {
     my $l = construct( 1, 2, 3 );
-    $l->append(4);
+    my $res = $l->append(4);
+    is $res, undef, 'right return value';
     is_deeply $l->to_data, [ 1, 2, 3, 4 ], 'right append';
     is $l->is_modified, 1, 'right modified';
 };

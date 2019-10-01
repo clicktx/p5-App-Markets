@@ -1,10 +1,9 @@
 package Yetie::Form::FieldSet;
 use Mojo::Base -base;
-use Mojo::Util qw/monkey_patch/;
 use Mojo::Collection;
 use Tie::IxHash;
 use Yetie::Form::Field;
-use Mojo::Util;
+use Mojo::Util qw/monkey_patch/;
 use Yetie::Util;
 
 sub append_field {

@@ -1,5 +1,4 @@
 package Yetie::Domain::Entity;
-use Yetie::Factory;
 use Yetie::Domain::Collection qw();
 use Yetie::Domain::IxHash qw();
 use Clone qw();
@@ -23,8 +22,6 @@ sub equals {
     my ( $self, $obj ) = @_;
     return $self->hash_code eq $obj->hash_code ? 1 : 0;
 }
-
-sub factory { return Yetie::Factory->new( $_[1] ) }
 
 sub has_id { return shift->id ? 1 : 0 }
 
@@ -158,12 +155,6 @@ Return object.
     my $bool = $entity->equals($other_entity);
 
 Return boolean value.
-
-=head2 C<factory>
-
-    __PACKAGE__->factory('entity-foo');
-
-Return Yetie::Factory object.
 
 =head2 C<has_id>
 

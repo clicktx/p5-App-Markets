@@ -46,7 +46,7 @@ sub add {
     my $self = shift;
     my $num = shift || 0;
 
-    $self->_validate_error($num);
+    $self->_validate($num);
     return $self->clone( value => $self->amount->copy->badd($num)->as_float );
 }
 
@@ -62,7 +62,7 @@ sub divide {
     my $self = shift;
     my $num = shift || 0;
 
-    $self->_validate_error($num);
+    $self->_validate($num);
     return $self->clone( value => $self->amount->copy->bdiv($num)->as_float );
 }
 
@@ -70,7 +70,7 @@ sub equals {
     my $self = shift;
     my $num = shift || 0;
 
-    $self->_validate_error($num);
+    $self->_validate($num);
     return $self->amount->beq($num);
 }
 
@@ -78,7 +78,7 @@ sub greater_than {
     my $self = shift;
     my $num = shift || 0;
 
-    $self->_validate_error($num);
+    $self->_validate($num);
     return $self->amount->bgt($num);
 }
 
@@ -86,7 +86,7 @@ sub less_than {
     my $self = shift;
     my $num = shift || 0;
 
-    $self->_validate_error($num);
+    $self->_validate($num);
     return $self->amount->blt($num);
 }
 
@@ -94,7 +94,7 @@ sub modulo {
     my $self = shift;
     my $num = shift || 0;
 
-    $self->_validate_error($num);
+    $self->_validate($num);
     return $self->clone( value => $self->amount->copy->bmod($num)->as_float );
 }
 
@@ -102,7 +102,7 @@ sub multiply {
     my $self = shift;
     my $num = shift || 0;
 
-    $self->_validate_error($num);
+    $self->_validate($num);
     return $self->clone( value => $self->amount->copy->bmul($num)->as_float );
 }
 
@@ -110,7 +110,7 @@ sub not_equals {
     my $self = shift;
     my $num = shift || 0;
 
-    $self->_validate_error($num);
+    $self->_validate($num);
     return $self->amount->bne($num);
 }
 
@@ -118,7 +118,7 @@ sub not_greater {
     my $self = shift;
     my $num = shift || 0;
 
-    $self->_validate_error($num);
+    $self->_validate($num);
     return $self->amount->ble($num);
 }
 
@@ -126,7 +126,7 @@ sub not_less {
     my $self = shift;
     my $num = shift || 0;
 
-    $self->_validate_error($num);
+    $self->_validate($num);
     return $self->amount->bge($num);
 }
 
@@ -134,7 +134,7 @@ sub subtract {
     my $self = shift;
     my $num = shift || 0;
 
-    $self->_validate_error($num);
+    $self->_validate($num);
     return $self->clone( value => $self->amount->copy->bsub($num)->as_float );
 }
 
@@ -148,7 +148,7 @@ sub to_data {
     };
 }
 
-sub _validate_error {
+sub _validate {
     my ( $self, $arg ) = @_;
     return if !ref $arg;
 

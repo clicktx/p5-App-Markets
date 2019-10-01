@@ -23,7 +23,9 @@ subtest 'caluculate_tax' => sub {
     my $rule = $pkg->new( tax_rate => 10.000 );
 
     my $price = Yetie::Domain::Value::Price->new(100);
-    is $rule->caluculate_tax($price), '$10.00', 'right outside tax';
+    my $tax   = $rule->caluculate_tax($price);
+    is $tax, '$10.00', 'right outside tax';
+    isa_ok $tax, 'Yetie::Domain::Value::Tax';
 
     $price = Yetie::Domain::Value::Price->new( value => 110, is_tax_included => 1 );
     is $rule->caluculate_tax($price), '$10.00', 'right inside tax';

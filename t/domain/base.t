@@ -34,6 +34,12 @@ subtest '_dump_by_public_attributes' => sub {
     is $obj->_dump_by_public_attributes, q{({bar=2,foo=1,},t::domain::base)}, 'right dump strings';
 };
 
+subtest 'factory' => sub {
+    my $e = $pkg->new();
+    my $f = $pkg->factory('entity-foo');
+    isa_ok $f, 'Yetie::Factory';
+};
+
 subtest 'get_all_attribute_names' => sub {
     my $obj   = $test_pkg->new;
     my @names = $obj->get_all_attribute_names;

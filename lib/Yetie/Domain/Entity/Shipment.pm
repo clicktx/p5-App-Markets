@@ -19,7 +19,7 @@ sub count_items { return shift->items->size }
 sub subtotal_excl_tax {
     my $self = shift;
 
-    my $price = $self->_init_price;
+    my $price = $self->_init_price( is_tax_included => 0 );
     my $items_total = $self->items->reduce( sub { $a + $b->row_total_excl_tax }, $price );
 
     my $subtotal = $items_total;
@@ -29,7 +29,7 @@ sub subtotal_excl_tax {
 sub subtotal_incl_tax {
     my $self = shift;
 
-    my $price = $self->_init_price;
+    my $price = $self->_init_price( is_tax_included => 1 );
     my $items_total = $self->items->reduce( sub { $a + $b->row_total_incl_tax }, $price );
 
     my $subtotal = $items_total;
@@ -38,11 +38,12 @@ sub subtotal_incl_tax {
 
 sub _init_price {
     my $self = shift;
+    my %args = @_;
 
     my $first_item = $self->items->first;
     return $first_item
-      ? $first_item->price->clone( value => 0 )
-      : Yetie::Factory->new('value-price')->construct;
+      ? $first_item->price->clone( value => 0, is_tax_included => $args{is_tax_included} )
+      : $self->factory('value-price')->construct( is_tax_included => $args{is_tax_included} );
 }
 
 no Moose;

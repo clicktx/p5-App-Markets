@@ -12,10 +12,37 @@ has id => (
     lazy    => 1,
     default => sub { sha1_sum( shift->cart_id ) }
 );
-has cart_id         => ( is => 'ro', default => q{} );
-has billing_address => ( is => 'rw', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
-has items           => ( is => 'ro', default => sub { __PACKAGE__->factory('list-line_items')->construct() } );
-has shipments       => ( is => 'ro', default => sub { __PACKAGE__->factory('list-shipments')->construct() } );
+has cart_id => (
+    is      => 'ro',
+    default => q{}
+);
+has billing_address => (
+    is      => 'rw',
+    default => sub { __PACKAGE__->factory('entity-address')->construct() }
+);
+has items => (
+    is      => 'ro',
+    default => sub { __PACKAGE__->factory('list-line_items')->construct() }
+);
+has shipments => (
+    is      => 'ro',
+    default => sub { __PACKAGE__->factory('list-shipments')->construct() }
+);
+has _total_amounts => (
+    is         => 'ro',
+    isa        => 'Yetie::Domain::List::TotalAmounts',
+    lazy_build => 1,
+    reader     => 'total_amounts',
+    init_arg   => undef,
+);
+
+sub _build__total_amounts {
+    my $self = shift;
+
+    my $total_amounts = $self->factory('list-total_amounts')->construct();
+    $self->items->each( sub { $total_amounts->sum($_) } );
+    return $total_amounts;
+}
 
 sub add_item {
     my ( $self, $item ) = @_;
@@ -43,14 +70,8 @@ sub clear_items {
     return $self;
 }
 
-sub grand_total {
-    my $self        = shift;
-    my $grand_total = $self->subtotal_incl_tax;
-
-    # 送料計算等
-
-    return $grand_total;
-}
+# NOTE: 送料計算等はどうなる？
+sub grand_total { shift->total_amounts->grand_total }
 
 sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
 
@@ -160,15 +181,11 @@ sub set_shipping_address {
     return $self;
 }
 
-sub subtotal_excl_tax {
-    my $self = shift;
-    return $self->items->subtotal_excl_tax + $self->shipments->subtotal_excl_tax;
-}
+sub subtotal_excl_tax { return shift->items->subtotal_excl_tax }
 
-sub subtotal_incl_tax {
-    my $self = shift;
-    return $self->items->subtotal_incl_tax + $self->shipments->subtotal_incl_tax;
-}
+sub subtotal_incl_tax { return shift->items->subtotal_incl_tax }
+
+sub taxes { return shift->total_amounts->taxes }
 
 sub to_order_data {
     my $self = shift;
@@ -191,15 +208,9 @@ sub to_order_data {
     return $data;
 }
 
-sub count_total_items {
-    my $self = shift;
-    return $self->items->size + $self->shipments->count_total_items;
-}
+sub count_total_items { return shift->items->size }
 
-sub total_quantity {
-    my $self = shift;
-    return $self->items->total_quantity + $self->shipments->total_quantity;
-}
+sub total_quantity { return shift->items->total_quantity }
 
 no Moose;
 __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
@@ -242,6 +253,12 @@ Elements is L<Yetie::Domain::Entity::LineItem> object.
 Return L<Yetie::Domain::Collection> object.
 Elements is L<Yetie::Domain::Entity::Shipment> object.
 
+=head2 C<total_amounts>
+
+    my $total_amounts = $cart->total_amounts;
+
+Return L<Yetie::Domain::List::TotalAmounts> object.
+
 =head1 METHODS
 
 L<Yetie::Domain::Entity::Cart> inherits all methods from L<Yetie::Domain::Entity> and implements
@@ -272,6 +289,12 @@ Remove all items.
 =head2 C<clone>
 
 =head2 C<grand_total>
+
+Calculate the total amount of all.
+
+    my $grand_total = $cart->grand_total;
+
+Return L<Yetie::Domain::Value::Price> object.
 
 =head2 C<has_billing_address>
 
@@ -368,6 +391,14 @@ Update shipping address.
 
 Return number of items types.
 
+=head2 C<taxes>
+
+All tax calculation result.
+
+    my $taxes = $cart->taxes;
+
+Return L<Yetie::Domain::Value::Tax> object.
+
 =head2 C<total_quantity>
 
     my $total_qty = $cart->total_quantity;
@@ -381,4 +412,4 @@ Yetie authors.
 =head1 SEE ALSO
 
 L<Yetie::Domain::Entity>, L<Yetie::Domain::List::Linetems>, L<Yetie::Domain::Entity::LineItem>,
-L<Yetie::Domain::Entity::Shipment>
+L<Yetie::Domain::Entity::Shipment>, L<Yetie::Domain::List::TotalAmounts>

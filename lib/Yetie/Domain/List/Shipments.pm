@@ -43,24 +43,29 @@ sub revert {
 sub subtotal_excl_tax {
     my $self = shift;
 
-    my $price = $self->_init_price;
+    my $price = $self->_init_price( is_tax_included => 0 );
     return $self->reduce( sub { $a + $b->subtotal_excl_tax }, $price );
 }
 
 sub subtotal_incl_tax {
     my $self = shift;
 
-    my $price = $self->_init_price;
+    my $price = $self->_init_price( is_tax_included => 1 );
     return $self->reduce( sub { $a + $b->subtotal_incl_tax }, $price );
 }
 
 sub _init_price {
-    my $self = shift;
+    my $self    = shift;
+    my %args    = @_;
+    my $factory = $self->factory('value-price');
 
     my $first_shipment = $self->first;
-    return $first_shipment
-      ? $first_shipment->items->first->price->clone( value => 0 )
-      : Yetie::Factory->new('value-price')->construct;
+    return $factory->construct( is_tax_included => $args{is_tax_included} ) if !$first_shipment;
+
+    my $items = $first_shipment->items;
+    return $factory->construct( is_tax_included => $args{is_tax_included} ) if !$items->size;
+
+    return $items->first->price->clone( value => 0, is_tax_included => $args{is_tax_included} );
 }
 
 no Moose;

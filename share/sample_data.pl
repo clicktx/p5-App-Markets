@@ -197,12 +197,12 @@
         [ 12, 7, 5, undef ], # trashed on test
     ],
     'SalesOrderItem' => [
-        [qw/order_id product_id quantity product_title price tax_rule_id/],
-        [ 1, 3, 3, 'product 3', 300, 1 ],
-        [ 1, 1, 1, 'product 1', 101, 2 ], # change price
-        [ 2, 2, 2, 'product 2', 200, 5 ],
-        [ 3, 4, 4, 'product 4', 333, 5 ],
-        [ 12, 1, 4, 'product 1', 101, 5 ], # trashed on test
-        [ 12, 2, 4, 'product 2', 200, 5 ], # trashed on test
+        [qw/order_id product_id quantity product_title price tax_rule_id currency_code is_tax_included/],
+        [ 1, 3, 3, 'product 3', 300, 1, 'USD', 0 ],
+        [ 1, 1, 1, 'product 1', 101, 2, 'USD', 0 ], # change price
+        [ 2, 2, 2, 'product 2', 200, 5, 'USD', 0 ],
+        [ 3, 4, 4, 'product 4', 333, 5, 'USD', 0 ],
+        [ 12, 1, 4, 'product 1', 101, 5, 'USD', 0 ], # trashed on test
+        [ 12, 2, 4, 'product 2', 200, 5, 'USD', 0 ], # trashed on test
     ],
 )

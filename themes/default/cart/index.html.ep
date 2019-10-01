@@ -37,7 +37,7 @@
     </ul>
 
     <%= csrf_field %>
-    <%= submit_button 'Update Cart' %>
+    <%= submit_button 'Recalculate' %>
 <% end %>
 <%= csrf_button_to 'Remove All Items' => 'rn.cart.clear' => ( id => 'form-cart-clear') %>
 
@@ -49,10 +49,21 @@
     Shipping & Handling:
 </div>
 <div class="">
-    Taxes:
+    Taxes: <%= $cart->taxes %>
 </div>
+
+% if ( $cart->total_amounts->has_many ){
+    <hr>
+        <% $cart->total_amounts->each( sub { %>
+            <div>
+                <%= $_->tax_rate_percentage %> : <%= $_->total_incl_tax %>
+            </div>
+        <% }); %>
+% }
+<hr>
+
 <div class="">
-    Grand Total: <%= $cart->grand_total %>
+    Cart Sutotal: <%= $cart->grand_total %>
 </div>
 <hr>
 

@@ -80,6 +80,14 @@ sub _build__row_total_incl_tax {
 
 sub equals { return $_[0]->product_hash_code eq $_[1]->product_hash_code ? 1 : 0 }
 
+sub row_tax_amount {
+    my $self = shift;
+
+    my $tax = $self->factory('value-tax')->construct();
+    $tax += $self->row_total_incl_tax->clone( is_tax_included => 0 ) - $self->row_total_excl_tax;
+    return $tax;
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -134,6 +142,12 @@ Implements the following new ones.
 =head2 C<equals>
 
     my $bool = $item->equals($other_item);
+
+=head2 C<row_tax_amount>
+
+    my $tax = $item->row_tax_amount;
+
+Return L<Yetie::Domain::Value::Tax> object.
 
 =head1 AUTHOR
 
