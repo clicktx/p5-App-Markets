@@ -43,12 +43,12 @@ my %example_data = (
             },
             items => [
                 {
-                    product_id    => 4,
-                    product_title => 'd',
-                    quantity      => 4,
+                    product_id    => 1,
+                    product_title => 'a',
+                    quantity      => 1,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
                     tax_rule => { round_mode => 'even', tax_rate => 5 },
-                }
+                },
             ]
         },
         {
@@ -65,23 +65,16 @@ my %example_data = (
             },
             items => [
                 {
-                    product_id    => 4,
-                    product_title => 'd',
-                    quantity      => 4,
+                    product_id    => 2,
+                    product_title => 'b',
+                    quantity      => 2,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
                     tax_rule => { round_mode => 'even', tax_rate => 5 },
                 },
                 {
-                    product_id    => 5,
-                    product_title => 'e',
-                    quantity      => 5,
-                    price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-                    tax_rule => { round_mode => 'even', tax_rate => 5 },
-                },
-                {
-                    product_id    => 6,
-                    product_title => 'f',
-                    quantity      => 6,
+                    product_id    => 3,
+                    product_title => 'c',
+                    quantity      => 3,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
                     tax_rule => { round_mode => 'even', tax_rate => 5 },
                 },
@@ -145,8 +138,8 @@ subtest 'methods' => sub {
     $d->{shipments}->[1]->{shipping_address}->{hash} = 'e49e00abbdbcaa37c27e8af5ca11fe33c24703ce';
     cmp_deeply $cart_data, { id => ignore(), cart_id => ignore(), %{$d} }, 'right data structure';
     is $cart->id,                '8cb2237d0679ca88db6464eac60da96345513964', 'right entity id';
-    is $cart->count_total_items, '7',                                        'right total item count';
-    is $cart->total_quantity,    '25',                                       'right total quantity count';
+    is $cart->count_total_items, 3,                                          'right total total items';
+    is $cart->total_quantity,    6,                                          'right total quantity';
 
     my $cart2 = Yetie::Factory->new('entity-cart')->construct(
         {
@@ -181,7 +174,7 @@ subtest 'add_shipping_item' => sub {
     $cart = _create_entity;
     $cart->add_shipping_item( 0,
         Yetie::Factory->new('entity-line_item')->construct( product_id => 4, quantity => 4, price => 100 ) );
-    is $cart->shipments->first->items->first->quantity, '8', 'right sum quantity';
+    is $cart->shipments->first->items->first->quantity, 1, 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
 };
 
@@ -415,16 +408,9 @@ subtest 'remove_shipping_item' => sub {
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
         {
-            product_id    => 5,
-            quantity      => 5,
-            product_title => ignore(),
-            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule      => ignore(),
-        },
-        {
-            product_id    => 6,
-            quantity      => 6,
-            product_title => ignore(),
+            product_id    => 3,
+            quantity      => 3,
+            product_title => 'c',
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
             tax_rule      => ignore(),
         },
@@ -438,23 +424,16 @@ subtest 'remove_shipping_item' => sub {
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
         {
-            product_id    => 4,
-            quantity      => 4,
-            product_title => ignore(),
+            product_id    => 2,
+            quantity      => 2,
+            product_title => 'b',
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
             tax_rule      => ignore(),
         },
         {
-            product_id    => 5,
-            quantity      => 5,
-            product_title => ignore(),
-            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule      => ignore(),
-        },
-        {
-            product_id    => 6,
-            quantity      => 6,
-            product_title => ignore(),
+            product_id    => 3,
+            quantity      => 3,
+            product_title => 'c',
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
             tax_rule      => ignore(),
         },
@@ -466,22 +445,15 @@ subtest 'remove_shipping_item' => sub {
     cmp_deeply $cart->to_data->{shipments}->[1]->{items},
       [
         {
-            product_id    => 4,
-            quantity      => 4,
+            product_id    => 2,
+            quantity      => 2,
             product_title => ignore(),
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
             tax_rule      => ignore(),
         },
         {
-            product_id    => 5,
-            quantity      => 5,
-            product_title => ignore(),
-            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule      => ignore(),
-        },
-        {
-            product_id    => 6,
-            quantity      => 6,
+            product_id    => 3,
+            quantity      => 3,
             product_title => ignore(),
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
             tax_rule      => ignore(),
