@@ -208,15 +208,9 @@ sub to_order_data {
     return $data;
 }
 
-sub count_total_items {
-    my $self = shift;
-    return $self->items->size + $self->shipments->count_total_items;
-}
+sub count_total_items { return shift->items->size }
 
-sub total_quantity {
-    my $self = shift;
-    return $self->items->total_quantity + $self->shipments->total_quantity;
-}
+sub total_quantity { return shift->items->total_quantity }
 
 no Moose;
 __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
