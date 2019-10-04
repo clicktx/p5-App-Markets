@@ -7,7 +7,7 @@ use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
 has billing_address => (
-    is      => 'ro',
+    is      => 'rw',
     isa     => 'Yetie::Domain::Entity::Address',
     default => sub { shift->factory('entity-address')->construct() },
 );
@@ -43,6 +43,15 @@ sub has_shipping_address {
 }
 
 sub has_shipping_item { return shift->shipments->has_item }
+
+sub set_billing_address {
+    my ( $self, $address ) = @_;
+    croak 'Argument is missing.' if !$address;
+    return if $self->billing_address->equals($address);
+
+    $self->billing_address($address);
+    return $self;
+}
 
 sub set_shipping_address {
     my $self = shift;
@@ -121,6 +130,10 @@ Return boolean value.
     my $bool = $checkout->has_shipping_item;
 
 Return boolean value.
+
+=head2 C<set_billing_address>
+
+    $checkout->set_billing_address( $address_obj );
 
 =head2 C<set_shipping_address>
 

@@ -136,6 +136,40 @@ subtest 'has_shipping_address' => sub {
     is $checkout->has_shipping_address, 1, 'right has address info';
 };
 
+subtest 'set_billing_address' => sub {
+    my %address = (
+        country_code => 'jp',
+        line1        => 'Tokyo',
+    );
+    my $valid_data = {
+        hash          => ignore(),
+        country_code  => 'jp',
+        city          => q{},
+        line1         => 'Tokyo',
+        line2         => q{},
+        organization  => q{},
+        personal_name => q{},
+        phone         => q{},
+        postal_code   => q{},
+        state         => q{},
+    };
+
+    my $checkout = _create_entity;
+    dies_ok { $checkout->set_billing_address() } 'right no arguments';
+
+    $checkout = _create_entity;
+    my $obj = $checkout->factory('entity-address')->construct(%address);
+    $checkout->set_billing_address($obj);
+    cmp_deeply $checkout->billing_address->to_data, $valid_data, 'right update, data is object';
+    is $checkout->is_modified, 1, 'right modified';
+
+    # not update
+    $checkout = _create_entity;
+    $obj      = $checkout->factory('entity-address')->construct( $example_data{billing_address} );
+    $checkout->set_billing_address($obj);
+    is $checkout->is_modified, 0, 'right not modified';
+};
+
 subtest 'set_shipping_address' => sub {
     my %address = (
         country_code => 'jp',
