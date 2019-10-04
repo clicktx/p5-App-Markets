@@ -25,6 +25,7 @@ sub basic_method {
     my $checkout = $c->service('checkout')->load;
     isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
     is_deeply $c->server_session->data('checkout'), {}, 'right load';
+    ok $c->stash('checkout'), 'right stash';
 
     $c->service('checkout')->update($checkout);
     cmp_deeply $c->server_session->data('checkout'),
@@ -33,6 +34,7 @@ sub basic_method {
         transaction => ignore(),
       },
       'right update';
+    is $c->stash('checkout'), $checkout, 'right equals object for stash';
 
     $c->service('checkout')->delete;
     cmp_deeply $c->server_session->data('checkout'), undef, 'right delete';

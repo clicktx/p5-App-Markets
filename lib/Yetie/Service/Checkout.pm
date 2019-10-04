@@ -6,6 +6,7 @@ sub create {
 
     $self->server_session->data( checkout => {} );
     my $checkout = $self->factory('entity-checkout')->construct();
+    $self->controller->stash( checkout => $checkout );
     return $checkout;
 }
 
@@ -23,6 +24,7 @@ sub load {
     return $self->create if !$data;
 
     my $checkout = $self->factory('entity-checkout')->construct($data);
+    $self->controller->stash( checkout => $checkout );
     return $checkout;
 }
 
