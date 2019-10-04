@@ -17,6 +17,13 @@ has transaction => (
     default => sub { shift->factory('entity-transaction')->construct() },
 );
 
+sub has_shipping_address {
+    my $self = shift;
+
+    return 0 if !$self->shipments->has_shipment;
+    return $self->shipments->first->shipping_address->is_empty ? 0 : 1;
+}
+
 sub set_shipping_address {
     my $self = shift;
     croak 'Argument is missing.' if !@_;
@@ -66,6 +73,12 @@ Return L<Yetie::Domain::Entity::Transaction> object.
 
 L<Yetie::Domain::Entity::Checkout> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
+
+=head2 C<has_shipping_address>
+
+    my $bool = $checkout->has_shipping_address;
+
+Return boolean value.
 
 =head2 C<set_shipping_address>
 

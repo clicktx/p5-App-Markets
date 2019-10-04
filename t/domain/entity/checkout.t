@@ -104,6 +104,17 @@ sub _create_entity {
     Yetie::Factory->new('entity-checkout')->construct(%args);
 }
 
+subtest 'has_shipping_address' => sub {
+    my $checkout = Yetie::Factory->new('entity-checkout')->construct();
+    is $checkout->has_shipping_address, 0, 'right has not shipment';
+
+    $checkout->shipments->create_shipment;
+    is $checkout->has_shipping_address, 0, 'right no address info';
+
+    $checkout = _create_entity;
+    is $checkout->has_shipping_address, 1, 'right has address info';
+};
+
 subtest 'set_shipping_address' => sub {
     my %address = (
         country_code => 'jp',
