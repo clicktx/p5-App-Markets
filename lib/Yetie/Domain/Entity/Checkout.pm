@@ -17,12 +17,25 @@ has transaction => (
     default => sub { shift->factory('entity-transaction')->construct() },
 );
 
+sub add_shipment_item {
+    my $self = shift;
+    my ( $index, $item ) = @_ > 1 ? ( shift, shift ) : ( 0, shift );
+    croak 'First argument was not a Digit'   if $index =~ /\D/sxm;
+    croak 'Second argument was not a Object' if ref $item =~ /::/sxm;
+
+    my $shipment = $self->shipments->get($index);
+    $shipment->items->append($item);
+    return $self;
+}
+
 sub has_shipping_address {
     my $self = shift;
 
     return 0 if !$self->shipments->has_shipment;
     return $self->shipments->first->shipping_address->is_empty ? 0 : 1;
 }
+
+sub has_shipping_item { return shift->shipments->has_item }
 
 sub set_shipping_address {
     my $self = shift;
@@ -74,9 +87,25 @@ Return L<Yetie::Domain::Entity::Transaction> object.
 L<Yetie::Domain::Entity::Checkout> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<add_shipment_item>
+
+    $checkout->add_shipment_item( $entity_item_object );
+    $checkout->add_shipment_item( $index_no => $entity_item_object );
+
+Return L<Yetie::Domain::Entity::Checkout> Object.
+
+C<$index_no> is option argument.
+Default $shipments->first
+
 =head2 C<has_shipping_address>
 
     my $bool = $checkout->has_shipping_address;
+
+Return boolean value.
+
+=head2 C<has_shipping_item>
+
+    my $bool = $checkout->has_shipping_item;
 
 Return boolean value.
 
