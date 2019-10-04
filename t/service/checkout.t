@@ -22,12 +22,12 @@ use Test::Deep;
 sub basic_method {
     my $c = shift;
 
-    my $checkout = $c->service('checkout')->load;
+    my $checkout = $c->service('checkout')->get;
     isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
-    is_deeply $c->server_session->data('checkout'), {}, 'right load';
+    is_deeply $c->server_session->data('checkout'), {}, 'right get';
     ok $c->stash('checkout'), 'right stash';
 
-    $c->service('checkout')->update($checkout);
+    $c->service('checkout')->save;
     cmp_deeply $c->server_session->data('checkout'),
       {
         shipments   => ignore(),

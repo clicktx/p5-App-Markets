@@ -1,7 +1,33 @@
 package Yetie::Service::Checkout;
 use Mojo::Base 'Yetie::Service';
 
-sub create {
+sub delete {
+    my $self = shift;
+
+    $self->server_session->clear('checkout');
+    return;
+}
+
+sub get {
+    my $self = shift;
+
+    my $checkout = $self->controller->stash('checkout');
+    return $self->_load if !$checkout;
+
+    return $checkout;
+}
+
+sub save {
+    my $self = shift;
+
+    my $checkout = $self->controller->stash('checkout');
+    return if !$checkout;
+
+    $self->_update($checkout);
+    return;
+}
+
+sub _create {
     my $self = shift;
 
     $self->server_session->data( checkout => {} );
@@ -10,25 +36,18 @@ sub create {
     return $checkout;
 }
 
-sub delete {
-    my $self = shift;
-
-    $self->server_session->clear('checkout');
-    return;
-}
-
-sub load {
+sub _load {
     my $self = shift;
 
     my $data = $self->server_session->data('checkout');
-    return $self->create if !$data;
+    return $self->_create if !$data;
 
     my $checkout = $self->factory('entity-checkout')->construct($data);
     $self->controller->stash( checkout => $checkout );
     return $checkout;
 }
 
-sub update {
+sub _update {
     my ( $self, $entity ) = @_;
 
     $self->server_session->data( checkout => $entity->to_data );
@@ -44,6 +63,19 @@ Yetie::Service::Checkout
 
 =head1 SYNOPSIS
 
+    my $c = shift;
+
+    # Load
+    my $checkout = $c->service('checkout')->get;
+
+    ....
+
+    # Store
+    $checkout->save;
+
+    # Remove
+    $checkout->delete;
+
 =head1 DESCRIPTION
 
 =head1 ATTRIBUTES
@@ -56,25 +88,19 @@ the following new ones.
 L<Yetie::Service::Checkout> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
-=head2 C<create>
-
-    my $checkout = $service->create;
-
-Return L<Yetie::Domain::Entity::Checkout> object.
-
 =head2 C<delete>
 
     $service->delete;
 
-=head2 C<load>
+=head2 C<get>
 
-    my $checkout = $service->load;
+    my $checkout = $service->get;
 
 Return L<Yetie::Domain::Entity::Checkout> object.
 
-=head2 C<update>
+=head2 C<save>
 
-    $service->update($checkout_obj);
+    $service->save;
 
 =head1 AUTHOR
 
