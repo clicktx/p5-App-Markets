@@ -6,6 +6,11 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
+has billing_address => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Entity::Address',
+    default => sub { shift->factory('entity-address')->construct() },
+);
 has shipments => (
     is      => 'ro',
     isa     => 'Yetie::Domain::List::Shipments',
@@ -27,6 +32,8 @@ sub add_shipment_item {
     $shipment->items->append($item);
     return $self;
 }
+
+sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
 
 sub has_shipping_address {
     my $self = shift;
@@ -96,6 +103,12 @@ Return L<Yetie::Domain::Entity::Checkout> Object.
 
 C<$index_no> is option argument.
 Default $shipments->first
+
+=head2 C<has_billing_address>
+
+    my $bool = $checkout->has_billing_address;
+
+Return boolean value.
 
 =head2 C<has_shipping_address>
 

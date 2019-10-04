@@ -84,18 +84,17 @@ my %example_data = (
             ]
         },
     ],
-
-    # billing_address => {
-    #     country_code  => 'jp',
-    #     city          => '',
-    #     state         => '',
-    #     line1         => 'Gunma',
-    #     line2         => '',
-    #     postal_code   => '',
-    #     personal_name => '',
-    #     organization  => '',
-    #     phone         => '',
-    # },
+    billing_address => {
+        country_code  => 'jp',
+        city          => '',
+        state         => '',
+        line1         => 'Gunma',
+        line2         => '',
+        postal_code   => '',
+        personal_name => '',
+        organization  => '',
+        phone         => '',
+    },
 );
 
 sub _create_entity {
@@ -116,6 +115,14 @@ subtest 'add_shipment_item' => sub {
     $checkout->add_shipment_item( Yetie::Factory->new('entity-line_item')->construct( product_id => 99 ) );
     is $checkout->shipments->first->items->last->product_id, 99, 'right add shipping_item';
     is $checkout->is_modified, 1, 'right modified';
+};
+
+subtest 'has_billing_address' => sub {
+    my $checkout = Yetie::Factory->new('entity-checkout')->construct();
+    is $checkout->has_billing_address, 0, 'right no address info';
+
+    $checkout = _create_entity;
+    is $checkout->has_billing_address, 1, 'right has address info';
 };
 
 subtest 'has_shipping_address' => sub {

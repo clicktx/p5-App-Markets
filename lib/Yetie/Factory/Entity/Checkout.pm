@@ -4,6 +4,8 @@ use Mojo::Base 'Yetie::Factory';
 sub cook {
     my $self = shift;
 
+    $self->aggregate( billing_address => ( 'entity-address', $self->param('billing_address') || {} ) );
+
     $self->aggregate( shipments => 'list-shipments', $self->param('shipments') || [] );
 
     $self->aggregate( transaction => 'entity-transaction', $self->param('transaction') || {} );
