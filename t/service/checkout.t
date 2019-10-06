@@ -12,6 +12,12 @@ sub t01_basic : Tests() {
     $t->get_ok('/test/basic_method')->status_is(200);
 }
 
+sub t02_add_all_cart_items : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+    $t->get_ok('/test/add_all_cart_items')->status_is(200);
+}
+
 __PACKAGE__->runtests;
 
 package Yetie::Controller::Catalog::Test;
@@ -30,8 +36,9 @@ sub basic_method {
     $c->service('checkout')->save;
     cmp_deeply $c->server_session->data('checkout'),
       {
-        shipments   => ignore(),
-        transaction => ignore(),
+        billing_address => ignore(),
+        shipments       => ignore(),
+        transaction     => ignore(),
       },
       'right update';
     is $c->stash('checkout'), $checkout, 'right equals object for stash';
