@@ -52,16 +52,6 @@ sub add_item {
     return $self;
 }
 
-sub add_shipping_item {
-    my ( $self, $index, $item ) = @_;
-    croak 'First argument was not a Digit'   if $index =~ /\D/sxm;
-    croak 'Second argument was not a Object' if ref $item =~ /::/sxm;
-
-    my $shipment = $self->shipments->get($index);
-    $shipment->items->append($item);
-    return $self;
-}
-
 sub clear_items {
     my $self = shift;
 
@@ -73,18 +63,7 @@ sub clear_items {
 # NOTE: 送料計算等はどうなる？
 sub grand_total { shift->total_amounts->grand_total }
 
-sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
-
 sub has_item { return shift->items->size ? 1 : 0 }
-
-sub has_shipping_address {
-    my $self = shift;
-
-    return 0 if !$self->shipments->has_shipment;
-    return $self->shipments->first->shipping_address->is_empty ? 0 : 1;
-}
-
-sub has_shipping_item { return shift->shipments->has_item }
 
 sub merge {
     my ( $self, $target ) = @_;
@@ -116,14 +95,6 @@ sub merge {
     return $stored;
 }
 
-sub move_items_to_first_shipment {
-    my $self = shift;
-
-    my $items = $self->items->to_array;
-    $self->shipments->first->items->append( @{$items} );
-    return $self;
-}
-
 # NOTE: 数量は未考慮
 sub remove_item {
     my ( $self, $line_num ) = @_;
@@ -132,52 +103,11 @@ sub remove_item {
     return $self->items->remove($line_num);
 }
 
-# NOTE: 数量は未考慮
-sub remove_shipping_item {
-    my ( $self, $index, $line_num ) = @_;
-    croak 'First argument was not a Digit'   if $index =~ /\D/sxm;
-    croak 'Second argument was not a Scalar' if $line_num =~ /\D/sxm;
-
-    my $shipment = $self->shipments->get($index);
-    return 0 if !$shipment;
-
-    return $shipment->items->remove($line_num);
-}
-
 sub revert {
     my $self = shift;
     return if !$self->shipments->has_item;
 
     $self->shipments->revert;
-    return $self;
-}
-
-sub set_billing_address {
-    my ( $self, $address ) = @_;
-    croak 'Argument is missing.' if !$address;
-    return if $self->billing_address->equals($address);
-
-    $self->billing_address($address);
-    return $self;
-}
-
-sub set_shipping_address {
-    my $self = shift;
-    croak 'Argument is missing.' if !@_;
-
-    # Convert arguments
-    my $addresses = @_ > 1 ? +{@_} : Yetie::Util::array_to_hash(@_);
-
-    # Has not shipment in shipments
-    if ( !$self->shipments->has_shipment ) { $self->shipments->create_shipment }
-
-    foreach my $index ( keys %{$addresses} ) {
-        my $address  = $addresses->{$index};
-        my $shipment = $self->shipments->get($index);
-
-        next if $shipment->shipping_address->equals($address);
-        $shipment->shipping_address($address);
-    }
     return $self;
 }
 
@@ -270,16 +200,6 @@ the following new ones.
 
 Return L<Yetie::Domain::Entity::Cart> Object.
 
-=head2 C<add_shipping_item>
-
-    $cart->add_shipping_item( $entity_item_object );
-    $cart->add_shipping_item( $index, $entity_item_object );
-
-Return L<Yetie::Domain::Entity::Cart> Object.
-
-C<$shipment_object> is option argument.
-default $shipments->first
-
 =head2 C<clear_items>
 
     $cart->clear_items;
@@ -296,27 +216,9 @@ Calculate the total amount of all.
 
 Return L<Yetie::Domain::Value::Price> object.
 
-=head2 C<has_billing_address>
-
-    my $bool = $cart->has_billing_address;
-
-Return boolean value.
-
 =head2 C<has_item>
 
     my $bool = $cart->has_item;
-
-Return boolean value.
-
-=head2 C<has_shipping_address>
-
-    my $bool = $cart->has_shipping_address;
-
-Return boolean value.
-
-=head2 C<has_shipping_item>
-
-    my $bool = $cart->has_shipping_item;
 
 Return boolean value.
 
@@ -332,21 +234,9 @@ Return boolean value.
 
 Return Entity Cart Object.
 
-=head2 C<move_items_to_first_shipment>
-
-    $cart->move_items_to_first_shipment;
-
-Move all items to the first element of C<Yetie::Domain::List::Shipments>.
-
 =head2 C<remove_item>
 
     $cart->remove_item($line_num);
-
-Return true if removed item.
-
-=head2 C<remove_shipping_item>
-
-    $cart->remove_shipping_item($shipment_index => $line_num);
 
 Return true if removed item.
 
@@ -357,21 +247,6 @@ Return true if removed item.
 Delete except the first shipping-information. Also delete all shipping-items of the first shipping-information.
 
 See L<Yetie::Domain::List::Shipments/revert>.
-
-=head2 C<set_billing_address>
-
-    $cart->set_billing_address( $address_obj );
-
-=head2 C<set_shipping_address>
-
-    # Update first element
-    $cart->set_shipping_address( $address_obj );
-
-    # Update multiple elements
-    $cart->set_shipping_address( 1 => $address_obj, 3 => $address_obj, ... );
-    $cart->set_shipping_address( [ $address_obj, $address_obj, ... ] );
-
-Update shipping address.
 
 =head2 C<subtotal_excl_tax>
 
@@ -411,5 +286,5 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>, L<Yetie::Domain::List::Linetems>, L<Yetie::Domain::Entity::LineItem>,
-L<Yetie::Domain::Entity::Shipment>, L<Yetie::Domain::List::TotalAmounts>
+L<Yetie::Domain::List::Linetems>, L<Yetie::Domain::Entity::LineItem>,
+L<Yetie::Domain::List::TotalAmounts>, L<Yetie::Domain::Entity>

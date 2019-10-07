@@ -165,18 +165,6 @@ subtest 'add_item' => sub {
     is $cart->is_modified, 1, 'right modified';
 };
 
-subtest 'add_shipping_item' => sub {
-    my $cart = _create_entity;
-    $cart->add_shipping_item( 0, Yetie::Factory->new('entity-line_item')->construct( product_id => 11 ) );
-    is $cart->shipments->first->items->last->product_id, '11', 'right add shipping_item';
-    is $cart->is_modified, 1, 'right modified';
-
-    $cart = _create_entity;
-    $cart->add_shipping_item( 0,
-        Yetie::Factory->new('entity-line_item')->construct( product_id => 4, quantity => 4, price => 100 ) );
-    is $cart->shipments->first->items->first->quantity, 1, 'right sum quantity';
-    is $cart->is_modified, 1, 'right modified';
-};
 
 subtest 'clear_items' => sub {
     my $cart = _create_entity;
@@ -207,25 +195,6 @@ subtest 'clone' => sub {
     cmp_deeply $cart->shipments->get(0)->items->get(0)->to_data,
       $clone->shipments->get(0)->items->get(0)->to_data,
       'right shipment item data';
-};
-
-subtest 'has_billing_address' => sub {
-    my $cart = Yetie::Factory->new('entity-cart')->construct();
-    is $cart->has_billing_address, 0, 'right no address info';
-
-    $cart = _create_entity;
-    is $cart->has_billing_address, 1, 'right has address info';
-};
-
-subtest 'has_shipping_address' => sub {
-    my $cart = Yetie::Factory->new('entity-cart')->construct();
-    is $cart->has_shipping_address, 0, 'right has not shipment';
-
-    $cart->shipments->create_shipment;
-    is $cart->has_shipping_address, 0, 'right no address info';
-
-    $cart = _create_entity;
-    is $cart->has_shipping_address, 1, 'right has address info';
 };
 
 subtest 'merge' => sub {
@@ -398,70 +367,6 @@ subtest 'remove_item' => sub {
       'right not removed';
 };
 
-subtest 'remove_shipping_item' => sub {
-    my $cart = _create_entity;
-    dies_ok { $cart->remove_shipping_item( 'foo', 2 ) } 'right first argument str';
-    dies_ok { $cart->remove_shipping_item( 1,     'foo' ) } 'right second argument str';
-
-    $cart->remove_shipping_item( 1 => 1 );
-    is $cart->is_modified, 1, 'right modified';
-    cmp_deeply $cart->to_data->{shipments}->[1]->{items},
-      [
-        {
-            product_id    => 3,
-            quantity      => 3,
-            product_title => 'c',
-            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule      => ignore(),
-        },
-      ],
-      'right remove shipping item';
-
-    # Unremove. not found item.
-    $cart = _create_entity;
-    $cart->remove_shipping_item( 1 => 4 );
-    is $cart->is_modified, 0, 'right not modified';
-    cmp_deeply $cart->to_data->{shipments}->[1]->{items},
-      [
-        {
-            product_id    => 2,
-            quantity      => 2,
-            product_title => 'b',
-            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule      => ignore(),
-        },
-        {
-            product_id    => 3,
-            quantity      => 3,
-            product_title => 'c',
-            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule      => ignore(),
-        },
-      ],
-      'right not removed';
-
-    $cart->remove_shipping_item( 2 => 1 );
-    is $cart->is_modified, 0, 'right not modified';
-    cmp_deeply $cart->to_data->{shipments}->[1]->{items},
-      [
-        {
-            product_id    => 2,
-            quantity      => 2,
-            product_title => ignore(),
-            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule      => ignore(),
-        },
-        {
-            product_id    => 3,
-            quantity      => 3,
-            product_title => ignore(),
-            price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule      => ignore(),
-        },
-      ],
-      'right not removed';
-};
-
 # subtest 'grand_total' => sub {};
 
 subtest 'revert' => sub {
@@ -516,95 +421,6 @@ subtest 'revert' => sub {
     # Without items
     $cart = _create_entity( shipments => [ { items => [] }, { items => [] } ] );
     ok !$cart->revert, 'right without item';
-    is $cart->is_modified, 0, 'right not modified';
-};
-
-subtest 'set_billing_address' => sub {
-    my %address = (
-        country_code => 'jp',
-        line1        => 'Tokyo',
-    );
-    my $valid_data = {
-        hash          => ignore(),
-        country_code  => 'jp',
-        city          => q{},
-        line1         => 'Tokyo',
-        line2         => q{},
-        organization  => q{},
-        personal_name => q{},
-        phone         => q{},
-        postal_code   => q{},
-        state         => q{},
-    };
-
-    my $cart = _create_entity;
-    dies_ok { $cart->set_billing_address() } 'right no arguments';
-
-    $cart = _create_entity;
-    my $obj = $cart->factory('entity-address')->construct(%address);
-    $cart->set_billing_address($obj);
-    cmp_deeply $cart->billing_address->to_data, $valid_data, 'right update, data is object';
-    is $cart->is_modified, 1, 'right modified';
-
-    # not update
-    $cart = _create_entity;
-    $obj  = $cart->factory('entity-address')->construct( $example_data{billing_address} );
-    $cart->set_billing_address($obj);
-    is $cart->is_modified, 0, 'right not modified';
-};
-
-subtest 'set_shipping_address' => sub {
-    my %address = (
-        country_code => 'jp',
-        line1        => 'Shimane',
-    );
-    my $valid_data = {
-        hash          => ignore(),
-        country_code  => 'jp',
-        city          => q{},
-        line1         => 'Shimane',
-        line2         => q{},
-        organization  => q{},
-        personal_name => q{},
-        phone         => q{},
-        postal_code   => q{},
-        state         => q{},
-    };
-
-    my $cart = _create_entity;
-    dies_ok { $cart->set_shipping_address() } 'right not arguments';
-
-    my $obj           = $cart->factory('entity-address')->construct(%address);
-    my $shipment_addr = $cart->shipments->get(1)->shipping_address->to_data;
-
-    $cart->set_shipping_address($obj);
-    cmp_deeply $cart->shipments->first->shipping_address->to_data, $valid_data, 'right single update';
-    cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $shipment_addr, 'right not update';
-    is $cart->is_modified, 1, 'right modified';
-
-    $cart          = _create_entity;
-    $shipment_addr = $cart->shipments->get(0)->shipping_address->to_data;
-    $cart->set_shipping_address( 1 => $obj );
-    cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $shipment_addr, 'right not update';
-    cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $valid_data,    'right specify update';
-    is $cart->is_modified, 1, 'right modified';
-
-    $cart = _create_entity;
-    $cart->set_shipping_address( [ $obj, $obj ] );
-    cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $valid_data, 'right multi update';
-    cmp_deeply $cart->shipments->get(1)->shipping_address->to_data, $valid_data, 'right multi update';
-    is $cart->is_modified, 1, 'right modified';
-
-    # first set(create and set)
-    $cart = Yetie::Factory->new('entity-cart')->construct();
-    $cart->set_shipping_address($obj);
-    cmp_deeply $cart->shipments->get(0)->shipping_address->to_data, $valid_data,
-      'right create shipment and set shipping_address';
-
-    # not update
-    $cart = _create_entity;
-    $obj  = $cart->factory('entity-address')->construct( $example_data{shipments}->[0]->{shipping_address} );
-    $cart->set_shipping_address($obj);
     is $cart->is_modified, 0, 'right not modified';
 };
 
