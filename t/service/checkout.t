@@ -49,4 +49,23 @@ sub basic_method {
     return $c->render( text => 1 );
 }
 
+sub add_all_cart_items {
+    my $c        = shift;
+    my $checkout = $c->service('checkout')->get;
+
+    # Cart in
+    $c->service('cart')->add_item( { product_id => 1, quantity => 1 } );
+    $c->service('cart')->add_item( { product_id => 2, quantity => 2 } );
+
+    # Add shipping address
+    my $shipment = $checkout->factory('entity-address')->construct( country_code => 'jp' );
+    $checkout->set_shipping_address($shipment);
+
+    my $items = $c->cart->items;
+    $c->service('checkout')->add_all_cart_items();
+    cmp_deeply $items->to_data, $checkout->shipments->first->items->to_data, 'right items';
+
+    return $c->render( text => 1 );
+}
+
 1;

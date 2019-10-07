@@ -1,6 +1,16 @@
 package Yetie::Service::Checkout;
 use Mojo::Base 'Yetie::Service';
 
+sub add_all_cart_items {
+    my $self = shift;
+
+    my $cart     = $self->controller->cart;
+    my $items    = $cart->items->to_array;
+    my $checkout = $self->get;
+    $checkout->shipments->first->items->append( @{$items} );
+    return;
+}
+
 sub delete {
     my $self = shift;
 
@@ -87,6 +97,12 @@ the following new ones.
 
 L<Yetie::Service::Checkout> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
+
+=head2 C<add_all_cart_items>
+
+Add all cart items to the first shipment.
+
+    $service->add_all_cart_items;
 
 =head2 C<delete>
 
