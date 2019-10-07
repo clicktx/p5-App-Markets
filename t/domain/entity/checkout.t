@@ -7,30 +7,6 @@ use Yetie::Factory;
 use_ok 'Yetie::Domain::Entity::Checkout';
 
 my %example_data = (
-
-    # items => [
-    #     {
-    #         product_id    => 1,
-    #         product_title => 'a',
-    #         quantity      => 1,
-    #         price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-    #         tax_rule => { round_mode => 'even', tax_rate => 5 },
-    #     },
-    #     {
-    #         product_id    => 2,
-    #         product_title => 'b',
-    #         quantity      => 2,
-    #         price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-    #         tax_rule => { round_mode => 'even', tax_rate => 5 },
-    #     },
-    #     {
-    #         product_id    => 3,
-    #         product_title => 'c',
-    #         quantity      => 3,
-    #         price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-    #         tax_rule => { round_mode => 'even', tax_rate => 5 },
-    #     },
-    # ],
     shipments => [
         {
             shipping_address => {
