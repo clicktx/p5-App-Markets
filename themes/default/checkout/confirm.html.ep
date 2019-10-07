@@ -92,8 +92,7 @@
     <%= submit_button 'BUY NOW' %>
 <% end %>
 
-<pre>
-<%= dumper $cart->to_data %>
-</pre>
+<pre>checkout: <%= dumper stash('checkout')->to_data %></pre>
+<pre>cart: <%= dumper $cart->to_data %></pre>
 
 <%= link_to 'Back to page' => 'rn.cart' %>

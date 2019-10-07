@@ -75,6 +75,4 @@
     <li><%= link_to 'Proceed to Checkout' => 'rn.checkout', ( class => 'btn btn-primary' ) %></li>
 </ul>
 
-<pre>
-<%= dumper $self->cart->to_data %>
-</pre>
+<pre>cart: <%= dumper $self->cart->to_data %></pre>
