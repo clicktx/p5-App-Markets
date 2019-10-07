@@ -93,6 +93,16 @@ Yetie::Domain::Entity::Checkout
 L<Yetie::Domain::Entity::Checkout> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<billing_address>
+
+Return L<Yetie::Domain::Entity::Address> object.
+
+=head2 C<shipments>
+
+    my $shipments = $checkout->shipments;
+
+Return L<Yetie::Domain::List::Shipments> object.
+
 =head2 C<transaction>
 
     my $transaction = $checkout->transaction;
