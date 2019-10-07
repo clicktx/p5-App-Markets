@@ -25,7 +25,7 @@ sub shipping_address {
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     # Set Address
     my $set_address = $c->factory('entity-address')->construct( $form->params->to_hash );
@@ -77,7 +77,7 @@ sub billing_address {
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     # Set Address
     my $set_address = $c->factory('entity-address')->construct( $form->params->to_hash );
@@ -98,16 +98,16 @@ sub confirm {
     $c->confirm_handler;
 
     my $form = $c->form('checkout-confirm');
-    return $c->render() unless $form->has_data;
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->has_data;
+    return $c->render() if !$form->do_validate;
 
     # checkout complete
-    $c->complete_handler;
+    return $c->complete_handler;
 }
 
 sub complete {
     my $c = shift;
-    $c->render();
+    return $c->render();
 }
 
 # handler?
@@ -118,23 +118,28 @@ sub complete {
 # - Choose a billing address
 # - Review your order
 sub confirm_handler {
-    my $c    = shift;
-    my $cart = $c->cart;
+    my $c = shift;
+
+    my $cart     = $c->cart;
+    my $checkout = $c->service('checkout')->get;
 
     # No items
-    return $c->redirect_to('rn.cart') unless $cart->has_item;
+    return $c->redirect_to('rn.cart') if !$cart->has_item;
 
     # Shipping address
-    return $c->redirect_to('rn.checkout.shipping_address') unless $cart->has_shipping_address;
+    return $c->redirect_to('rn.checkout.shipping_address') if !$checkout->has_shipping_address;
 
-    # ship items to one place
-    $cart->move_items_to_first_shipment if !$cart->has_shipping_item and !$cart->shipments->is_multiple;
+    # FIXME: ship items to one place
+    # $cart->move_items_to_first_shipment if !$checkout->has_shipping_item and !$checkout->shipments->is_multiple;
+    $c->service('checkout')->add_all_cart_items() if !$checkout->shipments->is_multiple;
 
     # Billing address
-    return $c->redirect_to('rn.checkout.billing_address') unless $cart->has_billing_address;
+    return $c->redirect_to('rn.checkout.billing_address') if !$checkout->has_billing_address;
 
     # Redirect confirm
     return $c->redirect_to('rn.checkout.confirm') if $c->stash('action') ne 'confirm';
+
+    return;
 }
 
 sub complete_handler {
@@ -211,25 +216,28 @@ sub complete_handler {
     $cart->clear_items;
 
     # redirect_to thank you page
-    $c->redirect_to('rn.checkout.complete');
+    return $c->redirect_to('rn.checkout.complete');
 }
 
 sub _select_address {
     my ( $c, $address_type ) = @_;
 
     my $form = $c->form('checkout-select_address');
-    return unless $form->do_validate;
+    return if !$form->do_validate;
 
-    my $no          = $form->param('select_no');
+    my $select_no   = $form->param('select_no');
     my $customer_id = $c->server_session->customer_id;
     my $addresses   = $c->service('customer')->get_address_list($customer_id);
-    my $selected    = $addresses->get($no);
-    return unless $selected;
+    my $selected    = $addresses->get($select_no);
+    return if !$selected;
 
     # Set Address
     # NOTE: set_billing_address or set_shipping_address
-    my $method = 'set_' . $address_type;
-    $c->cart->$method($selected);
+    my $checkout = $c->service('checkout')->get;
+    my $method   = 'set_' . $address_type;
+    $checkout->$method($selected);
+    $c->service('checkout')->save;
+    return;
 }
 
 1;
