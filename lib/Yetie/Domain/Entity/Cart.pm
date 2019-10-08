@@ -16,17 +16,9 @@ has cart_id => (
     is      => 'ro',
     default => q{}
 );
-has billing_address => (
-    is      => 'rw',
-    default => sub { __PACKAGE__->factory('entity-address')->construct() }
-);
 has items => (
     is      => 'ro',
     default => sub { __PACKAGE__->factory('list-line_items')->construct() }
-);
-has shipments => (
-    is      => 'ro',
-    default => sub { __PACKAGE__->factory('list-shipments')->construct() }
 );
 has _total_amounts => (
     is         => 'ro',
@@ -56,7 +48,6 @@ sub clear_items {
     my $self = shift;
 
     $self->items->clear;
-    $self->shipments->clear_items;
     return $self;
 }
 
@@ -103,40 +94,11 @@ sub remove_item {
     return $self->items->remove($line_num);
 }
 
-sub revert {
-    my $self = shift;
-    return if !$self->shipments->has_item;
-
-    $self->shipments->revert;
-    return $self;
-}
-
 sub subtotal_excl_tax { return shift->items->subtotal_excl_tax }
 
 sub subtotal_incl_tax { return shift->items->subtotal_incl_tax }
 
 sub taxes { return shift->total_amounts->taxes }
-
-sub to_order_data {
-    my $self = shift;
-    my $data = $self->to_data;
-
-    # Remove needless data
-    for (qw/id cart_id items/) { delete $data->{$_} }
-
-    # Billing Address
-    $data->{billing_address} = { id => $data->{billing_address}->{id} };
-
-    # Shipments
-    foreach my $shipment ( @{ $data->{shipments} } ) {
-        my $id = $shipment->{shipping_address}->{id};
-        $shipment->{shipping_address} = { id => $id };
-    }
-
-    # Rename shipments to orders
-    $data->{orders} = delete $data->{shipments};
-    return $data;
-}
 
 sub count_total_items { return shift->items->size }
 
@@ -161,8 +123,6 @@ Yetie::Domain::Entity::Cart
 L<Yetie::Domain::Entity::Cart> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
-=head2 C<billing_address>
-
 =head2 C<cart_id>
 
 =head2 C<id>
@@ -174,14 +134,6 @@ the following new ones.
 
 Return L<Yetie::Domain::List::LineItems> object.
 Elements is L<Yetie::Domain::Entity::LineItem> object.
-
-=head2 C<shipments>
-
-    my $shipments = $cart->shipments;
-    $shipments->each( sub { ... } );
-
-Return L<Yetie::Domain::Collection> object.
-Elements is L<Yetie::Domain::Entity::Shipment> object.
 
 =head2 C<total_amounts>
 
@@ -240,14 +192,6 @@ Return Entity Cart Object.
 
 Return true if removed item.
 
-=head2 C<revert>
-
-    $cart->revert;
-
-Delete except the first shipping-information. Also delete all shipping-items of the first shipping-information.
-
-See L<Yetie::Domain::List::Shipments/revert>.
-
 =head2 C<subtotal_excl_tax>
 
     my $subtotal_excl_tax = $cart->subtotal_excl_tax;
@@ -255,10 +199,6 @@ See L<Yetie::Domain::List::Shipments/revert>.
 =head2 C<subtotal_incl_tax>
 
     my $subtotal_incl_tax = $cart->subtotal_incl_tax;
-
-=head2 C<to_order_data>
-
-    my $order = $self->to_order_data;
 
 =head2 C<count_total_items>
 
