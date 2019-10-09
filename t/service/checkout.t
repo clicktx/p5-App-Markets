@@ -9,7 +9,11 @@ sub t00_startup : Tests(startup) { shift->app->routes->any('/:controller/:action
 sub t01_basic : Tests() {
     my $self = shift;
     my $t    = $self->t;
-    $t->get_ok('/test/basic_method')->status_is(200);
+
+    $t->get_ok('/test/create')->status_is(200);
+    $t->get_ok('/test/load')->status_is(200);
+    $t->get_ok('/test/save')->status_is(200);
+    $t->get_ok('/test/delete')->status_is(200);
 }
 
 sub t02_add_all_cart_items : Tests() {
@@ -23,29 +27,50 @@ __PACKAGE__->runtests;
 package Yetie::Controller::Catalog::Test;
 use Mojo::Base 'Yetie::Controller::Catalog';
 use Test::More;
-use Test::Deep;
 
-sub basic_method {
+sub create {
     my $c = shift;
 
     my $checkout = $c->service('checkout')->get;
     isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
     is $checkout->shipments->size, 1, 'right new shipment in shipments';
-    is_deeply $c->server_session->data('checkout'), {}, 'right get';
+    ok $c->server_session->data('checkout'), 'right create';
     ok $c->stash('checkout'), 'right stash';
 
+    return $c->render( text => 1 );
+}
+
+sub load {
+    my $c = shift;
+
+    my $checkout = $c->service('checkout')->get;
+    isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
+    is $checkout->shipments->size, 1, 'right load shipments';
+
+    return $c->render( text => 1 );
+}
+
+sub save {
+    my $c = shift;
+
+    my $checkout = $c->service('checkout')->get;
+    $checkout->set_billing_address( $c->factory('entity-address')->construct( id => 'foo' ) );
+
     $c->service('checkout')->save;
-    cmp_deeply $c->server_session->data('checkout'),
-      {
-        billing_address => ignore(),
-        shipments       => ignore(),
-        transaction     => ignore(),
-      },
-      'right update';
+    is $c->server_session->data('checkout')->{billing_address}->{id}, 'foo', 'right save data';
     is $c->stash('checkout'), $checkout, 'right equals object for stash';
 
+    return $c->render( text => 1 );
+}
+
+sub delete {
+    my $c = shift;
+
+    my $checkout = $c->service('checkout')->get;
+    ok $c->server_session->data('checkout'), 'right session';
     $c->service('checkout')->delete;
-    cmp_deeply $c->server_session->data('checkout'), undef, 'right delete';
+    is_deeply $c->server_session->data('checkout'), undef, 'right delete';
+    ok !$c->stash('checkout'), 'right stash';
 
     return $c->render( text => 1 );
 }
@@ -64,7 +89,7 @@ sub add_all_cart_items {
 
     my $items = $c->cart->items;
     $c->service('checkout')->add_all_cart_items();
-    cmp_deeply $items->to_data, $checkout->shipments->first->items->to_data, 'right items';
+    is_deeply $items->to_data, $checkout->shipments->first->items->to_data, 'right items';
 
     return $c->render( text => 1 );
 }
