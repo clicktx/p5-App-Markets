@@ -34,6 +34,31 @@ sub add_shipment_item {
     return $self;
 }
 
+sub get_order_data {
+    my $self = shift;
+    my $data = $self->to_data;
+
+    # Transaction
+    if ( !$self->transaction->id ) {
+        delete $data->{transaction};
+    }
+
+    # Remove needless data
+    # for (qw/id cart_id items/) { delete $data->{$_} }
+
+    # Billing Address
+    # $data->{billing_address} = { id => $data->{billing_address}->{id} };
+
+    # Rename shipments to orders
+    foreach my $shipment ( @{ $data->{shipments} } ) {
+        my $id = $shipment->{shipping_address}->{id};
+        $shipment->{shipping_address} = { id => $id };
+    }
+    $data->{orders} = delete $data->{shipments};
+
+    return $data;
+}
+
 sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
 
 sub has_shipping_address {
@@ -44,15 +69,6 @@ sub has_shipping_address {
 }
 
 sub has_shipping_item { return shift->shipments->has_item }
-
-# sub set_billing_address {
-#     my ( $self, $address ) = @_;
-#     croak 'Argument is missing.' if !$address;
-#     return if $self->billing_address->equals($address);
-
-#     $self->billing_address($address);
-#     return $self;
-# }
 
 sub set_shipping_address {
     my $self = shift;
@@ -120,6 +136,10 @@ Return L<Yetie::Domain::Entity::Checkout> Object.
 
 C<$index_no> is option argument.
 Default $shipments->first
+
+=head2 C<get_order_data>
+
+    my $order_data = $checkout->get_order_data;
 
 =head2 C<has_billing_address>
 
