@@ -42,6 +42,10 @@ sub _create {
 
     $self->server_session->data( checkout => {} );
     my $checkout = $self->factory('entity-checkout')->construct();
+
+    # Add new shipment
+    $checkout->shipments->create_shipment;
+
     $self->controller->stash( checkout => $checkout );
     return $checkout;
 }

@@ -30,6 +30,7 @@ sub basic_method {
 
     my $checkout = $c->service('checkout')->get;
     isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
+    is $checkout->shipments->size, 1, 'right new shipment in shipments';
     is_deeply $c->server_session->data('checkout'), {}, 'right get';
     ok $c->stash('checkout'), 'right stash';
 
