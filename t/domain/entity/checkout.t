@@ -167,6 +167,7 @@ subtest 'set_shipping_address' => sub {
     my $checkout = _create_entity;
     dies_ok { $checkout->set_shipping_address() } 'right not arguments';
 
+    $checkout->shipments->create_shipment;
     my $obj           = $checkout->factory('entity-address')->construct(%address);
     my $shipment_addr = $checkout->shipments->get(1)->shipping_address->to_data;
 
@@ -190,6 +191,7 @@ subtest 'set_shipping_address' => sub {
 
     # first set(create and set)
     $checkout = Yetie::Factory->new('entity-checkout')->construct();
+    $checkout->shipments->create_shipment;
     $checkout->set_shipping_address($obj);
     cmp_deeply $checkout->shipments->get(0)->shipping_address->to_data, $valid_data,
       'right create shipment and set shipping_address';

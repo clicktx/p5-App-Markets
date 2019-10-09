@@ -61,9 +61,6 @@ sub set_shipping_address {
     # Convert arguments
     my $addresses = @_ > 1 ? +{@_} : Yetie::Util::array_to_hash(@_);
 
-    # Has not shipment in shipments
-    if ( !$self->shipments->has_shipment ) { $self->shipments->create_shipment }
-
     foreach my $index ( keys %{$addresses} ) {
         my $address  = $addresses->{$index};
         my $shipment = $self->shipments->get($index);
