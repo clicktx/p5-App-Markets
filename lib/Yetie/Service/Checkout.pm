@@ -40,11 +40,10 @@ sub save {
 sub _create {
     my $self = shift;
 
-    $self->server_session->data( checkout => {} );
-    my $checkout = $self->factory('entity-checkout')->construct();
-
     # Add new shipment
+    my $checkout = $self->factory('entity-checkout')->construct();
     $checkout->shipments->create_shipment;
+    $self->_update($checkout);
 
     $self->controller->stash( checkout => $checkout );
     return $checkout;
