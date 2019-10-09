@@ -120,11 +120,11 @@ sub complete {
 sub confirm_handler {
     my $c = shift;
 
-    my $cart     = $c->cart;
-    my $checkout = $c->service('checkout')->get;
-
     # No items
+    my $cart = $c->cart;
     return $c->redirect_to('rn.cart') if !$cart->has_item;
+
+    my $checkout = $c->service('checkout')->get;
 
     # Shipping address
     return $c->redirect_to('rn.checkout.shipping_address') if !$checkout->has_shipping_address;
@@ -143,34 +143,35 @@ sub confirm_handler {
 }
 
 sub complete_handler {
-    my $c    = shift;
-    my $cart = $c->cart;
+    my $c = shift;
+
+    my $checkout = $c->service('checkout')->get;
 
     # XXX:未完成 Address正規化
     # set時(set_billing_address,set_shipping_address)に正規化を行う？
 
     # shipments
-    my $cart_service     = $c->service('cart');
     my $customer_service = $c->service('customer');
-    $cart->shipments->each(
+    $checkout->shipments->each(
         sub {
-            my $shipment = shift;
-            $cart_service->set_address_id( $shipment->shipping_address );
+            my $shipment            = shift;
+            my $shipping_address_id = $c->service('address')->set_address_id( $shipment->shipping_address );
 
             # Add to customer address
-            $customer_service->store_address( $shipment->shipping_address->id );
+            # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
+            $customer_service->add_to_address_book($shipping_address_id);
         }
     );
 
     # billing address
-    $cart_service->set_address_id( $cart->billing_address );
+    my $billing_address_id = $c->service('address')->set_address_id( $checkout->billing_address );
 
     # Add to customer address
     # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
-    $customer_service->store_address( $cart->billing_address->id );
+    $customer_service->add_to_address_book($billing_address_id);
 
     # Make order data
-    my $order = $cart->to_order_data;
+    my $order = $checkout->get_order_data;
 
     # オーダーデータ整形
     # ログイン購入
@@ -213,7 +214,7 @@ sub complete_handler {
     # cartクリア（再生成）
     # my $newcart = $c->factory('entity-cart')->construct();
     # $c->cart_session->data( $newcart->to_data );
-    $cart->clear_items;
+    $c->cart->clear_items;
 
     # redirect_to thank you page
     return $c->redirect_to('rn.checkout.complete');
