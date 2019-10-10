@@ -9,7 +9,7 @@ sub add_all_cart_items {
     my $checkout = $self->get;
     $checkout->shipments->first->items->append( @{$items} );
 
-    return $self->save;
+    return;
 }
 
 sub delete {

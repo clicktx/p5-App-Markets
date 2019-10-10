@@ -20,7 +20,6 @@ sub t02_add_all_cart_items : Tests() {
     my $self = shift;
     my $t    = $self->t;
     $t->get_ok('/test/add_all_cart_items')->status_is(200);
-    $t->get_ok('/test/after_add_all_cart_items')->status_is(200);
 }
 
 sub t03_set_address : Tests() {
@@ -105,14 +104,6 @@ sub add_all_cart_items {
     $c->service('checkout')->add_all_cart_items();
     is_deeply $items->to_data, $checkout->shipments->first->items->to_data, 'right items';
 
-    return $c->render( text => 1 );
-}
-
-sub after_add_all_cart_items {
-    my $c        = shift;
-    my $checkout = $c->service('checkout')->get;
-
-    cmp_deeply $checkout->shipments->first->items->to_data, [ ignore(), ignore() ], 'right saved items';
     return $c->render( text => 1 );
 }
 
