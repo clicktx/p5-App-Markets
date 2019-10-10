@@ -25,11 +25,11 @@ sub shipping_address {
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     # Set Address
-    my $set_address = $c->factory('entity-address')->construct( $form->params->to_hash );
-    $c->cart->set_shipping_address($set_address);
+    my $address = $c->factory('entity-address')->construct( $form->params->to_hash );
+    $c->service('checkout')->set_shipping_address($address);
 
     # NOTE: 1箇所のみに配送の場合
     # 複数配送の場合は先に配送先を複数登録しておく？別コントローラが良い？
@@ -77,11 +77,12 @@ sub billing_address {
     return $c->render() if $c->is_get_request;
 
     # Validation form
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->do_validate;
 
     # Set Address
-    my $set_address = $c->factory('entity-address')->construct( $form->params->to_hash );
-    $c->cart->set_billing_address($set_address);
+    my $address = $c->factory('entity-address')->construct( $form->params->to_hash );
+    $c->service('checkout')->set_billing_address($address);
+
     return $c->confirm_handler;
 }
 
@@ -98,16 +99,16 @@ sub confirm {
     $c->confirm_handler;
 
     my $form = $c->form('checkout-confirm');
-    return $c->render() unless $form->has_data;
-    return $c->render() unless $form->do_validate;
+    return $c->render() if !$form->has_data;
+    return $c->render() if !$form->do_validate;
 
     # checkout complete
-    $c->complete_handler;
+    return $c->complete_handler;
 }
 
 sub complete {
     my $c = shift;
-    $c->render();
+    return $c->render();
 }
 
 # handler?
@@ -118,54 +119,60 @@ sub complete {
 # - Choose a billing address
 # - Review your order
 sub confirm_handler {
-    my $c    = shift;
-    my $cart = $c->cart;
+    my $c = shift;
 
     # No items
-    return $c->redirect_to('rn.cart') unless $cart->has_item;
+    my $cart = $c->cart;
+    return $c->redirect_to('rn.cart') if !$cart->has_item;
+
+    my $checkout = $c->service('checkout')->get;
 
     # Shipping address
-    return $c->redirect_to('rn.checkout.shipping_address') unless $cart->has_shipping_address;
+    return $c->redirect_to('rn.checkout.shipping_address') if !$checkout->has_shipping_address;
 
-    # ship items to one place
-    $cart->move_items_to_first_shipment if !$cart->has_shipping_item and !$cart->shipments->is_multiple;
+    # FIXME: ship items to one place
+    # $cart->move_items_to_first_shipment if !$checkout->has_shipping_item and !$checkout->shipments->is_multiple;
+    $c->service('checkout')->add_all_cart_items() if !$checkout->shipments->is_multiple;
 
     # Billing address
-    return $c->redirect_to('rn.checkout.billing_address') unless $cart->has_billing_address;
+    return $c->redirect_to('rn.checkout.billing_address') if !$checkout->has_billing_address;
 
     # Redirect confirm
     return $c->redirect_to('rn.checkout.confirm') if $c->stash('action') ne 'confirm';
+
+    return;
 }
 
 sub complete_handler {
-    my $c    = shift;
-    my $cart = $c->cart;
+    my $c = shift;
+
+    my $checkout = $c->service('checkout')->get;
 
     # XXX:未完成 Address正規化
     # set時(set_billing_address,set_shipping_address)に正規化を行う？
 
     # shipments
-    my $cart_service     = $c->service('cart');
     my $customer_service = $c->service('customer');
-    $cart->shipments->each(
+    $checkout->shipments->each(
         sub {
-            my $shipment = shift;
-            $cart_service->set_address_id( $shipment->shipping_address );
+            my $shipment            = shift;
+            my $shipping_address_id = $c->service('address')->set_address_id( $shipment->shipping_address );
 
             # Add to customer address
-            $customer_service->store_address( $shipment->shipping_address->id );
+            # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
+            $customer_service->add_to_address_book($shipping_address_id);
         }
     );
 
     # billing address
-    $cart_service->set_address_id( $cart->billing_address );
+    my $billing_address_id = $c->service('address')->set_address_id( $checkout->billing_address );
 
     # Add to customer address
     # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
-    $customer_service->store_address( $cart->billing_address->id );
+    $customer_service->add_to_address_book($billing_address_id);
 
     # Make order data
-    my $order = $cart->to_order_data;
+    my $order = $checkout->get_order_data;
 
     # オーダーデータ整形
     # ログイン購入
@@ -208,28 +215,31 @@ sub complete_handler {
     # cartクリア（再生成）
     # my $newcart = $c->factory('entity-cart')->construct();
     # $c->cart_session->data( $newcart->to_data );
-    $cart->clear_items;
+    $c->cart->clear_items;
 
     # redirect_to thank you page
-    $c->redirect_to('rn.checkout.complete');
+    return $c->redirect_to('rn.checkout.complete');
 }
 
 sub _select_address {
     my ( $c, $address_type ) = @_;
 
     my $form = $c->form('checkout-select_address');
-    return unless $form->do_validate;
+    return if !$form->do_validate;
 
-    my $no          = $form->param('select_no');
+    my $select_no   = $form->param('select_no');
     my $customer_id = $c->server_session->customer_id;
     my $addresses   = $c->service('customer')->get_address_list($customer_id);
-    my $selected    = $addresses->get($no);
-    return unless $selected;
+    my $selected    = $addresses->get($select_no);
+    return if !$selected;
 
     # Set Address
     # NOTE: set_billing_address or set_shipping_address
-    my $method = 'set_' . $address_type;
-    $c->cart->$method($selected);
+    my $checkout = $c->service('checkout')->get;
+    my $method   = 'set_' . $address_type;
+    $checkout->$method($selected);
+    $c->service('checkout')->save;
+    return;
 }
 
 1;

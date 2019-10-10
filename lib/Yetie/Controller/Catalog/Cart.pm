@@ -19,9 +19,6 @@ sub index {
     my $c    = shift;
     my $cart = $c->cart;
 
-    # Revert cart
-    $cart->revert;
-
     # Initialize form
     my $form = $c->form('cart');
     $c->init_form( $form, $cart );

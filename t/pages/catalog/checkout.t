@@ -13,7 +13,6 @@ my $CART_DATA = {
         { product_id => 3, product_title => 'baz', quantity => 3, price => 300 },
         { product_id => 1, product_title => 'foo', quantity => 1, price => 100 },
     ],
-    shipments => [],
 };
 
 sub startup : Test(startup) {
