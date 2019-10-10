@@ -15,18 +15,18 @@ sub create_shipment {
     return $shipment;
 }
 
-sub has_item { return shift->total_item_count ? 1 : 0 }
+sub has_item { return shift->count_total_items ? 1 : 0 }
 
-sub has_shipment { return shift->count ? 1 : 0 }
+sub has_shipment { return shift->size ? 1 : 0 }
 
-sub is_multiple { return shift->count > 1 ? 1 : 0 }
+sub is_multiple { return shift->size > 1 ? 1 : 0 }
 
-sub total_item_count {
-    return shift->list->map( sub { $_->items->each } )->size;
+sub count_total_items {
+    return shift->map( sub { $_->items->each } )->size;
 }
 
 sub total_quantity {
-    return shift->list->reduce( sub { $a + $b->items->total_quantity }, 0 );
+    return shift->reduce( sub { $a + $b->items->total_quantity }, 0 );
 }
 
 sub revert {
@@ -40,8 +40,32 @@ sub revert {
     return $self->list($shipments);
 }
 
-sub subtotal {
-    return shift->list->reduce( sub { $a + $b->items->subtotal }, 0 );
+sub subtotal_excl_tax {
+    my $self = shift;
+
+    my $price = $self->_init_price( is_tax_included => 0 );
+    return $self->reduce( sub { $a + $b->subtotal_excl_tax }, $price );
+}
+
+sub subtotal_incl_tax {
+    my $self = shift;
+
+    my $price = $self->_init_price( is_tax_included => 1 );
+    return $self->reduce( sub { $a + $b->subtotal_incl_tax }, $price );
+}
+
+sub _init_price {
+    my $self    = shift;
+    my %args    = @_;
+    my $factory = $self->factory('value-price');
+
+    my $first_shipment = $self->first;
+    return $factory->construct( is_tax_included => $args{is_tax_included} ) if !$first_shipment;
+
+    my $items = $first_shipment->items;
+    return $factory->construct( is_tax_included => $args{is_tax_included} ) if !$items->size;
+
+    return $items->first->price->clone( value => 0, is_tax_included => $args{is_tax_included} );
 }
 
 no Moose;
@@ -98,9 +122,9 @@ Return boolean value.
 
 Return boolean value.
 
-=head2 C<total_item_count>
+=head2 C<count_total_items>
 
-    my $count = $shipments->total_item_count;
+    my $count = $shipments->count_total_items;
 
 =head2 C<total_quantity>
 
@@ -112,9 +136,13 @@ Return boolean value.
 
 Delete except the first element. Also delete all items of the first element.
 
-=head2 C<subtotal>
+=head2 C<subtotal_excl_tax>
 
-    my $subtotal = $shipments->subtotal;
+    my $subtotal_excl_tax = $items->subtotal_excl_tax;
+
+=head2 C<subtotal_incl_tax>
+
+    my $subtotal_incl_tax = $items->subtotal_incl_tax;
 
 =head1 AUTHOR
 

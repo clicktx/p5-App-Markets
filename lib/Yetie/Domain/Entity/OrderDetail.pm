@@ -3,20 +3,29 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-has created_at => ( is => 'ro' );
-has updated_at => ( is => 'ro' );
+has created_at       => ( is => 'ro' );
+has updated_at       => ( is => 'ro' );
 has customer         => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-customer')->construct() } );
 has billing_address  => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
 has shipping_address => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
 has items            => ( is => 'ro', default => sub { __PACKAGE__->factory('list-line_items')->construct() } );
-has purchased_on     => ( is => 'ro', default => q{} );
-has order_status     => ( is => 'ro', default => q{} );
+has purchased_on => ( is => 'ro', default => q{} );
+has order_status => ( is => 'ro', default => q{} );
 
 sub bill_to_name { return shift->billing_address->line1 }
 
 sub ship_to_name { return shift->shipping_address->line1 }
 
-sub total_amount { return shift->items->total_amount }
+sub total_amount {
+    my $self = shift;
+
+    my $items_total = $self->items->subtotal_incl_tax;
+
+    # ...
+
+    my $total_amount = $items_total;
+    return $total_amount;
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

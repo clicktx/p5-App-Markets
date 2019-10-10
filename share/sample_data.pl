@@ -51,16 +51,16 @@
 
     # Tax rules
     'TaxRule' => [
-        [ qw/id title tax_rate/],
-        [ 2, 'Tax 3%', 0.03 ],
-        [ 3, 'Tax 5%', 0.05 ],
-        [ 4, 'Tax 8%', 0.08 ],
-        [ 5, 'Reduced Tax 8%', 0.08 ],
-        [ 6, 'Tax 10%', 0.1 ],
+        [ qw/id title tax_rate round_mode/],
+        [ 2, 'Tax 3.141%', 3.141, 'even' ],
+        [ 3, 'Tax 5%', 5, 'even' ],
+        [ 4, 'Tax 8%', 8, 'even' ],
+        [ 5, 'Reduced Tax 8%', 8, 'even' ],
+        [ 6, 'Tax 10%', 10, 'even' ],
     ],
 
     # Default tax rules
-    'DefaultTaxRule' => [
+    'CommonTaxRule' => [
         [qw/tax_rule_id start_at/],
         [ 2, '1990-04-01 00:00:00' ],
     ],
@@ -182,25 +182,27 @@
         [ 7, 113, 4, '2017-07-07 07:15:01', '2017-07-07 07:15:01' ],
     ],
     'SalesOrder' => [
-        [qw/id sales_id shipping_address_id/],
-        [ 1, 1, 1 ],
-        [ 2, 1, 3 ],
-        [ 3, 2, 2 ],
-        [ 4, 3, 3 ],
-        [ 5, 3, 4 ],
-        [ 6, 4, 3 ],
-        [ 7, 4, 4 ],
-        [ 8, 5, 3 ],
-        [ 9, 5, 4 ],
-        [ 10, 6, 3 ],
-        [ 11, 6, 4 ],
-        [ 12, 7, 5 ],
+        [qw/id sales_id shipping_address_id trashed_at/],
+        [ 1, 1, 1, undef ],
+        [ 2, 1, 3, undef ],
+        [ 3, 2, 2, undef ],
+        [ 4, 3, 3, undef ],
+        [ 5, 3, 4, undef ],
+        [ 6, 4, 3, undef ],
+        [ 7, 4, 4, undef ],
+        [ 8, 5, 3, undef ],
+        [ 9, 5, 4, '2017-10-10 09:10:10' ], # trashed on test
+        [ 10, 6, 3, undef ],
+        [ 11, 6, 4, undef ],
+        [ 12, 7, 5, undef ], # trashed on test
     ],
     'SalesOrderItem' => [
-        [qw/order_id product_id quantity price product_title/],
-        [ 1, 3, 3, 300, 'product 3' ],
-        [ 1, 1, 1, 101, 'product 1' ], # change price
-        [ 2, 2, 2, 200, 'product 2' ],
-        [ 3, 4, 4, 333, 'product 4' ],
+        [qw/order_id product_id quantity product_title price tax_rule_id currency_code is_tax_included/],
+        [ 1, 3, 3, 'product 3', 300, 1, 'USD', 0 ],
+        [ 1, 1, 1, 'product 1', 101, 2, 'USD', 0 ], # change price
+        [ 2, 2, 2, 'product 2', 200, 5, 'USD', 0 ],
+        [ 3, 4, 4, 'product 4', 333, 5, 'USD', 0 ],
+        [ 12, 1, 4, 'product 1', 101, 5, 'USD', 0 ], # trashed on test
+        [ 12, 2, 4, 'product 2', 200, 5, 'USD', 0 ], # trashed on test
     ],
 )

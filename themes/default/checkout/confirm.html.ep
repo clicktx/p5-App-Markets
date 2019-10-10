@@ -24,7 +24,7 @@
             Change
         <% end %>
         <!-- NOTE: とりあえず通常配送のみ -->
-        <%= include 'common/elements/address', address => $cart->shipments->first->shipping_address %>
+        <%= include 'common/elements/address', address => $checkout->shipments->first->shipping_address %>
     <% end =%>
 </div>
 
@@ -34,7 +34,7 @@
         <%= link_to 'rn.checkout.billing_address' => begin %>
             Change
         <% end %>
-        <%= include 'common/elements/address', address => $cart->billing_address %>
+        <%= include 'common/elements/address', address => $checkout->billing_address %>
     <% end =%>
 </div>
 
@@ -45,7 +45,7 @@
             Change
         <% end %>
         <ol>
-            % $cart->shipments->first->items->each( sub {
+            % $checkout->shipments->first->items->each( sub {
                 <li>
                     ID: <%= $_->id %> | PRODUCT ID: <%= $_->product_id %>
                     | product_title: <%= $_->product_title %>
@@ -54,20 +54,45 @@
                         Change
                     <% end %>
                     | price: <%= $_->price %>
-                    | line total: <%= $_->subtotal %>
+                    | row total(including tax): <%= $_->row_total_incl_tax %>
                 </li>
             % });
         </ol>
     <% end =%>
 </div>
 
+<hr>
+<div class="">
+    Subtotal excluding-tax: <%= $cart->subtotal_excl_tax %> / including-tax: <%= $cart->subtotal_incl_tax %>
+</div>
+<div class="">
+    Shipping & Handling:
+</div>
+<div class="">
+    Taxes: <%= $cart->taxes %>
+
+</div>
+% if ( $cart->total_amounts->has_many ){
+    <hr>
+        <% $cart->total_amounts->each( sub { %>
+            <div>
+                <%= $_->tax_rate_percentage %> : <%= $_->total_incl_tax %>
+            </div>
+        <% }); %>
+% }
+<hr>
+
+<div class="">
+    Grand Total: <%= $cart->grand_total %>
+</div>
+<hr>
+
 <%= form_for 'rn.checkout.confirm' => ( method => 'post' ) => begin %>
     <%= csrf_field %>
     <%= submit_button 'BUY NOW' %>
 <% end %>
 
-<pre>
-<%= dumper $cart->to_data %>
-</pre>
+<pre>checkout: <%= dumper stash('checkout')->to_data %></pre>
+<pre>cart: <%= dumper $cart->to_data %></pre>
 
 <%= link_to 'Back to page' => 'rn.cart' %>

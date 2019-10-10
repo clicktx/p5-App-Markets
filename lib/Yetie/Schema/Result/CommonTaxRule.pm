@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::DefaultTaxRule;
+package Yetie::Schema::Result::CommonTaxRule;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 

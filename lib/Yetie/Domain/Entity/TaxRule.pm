@@ -6,6 +6,8 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
+with 'Yetie::Domain::Role::TypesMoney';
+
 has tax_rate => (
     is      => 'ro',
     isa     => PositiveOrZeroNum,
@@ -15,23 +17,35 @@ has title => (
     is  => 'ro',
     isa => 'Str',
 );
+has round_mode => (
+    is      => 'ro',
+    isa     => 'RoundMode',
+    default => 'even',
+);
 
 sub caluculate_tax {
     my ( $self, $price ) = @_;
 
-    my $currency_code = $price->currency_code;
-    return $price->is_tax_included
-      ? Math::Currency->new( $price->amount / ( 1 + $self->tax_rate ) * $self->tax_rate, $currency_code )
-      : Math::Currency->new( $price->amount * $self->tax_rate, $currency_code );
-}
+    my $tax_base = $self->factory('value-tax')->construct(
+        round_mode => $self->round_mode,
+        %{ $price->to_data },
+    );
 
-sub tax_rate_percentage { return shift->tax_rate * 100 }
+    my $rate = $self->tax_rate ? $self->tax_rate / 100 : 0;
+    my $tax =
+        $price->is_tax_included
+      ? $tax_base / ( 1 + $rate ) * $rate
+      : $tax_base * $rate;
+
+    return $tax;
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
 __END__
+=for stopwords +inf -inf trunc
 
 =head1 NAME
 
@@ -51,9 +65,18 @@ implements the following new ones.
 
 Tax rate.
 
+    # 8%
+    say Yetie::Domain::Entity::TaxRule->new( tax_rate => 8.000 )->tax_rate . '%';
+
 =head2 C<title>
 
 Tax rule title.
+
+=head2 C<round_mode>
+
+'even', 'odd', '+inf', '-inf', 'zero', 'trunc'
+
+L<Math::BigFloat#Rounding>
 
 =head1 METHODS
 
@@ -62,17 +85,12 @@ the following new ones.
 
 =head2 C<caluculate_tax>
 
-    my $amount = $tax_rule->caluculate_tax( Yetie::Domain::Value::Price->new(100) );
-    my $amount = $tax_rule->caluculate_tax( Yetie::Domain::Value::Price->new( value => 100, is_tax_included => 1 ) );
+    my $tax_amount = $tax_rule->caluculate_tax( Yetie::Domain::Value::Price->new(100) );
+    my $tax_amount = $tax_rule->caluculate_tax( Yetie::Domain::Value::Price->new( value => 100, is_tax_included => 1 ) );
 
-Return L<Math::Currency> object.
+Arguments L<Yetie::Domain::Value::Price> object.
 
-See L<Yetie::Domain::Value::Price>
-
-=head2 C<tax_rate_percentage>
-
-    # 8%
-    say Yetie::Domain::Entity::TaxRule->new( tax_rate => 0.08 )->tax_rate_percentage;
+Return L<Yetie::Domain::Value::Price> object.
 
 =head1 AUTHOR
 

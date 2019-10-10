@@ -104,6 +104,20 @@ sub pairs {
     wantarray ? @array : \@array;
 }
 
+sub rehash {
+    my $self = shift;
+
+    my @keys = $self->keys;
+    foreach my $key (@keys) {
+        my $value = $self->{$key};
+        next if !Scalar::Util::blessed($value);
+        next if !$value->can('rehash');
+
+        $value->rehash;
+    }
+    return $self;
+}
+
 sub size { scalar @{ shift->keys } }
 
 sub to_data {
@@ -230,6 +244,14 @@ Return the last key-value pair.
 
     my $array = $ixhash->pairs;
     my @array = $ixhash->pairs;
+
+=head2 C<rehash>
+
+    $ixhash->rehash;
+
+Recursive rehash for value.
+
+See L<Yetie::Domain::Base/rehash>
 
 =head2 C<size>
 

@@ -25,6 +25,28 @@ msgstr "New Product"
 msgid "copy"
 msgstr "copy"
 
+# Common
+msgid "text.billing.address"
+msgstr "Billing Address"
+
+msgid "text.edit"
+msgstr "Edit"
+
+msgid "text.items.ordered"
+msgstr "Items Ordered"
+
+msgid "text.order.details"
+msgstr "Order Details"
+
+msgid "text.orders"
+msgstr "Orders"
+
+msgid "text.shipping.address"
+msgstr "Shipping Address"
+
+msgid "text.trash.order"
+msgstr "Trash this Order"
+
 # Email
 msgid "email.sent.title"
 msgstr "We have sent you an email"

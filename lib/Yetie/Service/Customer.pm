@@ -157,7 +157,7 @@ sub search_customers {
     return ( $customers, $rs->pager );
 }
 
-sub store_address {
+sub add_to_address_book {
     my ( $self, $address_id ) = @_;
     return if !$address_id;
 
@@ -274,9 +274,9 @@ Return customer ID if log-in succeeded or C<undefined>.
 
 Return L<Yetie::Domain::Entity::Page::Customers> Object.
 
-=head2 C<store_address>
+=head2 C<add_to_address_book>
 
-    $service->store_address($address_id);
+    $service->add_to_address_book($address_id);
 
 Store customer addresses in storage from cart data.
 

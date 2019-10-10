@@ -10,6 +10,15 @@ sub get_registered_id {
     return $registered->id;
 }
 
+sub set_address_id {
+    my ( $self, $address ) = @_;
+
+    my $result     = $self->resultset('Address')->find_or_create_address( $address->to_hash );
+    my $address_id = $result->id;
+    $address->id($address_id);
+    return $address_id;
+}
+
 sub update_address {
     my ( $self, $params ) = @_;
 
@@ -26,6 +35,8 @@ sub update_address {
         # Update address
         $self->resultset('Address')->search( { id => $address->id } )->update( $address->to_data );
     }
+
+    return;
 }
 
 1;
@@ -55,6 +66,16 @@ the following new ones.
     my $address_id = $service->get_registered_id($address_entity);
 
 Return address ID or C<undefined>.
+
+=head2 C<set_address_id>
+
+Set the address ID.
+
+    $service->set_address_id($address_object);
+
+Arguments L<Yetie::Domain::Entity::Address> object.
+
+Return address ID.
 
 =head2 C<update_address>
 

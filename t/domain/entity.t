@@ -35,12 +35,6 @@ subtest 'basic' => sub {
     cmp_deeply $e->to_hash, { hoge => 1, fuga => 1 }, 'right default not undef';
 };
 
-subtest 'factory' => sub {
-    my $e = $pkg->new();
-    my $f = $pkg->factory('entity-foo');
-    isa_ok $f, 'Yetie::Factory';
-};
-
 subtest 'function' => sub {
     my $c = collection( 1, 2, 3 );
     isa_ok $c, 'Yetie::Domain::Collection';

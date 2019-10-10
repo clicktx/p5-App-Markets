@@ -127,6 +127,28 @@ subtest 'pairs' => sub {
     is_deeply \@array, [qw/a 10 b 20 c 30 d 40 e 50/];
 };
 
+{
+
+    package t::domain::entity;
+    use Moose;
+    extends 'Yetie::Domain::Entity';
+    has foo => ( is => 'ro' );
+}
+my @data = ( { id => 1, foo => 1 }, { id => 2, foo => 2 }, { id => 3, foo => 3 }, );
+
+subtest 'rehash' => sub {
+    my @entities;
+    push @entities, t::domain::entity->new($_) for @data;
+
+    my $ix = $pkg->new( a => $entities[0], b => $entities[1], c => $entities[2] );
+    my $hash_sum = $entities[1]->_hash_sum;
+    $entities[1]->_set_hash_sum('foo');
+
+    my $res = $ix->rehash;
+    is $ix->b->_hash_sum, $hash_sum, 'right rehash';
+    is $res, $ix, 'ritght return';
+};
+
 subtest 'size' => sub {
     my $size = $h->size;
     is $size, '5', 'right size';

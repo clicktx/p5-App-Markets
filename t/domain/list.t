@@ -18,7 +18,8 @@ subtest 'basic' => sub {
 
 subtest 'append' => sub {
     my $l = construct( 1, 2, 3 );
-    $l->append(4);
+    my $res = $l->append(4);
+    is $res, undef, 'right return value';
     is_deeply $l->to_data, [ 1, 2, 3, 4 ], 'right append';
     is $l->is_modified, 1, 'right modified';
 };
@@ -28,12 +29,6 @@ subtest 'clear' => sub {
     $l->clear;
     is_deeply $l->to_data, [], 'right clear';
     is $l->is_modified, 1, 'right modified';
-};
-
-subtest 'count' => sub {
-    my $l = construct( 1, 2, 3 );
-    my $int = $l->count;
-    is $int, 3, 'right count';
 };
 
 subtest 'each' => sub {
@@ -49,12 +44,32 @@ subtest 'each' => sub {
     is_deeply \@array, [ 1, 2, 3 ], 'right function in each';
 };
 
+subtest 'grep' => sub {
+    my $l = construct( 1, 2, 3 );
+    is_deeply $l->grep(qr/2/)->to_data, [2], 'right grep';
+};
+
 subtest 'has_elements' => sub {
     my $l = construct();
     ok !$l->has_elements, 'right has not elements';
 
     $l = construct( 1, 2, 3 );
     ok $l->has_elements, 'right has elements';
+};
+
+subtest 'map' => sub {
+    my $l = construct( 1, 2, 3 );
+    is_deeply $l->map( sub { ++$_ } )->to_data, [ 2, 3, 4 ], 'right map';
+};
+
+subtest 'reduce' => sub {
+    my $l = construct( 1, 2, 3 );
+    is $l->reduce( sub { $a + $b } ), 6, 'right reduce';
+};
+
+subtest 'size' => sub {
+    my $l = construct( 1, 2, 3 );
+    is $l->size, 3, 'right size';
 };
 
 subtest 'to_data' => sub {

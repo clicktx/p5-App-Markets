@@ -88,6 +88,10 @@ SEE L</set_value>
 L<Yetie::Domain::Value> inherits all methods from L<Yetie::Domain::Base> and implements
 the following new ones.
 
+=head2 C<clone>
+
+    my $clone = $obj->clone(%params);
+
 =head2 C<equals>
 
     my $bool = $obj->equals($object);

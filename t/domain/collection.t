@@ -40,16 +40,16 @@ subtest 'get' => sub {
     package t::domain::entity;
     use Moose;
     extends 'Yetie::Domain::Entity';
-    has hoge => ( is => 'ro' );
+    has foo => ( is => 'ro' );
 }
-my @data = ( { id => 1, hoge => 1 }, { id => 2, hoge => 2 }, { id => 3, hoge => 3 }, );
+my @data = ( { id => 1, foo => 1 }, { id => 2, foo => 2 }, { id => 3, foo => 3 }, );
 
 subtest 'get_by_id' => sub {
     my @entities;
     push @entities, t::domain::entity->new($_) for @data;
 
     my $c = $pkg->new(@entities);
-    is $c->get_by_id(2)->{hoge}, 2, 'right found entity';
+    is $c->get_by_id(2)->{foo}, 2, 'right found entity';
     is $c->get_by_id(5), undef, 'right not found entity';
 
     # Empty array
@@ -77,6 +77,19 @@ subtest 'has_element' => sub {
     # Empty array
     $c = $pkg->new();
     is $c->has_element(1), 0, 'right has not element';
+};
+
+subtest 'rehash' => sub {
+    my @entities;
+    push @entities, t::domain::entity->new($_) for @data;
+    my $c = $pkg->new(@entities);
+
+    my $hash_sum = $c->[1]->_hash_sum;
+    $c->[1]->_set_hash_sum('foo');
+
+    my $res = $c->rehash;
+    is $c->[1]->_hash_sum, $hash_sum, 'right rehash';
+    is $res, $c, 'right return';
 };
 
 subtest 'to_data' => sub {

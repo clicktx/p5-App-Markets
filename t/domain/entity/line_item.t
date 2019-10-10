@@ -1,10 +1,17 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Deep;
+use Test::Exception;
+use Yetie::Factory;
+
+sub factory {
+    return Yetie::Factory->new('entity-line_item')->construct(@_);
+}
 
 use_ok 'Yetie::Domain::Entity::LineItem';
 
 subtest 'basic' => sub {
-    my $item = Yetie::Domain::Entity::LineItem->new(
+    my $item = factory(
         {
             id            => 2,
             product_id    => 111,
@@ -18,7 +25,7 @@ subtest 'basic' => sub {
     is $item->product_id,    111,            'right product_id';
     is $item->product_title, 'test product', 'right product_title';
     is $item->quantity,      1,              'right quantity';
-    is $item->price,         100,            'right price';
+    is $item->price,         '$100.00',      'right price';
     is $item->is_modified,   0,              'right default modified';
 
     $item->product_id(111);
@@ -26,20 +33,33 @@ subtest 'basic' => sub {
 
     $item->quantity(5);
     is $item->is_modified, 1, 'right modified';
+
+    dies_ok {
+        factory(
+            {
+                id            => 2,
+                product_id    => 0,
+                product_title => 'test product',
+                quantity      => 1,
+                price         => 100,
+            }
+          )
+    }
+    'right isa product_id';
 };
 
 subtest 'equals' => sub {
-    my $item1 = Yetie::Domain::Entity::LineItem->new(
+    my $item1 = factory(
         {
             product_id => 1,
         }
     );
-    my $item2 = Yetie::Domain::Entity::LineItem->new(
+    my $item2 = factory(
         {
             product_id => 1,
         }
     );
-    my $item3 = Yetie::Domain::Entity::LineItem->new(
+    my $item3 = factory(
         {
             product_id => 2,
         }
@@ -52,7 +72,7 @@ subtest 'equals' => sub {
 };
 
 subtest 'product_hash_code' => sub {
-    my $item = Yetie::Domain::Entity::LineItem->new(
+    my $item = factory(
         {
             product_id => 111,
         }
@@ -61,27 +81,60 @@ subtest 'product_hash_code' => sub {
     is $item->is_modified, 0, 'right not modified';
 };
 
-subtest 'subtotal' => sub {
-    my $item = Yetie::Domain::Entity::LineItem->new(
+subtest 'row_tax_amount' => sub {
+    my $item = factory(
         {
-            quantity => 2,
-            price    => 300,
+            price    => 1,
+            quantity => 5,
+            tax_rule => {
+                tax_rate => 3.5,
+            },
         }
     );
-    is $item->subtotal, 600, 'right subtotal';
+    my $tax = $item->row_tax_amount;
+    isa_ok $tax, 'Yetie::Domain::Value::Tax';
+    is $tax, '$0.20', 'right tax amount';
+};
+
+subtest 'row_total' => sub {
+    my $item = factory(
+        {
+            price    => 300,
+            quantity => 0,
+            tax_rule => {
+                tax_rate => 5,
+            },
+        }
+    );
+    is $item->row_total_excl_tax, '$0.00', 'right row total excluding tax(no quantity)';
+    is $item->row_total_incl_tax, '$0.00', 'right row total including tax(no quantity)';
+
+    $item = factory(
+        {
+            price    => 300,
+            quantity => 2,
+            tax_rule => {
+                tax_rate => 5,
+            },
+        }
+    );
+    is $item->row_total_excl_tax, '$600.00', 'right row total excluding tax';
+    is $item->row_total_incl_tax, '$630.00', 'right row total including tax';
 };
 
 subtest 'to_data' => sub {
-    my $item = Yetie::Domain::Entity::LineItem->new(
+    my $item = factory(
         {
             product_id => 110,
             quantity   => 1,
         }
     );
-    is_deeply $item->to_data,
+    cmp_deeply $item->to_data,
       {
         product_id => 110,
         quantity   => 1,
+        price      => ignore(),
+        tax_rule   => ignore(),
       },
       'right dump data';
 };

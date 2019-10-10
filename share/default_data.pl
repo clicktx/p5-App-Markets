@@ -11,18 +11,21 @@
         # Price including tax
         [ 'is_price_including_tax', '0', 'pref.title.is_price_including_tax', 'pref.summary.is_price_including_tax', 40, 1 ],
         # Decimal rounding mode 'even' or 'trunc'
-        [ 'decimal_rounding_mode', 'even', 'pref.title.decimal_rounding_mode', 'pref.summary.decimal_rounding_mode', 50, 1 ],
+        [ 'default_round_mode', 'even', 'pref.title.default_round_mode', 'pref.summary.default_round_mode', 50, 1 ],
+
+        # round mode 'even' or 'trunc'
+        [ 'round_mode', 'even', 'pref.title.round_mode', 'pref.summary.round_mode', 400, 1 ],
 
         # shop master
         [ 'shop_name', 'Yetie Shop', 'pref.title.shop_name', 'pref.summary.shop_name', 10, 2 ],
 
         # staff
-        [ 'staff_password_min', '4', 'pref.title.staff_password_min', 'pref.summary.staff_password_min', 20, 2 ],
-        [ 'staff_password_max', '8', 'pref.title.staff_password_max', 'pref.summary.staff_password_max', 30, 2 ],
+        [ 'staff_password_min', '8', 'pref.title.staff_password_min', 'pref.summary.staff_password_min', 20, 2 ],
+        [ 'staff_password_max', '512', 'pref.title.staff_password_max', 'pref.summary.staff_password_max', 30, 2 ],
 
         # customer
-        [ 'customer_password_min', '4', 'pref.title.customer_password_min', 'pref.summary.customer_password_min', 40, 2 ],
-        [ 'customer_password_max', '8', 'pref.title.customer_password_max', 'pref.summary.customer_password_max', 50, 2 ],
+        [ 'customer_password_min', '8', 'pref.title.customer_password_min', 'pref.summary.customer_password_min', 40, 2 ],
+        [ 'customer_password_max', '512', 'pref.title.customer_password_max', 'pref.summary.customer_password_max', 50, 2 ],
 
         # application
         [ 'admin_uri_prefix', '/admin', 'pref.title.admin_uri_prefix', 'pref.summary.admin_uri_prefix', 10, 9 ],
@@ -35,7 +38,7 @@
 
     # tax rules
     'TaxRule' => [
-        [ qw/id title tax_rate/],
-        [ 1, 'Tax Exemption', 0 ],
+        [ qw/id title tax_rate round_mode/],
+        [ 1, 'Tax Exemption', 0, 'even' ],
     ],
 )

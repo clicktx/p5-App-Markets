@@ -55,4 +55,4 @@
 </p>
 
 <h1>session</h1>
-<pre><%= dumper server_session->data %></pre>
+<pre>session: <%= dumper server_session->data %></pre>

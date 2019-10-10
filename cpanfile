@@ -1,9 +1,9 @@
 requires 'perl',                                    '5.010';
 requires 'CGI::Expand',                             '2.05';
+requires 'Clone',                                   '0.43';
 requires 'DateTime',                                '1.42';
 requires 'DateTime::Format::MySQL',                 '0.06';
 requires 'DateTime::Format::Strptime',              '1.73';
-requires 'Data::Clone',                             '0.004';
 requires 'Data::Page::Navigation',                  '0.06';
 requires 'DBD::mysql',                              '4.033';
 requires 'DBI',                                     '1.636';

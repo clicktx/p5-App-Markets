@@ -31,6 +31,18 @@ sub get_by_line_num {
 
 sub has_element { return shift->get_by_id(shift) ? 1 : 0 }
 
+sub rehash {
+    my $self = shift;
+
+    foreach my $element ( @{$self} ) {
+        next if !Scalar::Util::blessed($element);
+        next if !$element->can('rehash');
+
+        $element->rehash;
+    }
+    return $self;
+}
+
 sub to_data {
     my $self = shift;
     my @array;
@@ -119,6 +131,14 @@ Return $element or undef.
 
 Return boolean value.
 
+=head2 C<rehash>
+
+    $collection->rehash;
+
+Recursive rehash for collection elements.
+
+See L<Yetie::Domain::Base/rehash>
+
 =head2 C<to_data>
 
     my $data = $collection->to_data;
@@ -131,4 +151,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
- L<Mojo::Collection>
+L<Mojo::Collection>

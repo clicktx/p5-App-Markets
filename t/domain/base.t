@@ -34,6 +34,12 @@ subtest '_dump_by_public_attributes' => sub {
     is $obj->_dump_by_public_attributes, q{({bar=2,foo=1,},t::domain::base)}, 'right dump strings';
 };
 
+subtest 'factory' => sub {
+    my $e = $pkg->new();
+    my $f = $pkg->factory('entity-foo');
+    isa_ok $f, 'Yetie::Factory';
+};
+
 subtest 'get_all_attribute_names' => sub {
     my $obj   = $test_pkg->new;
     my @names = $obj->get_all_attribute_names;
@@ -72,6 +78,12 @@ subtest 'rehash' => sub {
     is $hash_sum, $obj->_hash_sum, 'right hash_sum';
     $obj->rehash;
     isnt $hash_sum, $obj->_hash_sum, 'right rehash';
+
+    $hash_sum = $obj->_hash_sum;
+    my $obj2 = $test_pkg->new( bar => $obj );
+    $obj2->bar->_set_hash_sum('foo');
+    $obj2->rehash;
+    is $hash_sum, $obj2->bar->_hash_sum, 'right recursive rehash';
 };
 
 subtest 'set_attributes' => sub {

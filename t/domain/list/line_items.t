@@ -6,75 +6,127 @@ use Yetie::Factory;
 my $pkg = 'Yetie::Domain::List::LineItems';
 use_ok $pkg;
 
-my $construct = sub { Yetie::Factory->new('list-line_items')->construct(@_) };
+sub factory {
+    return Yetie::Factory->new('list-line_items')->construct(@_);
+}
+
+sub item_factory {
+    return Yetie::Factory->new('entity-line_item')->construct(@_);
+}
 
 subtest 'basic' => sub {
-    my $list = $construct->();
+    my $list = factory();
     isa_ok $list, 'Yetie::Domain::List';
 };
 
 subtest 'append' => sub {
-    my $f = Yetie::Factory->new('entity-line_item');
     my $data = [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 } ];
     my ( $list, $item );
 
     # Append single
-    $list = $construct->( list => $data );
-    $item = $f->construct( { product_id => 3, quantity => 3 } );
+    $list = factory( list => $data );
+    $item = item_factory( { product_id => 3, quantity => 3 } );
     $list->append($item);
     cmp_deeply $list->to_data,
-      [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 2 }, { product_id => 3, quantity => 3 } ],
+      [
+        { product_id => 1, quantity => 1, price => ignore(), tax_rule => ignore() },
+        { product_id => 2, quantity => 2, price => ignore(), tax_rule => ignore() },
+        { product_id => 3, quantity => 3, price => ignore(), tax_rule => ignore() }
+      ],
       'right single append';
     is $list->is_modified, 1, 'right modified';
 
     # Append same item(update quantity)
-    $list = $construct->( list => $data );
-    $item = $f->construct( { product_id => 2, quantity => 2 } );
+    $list = factory( list => $data );
+    $item = item_factory( { product_id => 2, quantity => 2 } );
     $list->append($item);
     cmp_deeply $list->to_data,
-      [ { product_id => 1, quantity => 1 }, { product_id => 2, quantity => 4 } ],
+      [
+        { product_id => 1, quantity => 1, price => ignore(), tax_rule => ignore() },
+        { product_id => 2, quantity => 4, price => ignore(), tax_rule => ignore() }
+      ],
       'right sum quantity';
     is $list->is_modified, 1, 'right modified';
 
     # Append multi
-    $list = $construct->( list => $data );
-    $item = $f->construct( { product_id => 1, quantity => 1 } );
-    my $item2 = $f->construct( { product_id => 2, quantity => 2 } );
-    my $item3 = $f->construct( { product_id => 3, quantity => 3 } );
+    $list = factory( list => $data );
+    $item = item_factory( { product_id => 1, quantity => 1 } );
+    my $item2 = item_factory( { product_id => 2, quantity => 2 } );
+    my $item3 = item_factory( { product_id => 3, quantity => 3 } );
     $list->append( $item, $item2, $item3 );
     cmp_deeply $list->to_data,
-      [ { product_id => 1, quantity => 2 }, { product_id => 2, quantity => 4 }, { product_id => 3, quantity => 3 } ],
+      [
+        { product_id => 1, quantity => 2, price => ignore(), tax_rule => ignore() },
+        { product_id => 2, quantity => 4, price => ignore(), tax_rule => ignore() },
+        { product_id => 3, quantity => 3, price => ignore(), tax_rule => ignore() }
+      ],
       'right multi append';
     is $list->is_modified, 1, 'right modified';
 };
 
 subtest 'total_quantity' => sub {
-    my $list = $construct->( list => [ { quantity => 1 }, { quantity => 2 } ] );
+    my $list = factory( list => [ { quantity => 1 }, { quantity => 2 } ] );
     is $list->total_quantity, 3, 'right total quantity';
 };
 
 subtest 'remove' => sub {
     my $data = [ { product_id => 1 }, { product_id => 2 }, { product_id => 3 } ];
-    my $list = $construct->( list => $data );
+    my $list = factory( list => $data );
     my $res = $list->remove(2);
-    cmp_deeply $list->to_data, [ { product_id => 1 }, { product_id => 3 } ], 'right remove item';
+    cmp_deeply $list->to_data,
+      [
+        { product_id => 1, price => ignore(), tax_rule => ignore() },
+        { product_id => 3, price => ignore(), tax_rule => ignore() }
+      ],
+      'right remove item';
     is $list->is_modified, 1, 'right modified';
     is $res, 1, 'right removed';
 
     # Unremove. not found item.
-    $list = $construct->( list => $data );
+    $list = factory( list => $data );
     $res = $list->remove(4);
     cmp_deeply $list->to_data,
-      [ { product_id => 1 }, { product_id => 2 }, { product_id => 3 } ],
+      [
+        { product_id => 1, price => ignore(), tax_rule => ignore() },
+        { product_id => 2, price => ignore(), tax_rule => ignore() },
+        { product_id => 3, price => ignore(), tax_rule => ignore() }
+      ],
       'right not remove item';
     is $list->is_modified, 0, 'right not modified';
     is $res, 0, 'right not removed';
 };
 
 subtest 'subtotal' => sub {
-    my $data = [ { quantity => 1, price => 1 }, { quantity => 2, price => 2 }, { quantity => 3, price => 3 } ];
-    my $list = $construct->( list => $data );
-    is $list->subtotal, 14, 'right subtotal';
+    my $data = [
+        {
+            price    => 10,
+            quantity => 1,
+            tax_rule => {
+                tax_rate => 5,
+            },
+        },
+        {
+            price    => 20,
+            quantity => 2,
+            tax_rule => {
+                tax_rate => 3,
+            },
+        },
+        {
+            price    => 30,
+            quantity => 3,
+            tax_rule => {
+                tax_rate => 5,
+            },
+        }
+    ];
+    my $list = factory( list => [] );
+    is $list->subtotal_excl_tax, '$0.00', 'right subtotal excluding tax(no items)';
+    is $list->subtotal_incl_tax, '$0.00', 'right subtotal including tax(no items)';
+
+    $list = factory( list => $data );
+    is $list->subtotal_excl_tax, '$140.00', 'right subtotal excluding tax';
+    is $list->subtotal_incl_tax, '$146.20', 'right subtotal including tax';
 };
 
 done_testing();

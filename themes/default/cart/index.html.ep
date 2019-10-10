@@ -4,7 +4,7 @@
 <h1><%= title %></h1>
 
 <% my $cart = $self->cart; %>
-<%= __nx('{cnt :num} item', '{cnt :num} items', $cart->total_item_count, cnt => $cart->total_item_count) %>
+<%= __nx('{cnt :num} item', '{cnt :num} items', $cart->count_total_items, cnt => $cart->count_total_items) %>
 (Total QTY: <%= $cart->total_quantity %>) in your cart.
 
 <%= form_for 'rn.cart' => ( method => 'POST' ) => begin %>
@@ -20,9 +20,9 @@
                 <a href="<%= url_for 'rn.product' => { product_id => $item->product_id } %>">
                     <%= $item->product_title %>
                 </a>
-                    | <%= $item->price %>
+                    | price: <%= $item->price %> incl-tax: <%= $item->price_incl_tax %> tax: <%= $item->tax_amount %>
                     | QTY:<%= $item->quantity %><%= form_widget("cart#quantity.$i") %><%= form_error("cart#item.$i.quantity") %>
-                    | <%= $item->subtotal %>
+                    | row-total including tax: <%= $item->row_total_incl_tax %>
                 <div class="cart-item-control">
                     <%= link_to 'rn.cart.item.delete' => ( name => "button.delete.$i", class => 'btn btn-link submit-post', 'data-name' => 'line_num', 'data-value' => $num ) => begin %>
                         Delete
@@ -37,16 +37,33 @@
     </ul>
 
     <%= csrf_field %>
-    <%= submit_button 'Update Cart' %>
+    <%= submit_button 'Recalculate' %>
 <% end %>
 <%= csrf_button_to 'Remove All Items' => 'rn.cart.clear' => ( id => 'form-cart-clear') %>
 
 <hr>
 <div class="">
-    Subtotal: <%= $cart->subtotal %>
+    Subtotal excluding-tax: <%= $cart->subtotal_excl_tax %> / including-tax: <%= $cart->subtotal_incl_tax %>
 </div>
 <div class="">
-    Grand Total: <%= $cart->grand_total %>
+    Shipping & Handling:
+</div>
+<div class="">
+    Taxes: <%= $cart->taxes %>
+</div>
+
+% if ( $cart->total_amounts->has_many ){
+    <hr>
+        <% $cart->total_amounts->each( sub { %>
+            <div>
+                <%= $_->tax_rate_percentage %> : <%= $_->total_incl_tax %>
+            </div>
+        <% }); %>
+% }
+<hr>
+
+<div class="">
+    Cart Sutotal: <%= $cart->grand_total %>
 </div>
 <hr>
 
@@ -58,6 +75,4 @@
     <li><%= link_to 'Proceed to Checkout' => 'rn.checkout', ( class => 'btn btn-primary' ) %></li>
 </ul>
 
-<pre>
-<%= dumper $self->cart->to_data %>
-</pre>
+<pre>cart: <%= dumper $self->cart->to_data %></pre>

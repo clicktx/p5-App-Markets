@@ -24,13 +24,6 @@ sub t02_find_cart : Tests() {
 
 # sub t03_merge_cart : Tests() {}
 
-sub t04_set_address_id : Tests() {
-    my $self = shift;
-    my $t    = $self->t;
-
-    $t->get_ok('/test/set_address_id')->status_is(200);
-}
-
 __PACKAGE__->runtests;
 
 package Yetie::Controller::Catalog::Test;
@@ -53,7 +46,8 @@ sub add_item {
             product_id    => 1,
             product_title => 'test product1',
             quantity      => 1,
-            price         => '100.00'
+            price         => { value => '100.00', currency_code => 'USD', is_tax_included => 0 },
+            tax_rule      => ignore(),
           },
           'right add cart';
     };
@@ -70,34 +64,3 @@ sub find_cart {
     $c->render( text => 1 );
 }
 
-sub set_address_id {
-    my $c    = shift;
-    my $cart = $c->cart;
-
-    my %data = (
-        country_code  => 'us',
-        line1         => '42 Pendergast St.',
-        line2         => '',
-        city          => 'Piedmont',
-        state         => 'SC',
-        postal_code   => '12345',
-        personal_name => 'foo bar',
-        organization  => '',
-        phone         => '0011223344',
-    );
-    my $last_id = $c->resultset('Address')->last_id;
-
-    subtest 'set_address_id' => sub {
-        my $address = $c->factory('entity-address')->construct(%data);
-        $cart->billing_address($address);
-        $c->service('cart')->set_address_id( $cart->billing_address );
-        is $cart->billing_address->id, $last_id + 1, 'right insert to storage';
-
-        $address = $c->factory('entity-address')->construct(%data);
-        $cart->billing_address($address);
-        is $cart->billing_address->id, undef;
-        $c->service('cart')->set_address_id( $cart->billing_address );
-        is $cart->billing_address->id, $last_id + 1, 'right load from storage';
-    };
-    $c->render( text => 1 );
-}

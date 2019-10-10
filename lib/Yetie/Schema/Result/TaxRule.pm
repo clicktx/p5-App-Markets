@@ -15,7 +15,13 @@ column title => {
 
 column tax_rate => {
     data_type   => 'DECIMAL',
-    size        => [ 6, 4 ],
+    size        => [ 6, 3 ],
+    is_nullable => 0,
+};
+
+column round_mode => {
+    data_type   => 'VARCHAR',
+    size        => 8,
     is_nullable => 0,
 };
 
@@ -23,6 +29,11 @@ column tax_rate => {
 has_many
   category_tax_rules => 'Yetie::Schema::Result::CategoryTaxRule',
   { 'foreign.category_id' => 'self.id' },
+  { cascade_delete        => 0 };
+
+has_many
+  sales_order_items => 'Yetie::Schema::Result::SalesOrderItem',
+  { 'foreign.tax_rule_id' => 'self.id' },
   { cascade_delete        => 0 };
 
 1;

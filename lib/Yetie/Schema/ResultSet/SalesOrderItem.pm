@@ -9,8 +9,9 @@ sub store_items {
     $items->each(
         sub {
             my $item = shift;
-            my %data = ( order_id => $order_id, %{ $item->to_data } );
-            $self->update_or_create( \%data );
+            my $data = $item->to_data;
+            $data->{order_id} = $order_id;
+            $self->update_or_create($data);
         }
     );
     return $self;

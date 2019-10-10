@@ -3,6 +3,47 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
 
+has _subtotal_excl_tax => (
+    is       => 'ro',
+    isa      => 'Yetie::Domain::Value::Price',
+    lazy     => 1,
+    builder  => '_build__subtotal_excl_tax',
+    reader   => 'subtotal_excl_tax',
+    init_arg => undef,
+);
+
+has _subtotal_incl_tax => (
+    is       => 'ro',
+    isa      => 'Yetie::Domain::Value::Price',
+    lazy     => 1,
+    builder  => '_build__subtotal_incl_tax',
+    reader   => 'subtotal_incl_tax',
+    init_arg => undef,
+);
+
+sub _init_price {
+    my $self = shift;
+    my %args = @_;
+
+    return $self->size
+      ? $self->first->price->clone( value => 0, is_tax_included => $args{is_tax_included} )
+      : $self->factory('value-price')->construct( is_tax_included => $args{is_tax_included} );
+}
+
+sub _build__subtotal_excl_tax {
+    my $self = shift;
+
+    my $price = $self->_init_price( is_tax_included => 0 );
+    return $self->reduce( sub { $a + $b->row_total_excl_tax }, $price );
+}
+
+sub _build__subtotal_incl_tax {
+    my $self = shift;
+
+    my $price = $self->_init_price( is_tax_included => 1 );
+    return $self->reduce( sub { $a + $b->row_total_incl_tax }, $price );
+}
+
 sub append {
     my $self = shift;
 
@@ -16,13 +57,13 @@ sub append {
 
 sub get_by_product_hash_code {
     my ( $self, $hash_code ) = @_;
-    return $self->list->first( sub { $_->product_hash_code eq $hash_code } );
+    return $self->first( sub { $_->product_hash_code eq $hash_code } );
 }
 
 sub has_element_by_hash { return shift->get_by_product_hash_code(shift) ? 1 : 0 }
 
 sub total_quantity {
-    return shift->list->reduce( sub { $a + $b->quantity }, 0 );
+    return shift->reduce( sub { $a + $b->quantity }, 0 );
 }
 
 sub remove {
@@ -31,23 +72,9 @@ sub remove {
     my $item = $self->get_by_line_num($line_num);
     return 0 if !$item;
 
-    my $new = $self->list->grep( sub { !$_->equals($item) } );
+    my $new = $self->grep( sub { !$_->equals($item) } );
     $self->list($new);
     return 1;
-}
-
-sub subtotal {
-    my $self = shift;
-    return $self->list->reduce( sub { $a + $b->subtotal }, 0 );
-}
-
-sub total_amount {
-    my $self = shift;
-    warn '!!DEPRECATED!!';
-
-    my $total_amount = 0;
-    $self->each( sub { $total_amount += $_->subtotal } );
-    return $total_amount;
 }
 
 sub _append_item {
@@ -58,7 +85,7 @@ sub _append_item {
 
 sub _update_quantity {
     my ( $self, $item ) = @_;
-    my $new = $self->list->map(
+    my $new = $self->map(
         sub {
             if ( $_->equals($item) ) { $_->quantity( $_->quantity + $item->quantity ) }
             return $_;
@@ -85,6 +112,14 @@ Yetie::Domain::List::LineItems
 
 L<Yetie::Domain::List::LineItems> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
+
+=head2 C<subtotal_excl_tax>
+
+    my $subtotal_excl_tax = $items->subtotal_excl_tax;
+
+=head2 C<subtotal_incl_tax>
+
+    my $subtotal_incl_tax = $items->subtotal_incl_tax;
 
 =head1 METHODS
 
@@ -113,16 +148,6 @@ the following new ones.
     $items->remove($line_num);
 
 Return true if remove item.
-
-=head2 C<subtotal>
-
-    my $subtotal = $items->subtotal;
-
-=head2 C<total_amount>
-
-DEPRECATED
-
-    my $total_amount = $items->total_amount;
 
 =head1 AUTHOR
 

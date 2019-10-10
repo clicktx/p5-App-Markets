@@ -18,7 +18,7 @@ sub t01 : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    $t->get_ok('/test/store_address')->status_is(200);
+    $t->get_ok('/test/add_to_address_book')->status_is(200);
 
     subtest login_process_remember_me => sub {
 
@@ -130,19 +130,19 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 use Test::More;
 use Test::Deep;
 
-sub store_address {
+sub add_to_address_book {
     my $c = shift;
     my $s = $c->service('customer');
 
-    subtest 'store_address' => sub {
-        my $res = $s->store_address(1);
+    subtest 'add_to_address_book' => sub {
+        my $res = $s->add_to_address_book(1);
         ok !$res, 'right no data';
 
         $c->server_session->customer_id(113);
-        $res = $s->store_address(1);
+        $res = $s->add_to_address_book(1);
         ok $res, 'right store address';
 
-        $res = $s->store_address(1);
+        $res = $s->add_to_address_book(1);
         ok !$res, 'right stored address';
     };
     $c->render( text => 1 );

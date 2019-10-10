@@ -23,7 +23,7 @@ sub choose_column_name {
 sub insert {
     my $self = shift;
 
-    my $now = Yetie::App::Core::DateTime->now;
+    my $now = $self->app->date_time->now;
     $self->created_at($now) if $self->can('created_at');
 
     $self->next::method(@_);
@@ -48,7 +48,7 @@ sub to_hash {
 sub update {
     my $self = shift;
 
-    $self->updated_at( Yetie::App::Core::DateTime->now ) if $self->can('updated_at');
+    $self->updated_at( $self->app->date_time->now ) if $self->can('updated_at');
     $self->next::method(@_);
 }
 

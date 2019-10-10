@@ -1,7 +1,10 @@
 package Yetie::Domain::Entity::LineItem;
 use Moose;
 use namespace::autoclean;
+use MooseX::Types::Common::Numeric qw(PositiveInt);
 extends 'Yetie::Domain::Entity';
+
+with 'Yetie::Domain::Role::Tax';
 
 has _product_hash_code => (
     is       => 'ro',
@@ -10,10 +13,49 @@ has _product_hash_code => (
     reader   => 'product_hash_code',
     init_arg => undef,
 );
-has product_id    => ( is => 'rw' );
-has product_title => ( is => 'rw' );
-has price         => ( is => 'rw' );
-has quantity      => ( is => 'rw' );
+has _row_total_excl_tax => (
+    is       => 'ro',
+    isa      => 'Yetie::Domain::Value::Price',
+    lazy     => 1,
+    builder  => '_build__row_total_excl_tax',
+    reader   => 'row_total_excl_tax',
+    init_arg => undef,
+);
+has _row_total_incl_tax => (
+    is       => 'ro',
+    isa      => 'Yetie::Domain::Value::Price',
+    lazy     => 1,
+    builder  => '_build__row_total_incl_tax',
+    reader   => 'row_total_incl_tax',
+    init_arg => undef,
+);
+has price => (
+    is      => 'rw',
+    isa     => 'Yetie::Domain::Value::Price',
+    default => sub { __PACKAGE__->factory('value-price')->construct() },
+);
+has product_id => (
+    is  => 'rw',
+    isa => PositiveInt,
+);
+has product_title => (
+    is  => 'rw',
+    isa => 'Str',
+);
+has quantity => (
+    is  => 'rw',
+    isa => 'Int',
+);
+
+override set_attributes => sub {
+    my ( $self, $args ) = @_;
+
+    my $price     = delete $args->{price};
+    my $new_price = $self->price->set_value($price);
+    $self->price($new_price);
+
+    return super();
+};
 
 sub _build__product_hash_code {
     my $self = shift;
@@ -26,14 +68,24 @@ sub _build__product_hash_code {
     return $self->SUPER::hash_code($str);
 }
 
+sub _build__row_total_excl_tax {
+    my $self = shift;
+    return $self->price_excl_tax * $self->quantity;
+}
+
+sub _build__row_total_incl_tax {
+    my $self = shift;
+    return $self->price_incl_tax * $self->quantity;
+}
+
 sub equals { return $_[0]->product_hash_code eq $_[1]->product_hash_code ? 1 : 0 }
 
-sub subtotal {
-    my $self     = shift;
-    my $subtotal = 0;
+sub row_tax_amount {
+    my $self = shift;
 
-    $subtotal = $self->price * $self->quantity;
-    return $subtotal;
+    my $tax = $self->factory('value-tax')->construct();
+    $tax += $self->row_total_incl_tax->clone( is_tax_included => 0 ) - $self->row_total_excl_tax;
+    return $tax;
 }
 
 no Moose;
@@ -52,8 +104,9 @@ Yetie::Domain::Entity::LineItem
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::LineItem> inherits all attributes from L<Yetie::Domain::Entity> and implements
-the following new ones.
+L<Yetie::Domain::Entity::LineItem> inherits all attributes from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Tax>.
+
+Implements the following new ones.
 
 =head2 C<product_hash_code>
 
@@ -70,21 +123,31 @@ This method gets a string identifying product item.
 
 =head2 C<price>
 
+Return L<Yetie::Domain::Value::Price> object.
+
+=head2 C<row_total_incl_tax>
+
+Return L<Yetie::Domain::Value::Price> object.
+
+=head2 C<row_total_incl_tax>
+
+Return L<Yetie::Domain::Value::Price> object.
+
 =head1 METHODS
 
-L<Yetie::Domain::Entity::LineItem> inherits all methods from L<Yetie::Domain::Entity> and implements
-the following new ones.
+L<Yetie::Domain::Entity::LineItem> inherits all methods from L<Yetie::Domain::Entity> and L<Yetie::Domain::Role::Tax>.
+
+Implements the following new ones.
 
 =head2 C<equals>
 
     my $bool = $item->equals($other_item);
 
-=head2 C<subtotal>
+=head2 C<row_tax_amount>
 
-    $item->subtotal
+    my $tax = $item->row_tax_amount;
 
-Returns the combined price of all the items in the row.
-This is equal to C< $item-E<gt>price> times C<$item-E<gt>quantity>.
+Return L<Yetie::Domain::Value::Tax> object.
 
 =head1 AUTHOR
 
@@ -92,4 +155,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity>
+L<Yetie::Domain::Role::Tax>, L<Yetie::Domain::Entity>

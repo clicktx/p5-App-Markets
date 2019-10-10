@@ -41,30 +41,30 @@ subtest 'limit' => sub {
 };
 
 subtest 'to_array' => sub {
-    my $rs = $schema->resultset('SalesOrderItem');
+    my $rs = $schema->resultset('Preference');
 
     subtest 'basic' => sub {
-        my $itr   = $rs->search( { order_id => 1 } );
+        my $itr   = $rs->search( { id => 1 } );
         my @array = $itr->to_array;
         my $array = $itr->to_array;
 
-        is @array, 2, 'right array';
+        is @array, 1, 'right array';
         is ref $array, 'ARRAY', 'right array refference';
 
         my @keys = sort( keys %{ $array[0] } );
-        is_deeply \@keys, [qw(id order_id price product_id product_title quantity)], 'right all columns';
+        is_deeply \@keys, [qw(default_value group_id id name position summary title value)], 'right all columns';
     };
 
     subtest 'options' => sub {
-        my $itr = $rs->search( { order_id => 1 } );
+        my $itr = $rs->search( { id => 1 } );
 
-        my @array = $itr->to_array( ignore_columns => [qw(product_title order_id)] );
+        my @array = $itr->to_array( ignore_columns => [qw(id name position)] );
         my @keys = sort( keys %{ $array[0] } );
-        is_deeply \@keys, [qw(id price product_id quantity)], 'right option "ignore_columns"';
+        is_deeply \@keys, [qw(default_value group_id summary title value)], 'right option "ignore_columns"';
 
-        @array = $itr->to_array( columns => [qw(product_title order_id)] );
+        @array = $itr->to_array( columns => [qw(id name position)] );
         @keys = sort( keys %{ $array[0] } );
-        is_deeply \@keys, [qw(order_id product_title)], 'right option "columns"';
+        is_deeply \@keys, [qw(id name position)], 'right option "columns"';
     };
 };
 

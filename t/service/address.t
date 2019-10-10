@@ -52,6 +52,30 @@ subtest 'get_registered_id' => sub {
     is $id, 1, 'right found registered';
 };
 
+subtest 'set_address_id' => sub {
+    my ( $c, $s ) = _init();
+    my %data = (
+        country_code  => 'us',
+        line1         => '42 Pendergast St.',
+        line2         => '',
+        city          => 'Piedmont',
+        state         => 'SC',
+        postal_code   => '12345',
+        personal_name => 'foo bar',
+        organization  => '',
+        phone         => '0011223344',
+    );
+
+    my $last_id    = $c->resultset('Address')->last_id;
+    my $address    = $c->factory('entity-address')->construct(%data);
+    my $address_id = $s->set_address_id($address);
+    is $address_id, $last_id + 1, 'right store to storage';
+
+    $address    = $c->factory('entity-address')->construct(%data);
+    $address_id = $s->set_address_id($address);
+    is $address_id, $last_id + 1, 'right load from storage';
+};
+
 subtest 'update_address' => sub {
     my ( $c, $s ) = _init();
 

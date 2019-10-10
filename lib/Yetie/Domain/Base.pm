@@ -1,4 +1,7 @@
 package Yetie::Domain::Base;
+use Scalar::Util qw();
+use Yetie::Factory;
+
 use Moose;
 use namespace::autoclean;
 use MooseX::StrictConstructor;
@@ -33,6 +36,8 @@ sub BUILD {
     $self->_hash_sum;
 }
 
+sub factory { return Yetie::Factory->new( $_[1] ) }
+
 sub get_all_attribute_names {
     return ( sort map { $_->name } shift->meta->get_all_attributes );
 }
@@ -51,8 +56,17 @@ sub hash_code {
 sub rehash {
     my $self = shift;
 
-    # FIXME: need recursive rehash
     $self->_set_hash_sum( $self->hash_code );
+
+    # recursive rehash
+    my @attributes = $self->get_all_attribute_names;
+    foreach my $attr (@attributes) {
+        next if !$self->can($attr);                       # NOTE: for change attribute reader
+        next if !Scalar::Util::blessed( $self->$attr );
+        next if !$self->$attr->can('rehash');
+
+        $self->$attr->rehash;
+    }
     return $self;
 }
 
@@ -110,6 +124,14 @@ Domain object base class.
 L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements
 the following new ones.
 
+=head2 C<factory>
+
+    __PACKAGE__->factory('entity-foo');
+
+    my $factory = $obj->factory('value-bar');
+
+Return L<Yetie::Factory> object.
+
 =head2 C<get_all_attribute_names>
 
     my @names = $obj->get_all_attribute_names;
@@ -134,6 +156,8 @@ Return SHA1 checksum.
     $obj->rehash;
 
 Recreate object hash sum.
+
+Recursive call for all attributes.
 
 =head2 C<set_attributes>
 

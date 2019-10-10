@@ -19,7 +19,7 @@
     <%= $product->price %>
 </div>
 <div>
-    TAX rate: <%= $product->tax_rule->tax_rate_percentage %>%
+    TAX rate: <%= $product->tax_rule->tax_rate %>%
 </div>
 <div>
     TAX: <%= $product->tax_amount %>

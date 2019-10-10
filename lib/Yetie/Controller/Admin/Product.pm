@@ -11,6 +11,7 @@ sub create {
     return $c->edit();
 }
 
+# NOTE: 削除しないでtrashedにした方が良いか？
 sub delete {
     my $c          = shift;
     my $product_id = $c->stash('product_id');
@@ -39,6 +40,8 @@ sub edit {
     my $product_id = $c->stash('product_id');
     my $product    = $c->service('product')->find_product($product_id);
     return $c->reply->not_found() if !$product->has_id;
+
+    $c->stash( product => $product );
 
     # Init form
     my $form = $c->form('admin-product');
@@ -93,9 +96,12 @@ sub category {
 
 sub _form_default_value {
     my ( $c, $form, $product ) = @_;
-    foreach my $name (qw/id price title description/) {
+
+    foreach my $name (qw/id title description/) {
         $form->field($name)->default_value( $product->$name );
     }
+    $form->field('price')->default_value( $product->price->value );
+
     return $form;
 }
 

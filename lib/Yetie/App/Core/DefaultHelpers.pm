@@ -117,15 +117,20 @@ sub _remote_address {
 }
 
 sub _reply_error {
-    my $c = shift;
+    my $c    = shift;
+    my %args = @_;
+
+    my $status        = delete $args{status}        || '400';
+    my $title         = delete $args{title}         || 'Bad Request';
+    my $error_message = delete $args{error_message} || q{};
 
     my %options = (
-        status        => 400,
         template      => 'error',
-        title         => 'Bad Request',
-        error_message => '',
+        status        => $status,
+        title         => $title,
+        error_message => $error_message,
     );
-    $c->render( %options, @_ );
+    $c->render( %options, %args );
 }
 
 sub _reply_message {
@@ -292,15 +297,19 @@ Get/Set preference.
 
 =head2 C<reply-E<gt>error>
 
-    $c->reply->error( title => 'foo', error_message => 'bar' );
+    $c->reply->error( status => 401, title => 'foo', error_message => 'bar' );
 
-Render the error template and set the response status code to 400.
+Render the error template.
+
+Default status code C<400>.
 
 =head2 C<reply-E<gt>message>
 
     $c->reply->message( title => 'foo', message => 'bar' );
 
 Render the message template.
+
+Default status code C<200>.
 
 =head2 C<schema>
 

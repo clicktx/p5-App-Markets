@@ -8,27 +8,20 @@ has tax_rule => (
     default => sub { Yetie::Factory->new('entity-tax_rule')->construct() },
 );
 
-around to_data => sub {
-    my $orig = shift;
-    my $self = shift;
-
-    my $data = $self->$orig();
-    delete $data->{tax_rule};
-    return $data;
-};
-
 sub price_excl_tax {
     my $self = shift;
 
-    my $price = $self->price;
-    return $price->is_tax_included ? $price - $self->tax_amount : $price;
+    return $self->price->is_tax_included
+      ? $self->price->clone( is_tax_included => 0 ) - $self->tax_amount
+      : $self->price;
 }
 
 sub price_incl_tax {
     my $self = shift;
 
-    my $price = $self->price;
-    return $price->is_tax_included ? $price : $price + $self->tax_amount;
+    return $self->price->is_tax_included
+      ? $self->price
+      : $self->price->clone( is_tax_included => 1 ) + $self->tax_amount->clone( is_tax_included => 1 );
 }
 
 sub tax_amount {
@@ -37,6 +30,8 @@ sub tax_amount {
     my $tax_amount = $self->tax_rule->caluculate_tax( $self->price );
     return $tax_amount;
 }
+
+sub tax_rate { return shift->tax_rule->tax_rate }
 
 1;
 __END__
@@ -72,6 +67,12 @@ the following new ones.
 =head2 C<tax_amount>
 
     my $tax_amount = $product->tax_amount;
+
+=head2 C<tax_rate>
+
+    my $tax_amount = $product->tax_rate;
+
+Return tax rate percentage.
 
 =head1 AUTHOR
 

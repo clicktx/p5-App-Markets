@@ -4,14 +4,8 @@ use Mojo::Base 'Yetie::Factory';
 sub cook {
     my $self = shift;
 
-    # Aggregate billing address
-    $self->aggregate( billing_address => ( 'entity-address', $self->{billing_address} || {} ) );
-
     # Aggregate items
     $self->aggregate( items => ( 'list-line_items', $self->param('items') || [] ) );
-
-    # Aggregate shipments
-    $self->aggregate( shipments => ( 'list-shipments', $self->param('shipments') || [] ) );
 }
 
 1;
@@ -46,4 +40,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
- L<Yetie::Factory>
+L<Yetie::Factory>
