@@ -93,6 +93,26 @@ subtest 'add_shipment_item' => sub {
     is $checkout->is_modified, 1, 'right modified';
 };
 
+subtest 'get_order_data' => sub {
+    my $checkout = _create_entity;
+    use DDP;p $checkout->get_order_data;
+    cmp_deeply $checkout->get_order_data,
+      {
+        billing_address => { id => ignore() },
+        orders          => [
+            {
+                items            => ignore(),
+                shipping_address => { id => ignore() },
+            },
+            {
+                items            => ignore(),
+                shipping_address => { id => ignore() },
+            }
+        ],
+      },
+      'right dump order data';
+};
+
 subtest 'has_billing_address' => sub {
     my $checkout = Yetie::Factory->new('entity-checkout')->construct();
     is $checkout->has_billing_address, 0, 'right no address info';

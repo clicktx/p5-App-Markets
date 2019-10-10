@@ -47,7 +47,7 @@ sub get_order_data {
     # for (qw/id cart_id items/) { delete $data->{$_} }
 
     # Billing Address
-    # $data->{billing_address} = { id => $data->{billing_address}->{id} };
+    $data->{billing_address} = { id => $data->{billing_address}->{id} };
 
     # Rename shipments to orders
     foreach my $shipment ( @{ $data->{shipments} } ) {
