@@ -138,6 +138,13 @@ Return L<Yetie::Domain::Entity::Checkout> object.
 
     $service->save;
 
+=head2 C<set_billing_address>
+
+    # Set or update
+    $service->set_billings_address( $address_obj );
+
+See L<Yetie::Domain::Entity::Checkout/set_billings_address>
+
 =head2 C<set_shipping_address>
 
     # Set or update first element
