@@ -71,11 +71,11 @@ sub has_shipping_address {
 sub has_shipping_item { return shift->shipments->has_item }
 
 sub set_shipping_address {
-    my $self = shift;
-    croak 'Argument is missing.' if !@_;
+    my ( $self, @args ) = @_;
+    croak 'Argument is missing.' if !@args;
 
     # Convert arguments
-    my $addresses = @_ > 1 ? +{@_} : Yetie::Util::array_to_hash(@_);
+    my $addresses = @args > 1 ? +{@args} : Yetie::Util::array_to_hash(@args);
 
     foreach my $index ( keys %{$addresses} ) {
         my $address  = $addresses->{$index};
@@ -158,6 +158,15 @@ Return boolean value.
     my $bool = $checkout->has_shipping_item;
 
 Return boolean value.
+
+=head2 C<revert>
+
+    $checkout->revert;
+
+Delete except the first shipping-information.
+Also delete all shipping-items of the first shipping-information.
+
+See L<Yetie::Domain::List::Shipments/revert>.
 
 =head2 C<set_billing_address>
 
