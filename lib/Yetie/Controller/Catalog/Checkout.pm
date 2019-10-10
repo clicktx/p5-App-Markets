@@ -119,13 +119,12 @@ sub complete {
 # - Choose a billing address
 # - Review your order
 sub confirm_handler {
-    my $c = shift;
+    my $c        = shift;
+    my $checkout = $c->service('checkout')->get;
 
-    # No items
+    # No cart items
     my $cart = $c->cart;
     return $c->redirect_to('rn.cart') if !$cart->has_item;
-
-    my $checkout = $c->service('checkout')->get;
 
     # Shipping address
     return $c->redirect_to('rn.checkout.shipping_address') if !$checkout->has_shipping_address;
