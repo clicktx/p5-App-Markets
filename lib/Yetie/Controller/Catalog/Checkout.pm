@@ -28,8 +28,8 @@ sub shipping_address {
     return $c->render() if !$form->do_validate;
 
     # Set Address
-    my $set_address = $c->factory('entity-address')->construct( $form->params->to_hash );
-    $c->cart->set_shipping_address($set_address);
+    my $address = $c->factory('entity-address')->construct( $form->params->to_hash );
+    $c->service('checkout')->set_shipping_address($address);
 
     # NOTE: 1箇所のみに配送の場合
     # 複数配送の場合は先に配送先を複数登録しておく？別コントローラが良い？
@@ -80,8 +80,9 @@ sub billing_address {
     return $c->render() if !$form->do_validate;
 
     # Set Address
-    my $set_address = $c->factory('entity-address')->construct( $form->params->to_hash );
-    $c->cart->set_billing_address($set_address);
+    my $address = $c->factory('entity-address')->construct( $form->params->to_hash );
+    $c->service('checkout')->set_billing_address($address);
+
     return $c->confirm_handler;
 }
 
