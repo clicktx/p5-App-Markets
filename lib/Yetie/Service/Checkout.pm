@@ -15,6 +15,7 @@ sub delete {
     my $self = shift;
 
     $self->server_session->clear('checkout');
+    delete $self->controller->stash->{checkout};
     return;
 }
 
@@ -34,6 +35,15 @@ sub save {
     return if !$checkout;
 
     $self->_update($checkout);
+    return;
+}
+
+sub set_shipping_address {
+    my ( $self, @args ) = @_;
+
+    my $checkout = $self->get;
+    $checkout->set_shipping_address(@args);
+    $self->save;
     return;
 }
 
@@ -84,10 +94,10 @@ Yetie::Service::Checkout
     ....
 
     # Store
-    $checkout->save;
+    $c->service('checkout')->save;
 
     # Remove
-    $checkout->delete;
+    $c->service('checkout')->delete;
 
 =head1 DESCRIPTION
 
@@ -121,10 +131,21 @@ Return L<Yetie::Domain::Entity::Checkout> object.
 
     $service->save;
 
+=head2 C<set_shipping_address>
+
+    # Set or update first element
+    $service->set_shipping_address( $address_obj );
+
+    # Set or update multiple elements
+    $service->set_shipping_address( 1 => $address_obj, 3 => $address_obj, ... );
+    $service->set_shipping_address( [ $address_obj, $address_obj, ... ] );
+
+See L<Yetie::Domain::Entity::Checkout/set_shipping_address>
+
 =head1 AUTHOR
 
 Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Service>
+L<Yetie::Domain::Entity::Checkout>, L<Yetie::Service>

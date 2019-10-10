@@ -22,6 +22,13 @@ sub t02_add_all_cart_items : Tests() {
     $t->get_ok('/test/add_all_cart_items')->status_is(200);
 }
 
+sub t03_set_shipping_address : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+    $t->get_ok('/test/set_shipping_address')->status_is(200);
+    $t->get_ok('/test/after_set_shipping_address')->status_is(200);
+}
+
 __PACKAGE__->runtests;
 
 package Yetie::Controller::Catalog::Test;
@@ -90,6 +97,30 @@ sub add_all_cart_items {
     my $items = $c->cart->items;
     $c->service('checkout')->add_all_cart_items();
     is_deeply $items->to_data, $checkout->shipments->first->items->to_data, 'right items';
+
+    return $c->render( text => 1 );
+}
+
+sub set_shipping_address {
+    my $c = shift;
+
+    my $checkout = $c->service('checkout')->get;
+    my $address = $c->factory('entity-address')->construct( country_code => 'foo' );
+    $c->service('checkout')->set_shipping_address($address);
+    is $checkout->shipments->first->shipping_address->country_code, 'foo', 'right set shipping address';
+
+    $address = $c->factory('entity-address')->construct( country_code => 'bar' );
+    $c->service('checkout')->set_shipping_address( 0 => $address );
+    is $checkout->shipments->first->shipping_address->country_code, 'bar', 'right update shipping address';
+
+    return $c->render( text => 1 );
+}
+
+sub after_set_shipping_address {
+    my $c = shift;
+
+    my $checkout = $c->service('checkout')->get;
+    is $checkout->shipments->first->shipping_address->country_code, 'bar', 'right update shipping address';
 
     return $c->render( text => 1 );
 }
