@@ -90,6 +90,14 @@ Arguments L<Yetie::Domain::Entity::LineItem> object.
 
 Return L<Yetie::Domain::Entity::TotalAmount> object.
 
+=head2 C<tax_rate_percentage>
+
+    # 10.000
+    say $total->tax_rate;
+
+    # 10%
+    say $total->tax_rate_percentage;
+
 =head1 AUTHOR
 
 Yetie authors.
