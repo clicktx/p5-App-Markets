@@ -8,7 +8,8 @@ sub add_all_cart_items {
     my $items    = $cart->items->to_array;
     my $checkout = $self->get;
     $checkout->shipments->first->items->append( @{$items} );
-    return;
+
+    return $self->save;
 }
 
 sub delete {
@@ -16,7 +17,7 @@ sub delete {
 
     $self->server_session->clear('checkout');
     delete $self->controller->stash->{checkout};
-    return;
+    return $self;
 }
 
 sub get {
@@ -34,8 +35,7 @@ sub save {
     my $checkout = $self->controller->stash('checkout');
     return if !$checkout;
 
-    $self->_update($checkout);
-    return;
+    return $self->_update($checkout);
 }
 
 sub set_shipping_address {
@@ -43,8 +43,8 @@ sub set_shipping_address {
 
     my $checkout = $self->get;
     $checkout->set_shipping_address(@args);
-    $self->save;
-    return;
+
+    return $self->save;
 }
 
 sub _create {
@@ -74,7 +74,7 @@ sub _update {
     my ( $self, $entity ) = @_;
 
     $self->server_session->data( checkout => $entity->to_data );
-    return;
+    return $self;
 }
 
 1;
