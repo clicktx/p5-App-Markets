@@ -38,12 +38,19 @@ sub save {
     return $self->_update($checkout);
 }
 
+sub set_billing_address {
+    my ( $self, @args ) = @_;
+
+    my $checkout = $self->get;
+    $checkout->set_billing_address(@args);
+    return $self->save;
+}
+
 sub set_shipping_address {
     my ( $self, @args ) = @_;
 
     my $checkout = $self->get;
     $checkout->set_shipping_address(@args);
-
     return $self->save;
 }
 
