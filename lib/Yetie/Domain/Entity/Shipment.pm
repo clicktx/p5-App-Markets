@@ -9,9 +9,10 @@ has items => (
     default => sub { __PACKAGE__->factory('list-line_items')->construct() }
 );
 has shipping_address => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'Yetie::Domain::Entity::Address',
-    default => sub { __PACKAGE__->factory('entity-address')->construct() }
+    default => sub { __PACKAGE__->factory('entity-address')->construct() },
+    writer  => 'set_shipping_address',
 );
 
 sub count_items { return shift->items->size }

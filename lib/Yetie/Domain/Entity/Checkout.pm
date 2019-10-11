@@ -82,7 +82,7 @@ sub set_shipping_address {
         my $shipment = $self->shipments->get($index);
 
         next if $shipment->shipping_address->equals($address);
-        $shipment->shipping_address($address);
+        $shipment->set_shipping_address($address);
     }
     return $self;
 }
