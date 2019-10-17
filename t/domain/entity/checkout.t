@@ -95,7 +95,6 @@ subtest 'add_shipment_item' => sub {
 
 subtest 'get_order_data' => sub {
     my $checkout = _create_entity;
-    use DDP;p $checkout->get_order_data;
     cmp_deeply $checkout->get_order_data,
       {
         billing_address => { id => ignore() },
@@ -103,10 +102,12 @@ subtest 'get_order_data' => sub {
             {
                 items            => ignore(),
                 shipping_address => { id => ignore() },
+                shipping_fee     => ignore(),
             },
             {
                 items            => ignore(),
                 shipping_address => { id => ignore() },
+                shipping_fee     => ignore(),
             }
         ],
       },

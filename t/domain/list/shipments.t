@@ -69,7 +69,15 @@ subtest 'revert' => sub {
     $v->revert;
     my $data = $v->to_data;
     is $data->[0]->{shipping_address}->{postal_code}, 12345, 'right shipping_address in first element';
-    cmp_deeply $data, [ { shipping_address => ignore(), items => [] } ], 'right revert';
+    cmp_deeply $data,
+      [
+        {
+            items            => [],
+            shipping_address => ignore(),
+            shipping_fee     => ignore(),
+        }
+      ],
+      'right revert';
 };
 
 subtest 'subtotal' => sub {

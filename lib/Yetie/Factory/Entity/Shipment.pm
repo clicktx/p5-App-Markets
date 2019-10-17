@@ -9,6 +9,9 @@ sub cook {
 
     # shipping_address
     $self->aggregate( shipping_address => ( 'entity-address', $self->{shipping_address} || {} ) );
+
+    # shipping_fee
+    $self->aggregate( shipping_fee => ( 'value-price', $self->{shipping_fee} || {} ) );
 }
 
 1;

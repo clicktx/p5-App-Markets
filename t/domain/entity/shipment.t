@@ -20,8 +20,9 @@ subtest 'basic' => sub {
     can_ok $shipment, 'shipping_address';
     can_ok $shipment, 'count_items';
 
-    isa_ok $shipment->shipping_address, 'Yetie::Domain::Entity::Address';
     isa_ok $shipment->items,            'Yetie::Domain::List::LineItems';
+    isa_ok $shipment->shipping_address, 'Yetie::Domain::Entity::Address';
+    isa_ok $shipment->shipping_fee,     'Yetie::Domain::Value::Price';
 
     is $shipment->id, 1, 'right id';
 };

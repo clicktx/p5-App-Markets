@@ -14,6 +14,10 @@ has shipping_address => (
     default => sub { shift->factory('entity-address')->construct() },
     writer  => 'set_shipping_address',
 );
+has shipping_fee => (
+    is      => 'ro',
+    default => sub { shift->factory('value-price')->construct() },
+);
 
 sub count_items { return shift->items->size }
 
