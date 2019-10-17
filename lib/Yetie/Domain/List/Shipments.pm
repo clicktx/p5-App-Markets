@@ -43,18 +43,18 @@ sub revert {
 sub subtotal_excl_tax {
     my $self = shift;
 
-    my $price = $self->_init_price( is_tax_included => 0 );
+    my $price = $self->_init_price_object( is_tax_included => 0 );
     return $self->reduce( sub { $a + $b->subtotal_excl_tax }, $price );
 }
 
 sub subtotal_incl_tax {
     my $self = shift;
 
-    my $price = $self->_init_price( is_tax_included => 1 );
+    my $price = $self->_init_price_object( is_tax_included => 1 );
     return $self->reduce( sub { $a + $b->subtotal_incl_tax }, $price );
 }
 
-sub _init_price {
+sub _init_price_object {
     my $self    = shift;
     my %args    = @_;
     my $factory = $self->factory('value-price');
