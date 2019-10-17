@@ -10,26 +10,27 @@ has tax_rule => (
 
 sub price_excl_tax {
     my ( $self, %args ) = @_;
-
     my $attr = $args{attr} || 'price';
+
     return $self->$attr->is_tax_included
-      ? $self->$attr->clone( is_tax_included => 0 ) - $self->tax_amount
+      ? $self->$attr->clone( is_tax_included => 0 ) - $self->tax_amount( attr => $attr )
       : $self->$attr;
 }
 
 sub price_incl_tax {
     my ( $self, %args ) = @_;
-
     my $attr = $args{attr} || 'price';
+
     return $self->$attr->is_tax_included
       ? $self->$attr
-      : $self->$attr->clone( is_tax_included => 1 ) + $self->tax_amount->clone( is_tax_included => 1 );
+      : $self->$attr->clone( is_tax_included => 1 ) + $self->tax_amount( attr => $attr )->clone( is_tax_included => 1 );
 }
 
 sub tax_amount {
-    my $self = shift;
+    my ( $self, %args ) = @_;
+    my $attr = $args{attr} || 'price';
 
-    my $tax_amount = $self->tax_rule->caluculate_tax( $self->price );
+    my $tax_amount = $self->tax_rule->caluculate_tax( $self->$attr );
     return $tax_amount;
 }
 
@@ -77,6 +78,10 @@ Arguments: C<attr> default 'price'
 =head2 C<tax_amount>
 
     my $tax_amount = $product->tax_amount;
+
+    my $tax_amount = $product->tax_amount( attr => 'shipping_fee' );
+
+Arguments: C<attr> default 'price'
 
 =head2 C<tax_rate>
 
