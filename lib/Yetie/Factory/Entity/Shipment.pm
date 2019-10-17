@@ -12,6 +12,9 @@ sub cook {
 
     # shipping_fee
     $self->aggregate( shipping_fee => ( 'value-price', $self->{shipping_fee} || {} ) );
+
+    # tax rule
+    $self->aggregate( tax_rule => 'entity-tax_rule', $self->param('tax_rule') || {} );
 }
 
 1;
@@ -46,4 +49,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
- L<Yetie::Factory>
+L<Yetie::Factory>

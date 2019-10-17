@@ -3,6 +3,8 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
+with 'Yetie::Domain::Role::Tax';
+
 has items => (
     is      => 'ro',
     isa     => 'Yetie::Domain::List::LineItems',
