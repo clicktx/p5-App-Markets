@@ -6,12 +6,12 @@ extends 'Yetie::Domain::Entity';
 has items => (
     is      => 'ro',
     isa     => 'Yetie::Domain::List::LineItems',
-    default => sub { __PACKAGE__->factory('list-line_items')->construct() }
+    default => sub { shift->factory('list-line_items')->construct() }
 );
 has shipping_address => (
     is      => 'ro',
     isa     => 'Yetie::Domain::Entity::Address',
-    default => sub { __PACKAGE__->factory('entity-address')->construct() },
+    default => sub { shift->factory('entity-address')->construct() },
     writer  => 'set_shipping_address',
 );
 
