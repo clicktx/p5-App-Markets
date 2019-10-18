@@ -80,4 +80,34 @@ subtest 'subtotal' => sub {
     };
 };
 
+subtest 'shipping_fee' => sub {
+    my $shipment = construct(
+        shipping_fee => 100,
+        tax_rule     => {
+            tax_rate => 5,
+        },
+    );
+
+    subtest 'excluding tax' => sub {
+        is $shipment->shipping_fee_excl_tax, '$100.00', 'right shipping fee excluding tax';
+    };
+    subtest 'including tax' => sub {
+        is $shipment->shipping_fee_incl_tax, '$105.00', 'right shipping fee including tax';
+    };
+
+    $shipment = construct(
+        shipping_fee => { value => 105, is_tax_included => 1 },
+        tax_rule     => {
+            tax_rate => 5,
+        },
+    );
+
+    subtest 'excluding tax' => sub {
+        is $shipment->shipping_fee_excl_tax, '$100.00', 'right shipping fee excluding tax';
+    };
+    subtest 'including tax' => sub {
+        is $shipment->shipping_fee_incl_tax, '$105.00', 'right shipping fee including tax';
+    };
+};
+
 done_testing();

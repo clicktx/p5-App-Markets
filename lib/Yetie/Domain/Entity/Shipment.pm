@@ -23,6 +23,10 @@ has shipping_fee => (
 
 sub count_items { return shift->items->size }
 
+sub shipping_fee_excl_tax { return shift->price_excl_tax( attr => 'shipping_fee' ) }
+
+sub shipping_fee_incl_tax { return shift->price_incl_tax( attr => 'shipping_fee' ) }
+
 sub subtotal_excl_tax {
     my $self = shift;
 
@@ -88,6 +92,14 @@ the following new ones.
 =head2 C<count_items>
 
     my $count = $shipment->count_items;
+
+=head2 C<shipping_fee_excl_tax>
+
+    my $fee = $shipment->shipping_fee_excl_tax;
+
+=head2 C<shipping_fee_incl_tax>
+
+    my $fee = $shipment->shipping_fee_incl_tax;
 
 =head2 C<subtotal_excl_tax>
 
