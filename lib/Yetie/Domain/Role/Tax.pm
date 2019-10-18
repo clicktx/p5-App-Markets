@@ -12,18 +12,22 @@ sub price_excl_tax {
     my ( $self, %args ) = @_;
     my $attr = $args{attr} || 'price';
 
-    return $self->$attr->is_tax_included
-      ? $self->$attr->clone( is_tax_included => 0 ) - $self->tax_amount( attr => $attr )
-      : $self->$attr;
+    return $self->$attr if !$self->$attr->is_tax_included;
+
+    my $price = $self->$attr->clone( is_tax_included => 0 );
+    my $tax_amount = $self->tax_amount( attr => $attr )->clone( is_tax_included => 0 );
+    return $price - $tax_amount;
 }
 
 sub price_incl_tax {
     my ( $self, %args ) = @_;
     my $attr = $args{attr} || 'price';
 
-    return $self->$attr->is_tax_included
-      ? $self->$attr
-      : $self->$attr->clone( is_tax_included => 1 ) + $self->tax_amount( attr => $attr )->clone( is_tax_included => 1 );
+    return $self->$attr if $self->$attr->is_tax_included;
+
+    my $price = $self->$attr->clone( is_tax_included => 1 );
+    my $tax_amount = $self->tax_amount( attr => $attr )->clone( is_tax_included => 1 );
+    return return $price + $tax_amount;
 }
 
 sub tax_amount {
