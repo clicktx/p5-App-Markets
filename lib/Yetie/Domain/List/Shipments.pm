@@ -7,6 +7,10 @@ sub clear_items {
     return shift->each( sub { $_->items->clear } );
 }
 
+sub count_total_items {
+    return shift->map( sub { $_->items->each } )->size;
+}
+
 sub create_shipment {
     my $self = shift;
 
@@ -20,14 +24,6 @@ sub has_item { return shift->count_total_items ? 1 : 0 }
 sub has_shipment { return shift->size ? 1 : 0 }
 
 sub is_multiple { return shift->size > 1 ? 1 : 0 }
-
-sub count_total_items {
-    return shift->map( sub { $_->items->each } )->size;
-}
-
-sub total_quantity {
-    return shift->reduce( sub { $a + $b->items->total_quantity }, 0 );
-}
 
 sub revert {
     my $self = shift;
@@ -52,6 +48,24 @@ sub subtotal_incl_tax {
 
     my $price = $self->_init_price_object( is_tax_included => 1 );
     return $self->reduce( sub { $a + $b->subtotal_incl_tax }, $price );
+}
+
+sub total_shipping_fee_excl_tax {
+    my $self = shift;
+
+    my $price = $self->_init_price_object( is_tax_included => 0 );
+    return $self->reduce( sub { $a + $b->shipping_fee_excl_tax }, $price );
+}
+
+sub total_shipping_fee_incl_tax {
+    my $self = shift;
+
+    my $price = $self->_init_price_object( is_tax_included => 1 );
+    return $self->reduce( sub { $a + $b->shipping_fee_incl_tax }, $price );
+}
+
+sub total_quantity {
+    return shift->reduce( sub { $a + $b->items->total_quantity }, 0 );
 }
 
 sub _init_price_object {
@@ -96,6 +110,10 @@ the following new ones.
 
     my $shipments->clear_items;
 
+=head2 C<count_total_items>
+
+    my $count = $shipments->count_total_items;
+
 =head2 C<create_shipment>
 
     my $shipment = $shipments->create_shipment;
@@ -122,14 +140,6 @@ Return boolean value.
 
 Return boolean value.
 
-=head2 C<count_total_items>
-
-    my $count = $shipments->count_total_items;
-
-=head2 C<total_quantity>
-
-    my $qty = $shipments->total_quantity;
-
 =head2 C<revert>
 
     $shipments->revert;
@@ -143,6 +153,18 @@ Delete except the first element. Also delete all items of the first element.
 =head2 C<subtotal_incl_tax>
 
     my $subtotal_incl_tax = $items->subtotal_incl_tax;
+
+=head2 C<total_shipping_fee_excl_tax>
+
+    my $fee = $shipments->total_shipping_fee_excl_tax;
+
+=head2 C<total_shipping_fee_incl_tax>
+
+    my $fee = $shipments->total_shipping_fee_incl_tax;
+
+=head2 C<total_quantity>
+
+    my $qty = $shipments->total_quantity;
 
 =head1 AUTHOR
 

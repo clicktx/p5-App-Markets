@@ -61,6 +61,31 @@ subtest 'total_quantity' => sub {
     is $v->total_quantity, 3, 'right total quantity';
 };
 
+subtest 'total_shipping_fee' => sub {
+    my $v = construct( list => [] );
+    is $v->total_shipping_fee_excl_tax, '$0.00', 'right total shipping fee excluding tax(no shipments)';
+    is $v->total_shipping_fee_incl_tax, '$0.00', 'right total shipping fee including tax(no shipments)';
+
+    $v = construct(
+        list => [
+            {
+                shipping_fee => 10,
+                tax_rule     => {
+                    tax_rate => 5,
+                },
+            },
+            {
+                shipping_fee => 20,
+                tax_rule     => {
+                    tax_rate => 5,
+                },
+            },
+        ]
+    );
+    is $v->total_shipping_fee_excl_tax, '$30.00', 'right total shipping fee excluding tax';
+    is $v->total_shipping_fee_incl_tax, '$31.50', 'right total shipping fee including tax';
+};
+
 subtest 'revert' => sub {
     my $v = construct();
     is $v->revert, undef, 'right not has shipment';
