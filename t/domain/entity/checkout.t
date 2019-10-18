@@ -103,11 +103,13 @@ subtest 'get_order_data' => sub {
                 items            => ignore(),
                 shipping_address => { id => ignore() },
                 shipping_fee     => ignore(),
+                tax_rule         => ignore(),
             },
             {
                 items            => ignore(),
                 shipping_address => { id => ignore() },
                 shipping_fee     => ignore(),
+                tax_rule         => ignore(),
             }
         ],
       },
