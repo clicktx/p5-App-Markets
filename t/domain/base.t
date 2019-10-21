@@ -34,6 +34,15 @@ subtest '_dump_by_public_attributes' => sub {
     is $obj->_dump_by_public_attributes, q{({bar=2,foo=1,},t::domain::base)}, 'right dump strings';
 };
 
+subtest 'args_to_hashref' => sub {
+    my $e = $pkg->new();
+
+    my $args = $e->args_to_hashref( foo => 'bar' );
+    is_deeply $args, { foo => 'bar' }, 'right arguments array';
+    $args = $e->args_to_hashref( { foo => 'bar' } );
+    is_deeply $args, { foo => 'bar' }, 'right arguments array reference';
+};
+
 subtest 'factory' => sub {
     my $e = $pkg->new();
     my $f = $pkg->factory('entity-foo');

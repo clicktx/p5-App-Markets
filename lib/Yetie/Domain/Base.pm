@@ -36,6 +36,11 @@ sub BUILD {
     $self->_hash_sum;
 }
 
+sub args_to_hashref {
+    my $self = shift;
+    return @_ > 1 ? +{@_} : shift || {};
+}
+
 sub factory { return Yetie::Factory->new( $_[1] ) }
 
 sub get_all_attribute_names {
