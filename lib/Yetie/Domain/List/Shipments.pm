@@ -13,8 +13,9 @@ sub count_total_items {
 
 sub create_shipment {
     my $self = shift;
+    my $args = $self->args_to_hashref(@_);
 
-    my $shipment = $self->factory('entity-shipment')->construct();
+    my $shipment = $self->factory('entity-shipment')->construct($args);
     $self->append($shipment);
     return $shipment;
 }
@@ -116,7 +117,9 @@ the following new ones.
 
 =head2 C<create_shipment>
 
-    my $shipment = $shipments->create_shipment;
+    my $shipment = $shipments->create_shipment( %attributes );
+
+    my $shipment = $shipments->create_shipment( \%attributes );
 
 Create L<Yetie::Domain::Entity::Shipment> object and add it to the collection.
 

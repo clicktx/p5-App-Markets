@@ -16,11 +16,12 @@ subtest 'basic' => sub {
 };
 
 subtest 'create_shipment' => sub {
-    my $v        = construct();
-    my $shipment = $v->create_shipment;
+    my $v = construct();
+    my $shipment = $v->create_shipment( shipping_address => { country_code => 'jp' } );
     is $v->size, 1, 'right create shipment';
     isa_ok $shipment, 'Yetie::Domain::Entity::Shipment';
     isa_ok $v->first, 'Yetie::Domain::Entity::Shipment';
+    is $v->first->shipping_address->country_code, 'jp', 'right construct with arguments';
 
     my $shipment2 = $v->create_shipment;
     is $v->size, 2, 'right recreate shipment';
