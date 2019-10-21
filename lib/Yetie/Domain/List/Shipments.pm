@@ -70,17 +70,17 @@ sub total_quantity {
 }
 
 sub _init_price_object {
-    my $self    = shift;
-    my %args    = @_;
-    my $factory = $self->factory('value-price');
+    my $self = shift;
+    my $args = $self->args_to_hashref(@_);
 
+    my $factory        = $self->factory('value-price');
     my $first_shipment = $self->first;
-    return $factory->construct( is_tax_included => $args{is_tax_included} ) if !$first_shipment;
+    return $factory->construct( is_tax_included => $args->{is_tax_included} ) if !$first_shipment;
 
     my $items = $first_shipment->items;
-    return $factory->construct( is_tax_included => $args{is_tax_included} ) if !$items->size;
+    return $factory->construct( is_tax_included => $args->{is_tax_included} ) if !$items->size;
 
-    return $items->first->price->clone( value => 0, is_tax_included => $args{is_tax_included} );
+    return $items->first->price->clone( value => 0, is_tax_included => $args->{is_tax_included} );
 }
 
 no Moose;

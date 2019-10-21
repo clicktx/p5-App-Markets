@@ -48,7 +48,8 @@ has quantity => (
 );
 
 override set_attributes => sub {
-    my ( $self, $args ) = @_;
+    my $self = shift;
+    my $args = $self->args_to_hashref(@_);
 
     my $price     = delete $args->{price};
     my $new_price = $self->price->set_value($price);

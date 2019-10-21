@@ -76,10 +76,11 @@ sub rehash {
 }
 
 sub set_attributes {
-    my ( $self, $params ) = @_;
+    my $self = shift;
+    my $args = $self->args_to_hashref(@_);
 
-    foreach my $key ( keys %{$params} ) {
-        my $value = $params->{$key};
+    foreach my $key ( keys %{$args} ) {
+        my $value = $args->{$key};
         $self->$key($value);
     }
     return $self;
@@ -166,6 +167,7 @@ Recursive call for all attributes.
 
 =head2 C<set_attributes>
 
+    $obj->set_attributes( %parameters );
     $obj->set_attributes( \%parameters );
 
 =head1 AUTHOR

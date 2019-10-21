@@ -49,12 +49,12 @@ sub subtotal_incl_tax {
 
 sub _init_price {
     my $self = shift;
-    my %args = @_;
+    my $args = $self->args_to_hashref(@_);
 
     my $first_item = $self->items->first;
     return $first_item
-      ? $first_item->price->clone( value => 0, is_tax_included => $args{is_tax_included} )
-      : $self->factory('value-price')->construct( is_tax_included => $args{is_tax_included} );
+      ? $first_item->price->clone( value => 0, is_tax_included => $args->{is_tax_included} )
+      : $self->factory('value-price')->construct( is_tax_included => $args->{is_tax_included} );
 }
 
 no Moose;
