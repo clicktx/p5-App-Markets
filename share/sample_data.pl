@@ -63,6 +63,8 @@
     'CommonTaxRule' => [
         [qw/tax_rule_id start_at/],
         [ 2, '1990-04-01 00:00:00' ],
+        [ 3, '1997-04-01 00:00:00' ],
+        [ 6, '2100-04-01 00:00:00' ],
     ],
 
     # Category tax rules
