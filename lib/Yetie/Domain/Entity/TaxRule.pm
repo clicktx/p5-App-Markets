@@ -26,11 +26,10 @@ has round_mode => (
 sub caluculate_tax {
     my ( $self, $price ) = @_;
 
-    my $tax_base = $self->factory('value-tax')->construct(
-        round_mode => $self->round_mode,
-        %{ $price->to_data },
-    );
+    my $attrs = $price->to_data;
+    $attrs->{round_mode} = $self->round_mode;
 
+    my $tax_base = $self->factory('value-tax')->construct($attrs);
     my $rate = $self->tax_rate ? $self->tax_rate / 100 : 0;
     my $tax =
         $price->is_tax_included
