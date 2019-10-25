@@ -51,12 +51,12 @@
 
     # Tax rules
     'TaxRule' => [
-        [ qw/id title tax_rate round_mode/],
-        [ 2, 'Tax 3.141%', 3.141, 'even' ],
-        [ 3, 'Tax 5%', 5, 'even' ],
-        [ 4, 'Tax 8%', 8, 'even' ],
-        [ 5, 'Reduced Tax 8%', 8, 'even' ],
-        [ 6, 'Tax 10%', 10, 'even' ],
+        [ qw/id title tax_rate/],
+        [ 2, 'Tax 3.141%', 3.141 ],
+        [ 3, 'Tax 5%', 5 ],
+        [ 4, 'Tax 8%', 8 ],
+        [ 5, 'Reduced Tax 8%', 8 ],
+        [ 6, 'Tax 10%', 10 ],
     ],
 
     # Default tax rules
