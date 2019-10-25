@@ -65,31 +65,8 @@ sub initialize_app {
     # Preferences
     $self->service('preference')->load;
 
-    # Set default language
-    $self->language( $self->pref('locale_language_code') );
-
-    # Currency
-    $self->plugin(
-        'Yetie::App::Core::Currency' => {
-            default_format     => $self->pref('locale_currency_code'),
-            default_round_mode => $self->pref('default_round_mode'),
-        }
-    );
-
-    # Server Session
-    $self->plugin(
-        'Yetie::App::Core::Session' => {
-            expires_delta        => $self->pref('server_session_expires_delta'),
-            cookie_expires_delta => $self->pref('server_session_cookie_expires_delta'),
-            httponly             => 1,
-
-            # secure => 1 if pref->https_only
-        }
-    );
-
-    # TimeZone
-    # my $time_zone = 'Asia/Tokyo';                 # from preference
-    # $self->date_time->time_zone($time_zone);
+    # Load plugins after loading preferences
+    $self->_load_plugins_after_load_pref;
 
     # Add before/after action hook
     # NOTE: Mojoliciou::Controllerの挙動を変更
@@ -168,6 +145,36 @@ sub _load_plugins {
     $app->plugin('Scrypt');
 
     return $app;
+}
+
+sub _load_plugins_after_load_pref {
+    my $app = shift;
+
+    # Default language
+    $app->language( $app->pref('locale_language_code') );
+
+    # Currency
+    $app->plugin(
+        'Yetie::App::Core::Currency' => {
+            default_format     => $app->pref('locale_currency_code'),
+            default_round_mode => $app->pref('default_round_mode'),
+        }
+    );
+
+    # Server Session
+    $app->plugin(
+        'Yetie::App::Core::Session' => {
+            expires_delta        => $app->pref('server_session_expires_delta'),
+            cookie_expires_delta => $app->pref('server_session_cookie_expires_delta'),
+            httponly             => 1,
+
+            # secure => 1 if pref->https_only
+        }
+    );
+
+    # TimeZone
+    # my $time_zone = 'Asia/Tokyo';                 # from preference
+    # $app->date_time->time_zone($time_zone);
 }
 
 1;
