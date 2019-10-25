@@ -10,7 +10,7 @@ subtest 'basic' => sub {
     lives_ok { $pkg->new( value => 1 ) } 'right lives';
     lives_ok { $pkg->new( value => 0.1 ) } 'right lives';
 
-    my $price = $pkg->new(100);
+    my $price = $pkg->new( value => 100, round_mode => 'even' );
     is $price->amount / 7, '$14.29', 'right defaylt round mode';
 
     $price = $pkg->new( value => 100, round_mode => 'trunc' );
@@ -63,8 +63,8 @@ subtest 'add_in_place' => sub {
 };
 
 subtest 'divide' => sub {
-    my $price = $pkg->new(100);
-    my $res   = $price / 1;
+    my $price = $pkg->new( value => 100, round_mode => 'even' );
+    my $res = $price / 1;
     ok $res->value == 100, 'right divide int';
 
     $res = $price / $price;
@@ -75,8 +75,8 @@ subtest 'divide' => sub {
 };
 
 subtest 'divide_in_place' => sub {
-    my $price = $pkg->new(100);
-    my $p2    = $price;
+    my $price = $pkg->new( value => 100, round_mode => 'even' );
+    my $p2 = $price;
     $p2 /= 2;
     ok $p2->value == 50, 'right divide in place';
 
