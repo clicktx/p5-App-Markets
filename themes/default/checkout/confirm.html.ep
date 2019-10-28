@@ -16,7 +16,6 @@
     <li><strong>Order Confirmation</strong></li>
 </ol>
 
-% my $cart = $self->cart;
 <div class="">
     <h3>Shipping Address</h3>
     <%= content shipping_address => begin =%>
@@ -61,6 +60,7 @@
     <% end =%>
 </div>
 
+% my $cart = $self->cart;
 <hr>
 <div class="">
     Subtotal excluding-tax: <%= $cart->subtotal_excl_tax %> / including-tax: <%= $cart->subtotal_incl_tax %>
