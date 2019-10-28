@@ -45,6 +45,9 @@ sub create {
     my $checkout = $c->service('checkout')->get;
     isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
     is $checkout->shipments->size, 1, 'right new shipment in shipments';
+    my $shipment = $checkout->shipments->first;
+    is $shipment->shipping_fee->currency_code, 'USD', 'right currency code';
+    ok $shipment->tax_rule->tax_rate == 5, 'right tax rule';
     ok $c->server_session->data('checkout'), 'right create';
     ok $c->stash('checkout'), 'right stash';
 

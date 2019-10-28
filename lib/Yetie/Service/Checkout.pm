@@ -59,7 +59,12 @@ sub _create {
 
     # Add new shipment
     my $checkout = $self->factory('entity-checkout')->construct();
-    $checkout->shipments->create_shipment;
+    my $price    = $self->service('price')->create_object(0);
+    my $tax_rule = $self->service('tax')->get_rule;
+    $checkout->shipments->create_shipment(
+        shipping_fee => $price->to_data,
+        tax_rule     => $tax_rule->to_data,
+    );
     $self->_update($checkout);
 
     $self->controller->stash( checkout => $checkout );
