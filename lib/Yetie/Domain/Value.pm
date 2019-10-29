@@ -39,11 +39,6 @@ sub is_modified {
     return $self->_hash_sum ne $self->hash_code ? 1 : 0;
 }
 
-sub set_value {
-    my ( $self, $arg ) = @_;
-    return $self->clone( value => $arg );
-}
-
 sub to_data { return shift->value }
 
 no Moose;
@@ -80,9 +75,6 @@ Read only
 
     my $value = $obj->value;
 
-Change of value?
-SEE L</set_value>
-
 =head1 METHODS
 
 L<Yetie::Domain::Value> inherits all methods from L<Yetie::Domain::Base> and implements
@@ -101,20 +93,6 @@ Return boolean value.
 =head2 C<is_modified>
 
     my $bool = $obj->is_modified;
-
-=head2 C<set_value>
-
-    my $obj = Yetie::Domain::Value->new( value => 'foo' );
-    my $new_obj = $obj->set_value('bar');
-
-    # foo
-    say $obj->value;
-    # bar
-    say $new_obj->value;
-
-Set value and clone object.
-
-Return L<Yetie::Domain::Value> object.
 
 =head2 C<to_data>
 

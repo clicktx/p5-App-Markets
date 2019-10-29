@@ -92,16 +92,6 @@ subtest 'to_data' => sub {
     is $v->to_data, 'foo', 'right to_data';
 };
 
-subtest 'set_value' => sub {
-    my $v = $pkg->new( value => 'foo' );
-    my $new = $v->set_value('foo');
-    isnt $v, $new, 'right different object';
-    ok $v->equals($new), 'right equals';
-
-    $new = $v->set_value('bar');
-    ok !$v->equals($new), 'right not equals';
-};
-
 subtest 'immutable' => sub {
     my $v = $pkg->new( value => 'foo' );
     dies_ok { $v->value('bar') } 'right immutable';
