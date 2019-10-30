@@ -1,5 +1,6 @@
 use Mojo::Base -strict;
 use Test::More;
+use Test::Exception;
 use Yetie::Domain::Collection;
 use Yetie::Domain::Entity::LineItem;
 use Yetie::Factory;
@@ -23,7 +24,8 @@ subtest 'basic' => sub {
     isa_ok $shipment->items,            'Yetie::Domain::List::LineItems';
     isa_ok $shipment->shipping_address, 'Yetie::Domain::Entity::Address';
     isa_ok $shipment->shipping_fee,     'Yetie::Domain::Value::Price';
-    isa_ok $shipment->tax_rule,         'Yetie::Domain::Entity::TaxRule';
+    lives_ok { $shipment->shipping_fee( $shipment->shipping_fee ) } 'right read-write';
+    isa_ok $shipment->tax_rule, 'Yetie::Domain::Entity::TaxRule';
 
     is $shipment->id, 1, 'right id';
 };

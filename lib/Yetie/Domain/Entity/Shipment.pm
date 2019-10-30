@@ -17,7 +17,8 @@ has shipping_address => (
     writer  => 'set_shipping_address',
 );
 has shipping_fee => (
-    is      => 'ro',
+    is      => 'rw',
+    isa     => 'Yetie::Domain::Value::Price',
     default => sub { shift->factory('value-price')->construct() },
 );
 
