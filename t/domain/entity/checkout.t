@@ -78,6 +78,13 @@ sub _create_entity {
     %args = %example_data unless @_;
     Yetie::Factory->new('entity-checkout')->construct(%args);
 }
+subtest 'attrs' => sub {
+    my $checkout = _create_entity;
+
+    ok !$checkout->is_confirmed, 'right not confirmed';
+    $checkout->is_confirmed(1);
+    ok $checkout->is_confirmed, 'right confirmed';
+};
 
 subtest 'add_shipment_item' => sub {
     my $checkout = _create_entity;
