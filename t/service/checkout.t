@@ -39,6 +39,45 @@ use Mojo::Base 'Yetie::Controller::Catalog';
 use Test::More;
 use Test::Deep;
 
+sub add_all_cart_items {
+    my $c        = shift;
+    my $checkout = $c->service('checkout')->get;
+
+    # Cart in
+    $c->service('cart')->add_item( { product_id => 1, quantity => 1 } );
+    $c->service('cart')->add_item( { product_id => 2, quantity => 2 } );
+
+    # Add shipping address
+    my $address = $checkout->factory('entity-address')->construct( country_code => 'jp' );
+
+    # $checkout->set_shipping_address($shipment);
+    $c->service('checkout')->set_shipping_address($address);
+
+    my $items = $c->cart->items;
+    $c->service('checkout')->add_all_cart_items();
+    is_deeply $items->to_data, $checkout->shipments->first->items->to_data, 'right items';
+
+    return $c->render( text => 1 );
+}
+
+sub after_set_billing_address {
+    my $c = shift;
+
+    my $checkout = $c->service('checkout')->get;
+    is $checkout->billing_address->country_code, 'baz', 'right reload billing address';
+
+    return $c->render( text => 1 );
+}
+
+sub after_set_shipping_address {
+    my $c = shift;
+
+    my $checkout = $c->service('checkout')->get;
+    is $checkout->shipments->first->shipping_address->country_code, 'bar', 'right reload shipping address';
+
+    return $c->render( text => 1 );
+}
+
 sub create {
     my $c = shift;
 
@@ -50,6 +89,18 @@ sub create {
     ok $shipment->tax_rule->tax_rate == 5, 'right tax rule';
     ok $c->server_session->data('checkout'), 'right create';
     ok $c->stash('checkout'), 'right stash';
+
+    return $c->render( text => 1 );
+}
+
+sub delete {
+    my $c = shift;
+
+    my $checkout = $c->service('checkout')->get;
+    ok $c->server_session->data('checkout'), 'right session';
+    $c->service('checkout')->delete;
+    is_deeply $c->server_session->data('checkout'), undef, 'right delete';
+    ok !$c->stash('checkout'), 'right stash';
 
     return $c->render( text => 1 );
 }
@@ -77,35 +128,13 @@ sub save {
     return $c->render( text => 1 );
 }
 
-sub delete {
+sub set_billing_address {
     my $c = shift;
 
     my $checkout = $c->service('checkout')->get;
-    ok $c->server_session->data('checkout'), 'right session';
-    $c->service('checkout')->delete;
-    is_deeply $c->server_session->data('checkout'), undef, 'right delete';
-    ok !$c->stash('checkout'), 'right stash';
-
-    return $c->render( text => 1 );
-}
-
-sub add_all_cart_items {
-    my $c        = shift;
-    my $checkout = $c->service('checkout')->get;
-
-    # Cart in
-    $c->service('cart')->add_item( { product_id => 1, quantity => 1 } );
-    $c->service('cart')->add_item( { product_id => 2, quantity => 2 } );
-
-    # Add shipping address
-    my $address = $checkout->factory('entity-address')->construct( country_code => 'jp' );
-
-    # $checkout->set_shipping_address($shipment);
-    $c->service('checkout')->set_shipping_address($address);
-
-    my $items = $c->cart->items;
-    $c->service('checkout')->add_all_cart_items();
-    is_deeply $items->to_data, $checkout->shipments->first->items->to_data, 'right items';
+    my $address = $c->factory('entity-address')->construct( country_code => 'baz' );
+    $c->service('checkout')->set_billing_address($address);
+    is $checkout->billing_address->country_code, 'baz', 'right set blling address';
 
     return $c->render( text => 1 );
 }
@@ -121,35 +150,6 @@ sub set_shipping_address {
     $address = $c->factory('entity-address')->construct( country_code => 'bar' );
     $c->service('checkout')->set_shipping_address( 0 => $address );
     is $checkout->shipments->first->shipping_address->country_code, 'bar', 'right update shipping address';
-
-    return $c->render( text => 1 );
-}
-
-sub after_set_shipping_address {
-    my $c = shift;
-
-    my $checkout = $c->service('checkout')->get;
-    is $checkout->shipments->first->shipping_address->country_code, 'bar', 'right reload shipping address';
-
-    return $c->render( text => 1 );
-}
-
-sub set_billing_address {
-    my $c = shift;
-
-    my $checkout = $c->service('checkout')->get;
-    my $address = $c->factory('entity-address')->construct( country_code => 'baz' );
-    $c->service('checkout')->set_billing_address($address);
-    is $checkout->billing_address->country_code, 'baz', 'right set blling address';
-
-    return $c->render( text => 1 );
-}
-
-sub after_set_billing_address {
-    my $c = shift;
-
-    my $checkout = $c->service('checkout')->get;
-    is $checkout->billing_address->country_code, 'baz', 'right reload billing address';
 
     return $c->render( text => 1 );
 }
