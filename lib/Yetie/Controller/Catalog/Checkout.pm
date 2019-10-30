@@ -5,7 +5,7 @@ sub index {
     my $c = shift;
 
     # Redirect logged-in customer
-    return $c->confirm_handler if $c->is_logged_in;
+    return $c->_confirm_handler if $c->is_logged_in;
 
     # Guest or a customer not logged in
     $c->continue_url('rn.checkout');
@@ -44,14 +44,14 @@ sub shipping_address {
         say 'multiple shipment is false';
     }
 
-    return $c->confirm_handler;
+    return $c->_confirm_handler;
 }
 
 sub shipping_address_select {
     my $c = shift;
 
     $c->_select_address('shipping_address');
-    return $c->confirm_handler;
+    return $c->_confirm_handler;
 }
 
 sub delivery_option {
@@ -83,27 +83,28 @@ sub billing_address {
     my $address = $c->factory('entity-address')->construct( $form->params->to_hash );
     $c->service('checkout')->set_billing_address($address);
 
-    return $c->confirm_handler;
+    return $c->_confirm_handler;
 }
 
 sub billing_address_select {
     my $c = shift;
 
     $c->_select_address('billing_address');
-    return $c->confirm_handler;
+    return $c->_confirm_handler;
 }
 
 sub confirm {
     my $c = shift;
 
-    $c->confirm_handler;
+    # Confirm checkout
+    $c->_confirm_handler();
 
     my $form = $c->form('checkout-confirm');
     return $c->render() if !$form->has_data;
     return $c->render() if !$form->do_validate;
 
     # checkout complete
-    return $c->complete_handler;
+    return $c->_complete_handler;
 }
 
 sub complete {
@@ -118,31 +119,31 @@ sub complete {
 # - Select a payment method
 # - Choose a billing address
 # - Review your order
-sub confirm_handler {
-    my $c        = shift;
-    my $checkout = $c->service('checkout')->get;
+sub _confirm_handler {
+    my $c = shift;
 
-    # No cart items
-    my $cart = $c->cart;
-    return $c->redirect_to('rn.cart') if !$cart->has_item;
+    # Not has items in cart
+    return $c->redirect_to('rn.cart') if !$c->cart->has_item;
+
+    my $checkout_service = $c->service('checkout');
+    my $checkout         = $checkout_service->get;
 
     # Shipping address
     return $c->redirect_to('rn.checkout.shipping_address') if !$checkout->has_shipping_address;
 
     # FIXME: ship items to one place
-    # $cart->move_items_to_first_shipment if !$checkout->has_shipping_item and !$checkout->shipments->is_multiple;
-    $c->service('checkout')->add_all_cart_items() if !$checkout->shipments->is_multiple;
+    $checkout_service->add_all_cart_items() if !$checkout->shipments->is_multiple;
 
     # Billing address
     return $c->redirect_to('rn.checkout.billing_address') if !$checkout->has_billing_address;
 
-    # Redirect confirm
-    return $c->redirect_to('rn.checkout.confirm') if $c->stash('action') ne 'confirm';
+    # Redirect if not from confirmation page
+    if ( $c->stash('action') ne 'confirm' ) { return $c->redirect_to('rn.checkout.confirm') }
 
     return;
 }
 
-sub complete_handler {
+sub _complete_handler {
     my $c = shift;
 
     my $checkout = $c->service('checkout')->get;
