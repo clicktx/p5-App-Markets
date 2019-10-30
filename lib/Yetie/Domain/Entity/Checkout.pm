@@ -12,11 +12,6 @@ has billing_address => (
     default => sub { shift->factory('entity-address')->construct() },
     writer  => 'set_billing_address',
 );
-has is_confirmed => (
-    is      => 'rw',
-    isa     => 'Bool',
-    default => 0,
-);
 has shipments => (
     is      => 'ro',
     isa     => 'Yetie::Domain::List::Shipments',
@@ -49,7 +44,7 @@ sub get_order_data {
     }
 
     # Remove unnecessary data
-    for (qw/is_confirmed/) { delete $data->{$_} }
+    # for (qw/is_confirmed/) { delete $data->{$_} }
 
     # Billing Address
     $data->{billing_address} = { id => $data->{billing_address}->{id} };
@@ -114,10 +109,6 @@ the following new ones.
 =head2 C<billing_address>
 
 Return L<Yetie::Domain::Entity::Address> object.
-
-=head2 C<is_confirmed>
-
-Return boolean value.
 
 =head2 C<shipments>
 
