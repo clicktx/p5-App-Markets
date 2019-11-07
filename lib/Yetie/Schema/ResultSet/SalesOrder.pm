@@ -70,7 +70,7 @@ the following new ones.
 
 =head2 C<find_by_id>
 
-    my $shipment = $rs->find_by_id($shipment_id);
+    my $sales_order = $rs->find_by_id($sales_order_id);
 
 =head2 C<search_sales_orders>
 
