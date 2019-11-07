@@ -11,7 +11,7 @@ sub count_total_items {
     return shift->map( sub { $_->items->each } )->size;
 }
 
-sub create_shipment {
+sub create_sales_order {
     my $self = shift;
     my $args = $self->args_to_hashref(@_);
 
@@ -115,11 +115,11 @@ the following new ones.
 
     my $count = $sales_orders->count_total_items;
 
-=head2 C<create_shipment>
+=head2 C<create_sales_order>
 
-    my $shipment = $sales_orders->create_shipment( %attributes );
+    my $sales_order = $sales_orders->create_sales_order( %attributes );
 
-    my $shipment = $sales_orders->create_shipment( \%attributes );
+    my $sales_order = $sales_orders->create_sales_order( \%attributes );
 
 Create L<Yetie::Domain::Entity::SalesOder> object and add it to the collection.
 

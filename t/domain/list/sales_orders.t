@@ -15,17 +15,17 @@ subtest 'basic' => sub {
     isa_ok $v, 'Yetie::Domain::List';
 };
 
-subtest 'create_shipment' => sub {
+subtest 'create_sales_order' => sub {
     my $v = construct();
-    my $shipment = $v->create_shipment( shipping_address => { country_code => 'jp' } );
-    is $v->size, 1, 'right create shipment';
-    isa_ok $shipment, 'Yetie::Domain::Entity::SalesOrder';
+    my $sales_order = $v->create_sales_order( shipping_address => { country_code => 'jp' } );
+    is $v->size, 1, 'right create sales_order';
+    isa_ok $sales_order, 'Yetie::Domain::Entity::SalesOrder';
     isa_ok $v->first, 'Yetie::Domain::Entity::SalesOrder';
     is $v->first->shipping_address->country_code, 'jp', 'right construct with arguments';
 
-    my $shipment2 = $v->create_shipment;
-    is $v->size, 2, 'right recreate shipment';
-    isnt $shipment, $shipment2, 'right compare object';
+    my $sales_order2 = $v->create_sales_order;
+    is $v->size, 2, 'right recreate sales_order';
+    isnt $sales_order, $sales_order2, 'right compare object';
 };
 
 subtest 'has_shipment' => sub {
