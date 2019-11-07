@@ -99,6 +99,9 @@ sub confirm {
     # Confirm checkout
     $c->_confirm_handler();
 
+    # Shipping fee
+    $c->service('checkout')->calculate_shipping_fees();
+
     my $form = $c->form('checkout-confirm');
     return $c->render() if !$form->has_data;
     return $c->render() if !$form->do_validate;

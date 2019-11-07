@@ -32,12 +32,19 @@ sub t03_set_address : Tests() {
     $t->get_ok('/test/after_set_billing_address')->status_is(200);
 }
 
+sub t04_calculate_shipping_fees : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+    $t->get_ok('/test/calculate_shipping_fees')->status_is(200);
+}
+
 __PACKAGE__->runtests;
 
 package Yetie::Controller::Catalog::Test;
 use Mojo::Base 'Yetie::Controller::Catalog';
 use Test::More;
 use Test::Deep;
+use Test::Exception;
 
 sub add_all_cart_items {
     my $c        = shift;
@@ -75,6 +82,13 @@ sub after_set_shipping_address {
     my $checkout = $c->service('checkout')->get;
     is $checkout->shipments->first->shipping_address->country_code, 'bar', 'right reload shipping address';
 
+    return $c->render( text => 1 );
+}
+
+sub calculate_shipping_fees {
+    my $c = shift;
+
+    lives_ok { $c->service('checkout')->calculate_shipping_fees };
     return $c->render( text => 1 );
 }
 

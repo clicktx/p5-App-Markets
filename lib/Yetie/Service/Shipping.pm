@@ -1,6 +1,14 @@
 package Yetie::Service::Shipping;
 use Mojo::Base 'Yetie::Service';
 
+sub get_shipping_fee {
+    my ( $self, $shipment ) = @_;
+
+    # 送料テーブルから取得
+    # $self->resultset('ShippingRate')
+    return 30;
+}
+
 1;
 __END__
 
@@ -21,6 +29,10 @@ the following new ones.
 
 L<Yetie::Service::Shipping> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
+
+=head2 C<get_shipping_fee>
+
+    my $shipping_fee = $service->get_shipping_fee($shipment);
 
 =head1 AUTHOR
 

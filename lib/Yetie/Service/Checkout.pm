@@ -12,6 +12,22 @@ sub add_all_cart_items {
     return;
 }
 
+sub calculate_shipping_fees {
+    my $self = shift;
+
+    my $checkout = $self->get;
+    $checkout->shipments->each(
+        sub {
+            my $shipment = shift;
+
+            my $shipping_fee = $self->service('shipping')->get_shipping_fee($shipment);
+            my $price = $shipment->shipping_fee->clone( value => $shipping_fee );
+            $shipment->shipping_fee($price);
+        }
+    );
+    return;
+}
+
 sub delete {
     my $self = shift;
 
@@ -128,6 +144,12 @@ the following new ones.
 Add all cart items to the first shipment.
 
     $service->add_all_cart_items;
+
+=head2 C<calculate_shipping_fees>
+
+    $service->calculate_shipping_fees;
+
+Calculate shipping fees.
 
 =head2 C<delete>
 
