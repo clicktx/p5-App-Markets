@@ -22,8 +22,6 @@ sub create_sales_order {
 
 sub has_item { return shift->count_total_items ? 1 : 0 }
 
-sub has_shipment { return shift->size ? 1 : 0 }
-
 sub is_multiple { return shift->size > 1 ? 1 : 0 }
 
 sub revert {
@@ -128,12 +126,6 @@ Return L<Yetie::Domain::Entity::SalesOder> object.
 =head2 C<has_item>
 
     my $bool = $sales_orders->has_item;
-
-Return boolean value.
-
-=head2 C<has_shipment>
-
-    my $bool = $sales_orders->has_shipment;
 
 Return boolean value.
 

@@ -64,7 +64,7 @@ sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
 sub has_shipping_address {
     my $self = shift;
 
-    return 0 if !$self->shipments->has_shipment;
+    return 0 if !$self->shipments->has_elements;
     return $self->shipments->first->shipping_address->is_empty ? 0 : 1;
 }
 

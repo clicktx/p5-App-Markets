@@ -28,16 +28,6 @@ subtest 'create_sales_order' => sub {
     isnt $sales_order, $sales_order2, 'right compare object';
 };
 
-subtest 'has_shipment' => sub {
-    my $v    = construct();
-    my $bool = $v->has_shipment;
-    is $bool, 0, 'right has not shipment';
-
-    $v = construct( list => [ {} ] );
-    $bool = $v->has_shipment;
-    is $bool, 1, 'right has shipment';
-};
-
 subtest 'is_multiple' => sub {
     my $v    = construct();
     my $bool = $v->is_multiple;
