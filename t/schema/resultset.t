@@ -77,16 +77,16 @@ subtest 'to_data' => sub {
 
 subtest 'each' => sub {
     my $rs = $schema->resultset('Sales');
-    my $order = $rs->find( 1, { prefetch => { orders => [ 'shipping_address', 'items' ] } }, );
+    my $order = $rs->find( 1, { prefetch => { sales_orders => [ 'shipping_address', 'items' ] } }, );
 
     subtest 'basic' => sub {
-        my @res = $order->orders->each;
+        my @res = $order->sales_orders->each;
         is @res, 2;
     };
 
     subtest 'default argument' => sub {
         my ( @res, @items );
-        $order->orders->each(
+        $order->sales_orders->each(
             sub {
                 push @res, $_;
                 $_->items->each( sub { push @items, $_ } );
@@ -98,7 +98,7 @@ subtest 'each' => sub {
 
     subtest 'number' => sub {
         my ( @res, @num );
-        $order->orders->each(
+        $order->sales_orders->each(
             sub {
                 my ( $e, $n ) = @_;
                 push @res, $e;

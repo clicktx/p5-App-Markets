@@ -33,11 +33,11 @@ sub _find_tests {
       {
         billing_address => ignore(),
         customer        => ignore(),
-        orders          => ignore(),
+        sales_orders    => ignore(),
       },
       'right related_resultsets';
 
-    $res->orders->each(
+    $res->sales_orders->each(
         sub {
             my ( $shipment, $num ) = @_;
             cmp_deeply $shipment->{related_resultsets},
@@ -49,7 +49,7 @@ sub _find_tests {
         }
     );
 
-    my @items = $res->orders->first->items;
+    my @items = $res->sales_orders->first->items;
     is @items, 2, 'right shipping items';
 
     $res = $rs->find_by_id(999);

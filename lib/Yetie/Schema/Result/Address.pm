@@ -92,7 +92,7 @@ has_many
   { cascade_delete       => 0 };
 
 has_many
-  orders => 'Yetie::Schema::Result::SalesOrder',
+  sales_orders => 'Yetie::Schema::Result::SalesOrder',
   { 'foreign.shipping_address_id' => 'self.id' },
   { cascade_delete       => 0 };
 
