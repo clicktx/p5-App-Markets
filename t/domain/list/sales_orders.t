@@ -3,11 +3,11 @@ use Test::More;
 use Test::Deep;
 use Yetie::Factory;
 
-my $pkg = 'Yetie::Domain::List::Shipments';
+my $pkg = 'Yetie::Domain::List::SalesOrders';
 use_ok $pkg;
 
 sub construct {
-    Yetie::Factory->new('list-shipments')->construct(@_);
+    Yetie::Factory->new('list-sales_orders')->construct(@_);
 }
 
 subtest 'basic' => sub {
@@ -19,8 +19,8 @@ subtest 'create_shipment' => sub {
     my $v = construct();
     my $shipment = $v->create_shipment( shipping_address => { country_code => 'jp' } );
     is $v->size, 1, 'right create shipment';
-    isa_ok $shipment, 'Yetie::Domain::Entity::Shipment';
-    isa_ok $v->first, 'Yetie::Domain::Entity::Shipment';
+    isa_ok $shipment, 'Yetie::Domain::Entity::SalesOrder';
+    isa_ok $v->first, 'Yetie::Domain::Entity::SalesOrder';
     is $v->first->shipping_address->country_code, 'jp', 'right construct with arguments';
 
     my $shipment2 = $v->create_shipment;

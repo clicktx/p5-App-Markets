@@ -14,8 +14,8 @@ has billing_address => (
 );
 has shipments => (
     is      => 'ro',
-    isa     => 'Yetie::Domain::List::Shipments',
-    default => sub { shift->factory('list-shipments')->construct() },
+    isa     => 'Yetie::Domain::List::SalesOrders',
+    default => sub { shift->factory('list-sales_orders')->construct() },
 );
 has transaction => (
     is      => 'ro',
@@ -114,7 +114,7 @@ Return L<Yetie::Domain::Entity::Address> object.
 
     my $shipments = $checkout->shipments;
 
-Return L<Yetie::Domain::List::Shipments> object.
+Return L<Yetie::Domain::List::SalesOrders> object.
 
 =head2 C<transaction>
 
@@ -166,7 +166,7 @@ Return boolean value.
 Delete except the first shipping-information.
 Also delete all shipping-items of the first shipping-information.
 
-See L<Yetie::Domain::List::Shipments/revert>.
+See L<Yetie::Domain::List::SalesOrders/revert>.
 
 =head2 C<set_billing_address>
 
