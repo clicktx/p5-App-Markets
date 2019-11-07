@@ -23,16 +23,17 @@ has transaction => (
     default => sub { shift->factory('entity-transaction')->construct() },
 );
 
-sub add_shipment_item {
-    my $self = shift;
-    my ( $index, $item ) = @_ > 1 ? ( shift, shift ) : ( 0, shift );
-    croak 'First argument was not a Digit'   if $index =~ /\D/sxm;
-    croak 'Second argument was not a Object' if ref $item =~ /::/sxm;
+# NOTE: not use
+# sub add_shipment_item {
+#     my $self = shift;
+#     my ( $index, $item ) = @_ > 1 ? ( shift, shift ) : ( 0, shift );
+#     croak 'First argument was not a Digit'   if $index =~ /\D/sxm;
+#     croak 'Second argument was not a Object' if ref $item =~ /::/sxm;
 
-    my $sales_order = $self->sales_orders->get($index);
-    $sales_order->items->append($item);
-    return $self;
-}
+#     my $sales_order = $self->sales_orders->get($index);
+#     $sales_order->items->append($item);
+#     return $self;
+# }
 
 sub get_order_data {
     my $self = shift;
