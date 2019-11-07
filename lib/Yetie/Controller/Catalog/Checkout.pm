@@ -34,7 +34,7 @@ sub shipping_address {
     # NOTE: 1箇所のみに配送の場合
     # 複数配送の場合は先に配送先を複数登録しておく？別コントローラが良い？
     # shipment objectを生成して配列にpushする必要がある。
-    # my $shipment = $c->factory('entity-shipment')->create( shipping_address => $selected->address->to_data );
+    # my $shipment = $c->factory('entity-sales_order')->create( shipping_address => $selected->address->to_data );
     # $cart->add_shipment($shipment);
     # NOTE: 複数配送を使うかのpreference
     if ( $c->pref('can_multiple_shipments') ) {

@@ -1,4 +1,4 @@
-package Yetie::Domain::Entity::Shipment;
+package Yetie::Domain::Entity::SalesOrder;
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
@@ -66,7 +66,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::Shipment
+Yetie::Domain::Entity::SalesOrder
 
 =head1 SYNOPSIS
 
@@ -74,7 +74,7 @@ Yetie::Domain::Entity::Shipment
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::Shipment> inherits all attributes from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::SalesOrder> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<shipping_address>
@@ -87,28 +87,28 @@ Return L<Yetie::Domain::List::LineItems> object.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::Shipment> inherits all methods from L<Yetie::Domain::Entity> and implements
+L<Yetie::Domain::Entity::SalesOrder> inherits all methods from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
 =head2 C<count_items>
 
-    my $count = $shipment->count_items;
+    my $count = $sales_order->count_items;
 
 =head2 C<shipping_fee_excl_tax>
 
-    my $fee = $shipment->shipping_fee_excl_tax;
+    my $fee = $sales_order->shipping_fee_excl_tax;
 
 =head2 C<shipping_fee_incl_tax>
 
-    my $fee = $shipment->shipping_fee_incl_tax;
+    my $fee = $sales_order->shipping_fee_incl_tax;
 
 =head2 C<subtotal_excl_tax>
 
-    my $subtotal_excl_tax = $shipment->subtotal_excl_tax;
+    my $subtotal_excl_tax = $sales_order->subtotal_excl_tax;
 
 =head2 C<subtotal_incl_tax>
 
-    my $subtotal_incl_tax = $shipment->subtotal_incl_tax;
+    my $subtotal_incl_tax = $sales_order->subtotal_incl_tax;
 
 =head1 AUTHOR
 
