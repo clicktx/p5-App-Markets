@@ -15,9 +15,9 @@ sub create_sales_order {
     my $self = shift;
     my $args = $self->args_to_hashref(@_);
 
-    my $shipment = $self->factory('entity-sales_order')->construct($args);
-    $self->append($shipment);
-    return $shipment;
+    my $sales_order = $self->factory('entity-sales_order')->construct($args);
+    $self->append($sales_order);
+    return $sales_order;
 }
 
 sub has_item { return shift->count_total_items ? 1 : 0 }
@@ -27,11 +27,11 @@ sub is_multiple { return shift->size > 1 ? 1 : 0 }
 sub revert {
     my $self = shift;
 
-    my $shipment_first = $self->first;
-    return if !$shipment_first;
+    my $first_element = $self->first;
+    return if !$first_element;
 
-    $shipment_first->items->clear;
-    my $sales_orders = $self->list->new($shipment_first);
+    $first_element->items->clear;
+    my $sales_orders = $self->list->new($first_element);
     return $self->list($sales_orders);
 }
 
@@ -72,10 +72,10 @@ sub _init_price_object {
     my $args = $self->args_to_hashref(@_);
 
     my $factory        = $self->factory('value-price');
-    my $first_shipment = $self->first;
-    return $factory->construct( is_tax_included => $args->{is_tax_included} ) if !$first_shipment;
+    my $first_element = $self->first;
+    return $factory->construct( is_tax_included => $args->{is_tax_included} ) if !$first_element;
 
-    my $items = $first_shipment->items;
+    my $items = $first_element->items;
     return $factory->construct( is_tax_included => $args->{is_tax_included} ) if !$items->size;
 
     return $items->first->price->clone( value => 0, is_tax_included => $args->{is_tax_included} );
