@@ -39,11 +39,11 @@ belongs_to
   { 'foreign.id' => 'self.billing_address_id' };
 
 has_many
-  orders => 'Yetie::Schema::Result::SalesOrder',
+  sales_orders => 'Yetie::Schema::Result::SalesOrder',
   { 'foreign.sales_id' => 'self.id' },
   { cascade_delete     => 0 };
 
-sub is_multiple_shipping { shift->orders->count > 1 ? 1 : 0 }
+sub is_multiple_shipping { shift->sales_orders->count > 1 ? 1 : 0 }
 
 1;
 __END__

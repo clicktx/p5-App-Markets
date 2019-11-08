@@ -57,12 +57,11 @@ sub add_all_cart_items {
     # Add shipping address
     my $address = $checkout->factory('entity-address')->construct( country_code => 'jp' );
 
-    # $checkout->set_shipping_address($shipment);
     $c->service('checkout')->set_shipping_address($address);
 
     my $items = $c->cart->items;
     $c->service('checkout')->add_all_cart_items();
-    is_deeply $items->to_data, $checkout->shipments->first->items->to_data, 'right items';
+    is_deeply $items->to_data, $checkout->sales_orders->first->items->to_data, 'right items';
 
     return $c->render( text => 1 );
 }
@@ -80,7 +79,7 @@ sub after_set_shipping_address {
     my $c = shift;
 
     my $checkout = $c->service('checkout')->get;
-    is $checkout->shipments->first->shipping_address->country_code, 'bar', 'right reload shipping address';
+    is $checkout->sales_orders->first->shipping_address->country_code, 'bar', 'right reload shipping address';
 
     return $c->render( text => 1 );
 }
@@ -97,10 +96,10 @@ sub create {
 
     my $checkout = $c->service('checkout')->get;
     isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
-    is $checkout->shipments->size, 1, 'right new shipment in shipments';
-    my $shipment = $checkout->shipments->first;
-    is $shipment->shipping_fee->currency_code, 'USD', 'right currency code';
-    ok $shipment->tax_rule->tax_rate == 5, 'right tax rule';
+    is $checkout->sales_orders->size, 1, 'right new element in sales orders';
+    my $sales_order = $checkout->sales_orders->first;
+    is $sales_order->shipping_fee->currency_code, 'USD', 'right currency code';
+    ok $sales_order->tax_rule->tax_rate == 5, 'right tax rule';
     ok $c->server_session->data('checkout'), 'right create';
     ok $c->stash('checkout'), 'right stash';
 
@@ -124,7 +123,7 @@ sub load {
 
     my $checkout = $c->service('checkout')->get;
     isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
-    is $checkout->shipments->size, 1, 'right load shipments';
+    is $checkout->sales_orders->size, 1, 'right load sales orders';
 
     return $c->render( text => 1 );
 }
@@ -159,11 +158,11 @@ sub set_shipping_address {
     my $checkout = $c->service('checkout')->get;
     my $address = $c->factory('entity-address')->construct( country_code => 'foo' );
     $c->service('checkout')->set_shipping_address($address);
-    is $checkout->shipments->first->shipping_address->country_code, 'foo', 'right set shipping address';
+    is $checkout->sales_orders->first->shipping_address->country_code, 'foo', 'right set shipping address';
 
     $address = $c->factory('entity-address')->construct( country_code => 'bar' );
     $c->service('checkout')->set_shipping_address( 0 => $address );
-    is $checkout->shipments->first->shipping_address->country_code, 'bar', 'right update shipping address';
+    is $checkout->sales_orders->first->shipping_address->country_code, 'bar', 'right update shipping address';
 
     return $c->render( text => 1 );
 }

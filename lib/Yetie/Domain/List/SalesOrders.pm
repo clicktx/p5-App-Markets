@@ -1,4 +1,4 @@
-package Yetie::Domain::List::Shipments;
+package Yetie::Domain::List::SalesOrders;
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
@@ -11,30 +11,28 @@ sub count_total_items {
     return shift->map( sub { $_->items->each } )->size;
 }
 
-sub create_shipment {
+sub create_sales_order {
     my $self = shift;
     my $args = $self->args_to_hashref(@_);
 
-    my $shipment = $self->factory('entity-shipment')->construct($args);
-    $self->append($shipment);
-    return $shipment;
+    my $sales_order = $self->factory('entity-sales_order')->construct($args);
+    $self->append($sales_order);
+    return $sales_order;
 }
 
 sub has_item { return shift->count_total_items ? 1 : 0 }
-
-sub has_shipment { return shift->size ? 1 : 0 }
 
 sub is_multiple { return shift->size > 1 ? 1 : 0 }
 
 sub revert {
     my $self = shift;
 
-    my $shipment_first = $self->first;
-    return if !$shipment_first;
+    my $first_element = $self->first;
+    return if !$first_element;
 
-    $shipment_first->items->clear;
-    my $shipments = $self->list->new($shipment_first);
-    return $self->list($shipments);
+    $first_element->items->clear;
+    my $sales_orders = $self->list->new($first_element);
+    return $self->list($sales_orders);
 }
 
 sub subtotal_excl_tax {
@@ -74,10 +72,10 @@ sub _init_price_object {
     my $args = $self->args_to_hashref(@_);
 
     my $factory        = $self->factory('value-price');
-    my $first_shipment = $self->first;
-    return $factory->construct( is_tax_included => $args->{is_tax_included} ) if !$first_shipment;
+    my $first_element = $self->first;
+    return $factory->construct( is_tax_included => $args->{is_tax_included} ) if !$first_element;
 
-    my $items = $first_shipment->items;
+    my $items = $first_element->items;
     return $factory->construct( is_tax_included => $args->{is_tax_included} ) if !$items->size;
 
     return $items->first->price->clone( value => 0, is_tax_included => $args->{is_tax_included} );
@@ -91,7 +89,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::List::Shipments
+Yetie::Domain::List::SalesOrders
 
 =head1 SYNOPSIS
 
@@ -99,53 +97,47 @@ Yetie::Domain::List::Shipments
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::List::Shipments> inherits all attributes from L<Yetie::Domain::List> and implements
+L<Yetie::Domain::List::SalesOrders> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::List::Shipments> inherits all methods from L<Yetie::Domain::List> and implements
+L<Yetie::Domain::List::SalesOrders> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
 
 =head2 C<clear_items>
 
-    my $shipments->clear_items;
+    my $sales_orders->clear_items;
 
 =head2 C<count_total_items>
 
-    my $count = $shipments->count_total_items;
+    my $count = $sales_orders->count_total_items;
 
-=head2 C<create_shipment>
+=head2 C<create_sales_order>
 
-    my $shipment = $shipments->create_shipment( %attributes );
+    my $sales_order = $sales_orders->create_sales_order( %attributes );
 
-    my $shipment = $shipments->create_shipment( \%attributes );
+    my $sales_order = $sales_orders->create_sales_order( \%attributes );
 
-Create L<Yetie::Domain::Entity::Shipment> object and add it to the collection.
+Create L<Yetie::Domain::Entity::SalesOder> object and add it to the collection.
 
-Return L<Yetie::Domain::Entity::Shipment> object.
+Return L<Yetie::Domain::Entity::SalesOder> object.
 
 =head2 C<has_item>
 
-    my $bool = $shipments->has_item;
-
-Return boolean value.
-
-=head2 C<has_shipment>
-
-    my $bool = $shipments->has_shipment;
+    my $bool = $sales_orders->has_item;
 
 Return boolean value.
 
 =head2 C<is_multiple>
 
-    my $bool = $shipments->is_multiple;
+    my $bool = $sales_orders->is_multiple;
 
 Return boolean value.
 
 =head2 C<revert>
 
-    $shipments->revert;
+    $sales_orders->revert;
 
 Delete except the first element. Also delete all items of the first element.
 
@@ -159,15 +151,15 @@ Delete except the first element. Also delete all items of the first element.
 
 =head2 C<total_shipping_fee_excl_tax>
 
-    my $fee = $shipments->total_shipping_fee_excl_tax;
+    my $fee = $sales_orders->total_shipping_fee_excl_tax;
 
 =head2 C<total_shipping_fee_incl_tax>
 
-    my $fee = $shipments->total_shipping_fee_incl_tax;
+    my $fee = $sales_orders->total_shipping_fee_incl_tax;
 
 =head2 C<total_quantity>
 
-    my $qty = $shipments->total_quantity;
+    my $qty = $sales_orders->total_quantity;
 
 =head1 AUTHOR
 

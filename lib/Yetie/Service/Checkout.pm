@@ -7,7 +7,7 @@ sub add_all_cart_items {
     my $cart     = $self->controller->cart;
     my $items    = $cart->items->to_array;
     my $checkout = $self->get;
-    $checkout->shipments->first->items->append( @{$items} );
+    $checkout->sales_orders->first->items->append( @{$items} );
 
     return;
 }
@@ -16,13 +16,13 @@ sub calculate_shipping_fees {
     my $self = shift;
 
     my $checkout = $self->get;
-    $checkout->shipments->each(
+    $checkout->sales_orders->each(
         sub {
-            my $shipment = shift;
+            my $sales_order = shift;
 
-            my $shipping_fee = $self->service('shipping')->get_shipping_fee($shipment);
-            my $price = $shipment->shipping_fee->clone( value => $shipping_fee );
-            $shipment->shipping_fee($price);
+            my $shipping_fee = $self->service('shipping')->get_shipping_fee($sales_order);
+            my $price = $sales_order->shipping_fee->clone( value => $shipping_fee );
+            $sales_order->shipping_fee($price);
         }
     );
     return;
@@ -73,11 +73,10 @@ sub set_shipping_address {
 sub _create {
     my $self = shift;
 
-    # Add new shipment
     my $checkout = $self->factory('entity-checkout')->construct();
     my $price    = $self->service('price')->create_object(0);
     my $tax_rule = $self->service('tax')->get_rule;
-    $checkout->shipments->create_shipment(
+    $checkout->sales_orders->create_sales_order(
         shipping_fee => $price->to_data,
         tax_rule     => $tax_rule->to_data,
     );
@@ -141,7 +140,7 @@ the following new ones.
 
 =head2 C<add_all_cart_items>
 
-Add all cart items to the first shipment.
+Add all cart items to the first sales order.
 
     $service->add_all_cart_items;
 

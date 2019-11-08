@@ -4,7 +4,6 @@ use Mojo::Base 'Yetie::Factory';
 sub cook {
     my $self = shift;
 
-    # Aggregate shipments
     $self->aggregate_collection( list => 'entity-total_amount', $self->param('list') );
 }
 
