@@ -57,7 +57,6 @@ sub add_all_cart_items {
     # Add shipping address
     my $address = $checkout->factory('entity-address')->construct( country_code => 'jp' );
 
-    # $checkout->set_shipping_address($shipment);
     $c->service('checkout')->set_shipping_address($address);
 
     my $items = $c->cart->items;
@@ -97,10 +96,10 @@ sub create {
 
     my $checkout = $c->service('checkout')->get;
     isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
-    is $checkout->sales_orders->size, 1, 'right new shipment in sales orders';
-    my $shipment = $checkout->sales_orders->first;
-    is $shipment->shipping_fee->currency_code, 'USD', 'right currency code';
-    ok $shipment->tax_rule->tax_rate == 5, 'right tax rule';
+    is $checkout->sales_orders->size, 1, 'right new element in sales orders';
+    my $sales_order = $checkout->sales_orders->first;
+    is $sales_order->shipping_fee->currency_code, 'USD', 'right currency code';
+    ok $sales_order->tax_rule->tax_rate == 5, 'right tax rule';
     ok $c->server_session->data('checkout'), 'right create';
     ok $c->stash('checkout'), 'right stash';
 

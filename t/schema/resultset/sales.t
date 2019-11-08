@@ -39,13 +39,13 @@ sub _find_tests {
 
     $res->sales_orders->each(
         sub {
-            my ( $shipment, $num ) = @_;
-            cmp_deeply $shipment->{related_resultsets},
+            my ( $sales_order, $num ) = @_;
+            cmp_deeply $sales_order->{related_resultsets},
               {
                 shipping_address => ignore(),
                 items            => ignore(),
               },
-              'right shipment no.' . $num . ' related_resultsets';
+              'right sales order no.' . $num . ' related_resultsets';
         }
     );
 

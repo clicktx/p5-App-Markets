@@ -126,7 +126,7 @@ subtest 'has_billing_address' => sub {
 
 subtest 'has_shipping_address' => sub {
     my $checkout = Yetie::Factory->new('entity-checkout')->construct();
-    is $checkout->has_shipping_address, 0, 'right has not shipment';
+    is $checkout->has_shipping_address, 0, 'right has not shipping address';
 
     $checkout->sales_orders->create_sales_order;
     is $checkout->has_shipping_address, 0, 'right no address info';
@@ -192,17 +192,17 @@ subtest 'set_shipping_address' => sub {
 
     $checkout->sales_orders->create_sales_order;
     my $obj           = $checkout->factory('entity-address')->construct(%address);
-    my $shipment_addr = $checkout->sales_orders->get(1)->shipping_address->to_data;
+    my $shipping_addr = $checkout->sales_orders->get(1)->shipping_address->to_data;
 
     $checkout->set_shipping_address($obj);
     cmp_deeply $checkout->sales_orders->first->shipping_address->to_data, $valid_data, 'right single update';
-    cmp_deeply $checkout->sales_orders->get(1)->shipping_address->to_data, $shipment_addr, 'right not update';
+    cmp_deeply $checkout->sales_orders->get(1)->shipping_address->to_data, $shipping_addr, 'right not update';
     is $checkout->is_modified, 1, 'right modified';
 
     $checkout      = _create_entity;
-    $shipment_addr = $checkout->sales_orders->get(0)->shipping_address->to_data;
+    $shipping_addr = $checkout->sales_orders->get(0)->shipping_address->to_data;
     $checkout->set_shipping_address( 1 => $obj );
-    cmp_deeply $checkout->sales_orders->get(0)->shipping_address->to_data, $shipment_addr, 'right not update';
+    cmp_deeply $checkout->sales_orders->get(0)->shipping_address->to_data, $shipping_addr, 'right not update';
     cmp_deeply $checkout->sales_orders->get(1)->shipping_address->to_data, $valid_data,    'right specify update';
     is $checkout->is_modified, 1, 'right modified';
 
@@ -217,7 +217,7 @@ subtest 'set_shipping_address' => sub {
     $checkout->sales_orders->create_sales_order;
     $checkout->set_shipping_address($obj);
     cmp_deeply $checkout->sales_orders->get(0)->shipping_address->to_data, $valid_data,
-      'right create shipment and set shipping_address';
+      'right create sales order and set shipping_address';
 
     # not update
     $checkout = _create_entity;
