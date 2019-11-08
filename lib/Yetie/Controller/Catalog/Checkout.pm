@@ -133,7 +133,7 @@ sub _confirm_handler {
     return $c->redirect_to('rn.checkout.shipping_address') if !$checkout->has_shipping_address;
 
     # FIXME: ship items to one place
-    $checkout_service->add_all_cart_items() if !$checkout->shipments->is_multiple;
+    $checkout_service->add_all_cart_items() if !$checkout->sales_orders->is_multiple;
 
     # Billing address
     return $c->redirect_to('rn.checkout.billing_address') if !$checkout->has_billing_address;
@@ -152,12 +152,12 @@ sub _complete_handler {
     # XXX:未完成 Address正規化
     # set時(set_billing_address,set_shipping_address)に正規化を行う？
 
-    # shipments
+    # shipping address
     my $customer_service = $c->service('customer');
-    $checkout->shipments->each(
+    $checkout->sales_orders->each(
         sub {
-            my $shipment            = shift;
-            my $shipping_address_id = $c->service('address')->set_address_id( $shipment->shipping_address );
+            my $sales_order         = shift;
+            my $shipping_address_id = $c->service('address')->set_address_id( $sales_order->shipping_address );
 
             # Add to customer address
             # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
