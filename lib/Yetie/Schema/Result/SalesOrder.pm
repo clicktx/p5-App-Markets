@@ -37,6 +37,11 @@ has_many
   { 'foreign.order_id' => 'self.id' },
   { cascade_delete     => 0 };
 
+has_many
+  shipments => 'Yetie::Schema::Result::Shipment',
+  { 'foreign.order_id' => 'self.id' },
+  { cascade_delete     => 0 };
+
 sub to_data {
     my $self = shift;
     return {

@@ -199,12 +199,33 @@
         [ 12, 7, 5, undef ], # trashed on test
     ],
     'SalesOrderItem' => [
-        [qw/order_id product_id quantity product_title price tax_rule_id currency_code is_tax_included/],
-        [ 1, 3, 3, 'product 3', 300, 1, 'USD', 0 ],
-        [ 1, 1, 1, 'product 1', 101, 2, 'USD', 0 ], # change price
-        [ 2, 2, 2, 'product 2', 200, 5, 'USD', 0 ],
-        [ 3, 4, 4, 'product 4', 333, 5, 'USD', 0 ],
-        [ 12, 1, 4, 'product 1', 101, 5, 'USD', 0 ], # trashed on test
-        [ 12, 2, 4, 'product 2', 200, 5, 'USD', 0 ], # trashed on test
+        [qw/id order_id product_id quantity product_title price tax_rule_id currency_code is_tax_included/],
+        [ 1001, 1, 3, 3, 'product 3', 300, 1, 'USD', 0 ],
+        [ 1002, 1, 1, 1, 'product 1', 101, 2, 'USD', 0 ], # change price
+        [ 1003, 2, 2, 2, 'product 2', 200, 5, 'USD', 0 ],
+        [ 1004, 3, 4, 4, 'product 4', 333, 5, 'USD', 0 ],
+        [ 1005, 12, 1, 4, 'product 1', 101, 5, 'USD', 0 ], # trashed on test
+        [ 1006, 12, 2, 4, 'product 2', 200, 5, 'USD', 0 ], # trashed on test
+    ],
+    'Shipment' => [
+        [qw/id order_id tracking_number completed_at/],
+        [ 33, 1, 'S111222333444', '2017-06-07 17:13:20' ],  # Ship partial, 2/3
+        [ 34, 2, 'S222333444555', '2017-07-08 15:10:35' ],  # Shipped all items
+        [ 35, 3, undef, undef ],
+        [ 36, 4, undef, undef ],
+        [ 37, 5, undef, undef ],
+        [ 38, 6, undef, undef ],
+        [ 39, 7, undef, undef ],
+        [ 40, 8, undef, undef ],
+        [ 41, 9, undef, undef ],
+        [ 42, 10, undef, undef ],
+        [ 43, 11, undef, undef ],
+        [ 44, 12, undef, undef ],
+    ],
+    'ShippedItem' => [
+        [qw/shipment_id order_item_id quantity/],
+        [ 33, 1001, 2 ],    # Ship partial, 2/3
+        [ 33, 1002, 1 ],
+        [ 34, 1003, 2 ],    # Shipped all items
     ],
 )

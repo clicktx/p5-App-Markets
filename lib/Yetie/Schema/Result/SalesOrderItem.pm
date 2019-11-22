@@ -75,6 +75,11 @@ belongs_to
   tax_rule => 'Yetie::Schema::Result::TaxRule',
   { 'foreign.id' => 'self.tax_rule_id' };
 
+has_many
+  shipped_items => 'Yetie::Schema::Result::ShippedItem',
+  { 'foreign.shipment_id' => 'self.id' },
+  { cascade_delete        => 0 };
+
 # Methods
 sub to_data {
     my $self = shift;
