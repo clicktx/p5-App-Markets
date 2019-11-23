@@ -21,7 +21,7 @@ column description => {
 column price => {
     data_type   => 'DECIMAL',
     is_nullable => 0,
-    size        => [ 12, 2 ],
+    size        => [ 12, 4 ],
 };
 
 column created_at => {
