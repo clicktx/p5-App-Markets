@@ -2,15 +2,11 @@ package Yetie::Schema::Result::CustomerAddress;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-primary_column customer_id => {
-    data_type   => 'INT',
-    is_nullable => 0,
-};
+use Yetie::Schema::Result::Customer;
+use Yetie::Schema::Result::Address;
 
-primary_column address_id => {
-    data_type   => 'INT',
-    is_nullable => 0,
-};
+primary_column customer_id => { data_type => Yetie::Schema::Result::Customer->column_info('id')->{data_type} };
+primary_column address_id  => { data_type => Yetie::Schema::Result::Address->column_info('id')->{data_type} };
 
 # Relation
 belongs_to

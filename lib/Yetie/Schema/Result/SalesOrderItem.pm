@@ -1,7 +1,10 @@
 package Yetie::Schema::Result::SalesOrderItem;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
+
+use Yetie::Schema::Result::SalesOrder;
 use Yetie::Schema::Result::Product;
+use Yetie::Schema::Result::TaxRule;
 
 primary_column id => {
     data_type         => 'INT',
@@ -9,17 +12,18 @@ primary_column id => {
 };
 
 column order_id => {
-    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::SalesOrder->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
 column product_id => {
-    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::Product->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
 column tax_rule_id => {
     data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::TaxRule->column_info('id')->{data_type},
     is_nullable => 0,
 };
 

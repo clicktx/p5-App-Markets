@@ -2,18 +2,21 @@ package Yetie::Schema::Result::StaffPassword;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
+use Yetie::Schema::Result::Staff;
+use Yetie::Schema::Result::Password;
+
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
 };
 
 column staff_id => {
-    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::Staff->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
 column password_id => {
-    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::Password->column_info('id')->{data_type},
     is_nullable => 0,
 };
 

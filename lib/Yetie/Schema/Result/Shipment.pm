@@ -2,13 +2,15 @@ package Yetie::Schema::Result::Shipment;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
+use Yetie::Schema::Result::SalesOrder;
+
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
 };
 
 column order_id => {
-    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::SalesOrder->column_info('id')->{data_type},
     is_nullable => 0,
 };
 

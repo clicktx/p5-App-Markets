@@ -2,13 +2,15 @@ package Yetie::Schema::Result::AuthenticationRequest;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
+use Yetie::Schema::Result::Email;
+
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
 };
 
 column email_id => {
-    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::Email->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
