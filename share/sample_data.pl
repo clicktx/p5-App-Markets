@@ -222,7 +222,7 @@
         [ 43, 11, undef, undef ],
         [ 44, 12, undef, undef ],
     ],
-    'ShippedItem' => [
+    'ShipmentItem' => [
         [qw/shipment_id order_item_id quantity/],
         [ 33, 1001, 2 ],    # Ship partial, 2/3
         [ 33, 1002, 1 ],
