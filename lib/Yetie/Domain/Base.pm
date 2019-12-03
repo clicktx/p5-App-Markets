@@ -36,6 +36,11 @@ sub BUILD {
     $self->_hash_sum;
 }
 
+sub args_to_hashref {
+    my $self = shift;
+    return @_ > 1 ? +{@_} : shift || {};
+}
+
 sub factory { return Yetie::Factory->new( $_[1] ) }
 
 sub get_all_attribute_names {
@@ -70,12 +75,21 @@ sub rehash {
     return $self;
 }
 
-sub set_attributes {
-    my ( $self, $params ) = @_;
+sub set_attribute {
+    my ( $self, $key, $value ) = @_;
 
-    foreach my $key ( keys %{$params} ) {
-        my $value = $params->{$key};
-        $self->$key($value);
+    my $attr = $self->$key;
+    Scalar::Util::blessed($attr) ? $attr->set_attributes($value) : $self->$key($value);
+    return $self;
+}
+
+sub set_attributes {
+    my $self = shift;
+    my $args = $self->args_to_hashref(@_);
+
+    foreach my $key ( keys %{$args} ) {
+        my $value = $args->{$key};
+        $self->set_attribute( $key, $value );
     }
     return $self;
 }
@@ -159,8 +173,13 @@ Recreate object hash sum.
 
 Recursive call for all attributes.
 
+=head2 C<set_attribute>
+
+    $obj->set_attribute( $key => $value );
+
 =head2 C<set_attributes>
 
+    $obj->set_attributes( %parameters );
     $obj->set_attributes( \%parameters );
 
 =head1 AUTHOR

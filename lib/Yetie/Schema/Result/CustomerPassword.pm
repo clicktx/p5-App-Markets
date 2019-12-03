@@ -2,14 +2,23 @@ package Yetie::Schema::Result::CustomerPassword;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
+use Yetie::Schema::Result::Customer;
+use Yetie::Schema::Result::Password;
+
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
 };
 
-column customer_id => { data_type => 'INT' };
+column customer_id => {
+    data_type   => Yetie::Schema::Result::Customer->column_info('id')->{data_type},
+    is_nullable => 0,
+};
 
-column password_id => { data_type => 'INT' };
+column password_id => {
+    data_type   => Yetie::Schema::Result::Password->column_info('id')->{data_type},
+    is_nullable => 0,
+};
 
 # Relation
 belongs_to

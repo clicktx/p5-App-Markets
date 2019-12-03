@@ -51,18 +51,20 @@
 
     # Tax rules
     'TaxRule' => [
-        [ qw/id title tax_rate round_mode/],
-        [ 2, 'Tax 3.141%', 3.141, 'even' ],
-        [ 3, 'Tax 5%', 5, 'even' ],
-        [ 4, 'Tax 8%', 8, 'even' ],
-        [ 5, 'Reduced Tax 8%', 8, 'even' ],
-        [ 6, 'Tax 10%', 10, 'even' ],
+        [ qw/id title tax_rate/],
+        [ 2, 'Tax 3.141%', 3.141 ],
+        [ 3, 'Tax 5%', 5 ],
+        [ 4, 'Tax 8%', 8 ],
+        [ 5, 'Reduced Tax 8%', 8 ],
+        [ 6, 'Tax 10%', 10 ],
     ],
 
     # Default tax rules
     'CommonTaxRule' => [
         [qw/tax_rule_id start_at/],
         [ 2, '1990-04-01 00:00:00' ],
+        [ 3, '1997-04-01 00:00:00' ],
+        [ 6, '2100-04-01 00:00:00' ],
     ],
 
     # Category tax rules
@@ -197,12 +199,33 @@
         [ 12, 7, 5, undef ], # trashed on test
     ],
     'SalesOrderItem' => [
-        [qw/order_id product_id quantity product_title price tax_rule_id currency_code is_tax_included/],
-        [ 1, 3, 3, 'product 3', 300, 1, 'USD', 0 ],
-        [ 1, 1, 1, 'product 1', 101, 2, 'USD', 0 ], # change price
-        [ 2, 2, 2, 'product 2', 200, 5, 'USD', 0 ],
-        [ 3, 4, 4, 'product 4', 333, 5, 'USD', 0 ],
-        [ 12, 1, 4, 'product 1', 101, 5, 'USD', 0 ], # trashed on test
-        [ 12, 2, 4, 'product 2', 200, 5, 'USD', 0 ], # trashed on test
+        [qw/id order_id product_id quantity product_title price tax_rule_id currency_code is_tax_included/],
+        [ 1001, 1, 3, 3, 'product 3', 300, 1, 'USD', 0 ],
+        [ 1002, 1, 1, 1, 'product 1', 101, 2, 'USD', 0 ], # change price
+        [ 1003, 2, 2, 2, 'product 2', 200, 5, 'USD', 0 ],
+        [ 1004, 3, 4, 4, 'product 4', 333, 5, 'USD', 0 ],
+        [ 1005, 12, 1, 4, 'product 1', 101, 5, 'USD', 0 ], # trashed on test
+        [ 1006, 12, 2, 4, 'product 2', 200, 5, 'USD', 0 ], # trashed on test
+    ],
+    'Shipment' => [
+        [qw/id order_id tracking_number completed_at/],
+        [ 33, 1, 'S111222333444', '2017-06-07 17:13:20' ],  # Ship partial, 2/3
+        [ 34, 2, 'S222333444555', '2017-07-08 15:10:35' ],  # Shipped all items
+        [ 35, 3, undef, undef ],
+        [ 36, 4, undef, undef ],
+        [ 37, 5, undef, undef ],
+        [ 38, 6, undef, undef ],
+        [ 39, 7, undef, undef ],
+        [ 40, 8, undef, undef ],
+        [ 41, 9, undef, undef ],
+        [ 42, 10, undef, undef ],
+        [ 43, 11, undef, undef ],
+        [ 44, 12, undef, undef ],
+    ],
+    'ShipmentItem' => [
+        [qw/shipment_id order_item_id quantity/],
+        [ 33, 1001, 2 ],    # Ship partial, 2/3
+        [ 33, 1002, 1 ],
+        [ 34, 1003, 2 ],    # Shipped all items
     ],
 )

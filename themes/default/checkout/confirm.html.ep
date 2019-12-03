@@ -16,7 +16,6 @@
     <li><strong>Order Confirmation</strong></li>
 </ol>
 
-% my $cart = $self->cart;
 <div class="">
     <h3>Shipping Address</h3>
     <%= content shipping_address => begin =%>
@@ -24,7 +23,7 @@
             Change
         <% end %>
         <!-- NOTE: とりあえず通常配送のみ -->
-        <%= include 'common/elements/address', address => $checkout->shipments->first->shipping_address %>
+        <%= include 'common/elements/address', address => $checkout->sales_orders->first->shipping_address %>
     <% end =%>
 </div>
 
@@ -45,7 +44,7 @@
             Change
         <% end %>
         <ol>
-            % $checkout->shipments->first->items->each( sub {
+            % $checkout->sales_orders->first->items->each( sub {
                 <li>
                     ID: <%= $_->id %> | PRODUCT ID: <%= $_->product_id %>
                     | product_title: <%= $_->product_title %>
@@ -61,12 +60,13 @@
     <% end =%>
 </div>
 
+% my $cart = $self->cart;
 <hr>
 <div class="">
     Subtotal excluding-tax: <%= $cart->subtotal_excl_tax %> / including-tax: <%= $cart->subtotal_incl_tax %>
 </div>
 <div class="">
-    Shipping & Handling:
+    Shipping & Handling: <%= $checkout->sales_orders->total_shipping_fee_incl_tax %>
 </div>
 <div class="">
     Taxes: <%= $cart->taxes %>

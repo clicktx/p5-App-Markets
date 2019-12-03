@@ -2,8 +2,11 @@ package Yetie::Schema::Result::ProductCategory;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-primary_column product_id  => { data_type => 'INT', };
-primary_column category_id => { data_type => 'INT', };
+use Yetie::Schema::Result::Product;
+use Yetie::Schema::Result::Category;
+
+primary_column product_id  => { data_type => Yetie::Schema::Result::Product->column_info('id')->{data_type} };
+primary_column category_id => { data_type => Yetie::Schema::Result::Category->column_info('id')->{data_type} };
 
 column is_primary => {
     data_type     => 'BOOLEAN',

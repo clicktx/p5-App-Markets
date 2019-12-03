@@ -63,7 +63,7 @@ the following new ones.
     my $pref_obj = $app->stash('yetie.entity.preference');
 
 Loading preference from DB.
-And set application defaults 'yetie.entity.preference' into C<Yetie::Domain::Entity::Preference> object.
+And set application defaults 'yetie.entity.preference' into C<Yetie::Domain::Set::Preferences> object.
 
 =head2 C<store>
 

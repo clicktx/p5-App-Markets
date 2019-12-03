@@ -3,11 +3,11 @@ use Test::More;
 use Test::Deep;
 use Yetie::Factory;
 
-my $pkg = 'Yetie::Domain::List::Shipments';
+my $pkg = 'Yetie::Domain::List::SalesOrders';
 use_ok $pkg;
 
 sub construct {
-    Yetie::Factory->new('list-shipments')->construct(@_);
+    Yetie::Factory->new('list-sales_orders')->construct(@_);
 }
 
 subtest 'basic' => sub {
@@ -15,26 +15,17 @@ subtest 'basic' => sub {
     isa_ok $v, 'Yetie::Domain::List';
 };
 
-subtest 'create_shipment' => sub {
-    my $v        = construct();
-    my $shipment = $v->create_shipment;
-    is $v->size, 1, 'right create shipment';
-    isa_ok $shipment, 'Yetie::Domain::Entity::Shipment';
-    isa_ok $v->first, 'Yetie::Domain::Entity::Shipment';
+subtest 'create_sales_order' => sub {
+    my $v = construct();
+    my $sales_order = $v->create_sales_order( shipping_address => { country_code => 'jp' } );
+    is $v->size, 1, 'right create sales_order';
+    isa_ok $sales_order, 'Yetie::Domain::Entity::SalesOrder';
+    isa_ok $v->first, 'Yetie::Domain::Entity::SalesOrder';
+    is $v->first->shipping_address->country_code, 'jp', 'right construct with arguments';
 
-    my $shipment2 = $v->create_shipment;
-    is $v->size, 2, 'right recreate shipment';
-    isnt $shipment, $shipment2, 'right compare object';
-};
-
-subtest 'has_shipment' => sub {
-    my $v    = construct();
-    my $bool = $v->has_shipment;
-    is $bool, 0, 'right has not shipment';
-
-    $v = construct( list => [ {} ] );
-    $bool = $v->has_shipment;
-    is $bool, 1, 'right has shipment';
+    my $sales_order2 = $v->create_sales_order;
+    is $v->size, 2, 'right recreate sales_order';
+    isnt $sales_order, $sales_order2, 'right compare object';
 };
 
 subtest 'is_multiple' => sub {
@@ -61,6 +52,31 @@ subtest 'total_quantity' => sub {
     is $v->total_quantity, 3, 'right total quantity';
 };
 
+subtest 'total_shipping_fee' => sub {
+    my $v = construct( list => [] );
+    is $v->total_shipping_fee_excl_tax, '$0.00', 'right total shipping fee excluding tax(no shipments)';
+    is $v->total_shipping_fee_incl_tax, '$0.00', 'right total shipping fee including tax(no shipments)';
+
+    $v = construct(
+        list => [
+            {
+                shipping_fee => 10,
+                tax_rule     => {
+                    tax_rate => 5,
+                },
+            },
+            {
+                shipping_fee => 20,
+                tax_rule     => {
+                    tax_rate => 5,
+                },
+            },
+        ]
+    );
+    is $v->total_shipping_fee_excl_tax, '$30.00', 'right total shipping fee excluding tax';
+    is $v->total_shipping_fee_incl_tax, '$31.50', 'right total shipping fee including tax';
+};
+
 subtest 'revert' => sub {
     my $v = construct();
     is $v->revert, undef, 'right not has shipment';
@@ -69,7 +85,16 @@ subtest 'revert' => sub {
     $v->revert;
     my $data = $v->to_data;
     is $data->[0]->{shipping_address}->{postal_code}, 12345, 'right shipping_address in first element';
-    cmp_deeply $data, [ { shipping_address => ignore(), items => [] } ], 'right revert';
+    cmp_deeply $data,
+      [
+        {
+            items            => [],
+            shipping_address => ignore(),
+            shipping_fee     => ignore(),
+            tax_rule         => ignore(),
+        }
+      ],
+      'right revert';
 };
 
 subtest 'subtotal' => sub {
