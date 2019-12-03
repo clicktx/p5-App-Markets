@@ -75,13 +75,21 @@ sub rehash {
     return $self;
 }
 
+sub set_attribute {
+    my ( $self, $key, $value ) = @_;
+
+    my $attr = $self->$key;
+    Scalar::Util::blessed($attr) ? $attr->set_attributes($value) : $self->$key($value);
+    return $self;
+}
+
 sub set_attributes {
     my $self = shift;
     my $args = $self->args_to_hashref(@_);
 
     foreach my $key ( keys %{$args} ) {
         my $value = $args->{$key};
-        $self->$key($value);
+        $self->set_attribute( $key, $value );
     }
     return $self;
 }
@@ -164,6 +172,10 @@ Return SHA1 checksum.
 Recreate object hash sum.
 
 Recursive call for all attributes.
+
+=head2 C<set_attribute>
+
+    $obj->set_attribute( $key => $value );
 
 =head2 C<set_attributes>
 

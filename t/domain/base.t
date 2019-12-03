@@ -10,6 +10,30 @@ use Mojo::Util qw/sha1_sum/;
     extends 'Yetie::Domain::Base';
 
     has [qw{foo bar _foo _bar}] => ( is => 'rw' );
+
+    package t::domain::p;
+    use Moose;
+    extends 'Yetie::Domain::Base';
+
+    has v => (
+        is      => 'ro',
+        default => sub { t::domain::base->new },
+    );
+
+    package t::domain::i;
+    use Moose;
+    extends 'Yetie::Domain::Base';
+
+    has t => ( is => 'rw', );
+    has c => (
+        is      => 'ro',
+        default => sub { t::domain::base->new },
+    );
+    has p => (
+        is      => 'ro',
+        default => sub { t::domain::p->new },
+    );
+
 }
 
 my $pkg      = 'Yetie::Domain::Base';
@@ -109,6 +133,22 @@ subtest 'set_attributes' => sub {
     is $obj->bar,  2, 'right attr';
     is $obj->_foo, 3, 'right attr';
     is $obj->_bar, 4, 'right attr';
+
+    $obj = t::domain::i->new();
+    $obj->set_attributes(
+        {
+            t => 'title',
+            c => {
+                foo => 'category',
+            },
+            p => {
+                v => { foo => 'price' },
+            },
+        }
+    );
+    is $obj->t, 'title', 'right attr';
+    is $obj->c->foo, 'category', 'right attr';
+    is $obj->p->v->foo, 'price', 'right attr';
 };
 
 done_testing();
