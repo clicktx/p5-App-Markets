@@ -36,6 +36,8 @@ sub BUILD {
     $self->_hash_sum;
 }
 
+sub args_to_hash { return %{ shift->args_to_hashref(@_) } }
+
 sub args_to_hashref {
     my $self = shift;
     return @_ > 1 ? +{@_} : shift || {};
@@ -137,6 +139,30 @@ Domain object base class.
 
 L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements
 the following new ones.
+
+=head2 C<args_to_hash>
+
+    sub foo {
+        my $self = shift;
+        my %hash = $self->args_to_hash(@_);
+        ...
+    }
+
+    # Arguments hash or hash reference
+    $self->foo( bar => 1 );
+    $self->foo( { baz => 2 } );
+
+=head2 C<args_to_hashref>
+
+    sub foo {
+        my $self = shift;
+        my $hash_ref = $self->args_to_hashref(@_);
+        ...
+    }
+
+    # Arguments hash or hash reference
+    $self->foo( bar => 1 );
+    $self->foo( { baz => 2 } );
 
 =head2 C<factory>
 

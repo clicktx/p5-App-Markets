@@ -58,13 +58,20 @@ subtest '_dump_by_public_attributes' => sub {
     is $obj->_dump_by_public_attributes, q{({bar=2,foo=1,},t::domain::base)}, 'right dump strings';
 };
 
+subtest 'args_to_hash' => sub {
+    my $e = $pkg->new();
+    my %args = $e->args_to_hash( foo => 'bar' );
+    is_deeply \%args, { foo => 'bar' }, 'right arguments hash';
+    %args = $e->args_to_hash( { foo => 'bar' } );
+    is_deeply \%args, { foo => 'bar' }, 'right arguments hash reference';
+};
+
 subtest 'args_to_hashref' => sub {
     my $e = $pkg->new();
-
     my $args = $e->args_to_hashref( foo => 'bar' );
-    is_deeply $args, { foo => 'bar' }, 'right arguments array';
+    is_deeply $args, { foo => 'bar' }, 'right arguments hash';
     $args = $e->args_to_hashref( { foo => 'bar' } );
-    is_deeply $args, { foo => 'bar' }, 'right arguments array reference';
+    is_deeply $args, { foo => 'bar' }, 'right arguments hash reference';
 };
 
 subtest 'factory' => sub {
