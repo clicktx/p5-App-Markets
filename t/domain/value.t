@@ -75,6 +75,12 @@ subtest 'clone' => sub {
 
     $clone = $obj->clone;
     ok !$clone->is_modified, 'right not modified';
+
+    $clone = $obj->clone( foo => 'bar' );
+    is $clone->foo, 'bar', 'right with arguments';
+
+    $clone = $obj->clone( { foo => 'bar' } );
+    is $clone->foo, 'bar', 'right with arguments(reference)';
 };
 
 subtest 'is_modified' => sub {
