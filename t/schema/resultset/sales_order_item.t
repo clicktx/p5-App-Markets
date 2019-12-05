@@ -10,39 +10,46 @@ my $t   = Test::Mojo->new('App');
 my $app = $t->app;
 my $rs  = $app->schema->resultset('SalesOrderItem');
 
-subtest store_items => sub {
-    my $detail = $app->factory('entity-order_detail')->construct(
-        id    => 1,
-        items => [
-            {
-                id         => 1,
-                product_id => 3,
-                price      => {
-                    value => 300,
-                },
-                quantity => 1,
-                tax_rule => { id => 2 },
+subtest store_item => sub {
+    $rs->store_item(
+        {
+            order_id   => 1,
+            product_id => 1,
+            quantity   => 4,
+            price      => {
+                currency_code   => "USD",
+                is_tax_included => 0,
+                tax_rule_id     => 2,
+                value           => 444,
             },
-            {
-                id         => 99,
-                product_id => 2,
-                price      => {
-                    value => 100,
-                },
-                quantity => 99,
-                tax_rule => { id => 2 },
-            },
-        ]
+        }
     );
-    $rs->store_items($detail);
 
-    my $item = $rs->find(1);
-    is $item->quantity, 1, 'right update';
+    my $last_id = $rs->last_id;
+    my $item    = $rs->find($last_id);
+    is $item->quantity, 4, 'right quantity';
+    ok $item->price->value == 444, 'right price value';
 
-    $item = $rs->find(99);
-    ok $item->price == 100, 'right create';
-    is $item->currency_code, 'USD', 'right create';
-    is $item->quantity,      99,    'right create';
+    # Update
+    $rs->store_item(
+        {
+            id         => $last_id,
+            order_id   => 1,
+            product_id => 1,
+            quantity   => 7,
+            price      => {
+                currency_code   => "JPY",
+                is_tax_included => 0,
+                tax_rule_id     => 2,
+                value           => 777,
+            },
+        }
+    );
+
+    $item = $rs->find($last_id);
+    is $item->quantity, 7, 'right quantity';
+    ok $item->price->value == 777, 'right price value';
+    is $item->price->currency_code, 'JPY', 'currency_code';
 };
 
 done_testing();
