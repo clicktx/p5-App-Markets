@@ -23,6 +23,26 @@ sub search_orders {
     return ( $orders, $rs->pager );
 }
 
+sub store_items {
+    my ( $self, $order, $form ) = @_;
+
+    my $order_id = $order->id;
+    my $list_param = $form->scope_param('item') || [];
+    my $items = $order->items;
+    $items->each(
+        sub {
+            my ( $item, $num ) = @_;
+            my $params = $list_param->[$num];
+            $item->set_attributes($params);
+
+            my $data = $item->to_data;
+            $data->{order_id} = $order_id;
+            if ( $item->is_modified ) { $self->resultset('SalesOrderItem')->store_item($data) }
+        }
+    );
+    return;
+}
+
 1;
 __END__
 
@@ -53,6 +73,10 @@ Return L<Yetie::Domain::Entity::OrderDetail> object.
 =head2 C<search_orders>
 
     my $entity = $service->search_orders($form);
+
+=head2 C<store_items>
+
+    $service->store_items( $order, $form );
 
 =head1 AUTHOR
 
