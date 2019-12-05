@@ -51,8 +51,8 @@ override set_attributes => sub {
     my $self = shift;
     my $args = $self->args_to_hashref(@_);
 
-    my $price = delete $args->{price};
-    my $new_price = $self->price->clone( value => $price );
+    my $params    = delete $args->{price};
+    my $new_price = $self->price->clone($params);
     $self->price($new_price);
 
     return super();
