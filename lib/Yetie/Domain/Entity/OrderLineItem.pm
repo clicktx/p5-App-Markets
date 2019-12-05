@@ -8,13 +8,14 @@ sub to_data {
     my $self = shift;
 
     return {
-        id              => $self->id,
-        product_id      => $self->product_id,
-        quantity        => $self->quantity,
-        price           => $self->price->value,
-        currency_code   => $self->price->currency_code,
-        is_tax_included => $self->price->is_tax_included,
-        tax_rule_id     => $self->tax_rule->id,
+        id         => $self->id,
+        product_id => $self->product_id,
+        quantity   => $self->quantity,
+        price      => {
+            %{ $self->price->to_data },
+            is_tax_included => $self->price->is_tax_included,
+            tax_rule_id     => $self->tax_rule->id,
+        },
     };
 }
 
