@@ -46,7 +46,7 @@ sub add_item {
             product_id    => 1,
             product_title => 'test product1',
             quantity      => 1,
-            price         => { value => '100.00', currency_code => 'USD', is_tax_included => 0 },
+            price         => { value => '100.0000', currency_code => 'USD', is_tax_included => 0 },
             tax_rule      => ignore(),
           },
           'right add cart';
