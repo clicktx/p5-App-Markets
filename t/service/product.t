@@ -12,17 +12,18 @@ use_ok 'Yetie::Service::Product';
 subtest 'duplicate_product' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
-
     my $rs      = $c->resultset('Product');
-    my $last_id = $rs->last_id;
-    my $orig    = $rs->find(1);
 
-    my $product = $service->duplicate_product(1);
-    is $product->id, $last_id + 1, 'right id';
-    is $product->description, $orig->description, 'right description';
-    is $product->price->{value}, $orig->price, 'right price';
-    like $product->title, qr/copy/, 'copy title';
-    is $product->product_categories, $orig->product_categories, 'right product_categories';
+    my $last_id           = $rs->last_id;
+    my $target_product_id = 1;
+    my $orig              = $rs->find($target_product_id);
+
+    $service->duplicate_product($target_product_id);
+    my $result = $rs->find( $last_id + 1 );
+    is $result->description, $orig->description, 'right description';
+    is $result->price,       $orig->price,       'right price';
+    like $result->title, qr/copy/, 'copy title';
+    is $result->product_categories, $orig->product_categories, 'right product_categories';
 };
 
 subtest 'find_product' => sub {
