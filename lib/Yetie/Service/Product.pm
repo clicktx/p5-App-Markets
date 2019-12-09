@@ -1,7 +1,7 @@
 package Yetie::Service::Product;
 use Mojo::Base 'Yetie::Service';
 
-# FIXME: DBに保存するのではなく、データのみをコピーする？
+# FIXME: DBに保存するのではなく、データのみをコピーしてフォームに反映させる？
 sub duplicate_product {
     my ( $self, $product_id ) = @_;
 
@@ -13,11 +13,9 @@ sub duplicate_product {
     my $i     = $rs->search( { title => { like => $title . '%' } } )->count + 1;
     $entity->title( $title . $i );
 
+    # Data
     my $data = $entity->to_data;
     delete $data->{id};
-
-    # Price
-    # FIXME: productのpriceオブジェクトはunit_priceオブジェクト等に変更する？
     my $price_data = delete $data->{price};
     $data->{price} = $price_data->{value};
 
