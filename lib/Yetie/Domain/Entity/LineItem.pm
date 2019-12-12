@@ -30,21 +30,25 @@ has _row_total_incl_tax => (
     init_arg => undef,
 );
 has price => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'Yetie::Domain::Value::Price',
     default => sub { __PACKAGE__->factory('value-price')->construct() },
+    writer  => 'set_price',
 );
 has product_id => (
-    is  => 'rw',
-    isa => PositiveInt,
+    is     => 'ro',
+    isa    => PositiveInt,
+    writer => 'set_product_id',
 );
 has product_title => (
-    is  => 'rw',
-    isa => 'Str',
+    is     => 'ro',
+    isa    => 'Str',
+    writer => 'set_product_title',
 );
 has quantity => (
-    is  => 'rw',
-    isa => 'Int',
+    is     => 'ro',
+    isa    => 'Int',
+    writer => 'set_quantity',
 );
 
 override set_attributes => sub {
@@ -53,7 +57,7 @@ override set_attributes => sub {
 
     my $params    = delete $args->{price};
     my $new_price = $self->price->clone($params);
-    $self->price($new_price);
+    $self->set_price($new_price);
 
     return super();
 };

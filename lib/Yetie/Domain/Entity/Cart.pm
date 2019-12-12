@@ -66,7 +66,7 @@ sub merge {
             sub {
                 my ( $e, $num ) = @_;
                 if ( $e->equals($item) ) {
-                    $item->quantity( $e->quantity + $item->quantity );
+                    $item->set_quantity( $e->quantity + $item->quantity );
                     my $i = $num - 1;
                     splice @{ $clone->items->list }, $i, 1;
                 }

@@ -28,10 +28,10 @@ subtest 'basic' => sub {
     is $item->price,         '$100.00',      'right price';
     is $item->is_modified,   0,              'right default modified';
 
-    $item->product_id(111);
+    $item->set_product_id(111);
     is $item->is_modified, 0, 'right not modified';
 
-    $item->quantity(5);
+    $item->set_quantity(5);
     is $item->is_modified, 1, 'right modified';
 
     dies_ok {
@@ -120,6 +120,12 @@ subtest 'row_total' => sub {
     );
     is $item->row_total_excl_tax, '$600.00', 'right row total excluding tax';
     is $item->row_total_incl_tax, '$630.00', 'right row total including tax';
+};
+
+subtest 'set_attributes' => sub {
+    my $item = factory();
+    $item->set_attributes( quantity => 3 );
+    is $item->quantity, 3, 'right set attribute';
 };
 
 subtest 'to_data' => sub {

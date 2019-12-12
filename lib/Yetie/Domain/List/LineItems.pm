@@ -87,7 +87,7 @@ sub _update_quantity {
     my ( $self, $item ) = @_;
     my $new = $self->map(
         sub {
-            if ( $_->equals($item) ) { $_->quantity( $_->quantity + $item->quantity ) }
+            if ( $_->equals($item) ) { $_->set_quantity( $_->quantity + $item->quantity ) }
             return $_;
         }
     );
