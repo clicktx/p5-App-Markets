@@ -48,7 +48,7 @@ sub append {
     my $self = shift;
 
     foreach my $item (@_) {
-        $self->get_by_product_hash_code( $item->product_hash_code )
+        $self->get_by_product_hash_code( $item->item_hash_sum )
           ? $self->_update_quantity($item)
           : $self->_append_item($item);
     }
@@ -57,7 +57,7 @@ sub append {
 
 sub get_by_product_hash_code {
     my ( $self, $hash_code ) = @_;
-    return $self->first( sub { $_->product_hash_code eq $hash_code } );
+    return $self->first( sub { $_->item_hash_sum eq $hash_code } );
 }
 
 sub has_element_by_hash { return shift->get_by_product_hash_code(shift) ? 1 : 0 }
@@ -133,7 +133,7 @@ the following new ones.
 
 =head2 C<get_by_product_hash_code>
 
-    my $item = $items->get_by_product_hash_code($product_hash_code);
+    my $item = $items->get_by_product_hash_code($item_hash_sum);
 
 =head2 C<has_element_by_hash>
 

@@ -71,13 +71,13 @@ subtest 'equals' => sub {
     is $item2->equals($item3), 0, 'right not equals';
 };
 
-subtest 'product_hash_code' => sub {
+subtest 'item_hash_sum' => sub {
     my $item = factory(
         {
             product_id => 111,
         }
     );
-    is $item->product_hash_code, '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2', 'right hash code';
+    is $item->item_hash_sum, '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2', 'right hash code';
     is $item->is_modified, 0, 'right not modified';
 };
 

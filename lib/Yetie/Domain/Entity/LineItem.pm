@@ -6,11 +6,11 @@ extends 'Yetie::Domain::Entity';
 
 with 'Yetie::Domain::Role::Tax';
 
-has _product_hash_code => (
+has _item_hash_sum => (
     is       => 'ro',
     lazy     => 1,
-    builder  => '_build__product_hash_code',
-    reader   => 'product_hash_code',
+    builder  => '_build__item_hash_sum',
+    reader   => 'item_hash_sum',
     init_arg => undef,
 );
 has _row_total_excl_tax => (
@@ -58,7 +58,7 @@ override set_attributes => sub {
     return super();
 };
 
-sub _build__product_hash_code {
+sub _build__item_hash_sum {
     my $self = shift;
 
     my $str;
@@ -79,7 +79,7 @@ sub _build__row_total_incl_tax {
     return $self->price_incl_tax * $self->quantity;
 }
 
-sub equals { return $_[0]->product_hash_code eq $_[1]->product_hash_code ? 1 : 0 }
+sub equals { return $_[0]->item_hash_sum eq $_[1]->item_hash_sum ? 1 : 0 }
 
 sub row_tax_amount {
     my $self = shift;
@@ -109,9 +109,9 @@ L<Yetie::Domain::Entity::LineItem> inherits all attributes from L<Yetie::Domain:
 
 Implements the following new ones.
 
-=head2 C<product_hash_code>
+=head2 C<item_hash_sum>
 
-    my $product_hash_code = $item->product_hash_code;
+    my $item_hash_sum = $item->item_hash_sum;
 
 Return SHA1 string.
 This method gets a string identifying product item.

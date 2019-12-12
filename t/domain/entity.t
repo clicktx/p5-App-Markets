@@ -54,10 +54,6 @@ subtest 'function' => sub {
     package t::line_item;
     use Moose;
     extends 'Yetie::Domain::Entity';
-    has _product_hash_code => (
-        reader => 'product_hash_code',
-        is     => 'ro',
-    );
 }
 
 subtest 'clone' => sub {
