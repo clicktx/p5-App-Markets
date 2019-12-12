@@ -81,8 +81,9 @@ sub rehash {
 sub set_attribute {
     my ( $self, $key, $value ) = @_;
 
-    my $attr = $self->$key;
-    Scalar::Util::blessed($attr) ? $attr->set_attributes($value) : $self->$key($value);
+    my $attr   = $self->$key;
+    my $setter = "set_$key";
+    Scalar::Util::blessed($attr) ? $attr->set_attributes($value) : $self->$setter($value);
     return $self;
 }
 

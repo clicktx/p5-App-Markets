@@ -9,7 +9,22 @@ use Mojo::Util qw/sha1_sum/;
     use Moose;
     extends 'Yetie::Domain::Base';
 
-    has [qw{foo bar _foo _bar}] => ( is => 'rw' );
+    has foo => (
+        is     => 'ro',
+        writer => 'set_foo',
+    );
+    has bar => (
+        is     => 'ro',
+        writer => 'set_bar',
+    );
+    has _foo => (
+        is     => 'ro',
+        writer => 'set__foo',
+    );
+    has _bar => (
+        is     => 'ro',
+        writer => 'set__bar',
+    );
 
     package t::domain::p;
     use Moose;
@@ -24,7 +39,10 @@ use Mojo::Util qw/sha1_sum/;
     use Moose;
     extends 'Yetie::Domain::Base';
 
-    has t => ( is => 'rw', );
+    has t => (
+        is     => 'ro',
+        writer => 'set_t',
+    );
     has c => (
         is      => 'ro',
         default => sub { t::domain::base->new },
@@ -114,7 +132,7 @@ subtest 'hash_code' => sub {
 subtest 'rehash' => sub {
     my $obj = $test_pkg->new( foo => 1 );
     my $hash_sum = $obj->hash_sum;
-    $obj->foo(2);
+    $obj->set_foo(2);
     is $hash_sum, $obj->hash_sum, 'right hash_sum';
     $obj->rehash;
     isnt $hash_sum, $obj->hash_sum, 'right rehash';
