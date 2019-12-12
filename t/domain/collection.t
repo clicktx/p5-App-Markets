@@ -84,11 +84,11 @@ subtest 'rehash' => sub {
     push @entities, t::domain::entity->new($_) for @data;
     my $c = $pkg->new(@entities);
 
-    my $hash_sum = $c->[1]->_hash_sum;
+    my $hash_sum = $c->[1]->hash_sum;
     $c->[1]->_set_hash_sum('foo');
 
     my $res = $c->rehash;
-    is $c->[1]->_hash_sum, $hash_sum, 'right rehash';
+    is $c->[1]->hash_sum, $hash_sum, 'right rehash';
     is $res, $c, 'right return';
 };
 

@@ -141,11 +141,11 @@ subtest 'rehash' => sub {
     push @entities, t::domain::entity->new($_) for @data;
 
     my $ix = $pkg->new( a => $entities[0], b => $entities[1], c => $entities[2] );
-    my $hash_sum = $entities[1]->_hash_sum;
+    my $hash_sum = $entities[1]->hash_sum;
     $entities[1]->_set_hash_sum('foo');
 
     my $res = $ix->rehash;
-    is $ix->b->_hash_sum, $hash_sum, 'right rehash';
+    is $ix->b->hash_sum, $hash_sum, 'right rehash';
     is $res, $ix, 'ritght return';
 };
 

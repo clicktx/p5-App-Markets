@@ -113,17 +113,17 @@ subtest 'hash_code' => sub {
 
 subtest 'rehash' => sub {
     my $obj = $test_pkg->new( foo => 1 );
-    my $hash_sum = $obj->_hash_sum;
+    my $hash_sum = $obj->hash_sum;
     $obj->foo(2);
-    is $hash_sum, $obj->_hash_sum, 'right hash_sum';
+    is $hash_sum, $obj->hash_sum, 'right hash_sum';
     $obj->rehash;
-    isnt $hash_sum, $obj->_hash_sum, 'right rehash';
+    isnt $hash_sum, $obj->hash_sum, 'right rehash';
 
-    $hash_sum = $obj->_hash_sum;
+    $hash_sum = $obj->hash_sum;
     my $obj2 = $test_pkg->new( bar => $obj );
     $obj2->bar->_set_hash_sum('foo');
     $obj2->rehash;
-    is $hash_sum, $obj2->bar->_hash_sum, 'right recursive rehash';
+    is $hash_sum, $obj2->bar->hash_sum, 'right recursive rehash';
 };
 
 subtest 'set_attributes' => sub {

@@ -29,7 +29,7 @@ sub is_empty { return shift->id ? 0 : 1 }
 
 sub is_modified {
     my $self = shift;
-    return 1 if $self->_hash_sum ne $self->hash_code;
+    return 1 if $self->hash_sum ne $self->hash_code;
 
     # Recursive call for attributes
     return $self->_recursive_call() ? 1 : 0;

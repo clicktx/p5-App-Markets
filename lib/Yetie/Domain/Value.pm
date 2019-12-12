@@ -37,7 +37,7 @@ sub equals {
 
 sub is_modified {
     my $self = shift;
-    return $self->_hash_sum ne $self->hash_code ? 1 : 0;
+    return $self->hash_sum ne $self->hash_code ? 1 : 0;
 }
 
 sub to_data { return shift->value }
