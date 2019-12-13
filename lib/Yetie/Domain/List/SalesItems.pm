@@ -1,4 +1,4 @@
-package Yetie::Domain::List::OrderLineItems;
+package Yetie::Domain::List::SalesItems;
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List::LineItems';
@@ -11,7 +11,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::List::OrderLineItems
+Yetie::Domain::List::SalesItems
 
 =head1 SYNOPSIS
 
@@ -19,12 +19,12 @@ Yetie::Domain::List::OrderLineItems
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::List::OrderLineItems> inherits all attributes from L<Yetie::Domain::List::LineItems> and implements
+L<Yetie::Domain::List::SalesItems> inherits all attributes from L<Yetie::Domain::List::LineItems> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::List::OrderLineItems> inherits all methods from L<Yetie::Domain::List::LineItems> and implements
+L<Yetie::Domain::List::SalesItems> inherits all methods from L<Yetie::Domain::List::LineItems> and implements
 the following new ones.
 
 =head1 AUTHOR
