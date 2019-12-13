@@ -1,7 +1,7 @@
 package Yetie::Domain::List::SalesItems;
 use Moose;
 use namespace::autoclean;
-extends 'Yetie::Domain::List::LineItems';
+extends 'Yetie::Domain::List::CartItems';
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
