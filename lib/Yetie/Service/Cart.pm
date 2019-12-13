@@ -16,7 +16,7 @@ sub add_item {
     $args->{price}         = $product->price->to_data;
     $args->{tax_rule}      = $product->tax_rule->to_data;
 
-    my $item = $self->factory('entity-line_item')->construct($args);
+    my $item = $self->factory('entity-cart_item')->construct($args);
     return $self->controller->cart->add_item($item);
 }
 

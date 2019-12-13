@@ -43,20 +43,20 @@ sub _create_entity {
 }
 
 use_ok 'Yetie::Domain::Entity::Cart';
-use_ok 'Yetie::Domain::Entity::LineItem';
+use_ok 'Yetie::Domain::Entity::CartItem';
 
 subtest 'basic' => sub {
     my $cart = Yetie::Domain::Entity::Cart->new;
     ok $cart->id;
-    isa_ok $cart->items, 'Yetie::Domain::List::LineItems';
+    isa_ok $cart->items, 'Yetie::Domain::List::CartItems';
 };
 
 subtest 'attributes' => sub {
     my $cart = _create_entity;
     is $cart->cart_id, '12345', 'right cart_id';
 
-    isa_ok $cart->items, 'Yetie::Domain::List::LineItems', 'right items';
-    isa_ok $cart->items->first, 'Yetie::Domain::Entity::LineItem', 'right items';
+    isa_ok $cart->items, 'Yetie::Domain::List::CartItems', 'right items';
+    isa_ok $cart->items->first, 'Yetie::Domain::Entity::CartItem', 'right items';
 };
 
 subtest 'methods' => sub {
