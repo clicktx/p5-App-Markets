@@ -82,13 +82,13 @@ subtest 'methods' => sub {
 
 subtest 'add_item' => sub {
     my $cart = _create_entity;
-    $cart->add_item( Yetie::Factory->new('entity-line_item')->construct( product_id => 11 ) );
+    $cart->add_item( Yetie::Factory->new('entity-cart_item')->construct( product_id => 11 ) );
     is $cart->items->last->product_id, '11', 'right last item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
     $cart->add_item(
-        Yetie::Factory->new('entity-line_item')->construct( product_id => 1, quantity => 1, price => 100 ) );
+        Yetie::Factory->new('entity-cart_item')->construct( product_id => 1, quantity => 1, price => 100 ) );
     is $cart->items->first->quantity, '2', 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
 };

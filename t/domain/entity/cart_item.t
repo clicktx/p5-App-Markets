@@ -5,46 +5,63 @@ use Test::Exception;
 use Yetie::Factory;
 
 sub factory {
-    return Yetie::Factory->new('entity-line_item')->construct(@_);
+    return Yetie::Factory->new('entity-cart_item')->construct(@_);
 }
 
-use_ok 'Yetie::Domain::Entity::LineItem';
+use_ok 'Yetie::Domain::Entity::CartItem';
 
 subtest 'basic' => sub {
     my $item = factory(
         {
-            id       => 2,
-            quantity => 1,
-            price    => 100,
+            id            => 2,
+            product_id    => 111,
+            product_title => 'test product',
+            quantity      => 1,
+            price         => 100,
         }
     );
 
-    is $item->id,          2,         'right id';
-    is $item->quantity,    1,         'right quantity';
-    is $item->price,       '$100.00', 'right price';
-    is $item->is_modified, 0,         'right default modified';
+    is $item->id,            2,              'right id';
+    is $item->product_id,    111,            'right product_id';
+    is $item->product_title, 'test product', 'right product_title';
+    is $item->quantity,      1,              'right quantity';
+    is $item->price,         '$100.00',      'right price';
+    is $item->is_modified,   0,              'right default modified';
 
-    $item->set_quantity(1);
+    $item->set_product_id(111);
     is $item->is_modified, 0, 'right not modified';
 
     $item->set_quantity(5);
     is $item->is_modified, 1, 'right modified';
+
+    dies_ok {
+        factory(
+            {
+                id            => 2,
+                product_id    => 0,
+                product_title => 'test product',
+                quantity      => 1,
+                price         => 100,
+            }
+          )
+    }
+    'right isa product_id';
 };
 
 subtest 'equals' => sub {
     my $item1 = factory(
         {
-            id => 1,
+            product_id => 1,
         }
     );
     my $item2 = factory(
         {
-            id => 1,
+            product_id => 1,
         }
     );
     my $item3 = factory(
         {
-            id => 2,
+            product_id => 2,
         }
     );
 
@@ -57,7 +74,7 @@ subtest 'equals' => sub {
 subtest 'item_hash_sum' => sub {
     my $item = factory(
         {
-            id => 111,
+            product_id => 111,
         }
     );
     is $item->item_hash_sum, '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2', 'right hash code';
@@ -114,16 +131,16 @@ subtest 'set_attributes' => sub {
 subtest 'to_data' => sub {
     my $item = factory(
         {
-            id       => 110,
-            quantity => 1,
+            product_id => 110,
+            quantity   => 1,
         }
     );
     cmp_deeply $item->to_data,
       {
-        id       => 110,
-        quantity => 1,
-        price    => ignore(),
-        tax_rule => ignore(),
+        product_id => 110,
+        quantity   => 1,
+        price      => ignore(),
+        tax_rule   => ignore(),
       },
       'right dump data';
 };

@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::LineItem;
 use Moose;
 use namespace::autoclean;
-use MooseX::Types::Common::Numeric qw(PositiveInt);
+
 extends 'Yetie::Domain::Entity';
 
 with 'Yetie::Domain::Role::Tax';
@@ -35,38 +35,19 @@ has price => (
     default => sub { __PACKAGE__->factory('value-price')->construct() },
     writer  => 'set_price',
 );
-has product_id => (
-    is     => 'ro',
-    isa    => PositiveInt,
-    writer => 'set_product_id',
-);
-has product_title => (
-    is     => 'ro',
-    isa    => 'Str',
-    writer => 'set_product_title',
-);
 has quantity => (
     is     => 'ro',
     isa    => 'Int',
     writer => 'set_quantity',
 );
 
-override set_attributes => sub {
-    my $self = shift;
-    my $args = $self->args_to_hashref(@_);
-
-    my $params    = delete $args->{price};
-    my $new_price = $self->price->clone($params);
-    $self->set_price($new_price);
-
-    return super();
-};
-
+# XXX: _target_attributes (_hashing_keys) を作ってarray_refを設定？
+# for my $attr(@$attrs){ $str .= "$attr:" . $self->$attr . ";" }
 sub _build__item_hash_sum {
     my $self = shift;
 
     my $str;
-    $str .= $self->product_id;
+    $str .= $self->id;
 
     # and more...
 
@@ -119,10 +100,6 @@ Implements the following new ones.
 
 Return SHA1 string.
 This method gets a string identifying product item.
-
-=head2 C<product_id>
-
-=head2 C<product_title>
 
 =head2 C<quantity>
 
