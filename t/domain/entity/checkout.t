@@ -82,13 +82,13 @@ sub _create_entity {
 # subtest 'add_shipment_item' => sub {
 #     my $checkout = _create_entity;
 #     my $res =
-#       $checkout->add_shipment_item( 0 => Yetie::Factory->new('entity-line_item')->construct( product_id => 11 ) );
+#       $checkout->add_shipment_item( 0 => Yetie::Factory->new('entity-cart_item')->construct( product_id => 11 ) );
 #     is $checkout->sales_orders->first->items->last->product_id, 11, 'right add shipping_item';
 #     is $checkout->is_modified, 1, 'right modified';
 #     isa_ok $res, 'Yetie::Domain::Entity::Checkout';
 
 #     $checkout = _create_entity;
-#     $checkout->add_shipment_item( Yetie::Factory->new('entity-line_item')->construct( product_id => 99 ) );
+#     $checkout->add_shipment_item( Yetie::Factory->new('entity-cart_item')->construct( product_id => 99 ) );
 #     is $checkout->sales_orders->first->items->last->product_id, 99, 'right add shipping_item';
 #     is $checkout->is_modified, 1, 'right modified';
 # };
@@ -102,14 +102,12 @@ subtest 'get_order_data' => sub {
             {
                 items            => ignore(),
                 shipping_address => { id => ignore() },
-                shipping_fee     => ignore(),
-                tax_rule         => ignore(),
+                shippings        => ignore(),
             },
             {
                 items            => ignore(),
                 shipping_address => { id => ignore() },
-                shipping_fee     => ignore(),
-                tax_rule         => ignore(),
+                shippings        => ignore(),
             }
         ],
       },
