@@ -5,7 +5,6 @@ use t::Util;
 use Test::More;
 use Test::Deep;
 use Test::Mojo;
-use DDP;
 
 my $CART_DATA = {
     items => [
