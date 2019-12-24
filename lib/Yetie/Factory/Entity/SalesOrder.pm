@@ -10,11 +10,8 @@ sub cook {
     # shipping_address
     $self->aggregate( shipping_address => ( 'entity-address', $self->{shipping_address} || {} ) );
 
-    # shipping_fee
-    # $self->aggregate( shipping_fee => ( 'value-price', $self->{shipping_fee} || {} ) );
-
-    # tax rule
-    # $self->aggregate( tax_rule => 'entity-tax_rule', $self->param('tax_rule') || {} );
+    # Aggregate shippings
+    $self->aggregate( shippings => ( 'list-shippings', $self->param('shippings') || [] ) );
 }
 
 1;

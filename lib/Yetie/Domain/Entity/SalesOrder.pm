@@ -3,8 +3,6 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-# with 'Yetie::Domain::Role::Tax';
-
 has items => (
     is      => 'ro',
     isa     => 'Yetie::Domain::List::SalesItems',
@@ -16,22 +14,13 @@ has shipping_address => (
     default => sub { shift->factory('entity-address')->construct() },
     writer  => 'set_shipping_address',
 );
-# has shipping_fee => (
-#     is      => 'rw',
-#     isa     => 'Yetie::Domain::Value::Price',
-#     default => sub { shift->factory('value-price')->construct() },
-# );
-# has shippings => (
-#     is      => 'ro',
-#     isa     => 'Yetie::Domain::List::Shippings',
-#     default => sub { shift->factory('list-shippings')->construct() },
-# );
+has shippings => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::List::Shippings',
+    default => sub { shift->factory('list-shippings')->construct() },
+);
 
 sub count_items { return shift->items->size }
-
-# sub shipping_fee_excl_tax { return shift->price_excl_tax( attr => 'shipping_fee' ) }
-
-# sub shipping_fee_incl_tax { return shift->price_incl_tax( attr => 'shipping_fee' ) }
 
 sub subtotal_excl_tax {
     my $self = shift;
@@ -98,14 +87,6 @@ the following new ones.
 =head2 C<count_items>
 
     my $count = $sales_order->count_items;
-
-=head2 C<shipping_fee_excl_tax>
-
-    my $fee = $sales_order->shipping_fee_excl_tax;
-
-=head2 C<shipping_fee_incl_tax>
-
-    my $fee = $sales_order->shipping_fee_incl_tax;
 
 =head2 C<subtotal_excl_tax>
 
