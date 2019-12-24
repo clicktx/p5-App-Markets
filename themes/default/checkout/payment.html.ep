@@ -1,0 +1,22 @@
+% layout 'default';
+% title 'Billing options';
+
+<h1><%= title %></h1>
+
+<%= link_to 'Edit Cart' => 'rn.cart' %>
+
+<h3>ORDER SUMMARY</h3>
+
+<h3>Secure checkout</h3>
+<ol>
+    <li>Please sign in</li>
+    <li>Shipping Address</li>
+    <li>Shipping Options</li>
+    <li><strong>Billing Options</strong></li>
+    <li>Order Confirmation</li>
+</ol>
+
+<h3>Select a payment methods</h3>
+
+
+<%= link_to 'Back to page' => 'rn.cart' %>

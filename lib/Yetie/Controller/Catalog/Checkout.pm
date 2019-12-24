@@ -54,12 +54,7 @@ sub shipping_address_select {
 
 sub delivery_option {
     my $c = shift;
-    return $c->redirect_to('rn.checkout.payment_method');
-}
-
-sub payment_method {
-    my $c = shift;
-    return $c->redirect_to('rn.checkout.billing_address');
+    return $c->redirect_to('rn.checkout.payment');
 }
 
 sub billing_address {
@@ -91,14 +86,22 @@ sub billing_address_select {
     return $c->_confirm_handler;
 }
 
+sub payment {
+    my $c = shift;
+
+    # return $c->redirect_to('rn.checkout.billing_address');
+    return $c->render();
+}
+
 sub confirm {
     my $c = shift;
 
     # Confirm checkout
     $c->_confirm_handler();
 
-    # Shipping fee
-    $c->service('checkout')->calculate_shipping_fees();
+    # Calculate cart
+    # $c->service('checkout')->calculate_shipping_fees();
+    $c->service('checkout')->calculate_all();
 
     my $form = $c->form('checkout-confirm');
     return $c->render() if !$form->has_data;
