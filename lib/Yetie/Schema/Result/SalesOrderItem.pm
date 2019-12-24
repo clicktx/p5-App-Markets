@@ -4,7 +4,7 @@ use DBIx::Class::Candy -autotable => v1;
 
 use Yetie::Schema::Result::SalesOrder;
 use Yetie::Schema::Result::Product;
-use Yetie::Schema::Result::TaxRule;
+use Yetie::Schema::Result::Price;
 
 primary_column id => {
     data_type         => 'INT',
@@ -21,9 +21,8 @@ column product_id => {
     is_nullable => 0,
 };
 
-column tax_rule_id => {
-    data_type   => 'INT',
-    data_type   => Yetie::Schema::Result::TaxRule->column_info('id')->{data_type},
+column price_id => {
+    data_type   => Yetie::Schema::Result::Price->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
@@ -34,35 +33,10 @@ column quantity => {
     is_nullable => 0,
 };
 
-column price => Yetie::Schema::Result::Product->column_info('price');
-
-column currency_code => {
-    data_type   => 'VARCHAR',
-    size        => 3,
-    is_nullable => 0,
-};
-
-column is_tax_included => {
-    data_type     => 'BOOLEAN',
-    is_nullable   => 0,
-    default_value => 0,
-};
-
 column note => {
     data_type   => 'VARCHAR',
     size        => 255,
     is_nullable => 1,
-};
-
-# NOTE: deflate data at insert
-inflate_column price => {
-    inflate => sub { shift },
-    deflate => sub {
-        my ( $data_from_app, $result ) = @_;
-        $result->currency_code( $data_from_app->{currency_code} );
-        $result->is_tax_included( $data_from_app->{is_tax_included} );
-        return $data_from_app->{value};
-    },
 };
 
 # Relation
@@ -76,8 +50,8 @@ belongs_to
   { 'foreign.id' => 'self.product_id' };
 
 belongs_to
-  tax_rule => 'Yetie::Schema::Result::TaxRule',
-  { 'foreign.id' => 'self.tax_rule_id' };
+  price => 'Yetie::Schema::Result::Price',
+  { 'foreign.id' => 'self.price_id' };
 
 has_many
   shipment_items => 'Yetie::Schema::Result::ShipmentItem',
@@ -88,19 +62,15 @@ has_many
 sub to_data {
     my $self = shift;
 
-    my @columns = qw(id product_id product_title quantity note);
     my $data    = {};
+    my @columns = qw(id product_id product_title quantity note);
     $data->{$_} = $self->$_ for @columns;
 
     # price
-    $data->{price} = {
-        value           => $self->price,
-        currency_code   => $self->currency_code,
-        is_tax_included => $self->is_tax_included,
-    };
+    $data->{price} = $self->price->to_data;
 
     # relation
-    $data->{tax_rule} = $self->tax_rule->to_data;
+    $data->{tax_rule} = delete $data->{price}->{tax_rule};
 
     return $data;
 }

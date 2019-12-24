@@ -1,4 +1,4 @@
-package Yetie::Domain::List::LineItems;
+package Yetie::Domain::List::CartItems;
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
@@ -102,7 +102,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::List::LineItems
+Yetie::Domain::List::CartItems
 
 =head1 SYNOPSIS
 
@@ -110,7 +110,7 @@ Yetie::Domain::List::LineItems
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::List::LineItems> inherits all attributes from L<Yetie::Domain::List> and implements
+L<Yetie::Domain::List::CartItems> inherits all attributes from L<Yetie::Domain::List> and implements
 the following new ones.
 
 =head2 C<subtotal_excl_tax>
@@ -123,7 +123,7 @@ the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::List::LineItems> inherits all methods from L<Yetie::Domain::List> and implements
+L<Yetie::Domain::List::CartItems> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
 
 =head2 C<append>
@@ -155,4 +155,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity::Item>, L<Yetie::Domain::List>
+L<Yetie::Domain::Entity::CartItem>, L<Yetie::Domain::List>

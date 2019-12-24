@@ -18,7 +18,7 @@ has cart_id => (
 );
 has items => (
     is      => 'ro',
-    default => sub { __PACKAGE__->factory('list-line_items')->construct() }
+    default => sub { __PACKAGE__->factory('list-cart_items')->construct() }
 );
 has _total_amounts => (
     is         => 'ro',
@@ -66,7 +66,7 @@ sub merge {
             sub {
                 my ( $e, $num ) = @_;
                 if ( $e->equals($item) ) {
-                    $item->quantity( $e->quantity + $item->quantity );
+                    $item->set_quantity( $e->quantity + $item->quantity );
                     my $i = $num - 1;
                     splice @{ $clone->items->list }, $i, 1;
                 }
@@ -124,8 +124,8 @@ the following new ones.
     my $items = $cart->items;
     $items->each( sub { ... } );
 
-Return L<Yetie::Domain::List::LineItems> object.
-Elements is L<Yetie::Domain::Entity::LineItem> object.
+Return L<Yetie::Domain::List::CartItems> object.
+Elements is L<Yetie::Domain::Entity::CartItem> object.
 
 =head2 C<total_amounts>
 
@@ -218,5 +218,5 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::List::Linetems>, L<Yetie::Domain::Entity::LineItem>,
+L<Yetie::Domain::List::CartItems>, L<Yetie::Domain::Entity::CartItem>,
 L<Yetie::Domain::List::TotalAmounts>, L<Yetie::Domain::Entity>

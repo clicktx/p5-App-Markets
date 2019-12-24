@@ -59,25 +59,25 @@ sub t03_items_orderd : Tests() {
     $t->get_ok('/admin/order/999/edit/items')->status_is(404);
 
     my $post_data = {
-        csrf_token        => $self->csrf_token,
-        'item.1.price'    => q{},
-        'item.1.quantity' => q{},
-        'item.2.price'    => 101,
-        'item.2.quantity' => 1,
+        csrf_token           => $self->csrf_token,
+        'item.1.price.value' => q{},
+        'item.1.quantity'    => q{},
+        'item.2.price.value' => 101,
+        'item.2.quantity'    => 1,
     };
     $t->post_ok( '/admin/order/1/edit/items', form => $post_data )->status_is( 200, 'right items post validate error' );
 
-    $post_data->{'item.1.price'}    = 555;
-    $post_data->{'item.1.quantity'} = 55;
+    $post_data->{'item.1.quantity'}    = 55;
+    $post_data->{'item.1.price.value'} = 555;
     $t->post_ok( '/admin/order/1/edit/items', form => $post_data )->status_is( 302, 'right items update' );
 
-    my $item = $t->app->resultset('SalesOrderItem')->find(1);
+    my $item = $t->app->resultset('SalesOrderItem')->find(1001);
     is $item->quantity, 55, 'right update item quantity';
-    ok $item->price == 555, 'right update item price';
+    ok $item->price->value == 555, 'right update item price';
 
     # roll back data
-    $post_data->{'item.1.price'}    = 300;
-    $post_data->{'item.1.quantity'} = 3;
+    $post_data->{'item.1.price.value'} = 300;
+    $post_data->{'item.1.quantity'}    = 3;
     $t->post_ok( '/admin/order/1/edit/items', form => $post_data );
 }
 

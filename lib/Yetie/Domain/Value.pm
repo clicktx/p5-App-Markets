@@ -23,7 +23,8 @@ around BUILDARGS => sub {
 };
 
 around clone => sub {
-    my ( $orig, $class, %params ) = @_;
+    my ( $orig, $class ) = ( shift, shift );
+    my %params = $class->args_to_hash(@_);
 
     my $clone = $class->$orig(%params);
     return $clone->rehash;
@@ -36,7 +37,7 @@ sub equals {
 
 sub is_modified {
     my $self = shift;
-    return $self->_hash_sum ne $self->hash_code ? 1 : 0;
+    return $self->hash_sum ne $self->hash_code ? 1 : 0;
 }
 
 sub to_data { return shift->value }
@@ -82,7 +83,11 @@ the following new ones.
 
 =head2 C<clone>
 
+    # Hash arguments
     my $clone = $obj->clone(%params);
+
+    # Hash reference arguments
+    my $clone = $obj->clone(\%params);
 
 =head2 C<equals>
 

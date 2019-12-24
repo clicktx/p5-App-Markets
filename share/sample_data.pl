@@ -198,14 +198,23 @@
         [ 11, 6, 4, undef ],
         [ 12, 7, 5, undef ], # trashed on test
     ],
+    'Price' => [
+        [qw/id tax_rule_id value currency_code is_tax_included/],
+        [ 91, 1, 300, 'USD', 0 ],
+        [ 92, 2, 101, 'USD', 0 ],
+        [ 93, 5, 200, 'USD', 0 ],
+        [ 94, 5, 333, 'USD', 0 ],
+        [ 95, 5, 101, 'USD', 0 ],
+        [ 96, 5, 200, 'USD', 0 ],
+    ],
     'SalesOrderItem' => [
-        [qw/id order_id product_id quantity product_title price tax_rule_id currency_code is_tax_included/],
-        [ 1001, 1, 3, 3, 'product 3', 300, 1, 'USD', 0 ],
-        [ 1002, 1, 1, 1, 'product 1', 101, 2, 'USD', 0 ], # change price
-        [ 1003, 2, 2, 2, 'product 2', 200, 5, 'USD', 0 ],
-        [ 1004, 3, 4, 4, 'product 4', 333, 5, 'USD', 0 ],
-        [ 1005, 12, 1, 4, 'product 1', 101, 5, 'USD', 0 ], # trashed on test
-        [ 1006, 12, 2, 4, 'product 2', 200, 5, 'USD', 0 ], # trashed on test
+        [qw/id order_id product_id quantity product_title price_id/],
+        [ 1001, 1, 3, 3, 'product 3', 91 ],
+        [ 1002, 1, 1, 1, 'product 1', 92 ], # change price
+        [ 1003, 2, 2, 2, 'product 2', 93 ],
+        [ 1004, 3, 4, 4, 'product 4', 94 ],
+        [ 1005, 12, 1, 4, 'product 1', 95 ], # trashed on test
+        [ 1006, 12, 2, 4, 'product 2', 96 ], # trashed on test
     ],
     'Shipment' => [
         [qw/id order_id tracking_number completed_at/],
