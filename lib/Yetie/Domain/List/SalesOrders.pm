@@ -49,19 +49,19 @@ sub subtotal_incl_tax {
     return $self->reduce( sub { $a + $b->subtotal_incl_tax }, $price );
 }
 
-sub total_shipping_fee_excl_tax {
-    my $self = shift;
+# sub total_shipping_fee_excl_tax {
+#     my $self = shift;
 
-    my $price = $self->_init_price_object( is_tax_included => 0 );
-    return $self->reduce( sub { $a + $b->shipping_fee_excl_tax }, $price );
-}
+#     my $price = $self->_init_price_object( is_tax_included => 0 );
+#     return $self->reduce( sub { $a + $b->shipping_fee_excl_tax }, $price );
+# }
 
-sub total_shipping_fee_incl_tax {
-    my $self = shift;
+# sub total_shipping_fee_incl_tax {
+#     my $self = shift;
 
-    my $price = $self->_init_price_object( is_tax_included => 1 );
-    return $self->reduce( sub { $a + $b->shipping_fee_incl_tax }, $price );
-}
+#     my $price = $self->_init_price_object( is_tax_included => 1 );
+#     return $self->reduce( sub { $a + $b->shipping_fee_incl_tax }, $price );
+# }
 
 sub total_quantity {
     return shift->reduce( sub { $a + $b->items->total_quantity }, 0 );
@@ -148,14 +148,6 @@ Delete except the first element. Also delete all items of the first element.
 =head2 C<subtotal_incl_tax>
 
     my $subtotal_incl_tax = $items->subtotal_incl_tax;
-
-=head2 C<total_shipping_fee_excl_tax>
-
-    my $fee = $sales_orders->total_shipping_fee_excl_tax;
-
-=head2 C<total_shipping_fee_incl_tax>
-
-    my $fee = $sales_orders->total_shipping_fee_incl_tax;
 
 =head2 C<total_quantity>
 
