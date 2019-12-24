@@ -1,8 +1,8 @@
-package Yetie::Domain::Entity::OrderLineItem;
+package Yetie::Domain::Entity::SalesItem;
 use Moose;
 use namespace::autoclean;
 
-extends 'Yetie::Domain::Entity::LineItem';
+extends 'Yetie::Domain::Entity::CartItem';
 
 sub to_data {
     my $self = shift;
@@ -27,7 +27,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Domain::Entity::OrderLineItem
+Yetie::Domain::Entity::SalesItem
 
 =head1 SYNOPSIS
 
@@ -35,13 +35,13 @@ Yetie::Domain::Entity::OrderLineItem
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::OrderLineItem> inherits all attributes from L<Yetie::Domain::Entity::LineItem> and L<Yetie::Domain::Role::Tax>.
+L<Yetie::Domain::Entity::SalesItem> inherits all attributes from L<Yetie::Domain::Entity::LineItem> and L<Yetie::Domain::Role::Tax>.
 
 Implements the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::OrderLineItem> inherits all methods from L<Yetie::Domain::Entity::LineItem> and L<Yetie::Domain::Role::Tax>.
+L<Yetie::Domain::Entity::SalesItem> inherits all methods from L<Yetie::Domain::Entity::LineItem> and L<Yetie::Domain::Role::Tax>.
 
 Implements the following new ones.
 

@@ -10,6 +10,7 @@ has _hash_sum => (
     is         => 'ro',
     isa        => 'Str',
     lazy_build => 1,
+    reader     => 'hash_sum',
     writer     => '_set_hash_sum',
 );
 sub _build__hash_sum { return shift->hash_code }
@@ -32,8 +33,8 @@ around BUILDARGS => sub {
 sub BUILD {
     my $self = shift;
 
-    # Lazy build
-    $self->_hash_sum;
+    # touch
+    $self->hash_sum;
 }
 
 sub args_to_hash { return %{ shift->args_to_hashref(@_) } }
@@ -80,8 +81,9 @@ sub rehash {
 sub set_attribute {
     my ( $self, $key, $value ) = @_;
 
-    my $attr = $self->$key;
-    Scalar::Util::blessed($attr) ? $attr->set_attributes($value) : $self->$key($value);
+    my $attr   = $self->$key;
+    my $setter = "set_$key";
+    Scalar::Util::blessed($attr) ? $attr->set_attributes($value) : $self->$setter($value);
     return $self;
 }
 
@@ -135,10 +137,19 @@ Yetie::Domain::Base
 
 Domain object base class.
 
+=head1 ATTRIBUTES
+
+L<Yetie::Domain> inherits all attributes from L<Moose> and implements the following new ones.
+
+=head2 C<hash_sum>
+
+Return cached SHA1 checksum.
+
+SEE L</hash_code>
+
 =head1 METHODS
 
-L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements
-the following new ones.
+L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements the following new ones.
 
 =head2 C<args_to_hash>
 

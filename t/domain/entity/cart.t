@@ -43,20 +43,20 @@ sub _create_entity {
 }
 
 use_ok 'Yetie::Domain::Entity::Cart';
-use_ok 'Yetie::Domain::Entity::LineItem';
+use_ok 'Yetie::Domain::Entity::CartItem';
 
 subtest 'basic' => sub {
     my $cart = Yetie::Domain::Entity::Cart->new;
     ok $cart->id;
-    isa_ok $cart->items, 'Yetie::Domain::List::LineItems';
+    isa_ok $cart->items, 'Yetie::Domain::List::CartItems';
 };
 
 subtest 'attributes' => sub {
     my $cart = _create_entity;
     is $cart->cart_id, '12345', 'right cart_id';
 
-    isa_ok $cart->items, 'Yetie::Domain::List::LineItems', 'right items';
-    isa_ok $cart->items->first, 'Yetie::Domain::Entity::LineItem', 'right items';
+    isa_ok $cart->items, 'Yetie::Domain::List::CartItems', 'right items';
+    isa_ok $cart->items->first, 'Yetie::Domain::Entity::CartItem', 'right items';
 };
 
 subtest 'methods' => sub {
@@ -82,13 +82,13 @@ subtest 'methods' => sub {
 
 subtest 'add_item' => sub {
     my $cart = _create_entity;
-    $cart->add_item( Yetie::Factory->new('entity-line_item')->construct( product_id => 11 ) );
+    $cart->add_item( Yetie::Factory->new('entity-cart_item')->construct( product_id => 11 ) );
     is $cart->items->last->product_id, '11', 'right last item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
     $cart->add_item(
-        Yetie::Factory->new('entity-line_item')->construct( product_id => 1, quantity => 1, price => 100 ) );
+        Yetie::Factory->new('entity-cart_item')->construct( product_id => 1, quantity => 1, price => 100 ) );
     is $cart->items->first->quantity, '2', 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
 };
