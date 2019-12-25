@@ -16,6 +16,7 @@ has payment_method => (
     is      => 'ro',
     isa     => 'Yetie::Domain::Entity::PaymentMethod',
     default => sub { shift->factory('entity-payment_method')->construct() },
+    writer  => 'set_payment_method',
 );
 has sales_orders => (
     is      => 'ro',
