@@ -16,9 +16,7 @@ our @EXPORT_OK = (qw(array_to_hash directories create_token load_class uuid));
 L<Yetie::Util> implements the following functions, which can be imported
 individually.
 
-=over
-
-=item C<array_to_hash>
+=head2 C<array_to_hash>
 
     # { 0 => 'a', 1 => 'b', 2 => 'c' }
     my %hash = array_to_hash( 'a', 'b', 'c' );
@@ -30,8 +28,6 @@ Convert array to hash.
 
 Return C<Hash> or C<Hash reference>.
 
-=back
-
 =cut
 
 sub array_to_hash {
@@ -42,9 +38,7 @@ sub array_to_hash {
     return wantarray ? %{$hashref} : $hashref;
 }
 
-=over
-
-=item C<directories>
+=head2 C<directories>
 
 List all subdirectories in the directory.
 
@@ -56,8 +50,6 @@ ignore - ignore directory name.
 
     $sub_directories = directories('hoge', { ignore => ['huga'] });
     @sub_directories = directories('hoge', { ignore => ['huga'] });
-
-=back
 
 =cut
 
@@ -79,9 +71,7 @@ sub directories {
     return wantarray ? @sub_directories : \@sub_directories;
 }
 
-=over
-
-=item C<create_token>
+=head2 C<create_token>
 
 Generate secure token. based L<Session::Token>
 
@@ -93,15 +83,11 @@ B<options>
 
 SEE ALSO L<Session::Token>
 
-=back
-
 =cut
 
 sub create_token { Session::Token->new(@_)->get }
 
-=over
-
-=item C<hashids>
+=head2 C<hashids>
 
 Generate short unique ids.
 
@@ -115,8 +101,6 @@ Generate short unique ids.
 
 SEE ALSO L<Hashids>
 
-=back
-
 =cut
 
 sub hashids {
@@ -128,9 +112,7 @@ sub hashids {
     );
 }
 
-=over
-
-=item C<load_class>
+=head2 C<load_class>
 
 Load a class.
 
@@ -139,8 +121,6 @@ Load a class.
     load_class 'Foo::Bar';
 
 SEE ALSO L<Mojo::Loader/load_class>
-
-=back
 
 =cut
 
@@ -153,9 +133,7 @@ sub load_class {
     1;
 }
 
-=over
-
-=item C<uuid>
+=head2 C<uuid>
 
 Create UUID version 4 token.
 
@@ -163,8 +141,6 @@ Create UUID version 4 token.
     my $token = uuid();
 
 SEE ALSO L<Session::Token/TOKEN-TEMPLATES>
-
-=back
 
 =cut
 
