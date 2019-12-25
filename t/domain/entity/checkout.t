@@ -98,6 +98,7 @@ subtest 'get_order_data' => sub {
     cmp_deeply $checkout->get_order_data,
       {
         billing_address => { id => ignore() },
+        payment_method  => ignore(),
         sales_orders    => [
             {
                 items            => ignore(),

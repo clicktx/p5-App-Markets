@@ -12,6 +12,11 @@ has billing_address => (
     default => sub { shift->factory('entity-address')->construct() },
     writer  => 'set_billing_address',
 );
+has payment_method => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Entity::PaymentMethod',
+    default => sub { shift->factory('entity-payment_method')->construct() },
+);
 has sales_orders => (
     is      => 'ro',
     isa     => 'Yetie::Domain::List::SalesOrders',
