@@ -12,6 +12,11 @@ sub add_all_cart_items {
     return;
 }
 
+sub calculate_all {
+    my $self = shift;
+    return;
+}
+
 sub calculate_shipping_fees {
     my $self = shift;
 
@@ -20,9 +25,9 @@ sub calculate_shipping_fees {
         sub {
             my $sales_order = shift;
 
-            my $shipping_fee = $self->service('shipping')->get_shipping_fee($sales_order);
-            my $price = $sales_order->shipping_fee->clone( value => $shipping_fee );
-            $sales_order->shipping_fee($price);
+            # my $shipping_fee = $self->service('shipping')->get_shipping_fee($sales_order);
+            # my $price = $sales_order->shipping_fee->clone( value => $shipping_fee );
+            # $sales_order->shipping_fee($price);
         }
     );
     return;
@@ -74,12 +79,7 @@ sub _create {
     my $self = shift;
 
     my $checkout = $self->factory('entity-checkout')->construct();
-    my $price    = $self->service('price')->create_object(0);
-    my $tax_rule = $self->service('tax')->get_rule;
-    $checkout->sales_orders->create_sales_order(
-        shipping_fee => $price->to_data,
-        tax_rule     => $tax_rule->to_data,
-    );
+    $checkout->sales_orders->create_sales_order();
     $self->_update($checkout);
 
     $self->controller->stash( checkout => $checkout );
