@@ -28,6 +28,10 @@ individually.
         # hash reference
         my $args = args2hash(@_);
     }
+
+Convert arguments.
+
+Return C<Hash> or C<Hash reference>.
 =cut
 
 sub args2hash {
