@@ -67,6 +67,8 @@ sub get_order_data {
 
 sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
 
+sub has_payment_method { return shift->payment_method->is_empty ? 0 : 1 }
+
 sub has_shipping_address {
     my $self = shift;
 
@@ -150,6 +152,12 @@ Default $sales_orders->first
 =head2 C<has_billing_address>
 
     my $bool = $checkout->has_billing_address;
+
+Return boolean value.
+
+=head2 C<has_payment_method>
+
+    my $bool = $checkout->has_payment_method;
 
 Return boolean value.
 

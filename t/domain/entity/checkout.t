@@ -71,6 +71,9 @@ my %example_data = (
         organization  => '',
         phone         => '',
     },
+    payment_method => {
+        id => 1,
+    },
 );
 
 sub _create_entity {
@@ -121,6 +124,14 @@ subtest 'has_billing_address' => sub {
 
     $checkout = _create_entity;
     is $checkout->has_billing_address, 1, 'right has address info';
+};
+
+subtest 'has_payment_method' => sub {
+    my $checkout = Yetie::Factory->new('entity-checkout')->construct();
+    is $checkout->has_payment_method, 0, 'right no address info';
+
+    $checkout = _create_entity;
+    is $checkout->has_payment_method, 1, 'right has address info';
 };
 
 subtest 'has_shipping_address' => sub {
