@@ -9,12 +9,31 @@ use List::Util qw/reduce/;
 use Mojo::Loader;
 use Session::Token;
 
-our @EXPORT_OK = (qw(array_to_hash directories create_token load_class uuid));
+our @EXPORT_OK = (qw(args2hash array_to_hash directories create_token load_class uuid));
 
 =head1 FUNCTIONS
 
 L<Yetie::Util> implements the following functions, which can be imported
 individually.
+
+=head2 C<args2hash>
+
+    use Yetie::Util qw/args2hash/;
+    sub foo{
+        my $self = shift;
+
+        # hash
+        my %args = args2hash(@_);
+
+        # hash reference
+        my $args = args2hash(@_);
+    }
+=cut
+
+sub args2hash {
+    my $args = @_ > 1 ? +{@_} : shift || {};
+    return wantarray ? %{$args} : $args;
+}
 
 =head2 C<array_to_hash>
 

@@ -1,4 +1,6 @@
 package Yetie::Domain::Entity::SalesOrder;
+use Yetie::Util qw(args2hash);
+
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
@@ -44,7 +46,7 @@ sub subtotal_incl_tax {
 
 sub _init_price {
     my $self = shift;
-    my $args = $self->args_to_hashref(@_);
+    my $args = args2hash(@_);
 
     my $first_item = $self->items->first;
     return $first_item

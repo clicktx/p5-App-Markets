@@ -1,6 +1,7 @@
 package Yetie::Domain::Base;
 use Scalar::Util qw();
 use Yetie::Factory;
+use Yetie::Util qw(args2hash);
 
 use Moose;
 use namespace::autoclean;
@@ -35,13 +36,6 @@ sub BUILD {
 
     # touch
     $self->hash_sum;
-}
-
-sub args_to_hash { return %{ shift->args_to_hashref(@_) } }
-
-sub args_to_hashref {
-    my $self = shift;
-    return @_ > 1 ? +{@_} : shift || {};
 }
 
 sub factory { return Yetie::Factory->new( $_[1] ) }
@@ -89,7 +83,7 @@ sub set_attribute {
 
 sub set_attributes {
     my $self = shift;
-    my $args = $self->args_to_hashref(@_);
+    my $args = args2hash(@_);
 
     foreach my $key ( keys %{$args} ) {
         my $value = $args->{$key};
@@ -150,30 +144,6 @@ SEE L</hash_code>
 =head1 METHODS
 
 L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements the following new ones.
-
-=head2 C<args_to_hash>
-
-    sub foo {
-        my $self = shift;
-        my %hash = $self->args_to_hash(@_);
-        ...
-    }
-
-    # Arguments hash or hash reference
-    $self->foo( bar => 1 );
-    $self->foo( { baz => 2 } );
-
-=head2 C<args_to_hashref>
-
-    sub foo {
-        my $self = shift;
-        my $hash_ref = $self->args_to_hashref(@_);
-        ...
-    }
-
-    # Arguments hash or hash reference
-    $self->foo( bar => 1 );
-    $self->foo( { baz => 2 } );
 
 =head2 C<factory>
 
