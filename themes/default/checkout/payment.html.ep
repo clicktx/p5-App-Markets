@@ -18,5 +18,12 @@
 
 <h3>Select a payment methods</h3>
 
+<div>
+    <%= form_for 'rn.checkout.payment' => ( method => 'POST' ) => begin %>
+        <%= form_widget 'checkout-payment#payment_method' %>
+        <%= csrf_field %>
+        <%= submit_button __('btn.next') %>
+    <% end %>
+</div>
 
-<%= link_to 'Back to page' => 'rn.cart' %>
+<%= link_to 'Back to page' => 'rn.checkout.billing_address' %>
