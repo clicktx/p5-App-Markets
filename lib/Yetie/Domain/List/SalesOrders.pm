@@ -1,4 +1,6 @@
 package Yetie::Domain::List::SalesOrders;
+use Yetie::Util qw(args2hash);
+
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
@@ -13,7 +15,7 @@ sub count_total_items {
 
 sub create_sales_order {
     my $self = shift;
-    my $args = $self->args_to_hashref(@_);
+    my $args = args2hash(@_);
 
     my $sales_order = $self->factory('entity-sales_order')->construct($args);
     $self->append($sales_order);
@@ -69,7 +71,7 @@ sub total_quantity {
 
 sub _init_price_object {
     my $self = shift;
-    my $args = $self->args_to_hashref(@_);
+    my $args = args2hash(@_);
 
     my $factory        = $self->factory('value-price');
     my $first_element = $self->first;

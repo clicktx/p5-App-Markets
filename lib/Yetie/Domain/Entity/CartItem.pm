@@ -1,4 +1,6 @@
 package Yetie::Domain::Entity::CartItem;
+use Yetie::Util qw(args2hash);
+
 use Moose;
 use namespace::autoclean;
 
@@ -19,7 +21,7 @@ has product_title => (
 
 override set_attributes => sub {
     my $self = shift;
-    my $args = $self->args_to_hashref(@_);
+    my $args = args2hash(@_);
 
     my $params    = delete $args->{price};
     my $new_price = $self->price->clone($params);
