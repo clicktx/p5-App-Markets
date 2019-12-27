@@ -43,6 +43,7 @@
             Change
     <% end %>
     id: <%= $checkout->payment_method->id %>
+    name: <%= $checkout->payment_method->name %>
 </div>
 
 <div class="">
