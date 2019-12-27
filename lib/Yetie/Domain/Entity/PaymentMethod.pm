@@ -3,6 +3,17 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
+has name => (
+    is  => 'ro',
+    isa => 'Str',
+);
+
+# description
+# surcharge 支払い手数料  x% + x円
+# surcharge_title
+# instructions
+# logo url alt
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
