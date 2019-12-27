@@ -1,4 +1,13 @@
 (
+    # Payment Method
+    'PaymentMethod' => [
+        [qw/id name/],
+        [ 1, 'Bank Transfer Payment' ],
+        [ 2, 'Paypal' ],
+        [ 3, 'Cash On Delivery Payment' ],
+        [ 4, 'Credit Card' ],
+    ],
+
     # Category
     'Category' => [
         [qw/id root_id lft rgt level title/],
