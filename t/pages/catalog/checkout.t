@@ -40,7 +40,7 @@ sub test_01_no_logged_in : Tests() {
         qw(
         /checkout/shipping-address
         /checkout/delivery-options
-        /checkout/payment-option
+        /checkout/payment
         /checkout/billing-address
         /checkout/confirm
         )
@@ -95,7 +95,7 @@ sub test_04_billing_address : Tests() {
         postal_code   => 'bar',
         phone         => 'baz',
     };
-    $t->post_ok( '/checkout/billing-address', form => $post_data )->status_is(200)->content_like(qr/confirm/);
+    $t->post_ok( '/checkout/billing-address', form => $post_data )->status_is(200);
 }
 
 sub test_05_select_address : Tests() {
@@ -111,6 +111,19 @@ sub test_05_select_address : Tests() {
 
     $t->post_ok( '/checkout/billing-address/select', form => $post_data )
       ->status_is( 200, 'right select billing address' );
+}
+
+sub test_06_select_payment_method : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    my $post_data = {
+        csrf_token     => $self->csrf_token,
+        payment_method => 2,
+    };
+
+    $t->post_ok( '/checkout/payment', form => $post_data )->status_is( 200, 'right select payment' )
+      ->content_like(qr/confirm/);
 }
 
 sub test_10_confirm : Tests() {
