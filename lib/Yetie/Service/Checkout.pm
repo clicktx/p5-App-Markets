@@ -59,6 +59,15 @@ sub save {
     return $self->_update($checkout);
 }
 
+sub set_attr {
+    my ( $self, $attr, $value ) = @_;
+
+    my $checkout = $self->get;
+    my $setter_method = "set_$attr";
+    $checkout->$setter_method($value);
+    return $self->save;
+}
+
 sub set_billing_address {
     my ( $self, @args ) = @_;
 
