@@ -89,8 +89,24 @@ sub billing_address_select {
 sub payment {
     my $c = shift;
 
-    # return $c->redirect_to('rn.checkout.billing_address');
-    return $c->render();
+    my $payment_methods = $c->service('payment')->get_payment_methods();
+
+    # Init Form
+    my $form    = $c->form('checkout-payment');
+    my $choices = $payment_methods->to_form_choices;
+    $form->field('payment_method')->choices($choices);
+
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
+    return $c->render() if !$form->do_validate;
+
+    # Set Payment Method
+    my $payment = $payment_methods->get_by_id( $form->param('payment_method') );
+    $c->service('checkout')->set_attr( payment_method => $payment );
+
+    return $c->_confirm_handler;
 }
 
 sub confirm {
@@ -140,6 +156,9 @@ sub _confirm_handler {
 
     # Billing address
     return $c->redirect_to('rn.checkout.billing_address') if !$checkout->has_billing_address;
+
+    # Payment method
+    return $c->redirect_to('rn.checkout.payment') if !$checkout->has_payment_method;
 
     # Redirect if not from confirmation page
     if ( $c->stash('action') ne 'confirm' ) { return $c->redirect_to('rn.checkout.confirm') }
