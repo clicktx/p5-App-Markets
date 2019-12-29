@@ -56,6 +56,9 @@ sub get_order_data {
     # Billing Address
     $data->{billing_address} = { id => $data->{billing_address}->{id} };
 
+    # Payment Method
+    $data->{payment_method} = { id => $data->{payment_method}->{id} };
+
     # Sales Orders
     foreach my $sales_order ( @{ $data->{sales_orders} } ) {
         my $id = $sales_order->{shipping_address}->{id};
