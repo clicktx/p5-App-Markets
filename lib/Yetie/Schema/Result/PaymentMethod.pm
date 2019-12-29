@@ -13,4 +13,10 @@ column name => {
     is_nullable => 0,
 };
 
+# Relation
+has_many
+  sales => 'Yetie::Schema::Result::Sales',
+  { 'foreign.payment_method_id' => 'self.id' },
+  { cascade_delete              => 0 };
+
 1;
