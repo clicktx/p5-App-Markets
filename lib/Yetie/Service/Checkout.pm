@@ -1,5 +1,6 @@
 package Yetie::Service::Checkout;
 use Mojo::Base 'Yetie::Service';
+use Yetie::Util qw(args2hash);
 
 sub add_all_cart_items {
     my $self = shift;
@@ -59,10 +60,28 @@ sub save {
     return $self->_update($checkout);
 }
 
+sub select_address {
+    my ( $self, %args ) = ( shift, args2hash(@_) );
+
+    my $address_type = $args{address_type};
+    my $select_no    = $args{select_no};
+
+    my $customer_id = $self->controller->server_session->customer_id;
+    return if !$customer_id;
+
+    my $addresses = $self->service('customer')->get_address_list($customer_id);
+    my $selected  = $addresses->get($select_no);
+    return if !$selected;
+
+    # Set Address
+    $self->set_attr( $address_type => $selected );
+    return 1;
+}
+
 sub set_attr {
     my ( $self, $attr, $value ) = @_;
 
-    my $checkout = $self->get;
+    my $checkout      = $self->get;
     my $setter_method = "set_$attr";
     $checkout->$setter_method($value);
     return $self->save;
@@ -172,6 +191,15 @@ Return L<Yetie::Domain::Entity::Checkout> object.
 =head2 C<save>
 
     $service->save;
+
+=head2 C<select_address>
+
+    my $bool = $service->select_address(
+        address_type => 'billing_address',
+        select_no    => $select_no,
+    );
+
+Return boolean value.
 
 =head2 C<set_billing_address>
 
