@@ -45,13 +45,6 @@ sub shipping_address {
     return $c->_confirm_handler;
 }
 
-sub shipping_address_select {
-    my $c = shift;
-
-    $c->_select_address('shipping_address');
-    return $c->_confirm_handler;
-}
-
 sub delivery_option {
     my $c = shift;
     return $c->redirect_to('rn.checkout.payment');
@@ -79,10 +72,21 @@ sub billing_address {
     return $c->_confirm_handler;
 }
 
-sub billing_address_select {
-    my $c = shift;
+sub select_address {
+    my $c            = shift;
+    my $address_type = $c->stash('address_type');
 
-    $c->_select_address('billing_address');
+    my $form = $c->form('checkout-select_address');
+    return $c->reply->error() if !$form->do_validate;
+
+    # Set address
+    my $select_no = $form->param('select_no');
+    my $res       = $c->service('checkout')->select_address(
+        address_type => $address_type,
+        select_no    => $select_no,
+    );
+    return $c->reply->error() if !$res;
+
     return $c->_confirm_handler;
 }
 
@@ -242,27 +246,6 @@ sub _complete_handler {
 
     # redirect_to thank you page
     return $c->redirect_to('rn.checkout.complete');
-}
-
-sub _select_address {
-    my ( $c, $address_type ) = @_;
-
-    my $form = $c->form('checkout-select_address');
-    return if !$form->do_validate;
-
-    my $select_no   = $form->param('select_no');
-    my $customer_id = $c->server_session->customer_id;
-    my $addresses   = $c->service('customer')->get_address_list($customer_id);
-    my $selected    = $addresses->get($select_no);
-    return if !$selected;
-
-    # Set Address
-    # NOTE: set_billing_address or set_shipping_address
-    my $checkout = $c->service('checkout')->get;
-    my $method   = 'set_' . $address_type;
-    $checkout->$method($selected);
-    $c->service('checkout')->save;
-    return;
 }
 
 1;
