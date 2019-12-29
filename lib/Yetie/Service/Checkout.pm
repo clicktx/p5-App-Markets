@@ -172,6 +172,10 @@ Add all cart items to the first sales order.
 
     $service->add_all_cart_items;
 
+=head2 C<calculate_all>
+
+experiment
+
 =head2 C<calculate_shipping_fees>
 
     $service->calculate_shipping_fees;
