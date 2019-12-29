@@ -52,14 +52,8 @@ sub to_data {
     my %data;
     foreach my $key ( keys %{$hash} ) {
         my $value = $hash->{$key};
-        if ( Scalar::Util::blessed $value) {
-            if ( $value->can('to_data') ) { $data{$key} = $value->to_data }
-            else {
-                my $class = ref $value;
-                Carp::croak "$key($class) has not \"to_data\" method";
-            }
-        }
-        else { $data{$key} = $value }
+        if ( Scalar::Util::blessed $value) { $data{$key} = _to_data( $key => $value ) }
+        else                               { $data{$key} = $value }
     }
     return \%data;
 }
@@ -108,6 +102,15 @@ sub _recursive_call {
         }
     }
     return;
+}
+
+sub _to_data {
+    my ( $key, $value ) = @_;
+
+    return $value->to_data if $value->can('to_data');
+
+    my $class = ref $value;
+    Carp::croak "$key($class) has not \"to_data\" method";
 }
 
 no Moose;
