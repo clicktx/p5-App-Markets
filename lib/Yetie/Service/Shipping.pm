@@ -2,7 +2,7 @@ package Yetie::Service::Shipping;
 use Mojo::Base 'Yetie::Service';
 
 sub get_shipping_fee {
-    my ( $self, $sales_order ) = @_;
+    # my ( $self, $sales_order ) = @_;
 
     # 送料テーブルから取得
     # $self->resultset('ShippingRate')
