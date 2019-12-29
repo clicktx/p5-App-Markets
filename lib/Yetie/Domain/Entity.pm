@@ -52,8 +52,14 @@ sub to_data {
     my %data;
     foreach my $key ( keys %{$hash} ) {
         my $value = $hash->{$key};
-        if ( Scalar::Util::blessed $value) { $data{$key} = $value->to_data if $value->can('to_data') }
-        else                               { $data{$key} = $value }
+        if ( Scalar::Util::blessed $value) {
+            if ( $value->can('to_data') ) { $data{$key} = $value->to_data }
+            else {
+                my $class = ref $value;
+                Carp::croak "$key($class) has not \"to_data\" method";
+            }
+        }
+        else { $data{$key} = $value }
     }
     return \%data;
 }
