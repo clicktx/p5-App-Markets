@@ -1,5 +1,5 @@
 package Yetie::Factory::Entity::SalesItem;
-use Mojo::Base 'Yetie::Factory::Entity::CartItem';
+use Mojo::Base 'Yetie::Factory::Entity::LineItem';
 
 1;
 __END__
@@ -19,12 +19,12 @@ Yetie::Factory::Entity::SalesItem
 
 =head1 ATTRIBUTES
 
-L<Yetie::Factory::Entity::SalesItem> inherits all attributes from L<Yetie::Factory::Entity::CartItem> and implements
+L<Yetie::Factory::Entity::SalesItem> inherits all attributes from L<Yetie::Factory::Entity::LineItem> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Factory::Entity::SalesItem> inherits all methods from L<Yetie::Factory::Entity::CartItem> and implements
+L<Yetie::Factory::Entity::SalesItem> inherits all methods from L<Yetie::Factory::Entity::LineItem> and implements
 the following new ones.
 
 =head1 AUTHOR
@@ -33,4 +33,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Factory::Entity::CartItem>
+L<Yetie::Factory::Entity::LineItem>, L<Yetie::Factory>
