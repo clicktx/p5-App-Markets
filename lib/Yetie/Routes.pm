@@ -146,12 +146,12 @@ sub add_catalog_routes {
     {
         my $checkout = $if_customer->any('/checkout')->to('checkout#');
         $checkout->any('/shipping-address')->to('#shipping_address')->name('rn.checkout.shipping_address');
-        $checkout->post('/shipping-address/select')->to('#shipping_address_select')
-          ->name('rn.checkout.shipping_address.select');
-        $checkout->any('/delivery-options')->to('#delivery_option')->name('rn.checkout.delivery_option');
         $checkout->any('/billing-address')->to('#billing_address')->name('rn.checkout.billing_address');
-        $checkout->post('/billing-address/select')->to('#billing_address_select')
+        $checkout->post('/shipping-address/select')->to( '#select_address', address_type => 'shipping_address' )
+          ->name('rn.checkout.shipping_address.select');
+        $checkout->post('/billing-address/select')->to( '#select_address', address_type => 'billing_address' )
           ->name('rn.checkout.billing_address.select');
+        $checkout->any('/delivery-options')->to('#delivery_option')->name('rn.checkout.delivery_option');
         $checkout->any('/payment')->to('#payment')->name('rn.checkout.payment');
         $checkout->any('/confirm')->to('#confirm')->name('rn.checkout.confirm');
     }
