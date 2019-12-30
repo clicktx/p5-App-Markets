@@ -3,6 +3,10 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
 
+has _item_isa => (
+    is      => 'ro',
+    default => 'Yetie::Domain::Entity::LineItem',
+);
 has _subtotal_excl_tax => (
     is       => 'ro',
     isa      => 'Yetie::Domain::Value::Price',
@@ -79,6 +83,9 @@ sub remove {
 
 sub _append_item {
     my ( $self, $item ) = @_;
+
+    my $isa = $self->_item_isa;
+    Carp::croak "Append item are not isa $isa" if !$item->isa($isa);
     my $new = $self->list->append($item);
     return $self->list($new);
 }

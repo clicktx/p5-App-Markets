@@ -3,6 +3,8 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List::CartItems';
 
+has _item_isa => ( default => 'Yetie::Domain::Entity::SalesItem' );
+
 sub to_order_data {
     return shift->reduce( sub { [ @{$a}, $b->to_order_data ], }, [] );
 }
