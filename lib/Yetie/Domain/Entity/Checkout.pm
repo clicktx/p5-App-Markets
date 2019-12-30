@@ -59,11 +59,8 @@ sub get_order_data {
     # Payment Method
     $data->{payment_method} = { id => $data->{payment_method}->{id} };
 
-    # Sales Orders
-    foreach my $sales_order ( @{ $data->{sales_orders} } ) {
-        my $id = $sales_order->{shipping_address}->{id};
-        $sales_order->{shipping_address} = { id => $id };
-    }
+    # Override Sales Orders
+    $data->{sales_orders} = $self->sales_orders->to_order_data();
 
     return $data;
 }

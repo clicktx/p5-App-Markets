@@ -10,6 +10,7 @@ my %example_data = (
     sales_orders => [
         {
             shipping_address => {
+                id            => 33,
                 country_code  => 'jp',
                 city          => '',
                 state         => '',
@@ -26,12 +27,13 @@ my %example_data = (
                     product_title => 'a',
                     quantity      => 1,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-                    tax_rule => { tax_rate => 5 },
+                    tax_rule => { id => 2, tax_rate => 5 },
                 },
             ]
         },
         {
             shipping_address => {
+                id            => 44,
                 country_code  => 'jp',
                 city          => '',
                 state         => '',
@@ -48,19 +50,20 @@ my %example_data = (
                     product_title => 'b',
                     quantity      => 2,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-                    tax_rule => { tax_rate => 5 },
+                    tax_rule => { id => 2, tax_rate => 5 },
                 },
                 {
                     product_id    => 3,
                     product_title => 'c',
                     quantity      => 3,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-                    tax_rule => { tax_rate => 5 },
+                    tax_rule => { id => 2, tax_rate => 5 },
                 },
             ]
         },
     ],
     billing_address => {
+        id            => 55,
         country_code  => 'jp',
         city          => '',
         state         => '',
@@ -98,20 +101,36 @@ sub _create_entity {
 
 subtest 'get_order_data' => sub {
     my $checkout = _create_entity;
-    cmp_deeply $checkout->get_order_data,
-      {
-        billing_address => { id => ignore() },
+    cmp_deeply $checkout->get_order_data, {
+        billing_address => { id => 55 },
         payment_method  => ignore(),
         sales_orders    => [
             {
-                items            => ignore(),
-                shipping_address => { id => ignore() },
-                shippings        => ignore(),
+                id    => ignore(),
+                items => [
+                    {
+                        id    => ignore(),
+                        price => {
+                            currency_code   => "USD",
+                            is_tax_included => 0,
+                            value           => 100,
+                            tax_rule_id     => 2,
+                        },
+                        product_id    => 1,
+                        product_title => "a",
+                        quantity      => 1,
+                    },
+                ],
+                shipping_address => { id => 33 },
+
+                # shippings        => ignore(),
             },
             {
+                id               => ignore(),
                 items            => ignore(),
-                shipping_address => { id => ignore() },
-                shippings        => ignore(),
+                shipping_address => ignore(),
+
+                # shippings        => ignore(),
             }
         ],
       },

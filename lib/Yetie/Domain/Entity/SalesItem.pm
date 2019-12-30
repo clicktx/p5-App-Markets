@@ -19,6 +19,22 @@ sub to_data {
     };
 }
 
+sub to_order_data {
+    my $self = shift;
+
+    return {
+        id            => $self->id,
+        product_id    => $self->product_id,
+        product_title => $self->product_title,
+        quantity      => $self->quantity,
+        price         => {
+            %{ $self->price->to_data },
+            is_tax_included => $self->price->is_tax_included,
+            tax_rule_id     => $self->tax_rule->id,
+        },
+    };
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -48,6 +64,10 @@ Implements the following new ones.
 =head2 C<to_data>
 
 Override method.
+
+=head2 C<to_order_data>
+
+    my $order_data = $item->to_order_data();
 
 =head1 AUTHOR
 
