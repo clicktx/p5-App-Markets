@@ -1,4 +1,6 @@
 package Yetie::Domain::Entity::LineItem;
+use MooseX::Types::Common::Numeric qw/PositiveInt/;
+
 use Moose;
 use namespace::autoclean;
 
@@ -36,9 +38,10 @@ has price => (
     writer  => 'set_price',
 );
 has quantity => (
-    is     => 'ro',
-    isa    => 'Int',
-    writer => 'set_quantity',
+    is      => 'ro',
+    isa     => PositiveInt,
+    default => 1,
+    writer  => 'set_quantity',
 );
 
 # XXX: _target_attributes (_hashing_keys) を作ってarray_refを設定？

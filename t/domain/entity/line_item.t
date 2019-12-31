@@ -11,6 +11,17 @@ sub factory {
 use_ok 'Yetie::Domain::Entity::LineItem';
 
 subtest 'basic' => sub {
+    dies_ok {
+        my $item = factory(
+            {
+                id       => 2,
+                quantity => 0,
+                price    => 100,
+            }
+        );
+    }
+    'right quantity zero';
+
     my $item = factory(
         {
             id       => 2,
@@ -81,18 +92,6 @@ subtest 'row_tax_amount' => sub {
 
 subtest 'row_total' => sub {
     my $item = factory(
-        {
-            price    => 300,
-            quantity => 0,
-            tax_rule => {
-                tax_rate => 5,
-            },
-        }
-    );
-    is $item->row_total_excl_tax, '$0.00', 'right row total excluding tax(no quantity)';
-    is $item->row_total_incl_tax, '$0.00', 'right row total including tax(no quantity)';
-
-    $item = factory(
         {
             price    => 300,
             quantity => 2,
