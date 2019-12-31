@@ -3,7 +3,10 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List::LineItems';
 
-has _item_isa => ( default => 'Yetie::Domain::Entity::CartItem' );
+has _item_isa => (
+    is      => 'ro',
+    default => 'Yetie::Domain::Entity::CartItem'
+);
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
