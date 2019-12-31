@@ -9,12 +9,47 @@ use List::Util qw/reduce/;
 use Mojo::Loader;
 use Session::Token;
 
-our @EXPORT_OK = (qw(args2hash array_to_hash directories create_token load_class uuid));
+our @EXPORT_OK = (
+    qw/args2array args2hash array_to_hash
+      directories create_token load_class uuid/
+);
 
 =head1 FUNCTIONS
 
 L<Yetie::Util> implements the following functions, which can be imported
 individually.
+
+=head2 C<args2array>
+
+    use Yetie::Util qw/args2array/;
+    sub foo{
+        my $self = shift;
+
+        # array
+        my @args = args2array(@_);
+
+        # array reference
+        my $args = args2array(@_);
+    }
+
+    # Arguments array or array reference
+    foo( 'foo', 'bar', 'baz' );
+    foo( ['foo', 'bar', 'baz'] );
+
+    # Bad argumnts
+    foo( \@array, 'foo', 'bar', ... );
+
+Convert arguments.
+
+Arguments C<Array> or C<Array reference>.
+
+Return C<Array> or C<Array reference>.
+=cut
+
+sub args2array {
+    my $args = ref $_[0] ne 'ARRAY' ? +[@_] : shift || [];
+    return wantarray ? @{$args} : $args;
+}
 
 =head2 C<args2hash>
 
@@ -29,7 +64,13 @@ individually.
         my $args = args2hash(@_);
     }
 
+    # Arguments hash or hash reference
+    foo( foo => 1, bar => 2, baz => 3 );
+    foo( {foo => 1, bar => 2, baz => 3} );
+
 Convert arguments.
+
+Arguments C<Hash> or C<Hash reference>.
 
 Return C<Hash> or C<Hash reference>.
 =cut
