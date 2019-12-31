@@ -93,6 +93,22 @@ subtest 'add_item' => sub {
     is $cart->is_modified, 1, 'right modified';
 };
 
+subtest 'change_quantity' => sub {
+    my $cart = _create_entity;
+
+    $cart->change_quantities( [ 7, undef, 9 ] );
+    is $cart->items->get(0)->quantity, 7, 'right change quantities';
+    is $cart->items->get(1)->quantity, 2, 'right change quantities';
+    is $cart->items->get(2)->quantity, 9, 'right change quantities';
+
+    $cart->change_quantity( 0 => 3 );
+    is $cart->items->get(0)->quantity, 3, 'right change quantity';
+    $cart->change_quantity( 2 => 5 );
+    is $cart->items->get(2)->quantity, 5, 'right change quantity';
+
+    dies_ok { $cart->change_quantity( 0 => 0 ) } 'right set zero';
+};
+
 subtest 'clear_items' => sub {
     my $cart = _create_entity;
     $cart->clear_items;
