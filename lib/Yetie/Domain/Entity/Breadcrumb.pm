@@ -9,6 +9,8 @@ has class => ( is => 'ro', default => '' );
 has title => ( is => 'ro', default => '' );
 has url   => ( is => 'ro', default => sub { Mojo::URL->new } );
 
+sub to_data { return shift->to_hash }
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
