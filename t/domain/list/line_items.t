@@ -74,7 +74,10 @@ subtest 'remove' => sub {
     my $list = factory( list => $data );
     my $res = $list->remove(2);
     cmp_deeply $list->to_data,
-      [ { id => 1, price => ignore(), tax_rule => ignore() }, { id => 3, price => ignore(), tax_rule => ignore() } ],
+      [
+        { id => 1, price => ignore(), tax_rule => ignore(), quantity => ignore() },
+        { id => 3, price => ignore(), tax_rule => ignore(), quantity => ignore() },
+      ],
       'right remove item';
     is $list->is_modified, 1, 'right modified';
     is $res, 1, 'right removed';
@@ -84,9 +87,9 @@ subtest 'remove' => sub {
     $res = $list->remove(4);
     cmp_deeply $list->to_data,
       [
-        { id => 1, price => ignore(), tax_rule => ignore() },
-        { id => 2, price => ignore(), tax_rule => ignore() },
-        { id => 3, price => ignore(), tax_rule => ignore() }
+        { id => 1, price => ignore(), tax_rule => ignore(), quantity => ignore() },
+        { id => 2, price => ignore(), tax_rule => ignore(), quantity => ignore() },
+        { id => 3, price => ignore(), tax_rule => ignore(), quantity => ignore() }
       ],
       'right not remove item';
     is $list->is_modified, 0, 'right not modified';
