@@ -217,30 +217,43 @@ the following new ones.
 
 =head2 C<aggregate>
 
-    my $obj = $factory->aggregate( $attribure_name => $domain_class, \%data );
+    sub cook {
+        my $self = shift;
 
-    # Entity Object
-    my $entity = $factory->aggregate( user => 'entity-user', { id => 1, name => 'foo', age => 22, ... } );
+        my %data = ( foo => 'bar' );
+        $self->aggregate( $attribure_name => $domain_class, \%data );
 
-    # Value Object
-    my $value = $factory->aggregate( email => 'value-email', { value => 'a@example.org', ... } );
-    my $value = $factory->aggregate( email => 'value-email', 'a@example.org' );
+        # Entity Object
+        $self->aggregate( user => 'entity-user', { id => 1, name => 'foo', age => 22, ... } );
+
+        # Value Object
+        $self->aggregate( email => 'value-email', { value => 'a@example.org', ... } );
+        $self->aggregate( email => 'value-email', 'a@example.org' );
+    }
 
 Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
 
 =head2 C<aggregate_collection>
 
-    my @data = (qw/a b c d e f/);
-    my $domain = $factory->aggregate_collection( $accessor_name, $target_entity, \@data );
-    my $domain = $factory->aggregate_collection( 'items', 'entity-xxx-item', \@data );
+    sub cook {
+        my $self = shift;
+
+        my @data = (qw/a b c d e f/);
+        $self->aggregate_collection( $accessor_name, $target_domain_class, \@data );
+        $self->aggregate_collection( 'items', 'entity-xxx-item', \@data );
+    }
 
 Create L<Yetie::Domain::Collection> type aggregate.
 
 =head2 C<aggregate_ixhash>
 
-    my @data = ( { label => { key => 'value' } }, { label2 => { key2 => 'value2' } }, ... );
-    my $domain = $factory->aggregate_ixhash( $accessor_name, $target_entity, \@data );
-    my $domain = $factory->aggregate_ixhash( 'items', 'entity-xxx-item', \@data );
+    sub cook {
+        my $self = shift;
+
+        my @data = ( { label => { key => 'value' } }, { label2 => { key2 => 'value2' } }, ... );
+        $self->aggregate_ixhash( $accessor_name, $target_domain_class, \@data );
+        $self->aggregate_ixhash( 'items', 'entity-xxx-item', \@data );
+    }
 
 Create L<Yetie::Domain::IxHash> type aggregate.
 
