@@ -38,7 +38,8 @@ sub items {
     return $c->render() if !$form->do_validate;
 
     # Store to DB
-    $c->service('order')->store_items( $order, $form );
+    my $param_list = $form->scope_param('item') || [];
+    $c->service('order')->store_items( $order, $param_list );
 
     my $url = $c->url_for( 'rn.admin.order.index', order_id => $order_id )->fragment('items');
     return $c->redirect_to($url);
