@@ -1,8 +1,8 @@
 default pagination
 <div class="pagination">
-    <%= link_to '<<' => url_for('current')->query( [ %$params, page => $pager->first_page ] ) =%>
+    <%= link_to '<<' => url_for('current')->query(%$params)->query({ page => $pager->first_page }) =%>
     % if ( $pager->previous_page ) {
-        <%= link_to '<' => url_for('current')->query( [ %$params, page => $pager->previous_page ] ) =%>
+        <%= link_to '<' => url_for('current')->query(%$params)->query({ page => $pager->previous_page }) =%>
     % } else {
         <%= '<' =%>
     % }
@@ -11,13 +11,13 @@ default pagination
             <%= $num =%>
         % }
         % else {
-            <%= link_to $num => url_for('current')->query( [ %$params, page => $num ] ) =%>
+            <%= link_to $num => url_for()->query(%$params)->query({ page => $num }) =%>
         % }
     % }
     % if ( $pager->next_page ) {
-        <%= link_to '>' => url_for('current')->query( [ %$params, page => $pager->next_page ] ) =%>
+        <%= link_to '>' => url_for('current')->query(%$params)->query({ page => $pager->next_page }) =%>
     % } else {
         <%= '>' =%>
     % }
-    <%= link_to '>>' => url_for('current')->query( [ %$params, page => $pager->last_page ] ) %>
+    <%= link_to '>>' => url_for('current')->query(%$params)->query({ page => $pager->last_page }) %>
 </div>
