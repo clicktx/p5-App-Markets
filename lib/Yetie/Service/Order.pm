@@ -35,7 +35,7 @@ sub store_items {
             my $params = $list_param->[$num];
             $item->set_attributes($params);
 
-            my $data = $item->to_data;
+            my $data = $item->to_order_data;
             $data->{order_id} = $order_id;
             if ( $item->is_modified ) { $self->resultset('SalesOrderItem')->store_item($data) }
         }
