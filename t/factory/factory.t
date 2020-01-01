@@ -180,7 +180,7 @@ subtest 'aggregate method' => sub {
         package Yetie::Domain::Entity::Agg;
         use Moose;
         extends 'Yetie::Domain::Entity';
-        has [qw(hoge fuga foos bars)] => ( is => 'rw' );
+        has [qw(hoge fuga foos bars list hash_set)] => ( is => 'rw' );
     }
 
     my $f = Yetie::Factory->new('entity-agg');
@@ -205,6 +205,20 @@ subtest 'aggregate method' => sub {
 
     isa_ok $entity->bars, 'Yetie::Domain::IxHash';
     is_deeply $entity->bars->to_data, { a => { hoge => {} } }, 'right aggregate hash';
+
+    # aggregate domain list and set
+    $f = Yetie::Factory->new(
+        'entity-agg',
+        list     => [ {} ],
+        hash_set => [ { a => {} } ],
+    );
+    $f->aggregate_domain_list('entity-foo');
+    $f->aggregate_domain_set('entity-bar');
+    $entity = $f->construct();
+    isa_ok $entity->list, 'Yetie::Domain::Collection';
+    is_deeply $entity->list->to_data, [ { a => 1, b => 2, f => 'fuga', h => 'hoge' } ], 'right aggregate array';
+    isa_ok $entity->hash_set, 'Yetie::Domain::IxHash';
+    is_deeply $entity->hash_set->to_data, { a => { hoge => {} } }, 'right aggregate hash';
 };
 
 done_testing();

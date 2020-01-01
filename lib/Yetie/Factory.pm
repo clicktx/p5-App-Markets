@@ -24,6 +24,20 @@ sub aggregate {
     return $self;
 }
 
+sub aggregate_domain_list {
+    my ( $self, $domain ) = @_;
+
+    my $list = $self->param('list') || [];
+    return $self->aggregate_collection( list => $domain, $list );
+}
+
+sub aggregate_domain_set {
+    my ( $self, $domain ) = @_;
+
+    my $hash = $self->param('hash_set') || [];
+    return $self->aggregate_ixhash( hash_set => $domain, $hash );
+}
+
 sub aggregate_collection {
     my ( $self, $accessor, $domain, $data ) = @_;
 
@@ -232,6 +246,34 @@ the following new ones.
     }
 
 Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
+
+=head2 C<aggregate_domain_list>
+
+    sub cook {
+        my $self = shift;
+
+        $self->aggregate_domain_list($target_domain_class);
+
+        # Longer version
+        $self->aggregate_collection( 'list' => $target_domain_class, $self->param('list') || [] );
+    }
+
+Create L<Yetie::Domain::List> type aggregate.
+See L</aggregate_collection>.
+
+=head2 C<aggregate_domain_set>
+
+    sub cook {
+        my $self = shift;
+
+        $self->aggregate_domain_set($target_domain_class);
+
+        # Longer version
+        $self->aggregate_ixhash( 'hash_set' => $target_domain_class, $self->param('hash_set') || {} );
+    }
+
+Create L<Yetie::Domain::Set> type aggregate.
+See L</aggregate_ixhash>.
 
 =head2 C<aggregate_collection>
 
