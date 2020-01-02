@@ -58,9 +58,6 @@
                     ID: <%= $_->id %> | PRODUCT ID: <%= $_->product_id %>
                     | product_title: <%= $_->product_title %>
                     | QTY: <%= $_->quantity %>
-                    <%= link_to 'rn.checkout.change.item_quantity' => begin %>
-                        Change
-                    <% end %>
                     | price: <%= $_->price %>
                     | row total(including tax): <%= $_->row_total_incl_tax %>
                 </li>
