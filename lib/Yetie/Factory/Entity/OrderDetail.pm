@@ -4,9 +4,9 @@ use Mojo::Base 'Yetie::Factory';
 sub cook {
     my $self = shift;
 
-    $self->aggregate( billing_address  => 'entity-address',        $self->{billing_address}  || {} );
-    $self->aggregate( shipping_address => 'entity-address',        $self->{shipping_address} || {} );
-    $self->aggregate( items            => 'list-order_line_items', $self->param('items')     || [] );
+    $self->aggregate( billing_address  => 'entity-address',   $self->{billing_address}  || {} );
+    $self->aggregate( shipping_address => 'entity-address',   $self->{shipping_address} || {} );
+    $self->aggregate( items            => 'list-sales_items', $self->param('items')     || [] );
 }
 
 1;

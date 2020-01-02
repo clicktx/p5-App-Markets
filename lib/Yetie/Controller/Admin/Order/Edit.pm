@@ -37,18 +37,9 @@ sub items {
     # Validation form
     return $c->render() if !$form->do_validate;
 
-    my $list_param = $form->scope_param('item') || [];
-    my $items = $order->items;
-    $items->each(
-        sub {
-            my ( $item, $num ) = @_;
-            my $params = $list_param->[$num];
-            $item->set_attributes($params);
-        }
-    );
-
-    # Update
-    if ( $order->is_modified ) { $c->resultset('SalesOrderItem')->store_items($order) }
+    # Store to DB
+    my $param_list = $form->scope_param('item') || [];
+    $c->service('order')->store_items( $order, $param_list );
 
     my $url = $c->url_for( 'rn.admin.order.index', order_id => $order_id )->fragment('items');
     return $c->redirect_to($url);

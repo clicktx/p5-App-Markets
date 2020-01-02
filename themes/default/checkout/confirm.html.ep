@@ -38,6 +38,15 @@
 </div>
 
 <div class="">
+    <h3>Payment Method</h3>
+    <%= link_to 'rn.checkout.payment' => begin %>
+            Change
+    <% end %>
+    id: <%= $checkout->payment_method->id %>
+    name: <%= $checkout->payment_method->name %>
+</div>
+
+<div class="">
     <h3>Items Ordered</h3>
     <%= content items_ordered => begin =%>
         <%= link_to 'rn.cart' => begin %>
@@ -66,7 +75,7 @@
     Subtotal excluding-tax: <%= $cart->subtotal_excl_tax %> / including-tax: <%= $cart->subtotal_incl_tax %>
 </div>
 <div class="">
-    Shipping & Handling: <%= $checkout->sales_orders->total_shipping_fee_incl_tax %>
+    Shipping & Handling:  $checkout->sales_orders->total_shipping_fee_incl_tax
 </div>
 <div class="">
     Taxes: <%= $cart->taxes %>

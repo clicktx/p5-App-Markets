@@ -26,6 +26,7 @@ sub delete {
       : $c->reply->not_found();
 }
 
+# FIXME: DBに保存するのではなく、データのみをコピーする？
 sub duplicate {
     my $c = shift;
 

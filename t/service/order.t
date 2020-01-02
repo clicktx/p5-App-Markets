@@ -24,10 +24,8 @@ subtest 'find_order' => sub {
 
 subtest 'search_orders' => sub {
     my ( $c, $s ) = _init();
-    my $f = $c->form('search');
-    $f->do_validate;
 
-    my ( $e, $p ) = $s->search_orders($f);
+    my ( $e, $p ) = $s->search_orders();
     isa_ok $e, 'Yetie::Domain::List::OrderDetails';
     isa_ok $p, 'DBIx::Class::ResultSet::Pager';
 };

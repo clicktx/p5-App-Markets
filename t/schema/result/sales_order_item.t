@@ -11,10 +11,10 @@ my $schema = $app->schema;
 my $rs     = $schema->resultset('SalesOrderItem');
 
 subtest 'to_data' => sub {
-    my $res = $rs->find(1);
+    my $res = $rs->find(1001);
     cmp_deeply $res->to_data,
       {
-        id            => 1,
+        id            => 1001,
         product_id    => ignore(),
         product_title => ignore(),
         quantity      => ignore(),

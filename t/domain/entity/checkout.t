@@ -10,6 +10,7 @@ my %example_data = (
     sales_orders => [
         {
             shipping_address => {
+                id            => 33,
                 country_code  => 'jp',
                 city          => '',
                 state         => '',
@@ -26,12 +27,13 @@ my %example_data = (
                     product_title => 'a',
                     quantity      => 1,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-                    tax_rule => { tax_rate => 5 },
+                    tax_rule => { id => 2, tax_rate => 5 },
                 },
             ]
         },
         {
             shipping_address => {
+                id            => 44,
                 country_code  => 'jp',
                 city          => '',
                 state         => '',
@@ -48,19 +50,20 @@ my %example_data = (
                     product_title => 'b',
                     quantity      => 2,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-                    tax_rule => { tax_rate => 5 },
+                    tax_rule => { id => 2, tax_rate => 5 },
                 },
                 {
                     product_id    => 3,
                     product_title => 'c',
                     quantity      => 3,
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-                    tax_rule => { tax_rate => 5 },
+                    tax_rule => { id => 2, tax_rate => 5 },
                 },
             ]
         },
     ],
     billing_address => {
+        id            => 55,
         country_code  => 'jp',
         city          => '',
         state         => '',
@@ -70,6 +73,9 @@ my %example_data = (
         personal_name => '',
         organization  => '',
         phone         => '',
+    },
+    payment_method => {
+        id => 1,
     },
 );
 
@@ -82,34 +88,49 @@ sub _create_entity {
 # subtest 'add_shipment_item' => sub {
 #     my $checkout = _create_entity;
 #     my $res =
-#       $checkout->add_shipment_item( 0 => Yetie::Factory->new('entity-line_item')->construct( product_id => 11 ) );
+#       $checkout->add_shipment_item( 0 => Yetie::Factory->new('entity-cart_item')->construct( product_id => 11 ) );
 #     is $checkout->sales_orders->first->items->last->product_id, 11, 'right add shipping_item';
 #     is $checkout->is_modified, 1, 'right modified';
 #     isa_ok $res, 'Yetie::Domain::Entity::Checkout';
 
 #     $checkout = _create_entity;
-#     $checkout->add_shipment_item( Yetie::Factory->new('entity-line_item')->construct( product_id => 99 ) );
+#     $checkout->add_shipment_item( Yetie::Factory->new('entity-cart_item')->construct( product_id => 99 ) );
 #     is $checkout->sales_orders->first->items->last->product_id, 99, 'right add shipping_item';
 #     is $checkout->is_modified, 1, 'right modified';
 # };
 
 subtest 'get_order_data' => sub {
     my $checkout = _create_entity;
-    cmp_deeply $checkout->get_order_data,
-      {
-        billing_address => { id => ignore() },
+    cmp_deeply $checkout->get_order_data, {
+        billing_address => { id => 55 },
+        payment_method  => ignore(),
         sales_orders    => [
             {
-                items            => ignore(),
-                shipping_address => { id => ignore() },
-                shipping_fee     => ignore(),
-                tax_rule         => ignore(),
+                id    => ignore(),
+                items => [
+                    {
+                        id    => ignore(),
+                        price => {
+                            currency_code   => "USD",
+                            is_tax_included => 0,
+                            value           => 100,
+                            tax_rule_id     => 2,
+                        },
+                        product_id    => 1,
+                        product_title => "a",
+                        quantity      => 1,
+                    },
+                ],
+                shipping_address => { id => 33 },
+
+                # shippings        => ignore(),
             },
             {
+                id               => ignore(),
                 items            => ignore(),
-                shipping_address => { id => ignore() },
-                shipping_fee     => ignore(),
-                tax_rule         => ignore(),
+                shipping_address => ignore(),
+
+                # shippings        => ignore(),
             }
         ],
       },
@@ -122,6 +143,14 @@ subtest 'has_billing_address' => sub {
 
     $checkout = _create_entity;
     is $checkout->has_billing_address, 1, 'right has address info';
+};
+
+subtest 'has_payment_method' => sub {
+    my $checkout = Yetie::Factory->new('entity-checkout')->construct();
+    is $checkout->has_payment_method, 0, 'right no address info';
+
+    $checkout = _create_entity;
+    is $checkout->has_payment_method, 1, 'right has address info';
 };
 
 subtest 'has_shipping_address' => sub {

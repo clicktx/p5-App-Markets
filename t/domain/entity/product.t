@@ -16,6 +16,7 @@ my $test_data = {
     updated_at => undef,
 
     tax_rule => {
+        id       => 1,
         tax_rate => 5.6,
         title    => 'Sales Tax',
     },
@@ -28,7 +29,10 @@ sub _create_entity {
 use_ok 'Yetie::Domain::Entity::Product';
 
 subtest 'basic' => sub {
-    my $e = Yetie::Factory->new('entity-product')->construct( price => 1 );
+    my $e = Yetie::Factory->new('entity-product')->construct(
+        price    => 1,
+        tax_rule => { id => 1 },
+    );
     isa_ok $e, 'Yetie::Domain::Entity';
     isa_ok $e->price,              'Yetie::Domain::Value::Price';
     isa_ok $e->product_categories, 'Yetie::Domain::List::ProductCategories';

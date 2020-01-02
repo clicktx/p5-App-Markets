@@ -28,7 +28,7 @@
                 </td>
                 <td class=""><%= $item->product_title %></td>
                 <td class="">
-                    <%= form_field "item.$i.price" =%>
+                    <%= form_field "item.$i.price.value" =%>
                     <%= form_widget value => $item->price->value %>
                     <%= form_error %>
                 </td>

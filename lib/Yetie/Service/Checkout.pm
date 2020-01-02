@@ -1,14 +1,23 @@
 package Yetie::Service::Checkout;
 use Mojo::Base 'Yetie::Service';
+use Yetie::Util qw(args2hash);
 
 sub add_all_cart_items {
     my $self = shift;
 
-    my $cart     = $self->controller->cart;
-    my $items    = $cart->items->to_array;
+    # class exchange
+    my $cart_items = $self->controller->cart->items;
+    my $factory    = $self->factory('entity-sales_item');
+    my $items      = $cart_items->reduce( sub { [ @{$a}, $factory->construct( $b->to_data ) ] }, [] );
+
     my $checkout = $self->get;
     $checkout->sales_orders->first->items->append( @{$items} );
 
+    return;
+}
+
+sub calculate_all {
+    my $self = shift;
     return;
 }
 
@@ -20,9 +29,9 @@ sub calculate_shipping_fees {
         sub {
             my $sales_order = shift;
 
-            my $shipping_fee = $self->service('shipping')->get_shipping_fee($sales_order);
-            my $price = $sales_order->shipping_fee->clone( value => $shipping_fee );
-            $sales_order->shipping_fee($price);
+            # my $shipping_fee = $self->service('shipping')->get_shipping_fee($sales_order);
+            # my $price = $sales_order->shipping_fee->clone( value => $shipping_fee );
+            # $sales_order->shipping_fee($price);
         }
     );
     return;
@@ -54,6 +63,33 @@ sub save {
     return $self->_update($checkout);
 }
 
+sub select_address {
+    my ( $self, %args ) = ( shift, args2hash(@_) );
+
+    my $address_type = $args{address_type};
+    my $select_no    = $args{select_no};
+
+    my $customer_id = $self->controller->server_session->customer_id;
+    return if !$customer_id;
+
+    my $addresses = $self->service('customer')->get_address_list($customer_id);
+    my $selected  = $addresses->get($select_no);
+    return if !$selected;
+
+    # Set Address
+    $self->set_attr( $address_type => $selected );
+    return 1;
+}
+
+sub set_attr {
+    my ( $self, $attr, $value ) = @_;
+
+    my $checkout      = $self->get;
+    my $setter_method = "set_$attr";
+    $checkout->$setter_method($value);
+    return $self->save;
+}
+
 sub set_billing_address {
     my ( $self, @args ) = @_;
 
@@ -74,12 +110,7 @@ sub _create {
     my $self = shift;
 
     my $checkout = $self->factory('entity-checkout')->construct();
-    my $price    = $self->service('price')->create_object(0);
-    my $tax_rule = $self->service('tax')->get_rule;
-    $checkout->sales_orders->create_sales_order(
-        shipping_fee => $price->to_data,
-        tax_rule     => $tax_rule->to_data,
-    );
+    $checkout->sales_orders->create_sales_order();
     $self->_update($checkout);
 
     $self->controller->stash( checkout => $checkout );
@@ -144,6 +175,10 @@ Add all cart items to the first sales order.
 
     $service->add_all_cart_items;
 
+=head2 C<calculate_all>
+
+experiment
+
 =head2 C<calculate_shipping_fees>
 
     $service->calculate_shipping_fees;
@@ -163,6 +198,15 @@ Return L<Yetie::Domain::Entity::Checkout> object.
 =head2 C<save>
 
     $service->save;
+
+=head2 C<select_address>
+
+    my $bool = $service->select_address(
+        address_type => 'billing_address',
+        select_no    => $select_no,
+    );
+
+Return boolean value.
 
 =head2 C<set_billing_address>
 

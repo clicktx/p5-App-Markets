@@ -4,6 +4,7 @@ use DBIx::Class::Candy -autotable => 'singular';
 
 use Yetie::Schema::Result::Customer;
 use Yetie::Schema::Result::Address;
+use Yetie::Schema::Result::PaymentMethod;
 
 primary_column id => {
     data_type         => 'INT',
@@ -17,6 +18,11 @@ column customer_id => {
 
 column billing_address_id => {
     data_type   => Yetie::Schema::Result::Address->column_info('id')->{data_type},
+    is_nullable => 0,
+};
+
+column payment_method_id => {
+    data_type   => Yetie::Schema::Result::PaymentMethod->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
@@ -40,6 +46,10 @@ belongs_to
 belongs_to
   billing_address => 'Yetie::Schema::Result::Address',
   { 'foreign.id' => 'self.billing_address_id' };
+
+belongs_to
+  payment_method => 'Yetie::Schema::Result::PaymentMethod',
+  { 'foreign.id' => 'self.payment_method_id' };
 
 has_many
   sales_orders => 'Yetie::Schema::Result::SalesOrder',

@@ -97,9 +97,7 @@ sub create {
     my $checkout = $c->service('checkout')->get;
     isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
     is $checkout->sales_orders->size, 1, 'right new element in sales orders';
-    my $sales_order = $checkout->sales_orders->first;
-    is $sales_order->shipping_fee->currency_code, 'USD', 'right currency code';
-    ok $sales_order->tax_rule->tax_rate == 5, 'right tax rule';
+    isa_ok $checkout->sales_orders->first, 'Yetie::Domain::Entity::SalesOrder';
     ok $c->server_session->data('checkout'), 'right create';
     ok $c->stash('checkout'), 'right stash';
 

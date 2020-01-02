@@ -3,6 +3,34 @@ use Test::More;
 
 use_ok 'Yetie::Util';
 
+subtest 'args2array' => sub {
+
+    package t::argumentArray;
+    use Yetie::Util qw(args2array);
+    use Test::More;
+    my @args = args2array('foo');
+    is_deeply \@args, ['foo'], 'right return array';
+    @args = args2array(qw[foo bar baz]);
+    is_deeply \@args, [qw/foo bar baz/], 'right return array';
+
+    my $args = args2array('foo');
+    is_deeply $args, ['foo'], 'right return array reference';
+    $args = args2array(qw[foo bar baz]);
+    is_deeply $args, [qw/foo bar baz/], 'right return array reference';
+};
+
+subtest 'args2hash' => sub {
+
+    package t::argumentHash;
+    use Yetie::Util qw(args2hash);
+    use Test::More;
+    my %args = args2hash(qw[foo 1 bar 2 baz 3]);
+    is_deeply \%args, { foo => 1, bar => 2, baz => 3 }, 'right return hash';
+
+    my $args = args2hash(qw[foo 1 bar 2 baz 3]);
+    is_deeply $args, { foo => 1, bar => 2, baz => 3 }, 'right return hash reference';
+};
+
 subtest 'array_to_hash' => sub {
     my @array = (qw/a b c/);
 

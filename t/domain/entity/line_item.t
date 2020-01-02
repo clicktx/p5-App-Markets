@@ -11,57 +11,56 @@ sub factory {
 use_ok 'Yetie::Domain::Entity::LineItem';
 
 subtest 'basic' => sub {
+    dies_ok {
+        my $item = factory(
+            {
+                id       => 2,
+                quantity => 0,
+                price    => 100,
+                tax_rule => { id => 1 },
+            }
+        );
+    }
+    'right quantity zero';
+
     my $item = factory(
         {
-            id            => 2,
-            product_id    => 111,
-            product_title => 'test product',
-            quantity      => 1,
-            price         => 100,
+            id       => 2,
+            quantity => 1,
+            price    => 100,
+            tax_rule => { id => 1 },
         }
     );
 
-    is $item->id,            2,              'right id';
-    is $item->product_id,    111,            'right product_id';
-    is $item->product_title, 'test product', 'right product_title';
-    is $item->quantity,      1,              'right quantity';
-    is $item->price,         '$100.00',      'right price';
-    is $item->is_modified,   0,              'right default modified';
+    is $item->id,          2,         'right id';
+    is $item->quantity,    1,         'right quantity';
+    is $item->price,       '$100.00', 'right price';
+    is $item->is_modified, 0,         'right default modified';
 
-    $item->product_id(111);
+    $item->set_quantity(1);
     is $item->is_modified, 0, 'right not modified';
 
-    $item->quantity(5);
+    $item->set_quantity(5);
     is $item->is_modified, 1, 'right modified';
-
-    dies_ok {
-        factory(
-            {
-                id            => 2,
-                product_id    => 0,
-                product_title => 'test product',
-                quantity      => 1,
-                price         => 100,
-            }
-          )
-    }
-    'right isa product_id';
 };
 
 subtest 'equals' => sub {
     my $item1 = factory(
         {
-            product_id => 1,
+            id       => 1,
+            tax_rule => { id => 1 },
         }
     );
     my $item2 = factory(
         {
-            product_id => 1,
+            id       => 1,
+            tax_rule => { id => 1 },
         }
     );
     my $item3 = factory(
         {
-            product_id => 2,
+            id       => 2,
+            tax_rule => { id => 1 },
         }
     );
 
@@ -71,13 +70,14 @@ subtest 'equals' => sub {
     is $item2->equals($item3), 0, 'right not equals';
 };
 
-subtest 'product_hash_code' => sub {
+subtest 'item_hash_sum' => sub {
     my $item = factory(
         {
-            product_id => 111,
+            id       => 111,
+            tax_rule => { id => 1 },
         }
     );
-    is $item->product_hash_code, '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2', 'right hash code';
+    is $item->item_hash_sum, '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2', 'right hash code';
     is $item->is_modified, 0, 'right not modified';
 };
 
@@ -87,6 +87,7 @@ subtest 'row_tax_amount' => sub {
             price    => 1,
             quantity => 5,
             tax_rule => {
+                id       => 1,
                 tax_rate => 3.5,
             },
         }
@@ -100,20 +101,9 @@ subtest 'row_total' => sub {
     my $item = factory(
         {
             price    => 300,
-            quantity => 0,
-            tax_rule => {
-                tax_rate => 5,
-            },
-        }
-    );
-    is $item->row_total_excl_tax, '$0.00', 'right row total excluding tax(no quantity)';
-    is $item->row_total_incl_tax, '$0.00', 'right row total including tax(no quantity)';
-
-    $item = factory(
-        {
-            price    => 300,
             quantity => 2,
             tax_rule => {
+                id       => 1,
                 tax_rate => 5,
             },
         }
@@ -122,19 +112,26 @@ subtest 'row_total' => sub {
     is $item->row_total_incl_tax, '$630.00', 'right row total including tax';
 };
 
+subtest 'set_attributes' => sub {
+    my $item = factory( tax_rule => { id => 1 } );
+    $item->set_attributes( quantity => 3 );
+    is $item->quantity, 3, 'right set attribute';
+};
+
 subtest 'to_data' => sub {
     my $item = factory(
         {
-            product_id => 110,
-            quantity   => 1,
+            id       => 110,
+            quantity => 1,
+            tax_rule => { id => 1 },
         }
     );
     cmp_deeply $item->to_data,
       {
-        product_id => 110,
-        quantity   => 1,
-        price      => ignore(),
-        tax_rule   => ignore(),
+        id       => 110,
+        quantity => 1,
+        price    => ignore(),
+        tax_rule => ignore(),
       },
       'right dump data';
 };

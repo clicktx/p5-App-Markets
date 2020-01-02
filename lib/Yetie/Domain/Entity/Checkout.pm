@@ -12,6 +12,12 @@ has billing_address => (
     default => sub { shift->factory('entity-address')->construct() },
     writer  => 'set_billing_address',
 );
+has payment_method => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::Entity::PaymentMethod',
+    default => sub { shift->factory('entity-payment_method')->construct() },
+    writer  => 'set_payment_method',
+);
 has sales_orders => (
     is      => 'ro',
     isa     => 'Yetie::Domain::List::SalesOrders',
@@ -50,16 +56,18 @@ sub get_order_data {
     # Billing Address
     $data->{billing_address} = { id => $data->{billing_address}->{id} };
 
-    # Sales Orders
-    foreach my $sales_order ( @{ $data->{sales_orders} } ) {
-        my $id = $sales_order->{shipping_address}->{id};
-        $sales_order->{shipping_address} = { id => $id };
-    }
+    # Payment Method
+    $data->{payment_method} = { id => $data->{payment_method}->{id} };
+
+    # Override Sales Orders
+    $data->{sales_orders} = $self->sales_orders->to_order_data();
 
     return $data;
 }
 
 sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
+
+sub has_payment_method { return shift->payment_method->is_empty ? 0 : 1 }
 
 sub has_shipping_address {
     my $self = shift;
@@ -144,6 +152,12 @@ Default $sales_orders->first
 =head2 C<has_billing_address>
 
     my $bool = $checkout->has_billing_address;
+
+Return boolean value.
+
+=head2 C<has_payment_method>
+
+    my $bool = $checkout->has_payment_method;
 
 Return boolean value.
 

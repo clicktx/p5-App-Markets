@@ -1,4 +1,6 @@
 package Yetie::Domain::Value;
+use Yetie::Util qw(args2hash);
+
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Base';
@@ -24,7 +26,7 @@ around BUILDARGS => sub {
 
 around clone => sub {
     my ( $orig, $class ) = ( shift, shift );
-    my %params = $class->args_to_hash(@_);
+    my %params = args2hash(@_);
 
     my $clone = $class->$orig(%params);
     return $clone->rehash;
@@ -37,7 +39,7 @@ sub equals {
 
 sub is_modified {
     my $self = shift;
-    return $self->_hash_sum ne $self->hash_code ? 1 : 0;
+    return $self->hash_sum ne $self->hash_code ? 1 : 0;
 }
 
 sub to_data { return shift->value }

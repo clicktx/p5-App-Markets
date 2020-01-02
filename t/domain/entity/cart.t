@@ -11,21 +11,21 @@ my %example_data = (
             product_title => 'a',
             quantity      => 1,
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule => { tax_rate => 5 },
+            tax_rule => { id => 1, tax_rate => 5 },
         },
         {
             product_id    => 2,
             product_title => 'b',
             quantity      => 2,
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule => { tax_rate => 5 },
+            tax_rule => { id => 1, tax_rate => 5 },
         },
         {
             product_id    => 3,
             product_title => 'c',
             quantity      => 3,
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule => { tax_rate => 5 },
+            tax_rule => { id => 1, tax_rate => 5 },
         },
     ],
 );
@@ -43,20 +43,20 @@ sub _create_entity {
 }
 
 use_ok 'Yetie::Domain::Entity::Cart';
-use_ok 'Yetie::Domain::Entity::LineItem';
+use_ok 'Yetie::Domain::Entity::CartItem';
 
 subtest 'basic' => sub {
     my $cart = Yetie::Domain::Entity::Cart->new;
     ok $cart->id;
-    isa_ok $cart->items, 'Yetie::Domain::List::LineItems';
+    isa_ok $cart->items, 'Yetie::Domain::List::CartItems';
 };
 
 subtest 'attributes' => sub {
     my $cart = _create_entity;
     is $cart->cart_id, '12345', 'right cart_id';
 
-    isa_ok $cart->items, 'Yetie::Domain::List::LineItems', 'right items';
-    isa_ok $cart->items->first, 'Yetie::Domain::Entity::LineItem', 'right items';
+    isa_ok $cart->items, 'Yetie::Domain::List::CartItems', 'right items';
+    isa_ok $cart->items->first, 'Yetie::Domain::Entity::CartItem', 'right items';
 };
 
 subtest 'methods' => sub {
@@ -82,15 +82,31 @@ subtest 'methods' => sub {
 
 subtest 'add_item' => sub {
     my $cart = _create_entity;
-    $cart->add_item( Yetie::Factory->new('entity-line_item')->construct( product_id => 11 ) );
+    $cart->add_item( Yetie::Factory->new('entity-cart_item')->construct( product_id => 11, tax_rule => { id => 1 } ) );
     is $cart->items->last->product_id, '11', 'right last item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
-    $cart->add_item(
-        Yetie::Factory->new('entity-line_item')->construct( product_id => 1, quantity => 1, price => 100 ) );
+    $cart->add_item( Yetie::Factory->new('entity-cart_item')
+          ->construct( product_id => 1, quantity => 1, price => 100, tax_rule => { id => 1 } ) );
     is $cart->items->first->quantity, '2', 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
+};
+
+subtest 'change_quantity' => sub {
+    my $cart = _create_entity;
+
+    $cart->change_quantities( [ 7, undef, 9 ] );
+    is $cart->items->get(0)->quantity, 7, 'right change quantities';
+    is $cart->items->get(1)->quantity, 2, 'right change quantities';
+    is $cart->items->get(2)->quantity, 9, 'right change quantities';
+
+    $cart->change_quantity( 0 => 3 );
+    is $cart->items->get(0)->quantity, 3, 'right change quantity';
+    $cart->change_quantity( 2 => 5 );
+    is $cart->items->get(2)->quantity, 5, 'right change quantity';
+
+    dies_ok { $cart->change_quantity( 0 => 0 ) } 'right set zero';
 };
 
 subtest 'clear_items' => sub {
@@ -118,9 +134,9 @@ subtest 'merge' => sub {
     my $cart        = _create_entity;
     my %stored_data = (
         items => [
-            { product_id => 4, quantity => 4, price => 100 },
-            { product_id => 1, quantity => 1, price => 100 },
-            { product_id => 5, quantity => 5, price => 100 },
+            { product_id => 4, quantity => 4, price => 100, tax_rule => { id => 1 } },
+            { product_id => 1, quantity => 1, price => 100, tax_rule => { id => 1 } },
+            { product_id => 5, quantity => 5, price => 100, tax_rule => { id => 1 } },
         ],
     );
     my $stored_cart = Yetie::Factory->new('entity-cart')->construct(

@@ -11,7 +11,13 @@ sub index {
     return $c->redirect_to( $c->current_route ) if !$form->do_validate;
 
     # Orders
-    my ( $orders, $pager ) = $c->service('order')->search_orders($form);
+    my $conditions = {
+        where    => '',
+        order_by => '',
+        page_no  => $form->param('page'),
+        per_page => $form->param('per_page') || 5,
+    };
+    my ( $orders, $pager ) = $c->service('order')->search_orders($conditions);
 
     # Page
     my $page = $c->factory('entity-page')->construct(

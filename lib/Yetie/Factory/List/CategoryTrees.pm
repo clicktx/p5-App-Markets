@@ -4,7 +4,8 @@ use Mojo::Base 'Yetie::Factory';
 sub cook {
     my $self = shift;
 
-    $self->aggregate_collection( list => 'entity-category_tree_node', $self->param('list') || [] );
+    $self->aggregate_domain_list('entity-category_tree_node');
+    return $self;
 }
 
 1;

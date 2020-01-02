@@ -29,7 +29,7 @@ sub is_empty { return shift->id ? 0 : 1 }
 
 sub is_modified {
     my $self = shift;
-    return 1 if $self->_hash_sum ne $self->hash_code;
+    return 1 if $self->hash_sum ne $self->hash_code;
 
     # Recursive call for attributes
     return $self->_recursive_call() ? 1 : 0;
@@ -52,7 +52,7 @@ sub to_data {
     my %data;
     foreach my $key ( keys %{$hash} ) {
         my $value = $hash->{$key};
-        if ( Scalar::Util::blessed $value) { $data{$key} = $value->to_data if $value->can('to_data') }
+        if ( Scalar::Util::blessed $value) { $data{$key} = _to_data( $key => $value ) }
         else                               { $data{$key} = $value }
     }
     return \%data;
@@ -102,6 +102,15 @@ sub _recursive_call {
         }
     }
     return;
+}
+
+sub _to_data {
+    my ( $key, $value ) = @_;
+
+    return $value->to_data if $value->can('to_data');
+
+    my $class = ref $value;
+    Carp::croak "$key($class) has not \"to_data\" method";
 }
 
 no Moose;

@@ -9,16 +9,78 @@ use List::Util qw/reduce/;
 use Mojo::Loader;
 use Session::Token;
 
-our @EXPORT_OK = (qw(array_to_hash directories create_token load_class uuid));
+our @EXPORT_OK = (
+    qw/args2array args2hash array_to_hash
+      directories create_token load_class uuid/
+);
 
 =head1 FUNCTIONS
 
 L<Yetie::Util> implements the following functions, which can be imported
 individually.
 
-=over
+=head2 C<args2array>
 
-=item C<array_to_hash>
+    use Yetie::Util qw/args2array/;
+    sub foo{
+        my $self = shift;
+
+        # array
+        my @args = args2array(@_);
+
+        # array reference
+        my $args = args2array(@_);
+    }
+
+    # Arguments array or array reference
+    foo( 'foo', 'bar', 'baz' );
+    foo( ['foo', 'bar', 'baz'] );
+
+    # Bad argumnts
+    foo( \@array, 'foo', 'bar', ... );
+
+Convert arguments.
+
+Arguments C<Array> or C<Array reference>.
+
+Return C<Array> or C<Array reference>.
+=cut
+
+sub args2array {
+    my $args = ref $_[0] ne 'ARRAY' ? +[@_] : shift || [];
+    return wantarray ? @{$args} : $args;
+}
+
+=head2 C<args2hash>
+
+    use Yetie::Util qw/args2hash/;
+    sub foo{
+        my $self = shift;
+
+        # hash
+        my %args = args2hash(@_);
+
+        # hash reference
+        my $args = args2hash(@_);
+    }
+
+    # Arguments hash or hash reference
+    foo( foo => 1, bar => 2, baz => 3 );
+    foo( {foo => 1, bar => 2, baz => 3} );
+
+Convert arguments.
+
+Arguments C<Hash> or C<Hash reference>.
+
+Return C<Hash> or C<Hash reference>.
+=cut
+
+sub args2hash {
+    my $args = @_ > 1 ? +{@_} : shift || {};
+    return wantarray ? %{$args} : $args;
+}
+
+=head2 C<array_to_hash>
 
     # { 0 => 'a', 1 => 'b', 2 => 'c' }
     my %hash = array_to_hash( 'a', 'b', 'c' );
@@ -30,8 +92,6 @@ Convert array to hash.
 
 Return C<Hash> or C<Hash reference>.
 
-=back
-
 =cut
 
 sub array_to_hash {
@@ -42,9 +102,7 @@ sub array_to_hash {
     return wantarray ? %{$hashref} : $hashref;
 }
 
-=over
-
-=item C<directories>
+=head2 C<directories>
 
 List all subdirectories in the directory.
 
@@ -56,8 +114,6 @@ ignore - ignore directory name.
 
     $sub_directories = directories('hoge', { ignore => ['huga'] });
     @sub_directories = directories('hoge', { ignore => ['huga'] });
-
-=back
 
 =cut
 
@@ -79,9 +135,7 @@ sub directories {
     return wantarray ? @sub_directories : \@sub_directories;
 }
 
-=over
-
-=item C<create_token>
+=head2 C<create_token>
 
 Generate secure token. based L<Session::Token>
 
@@ -93,15 +147,11 @@ B<options>
 
 SEE ALSO L<Session::Token>
 
-=back
-
 =cut
 
 sub create_token { Session::Token->new(@_)->get }
 
-=over
-
-=item C<hashids>
+=head2 C<hashids>
 
 Generate short unique ids.
 
@@ -115,8 +165,6 @@ Generate short unique ids.
 
 SEE ALSO L<Hashids>
 
-=back
-
 =cut
 
 sub hashids {
@@ -128,9 +176,7 @@ sub hashids {
     );
 }
 
-=over
-
-=item C<load_class>
+=head2 C<load_class>
 
 Load a class.
 
@@ -139,8 +185,6 @@ Load a class.
     load_class 'Foo::Bar';
 
 SEE ALSO L<Mojo::Loader/load_class>
-
-=back
 
 =cut
 
@@ -153,9 +197,7 @@ sub load_class {
     1;
 }
 
-=over
-
-=item C<uuid>
+=head2 C<uuid>
 
 Create UUID version 4 token.
 
@@ -163,8 +205,6 @@ Create UUID version 4 token.
     my $token = uuid();
 
 SEE ALSO L<Session::Token/TOKEN-TEMPLATES>
-
-=back
 
 =cut
 

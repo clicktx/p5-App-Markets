@@ -1,7 +1,7 @@
 package Yetie::Domain::Entity::Cart;
 use Carp qw(croak);
-use Yetie::Util;
 use Mojo::Util qw/sha1_sum/;
+use Yetie::Util qw/args2array/;
 
 use Moose;
 use namespace::autoclean;
@@ -18,7 +18,7 @@ has cart_id => (
 );
 has items => (
     is      => 'ro',
-    default => sub { __PACKAGE__->factory('list-line_items')->construct() }
+    default => sub { __PACKAGE__->factory('list-cart_items')->construct() }
 );
 has _total_amounts => (
     is         => 'ro',
@@ -44,6 +44,24 @@ sub add_item {
     return $self;
 }
 
+sub change_quantity {
+    my ( $self, $i, $quantity ) = @_;
+
+    $self->items->get($i)->set_quantity($quantity);
+    return $self;
+}
+
+sub change_quantities {
+    my ( $self, @quantities ) = ( shift, args2array(shift) );
+
+    for ( my $i = 0 ; $i < @quantities ; $i++ ) {
+        my $quantity = $quantities[$i];
+        next if !defined $quantity;
+        $self->change_quantity( $i => $quantity );
+    }
+    return $self;
+}
+
 sub clear_items {
     my $self = shift;
 
@@ -66,7 +84,7 @@ sub merge {
             sub {
                 my ( $e, $num ) = @_;
                 if ( $e->equals($item) ) {
-                    $item->quantity( $e->quantity + $item->quantity );
+                    $item->set_quantity( $e->quantity + $item->quantity );
                     my $i = $num - 1;
                     splice @{ $clone->items->list }, $i, 1;
                 }
@@ -124,8 +142,8 @@ the following new ones.
     my $items = $cart->items;
     $items->each( sub { ... } );
 
-Return L<Yetie::Domain::List::LineItems> object.
-Elements is L<Yetie::Domain::Entity::LineItem> object.
+Return L<Yetie::Domain::List::CartItems> object.
+Elements is L<Yetie::Domain::Entity::CartItem> object.
 
 =head2 C<total_amounts>
 
@@ -143,6 +161,16 @@ the following new ones.
     $cart->add_item( $entity_item_object );
 
 Return L<Yetie::Domain::Entity::Cart> Object.
+
+=head2 C<change_quantity>
+
+    $cart->change_quantity( $item_index => $quantity );
+
+=head2 C<change_quantities>
+
+    $cart->change_quantities( [ 1, undef, 3 ] );
+
+Will be not change if C<undefined>.
 
 =head2 C<clear_items>
 
@@ -218,5 +246,5 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::List::Linetems>, L<Yetie::Domain::Entity::LineItem>,
+L<Yetie::Domain::List::CartItems>, L<Yetie::Domain::Entity::CartItem>,
 L<Yetie::Domain::List::TotalAmounts>, L<Yetie::Domain::Entity>

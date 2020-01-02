@@ -21,13 +21,10 @@ subtest 'basic' => sub {
     can_ok $sales_order, 'shipping_address';
     can_ok $sales_order, 'count_items';
 
-    isa_ok $sales_order->items,            'Yetie::Domain::List::LineItems';
+    isa_ok $sales_order->items,            'Yetie::Domain::List::SalesItems';
     isa_ok $sales_order->shipping_address, 'Yetie::Domain::Entity::Address';
-    isa_ok $sales_order->shipping_fee,     'Yetie::Domain::Value::Price';
-    lives_ok { $sales_order->shipping_fee( $sales_order->shipping_fee ) } 'right read-write';
-    isa_ok $sales_order->tax_rule, 'Yetie::Domain::Entity::TaxRule';
-
-    is $sales_order->id, 1, 'right id';
+    isa_ok $sales_order->shippings,        'Yetie::Domain::List::Shippings';
+    is $sales_order->id,                   1, 'right id';
 };
 
 subtest 'equals' => sub {
@@ -42,7 +39,10 @@ subtest 'count_items' => sub {
     my $sales_order = construct( id => 1 );
     is $sales_order->count_items, 0, 'right count_items';
 
-    $sales_order = construct( id => 1, items => [ {}, {}, {} ] );
+    $sales_order = construct(
+        id    => 1,
+        items => [ { tax_rule => { id => 1 } }, { tax_rule => { id => 1 } }, { tax_rule => { id => 1 } } ]
+    );
     is $sales_order->count_items, 3, 'right count_items';
 };
 
@@ -54,6 +54,7 @@ subtest 'subtotal' => sub {
                 price    => 1,
                 quantity => 1,
                 tax_rule => {
+                    id       => 1,
                     tax_rate => 5,
                 },
             },
@@ -61,6 +62,7 @@ subtest 'subtotal' => sub {
                 price    => 2,
                 quantity => 2,
                 tax_rule => {
+                    id       => 1,
                     tax_rate => 5,
                 },
             },
@@ -68,6 +70,7 @@ subtest 'subtotal' => sub {
                 price    => 3,
                 quantity => 3,
                 tax_rule => {
+                    id       => 1,
                     tax_rate => 5,
                 },
             }
@@ -79,36 +82,6 @@ subtest 'subtotal' => sub {
     };
     subtest 'including tax' => sub {
         is $sales_order->subtotal_incl_tax, '$14.70', 'right subtotal including tax';
-    };
-};
-
-subtest 'shipping_fee' => sub {
-    my $sales_order = construct(
-        shipping_fee => 100,
-        tax_rule     => {
-            tax_rate => 5,
-        },
-    );
-
-    subtest 'excluding tax' => sub {
-        is $sales_order->shipping_fee_excl_tax, '$100.00', 'right shipping fee excluding tax';
-    };
-    subtest 'including tax' => sub {
-        is $sales_order->shipping_fee_incl_tax, '$105.00', 'right shipping fee including tax';
-    };
-
-    $sales_order = construct(
-        shipping_fee => { value => 105, is_tax_included => 1 },
-        tax_rule     => {
-            tax_rate => 5,
-        },
-    );
-
-    subtest 'excluding tax' => sub {
-        is $sales_order->shipping_fee_excl_tax, '$100.00', 'right shipping fee excluding tax';
-    };
-    subtest 'including tax' => sub {
-        is $sales_order->shipping_fee_incl_tax, '$105.00', 'right shipping fee including tax';
     };
 };
 

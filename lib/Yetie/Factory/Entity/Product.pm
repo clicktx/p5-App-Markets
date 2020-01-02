@@ -11,7 +11,10 @@ sub cook {
     $self->aggregate( price => 'value-price', $self->{price} );
 
     # tax
-    $self->aggregate( tax_rule => 'entity-tax_rule', $self->param('tax_rule') || {} );
+    if ( $self->param('tax_rule') ) {
+        $self->aggregate( tax_rule => 'entity-tax_rule', $self->param('tax_rule') );
+    }
+
 }
 
 1;

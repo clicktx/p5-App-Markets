@@ -100,6 +100,18 @@ If set C<checked> or C<selected> together, this parameter takes precedence.
 
 =head2 C<choices>
 
+    choices => [
+        [ label => 'value' ],
+        [ foo => 1 ],
+        [ bar => 2 ],
+    ],
+
+    choices => [
+        c( optgroup => [ [ label1 => 'value1' ], [ label2 => 'value2' ] ] ),
+        c( EU => [ [ Germany => 'de' ], [ England => 'en' ] ] ),
+        c( Asia => [ [ China => 'cn' ], [ Japan => 'jp', checked => 1 ] ] ),
+    ],
+
 =head2 C<class>
 
 =head2 C<default_value>

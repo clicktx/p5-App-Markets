@@ -8,19 +8,19 @@ my $pkg = 'Yetie::Domain::Entity::TaxRule';
 use_ok $pkg;
 
 subtest 'basic' => sub {
-    my $rule = $pkg->new();
+    my $rule = $pkg->new( id => 1 );
 
     is $rule->tax_rate, 0, 'right default rate';
     can_ok $rule, 'title';
 };
 
 subtest 'tax_rate' => sub {
-    is Yetie::Domain::Entity::TaxRule->new( tax_rate => 8.00 )->tax_rate, '8',    'right rate';
-    is Yetie::Domain::Entity::TaxRule->new( tax_rate => 3.15 )->tax_rate, '3.15', 'right rate';
+    is Yetie::Domain::Entity::TaxRule->new( id => 1, tax_rate => 8.00 )->tax_rate, '8',    'right rate';
+    is Yetie::Domain::Entity::TaxRule->new( id => 2, tax_rate => 3.15 )->tax_rate, '3.15', 'right rate';
 };
 
 subtest 'caluculate_tax' => sub {
-    my $rule = $pkg->new( tax_rate => 10.000 );
+    my $rule = $pkg->new( id => 1, tax_rate => 10.000 );
 
     my $price = Yetie::Domain::Value::Price->new(100);
     my $tax   = $rule->caluculate_tax($price);
@@ -34,10 +34,10 @@ subtest 'caluculate_tax' => sub {
     is $rule->caluculate_tax($price), '$0.00', 'right inside tax for zero';
 
     $price = Yetie::Domain::Value::Price->new( value => 1, is_tax_included => 0 );
-    $rule = $pkg->new( tax_rate => 3.5 );
+    $rule = $pkg->new( id => 1, tax_rate => 3.5 );
     is $rule->caluculate_tax($price), '$0.04', 'right round mode even(default)';
 
-    $rule = $pkg->new( tax_rate => 3.5, round_mode => 'trunc' );
+    $rule = $pkg->new( id => 1, tax_rate => 3.5, round_mode => 'trunc' );
     is $rule->caluculate_tax($price), '$0.03', 'right round mode trunc';
 };
 

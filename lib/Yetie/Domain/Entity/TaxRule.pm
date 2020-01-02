@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::TaxRule;
-use MooseX::Types::Common::Numeric qw/PositiveOrZeroNum/;
+use MooseX::Types::Common::Numeric qw/PositiveOrZeroNum PositiveInt/;
 use Math::Currency;
 
 use Moose;
@@ -13,6 +13,10 @@ has _round_mode => (
     isa      => 'RoundMode',
     reader   => 'round_mode',
     init_arg => 'round_mode',
+);
+has '+id' => (
+    isa      => PositiveInt,
+    required => 1,
 );
 has tax_rate => (
     is      => 'ro',
