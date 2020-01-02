@@ -3,9 +3,8 @@ use Moose::Role;
 use Yetie::Factory;
 
 has tax_rule => (
-    is      => 'ro',
-    isa     => 'Yetie::Domain::Entity::TaxRule',
-    default => sub { Yetie::Factory->new('entity-tax_rule')->construct() },
+    is  => 'ro',
+    isa => 'Yetie::Domain::Entity::TaxRule',
 );
 
 sub price_excl_tax {
