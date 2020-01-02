@@ -8,9 +8,9 @@ use Test::Mojo;
 
 my $CART_DATA = {
     items => [
-        { product_id => 2, product_title => 'bar', quantity => 2, price => 200 },
-        { product_id => 3, product_title => 'baz', quantity => 3, price => 300 },
-        { product_id => 1, product_title => 'foo', quantity => 1, price => 100 },
+        { product_id => 2, product_title => 'bar', quantity => 2, price => 200, tax_rule => { id => 1 } },
+        { product_id => 3, product_title => 'baz', quantity => 3, price => 300, tax_rule => { id => 1 } },
+        { product_id => 1, product_title => 'foo', quantity => 1, price => 100, tax_rule => { id => 1 } },
     ],
 };
 
@@ -153,7 +153,7 @@ sub test_50_stored_data : Tests() {
     is $last_order->product_id,    1, 'right stored product_id';
     is $last_order->product_title, 'foo', 'right stored product_id';
     is $last_order->quantity,      1, 'right stored quantity';
-    ok $last_order->price == 100, 'right stored price';
+    ok $last_order->price->value == 100, 'right stored price';
 }
 
 __PACKAGE__->runtests;
