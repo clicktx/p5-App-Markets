@@ -5,8 +5,11 @@ use Yetie::Util qw(args2hash);
 sub add_all_cart_items {
     my $self = shift;
 
-    my $cart     = $self->controller->cart;
-    my $items    = $cart->items->to_array;
+    # class exchange
+    my $cart_items = $self->controller->cart->items;
+    my $factory    = $self->factory('entity-sales_item');
+    my $items      = $cart_items->reduce( sub { [ @{$a}, $factory->construct( $b->to_data ) ] }, [] );
+
     my $checkout = $self->get;
     $checkout->sales_orders->first->items->append( @{$items} );
 
