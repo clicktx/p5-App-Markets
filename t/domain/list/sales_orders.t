@@ -43,12 +43,23 @@ subtest 'is_multiple' => sub {
 };
 
 subtest 'count_total_items' => sub {
-    my $v = construct( list => [ { items => [ {}, {} ] }, { items => [ {}, {} ] } ] );
+    my $v = construct(
+        list => [
+            { items => [ { tax_rule => { id => 1 } }, { tax_rule => { id => 1 } } ] },
+            { items => [ { tax_rule => { id => 1 } }, { tax_rule => { id => 1 } } ] },
+        ]
+    );
     is $v->count_total_items, 4, 'right total items';
 };
 
 subtest 'total_quantity' => sub {
-    my $v = construct( list => [ { items => [ { quantity => 1 }, { quantity => 2 } ] } ] );
+    my $v = construct(
+        list => [
+            {
+                items => [ { quantity => 1, tax_rule => { id => 1 } }, { quantity => 2, tax_rule => { id => 1 } }, ]
+            }
+        ]
+    );
     is $v->total_quantity, 3, 'right total quantity';
 };
 
@@ -81,7 +92,10 @@ subtest 'revert' => sub {
     my $v = construct();
     is $v->revert, undef, 'right not has shipment';
 
-    $v = construct( list => [ { shipping_address => { postal_code => 12345 }, items => [ { quantity => 1 } ] } ] );
+    $v =
+      construct( list =>
+          [ { shipping_address => { postal_code => 12345 }, items => [ { quantity => 1, tax_rule => { id => 1 } } ] } ]
+      );
     $v->revert;
     my $data = $v->to_data;
     is $data->[0]->{shipping_address}->{postal_code}, 12345, 'right shipping_address in first element';
@@ -104,6 +118,7 @@ subtest 'subtotal' => sub {
                     price    => 1,
                     quantity => 1,
                     tax_rule => {
+                        id       => 1,
                         tax_rate => 5,
                     },
                 },
@@ -111,6 +126,7 @@ subtest 'subtotal' => sub {
                     price    => 2,
                     quantity => 2,
                     tax_rule => {
+                        id       => 1,
                         tax_rate => 5,
                     },
                 },
@@ -118,6 +134,7 @@ subtest 'subtotal' => sub {
                     price    => 3,
                     quantity => 3,
                     tax_rule => {
+                        id       => 1,
                         tax_rate => 5,
                     },
                 }
@@ -129,6 +146,7 @@ subtest 'subtotal' => sub {
                     price    => 1,
                     quantity => 1,
                     tax_rule => {
+                        id       => 1,
                         tax_rate => 5,
                     },
                 },
@@ -136,6 +154,7 @@ subtest 'subtotal' => sub {
                     price    => 2,
                     quantity => 2,
                     tax_rule => {
+                        id       => 1,
                         tax_rate => 5,
                     },
                 },
@@ -143,6 +162,7 @@ subtest 'subtotal' => sub {
                     price    => 3,
                     quantity => 3,
                     tax_rule => {
+                        id       => 1,
                         tax_rate => 5,
                     },
                 }

@@ -39,7 +39,10 @@ subtest 'count_items' => sub {
     my $sales_order = construct( id => 1 );
     is $sales_order->count_items, 0, 'right count_items';
 
-    $sales_order = construct( id => 1, items => [ {}, {}, {} ] );
+    $sales_order = construct(
+        id    => 1,
+        items => [ { tax_rule => { id => 1 } }, { tax_rule => { id => 1 } }, { tax_rule => { id => 1 } } ]
+    );
     is $sales_order->count_items, 3, 'right count_items';
 };
 
@@ -51,6 +54,7 @@ subtest 'subtotal' => sub {
                 price    => 1,
                 quantity => 1,
                 tax_rule => {
+                    id       => 1,
                     tax_rate => 5,
                 },
             },
@@ -58,6 +62,7 @@ subtest 'subtotal' => sub {
                 price    => 2,
                 quantity => 2,
                 tax_rule => {
+                    id       => 1,
                     tax_rate => 5,
                 },
             },
@@ -65,6 +70,7 @@ subtest 'subtotal' => sub {
                 price    => 3,
                 quantity => 3,
                 tax_rule => {
+                    id       => 1,
                     tax_rate => 5,
                 },
             }

@@ -31,6 +31,7 @@ subtest 'sum' => sub {
     my $line_item = $f->factory('entity-line_item')->construct(
         {
             tax_rule => {
+                id       => 1,
                 tax_rate => 5,
             },
         }
@@ -42,6 +43,7 @@ subtest 'sum' => sub {
             quantity => 1,
             price    => 100,
             tax_rule => {
+                id       => 1,
                 tax_rate => 3,
             },
         }

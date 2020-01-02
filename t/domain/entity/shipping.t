@@ -16,6 +16,7 @@ subtest 'basic' => sub {
             round_mode    => 'even',
         },
         tax_rule => {
+            id       => 1,
             tax_rate => 5,
         },
     );

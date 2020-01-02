@@ -11,21 +11,21 @@ my %example_data = (
             product_title => 'a',
             quantity      => 1,
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule => { tax_rate => 5 },
+            tax_rule => { id => 1, tax_rate => 5 },
         },
         {
             product_id    => 2,
             product_title => 'b',
             quantity      => 2,
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule => { tax_rate => 5 },
+            tax_rule => { id => 1, tax_rate => 5 },
         },
         {
             product_id    => 3,
             product_title => 'c',
             quantity      => 3,
             price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
-            tax_rule => { tax_rate => 5 },
+            tax_rule => { id => 1, tax_rate => 5 },
         },
     ],
 );
@@ -82,13 +82,13 @@ subtest 'methods' => sub {
 
 subtest 'add_item' => sub {
     my $cart = _create_entity;
-    $cart->add_item( Yetie::Factory->new('entity-cart_item')->construct( product_id => 11 ) );
+    $cart->add_item( Yetie::Factory->new('entity-cart_item')->construct( product_id => 11, tax_rule => { id => 1 } ) );
     is $cart->items->last->product_id, '11', 'right last item';
     is $cart->is_modified, 1, 'right modified';
 
     $cart = _create_entity;
-    $cart->add_item(
-        Yetie::Factory->new('entity-cart_item')->construct( product_id => 1, quantity => 1, price => 100 ) );
+    $cart->add_item( Yetie::Factory->new('entity-cart_item')
+          ->construct( product_id => 1, quantity => 1, price => 100, tax_rule => { id => 1 } ) );
     is $cart->items->first->quantity, '2', 'right sum quantity';
     is $cart->is_modified, 1, 'right modified';
 };
@@ -134,9 +134,9 @@ subtest 'merge' => sub {
     my $cart        = _create_entity;
     my %stored_data = (
         items => [
-            { product_id => 4, quantity => 4, price => 100 },
-            { product_id => 1, quantity => 1, price => 100 },
-            { product_id => 5, quantity => 5, price => 100 },
+            { product_id => 4, quantity => 4, price => 100, tax_rule => { id => 1 } },
+            { product_id => 1, quantity => 1, price => 100, tax_rule => { id => 1 } },
+            { product_id => 5, quantity => 5, price => 100, tax_rule => { id => 1 } },
         ],
     );
     my $stored_cart = Yetie::Factory->new('entity-cart')->construct(

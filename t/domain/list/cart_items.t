@@ -13,7 +13,10 @@ sub factory {
 
 subtest 'append' => sub {
     my $list = factory();
-    my $item = Yetie::Factory->new('entity-line_item')->construct( id => 1 );
+    my $item = Yetie::Factory->new('entity-line_item')->construct(
+        id       => 1,
+        tax_rule => { id => 1 },
+    );
     dies_ok { $list->append($item) } 'right fail';
 };
 

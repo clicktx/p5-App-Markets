@@ -17,6 +17,7 @@ subtest 'basic' => sub {
                 id       => 2,
                 quantity => 0,
                 price    => 100,
+                tax_rule => { id => 1 },
             }
         );
     }
@@ -27,6 +28,7 @@ subtest 'basic' => sub {
             id       => 2,
             quantity => 1,
             price    => 100,
+            tax_rule => { id => 1 },
         }
     );
 
@@ -45,17 +47,20 @@ subtest 'basic' => sub {
 subtest 'equals' => sub {
     my $item1 = factory(
         {
-            id => 1,
+            id       => 1,
+            tax_rule => { id => 1 },
         }
     );
     my $item2 = factory(
         {
-            id => 1,
+            id       => 1,
+            tax_rule => { id => 1 },
         }
     );
     my $item3 = factory(
         {
-            id => 2,
+            id       => 2,
+            tax_rule => { id => 1 },
         }
     );
 
@@ -68,7 +73,8 @@ subtest 'equals' => sub {
 subtest 'item_hash_sum' => sub {
     my $item = factory(
         {
-            id => 111,
+            id       => 111,
+            tax_rule => { id => 1 },
         }
     );
     is $item->item_hash_sum, '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2', 'right hash code';
@@ -81,6 +87,7 @@ subtest 'row_tax_amount' => sub {
             price    => 1,
             quantity => 5,
             tax_rule => {
+                id       => 1,
                 tax_rate => 3.5,
             },
         }
@@ -96,6 +103,7 @@ subtest 'row_total' => sub {
             price    => 300,
             quantity => 2,
             tax_rule => {
+                id       => 1,
                 tax_rate => 5,
             },
         }
@@ -105,7 +113,7 @@ subtest 'row_total' => sub {
 };
 
 subtest 'set_attributes' => sub {
-    my $item = factory();
+    my $item = factory( tax_rule => { id => 1 } );
     $item->set_attributes( quantity => 3 );
     is $item->quantity, 3, 'right set attribute';
 };
@@ -115,6 +123,7 @@ subtest 'to_data' => sub {
         {
             id       => 110,
             quantity => 1,
+            tax_rule => { id => 1 },
         }
     );
     cmp_deeply $item->to_data,

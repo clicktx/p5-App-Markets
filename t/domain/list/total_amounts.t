@@ -10,6 +10,7 @@ my $line_item_tax3 = $f->factory('entity-line_item')->construct(
         quantity => 1,
         price    => 100,
         tax_rule => {
+            id       => 1,
             tax_rate => 3,
         },
     }
@@ -19,6 +20,7 @@ my $line_item_tax5 = $f->factory('entity-line_item')->construct(
         quantity => 1,
         price    => 100,
         tax_rule => {
+            id       => 2,
             tax_rate => 5,
         },
     }
