@@ -2,18 +2,21 @@ package Yetie::Schema::Result::SalesOrder;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
+use Yetie::Schema::Result::Sales;
+use Yetie::Schema::Result::Address;
+
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
 };
 
 column sales_id => {
-    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::Sales->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
 column shipping_address_id => {
-    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::Address->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
@@ -34,6 +37,11 @@ belongs_to
 
 has_many
   items => 'Yetie::Schema::Result::SalesOrderItem',
+  { 'foreign.order_id' => 'self.id' },
+  { cascade_delete     => 0 };
+
+has_many
+  shipments => 'Yetie::Schema::Result::Shipment',
   { 'foreign.order_id' => 'self.id' },
   { cascade_delete     => 0 };
 

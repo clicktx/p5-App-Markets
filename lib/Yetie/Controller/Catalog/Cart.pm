@@ -30,13 +30,9 @@ sub index {
     return $c->render() if !$form->do_validate;
 
     # Edit cart
-    $cart->items->each(
-        sub {
-            my ( $item, $num ) = @_;
-            my $i = $num - 1;
-            $item->quantity( $form->scope_param('quantity')->[$i] );
-        }
-    );
+    my $quantities = $form->scope_param('quantity');
+    $cart->change_quantities($quantities);
+
     $c->render();
 }
 

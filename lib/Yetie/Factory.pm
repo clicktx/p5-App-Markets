@@ -24,6 +24,20 @@ sub aggregate {
     return $self;
 }
 
+sub aggregate_domain_list {
+    my ( $self, $domain ) = @_;
+
+    my $list = $self->param('list') || [];
+    return $self->aggregate_collection( list => $domain, $list );
+}
+
+sub aggregate_domain_set {
+    my ( $self, $domain ) = @_;
+
+    my $hash = $self->param('hash_set') || [];
+    return $self->aggregate_ixhash( hash_set => $domain, $hash );
+}
+
 sub aggregate_collection {
     my ( $self, $accessor, $domain, $data ) = @_;
 
@@ -217,30 +231,71 @@ the following new ones.
 
 =head2 C<aggregate>
 
-    my $obj = $factory->aggregate( $attribure_name => $domain_class, \%data );
+    sub cook {
+        my $self = shift;
 
-    # Entity Object
-    my $entity = $factory->aggregate( user => 'entity-user', { id => 1, name => 'foo', age => 22, ... } );
+        my %data = ( foo => 'bar' );
+        $self->aggregate( $attribure_name => $domain_class, \%data );
 
-    # Value Object
-    my $value = $factory->aggregate( email => 'value-email', { value => 'a@example.org', ... } );
-    my $value = $factory->aggregate( email => 'value-email', 'a@example.org' );
+        # Entity Object
+        $self->aggregate( user => 'entity-user', { id => 1, name => 'foo', age => 22, ... } );
+
+        # Value Object
+        $self->aggregate( email => 'value-email', { value => 'a@example.org', ... } );
+        $self->aggregate( email => 'value-email', 'a@example.org' );
+    }
 
 Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
 
+=head2 C<aggregate_domain_list>
+
+    sub cook {
+        my $self = shift;
+
+        $self->aggregate_domain_list($target_domain_class);
+
+        # Longer version
+        $self->aggregate_collection( 'list' => $target_domain_class, $self->param('list') || [] );
+    }
+
+Create L<Yetie::Domain::List> type aggregate.
+See L</aggregate_collection>.
+
+=head2 C<aggregate_domain_set>
+
+    sub cook {
+        my $self = shift;
+
+        $self->aggregate_domain_set($target_domain_class);
+
+        # Longer version
+        $self->aggregate_ixhash( 'hash_set' => $target_domain_class, $self->param('hash_set') || {} );
+    }
+
+Create L<Yetie::Domain::Set> type aggregate.
+See L</aggregate_ixhash>.
+
 =head2 C<aggregate_collection>
 
-    my @data = (qw/a b c d e f/);
-    my $domain = $factory->aggregate_collection( $accessor_name, $target_entity, \@data );
-    my $domain = $factory->aggregate_collection( 'items', 'entity-xxx-item', \@data );
+    sub cook {
+        my $self = shift;
+
+        my @data = (qw/a b c d e f/);
+        $self->aggregate_collection( $accessor_name, $target_domain_class, \@data );
+        $self->aggregate_collection( 'items', 'entity-xxx-item', \@data );
+    }
 
 Create L<Yetie::Domain::Collection> type aggregate.
 
 =head2 C<aggregate_ixhash>
 
-    my @data = ( { label => { key => 'value' } }, { label2 => { key2 => 'value2' } }, ... );
-    my $domain = $factory->aggregate_ixhash( $accessor_name, $target_entity, \@data );
-    my $domain = $factory->aggregate_ixhash( 'items', 'entity-xxx-item', \@data );
+    sub cook {
+        my $self = shift;
+
+        my @data = ( { label => { key => 'value' } }, { label2 => { key2 => 'value2' } }, ... );
+        $self->aggregate_ixhash( $accessor_name, $target_domain_class, \@data );
+        $self->aggregate_ixhash( 'items', 'entity-xxx-item', \@data );
+    }
 
 Create L<Yetie::Domain::IxHash> type aggregate.
 

@@ -3,31 +3,37 @@ use Moose::Role;
 use Yetie::Factory;
 
 has tax_rule => (
-    is      => 'ro',
-    isa     => 'Yetie::Domain::Entity::TaxRule',
-    default => sub { Yetie::Factory->new('entity-tax_rule')->construct() },
+    is  => 'ro',
+    isa => 'Yetie::Domain::Entity::TaxRule',
 );
 
 sub price_excl_tax {
-    my $self = shift;
+    my ( $self, %args ) = @_;
+    my $attr = $args{attr} || 'price';
 
-    return $self->price->is_tax_included
-      ? $self->price->clone( is_tax_included => 0 ) - $self->tax_amount
-      : $self->price;
+    return $self->$attr if !$self->$attr->is_tax_included;
+
+    my $price = $self->$attr->clone( is_tax_included => 0 );
+    my $tax_amount = $self->tax_amount( attr => $attr )->clone( is_tax_included => 0 );
+    return $price - $tax_amount;
 }
 
 sub price_incl_tax {
-    my $self = shift;
+    my ( $self, %args ) = @_;
+    my $attr = $args{attr} || 'price';
 
-    return $self->price->is_tax_included
-      ? $self->price
-      : $self->price->clone( is_tax_included => 1 ) + $self->tax_amount->clone( is_tax_included => 1 );
+    return $self->$attr if $self->$attr->is_tax_included;
+
+    my $price = $self->$attr->clone( is_tax_included => 1 );
+    my $tax_amount = $self->tax_amount( attr => $attr )->clone( is_tax_included => 1 );
+    return return $price + $tax_amount;
 }
 
 sub tax_amount {
-    my $self = shift;
+    my ( $self, %args ) = @_;
+    my $attr = $args{attr} || 'price';
 
-    my $tax_amount = $self->tax_rule->caluculate_tax( $self->price );
+    my $tax_amount = $self->tax_rule->caluculate_tax( $self->$attr );
     return $tax_amount;
 }
 
@@ -60,13 +66,25 @@ the following new ones.
 
     my $price_excl_tax = $product->price_excl_tax;
 
+    my $price_excl_tax = $product->price_excl_tax( attr => 'shipping_fee' );
+
+Arguments: C<attr> default 'price'
+
 =head2 C<price_incl_tax>
 
     my $price_incl_tax = $product->price_incl_tax;
 
+    my $price_incl_tax = $product->price_incl_tax( attr => 'shipping_fee' );
+
+Arguments: C<attr> default 'price'
+
 =head2 C<tax_amount>
 
     my $tax_amount = $product->tax_amount;
+
+    my $tax_amount = $product->tax_amount( attr => 'shipping_fee' );
+
+Arguments: C<attr> default 'price'
 
 =head2 C<tax_rate>
 

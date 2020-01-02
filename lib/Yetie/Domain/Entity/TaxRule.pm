@@ -1,5 +1,5 @@
 package Yetie::Domain::Entity::TaxRule;
-use MooseX::Types::Common::Numeric qw/PositiveOrZeroNum/;
+use MooseX::Types::Common::Numeric qw/PositiveOrZeroNum PositiveInt/;
 use Math::Currency;
 
 use Moose;
@@ -8,6 +8,16 @@ extends 'Yetie::Domain::Entity';
 
 with 'Yetie::Domain::Role::TypesMoney';
 
+has _round_mode => (
+    is       => 'ro',
+    isa      => 'RoundMode',
+    reader   => 'round_mode',
+    init_arg => 'round_mode',
+);
+has '+id' => (
+    isa      => PositiveInt,
+    required => 1,
+);
 has tax_rate => (
     is      => 'ro',
     isa     => PositiveOrZeroNum,
@@ -17,20 +27,14 @@ has title => (
     is  => 'ro',
     isa => 'Str',
 );
-has round_mode => (
-    is      => 'ro',
-    isa     => 'RoundMode',
-    default => 'even',
-);
 
 sub caluculate_tax {
     my ( $self, $price ) = @_;
 
-    my $tax_base = $self->factory('value-tax')->construct(
-        round_mode => $self->round_mode,
-        %{ $price->to_data },
-    );
+    my $attrs = $price->to_data;
+    $attrs->{round_mode} = $self->round_mode if $self->round_mode;
 
+    my $tax_base = $self->factory('value-tax')->construct($attrs);
     my $rate = $self->tax_rate ? $self->tax_rate / 100 : 0;
     my $tax =
         $price->is_tax_included
@@ -71,12 +75,6 @@ Tax rate.
 =head2 C<title>
 
 Tax rule title.
-
-=head2 C<round_mode>
-
-'even', 'odd', '+inf', '-inf', 'zero', 'trunc'
-
-L<Math::BigFloat#Rounding>
 
 =head1 METHODS
 

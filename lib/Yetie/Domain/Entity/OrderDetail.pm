@@ -8,7 +8,7 @@ has updated_at       => ( is => 'ro' );
 has customer         => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-customer')->construct() } );
 has billing_address  => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
 has shipping_address => ( is => 'ro', default => sub { __PACKAGE__->factory('entity-address')->construct() } );
-has items            => ( is => 'ro', default => sub { __PACKAGE__->factory('list-line_items')->construct() } );
+has items            => ( is => 'ro', default => sub { __PACKAGE__->factory('list-sales_items')->construct() } );
 has purchased_on => ( is => 'ro', default => q{} );
 has order_status => ( is => 'ro', default => q{} );
 

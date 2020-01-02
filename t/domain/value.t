@@ -36,16 +36,16 @@ subtest 'basic' => sub {
     is $v->value, 'foo', 'right single argument';
 };
 
-subtest '_hash_sum' => sub {
+subtest 'hash_sum' => sub {
     my $obj      = $test_pkg->new;
     my $hash_sum = '4d307fef71be148cb0768c96b17b64455d0347a9';
-    is $obj->_hash_sum, $hash_sum, 'right hash_sum';
+    is $obj->hash_sum, $hash_sum, 'right hash_sum';
     $obj->foo(1);
-    is $obj->_hash_sum, $hash_sum, 'right modify attribute after call "_hash_sum"';
+    is $obj->hash_sum, $hash_sum, 'right modify attribute after call "hash_sum"';
 
     $obj = $test_pkg->new;
     $obj->foo(1);
-    is $obj->_hash_sum, $hash_sum, 'right modify attribute before call "_hash_sum"';
+    is $obj->hash_sum, $hash_sum, 'right modify attribute before call "hash_sum"';
 };
 
 subtest 'equals' => sub {
@@ -75,6 +75,12 @@ subtest 'clone' => sub {
 
     $clone = $obj->clone;
     ok !$clone->is_modified, 'right not modified';
+
+    $clone = $obj->clone( foo => 'bar' );
+    is $clone->foo, 'bar', 'right with arguments';
+
+    $clone = $obj->clone( { foo => 'bar' } );
+    is $clone->foo, 'bar', 'right with arguments(reference)';
 };
 
 subtest 'is_modified' => sub {
@@ -90,16 +96,6 @@ subtest 'is_modified' => sub {
 subtest 'to_data' => sub {
     my $v = $pkg->new( value => 'foo' );
     is $v->to_data, 'foo', 'right to_data';
-};
-
-subtest 'set_value' => sub {
-    my $v = $pkg->new( value => 'foo' );
-    my $new = $v->set_value('foo');
-    isnt $v, $new, 'right different object';
-    ok $v->equals($new), 'right equals';
-
-    $new = $v->set_value('bar');
-    ok !$v->equals($new), 'right not equals';
 };
 
 subtest 'immutable' => sub {

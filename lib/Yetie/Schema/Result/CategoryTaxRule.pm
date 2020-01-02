@@ -2,8 +2,11 @@ package Yetie::Schema::Result::CategoryTaxRule;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-primary_column category_id => { data_type => 'INT' };
-primary_column tax_rule_id => { data_type => 'INT' };
+use Yetie::Schema::Result::Category;
+use Yetie::Schema::Result::TaxRule;
+
+primary_column category_id => { data_type => Yetie::Schema::Result::Category->column_info('id')->{data_type} };
+primary_column tax_rule_id => { data_type => Yetie::Schema::Result::TaxRule->column_info('id')->{data_type} };
 
 column start_at => {
     data_type   => 'DATETIME',

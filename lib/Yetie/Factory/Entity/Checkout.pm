@@ -6,7 +6,9 @@ sub cook {
 
     $self->aggregate( billing_address => ( 'entity-address', $self->param('billing_address') || {} ) );
 
-    $self->aggregate( shipments => 'list-shipments', $self->param('shipments') || [] );
+    $self->aggregate( payment_method => 'entity-payment_method', $self->param('payment_method') || {} );
+
+    $self->aggregate( sales_orders => 'list-sales_orders', $self->param('sales_orders') || [] );
 
     $self->aggregate( transaction => 'entity-transaction', $self->param('transaction') || {} );
 }

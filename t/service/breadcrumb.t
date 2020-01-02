@@ -16,7 +16,11 @@ sub t01_get_list_by_category_id : Tests() {
     my ( $c, $s ) = $self->_init;
 
     my $list = $s->get_list_by_category_id(16);
-    is_deeply $list->to_data, [ { class => q{}, title => 'Foods' }, { class => 'current', title => 'Drinks' } ],
+    is_deeply $list->to_data,
+      [
+        { class => q{},       title => 'Foods',  url => '/category/15' },
+        { class => 'current', title => 'Drinks', url => '/category/16' },
+      ],
       'right get list';
 
     $list = $s->get_list_by_category_id(999);
@@ -31,9 +35,9 @@ sub t02_get_list_by_product : Tests() {
     my $list    = $s->get_list_by_product($product);
     is_deeply $list->to_data,
       [
-        { class => q{},       title => 'Foods' },
-        { class => q{},       title => 'Alcoholic Drinks' },
-        { class => 'current', title => 'Beer' },
+        { class => q{},       title => 'Foods',            url => '/category/15' },
+        { class => q{},       title => 'Alcoholic Drinks', url => '/category/18' },
+        { class => 'current', title => 'Beer',             url => '/category/19' },
       ],
       'right get list';
 

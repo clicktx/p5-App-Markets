@@ -2,18 +2,21 @@ package Yetie::Schema::Result::CustomerActivity;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
+use Yetie::Schema::Result::Customer;
+use Yetie::Schema::Result::Activity;
+
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
 };
 
 column customer_id => {
-    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::Customer->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
 column activity_id => {
-    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::Activity->column_info('id')->{data_type},
     is_nullable => 0,
     extra       => { unsigned => 1 },
 };

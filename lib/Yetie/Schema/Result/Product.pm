@@ -2,6 +2,8 @@ package Yetie::Schema::Result::Product;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
+use Yetie::Schema::Result::Price;
+
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
@@ -18,11 +20,7 @@ column description => {
     is_nullable => 0,
 };
 
-column price => {
-    data_type   => 'DECIMAL',
-    is_nullable => 0,
-    size        => [ 12, 2 ],
-};
+column price => Yetie::Schema::Result::Price->column_info('value');
 
 column created_at => {
     data_type   => 'DATETIME',

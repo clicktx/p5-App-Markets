@@ -1,6 +1,7 @@
 package Yetie::Domain::Base;
 use Scalar::Util qw();
 use Yetie::Factory;
+use Yetie::Util qw(args2hash);
 
 use Moose;
 use namespace::autoclean;
@@ -10,6 +11,7 @@ has _hash_sum => (
     is         => 'ro',
     isa        => 'Str',
     lazy_build => 1,
+    reader     => 'hash_sum',
     writer     => '_set_hash_sum',
 );
 sub _build__hash_sum { return shift->hash_code }
@@ -32,8 +34,8 @@ around BUILDARGS => sub {
 sub BUILD {
     my $self = shift;
 
-    # Lazy build
-    $self->_hash_sum;
+    # touch
+    $self->hash_sum;
 }
 
 sub factory { return Yetie::Factory->new( $_[1] ) }
@@ -70,12 +72,22 @@ sub rehash {
     return $self;
 }
 
-sub set_attributes {
-    my ( $self, $params ) = @_;
+sub set_attribute {
+    my ( $self, $key, $value ) = @_;
 
-    foreach my $key ( keys %{$params} ) {
-        my $value = $params->{$key};
-        $self->$key($value);
+    my $attr   = $self->$key;
+    my $setter = "set_$key";
+    Scalar::Util::blessed($attr) ? $attr->set_attributes($value) : $self->$setter($value);
+    return $self;
+}
+
+sub set_attributes {
+    my $self = shift;
+    my $args = args2hash(@_);
+
+    foreach my $key ( keys %{$args} ) {
+        my $value = $args->{$key};
+        $self->set_attribute( $key, $value );
     }
     return $self;
 }
@@ -119,10 +131,19 @@ Yetie::Domain::Base
 
 Domain object base class.
 
+=head1 ATTRIBUTES
+
+L<Yetie::Domain> inherits all attributes from L<Moose> and implements the following new ones.
+
+=head2 C<hash_sum>
+
+Return cached SHA1 checksum.
+
+SEE L</hash_code>
+
 =head1 METHODS
 
-L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements
-the following new ones.
+L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements the following new ones.
 
 =head2 C<factory>
 
@@ -159,8 +180,13 @@ Recreate object hash sum.
 
 Recursive call for all attributes.
 
+=head2 C<set_attribute>
+
+    $obj->set_attribute( $key => $value );
+
 =head2 C<set_attributes>
 
+    $obj->set_attributes( %parameters );
     $obj->set_attributes( \%parameters );
 
 =head1 AUTHOR

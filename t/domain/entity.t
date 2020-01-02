@@ -1,6 +1,7 @@
 use Mojo::Base -strict;
 use Test::More;
 use Test::Deep;
+use Test::Exception;
 use Yetie::Domain::Collection qw/collection/;
 use Yetie::Domain::IxHash qw/ixhash/;
 use Yetie::Domain::Value;
@@ -54,10 +55,6 @@ subtest 'function' => sub {
     package t::line_item;
     use Moose;
     extends 'Yetie::Domain::Entity';
-    has _product_hash_code => (
-        reader => 'product_hash_code',
-        is     => 'ro',
-    );
 }
 
 subtest 'clone' => sub {
@@ -150,6 +147,13 @@ subtest 'to_data method' => sub {
         has [qw(a b h1 h2 h3 url v)] => ( is => 'rw' );
     }
     my $e = t::entity::to_data->new(
+        a   => 1,
+        h2  => t::entity::to_data->new(),
+        url => Mojo::URL->new,              # has not "to_data" method.
+    );
+    dies_ok { $e->to_data } 'right has not to_data method';
+
+    $e = t::entity::to_data->new(
         a  => 1,
         b  => 2,
         h2 => t::entity::to_data->new(),
@@ -157,10 +161,8 @@ subtest 'to_data method' => sub {
             a  => 1,
             h1 => t::entity::to_data->new( a => 1, b => 2 ),
         ),
-        url => Mojo::URL->new,                                # has not "to_data" method.
-        v   => Yetie::Domain::Value->new( value => 'foo' ),
+        v => Yetie::Domain::Value->new( value => 'foo' ),
     );
-
     cmp_deeply $e->to_data,
       {
         a  => 1,

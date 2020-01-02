@@ -19,12 +19,6 @@ column tax_rate => {
     is_nullable => 0,
 };
 
-column round_mode => {
-    data_type   => 'VARCHAR',
-    size        => 8,
-    is_nullable => 0,
-};
-
 # Relation
 has_many
   category_tax_rules => 'Yetie::Schema::Result::CategoryTaxRule',
@@ -32,7 +26,7 @@ has_many
   { cascade_delete        => 0 };
 
 has_many
-  sales_order_items => 'Yetie::Schema::Result::SalesOrderItem',
+  price => 'Yetie::Schema::Result::Price',
   { 'foreign.tax_rule_id' => 'self.id' },
   { cascade_delete        => 0 };
 

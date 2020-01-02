@@ -1,20 +1,27 @@
 package Yetie::Schema::ResultSet::SalesOrderItem;
 use Mojo::Base 'Yetie::Schema::ResultSet';
 
-sub store_items {
-    my ( $self, $order ) = @_;
+sub store_item {
+    my ( $self, $data ) = @_;
 
-    my $order_id = $order->id;
-    my $items    = $order->items;
-    $items->each(
-        sub {
-            my $item = shift;
-            my $data = $item->to_data;
-            $data->{order_id} = $order_id;
-            $self->update_or_create($data);
+    my $id = $data->{id} || q{};
+    my $item = $self->find(
+        $id,
+        {
+            prefetch => {
+                price => 'tax_rule',
+            },
         }
     );
-    return $self;
+
+    # Insert
+    return $self->create($data) if !$item;
+
+    # Update
+    my $price_data = delete $data->{price};
+    $item->price->update($price_data);
+    $item->update($data);
+    return;
 }
 
 1;
@@ -41,13 +48,15 @@ the following new ones.
 L<Yetie::Schema::ResultSet::SalesOrderItem> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
 
-=head2 C<store_items>
+=head2 C<store_item>
 
-Create or update items.
+    $rs->store_item( \%data );
 
-    $rs->store_items( $order );
+Return value
 
-Argument: L<Yetie::Domain::Entity::OrderDetail> object.
+create: $result
+
+update: undef
 
 =head1 AUTHOR
 

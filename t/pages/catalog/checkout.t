@@ -5,13 +5,12 @@ use t::Util;
 use Test::More;
 use Test::Deep;
 use Test::Mojo;
-use DDP;
 
 my $CART_DATA = {
     items => [
-        { product_id => 2, product_title => 'bar', quantity => 2, price => 200 },
-        { product_id => 3, product_title => 'baz', quantity => 3, price => 300 },
-        { product_id => 1, product_title => 'foo', quantity => 1, price => 100 },
+        { product_id => 2, product_title => 'bar', quantity => 2, price => 200, tax_rule => { id => 1 } },
+        { product_id => 3, product_title => 'baz', quantity => 3, price => 300, tax_rule => { id => 1 } },
+        { product_id => 1, product_title => 'foo', quantity => 1, price => 100, tax_rule => { id => 1 } },
     ],
 };
 
@@ -41,7 +40,7 @@ sub test_01_no_logged_in : Tests() {
         qw(
         /checkout/shipping-address
         /checkout/delivery-options
-        /checkout/payment-option
+        /checkout/payment
         /checkout/billing-address
         /checkout/confirm
         )
@@ -96,7 +95,7 @@ sub test_04_billing_address : Tests() {
         postal_code   => 'bar',
         phone         => 'baz',
     };
-    $t->post_ok( '/checkout/billing-address', form => $post_data )->status_is(200)->content_like(qr/confirm/);
+    $t->post_ok( '/checkout/billing-address', form => $post_data )->status_is(200);
 }
 
 sub test_05_select_address : Tests() {
@@ -112,6 +111,19 @@ sub test_05_select_address : Tests() {
 
     $t->post_ok( '/checkout/billing-address/select', form => $post_data )
       ->status_is( 200, 'right select billing address' );
+}
+
+sub test_06_select_payment_method : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
+
+    my $post_data = {
+        csrf_token     => $self->csrf_token,
+        payment_method => 2,
+    };
+
+    $t->post_ok( '/checkout/payment', form => $post_data )->status_is( 200, 'right select payment' )
+      ->content_like(qr/confirm/);
 }
 
 sub test_10_confirm : Tests() {
@@ -141,7 +153,7 @@ sub test_50_stored_data : Tests() {
     is $last_order->product_id,    1, 'right stored product_id';
     is $last_order->product_title, 'foo', 'right stored product_id';
     is $last_order->quantity,      1, 'right stored quantity';
-    ok $last_order->price == 100, 'right stored price';
+    ok $last_order->price->value == 100, 'right stored price';
 }
 
 __PACKAGE__->runtests;

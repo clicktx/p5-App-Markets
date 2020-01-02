@@ -18,7 +18,7 @@ sub find_by_id {
                 'customer',
                 'billing_address',
                 {
-                    orders => [ 'shipping_address', 'items' ],
+                    sales_orders => [ 'shipping_address', 'items' ],
                 },
             ],
         },

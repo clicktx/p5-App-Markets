@@ -12,16 +12,18 @@ use_ok 'Yetie::Service::Product';
 subtest 'duplicate_product' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
+    my $rs      = $c->resultset('Product');
 
-    my $last_id = $app->schema->resultset('Product')->last_id;
-    my $orig    = $app->schema->resultset('Product')->find(1);
+    my $last_id           = $rs->last_id;
+    my $target_product_id = 1;
+    my $orig              = $rs->find($target_product_id);
 
-    my $product = $service->duplicate_product(1);
-    is $product->id, $last_id + 1, 'right id';
-    is $product->description, $orig->description, 'right description';
-    is $product->price->{value}, $orig->price, 'right price';
-    like $product->title, qr/copy/, 'copy title';
-    is $product->product_categories, $orig->product_categories, 'right product_categories';
+    $service->duplicate_product($target_product_id);
+    my $result = $rs->find( $last_id + 1 );
+    is $result->description, $orig->description, 'right description';
+    is $result->price,       $orig->price,       'right price';
+    like $result->title, qr/copy/, 'copy title';
+    is $result->product_categories, $orig->product_categories, 'right product_categories';
 };
 
 subtest 'find_product' => sub {
@@ -37,7 +39,7 @@ subtest 'new_product' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
 
-    my $last_id = $app->schema->resultset('Product')->last_id;
+    my $last_id = $c->resultset('Product')->last_id;
     my $product = $service->new_product;
     is $product->id, $last_id + 1, 'right create new product';
 };
@@ -46,13 +48,13 @@ subtest 'remove_product' => sub {
     my $c       = $app->build_controller;
     my $service = $c->service('product');
 
-    my $result  = $app->schema->resultset('Product')->search( {}, { order_by => { -desc => 'id' } } );
+    my $result  = $c->resultset('Product')->search( {}, { order_by => { -desc => 'id' } } );
     my $all     = $result->count;
     my $last_id = $result->first->id;
     my $product = $service->remove_product($last_id);
     is $product->id, $last_id, 'right remove product(id)';
 
-    my $after = $app->schema->resultset('Product')->search( {} )->count;
+    my $after = $c->resultset('Product')->search( {} )->count;
     is $after, $all - 1, 'right remove product(count)';
 };
 

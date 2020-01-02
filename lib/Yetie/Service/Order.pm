@@ -1,5 +1,6 @@
 package Yetie::Service::Order;
 use Mojo::Base 'Yetie::Service';
+use Yetie::Util qw(args2hash);
 
 sub find_order {
     my ( $self, $order_id ) = @_;
@@ -10,17 +11,35 @@ sub find_order {
 }
 
 sub search_orders {
-    my ( $self, $form ) = @_;
+    my ( $self, %args ) = ( shift, args2hash(@_) );
 
     my $conditions = {
-        where    => '',
-        order_by => '',
-        page_no  => $form->param('page') || 1,
-        per_page => $form->param('per_page') || 5,
+        where    => $args{where},
+        order_by => $args{order_by},
+        page_no  => $args{page_no} || 1,
+        per_page => $args{per_page},
     };
     my $rs = $self->resultset('SalesOrder')->search_sales_orders($conditions);
     my $orders = $self->factory('list-order_details')->construct( list => $rs->to_data );
     return ( $orders, $rs->pager );
+}
+
+sub store_items {
+    my ( $self, $order, $param_list ) = @_;
+
+    my $order_id = $order->id;
+    $order->items->each(
+        sub {
+            my ( $item, $num ) = @_;
+            my $params = $param_list->[$num];
+            $item->set_attributes($params);
+
+            my $data = $item->to_order_data;
+            $data->{order_id} = $order_id;
+            if ( $item->is_modified ) { $self->resultset('SalesOrderItem')->store_item($data) }
+        }
+    );
+    return;
 }
 
 1;
@@ -52,7 +71,11 @@ Return L<Yetie::Domain::Entity::OrderDetail> object.
 
 =head2 C<search_orders>
 
-    my $entity = $service->search_orders($form);
+    my $entity = $service->search_orders(%conditions);
+
+=head2 C<store_items>
+
+    $service->store_items( $order, \@param_list );
 
 =head1 AUTHOR
 

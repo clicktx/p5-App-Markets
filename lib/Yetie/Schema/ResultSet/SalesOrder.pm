@@ -3,7 +3,9 @@ use Mojo::Base 'Yetie::Schema::ResultSet';
 
 my $prefetch = [
     'shipping_address',
-    { items => 'tax_rule' },
+    {
+        items => { price => 'tax_rule' },
+    },
     {
         sales => [ 'customer', 'billing_address' ],
     },
@@ -70,7 +72,7 @@ the following new ones.
 
 =head2 C<find_by_id>
 
-    my $shipment = $rs->find_by_id($shipment_id);
+    my $sales_order = $rs->find_by_id($sales_order_id);
 
 =head2 C<search_sales_orders>
 

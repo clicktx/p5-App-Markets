@@ -9,7 +9,49 @@ use Mojo::Util qw/sha1_sum/;
     use Moose;
     extends 'Yetie::Domain::Base';
 
-    has [qw{foo bar _foo _bar}] => ( is => 'rw' );
+    has foo => (
+        is     => 'ro',
+        writer => 'set_foo',
+    );
+    has bar => (
+        is     => 'ro',
+        writer => 'set_bar',
+    );
+    has _foo => (
+        is     => 'ro',
+        writer => 'set__foo',
+    );
+    has _bar => (
+        is     => 'ro',
+        writer => 'set__bar',
+    );
+
+    package t::domain::p;
+    use Moose;
+    extends 'Yetie::Domain::Base';
+
+    has v => (
+        is      => 'ro',
+        default => sub { t::domain::base->new },
+    );
+
+    package t::domain::i;
+    use Moose;
+    extends 'Yetie::Domain::Base';
+
+    has t => (
+        is     => 'ro',
+        writer => 'set_t',
+    );
+    has c => (
+        is      => 'ro',
+        default => sub { t::domain::base->new },
+    );
+    has p => (
+        is      => 'ro',
+        default => sub { t::domain::p->new },
+    );
+
 }
 
 my $pkg      = 'Yetie::Domain::Base';
@@ -73,17 +115,17 @@ subtest 'hash_code' => sub {
 
 subtest 'rehash' => sub {
     my $obj = $test_pkg->new( foo => 1 );
-    my $hash_sum = $obj->_hash_sum;
-    $obj->foo(2);
-    is $hash_sum, $obj->_hash_sum, 'right hash_sum';
+    my $hash_sum = $obj->hash_sum;
+    $obj->set_foo(2);
+    is $hash_sum, $obj->hash_sum, 'right hash_sum';
     $obj->rehash;
-    isnt $hash_sum, $obj->_hash_sum, 'right rehash';
+    isnt $hash_sum, $obj->hash_sum, 'right rehash';
 
-    $hash_sum = $obj->_hash_sum;
+    $hash_sum = $obj->hash_sum;
     my $obj2 = $test_pkg->new( bar => $obj );
     $obj2->bar->_set_hash_sum('foo');
     $obj2->rehash;
-    is $hash_sum, $obj2->bar->_hash_sum, 'right recursive rehash';
+    is $hash_sum, $obj2->bar->hash_sum, 'right recursive rehash';
 };
 
 subtest 'set_attributes' => sub {
@@ -100,6 +142,22 @@ subtest 'set_attributes' => sub {
     is $obj->bar,  2, 'right attr';
     is $obj->_foo, 3, 'right attr';
     is $obj->_bar, 4, 'right attr';
+
+    $obj = t::domain::i->new();
+    $obj->set_attributes(
+        {
+            t => 'title',
+            c => {
+                foo => 'category',
+            },
+            p => {
+                v => { foo => 'price' },
+            },
+        }
+    );
+    is $obj->t, 'title', 'right attr';
+    is $obj->c->foo, 'category', 'right attr';
+    is $obj->p->v->foo, 'price', 'right attr';
 };
 
 done_testing();

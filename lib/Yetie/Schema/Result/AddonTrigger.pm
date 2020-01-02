@@ -2,10 +2,12 @@ package Yetie::Schema::Result::AddonTrigger;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
+use Yetie::Schema::Result::Addon;
+
 primary_column id => { data_type => 'INT', };
 
 column addon_id => {
-    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::Addon->column_info('id')->{data_type},
     is_nullable => 1,
 };
 

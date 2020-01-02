@@ -22,6 +22,12 @@ extends 'Yetie::Domain::Value';
 
 with 'Yetie::Domain::Role::TypesMoney';
 
+has _round_mode => (
+    is       => 'ro',
+    isa      => 'RoundMode',
+    reader   => 'round_mode',
+    init_arg => 'round_mode',
+);
 has '+value' => (
     isa     => PositiveOrZeroNum,
     default => 0,
@@ -36,11 +42,6 @@ has is_tax_included => (
     isa     => 'Bool',
     default => 0,
 );
-has round_mode => (
-    is      => 'ro',
-    isa     => 'RoundMode',
-    default => 'even',
-);
 
 sub add {
     my $self = shift;
@@ -54,7 +55,7 @@ sub amount {
     my $self = shift;
 
     my $mc = Math::Currency->new( $self->value, $self->currency_code );
-    $mc->round_mode( $self->round_mode );
+    $mc->round_mode( $self->round_mode ) if $self->round_mode;
     return $mc;
 }
 

@@ -12,10 +12,16 @@ has billing_address => (
     default => sub { shift->factory('entity-address')->construct() },
     writer  => 'set_billing_address',
 );
-has shipments => (
+has payment_method => (
     is      => 'ro',
-    isa     => 'Yetie::Domain::List::Shipments',
-    default => sub { shift->factory('list-shipments')->construct() },
+    isa     => 'Yetie::Domain::Entity::PaymentMethod',
+    default => sub { shift->factory('entity-payment_method')->construct() },
+    writer  => 'set_payment_method',
+);
+has sales_orders => (
+    is      => 'ro',
+    isa     => 'Yetie::Domain::List::SalesOrders',
+    default => sub { shift->factory('list-sales_orders')->construct() },
 );
 has transaction => (
     is      => 'ro',
@@ -23,16 +29,17 @@ has transaction => (
     default => sub { shift->factory('entity-transaction')->construct() },
 );
 
-sub add_shipment_item {
-    my $self = shift;
-    my ( $index, $item ) = @_ > 1 ? ( shift, shift ) : ( 0, shift );
-    croak 'First argument was not a Digit'   if $index =~ /\D/sxm;
-    croak 'Second argument was not a Object' if ref $item =~ /::/sxm;
+# NOTE: not use
+# sub add_shipment_item {
+#     my $self = shift;
+#     my ( $index, $item ) = @_ > 1 ? ( shift, shift ) : ( 0, shift );
+#     croak 'First argument was not a Digit'   if $index =~ /\D/sxm;
+#     croak 'Second argument was not a Object' if ref $item =~ /::/sxm;
 
-    my $shipment = $self->shipments->get($index);
-    $shipment->items->append($item);
-    return $self;
-}
+#     my $sales_order = $self->sales_orders->get($index);
+#     $sales_order->items->append($item);
+#     return $self;
+# }
 
 sub get_order_data {
     my $self = shift;
@@ -43,32 +50,33 @@ sub get_order_data {
         delete $data->{transaction};
     }
 
-    # Remove needless data
-    # for (qw/id cart_id items/) { delete $data->{$_} }
+    # Remove unnecessary data
+    # for (qw/is_confirmed/) { delete $data->{$_} }
 
     # Billing Address
     $data->{billing_address} = { id => $data->{billing_address}->{id} };
 
-    # Rename shipments to orders
-    foreach my $shipment ( @{ $data->{shipments} } ) {
-        my $id = $shipment->{shipping_address}->{id};
-        $shipment->{shipping_address} = { id => $id };
-    }
-    $data->{orders} = delete $data->{shipments};
+    # Payment Method
+    $data->{payment_method} = { id => $data->{payment_method}->{id} };
+
+    # Override Sales Orders
+    $data->{sales_orders} = $self->sales_orders->to_order_data();
 
     return $data;
 }
 
 sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
 
+sub has_payment_method { return shift->payment_method->is_empty ? 0 : 1 }
+
 sub has_shipping_address {
     my $self = shift;
 
-    return 0 if !$self->shipments->has_shipment;
-    return $self->shipments->first->shipping_address->is_empty ? 0 : 1;
+    return 0 if !$self->sales_orders->has_elements;
+    return $self->sales_orders->first->shipping_address->is_empty ? 0 : 1;
 }
 
-sub has_shipping_item { return shift->shipments->has_item }
+sub has_shipping_item { return shift->sales_orders->has_item }
 
 sub set_shipping_address {
     my ( $self, @args ) = @_;
@@ -78,11 +86,11 @@ sub set_shipping_address {
     my $addresses = @args > 1 ? +{@args} : Yetie::Util::array_to_hash(@args);
 
     foreach my $index ( keys %{$addresses} ) {
-        my $address  = $addresses->{$index};
-        my $shipment = $self->shipments->get($index);
+        my $address     = $addresses->{$index};
+        my $sales_order = $self->sales_orders->get($index);
 
-        next if $shipment->shipping_address->equals($address);
-        $shipment->shipping_address($address);
+        next if $sales_order->shipping_address->equals($address);
+        $sales_order->set_shipping_address($address);
     }
     return $self;
 }
@@ -110,11 +118,11 @@ the following new ones.
 
 Return L<Yetie::Domain::Entity::Address> object.
 
-=head2 C<shipments>
+=head2 C<sales_orders>
 
-    my $shipments = $checkout->shipments;
+    my $sales_orders = $checkout->sales_orders;
 
-Return L<Yetie::Domain::List::Shipments> object.
+Return L<Yetie::Domain::List::SalesOrders> object.
 
 =head2 C<transaction>
 
@@ -135,7 +143,7 @@ the following new ones.
 Return L<Yetie::Domain::Entity::Checkout> Object.
 
 C<$index_no> is option argument.
-Default $shipments->first
+Default $sales_orders->first
 
 =head2 C<get_order_data>
 
@@ -144,6 +152,12 @@ Default $shipments->first
 =head2 C<has_billing_address>
 
     my $bool = $checkout->has_billing_address;
+
+Return boolean value.
+
+=head2 C<has_payment_method>
+
+    my $bool = $checkout->has_payment_method;
 
 Return boolean value.
 
@@ -166,7 +180,7 @@ Return boolean value.
 Delete except the first shipping-information.
 Also delete all shipping-items of the first shipping-information.
 
-See L<Yetie::Domain::List::Shipments/revert>.
+See L<Yetie::Domain::List::SalesOrders/revert>.
 
 =head2 C<set_billing_address>
 
