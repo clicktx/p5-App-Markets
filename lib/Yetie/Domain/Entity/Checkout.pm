@@ -41,30 +41,6 @@ has transaction => (
 #     return $self;
 # }
 
-sub get_order_data {
-    my $self = shift;
-    my $data = $self->to_data;
-
-    # Transaction
-    if ( !$self->transaction->id ) {
-        delete $data->{transaction};
-    }
-
-    # Remove unnecessary data
-    # for (qw/is_confirmed/) { delete $data->{$_} }
-
-    # Billing Address
-    $data->{billing_address} = { id => $data->{billing_address}->{id} };
-
-    # Payment Method
-    $data->{payment_method} = { id => $data->{payment_method}->{id} };
-
-    # Override Sales Orders
-    $data->{sales_orders} = $self->sales_orders->to_order_data();
-
-    return $data;
-}
-
 sub has_billing_address { return shift->billing_address->is_empty ? 0 : 1 }
 
 sub has_payment_method { return shift->payment_method->is_empty ? 0 : 1 }
@@ -93,6 +69,30 @@ sub set_shipping_address {
         $sales_order->set_shipping_address($address);
     }
     return $self;
+}
+
+sub to_order_data {
+    my $self = shift;
+    my $data = $self->to_data;
+
+    # Transaction
+    if ( !$self->transaction->id ) {
+        delete $data->{transaction};
+    }
+
+    # Remove unnecessary data
+    # for (qw/is_confirmed/) { delete $data->{$_} }
+
+    # Billing Address
+    $data->{billing_address} = { id => $data->{billing_address}->{id} };
+
+    # Payment Method
+    $data->{payment_method} = { id => $data->{payment_method}->{id} };
+
+    # Override Sales Orders
+    $data->{sales_orders} = $self->sales_orders->to_order_data();
+
+    return $data;
 }
 
 no Moose;
@@ -145,10 +145,6 @@ Return L<Yetie::Domain::Entity::Checkout> Object.
 C<$index_no> is option argument.
 Default $sales_orders->first
 
-=head2 C<get_order_data>
-
-    my $order_data = $checkout->get_order_data;
-
 =head2 C<has_billing_address>
 
     my $bool = $checkout->has_billing_address;
@@ -196,6 +192,10 @@ See L<Yetie::Domain::List::SalesOrders/revert>.
     $checkout->set_shipping_address( [ $address_obj, $address_obj, ... ] );
 
 Update shipping address.
+
+=head2 C<to_order_data>
+
+    my $order_data = $checkout->to_order_data;
 
 =head1 AUTHOR
 

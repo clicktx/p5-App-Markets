@@ -199,7 +199,7 @@ sub _complete_handler {
     $customer_service->add_to_address_book($billing_address_id);
 
     # Make order data
-    my $order = $checkout->get_order_data;
+    my $order = $checkout->to_order_data;
 
     # オーダーデータ整形
     # ログイン購入
