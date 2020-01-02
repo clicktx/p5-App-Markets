@@ -109,7 +109,6 @@ subtest 'get_order_data' => sub {
                 id    => ignore(),
                 items => [
                     {
-                        id    => ignore(),
                         price => {
                             currency_code   => "USD",
                             is_tax_included => 0,
