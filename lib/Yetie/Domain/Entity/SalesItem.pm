@@ -4,35 +4,18 @@ use namespace::autoclean;
 
 extends 'Yetie::Domain::Entity::CartItem';
 
-sub to_data {
-    my $self = shift;
-
-    return {
-        id         => $self->id,
-        product_id => $self->product_id,
-        quantity   => $self->quantity,
-        price      => {
-            %{ $self->price->to_data },
-            is_tax_included => $self->price->is_tax_included,
-            tax_rule_id     => $self->tax_rule->id,
-        },
-    };
-}
-
 sub to_order_data {
     my $self = shift;
 
-    return {
-        id            => $self->id,
-        product_id    => $self->product_id,
-        product_title => $self->product_title,
-        quantity      => $self->quantity,
-        price         => {
-            %{ $self->price->to_data },
-            is_tax_included => $self->price->is_tax_included,
-            tax_rule_id     => $self->tax_rule->id,
-        },
+    my $data = $self->to_data;
+
+    delete $data->{tax_rule};
+    $data->{price} = {
+        %{ $self->price->to_data },
+        is_tax_included => $self->price->is_tax_included,
+        tax_rule_id     => $self->tax_rule->id,
     };
+    return $data;
 }
 
 no Moose;
