@@ -47,7 +47,7 @@ sub shipping_address {
 
 sub delivery_option {
     my $c = shift;
-    return $c->redirect_to('rn.checkout.payment');
+    return $c->prg_to('rn.checkout.payment');
 }
 
 sub billing_address {
@@ -117,7 +117,7 @@ sub confirm {
     my $c = shift;
 
     # Confirm checkout
-    $c->_confirm_handler();
+    return if $c->_confirm_handler();
 
     # Calculate cart
     # $c->service('checkout')->calculate_shipping_fees();
@@ -153,19 +153,19 @@ sub _confirm_handler {
     my $checkout         = $checkout_service->get;
 
     # Shipping address
-    return $c->redirect_to('rn.checkout.shipping_address') if !$checkout->has_shipping_address;
+    return $c->prg_to('rn.checkout.shipping_address') if !$checkout->has_shipping_address;
 
     # FIXME: ship items to one place
     $checkout_service->add_all_cart_items() if !$checkout->sales_orders->is_multiple;
 
     # Billing address
-    return $c->redirect_to('rn.checkout.billing_address') if !$checkout->has_billing_address;
+    return $c->prg_to('rn.checkout.billing_address') if !$checkout->has_billing_address;
 
     # Payment method
-    return $c->redirect_to('rn.checkout.payment') if !$checkout->has_payment_method;
+    return $c->prg_to('rn.checkout.payment') if !$checkout->has_payment_method;
 
     # Redirect if not from confirmation page
-    if ( $c->stash('action') ne 'confirm' ) { return $c->redirect_to('rn.checkout.confirm') }
+    if ( $c->stash('action') ne 'confirm' ) { return $c->prg_to('rn.checkout.confirm') }
 
     return;
 }
@@ -244,8 +244,8 @@ sub _complete_handler {
     # $c->cart_session->data( $newcart->to_data );
     $c->cart->clear_items;
 
-    # redirect_to thank you page
-    return $c->redirect_to('rn.checkout.complete');
+    # redirect thank you page
+    return $c->prg_to('rn.checkout.complete');
 }
 
 1;
