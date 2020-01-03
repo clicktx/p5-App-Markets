@@ -12,12 +12,17 @@ any '/continue_foobar' => sub {
 };
 any '/continue_redirect' => sub {
     my $c = shift;
-    $c->render( json => { continue_url => $c->continue_url } );
+    return $c->render( json => { continue_url => $c->continue_url } );
 };
 
 any '/req' => sub {
     my $c = shift;
-    $c->render( json => { req => $c->is_get_request } );
+    return $c->render( json => { req => $c->is_get_request } );
+};
+
+any '/prg' => sub {
+    my $c = shift;
+    return $c->prg_to('/');
 };
 
 use t::Util;
@@ -72,6 +77,12 @@ subtest 'is_logged_in' => sub {
 
     $t->get_ok('/customer_loggedin')->json_is( { is_logged_in => 0 } );
     $t->get_ok('/staff_loggedin')->json_is( { is_logged_in => 0 } );
+};
+
+subtest 'prg_to' => sub {
+    my $t = Test::Mojo->new;
+    $t->get_ok('/prg')->status_is(303);
+    $t->post_ok('/prg')->status_is(303);
 };
 
 done_testing();

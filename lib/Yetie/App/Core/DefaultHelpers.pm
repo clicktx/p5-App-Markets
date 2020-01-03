@@ -30,6 +30,7 @@ sub register {
     $app->helper( is_logged_in     => sub { _is_logged_in(@_) } );
     $app->helper( j                => sub { _j(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
+    $app->helper( prg_to           => sub { _prg_to(@_) } );
     $app->helper( 'reply.error'    => sub { _reply_error(@_) } );
     $app->helper( 'reply.message'  => sub { _reply_message(@_) } );
     $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
@@ -131,6 +132,13 @@ sub _reply_error {
         error_message => $error_message,
     );
     $c->render( %options, %args );
+}
+
+sub _prg_to {
+    my ( $c, @args ) = ( shift, @_ );
+
+    $c->res->code(303);
+    return $c->redirect_to(@args);
 }
 
 sub _reply_message {
@@ -294,6 +302,22 @@ Return L<Yetie::Schema::ResultSet> object.
     $c->pref( hoge => 'fizz', fuga => 'bazz' );
 
 Get/Set preference.
+
+=head2 C<prg_to>
+
+    $c = $c->prg_to('named', foo => 'bar');
+    $c = $c->prg_to('named', {foo => 'bar'});
+    $c = $c->prg_to('/index.html');
+    $c = $c->prg_to('http://example.com/index.html');
+
+    # Longer version
+    $c->res->code(303);
+    $c->redirect_to('some_route');
+
+Post/Redirect/Get(PRG)
+
+Prepare a 303 redirect response with Location header,
+takes the same arguments as L<Mojolicious::Plugin::DefaultHelpers/redirect_to>.
 
 =head2 C<reply-E<gt>error>
 
