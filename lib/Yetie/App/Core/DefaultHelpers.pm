@@ -69,7 +69,7 @@ sub _cache {
     return $caches->get($key);
 }
 
-sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
+sub _cart { return @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
 
 sub _continue_url {
     my ( $c, $arg ) = @_;
@@ -90,9 +90,9 @@ sub _factory {
     return $factory;
 }
 
-sub _is_admin_route { shift->isa('Yetie::Controller::Admin') ? 1 : 0 }
+sub _is_admin_route { return shift->isa('Yetie::Controller::Admin') ? 1 : 0 }
 
-sub _is_get_request { shift->req->method eq 'GET' ? 1 : 0 }
+sub _is_get_request { return shift->req->method eq 'GET' ? 1 : 0 }
 
 sub _is_logged_in {
     my $c = shift;
@@ -101,7 +101,7 @@ sub _is_logged_in {
     return $c->server_session->$method ? 1 : 0;
 }
 
-sub _j { Mojo::JSON::j( $_[1] ) }
+sub _j { return Mojo::JSON::j( $_[1] ) }
 
 sub _pref {
     my $c    = shift;
@@ -118,8 +118,7 @@ sub _remote_address {
 }
 
 sub _reply_error {
-    my $c    = shift;
-    my %args = @_;
+    my ( $c, %args ) = ( shift, @_ );
 
     my $status        = delete $args{status}        || '400';
     my $title         = delete $args{title}         || 'Bad Request';
@@ -131,7 +130,7 @@ sub _reply_error {
         title         => $title,
         error_message => $error_message,
     );
-    $c->render( %options, %args );
+    return $c->render( %options, %args );
 }
 
 sub _prg_to {
@@ -150,7 +149,7 @@ sub _reply_message {
         title    => '',
         message  => '',
     );
-    $c->render( %options, @_ );
+    return $c->render( %options, @_ );
 }
 
 sub _service {
