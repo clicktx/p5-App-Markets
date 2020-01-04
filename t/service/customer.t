@@ -111,7 +111,18 @@ sub t05_get_address_list : Tests() {
     is $e->list->size, 0, 'right not found customer';
 }
 
-sub t06_search_customers : Tests() {
+sub t06_get_customer_cart_id : Tests() {
+    my $self = shift;
+    my ( $c, $s ) = $self->_init();
+
+    my $cart_id = $s->get_customer_cart_id(111);
+    is $cart_id, 't8e3acvxwu9y49aw34b43rtn52nff61vhbogx2vn', 'right cart id';
+
+    $cart_id = $s->get_customer_cart_id(999);
+    is $cart_id, undef, 'right not found customer';
+}
+
+sub t07_search_customers : Tests() {
     my $self = shift;
     my ( $c, $s ) = $self->_init();
 

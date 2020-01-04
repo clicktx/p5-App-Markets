@@ -153,10 +153,10 @@
     # ---             g@example.org       0               -
 
     'Customer' => [
-        [qw/id created_at updated_at/],
-        [ 111, '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
-        [ 112, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
-        [ 113, '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
+        [qw/id cart_id created_at updated_at/],
+        [ 111, 't8e3acvxwu9y49aw34b43rtn52nff61vhbogx2vn', '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
+        [ 112, '9jmedumbbyzq23n2nfkmknt9gr89qx5zy71bosr3', '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
+        [ 113, 'usy4bjf00p8bf85fqu9stup87jf3kaxbs0qn0jmf', '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
     ],
     'CustomerPassword' => [
         [qw/customer_id password_id/],

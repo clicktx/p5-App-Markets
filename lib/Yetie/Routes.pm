@@ -161,7 +161,8 @@ sub add_catalog_routes {
     # For Customers
     {
         # Logout
-        $r->get('/logout')->to('logout#index')->name('rn.logout');
+        $r->get('/logout')->to('account#logout')->name('rn.logout');
+        $r->get('/loged-out')->to('account#loged_out')->name('rn.loged_out');
 
         # Magic link
         $r->get('/magic-link/:token')->to('auth-magic_link#verify')->name('rn.auth.magic_link');
