@@ -123,11 +123,14 @@ sub login {
     # Set customer id (logged-in flag)
     $session->customer_id($customer_id);
 
+    # Customer cart
+    my $customer_cart_id = $self->get_customer_cart_id($customer_id);
+
     # Merge cart
-    my $merged_cart = $self->service('cart')->merge_cart($customer_id);
+    my $merged_cart = $self->service('cart')->merge_cart($customer_cart_id);
 
     # Regenerate sid and set cart id
-    $session->recreate( { cart_id => $customer_id, cart_data => $merged_cart->to_data } );
+    $session->recreate( { cart_id => $customer_cart_id, cart_data => $merged_cart->to_data } );
 
     # Update last login time
     $self->resultset('Customer')->last_logged_in_now($customer_id);
