@@ -2,9 +2,17 @@ package Yetie::Schema::Result::Customer;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
+use Yetie::Schema::Result::Cart;
+
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
+};
+
+unique_column cart_id => {
+    data_type   => Yetie::Schema::Result::Cart->column_info('cart_id')->{data_type},
+    size        => Yetie::Schema::Result::Cart->column_info('cart_id')->{size},
+    is_nullable => 0,
 };
 
 column created_at => {

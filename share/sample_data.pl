@@ -1,4 +1,9 @@
-(
+use Yetie::Util;
+
+my @cart_id;
+push @cart_id,Yetie::Util::create_token( length => 40, alphabet => [ 'a' .. 'z', '0' .. '9' ] ) for (1..10);
+
+return (
     # Payment Method
     'PaymentMethod' => [
         [qw/id name/],
@@ -153,10 +158,10 @@
     # ---             g@example.org       0               -
 
     'Customer' => [
-        [qw/id created_at updated_at/],
-        [ 111, '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
-        [ 112, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
-        [ 113, '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
+        [qw/id cart_id created_at updated_at/],
+        [ 111, $cart_id[0], '2017-06-06 19:50:05', '2017-06-16 18:30:12' ],
+        [ 112, $cart_id[1], '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
+        [ 113, $cart_id[2], '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
     ],
     'CustomerPassword' => [
         [qw/customer_id password_id/],
@@ -246,4 +251,4 @@
         [ 33, 1002, 1 ],
         [ 34, 1003, 2 ],    # Shipped all items
     ],
-)
+);
