@@ -33,6 +33,26 @@ sub add_history {
     $c->server_session->data( history => $history );
 }
 
+sub add_to_address_book {
+    my ( $self, $address_id ) = @_;
+    return if !$address_id;
+
+    my $c           = $self->controller;
+    my $customer_id = $c->server_session->customer_id;
+    return if !$customer_id;
+
+    my $result = $c->resultset('CustomerAddress')->find_or_new(
+        {
+            customer_id => $customer_id,
+            address_id  => $address_id,
+        }
+    );
+    return if $result->in_storage;
+
+    $result->insert;
+    return 1;
+}
+
 sub create_customer {
     my ( $self, $email_addr ) = @_;
 
@@ -166,26 +186,6 @@ sub search_customers {
     return ( $customers, $rs->pager );
 }
 
-sub add_to_address_book {
-    my ( $self, $address_id ) = @_;
-    return if !$address_id;
-
-    my $c           = $self->controller;
-    my $customer_id = $c->server_session->customer_id;
-    return if !$customer_id;
-
-    my $result = $c->resultset('CustomerAddress')->find_or_new(
-        {
-            customer_id => $customer_id,
-            address_id  => $address_id,
-        }
-    );
-    return if $result->in_storage;
-
-    $result->insert;
-    return 1;
-}
-
 sub _login_failed {
     my ( $self, $message, $form ) = @_;
 
@@ -226,6 +226,12 @@ the following new ones.
 
     Add history current URL for server session.
     Unsave list setting in L<Yetie::Routes>.
+
+=head2 C<add_to_address_book>
+
+    $service->add_to_address_book($address_id);
+
+Store customer addresses in storage from cart data.
 
 =head2 C<create_customer>
 
@@ -288,12 +294,6 @@ Return customer ID if log-in succeeded or C<undefined>.
     my ( $customers, $pager ) = $service->search_customers($form_object);
 
 Return L<Yetie::Domain::Entity::Page::Customers> Object.
-
-=head2 C<add_to_address_book>
-
-    $service->add_to_address_book($address_id);
-
-Store customer addresses in storage from cart data.
 
 =head1 AUTHOR
 
