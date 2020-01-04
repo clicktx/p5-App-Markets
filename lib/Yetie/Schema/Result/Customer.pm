@@ -26,6 +26,16 @@ column last_logged_in_at => {
 };
 
 # Relation
+has_many
+  activities => 'Yetie::Schema::Result::CustomerActivity',
+  { 'foreign.customer_id' => 'self.id' },
+  { cascade_delete        => 0 };
+
+has_many
+  addresses => 'Yetie::Schema::Result::CustomerAddress',
+  { 'foreign.customer_id' => 'self.id' },
+  { cascade_delete        => 0 };
+
 might_have
   customer_password => 'Yetie::Schema::Result::CustomerPassword',
   { 'foreign.customer_id' => 'self.id' },
@@ -37,17 +47,7 @@ has_many
   { cascade_delete        => 0 };
 
 has_many
-  addresses => 'Yetie::Schema::Result::CustomerAddress',
-  { 'foreign.customer_id' => 'self.id' },
-  { cascade_delete        => 0 };
-
-has_many
   sales => 'Yetie::Schema::Result::Sales',
-  { 'foreign.customer_id' => 'self.id' },
-  { cascade_delete        => 0 };
-
-has_many
-  activities => 'Yetie::Schema::Result::CustomerActivity',
   { 'foreign.customer_id' => 'self.id' },
   { cascade_delete        => 0 };
 
