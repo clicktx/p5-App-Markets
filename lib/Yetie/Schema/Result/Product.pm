@@ -47,9 +47,9 @@ has_many
 
 # Add Index
 sub sqlt_deploy_hook {
-    my ( $self, $sqlt_table ) = @_;
+    my ( $self, $table ) = @_;
 
-    $sqlt_table->add_index( name => 'idx_title', fields => ['title'] );
+    $table->add_index( name => 'idx_title', fields => ['title'] );
 }
 
 # Methods
