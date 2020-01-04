@@ -67,6 +67,13 @@ msgstr "Username or email address"
 msgid "login.password"
 msgstr "Password"
 
+# Checkout
+msgid "checkout.done.title"
+msgstr "Thank you for your purchase"
+
+msgid "checkout.done.message"
+msgstr "Purchase proceeding has been completed.The procedure has been rightly done."
+
 # Error messages
 msgid "Required"
 msgstr "Required"
