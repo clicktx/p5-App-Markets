@@ -33,14 +33,15 @@ sub cookie_expires {
 sub extend_expires {
     my $self = shift;
 
-    $self->SUPER::extend_expires(@_);
+    $self->_expires( time + $self->expires_delta );
     $self->cookie_expires( time + $self->cookie_expires_delta );
 
     if ( $self->transport ) {
         $self->transport->tx( $self->tx );
         $self->transport->set( $self->sid, $self->cookie_expires );
     }
-    return;
+
+    return $self->_is_flushed(0);
 }
 
 sub flush {
