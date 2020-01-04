@@ -77,6 +77,15 @@ sub get_address_list {
     return $self->factory('list-addresses')->construct( list => $rs->to_data );
 }
 
+sub get_customer_cart_id {
+    my ( $self, $customer_id ) = @_;
+
+    my $res = $self->resultset('Customer')->find($customer_id);
+    return if !$res;
+
+    return $res->cart_id;
+}
+
 sub load_history {
     my $self = shift;
     my $c    = $self->controller;
@@ -243,6 +252,12 @@ Return L<Yetie::Domain::Entity::Customer> object.
     my $addresses = $service->get_address_list($customer_id);
 
 Return L<Yetie::Domain::List::Addresses> object.
+
+=head2 C<get_customer_cart_id>
+
+    my $cart_id = $service->get_customer_cart_id($customer_id);
+
+Return customer cart id.
 
 =head2 C<load_history>
 
