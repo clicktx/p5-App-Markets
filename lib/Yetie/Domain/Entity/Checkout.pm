@@ -27,7 +27,7 @@ has sales_orders => (
 has token => (
     is       => 'ro',
     isa      => NonEmptySimpleStr,
-    required => 1,
+    default  => sub { Yetie::Util::create_token },
 );
 has transaction => (
     is      => 'ro',
@@ -132,6 +132,12 @@ Return L<Yetie::Domain::Entity::Address> object.
     my $sales_orders = $checkout->sales_orders;
 
 Return L<Yetie::Domain::List::SalesOrders> object.
+
+=head2 C<token>
+
+    my $token = $checkout->token;
+
+See L<Yetie::Util/create_token>
 
 =head2 C<transaction>
 

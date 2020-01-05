@@ -77,7 +77,6 @@ my %example_data = (
     payment_method => {
         id => 1,
     },
-    token => 'aaa',
 );
 
 sub _create_entity {
@@ -101,7 +100,7 @@ sub _create_entity {
 # };
 
 subtest 'has_billing_address' => sub {
-    my $checkout = Yetie::Factory->new('entity-checkout')->construct( token => 'aaa' );
+    my $checkout = Yetie::Factory->new('entity-checkout')->construct();
     is $checkout->has_billing_address, 0, 'right no address info';
 
     $checkout = _create_entity;
@@ -109,7 +108,7 @@ subtest 'has_billing_address' => sub {
 };
 
 subtest 'has_payment_method' => sub {
-    my $checkout = Yetie::Factory->new('entity-checkout')->construct( token => 'aaa' );
+    my $checkout = Yetie::Factory->new('entity-checkout')->construct();
     is $checkout->has_payment_method, 0, 'right no address info';
 
     $checkout = _create_entity;
@@ -117,7 +116,7 @@ subtest 'has_payment_method' => sub {
 };
 
 subtest 'has_shipping_address' => sub {
-    my $checkout = Yetie::Factory->new('entity-checkout')->construct( token => 'aaa' );
+    my $checkout = Yetie::Factory->new('entity-checkout')->construct();
     is $checkout->has_shipping_address, 0, 'right has not shipping address';
 
     $checkout->sales_orders->create_sales_order;
@@ -205,7 +204,7 @@ subtest 'set_shipping_address' => sub {
     is $checkout->is_modified, 1, 'right modified';
 
     # first set(create and set)
-    $checkout = Yetie::Factory->new('entity-checkout')->construct( token => 'aaa' );
+    $checkout = Yetie::Factory->new('entity-checkout')->construct();
     $checkout->sales_orders->create_sales_order;
     $checkout->set_shipping_address($obj);
     cmp_deeply $checkout->sales_orders->get(0)->shipping_address->to_data, $valid_data,
@@ -222,7 +221,7 @@ subtest 'to_order_data' => sub {
     my $checkout = _create_entity;
     cmp_deeply $checkout->to_order_data, {
         billing_address => { id => 55 },
-        checkout_token  => 'aaa',
+        checkout_token  => ignore(),
         payment_method  => ignore(),
         sales_orders    => [
             {
