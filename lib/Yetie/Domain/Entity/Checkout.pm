@@ -1,6 +1,7 @@
 package Yetie::Domain::Entity::Checkout;
 use Yetie::Util;
 use Carp qw(croak);
+use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 
 use Moose;
 use namespace::autoclean;
@@ -22,6 +23,11 @@ has sales_orders => (
     is      => 'ro',
     isa     => 'Yetie::Domain::List::SalesOrders',
     default => sub { shift->factory('list-sales_orders')->construct() },
+);
+has token => (
+    is       => 'ro',
+    isa      => NonEmptySimpleStr,
+    required => 1,
 );
 has transaction => (
     is      => 'ro',
