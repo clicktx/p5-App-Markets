@@ -85,6 +85,14 @@ subtest 'prg_to' => sub {
     $t->post_ok('/prg')->status_is(303);
 };
 
+subtest 'token' => sub {
+    my $t = Test::Mojo->new('App');
+    my $r = $t->app->routes->namespaces( ['Yetie::Controller'] );
+    $r->get('/token/:action')->to('token#');
+
+    $t->get_ok('/token/test')->status_is(200);
+};
+
 done_testing();
 
 package Yetie::Controller::Customer;
@@ -111,6 +119,23 @@ sub loggedin {
 sub route {
     my $c = shift;
     return $c->render( json => { route => $c->is_admin_route } );
+}
+
+package Yetie::Controller::Token;
+use Mojo::Base 'Yetie::Controller::Catalog';
+use Test::More;
+
+sub test {
+    my $c = shift;
+
+    my $token = $c->token->get;
+    ok $token, 'right get token';
+    is $token, $c->token->get, 'right equal token';
+
+    my $new_token = $c->token->regenerate;
+    isnt $token, $new_token, 'right regenerate token';
+
+    return $c->render( json => {} );
 }
 
 __END__
