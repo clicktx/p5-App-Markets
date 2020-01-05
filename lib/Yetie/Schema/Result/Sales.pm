@@ -11,6 +11,12 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
+unique_column checkout_token => {
+    data_type   => 'VARCHAR',
+    size        => 40,
+    is_nullable => 0,
+};
+
 column customer_id => {
     data_type   => Yetie::Schema::Result::Customer->column_info('id')->{data_type},
     is_nullable => 0,
