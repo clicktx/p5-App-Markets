@@ -98,6 +98,9 @@ sub to_order_data {
     # Override Sales Orders
     $data->{sales_orders} = $self->sales_orders->to_order_data();
 
+    # Checkout Token
+    $data->{checkout_token} = delete $data->{token};
+
     return $data;
 }
 
