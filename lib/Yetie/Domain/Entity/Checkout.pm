@@ -25,9 +25,10 @@ has sales_orders => (
     default => sub { shift->factory('list-sales_orders')->construct() },
 );
 has token => (
-    is       => 'ro',
-    isa      => NonEmptySimpleStr,
-    default  => sub { Yetie::Util::create_token },
+    is      => 'ro',
+    isa     => NonEmptySimpleStr,
+    default => sub { Yetie::Util::create_token },
+    writer  => 'set_token',
 );
 has transaction => (
     is      => 'ro',
@@ -59,6 +60,14 @@ sub has_shipping_address {
 }
 
 sub has_shipping_item { return shift->sales_orders->has_item }
+
+sub regenerate_token {
+    my $self = shift;
+
+    my $token = Yetie::Util::create_token();
+    $self->set_token($token);
+    return $token;
+}
 
 sub set_shipping_address {
     my ( $self, @args ) = @_;

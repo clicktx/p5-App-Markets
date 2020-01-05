@@ -126,6 +126,14 @@ subtest 'has_shipping_address' => sub {
     is $checkout->has_shipping_address, 1, 'right has address info';
 };
 
+subtest 'regenerate_token' => sub {
+    my $checkout  = Yetie::Factory->new('entity-checkout')->construct();
+    my $token     = $checkout->token;
+    my $new_token = $checkout->regenerate_token;
+    isnt $token, $checkout->token, 'right regenerate token';
+    isnt $token, $new_token, 'right return value';
+};
+
 subtest 'set_billing_address' => sub {
     my %address = (
         country_code => 'jp',
