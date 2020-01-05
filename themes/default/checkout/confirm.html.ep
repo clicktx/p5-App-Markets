@@ -95,6 +95,8 @@
 
 <%= form_for 'rn.checkout.confirm' => ( method => 'post' ) => begin %>
     <%= csrf_field %>
+    <%= token_field token => stash('checkout')->token %>
+    Token: <%= stash('checkout')->token %>
     <%= submit_button 'BUY NOW' %>
 <% end %>
 
