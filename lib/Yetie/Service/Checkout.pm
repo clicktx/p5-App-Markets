@@ -54,6 +54,8 @@ sub get {
     return $checkout;
 }
 
+sub reset { return shift->_create }
+
 sub save {
     my $self = shift;
 
@@ -192,6 +194,14 @@ Calculate shipping fees.
 =head2 C<get>
 
     my $checkout = $service->get;
+
+Return L<Yetie::Domain::Entity::Checkout> object.
+
+=head2 C<reset>
+
+    my $new = $service->reset;
+
+Create new L<Yetie::Domain::Entity::Checkout> object and set store to session.
 
 Return L<Yetie::Domain::Entity::Checkout> object.
 
