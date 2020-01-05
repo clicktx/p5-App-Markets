@@ -109,7 +109,8 @@ sub set_shipping_address {
 sub _create {
     my $self = shift;
 
-    my $checkout = $self->factory('entity-checkout')->construct( token => $self->controller->token );
+    my $token = $self->controller->token->get;
+    my $checkout = $self->factory('entity-checkout')->construct( token => $token );
     $checkout->sales_orders->create_sales_order();
     $self->_update($checkout);
 
