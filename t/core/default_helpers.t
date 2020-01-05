@@ -29,6 +29,28 @@ use t::Util;
 use Test::More;
 use Test::Mojo;
 
+subtest 'continue_url' => sub {
+    my $t = Test::Mojo->new;
+    $t->ua->max_redirects(1);
+    $t->get_ok('/continue_none')->json_is( { continue_url => 'rn.home' } );
+    $t->get_ok('/continue_foobar')->json_is( { continue_url => 'foobar' } );
+};
+
+subtest 'is_get_request' => sub {
+    my $t = Test::Mojo->new;
+    $t->get_ok('/req')->json_is( { req => 1 } );
+    $t->post_ok('/req')->json_is( { req => 0 } );
+};
+
+subtest 'prg_to' => sub {
+    my $t = Test::Mojo->new;
+    $t->get_ok('/prg')->status_is(303);
+    $t->post_ok('/prg')->status_is(303);
+};
+
+#########################################
+# Use App tests
+#########################################
 subtest 'cache' => sub {
     my $t = Test::Mojo->new('App');
     my $c = $t->app->build_controller;
@@ -46,13 +68,6 @@ subtest 'cache' => sub {
     is $c->cache('bar'), 7, 'right other cache';
 };
 
-subtest 'continue_url' => sub {
-    my $t = Test::Mojo->new;
-    $t->ua->max_redirects(1);
-    $t->get_ok('/continue_none')->json_is( { continue_url => 'rn.home' } );
-    $t->get_ok('/continue_foobar')->json_is( { continue_url => 'foobar' } );
-};
-
 subtest 'is_admin_route' => sub {
     my $t = Test::Mojo->new('App');
     my $r = $t->app->routes->namespaces( ['Yetie::Controller'] );
@@ -61,12 +76,6 @@ subtest 'is_admin_route' => sub {
 
     $t->get_ok('/customer_route')->json_is( { route => 0 } );
     $t->get_ok('/staff_route')->json_is( { route => 1 } );
-};
-
-subtest 'is_get_request' => sub {
-    my $t = Test::Mojo->new;
-    $t->get_ok('/req')->json_is( { req => 1 } );
-    $t->post_ok('/req')->json_is( { req => 0 } );
 };
 
 subtest 'is_logged_in' => sub {
@@ -79,12 +88,6 @@ subtest 'is_logged_in' => sub {
     $t->get_ok('/staff_loggedin')->json_is( { is_logged_in => 0 } );
 };
 
-subtest 'prg_to' => sub {
-    my $t = Test::Mojo->new;
-    $t->get_ok('/prg')->status_is(303);
-    $t->post_ok('/prg')->status_is(303);
-};
-
 subtest 'token' => sub {
     my $t = Test::Mojo->new('App');
     my $r = $t->app->routes->namespaces( ['Yetie::Controller'] );
@@ -95,6 +98,7 @@ subtest 'token' => sub {
 
 done_testing();
 
+# controllers
 package Yetie::Controller::Customer;
 use Mojo::Base 'Yetie::Controller::Catalog';
 
