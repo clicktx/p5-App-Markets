@@ -1,4 +1,4 @@
-package Yetie::App::Core::DefaultHelpers;
+package Yetie::App::Core::Helpers;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use Carp                    ();
@@ -195,13 +195,13 @@ __END__
 
 =head1 NAME
 
-Yetie::App::Core::DefaultHelpers - Default helpers plugin for Yetie
+Yetie::App::Core::Helpers - Default helpers plugin for Yetie
 
 =head1 DESCRIPTION
 
 =head1 HELPERS
 
-L<Yetie::App::Core::DefaultHelpers> implements the following helpers.
+L<Yetie::App::Core::Helpers> implements the following helpers.
 
 =head2 C<__x_default_lang>
 
@@ -338,7 +338,7 @@ Get/Set preference.
 Post/Redirect/Get(PRG)
 
 Prepare a 303 redirect response with Location header,
-takes the same arguments as L<Mojolicious::Plugin::DefaultHelpers/redirect_to>.
+takes the same arguments as L<Mojolicious::Plugin::Helpers/redirect_to>.
 
 =head2 C<reply-E<gt>error>
 
