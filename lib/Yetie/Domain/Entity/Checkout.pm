@@ -1,7 +1,6 @@
 package Yetie::Domain::Entity::Checkout;
 use Yetie::Util;
 use Carp qw(croak);
-use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 
 use Moose;
 use namespace::autoclean;
