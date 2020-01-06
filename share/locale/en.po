@@ -74,6 +74,12 @@ msgstr "Thank you for your purchase"
 msgid "checkout.done.message"
 msgstr "Purchase proceeding has been completed.The procedure has been rightly done."
 
+msgid "err.checkout.double.post.title"
+msgstr "Error or Completed"
+
+msgid "err.checkout.double.post.message"
+msgstr "However, your purchase may have been completed."
+
 # Error messages
 msgid "Required"
 msgstr "Required"
