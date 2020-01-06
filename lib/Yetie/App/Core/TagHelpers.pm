@@ -95,7 +95,7 @@ Generate C<input> tag of type C<submit>(default).
 
     %= token_field( token => 'foobarbaz' )
 
-Generate input tag of type hidden with L<Yetie::App::Core::DefaultHelpers/token>.
+Generate input tag of type hidden with L<Yetie::App::Core::Helpers/token>.
 
     <input name="token" type="hidden" value="fa6a08...">
 

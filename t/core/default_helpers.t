@@ -1,5 +1,5 @@
 use Mojolicious::Lite;
-plugin 'Yetie::App::Core::DefaultHelpers';
+plugin 'Yetie::App::Core::Helpers';
 
 any '/continue_none' => sub {
     my $c = shift;
