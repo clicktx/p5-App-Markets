@@ -24,11 +24,6 @@ has sales_orders => (
     isa     => 'Yetie::Domain::List::SalesOrders',
     default => sub { shift->factory('list-sales_orders')->construct() },
 );
-has token => (
-    is      => 'ro',
-    isa     => NonEmptySimpleStr,
-    default => sub { Yetie::Util::create_token },
-);
 has transaction => (
     is      => 'ro',
     isa     => 'Yetie::Domain::Entity::Transaction',
@@ -98,9 +93,6 @@ sub to_order_data {
     # Override Sales Orders
     $data->{sales_orders} = $self->sales_orders->to_order_data();
 
-    # Checkout Token
-    $data->{checkout_token} = delete $data->{token};
-
     return $data;
 }
 
@@ -132,12 +124,6 @@ Return L<Yetie::Domain::Entity::Address> object.
     my $sales_orders = $checkout->sales_orders;
 
 Return L<Yetie::Domain::List::SalesOrders> object.
-
-=head2 C<token>
-
-    my $token = $checkout->token;
-
-See L<Yetie::Util/create_token>
 
 =head2 C<transaction>
 

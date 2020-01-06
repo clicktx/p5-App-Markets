@@ -221,7 +221,6 @@ subtest 'to_order_data' => sub {
     my $checkout = _create_entity;
     cmp_deeply $checkout->to_order_data, {
         billing_address => { id => 55 },
-        checkout_token  => ignore(),
         payment_method  => ignore(),
         sales_orders    => [
             {
