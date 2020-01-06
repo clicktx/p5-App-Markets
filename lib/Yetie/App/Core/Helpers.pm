@@ -17,29 +17,30 @@ sub register {
     # TagHelpers more
     $app->plugin('Yetie::App::Core::TagHelpers');
 
-    $app->helper( __x_default_lang   => sub { __x_default_lang(@_) } );
-    $app->helper( addons             => sub { shift->app->addons(@_) } );
-    $app->helper( cache              => sub { _cache(@_) } );
-    $app->helper( cart               => sub { _cart(@_) } );
-    $app->helper( continue_url       => sub { _continue_url(@_) } );
-    $app->helper( cookie_session     => sub { shift->session(@_) } );
-    $app->helper( date_time          => sub { shift->app->date_time(@_) } );
-    $app->helper( factory            => sub { _factory(@_) } );
-    $app->helper( is_admin_route     => sub { _is_admin_route(@_) } );
-    $app->helper( is_get_request     => sub { _is_get_request(@_) } );
-    $app->helper( is_logged_in       => sub { _is_logged_in(@_) } );
-    $app->helper( j                  => sub { _j(@_) } );
-    $app->helper( pref               => sub { _pref(@_) } );
-    $app->helper( prg_to             => sub { _prg_to(@_) } );
-    $app->helper( 'reply.error'      => sub { _reply_error(@_) } );
-    $app->helper( 'reply.message'    => sub { _reply_message(@_) } );
-    $app->helper( resultset          => sub { shift->app->schema->resultset(@_) } );
-    $app->helper( remote_address     => sub { _remote_address(@_) } );
-    $app->helper( schema             => sub { shift->app->schema } );
-    $app->helper( service            => sub { _service(@_) } );
-    $app->helper( template           => sub { _template(@_) } );
-    $app->helper( 'token.get'        => sub { _token_get(@_) } );
-    $app->helper( 'token.regenerate' => sub { _token_regenerate(@_) } );
+    $app->helper( __x_default_lang => sub { __x_default_lang(@_) } );
+    $app->helper( addons           => sub { shift->app->addons(@_) } );
+    $app->helper( cache            => sub { _cache(@_) } );
+    $app->helper( cart             => sub { _cart(@_) } );
+    $app->helper( continue_url     => sub { _continue_url(@_) } );
+    $app->helper( cookie_session   => sub { shift->session(@_) } );
+    $app->helper( date_time        => sub { shift->app->date_time(@_) } );
+    $app->helper( factory          => sub { _factory(@_) } );
+    $app->helper( is_admin_route   => sub { _is_admin_route(@_) } );
+    $app->helper( is_get_request   => sub { _is_get_request(@_) } );
+    $app->helper( is_logged_in     => sub { _is_logged_in(@_) } );
+    $app->helper( j                => sub { _j(@_) } );
+    $app->helper( pref             => sub { _pref(@_) } );
+    $app->helper( prg_to           => sub { _prg_to(@_) } );
+    $app->helper( 'reply.error'    => sub { _reply_error(@_) } );
+    $app->helper( 'reply.message'  => sub { _reply_message(@_) } );
+    $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
+    $app->helper( remote_address   => sub { _remote_address(@_) } );
+    $app->helper( schema           => sub { shift->app->schema } );
+    $app->helper( service          => sub { _service(@_) } );
+    $app->helper( template         => sub { _template(@_) } );
+    $app->helper( 'token.clear'    => sub { _token_clear(@_) } );
+    $app->helper( 'token.get'      => sub { _token_get(@_) } );
+    $app->helper( 'token.validate' => sub { _token_validate(@_) } );
 }
 
 sub __x_default_lang {
@@ -170,24 +171,34 @@ sub _template {
     return @_ ? $c->stash( template => shift ) : $c->stash('template');
 }
 
+sub _token_clear {
+    my $c = shift;
+
+    my $session = $c->server_session;
+    $session->clear('token');
+    $session->flush;
+    return;
+}
+
 sub _token_get {
     my $c = shift;
 
-    my $token = $c->server_session->data('token');
+    my $session = $c->server_session;
+    my $token   = $session->data('token');
     return $token if $token;
 
     # Create new token
     $token = Yetie::Util::create_token();
-    $c->server_session->data( token => $token );
+    $session->data( token => $token );
+    $session->flush;
     return $token;
 }
 
-sub _token_regenerate {
+sub _token_validate {
     my $c = shift;
 
-    my $token = Yetie::Util::create_token();
-    $c->server_session->data( token => $token );
-    return $token;
+    my $target_token = shift || $c->param('token');
+    return $c->token->get eq $target_token ? 1 : 0;
 }
 
 1;
@@ -389,6 +400,12 @@ Get/Set template.
 
 Alias for $c->stash(template => 'hoge/index');
 
+=head2 C<token-E<gt>clear>
+
+    $c->token->clear;
+
+Delete token from data("token") in L<Yetie::App::Core::Session::ServerSession>.
+
 =head2 C<token-E<gt>get>
 
     my $token = $c->token->get;
@@ -397,13 +414,19 @@ Get token from data("token") in L<Yetie::App::Core::Session::ServerSession>, and
 
 token are L<Yetie::Util/create_token>.
 
-=head2 C<token-E<gt>regenerate>
+=head2 C<token-E<gt>validate>
 
-    my $new_token = $c->token->regenerate;
+    my $bool = $c->token->validate;
+    my $bool = $c->token->validate('foobar');
 
-Regerenate token in L<Yetie::App::Core::Session::ServerSession>.
+    if ($bool) { say 'Succeed' }
+    else { say 'Failed' }
 
-Return new token string.
+Validate token.
+
+Default target token C<app-E<gt>controller-E<gt>param('token')>
+
+Return boolean value.
 
 =head1 AUTHOR
 

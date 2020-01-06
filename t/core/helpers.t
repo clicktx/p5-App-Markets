@@ -93,7 +93,9 @@ subtest 'token' => sub {
     my $r = $t->app->routes->namespaces( ['Yetie::Controller'] );
     $r->get('/token/:action')->to('token#');
 
-    $t->get_ok('/token/test')->status_is(200);
+    $t->get_ok('/token/get')->status_is(200);
+    $t->get_ok('/token/validate')->status_is(200);
+    $t->get_ok('/token/clear')->status_is(200);
 };
 
 done_testing();
@@ -129,16 +131,40 @@ package Yetie::Controller::Token;
 use Mojo::Base 'Yetie::Controller::Catalog';
 use Test::More;
 
-sub test {
+sub get {
     my $c = shift;
 
     my $token = $c->token->get;
     ok $token, 'right get token';
     is $token, $c->token->get, 'right equal token';
+    is $c->server_session->data('token'), $token, 'right store token for session';
+    return $c->render( json => {} );
+}
 
-    my $new_token = $c->token->regenerate;
-    isnt $token, $new_token, 'right regenerate token';
+sub validate {
+    my $c = shift;
 
+    my $token = $c->token->get;
+    $c->param( token => $token );
+    my $bool = $c->token->validate;
+    ok $bool, 'right success token';
+
+    $c->param( token => 'foo' );
+    $bool = $c->token->validate;
+    ok !$bool, 'right faile token';
+
+    $c->param( token => '' );
+    ok $c->token->validate($token), 'right success token(argument)';
+    ok !$c->token->validate('foo'), 'right faile token(argument)';
+
+    return $c->render( json => {} );
+}
+
+sub clear {
+    my $c = shift;
+
+    $c->token->clear;
+    ok !$c->server_session->data('token'), 'right delete token for session';
     return $c->render( json => {} );
 }
 
