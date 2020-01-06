@@ -11,7 +11,7 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-unique_column checkout_token => {
+unique_column token => {
     data_type   => 'VARCHAR',
     size        => 40,
     is_nullable => 0,

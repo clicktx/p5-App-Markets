@@ -183,7 +183,7 @@
 
     # Orders
     'Sales' => [
-        [qw/id checkout_token customer_id billing_address_id payment_method_id created_at updated_at/],
+        [qw/id token customer_id billing_address_id payment_method_id created_at updated_at/],
         [ 1, 'aaa', 111, 1, 1, '2017-06-06 20:01:35', '2017-06-06 20:01:35' ],
         [ 2, 'bbb', 112, 2, 2, '2017-07-07 07:02:15', '2017-07-07 07:02:15' ],
         [ 3, 'ccc', 113, 4, 3, '2017-07-07 07:08:05', '2017-07-07 07:08:05' ],
