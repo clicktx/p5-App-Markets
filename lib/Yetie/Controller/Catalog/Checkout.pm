@@ -124,7 +124,11 @@ sub confirm {
     $c->service('checkout')->calculate_all();
 
     my $form = $c->form('checkout-confirm');
-    return $c->render() if !$form->has_data;
+
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
     return $c->render() if !$form->do_validate;
 
     # Checking double post
