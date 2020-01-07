@@ -45,6 +45,18 @@ sub delete {
     return $self;
 }
 
+sub destroy {
+    my $self = shift;
+
+    # Derele cart items
+    $self->c->cart->clear_items;
+
+    # Delete double post check token
+    $self->c->token->clear;
+
+    return;
+}
+
 sub get {
     my $self = shift;
 
@@ -106,6 +118,27 @@ sub set_shipping_address {
     my $checkout = $self->get;
     $checkout->set_shipping_address(@args);
     return $self->save;
+}
+
+sub validate_double_post {
+    my $self  = shift;
+    my $c     = $self->c;
+    my $token = shift || $c->param('token');
+
+    return if $c->token->validate($token);
+
+    # Delete cart and token
+    $self->destroy;
+
+    my $sales = $c->resultset('Sales')->find( { token => $token } );
+    return $c->reply->error(
+        title         => 'err.checkout.double.post.title',
+        error_message => 'err.checkout.double.post.message',
+    ) if !$sales;
+
+    # Ordered
+    $c->flash( sales_id => $sales->id );
+    return $c->prg_to('rn.checkout.complete');
 }
 
 sub _create {
@@ -191,6 +224,13 @@ Calculate shipping fees.
 
     $service->delete;
 
+=head2 C<destroy>
+
+    $service->destroy;
+
+Delete cart items in L<Yetie::App::Core::Session::CartSession>
+and delete token in L<Yetie::App::Core::Session::ServerSession>.
+
 =head2 C<get>
 
     my $checkout = $service->get;
@@ -235,6 +275,16 @@ See L<Yetie::Domain::Entity::Checkout/set_billings_address>
     $service->set_shipping_address( [ $address_obj, $address_obj, ... ] );
 
 See L<Yetie::Domain::Entity::Checkout/set_shipping_address>
+
+=head2 C<validate_double_post>
+
+    my $res = $service->validate_double_post;
+
+    my $res = $service->validate_double_post($token);
+
+Return L<Yetie::Controller::Catalog::Checkout> if validation fails.
+
+Returns C<undef> if validation is successful.
 
 =head1 AUTHOR
 

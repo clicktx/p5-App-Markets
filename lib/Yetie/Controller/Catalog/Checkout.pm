@@ -128,21 +128,8 @@ sub confirm {
     return $c->render() if !$form->do_validate;
 
     # Checking double post
-    if ( !$c->token->validate ) {
-
-        # Delete checkout
-        $c->_destroy_checkout;
-
-        my $sales = $c->resultset('Sales')->find( { token => $c->param('token') } );
-        return $c->reply->error(
-            title         => 'err.checkout.double.post.title',
-            error_message => 'err.checkout.double.post.message',
-        ) if !$sales;
-
-        # Ordered
-        $c->flash( sales_id => $sales->id );
-        return $c->prg_to('rn.checkout.complete');
-    }
+    my $res = $c->service('checkout')->validate_double_post();
+    return $res if $res;
 
     # checkout complete
     return $c->_complete_handler;
@@ -183,18 +170,6 @@ sub _confirm_handler {
 
     # Redirect if not from confirmation page
     if ( $c->stash('action') ne 'confirm' ) { return $c->prg_to('rn.checkout.confirm') }
-
-    return;
-}
-
-sub _destroy_checkout {
-    my $c = shift;
-
-    # Derele cart items
-    $c->cart->clear_items;
-
-    # Delete double post check token
-    $c->token->clear;
 
     return;
 }
@@ -271,8 +246,8 @@ sub _complete_handler {
     };
     $schema->txn($cb);
 
-    # Delete cart items and more
-    $c->_destroy_checkout;
+    # Delete cart items and token
+    $c->service('checkout')->destroy;
 
     # redirect thank you page
     $c->flash( sales_id => $res->id );
