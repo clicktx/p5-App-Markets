@@ -127,6 +127,23 @@ sub confirm {
     return $c->render() if !$form->has_data;
     return $c->render() if !$form->do_validate;
 
+    # Checking double post
+    if ( !$c->token->validate ) {
+
+        # Delete checkout
+        $c->_destroy_checkout;
+
+        my $sales = $c->resultset('Sales')->find( { token => $c->param('token') } );
+        return $c->reply->error(
+            title         => 'err.checkout.double.post.title',
+            error_message => 'err.checkout.double.post.message',
+        ) if !$sales;
+
+        # Ordered
+        $c->flash( sales_id => $sales->id );
+        return $c->prg_to('rn.checkout.complete');
+    }
+
     # checkout complete
     return $c->_complete_handler;
 }
@@ -166,6 +183,18 @@ sub _confirm_handler {
 
     # Redirect if not from confirmation page
     if ( $c->stash('action') ne 'confirm' ) { return $c->prg_to('rn.checkout.confirm') }
+
+    return;
+}
+
+sub _destroy_checkout {
+    my $c = shift;
+
+    # Derele cart items
+    $c->cart->clear_items;
+
+    # Delete double post check token
+    $c->token->clear;
 
     return;
 }
@@ -216,14 +245,18 @@ sub _complete_handler {
     # XXX: WIP ゲスト購入
     delete $order->{email};
 
+    # Add token
+    $order->{token} = $c->token->get;
+
     # Store order
     my $schema = $c->app->schema;
-    my $cb     = sub {
+    my $res;
+    my $cb = sub {
 
         # Order
         # $order->{order_number} = $schema->sequence('Order');
         # $schema->resultset('Order')->create($order);    # NOTE: itemsはbulk insert されない
-        $schema->resultset('Sales')->create($order);
+        $res = $schema->resultset('Sales')->create($order);
 
         # NOTE:
         # DBIx::Class::ResultSet https://metacpan.org/pod/DBIx::Class::ResultSet#populate
@@ -238,13 +271,11 @@ sub _complete_handler {
     };
     $schema->txn($cb);
 
-    # cart sessionクリア
-    # cartクリア（再生成）
-    # my $newcart = $c->factory('entity-cart')->construct();
-    # $c->cart_session->data( $newcart->to_data );
-    $c->cart->clear_items;
+    # Delete cart items and more
+    $c->_destroy_checkout;
 
     # redirect thank you page
+    $c->flash( sales_id => $res->id );
     return $c->prg_to('rn.checkout.complete');
 }
 
