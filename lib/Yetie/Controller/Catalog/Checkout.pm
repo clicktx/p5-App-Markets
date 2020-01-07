@@ -135,10 +135,7 @@ sub confirm {
     return $c->_complete_handler;
 }
 
-sub complete {
-    my $c = shift;
-    return $c->render();
-}
+sub complete { return shift->render() }
 
 # handler?
 # - Select a shipping address
