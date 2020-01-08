@@ -1,6 +1,9 @@
 package Yetie::Service::Checkout;
 use Mojo::Base 'Yetie::Service';
 use Yetie::Util qw(args2hash);
+use Role::Tiny::With;
+
+with 'Yetie::Service::Checkout::Complete';
 
 sub add_all_cart_items {
     my $self = shift;
@@ -219,6 +222,12 @@ experiment
     $service->calculate_shipping_fees;
 
 Calculate shipping fees.
+
+=head2 C<complete>
+
+    $service->complete;
+
+Import from L<Yetie::Service::Checkout::Complete>
 
 =head2 C<delete>
 
