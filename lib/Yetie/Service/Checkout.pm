@@ -135,8 +135,8 @@ sub validate_double_post {
 
     my $sales = $c->resultset('Sales')->find( { token => $token } );
     return $c->reply->error(
-        title         => 'err.checkout.double.post.title',
-        error_message => 'err.checkout.double.post.message',
+        title         => 'checkout.double.post.err.title',
+        error_message => 'checkout.double.post.err.message',
     ) if !$sales;
 
     # Ordered

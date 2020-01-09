@@ -72,10 +72,10 @@ msgstr "Password"
 
 
 # Checkout
-msgid "err.checkout.double.post.title"
+msgid "checkout.double.post.err.title"
 msgstr "Error or Completed"
 
-msgid "err.checkout.double.post.message"
+msgid "checkout.double.post.err.message"
 msgstr "However, your purchase may have been completed."
 
 msgid "checkout.done.title"
