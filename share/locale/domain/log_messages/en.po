@@ -53,6 +53,9 @@ msgstr "[{remote_address}] Failed to authentication request:{reason}"
 msgid "pref.update.failed"
 msgstr "Could not update preference"
 
+msgid "reply.error"
+msgstr "Reply error page on \"{method} {url}\"\n{title}\n{error_message}"
+
 msgid "schema.do.rollback"
 msgstr "Did rollback transaction:{error}"
 

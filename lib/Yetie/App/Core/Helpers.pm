@@ -127,6 +127,15 @@ sub _reply_error {
     my $title         = delete $args{title}         || 'Bad Request';
     my $error_message = delete $args{error_message} || q{};
 
+    # logging
+    my %context = (
+        method        => $c->req->method,
+        url           => $c->req->url->to_string,
+        title         => $c->__($title),
+        error_message => $c->__($error_message),
+    );
+    $c->logging_error( 'reply.error', %context );
+
     my %options = (
         template      => 'error',
         status        => $status,
