@@ -3,82 +3,92 @@ use Mojo::Base -role;
 
 sub complete {
     my $self = shift;
-    my $c    = $self->c;
 
+    my $c        = $self->c;
     my $checkout = $self->get;
 
     # XXX:未完成 Address正規化
     # set時(set_billing_address,set_shipping_address)に正規化を行う？
 
     # shipping address
-    my $customer_service = $c->service('customer');
-    $checkout->sales_orders->each(
-        sub {
-            my $sales_order         = shift;
-            my $shipping_address_id = $c->service('address')->set_address_id( $sales_order->shipping_address );
-
-            # Add to customer address
-            # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
-            $customer_service->add_to_address_book($shipping_address_id);
-        }
-    );
+    $self->_shipping_address($checkout);
 
     # billing address
-    my $billing_address_id = $c->service('address')->set_address_id( $checkout->billing_address );
+    $self->_billing_address($checkout);
+
+    # Make order data
+    my $order_data = $self->_get_order_data($checkout);
+
+    # Store order
+    my $res = $self->resultset('Sales')->create_order($order_data);
+
+    # Delete cart-items and token
+    $self->destroy;
+
+    # Store error
+    if ( !$res ) {
+        return $c->reply->error(
+            title         => 'checkout.complete.err.title',
+            error_message => 'checkout.complete.err.message',
+        );
+    }
+
+    # Completed
+    $c->flash( sales_id => $res->id );
+    return $c->prg_to('rn.checkout.complete');
+}
+
+sub _billing_address {
+    my ( $self, $checkout ) = @_;
+
+    my $billing_address_id = $self->service('address')->set_address_id( $checkout->billing_address );
 
     # Add to customer address
     # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
-    $customer_service->add_to_address_book($billing_address_id);
+    $self->service('customer')->add_to_address_book($billing_address_id);
 
-    # Make order data
-    my $order = $checkout->to_order_data;
+    return;
+}
+
+sub _get_order_data {
+    my ( $self, $checkout ) = @_;
+
+    my $order_data = $checkout->to_order_data;
 
     # オーダーデータ整形
     # ログイン購入
-    my $customer_id = $c->server_session->customer_id;
+    my $customer_id = $self->c->server_session->customer_id;
     if ($customer_id) {
-        $order->{customer} = { id => $customer_id };
+        $order_data->{customer} = { id => $customer_id };
     }
     else {
         # ゲスト購入
         # emailからcustomer_idを算出？新規顧客の場合はcustomer作成
-        $order->{customer} = {};
+        $order_data->{customer} = {};
     }
 
     # XXX: WIP ゲスト購入
-    delete $order->{email};
+    delete $order_data->{email};
 
     # Add token
-    $order->{token} = $c->token->get;
+    $order_data->{token} = $self->c->token->get;
 
-    # Store order
-    my $schema = $c->schema;
-    my $res;
-    my $cb = sub {
+    return $order_data;
+}
 
-        # Order
-        # $order->{order_number} = $schema->sequence('Order');
-        # $schema->resultset('Order')->create($order);    # NOTE: itemsはbulk insert されない
-        $res = $schema->resultset('Sales')->create($order);
+sub _shipping_address {
+    my ( $self, $checkout ) = @_;
 
-        # NOTE:
-        # DBIx::Class::ResultSet https://metacpan.org/pod/DBIx::Class::ResultSet#populate
-        # chekout の他に注文修正等で使う可能性があるのでresultsetにmethod化しておく？
-        # $schema->resultset('Order')->create_with_bulkinsert_items($order);
+    $checkout->sales_orders->each(
+        sub {
+            my $sales_order         = shift;
+            my $shipping_address_id = $self->service('address')->set_address_id( $sales_order->shipping_address );
 
-        # bulk insert
-        # my $items = $cart->items->first->to_array;
-        # my $order_id = $schema->storage->last_insert_id;
-        # my $data = $c->model('item')->to_array( $order_id, $items );
-        # $schema->resultset('Order::Item')->populate($data);
-    };
-    $schema->txn($cb);
-
-    # Delete cart items and token
-    $self->destroy;
-
-    # redirect thank you page
-    $c->flash( sales_id => $res->id );
+            # Add to customer address
+            # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
+            $self->service('customer')->add_to_address_book($shipping_address_id);
+        }
+    );
     return;
 }
 

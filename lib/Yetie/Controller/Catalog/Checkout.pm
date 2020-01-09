@@ -136,8 +136,7 @@ sub confirm {
     return $res if $res;
 
     # checkout complete
-    $c->service('checkout')->complete;
-    return $c->prg_to('rn.checkout.complete');
+    return $c->service('checkout')->complete;
 }
 
 sub complete { return shift->render() }

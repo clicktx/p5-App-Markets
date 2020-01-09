@@ -72,6 +72,12 @@ msgstr "Password"
 
 
 # Checkout
+msgid "checkout.complete.err.title"
+msgstr "Checkout Error"
+
+msgid "checkout.complete.err.message"
+msgstr "Your purchase has not been completed."
+
 msgid "checkout.double.post.err.title"
 msgstr "Error or Completed"
 
