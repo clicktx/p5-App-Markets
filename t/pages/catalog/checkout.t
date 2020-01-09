@@ -14,9 +14,8 @@ my $CART_DATA = {
     ],
 };
 
-sub startup : Test(startup) {
+sub _init {
     my $self = shift;
-    $self->SUPER::startup;
 
     # カートに商品を入れておく
     $self->ua->get('/');
@@ -25,6 +24,12 @@ sub startup : Test(startup) {
     $server_session->load($sid);
     $server_session->cart->data($CART_DATA);
     $server_session->flush;
+}
+
+sub startup : Test(startup) {
+    my $self = shift;
+    $self->SUPER::startup;
+    $self->_init();
 }
 
 # NOTE: カートが空の場合のtestも必要
@@ -126,19 +131,42 @@ sub test_06_select_payment_method : Tests() {
       ->content_like(qr/confirm/);
 }
 
-sub test_10_confirm : Tests() {
+sub test_20_confirm_and_complete : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
     $t->get_ok('/checkout/confirm')->status_is(200)->content_like(qr/confirm/);
+
+    # Get token
+    my $token     = t::Util::get_token($t);
+    my $post_data = {
+        csrf_token => $self->csrf_token,
+        token      => $token,
+    };
+    $t->post_ok( '/checkout/confirm', form => $post_data )->status_is(200);
 }
 
-sub test_20_complete : Tests() {
+sub test_30_double_post_complete : Tests() {
     my $self = shift;
     my $t    = $self->t;
 
-    my $post_data = { csrf_token => $self->csrf_token, };
-    $t->post_ok( '/checkout/confirm', form => $post_data )->status_is(200);
+    subtest 'error' => sub {
+        $self->_init();
+        my $post_data = {
+            csrf_token => $self->csrf_token,
+            token      => 'foobar',
+        };
+        $t->post_ok( '/checkout/confirm', form => $post_data )->status_is(400);
+    };
+
+    subtest 'Purchase completed' => sub {
+        $self->_init();
+        my $post_data = {
+            csrf_token => $self->csrf_token,
+            token      => 'ggg',
+        };
+        $t->post_ok( '/checkout/confirm', form => $post_data )->status_is(200)->content_like(qr/Sales ID : 7/);
+    };
 }
 
 sub test_50_stored_data : Tests() {

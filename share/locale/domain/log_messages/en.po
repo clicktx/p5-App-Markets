@@ -13,22 +13,23 @@ msgstr ""
 "Language: en\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+# Basic message
 msgid "log.message"
 msgstr "{message}"
 
 
 # Log messages for admin
-msgid "admin.login.failed.not_found"
-msgstr "[{remote_address}] Login failed:account not found. login_id:{login_id}"
-
-msgid "admin.login.failed.password"
-msgstr "[{remote_address}] Login failed:password mismatch. login id:{login_id}"
-
 msgid "admin.category.created"
 msgstr "[{remote_address}] Created new category by Staff ID:{staff_id}"
 
 msgid "admin.category.edited"
 msgstr "[{remote_address}] Updated category ID:{category_id} by Staff ID:{staff_id}"
+
+msgid "admin.login.failed.not_found"
+msgstr "[{remote_address}] Login failed:account not found. login_id:{login_id}"
+
+msgid "admin.login.failed.password"
+msgstr "[{remote_address}] Login failed:password mismatch. login id:{login_id}"
 
 msgid "admin.product.duplicated"
 msgstr "[{remote_address}] Duplicate product from ID:{product_id} by Staff ID:{staff_id}"
@@ -47,12 +48,16 @@ msgstr "[{remote_address}] Login failed:password mismatch. email:{email}"
 msgid "passwordless.authentication.failed"
 msgstr "[{remote_address}] Failed to authentication request:{reason}"
 
+
 # Log messages for App
-msgid "schema.rollback.failed"
-msgstr "Transaction rollback failed:{error}"
+msgid "pref.update.failed"
+msgstr "Could not update preference"
+
+msgid "reply.error"
+msgstr "Reply error page on \"{method} {url}\"\n{title}\n{error_message}"
 
 msgid "schema.do.rollback"
 msgstr "Did rollback transaction:{error}"
 
-msgid "pref.update.failed"
-msgstr "Could not update preference"
+msgid "schema.rollback.failed"
+msgstr "Transaction rollback failed:{error}"

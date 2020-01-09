@@ -17,16 +17,17 @@ sub AUTOLOAD {
       unless my $helper = $self->app->renderer->get_helper($method);
     return $self->controller->$helper(@_);
 }
+sub c { return shift->controller }
 
-sub factory { shift->app->factory(@_) }
+sub factory { return shift->app->factory(@_) }
 
-sub pref { shift->app->pref(@_) }
+sub pref { return shift->app->pref(@_) }
 
-sub resultset { shift->app->schema->resultset(@_) }
+sub resultset { return shift->app->schema->resultset(@_) }
 
-sub service { shift->controller->service(@_) }
+sub service { return shift->controller->service(@_) }
 
-sub schema { shift->app->schema(@_) }
+sub schema { return shift->app->schema(@_) }
 
 sub new {
     my ( $class, $c ) = ( shift, shift );
@@ -78,6 +79,13 @@ a L<Mojolicious::Controller> object.
 
 L<Yetie::Service> inherits all methods from L<Mojo::Base> and implements
 the following new ones.
+
+=head2 C<c>
+
+    my $controller = $service->c;
+
+Get controller object.
+Alias L</controller>.
 
 =head2 C<factory>
 

@@ -1,17 +1,24 @@
 header
-<div>session-id: <%= $self->server_session->sid %></div>
-<div>flash ref: <%= $self->flash('ref') %></div>
-<div>continue url: <%= $self->continue_url %></div>
-<div>cid: <%= $self->server_session->customer_id %>
-    <% if ($self->is_logged_in){ %>
+<div>session-id: <%= server_session()->sid %></div>
+<div>flash ref: <%= flash('ref') %></div>
+<div>continue url: <%= continue_url() %></div>
+<div>customer_id: <%= server_session()->customer_id %>
+    <% if ( is_logged_in() ){ %>
         Logged in
     <% } else { %>
         anonymouse
     <% } %>
 </div>
 <ul>
+    <li><%= link_to 'top page' => '/' %></li>
     <li><%= link_to 'Category1' => 'rn.category' => { category_id => 1 } %></li>
     <li><%= link_to 'My Cart' => 'rn.cart' %></li>
-    <li><%= link_to __('login') => 'rn.login' %></li>
+    <li>
+        <% if (is_logged_in) { %>
+            <%= link_to __('logout') => 'rn.logout' %>
+        <% } else { %>
+            <%= link_to __('login') => 'rn.login' %>
+        <% } %>
+    </li>
 </ul>
 <hr>

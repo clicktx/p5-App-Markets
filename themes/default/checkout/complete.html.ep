@@ -1,6 +1,12 @@
 % layout 'default';
-% title 'Thanks!';
+% title __('checkout.done.title');
 
 <h1><%= title %></h1>
 
-Thank you for your order!
+%= __('checkout.done.message')
+
+% if ( flash('sales_id') ){
+    <div>
+        Sales ID : <%= flash('sales_id') %>
+    </div>
+% }

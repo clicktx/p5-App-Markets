@@ -1,4 +1,4 @@
-package Yetie::App::Core::DefaultHelpers;
+package Yetie::App::Core::Helpers;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use Carp                    ();
@@ -30,6 +30,7 @@ sub register {
     $app->helper( is_logged_in     => sub { _is_logged_in(@_) } );
     $app->helper( j                => sub { _j(@_) } );
     $app->helper( pref             => sub { _pref(@_) } );
+    $app->helper( prg_to           => sub { _prg_to(@_) } );
     $app->helper( 'reply.error'    => sub { _reply_error(@_) } );
     $app->helper( 'reply.message'  => sub { _reply_message(@_) } );
     $app->helper( resultset        => sub { shift->app->schema->resultset(@_) } );
@@ -37,6 +38,9 @@ sub register {
     $app->helper( schema           => sub { shift->app->schema } );
     $app->helper( service          => sub { _service(@_) } );
     $app->helper( template         => sub { _template(@_) } );
+    $app->helper( 'token.clear'    => sub { _token_clear(@_) } );
+    $app->helper( 'token.get'      => sub { _token_get(@_) } );
+    $app->helper( 'token.validate' => sub { _token_validate(@_) } );
 }
 
 sub __x_default_lang {
@@ -68,7 +72,7 @@ sub _cache {
     return $caches->get($key);
 }
 
-sub _cart { @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
+sub _cart { return @_ > 1 ? $_[0]->stash( 'yetie.cart' => $_[1] ) : $_[0]->stash('yetie.cart') }
 
 sub _continue_url {
     my ( $c, $arg ) = @_;
@@ -89,9 +93,9 @@ sub _factory {
     return $factory;
 }
 
-sub _is_admin_route { shift->isa('Yetie::Controller::Admin') ? 1 : 0 }
+sub _is_admin_route { return shift->isa('Yetie::Controller::Admin') ? 1 : 0 }
 
-sub _is_get_request { shift->req->method eq 'GET' ? 1 : 0 }
+sub _is_get_request { return shift->req->method eq 'GET' ? 1 : 0 }
 
 sub _is_logged_in {
     my $c = shift;
@@ -100,7 +104,7 @@ sub _is_logged_in {
     return $c->server_session->$method ? 1 : 0;
 }
 
-sub _j { Mojo::JSON::j( $_[1] ) }
+sub _j { return Mojo::JSON::j( $_[1] ) }
 
 sub _pref {
     my $c    = shift;
@@ -117,12 +121,20 @@ sub _remote_address {
 }
 
 sub _reply_error {
-    my $c    = shift;
-    my %args = @_;
+    my ( $c, %args ) = ( shift, @_ );
 
     my $status        = delete $args{status}        || '400';
     my $title         = delete $args{title}         || 'Bad Request';
     my $error_message = delete $args{error_message} || q{};
+
+    # logging
+    my %context = (
+        method        => $c->req->method,
+        url           => $c->req->url->to_string,
+        title         => $c->__($title),
+        error_message => $c->__($error_message),
+    );
+    $c->logging_error( 'reply.error', %context );
 
     my %options = (
         template      => 'error',
@@ -130,7 +142,14 @@ sub _reply_error {
         title         => $title,
         error_message => $error_message,
     );
-    $c->render( %options, %args );
+    return $c->render( %options, %args );
+}
+
+sub _prg_to {
+    my ( $c, @args ) = ( shift, @_ );
+
+    $c->res->code(303);
+    return $c->redirect_to(@args);
 }
 
 sub _reply_message {
@@ -142,7 +161,7 @@ sub _reply_message {
         title    => '',
         message  => '',
     );
-    $c->render( %options, @_ );
+    return $c->render( %options, @_ );
 }
 
 sub _service {
@@ -161,18 +180,48 @@ sub _template {
     return @_ ? $c->stash( template => shift ) : $c->stash('template');
 }
 
+sub _token_clear {
+    my $c = shift;
+
+    my $session = $c->server_session;
+    $session->clear('token');
+    $session->flush;
+    return;
+}
+
+sub _token_get {
+    my $c = shift;
+
+    my $session = $c->server_session;
+    my $token   = $session->data('token');
+    return $token if $token;
+
+    # Create new token
+    $token = Yetie::Util::create_token();
+    $session->data( token => $token );
+    $session->flush;
+    return $token;
+}
+
+sub _token_validate {
+    my $c = shift;
+
+    my $target_token = shift || $c->param('token');
+    return $c->token->get eq $target_token ? 1 : 0;
+}
+
 1;
 __END__
 
 =head1 NAME
 
-Yetie::App::Core::DefaultHelpers - Default helpers plugin for Yetie
+Yetie::App::Core::Helpers - Default helpers plugin for Yetie
 
 =head1 DESCRIPTION
 
 =head1 HELPERS
 
-L<Yetie::App::Core::DefaultHelpers> implements the following helpers.
+L<Yetie::App::Core::Helpers> implements the following helpers.
 
 =head2 C<__x_default_lang>
 
@@ -295,6 +344,22 @@ Return L<Yetie::Schema::ResultSet> object.
 
 Get/Set preference.
 
+=head2 C<prg_to>
+
+    $c = $c->prg_to('named', foo => 'bar');
+    $c = $c->prg_to('named', {foo => 'bar'});
+    $c = $c->prg_to('/index.html');
+    $c = $c->prg_to('http://example.com/index.html');
+
+    # Longer version
+    $c->res->code(303);
+    $c->redirect_to('some_route');
+
+Post/Redirect/Get(PRG)
+
+Prepare a 303 redirect response with Location header,
+takes the same arguments as L<Mojolicious::Plugin::Helpers/redirect_to>.
+
 =head2 C<reply-E<gt>error>
 
     $c->reply->error( status => 401, title => 'foo', error_message => 'bar' );
@@ -343,6 +408,34 @@ Service Layer accessor.
 Get/Set template.
 
 Alias for $c->stash(template => 'hoge/index');
+
+=head2 C<token-E<gt>clear>
+
+    $c->token->clear;
+
+Delete token from data("token") in L<Yetie::App::Core::Session::ServerSession>.
+
+=head2 C<token-E<gt>get>
+
+    my $token = $c->token->get;
+
+Get token from data("token") in L<Yetie::App::Core::Session::ServerSession>, and generate one if none exists.
+
+token are L<Yetie::Util/create_token>.
+
+=head2 C<token-E<gt>validate>
+
+    my $bool = $c->token->validate;
+    my $bool = $c->token->validate('foobar');
+
+    if ($bool) { say 'Succeed' }
+    else { say 'Failed' }
+
+Validate token.
+
+Default target token C<app-E<gt>controller-E<gt>param('token')>
+
+Return boolean value.
 
 =head1 AUTHOR
 

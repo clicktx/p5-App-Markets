@@ -145,11 +145,26 @@ Generate secure token. based L<Session::Token>
 
 B<options>
 
+    # Defaults
+    create_token(
+        length => 40,
+        alphabet => [ 'a' .. 'z', '0' .. '9' ],
+    );
+
 SEE ALSO L<Session::Token>
 
 =cut
 
-sub create_token { Session::Token->new(@_)->get }
+sub create_token {
+    my @args = @_;
+    return Session::Token->new(@_)->get if @args;
+
+    # Default
+    return Session::Token->new(
+        length   => 40,
+        alphabet => [ 'a' .. 'z', '0' .. '9' ],
+    )->get;
+}
 
 =head2 C<hashids>
 
