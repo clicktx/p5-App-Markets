@@ -68,9 +68,9 @@ sub txn_failed {
 
 sub txn {
     my ( $self, $cb ) = @_;
-    try { $self->txn_do($cb) }
+
+    return try { $self->txn_do($cb) }
     catch { $self->txn_failed($_) };
-    return 1;
 }
 
 sub TZ { return $TZ }
@@ -129,13 +129,15 @@ Logging transaction error.
 
 =head2 C<txn>
 
-    $schema->txn( sub { ... } );
+    my $result = $schema->txn( sub { ... } );
 
 Return C<true> or exception.
 
 Execute L<DBIx::Class::Schema/txn_do> in trap an exception.
 
 For exceptions, does L</txn_failed>.
+
+Return result
 
 =head2 C<TZ>
 
