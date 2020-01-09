@@ -25,6 +25,7 @@ msgstr "New Product"
 msgid "copy"
 msgstr "copy"
 
+
 # Common
 msgid "text.billing.address"
 msgstr "Billing Address"
@@ -47,12 +48,14 @@ msgstr "Shipping Address"
 msgid "text.trash.order"
 msgstr "Trash this Order"
 
+
 # Email
 msgid "email.sent.title"
 msgstr "We have sent you an email"
 
 msgid "email.sent.message"
 msgstr "Please check your email."
+
 
 # Login
 msgid "login"
@@ -67,23 +70,22 @@ msgstr "Username or email address"
 msgid "login.password"
 msgstr "Password"
 
+
 # Checkout
-msgid "checkout.done.title"
-msgstr "Thank you for your purchase"
-
-msgid "checkout.done.message"
-msgstr "Purchase proceeding has been completed.The procedure has been rightly done."
-
 msgid "err.checkout.double.post.title"
 msgstr "Error or Completed"
 
 msgid "err.checkout.double.post.message"
 msgstr "However, your purchase may have been completed."
 
-# Error messages
-msgid "Required"
-msgstr "Required"
+msgid "checkout.done.title"
+msgstr "Thank you for your purchase"
 
+msgid "checkout.done.message"
+msgstr "Purchase proceeding has been completed.The procedure has been rightly done."
+
+
+# Error messages
 msgid "Invalid value"
 msgstr "Invalid value"
 
@@ -96,6 +98,10 @@ msgstr "Must be at the most {length} symbols"
 msgid "Must be between {min} and {max} symbols"
 msgstr "Must be between {min} and {max} symbols"
 
+msgid "Required"
+msgstr "Required"
+
+
 # password-less authentication
 msgid "auth.request.error.title"
 msgstr "Bad request"
@@ -103,15 +109,19 @@ msgstr "Bad request"
 msgid "auth.request.error.message"
 msgstr "It is an expired or invalid request."
 
+
 # for preferences
-msgid "pref.title.admin_uri_prefix"
-msgstr "admin page prefix"
+msgid "pref.summary.addons_dir"
+msgstr "preference summary for addons_dir"
 
 msgid "pref.summary.admin_uri_prefix"
 msgstr "preference summary for admin_uri_prefix"
 
+msgid "pref.summary.addons_dir"
+msgstr "preference summary for addons_dir"
+
 msgid "pref.title.addons_dir"
 msgstr "addons directory name"
 
-msgid "pref.summary.addons_dir"
-msgstr "preference summary for addons_dir"
+msgid "pref.title.admin_uri_prefix"
+msgstr "admin page prefix"
