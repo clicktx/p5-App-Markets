@@ -1,6 +1,13 @@
 package Yetie::Schema::ResultSet::Sales;
 use Mojo::Base 'Yetie::Schema::ResultSet';
 
+sub create_order {
+    my ( $self, $order_data ) = @_;
+
+    my $cb = sub { return $self->create($order_data) };
+    return $self->schema->txn($cb);
+}
+
 sub get_id_by_order_id {
     my ( $self, $order_id ) = @_;
 
@@ -55,6 +62,10 @@ the following new ones.
 
 L<Yetie::Schema::ResultSet::Sales> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
+
+=head2 C<create_order>
+
+    my $result = $rs->create_order($order_data);
 
 =head2 C<get_id_by_order_id>
 
