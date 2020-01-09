@@ -1,6 +1,7 @@
 package Yetie::Schema::ResultSet::Customer;
 use Mojo::Base 'Yetie::Schema::ResultSet';
 use Try::Tiny;
+use Yetie::Util;
 
 has prefetch => sub {
     [ { customer_password => 'password' }, { emails => 'email' } ];
@@ -11,12 +12,14 @@ sub create_customer {
 
     my $result;
     my $cb = sub {
+        my $cart_id = Yetie::Util::create_token();
         my $result_email =
           $self->schema->resultset('Email')->update_or_create( { address => $email, is_verified => 1 } );
         try {
             $result = $self->create(
                 {
-                    emails => [
+                    cart_id => $cart_id,
+                    emails  => [
                         {
                             email      => { id => $result_email->id },
                             is_primary => 1,

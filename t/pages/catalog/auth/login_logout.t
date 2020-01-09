@@ -53,7 +53,7 @@ sub t00_login_logout : Tests() {
     isnt $sid, $sid_logged_in, 'right regenerate sid';
 
     # logout
-    $t->get_ok('/logout')->status_is(200);
+    $t->get_ok('/logout')->status_is(302);
     $t->get_ok('/account/home')->status_is(302);
     my $sid_new_session = $self->sid;
     isnt $sid_logged_in, $sid_new_session, 'right new sid';

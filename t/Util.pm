@@ -44,6 +44,12 @@ sub get_sid {
     return $cookie ? $cookie->value : undef;
 }
 
+sub get_token {
+    my $t     = shift;
+    my $token = $t->tx->res->dom->at('input[name="token"]')->val;
+    return $token;
+}
+
 sub init_addon {
     my ( $self, $app, $name, $arg ) = ( shift, shift, shift, shift // {} );
 

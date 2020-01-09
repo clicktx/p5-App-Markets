@@ -10,7 +10,6 @@ has cart         => sub { shift->cart_session };
 
 has _cookie_expires      => 0;
 has cookie_expires_delta => 3600 * 24 * 365;
-has cookie_token_length  => 40;
 
 sub cart_id { return shift->data('cart_id') }
 
@@ -34,14 +33,15 @@ sub cookie_expires {
 sub extend_expires {
     my $self = shift;
 
-    $self->SUPER::extend_expires(@_);
+    $self->_expires( time + $self->expires_delta );
     $self->cookie_expires( time + $self->cookie_expires_delta );
 
     if ( $self->transport ) {
         $self->transport->tx( $self->tx );
         $self->transport->set( $self->sid, $self->cookie_expires );
     }
-    return;
+
+    return $self->_is_flushed(0);
 }
 
 sub flush {
@@ -50,11 +50,6 @@ sub flush {
     my $result = $self->SUPER::flush(@_);
     $self->cart->is_modified(0);
     return $result;
-}
-
-sub create_cookie_token {
-    my $self = shift;
-    return Yetie::Util::create_token( length => $self->cookie_token_length, alphabet => [ 'a' .. 'z', '0' .. '9' ] );
 }
 
 sub is_customer_logged_in { return shift->customer_id ? 1 : 0 }
@@ -128,7 +123,8 @@ sub clear {
     return if @_;
 
     # Init Cart
-    return $self->_init_cart( $self->create_cookie_token );
+    my $cart_id = Yetie::Util::create_token();
+    return $self->_init_cart($cart_id);
 }
 
 # Override method MojoX::Session::create
@@ -148,7 +144,7 @@ sub create {
     }
 
     # cart
-    my $cart_id = $args->{cart_id} || $self->create_cookie_token;
+    my $cart_id = $args->{cart_id} || Yetie::Util::create_token();
     $self->_init_cart($cart_id);
 
     return $sid;
@@ -253,12 +249,6 @@ Alias for L</cart_session>
 
     my $delta = $session->cookie_expires_delta;
 
-=head2 C<cookie_token_length>
-
-Default: 40
-
-See L</create_cookie_token>
-
 =head1 METHODS
 
 L<Yetie::App::Core::Session::ServerSession> inherits all methods from L<MojoX::Session> and implements
@@ -315,10 +305,6 @@ This method override L<MojoX::Session/extend_expires>.
 
 This method override L<MojoX::Session/flush>.
 Stored session data.
-
-=head2 C<create_cookie_token>
-
-    my $token = $session->create_cookie_token;
 
 =head2 C<is_customer_logged_in>
 

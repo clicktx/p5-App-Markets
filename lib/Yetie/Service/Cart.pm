@@ -29,11 +29,11 @@ sub find_cart {
 }
 
 sub merge_cart {
-    my ( $self, $customer_id ) = @_;
+    my ( $self, $customer_cart_id ) = @_;
     my $c       = $self->controller;
     my $session = $c->server_session;
 
-    my $customer_cart = $self->find_cart($customer_id);
+    my $customer_cart = $self->find_cart($customer_cart_id);
     return $customer_cart if !$c->cart;    # NOTE: necessary remember_me login
 
     my $merged_cart = $c->cart->merge($customer_cart);
@@ -76,7 +76,7 @@ Return L<Yetie::Domain::Entity::Cart> object.
 
 =head2 C<merge_cart>
 
-    my $merged_cart = $service->merge_cart($customer_id);
+    my $merged_cart = $service->merge_cart($customer_cart_id);
 
 Return L<Yetie::Domain::Entity::Cart> object.
 

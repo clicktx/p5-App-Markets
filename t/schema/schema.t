@@ -28,7 +28,7 @@ subtest 'txn' => sub {
     'right die';
 
     lives_ok {
-        ok $schema->txn( sub { } ), 'right return value';
+        is $schema->txn( sub { return 'foo' } ), 'foo', 'right return value';
     }
     'right lives';
 };

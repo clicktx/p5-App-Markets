@@ -1,6 +1,9 @@
 package Yetie::Service::Checkout;
 use Mojo::Base 'Yetie::Service';
 use Yetie::Util qw(args2hash);
+use Role::Tiny::With;
+
+with 'Yetie::Service::Checkout::Complete';
 
 sub add_all_cart_items {
     my $self = shift;
@@ -45,6 +48,18 @@ sub delete {
     return $self;
 }
 
+sub destroy {
+    my $self = shift;
+
+    # Derele cart items
+    $self->c->cart->clear_items;
+
+    # Delete double post check token
+    $self->c->token->clear;
+
+    return;
+}
+
 sub get {
     my $self = shift;
 
@@ -53,6 +68,8 @@ sub get {
 
     return $checkout;
 }
+
+sub reset { return shift->_create }
 
 sub save {
     my $self = shift;
@@ -104,6 +121,27 @@ sub set_shipping_address {
     my $checkout = $self->get;
     $checkout->set_shipping_address(@args);
     return $self->save;
+}
+
+sub validate_double_post {
+    my $self  = shift;
+    my $c     = $self->c;
+    my $token = shift || $c->param('token');
+
+    return if $c->token->validate($token);
+
+    # Delete cart and token
+    $self->destroy;
+
+    my $sales = $c->resultset('Sales')->find( { token => $token } );
+    return $c->reply->error(
+        title         => 'checkout.double.post.err.title',
+        error_message => 'checkout.double.post.err.message',
+    ) if !$sales;
+
+    # Ordered
+    $c->flash( sales_id => $sales->id );
+    return $c->prg_to('rn.checkout.complete');
 }
 
 sub _create {
@@ -185,13 +223,34 @@ experiment
 
 Calculate shipping fees.
 
+=head2 C<complete>
+
+    $service->complete;
+
+Import from L<Yetie::Service::Checkout::Complete>
+
 =head2 C<delete>
 
     $service->delete;
 
+=head2 C<destroy>
+
+    $service->destroy;
+
+Delete cart items in L<Yetie::App::Core::Session::CartSession>
+and delete token in L<Yetie::App::Core::Session::ServerSession>.
+
 =head2 C<get>
 
     my $checkout = $service->get;
+
+Return L<Yetie::Domain::Entity::Checkout> object.
+
+=head2 C<reset>
+
+    my $new = $service->reset;
+
+Create new L<Yetie::Domain::Entity::Checkout> object and set store to session.
 
 Return L<Yetie::Domain::Entity::Checkout> object.
 
@@ -225,6 +284,16 @@ See L<Yetie::Domain::Entity::Checkout/set_billings_address>
     $service->set_shipping_address( [ $address_obj, $address_obj, ... ] );
 
 See L<Yetie::Domain::Entity::Checkout/set_shipping_address>
+
+=head2 C<validate_double_post>
+
+    my $res = $service->validate_double_post;
+
+    my $res = $service->validate_double_post($token);
+
+Return L<Yetie::Controller::Catalog::Checkout> if validation fails.
+
+Returns C<undef> if validation is successful.
 
 =head1 AUTHOR
 
