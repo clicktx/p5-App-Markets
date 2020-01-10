@@ -4,7 +4,7 @@ use DBIx::Class::Candy -autotable => v1;
 
 use Yetie::Schema::Result::SalesOrder;
 use Yetie::Schema::Result::Product;
-use Yetie::Schema::Result::Price;
+use Yetie::Schema::Result::SalesPrice;
 
 primary_column id => {
     data_type         => 'INT',
@@ -22,7 +22,7 @@ column product_id => {
 };
 
 column price_id => {
-    data_type   => Yetie::Schema::Result::Price->column_info('id')->{data_type},
+    data_type   => Yetie::Schema::Result::SalesPrice->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
@@ -50,7 +50,7 @@ belongs_to
   { 'foreign.id' => 'self.product_id' };
 
 belongs_to
-  price => 'Yetie::Schema::Result::Price',
+  price => 'Yetie::Schema::Result::SalesPrice',
   { 'foreign.id' => 'self.price_id' };
 
 has_many

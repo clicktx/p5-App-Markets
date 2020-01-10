@@ -2,7 +2,7 @@ package Yetie::Schema::Result::Product;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-use Yetie::Schema::Result::Price;
+use Yetie::Schema::Result::SalesPrice;
 
 primary_column id => {
     data_type         => 'INT',
@@ -20,7 +20,7 @@ column description => {
     is_nullable => 0,
 };
 
-column price => Yetie::Schema::Result::Price->column_info('value');
+column price => Yetie::Schema::Result::SalesPrice->column_info('value');
 
 column created_at => {
     data_type   => 'DATETIME',
@@ -47,9 +47,9 @@ has_many
 
 # Add Index
 sub sqlt_deploy_hook {
-    my ( $self, $sqlt_table ) = @_;
+    my ( $self, $table ) = @_;
 
-    $sqlt_table->add_index( name => 'idx_title', fields => ['title'] );
+    $table->add_index( name => 'idx_title', fields => ['title'] );
 }
 
 # Methods

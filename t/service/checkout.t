@@ -25,6 +25,12 @@ sub t02_add_all_cart_items : Tests() {
 sub t03_set_address : Tests() {
     my $self = shift;
     my $t    = $self->t;
+    $t->get_ok('/test/reset')->status_is(200);
+}
+
+sub t04_set_address : Tests() {
+    my $self = shift;
+    my $t    = $self->t;
     $t->get_ok('/test/set_shipping_address')->status_is(200);
     $t->get_ok('/test/after_set_shipping_address')->status_is(200);
 
@@ -32,7 +38,7 @@ sub t03_set_address : Tests() {
     $t->get_ok('/test/after_set_billing_address')->status_is(200);
 }
 
-sub t04_calculate_shipping_fees : Tests() {
+sub t05_calculate_shipping_fees : Tests() {
     my $self = shift;
     my $t    = $self->t;
     $t->get_ok('/test/calculate_shipping_fees')->status_is(200);
@@ -123,6 +129,18 @@ sub load {
     isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
     is $checkout->sales_orders->size, 1, 'right load sales orders';
 
+    return $c->render( text => 1 );
+}
+
+sub reset {
+    my $c = shift;
+
+    my $checkout = $c->service('checkout')->get;
+    my $new      = $c->service('checkout')->reset;
+    isnt $checkout, $new, 'right reset checkout';
+
+    my $load = $c->service('checkout')->get;
+    is $new, $load, 'right stored object';
     return $c->render( text => 1 );
 }
 

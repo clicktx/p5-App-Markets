@@ -5,7 +5,7 @@ use Mojolicious::Plugin::TagHelpers;
 sub register {
     my ( $self, $app ) = @_;
 
-    my @helpers = (qw(button submit_button));
+    my @helpers = (qw(button submit_button token_field));
     $app->helper( $_ => __PACKAGE__->can("_$_") ) for @helpers;
 }
 
@@ -31,6 +31,14 @@ sub _submit_button {
 }
 
 sub _tag { Mojolicious::Plugin::TagHelpers::_tag(@_) }
+
+sub _token_field {
+    my $c    = shift;
+    my %args = @_;
+
+    $args{token} = $c->helpers->token->get if !$args{token};
+    return $c->helpers->hidden_field(%args);
+}
 
 1;
 __END__
@@ -80,6 +88,18 @@ Generate C<input> tag of type C<submit>(default).
     <input id="foo" type="submit" value="Ok!">
     <input type="button" value="Go!">
     <input type="reset" value="Reset">
+
+=head2 C<token_field>
+
+    %= token_field
+
+    %= token_field( token => 'foobarbaz' )
+
+Generate input tag of type hidden with L<Yetie::App::Core::Helpers/token>.
+
+    <input name="token" type="hidden" value="fa6a08...">
+
+    <input name="token" type="hidden" value="foobarbaz">
 
 =head1 AUTHOR
 

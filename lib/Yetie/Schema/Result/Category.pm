@@ -59,14 +59,14 @@ has_many
 
 # Add Index
 sub sqlt_deploy_hook {
-    my ( $self, $sqlt_table ) = @_;
+    my ( $self, $table ) = @_;
 
-    $sqlt_table->add_index( name => 'idx_root_id', fields => ['root_id'] );
-    $sqlt_table->add_index( name => 'idx_level',   fields => ['level'] );
+    $table->add_index( name => 'idx_root_id', fields => ['root_id'] );
+    $table->add_index( name => 'idx_level',   fields => ['level'] );
 
     # HACK: Create constraints and indexes at schema deployment.
-    $sqlt_table->drop_constraint('categories_fk_root_id');
-    $sqlt_table->drop_index('categories_idx_root_id');
+    $table->drop_constraint('categories_fk_root_id');
+    $table->drop_index('categories_idx_root_id');
 }
 
 sub descendant_ids {

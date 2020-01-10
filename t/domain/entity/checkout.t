@@ -99,43 +99,6 @@ sub _create_entity {
 #     is $checkout->is_modified, 1, 'right modified';
 # };
 
-subtest 'get_order_data' => sub {
-    my $checkout = _create_entity;
-    cmp_deeply $checkout->get_order_data, {
-        billing_address => { id => 55 },
-        payment_method  => ignore(),
-        sales_orders    => [
-            {
-                id    => ignore(),
-                items => [
-                    {
-                        price => {
-                            currency_code   => "USD",
-                            is_tax_included => 0,
-                            value           => 100,
-                            tax_rule_id     => 2,
-                        },
-                        product_id    => 1,
-                        product_title => "a",
-                        quantity      => 1,
-                    },
-                ],
-                shipping_address => { id => 33 },
-
-                # shippings        => ignore(),
-            },
-            {
-                id               => ignore(),
-                items            => ignore(),
-                shipping_address => ignore(),
-
-                # shippings        => ignore(),
-            }
-        ],
-      },
-      'right dump order data';
-};
-
 subtest 'has_billing_address' => sub {
     my $checkout = Yetie::Factory->new('entity-checkout')->construct();
     is $checkout->has_billing_address, 0, 'right no address info';
@@ -252,6 +215,43 @@ subtest 'set_shipping_address' => sub {
     $obj      = $checkout->factory('entity-address')->construct( $example_data{sales_orders}->[0]->{shipping_address} );
     $checkout->set_shipping_address($obj);
     is $checkout->is_modified, 0, 'right not modified';
+};
+
+subtest 'to_order_data' => sub {
+    my $checkout = _create_entity;
+    cmp_deeply $checkout->to_order_data, {
+        billing_address => { id => 55 },
+        payment_method  => ignore(),
+        sales_orders    => [
+            {
+                id    => ignore(),
+                items => [
+                    {
+                        price => {
+                            currency_code   => "USD",
+                            is_tax_included => 0,
+                            value           => 100,
+                            tax_rule_id     => 2,
+                        },
+                        product_id    => 1,
+                        product_title => "a",
+                        quantity      => 1,
+                    },
+                ],
+                shipping_address => { id => 33 },
+
+                # shippings        => ignore(),
+            },
+            {
+                id               => ignore(),
+                items            => ignore(),
+                shipping_address => ignore(),
+
+                # shippings        => ignore(),
+            }
+        ],
+      },
+      'right dump order data';
 };
 
 done_testing();

@@ -86,6 +86,7 @@ sub methods {
     my $service = $c->service('test');
 
     isa_ok $service->schema, 'Yetie::Schema';
+    can_ok $service, 'c';
     can_ok $service, 'factory';
     can_ok $service, 'pref';
     can_ok $service, 'resultset';

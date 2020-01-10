@@ -26,7 +26,7 @@ has_many
   { cascade_delete        => 0 };
 
 has_many
-  price => 'Yetie::Schema::Result::Price',
+  price => 'Yetie::Schema::Result::SalesPrice',
   { 'foreign.tax_rule_id' => 'self.id' },
   { cascade_delete        => 0 };
 

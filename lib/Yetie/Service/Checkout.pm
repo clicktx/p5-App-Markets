@@ -1,6 +1,9 @@
 package Yetie::Service::Checkout;
 use Mojo::Base 'Yetie::Service';
 use Yetie::Util qw(args2hash);
+use Role::Tiny::With;
+
+with 'Yetie::Service::Checkout::Complete';
 
 sub add_all_cart_items {
     my $self = shift;
@@ -45,6 +48,18 @@ sub delete {
     return $self;
 }
 
+sub destroy {
+    my $self = shift;
+
+    # Derele cart items
+    $self->c->cart->clear_items;
+
+    # Delete double post check token
+    $self->c->token->clear;
+
+    return;
+}
+
 sub get {
     my $self = shift;
 
@@ -53,6 +68,8 @@ sub get {
 
     return $checkout;
 }
+
+sub reset { return shift->_create }
 
 sub save {
     my $self = shift;
@@ -185,13 +202,34 @@ experiment
 
 Calculate shipping fees.
 
+=head2 C<complete>
+
+    $service->complete;
+
+Import from L<Yetie::Service::Checkout::Complete>
+
 =head2 C<delete>
 
     $service->delete;
 
+=head2 C<destroy>
+
+    $service->destroy;
+
+Delete cart items in L<Yetie::App::Core::Session::CartSession>
+and delete token in L<Yetie::App::Core::Session::ServerSession>.
+
 =head2 C<get>
 
     my $checkout = $service->get;
+
+Return L<Yetie::Domain::Entity::Checkout> object.
+
+=head2 C<reset>
+
+    my $new = $service->reset;
+
+Create new L<Yetie::Domain::Entity::Checkout> object and set store to session.
 
 Return L<Yetie::Domain::Entity::Checkout> object.
 

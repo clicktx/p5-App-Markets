@@ -55,4 +55,5 @@
 </p>
 
 <h1>session</h1>
-<pre>session: <%= dumper server_session->data %></pre>
+<pre>cookie_session: <%= dumper session %></pre>
+<pre>server_session: <%= dumper server_session->data %></pre>
