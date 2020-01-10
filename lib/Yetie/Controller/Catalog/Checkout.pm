@@ -131,10 +131,6 @@ sub confirm {
     # Validation form
     return $c->render() if !$form->do_validate;
 
-    # Checking double post
-    my $res = $c->service('checkout')->validate_double_post();
-    return $res if $res;
-
     # checkout complete
     return $c->service('checkout')->complete;
 }

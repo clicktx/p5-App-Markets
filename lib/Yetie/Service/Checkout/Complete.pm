@@ -3,8 +3,11 @@ use Mojo::Base -role;
 
 sub complete {
     my $self = shift;
+    my $c    = $self->c;
 
-    my $c        = $self->c;
+    # Double post
+    if ( my $res = $self->_validate_double_post ) { return $res }
+
     my $checkout = $self->get;
 
     # XXX:未完成 Address正規化
@@ -90,6 +93,24 @@ sub _shipping_address {
         }
     );
     return;
+}
+
+sub _validate_double_post {
+    my $self = shift;
+    my $c    = $self->c;
+
+    my $token = $c->param('token');
+    return if $c->token->validate($token);
+
+    my $sales = $c->resultset('Sales')->find( { token => $token } );
+    return $c->reply->error(
+        title         => 'checkout.double.post.err.title',
+        error_message => 'checkout.double.post.err.message',
+    ) if !$sales;
+
+    # Ordered
+    $c->flash( sales_id => $sales->id );
+    return $c->prg_to('rn.checkout.complete');
 }
 
 1;

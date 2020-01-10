@@ -123,27 +123,6 @@ sub set_shipping_address {
     return $self->save;
 }
 
-sub validate_double_post {
-    my $self  = shift;
-    my $c     = $self->c;
-    my $token = shift || $c->param('token');
-
-    return if $c->token->validate($token);
-
-    # Delete cart and token
-    $self->destroy;
-
-    my $sales = $c->resultset('Sales')->find( { token => $token } );
-    return $c->reply->error(
-        title         => 'checkout.double.post.err.title',
-        error_message => 'checkout.double.post.err.message',
-    ) if !$sales;
-
-    # Ordered
-    $c->flash( sales_id => $sales->id );
-    return $c->prg_to('rn.checkout.complete');
-}
-
 sub _create {
     my $self = shift;
 
@@ -284,16 +263,6 @@ See L<Yetie::Domain::Entity::Checkout/set_billings_address>
     $service->set_shipping_address( [ $address_obj, $address_obj, ... ] );
 
 See L<Yetie::Domain::Entity::Checkout/set_shipping_address>
-
-=head2 C<validate_double_post>
-
-    my $res = $service->validate_double_post;
-
-    my $res = $service->validate_double_post($token);
-
-Return L<Yetie::Controller::Catalog::Checkout> if validation fails.
-
-Returns C<undef> if validation is successful.
 
 =head1 AUTHOR
 
