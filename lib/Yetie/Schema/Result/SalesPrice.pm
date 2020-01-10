@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Price;
+package Yetie::Schema::Result::SalesPrice;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 

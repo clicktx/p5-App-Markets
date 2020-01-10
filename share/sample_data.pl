@@ -207,7 +207,7 @@
         [ 11, 6, 4, undef ],
         [ 12, 7, 5, undef ], # trashed on test
     ],
-    'Price' => [
+    'SalesPrice' => [
         [qw/id tax_rule_id value currency_code is_tax_included/],
         [ 91, 1, 300, 'USD', 0 ],
         [ 92, 2, 101, 'USD', 0 ],
