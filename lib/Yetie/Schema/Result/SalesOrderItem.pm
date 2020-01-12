@@ -2,9 +2,10 @@ package Yetie::Schema::Result::SalesOrderItem;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-use Yetie::Schema::Result::SalesOrder;
 use Yetie::Schema::Result::Product;
+use Yetie::Schema::Result::SalesOrder;
 use Yetie::Schema::Result::SalesPrice;
+use Yetie::Schema::Result::TaxRule;
 
 primary_column id => {
     data_type         => 'INT',
@@ -26,6 +27,12 @@ column price_id => {
     is_nullable => 0,
 };
 
+column tax_rule_id => {
+    data_type   => 'INT',
+    data_type   => Yetie::Schema::Result::TaxRule->column_info('id')->{data_type},
+    is_nullable => 0,
+};
+
 column product_title => Yetie::Schema::Result::Product->column_info('title');
 
 column quantity => {
@@ -42,16 +49,20 @@ column note => {
 # Relation
 # NOTE: 'order' is SQL reserved word.
 belongs_to
-  sales_order => 'Yetie::Schema::Result::SalesOrder',
-  { 'foreign.id' => 'self.order_id' };
+  price => 'Yetie::Schema::Result::SalesPrice',
+  { 'foreign.id' => 'self.price_id' };
 
 belongs_to
   product => 'Yetie::Schema::Result::Product',
   { 'foreign.id' => 'self.product_id' };
 
 belongs_to
-  price => 'Yetie::Schema::Result::SalesPrice',
-  { 'foreign.id' => 'self.price_id' };
+  sales_order => 'Yetie::Schema::Result::SalesOrder',
+  { 'foreign.id' => 'self.order_id' };
+
+belongs_to
+  tax_rule => 'Yetie::Schema::Result::TaxRule',
+  { 'foreign.id' => 'self.tax_rule_id' };
 
 has_many
   shipment_items => 'Yetie::Schema::Result::ShipmentItem',
@@ -66,11 +77,9 @@ sub to_data {
     my @columns = qw(id product_id product_title quantity note);
     $data->{$_} = $self->$_ for @columns;
 
-    # price
-    $data->{price} = $self->price->to_data;
-
     # relation
-    $data->{tax_rule} = delete $data->{price}->{tax_rule};
+    $data->{price}    = $self->price->to_data;
+    $data->{tax_rule} = $self->tax_rule->to_data;
 
     return $data;
 }
