@@ -17,6 +17,8 @@ sub has_elements { return shift->hash_set->size ? 1 : 0 }
 
 sub to_data { return shift->hash_set->to_data }
 
+sub to_order_data { return shift->hash_set->to_order_data }
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -74,6 +76,10 @@ Dump the data of hash set.
     my $data = $set->hash_set->to_data;
 
 Return Hash reference.
+
+=head2 C<to_order_data>
+
+L</to_data> alias method.
 
 =head1 AUTHOR
 

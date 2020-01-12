@@ -3,7 +3,7 @@ use Mojo::Base -base;
 
 use Exporter 'import';
 use List::Util;
-use Scalar::Util 'blessed';
+use Scalar::Util qw();
 use Tie::IxHash;
 
 our @EXPORT_OK = ('ixhash');
@@ -120,24 +120,28 @@ sub rehash {
 
 sub size { scalar @{ shift->keys } }
 
-sub to_data {
-    my $self = shift;
+sub to_data { return shift->_dump_data('to_data') }
+
+sub to_hash { return +{ %{ shift() } } }
+
+sub to_order_data { return shift->_dump_data('to_order_data') }
+
+sub values {
+    my @values = values %{ shift() };
+    return wantarray ? @values : \@values;
+}
+
+sub _dump_data {
+    my ( $self, $method ) = @_;
 
     my %data;
     $self->each(
         sub {
             my ( $k, $v ) = @_;
-            $data{$k} = blessed $v ? $v->to_data : $v;
+            $data{$k} = Scalar::Util::blessed $v ? $v->$method : $v;
         }
     );
     return \%data;
-}
-
-sub to_hash { +{ %{ shift() } } }
-
-sub values {
-    my @values = values %{ shift() };
-    return wantarray ? @values : \@values;
 }
 
 1;
@@ -268,6 +272,10 @@ Number of key-value pair in IxHash.
     my $hash = $ixhash->to_hash;
 
 Turn IxHash into hash reference.
+
+=head2 C<to_order_data>
+
+L</to_data> alias method.
 
 =head2 C<values>
 

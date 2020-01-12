@@ -32,7 +32,8 @@ subtest 'has_elements' => sub {
 
 subtest 'to_data' => sub {
     my $set = $construct->( foo => 1, bar => 2, baz => 3 );
-    is_deeply $set->to_data, { foo => 1, bar => 2, baz => 3 }, 'right dump data';
+    is_deeply $set->to_data,       { foo => 1, bar => 2, baz => 3 }, 'right dump data';
+    is_deeply $set->to_order_data, { foo => 1, bar => 2, baz => 3 }, 'right dump order data';
 };
 
 done_testing();

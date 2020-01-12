@@ -56,6 +56,8 @@ sub to_array { return shift->list->to_array }
 
 sub to_data { return shift->list->to_data }
 
+sub to_order_data { return shift->list->to_order_data }
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -221,6 +223,10 @@ Dump the data of collection.
 Return Array reference.
 
 NOTE: Dump all object recursively.
+
+=head2 C<to_order_data>
+
+L</to_data> alias method.
 
 =head1 AUTHOR
 

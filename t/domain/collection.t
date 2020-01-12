@@ -95,7 +95,8 @@ subtest 'rehash' => sub {
 subtest 'to_data' => sub {
     use Yetie::Domain::Collection qw/collection/;
     my $c = $pkg->new( collection(), 1, collection( collection(), collection( 1, 2 ) ), 2 );
-    cmp_deeply $c->to_data, [ [], 1, [ [], [ 1, 2 ] ], 2 ], 'right dump data';
+    cmp_deeply $c->to_data,       [ [], 1, [ [], [ 1, 2 ] ], 2 ], 'right dump data';
+    cmp_deeply $c->to_order_data, [ [], 1, [ [], [ 1, 2 ] ], 2 ], 'right dump order data';
 };
 
 done_testing();

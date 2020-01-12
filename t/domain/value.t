@@ -98,6 +98,11 @@ subtest 'to_data' => sub {
     is $v->to_data, 'foo', 'right to_data';
 };
 
+subtest 'to_order_data' => sub {
+    my $v = $pkg->new( value => 'foo' );
+    is $v->to_order_data, 'foo', 'right to_order_data';
+};
+
 subtest 'immutable' => sub {
     my $v = $pkg->new( value => 'foo' );
     dies_ok { $v->value('bar') } 'right immutable';

@@ -44,6 +44,8 @@ sub is_modified {
 
 sub to_data { return shift->value }
 
+sub to_order_data { return shift->to_data }
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
@@ -106,6 +108,12 @@ Return boolean value.
     my $value = $obj->to_data;
 
 L</value> alias method.
+
+=head2 C<to_order_data>
+
+    my $value = $obj->to_order_data;
+
+L</to_data> alias method.
 
 =head1 AUTHOR
 

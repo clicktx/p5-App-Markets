@@ -180,6 +180,11 @@ subtest 'to_data method' => sub {
       'right dump data';
 };
 
+subtest 'to_order_data' => sub {
+    my $e = Yetie::Domain::Entity->new();
+    can_ok $e, 'to_order_data';
+};
+
 subtest 'is_modified' => sub {
     {
         use DateTime;
