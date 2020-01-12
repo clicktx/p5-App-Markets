@@ -156,7 +156,7 @@ subtest 'size' => sub {
 
 subtest 'to_hash' => sub {
     my $hash_ref = $h->to_hash;
-    cmp_deeply $hash_ref, { a => 10, b => 20, c => 30, d => 40, e => 50 };
+    cmp_deeply $hash_ref, { a => 10, b => 20, c => 30, d => 40, e => 50 }, 'right dump hash';
 };
 
 subtest 'to_data' => sub {
@@ -166,8 +166,8 @@ subtest 'to_data' => sub {
         b => { b1       => 2 },
         c => 3
     );
-    my $data = $h->to_data;
-    cmp_deeply $data, { a => { a1 => { a2 => 1 } }, b => { b1 => 2 }, c => 3 };
+    cmp_deeply $h->to_data,       { a => { a1 => { a2 => 1 } }, b => { b1 => 2 }, c => 3 }, 'right dump data';
+    cmp_deeply $h->to_order_data, { a => { a1 => { a2 => 1 } }, b => { b1 => 2 }, c => 3 }, 'right dump order data';
 };
 
 subtest 'values' => sub {

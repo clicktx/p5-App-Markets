@@ -74,7 +74,8 @@ subtest 'size' => sub {
 
 subtest 'to_data' => sub {
     my $l = construct( 1, 2, 3 );
-    is_deeply $l->to_data, [ 1, 2, 3 ], 'right dump data';
+    is_deeply $l->to_data,       [ 1, 2, 3 ], 'right dump data';
+    is_deeply $l->to_order_data, [ 1, 2, 3 ], 'right dump order data';
 };
 
 done_testing();

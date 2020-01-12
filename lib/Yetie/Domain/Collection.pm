@@ -1,6 +1,6 @@
 package Yetie::Domain::Collection;
 use Mojo::Base 'Mojo::Collection';
-use Scalar::Util qw/blessed/;
+use Scalar::Util qw();
 
 our @EXPORT_OK = qw(c collection);
 
@@ -43,11 +43,16 @@ sub rehash {
     return $self;
 }
 
-sub to_data {
-    my $self = shift;
-    my @array;
-    push @array, blessed $_ ? $_->to_data : $_ for @{ $self->to_array };
-    return \@array;
+sub to_data { return shift->_dump_data('to_data') }
+
+sub to_order_data { return shift->_dump_data('to_order_data') }
+
+sub _dump_data {
+    my ( $self, $method ) = @_;
+
+    my @data;
+    push @data, Scalar::Util::blessed $_ ? $_->$method : $_ for @{ $self->to_array };
+    return \@data;
 }
 
 1;
@@ -144,6 +149,10 @@ See L<Yetie::Domain::Base/rehash>
     my $data = $collection->to_data;
 
 Turn collection into array reference. This method recursive call L<Mojo::Collection/to_array>.
+
+=head2 C<to_order_data>
+
+L</to_data> alias method.
 
 =head1 AUTHOR
 

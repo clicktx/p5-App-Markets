@@ -46,17 +46,9 @@ sub to_array {
     return [ \@keys, \@values ];
 }
 
-sub to_data {
-    my $self = shift;
-    my $hash = $self->to_hash;
-    my %data;
-    foreach my $key ( keys %{$hash} ) {
-        my $value = $hash->{$key};
-        if ( Scalar::Util::blessed $value) { $data{$key} = _to_data( $key => $value ) }
-        else                               { $data{$key} = $value }
-    }
-    return \%data;
-}
+sub to_data { return shift->_dump_data('to_data') }
+
+sub to_order_data { return shift->_dump_data('to_order_data') }
 
 sub to_hash {
     my %hash = %{ +shift };
@@ -104,13 +96,21 @@ sub _recursive_call {
     return;
 }
 
-sub _to_data {
-    my ( $key, $value ) = @_;
+sub _dump_data {
+    my ( $self, $method ) = @_;
 
-    return $value->to_data if $value->can('to_data');
-
-    my $class = ref $value;
-    Carp::croak "$key($class) has not \"to_data\" method";
+    my $hash = $self->to_hash;
+    my %data;
+    foreach my $key ( keys %{$hash} ) {
+        my $value = $hash->{$key};
+        if ( Scalar::Util::blessed $value) {
+            my $class = ref $value;
+            Carp::croak "$key($class) has not \"$method\" method" if !$value->can($method);
+            $data{$key} = $value->$method;
+        }
+        else { $data{$key} = $value }
+    }
+    return \%data;
 }
 
 no Moose;
@@ -240,6 +240,12 @@ Objects that do not have method "to_data" are also deleted.
         a => 1,
         b => [1,2,3],
     };
+
+=head2 C<to_order_data>
+
+    my $order_data = $e->to_order_data;
+
+See L</to_data>.
 
 =head2 C<to_hash>
 
