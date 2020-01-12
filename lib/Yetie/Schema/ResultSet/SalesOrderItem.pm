@@ -8,9 +8,7 @@ sub store_item {
     my $item = $self->find(
         $id,
         {
-            prefetch => {
-                price => 'tax_rule',
-            },
+            prefetch => [ 'price', 'tax_rule' ],
         }
     );
 

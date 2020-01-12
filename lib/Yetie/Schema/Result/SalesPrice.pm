@@ -2,17 +2,9 @@ package Yetie::Schema::Result::SalesPrice;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-use Yetie::Schema::Result::TaxRule;
-
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
-};
-
-column tax_rule_id => {
-    data_type   => 'INT',
-    data_type   => Yetie::Schema::Result::TaxRule->column_info('id')->{data_type},
-    is_nullable => 0,
 };
 
 column value => {
@@ -45,10 +37,6 @@ inflate_column value => {
 };
 
 # Relation
-belongs_to
-  tax_rule => 'Yetie::Schema::Result::TaxRule',
-  { 'foreign.id' => 'self.tax_rule_id' };
-
 might_have
   order_item => 'Yetie::Schema::Result::SalesOrderItem',
   { 'foreign.price_id' => 'self.id' },
@@ -61,9 +49,6 @@ sub to_data {
     my $data    = {};
     my @columns = qw(value currency_code is_tax_included);
     $data->{$_} = $self->$_ for @columns;
-
-    # relation
-    $data->{tax_rule} = $self->tax_rule->to_data;
 
     return $data;
 }

@@ -19,9 +19,9 @@ subtest store_item => sub {
             price      => {
                 currency_code   => "USD",
                 is_tax_included => 0,
-                tax_rule_id     => 2,
                 value           => 444,
             },
+            tax_rule_id => 2,
         }
     );
 
@@ -40,9 +40,9 @@ subtest store_item => sub {
             price      => {
                 currency_code   => "JPY",
                 is_tax_included => 0,
-                tax_rule_id     => 2,
                 value           => 777,
             },
+            tax_rule_id => 2,
         }
     );
 

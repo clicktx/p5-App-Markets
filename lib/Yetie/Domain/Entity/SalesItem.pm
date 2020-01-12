@@ -8,13 +8,9 @@ sub to_order_data {
     my $self = shift;
 
     my $data = $self->to_data;
-
     delete $data->{tax_rule};
-    $data->{price} = {
-        %{ $self->price->to_data },
-        is_tax_included => $self->price->is_tax_included,
-        tax_rule_id     => $self->tax_rule->id,
-    };
+    $data->{tax_rule_id} = $self->tax_rule->id;
+
     return $data;
 }
 
