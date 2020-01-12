@@ -65,10 +65,6 @@ sub subtotal_incl_tax {
 #     return $self->reduce( sub { $a + $b->shipping_fee_incl_tax }, $price );
 # }
 
-sub to_order_data {
-    return shift->reduce( sub { [ @{$a}, $b->to_order_data ], }, [] );
-}
-
 sub total_quantity {
     return shift->reduce( sub { $a + $b->items->total_quantity }, 0 );
 }
@@ -154,10 +150,6 @@ Delete except the first element. Also delete all items of the first element.
 =head2 C<subtotal_incl_tax>
 
     my $subtotal_incl_tax = $items->subtotal_incl_tax;
-
-=head2 C<to_order_data>
-
-    my $order_data = $sales_orders->to_order_data();
 
 =head2 C<total_quantity>
 
