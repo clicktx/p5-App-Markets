@@ -28,6 +28,11 @@ has title => (
     isa => 'Str',
 );
 
+override 'to_order_data' => sub {
+    my $self = shift;
+    return { id => $self->id };
+};
+
 sub caluculate_tax {
     my ( $self, $price ) = @_;
 

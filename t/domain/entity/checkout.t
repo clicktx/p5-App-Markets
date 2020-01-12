@@ -232,7 +232,7 @@ subtest 'to_order_data' => sub {
                             is_tax_included => 0,
                             value           => 100,
                         },
-                        tax_rule_id   => 2,
+                        tax_rule      => { id => 2 },
                         product_id    => 1,
                         product_title => "a",
                         quantity      => 1,
