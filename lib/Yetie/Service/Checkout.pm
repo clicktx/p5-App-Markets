@@ -3,7 +3,7 @@ use Mojo::Base 'Yetie::Service';
 use Yetie::Util qw(args2hash);
 use Role::Tiny::With;
 
-with 'Yetie::Service::Checkout::Complete';
+with 'Yetie::Service::Checkout::Base', 'Yetie::Service::Checkout::Complete';
 
 sub add_all_cart_items {
     my $self = shift;
@@ -38,46 +38,6 @@ sub calculate_shipping_fees {
         }
     );
     return;
-}
-
-sub delete {
-    my $self = shift;
-
-    $self->server_session->clear('checkout');
-    delete $self->controller->stash->{checkout};
-    return $self;
-}
-
-sub destroy {
-    my $self = shift;
-
-    # Derele cart items
-    $self->c->cart->clear_items;
-
-    # Delete double post check token
-    $self->c->token->clear;
-
-    return;
-}
-
-sub get {
-    my $self = shift;
-
-    my $checkout = $self->controller->stash('checkout');
-    return $self->_load if !$checkout;
-
-    return $checkout;
-}
-
-sub reset { return shift->_create }
-
-sub save {
-    my $self = shift;
-
-    my $checkout = $self->controller->stash('checkout');
-    return if !$checkout;
-
-    return $self->_update($checkout);
 }
 
 sub select_address {
@@ -121,35 +81,6 @@ sub set_shipping_address {
     my $checkout = $self->get;
     $checkout->set_shipping_address(@args);
     return $self->save;
-}
-
-sub _create {
-    my $self = shift;
-
-    my $checkout = $self->factory('entity-checkout')->construct();
-    $checkout->sales_orders->create_sales_order();
-    $self->_update($checkout);
-
-    $self->controller->stash( checkout => $checkout );
-    return $checkout;
-}
-
-sub _load {
-    my $self = shift;
-
-    my $data = $self->server_session->data('checkout');
-    return $self->_create if !$data;
-
-    my $checkout = $self->factory('entity-checkout')->construct($data);
-    $self->controller->stash( checkout => $checkout );
-    return $checkout;
-}
-
-sub _update {
-    my ( $self, $entity ) = @_;
-
-    $self->server_session->data( checkout => $entity->to_data );
-    return $self;
 }
 
 1;
