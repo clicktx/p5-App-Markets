@@ -20,15 +20,13 @@ Yetie::Domain::Entity::SalesItem
 
 =head1 ATTRIBUTES
 
-L<Yetie::Domain::Entity::SalesItem> inherits all attributes from L<Yetie::Domain::Entity::LineItem> and L<Yetie::Domain::Role::Tax>.
-
-Implements the following new ones.
+L<Yetie::Domain::Entity::SalesItem> inherits all attributes from L<Yetie::Domain::Entity::CartItem>
+and Implements the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Domain::Entity::SalesItem> inherits all methods from L<Yetie::Domain::Entity::LineItem> and L<Yetie::Domain::Role::Tax>.
-
-Implements the following new ones.
+L<Yetie::Domain::Entity::SalesItem> inherits all methods from L<Yetie::Domain::Entity::CartItem>
+and Implements the following new ones.
 
 =head1 AUTHOR
 
@@ -36,4 +34,4 @@ Yetie authors.
 
 =head1 SEE ALSO
 
-L<Yetie::Domain::Entity::LineItem>, L<Yetie::Domain::Role::Tax>, L<Yetie::Domain::Entity>
+L<Yetie::Domain::Entity::CartItem>, L<Yetie::Domain::Entity>
