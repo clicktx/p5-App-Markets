@@ -45,7 +45,7 @@ sub _create {
     my $self = shift;
 
     my $checkout = $self->factory('entity-checkout')->construct();
-    $checkout->sales_orders->create_sales_order();
+    $checkout->sales_orders->append_new();
     $self->_update($checkout);
 
     $self->controller->stash( checkout => $checkout );

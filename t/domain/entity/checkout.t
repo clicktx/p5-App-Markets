@@ -125,7 +125,7 @@ subtest 'has_shipping_address' => sub {
     my $checkout = Yetie::Factory->new('entity-checkout')->construct();
     is $checkout->has_shipping_address, 0, 'right has not shipping address';
 
-    $checkout->sales_orders->create_sales_order;
+    $checkout->sales_orders->append_new;
     is $checkout->has_shipping_address, 0, 'right no address info';
 
     $checkout = _create_entity;
@@ -187,7 +187,7 @@ subtest 'set_shipping_address' => sub {
     my $checkout = _create_entity;
     dies_ok { $checkout->set_shipping_address() } 'right not arguments';
 
-    $checkout->sales_orders->create_sales_order;
+    $checkout->sales_orders->append_new;
     my $obj           = $checkout->factory('entity-address')->construct(%address);
     my $shipping_addr = $checkout->sales_orders->get(1)->shipping_address->to_data;
 
@@ -211,7 +211,7 @@ subtest 'set_shipping_address' => sub {
 
     # first set(create and set)
     $checkout = Yetie::Factory->new('entity-checkout')->construct();
-    $checkout->sales_orders->create_sales_order;
+    $checkout->sales_orders->append_new;
     $checkout->set_shipping_address($obj);
     cmp_deeply $checkout->sales_orders->get(0)->shipping_address->to_data, $valid_data,
       'right create sales order and set shipping_address';

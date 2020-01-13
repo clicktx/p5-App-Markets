@@ -5,21 +5,21 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
 
-sub clear_items {
-    return shift->each( sub { $_->items->clear } );
-}
-
-sub count_total_items {
-    return shift->map( sub { $_->items->each } )->size;
-}
-
-sub create_sales_order {
+sub append_new {
     my $self = shift;
     my $args = args2hash(@_);
 
     my $sales_order = $self->factory('entity-sales_order')->construct($args);
     $self->append($sales_order);
     return $sales_order;
+}
+
+sub clear_items {
+    return shift->each( sub { $_->items->clear } );
+}
+
+sub count_total_items {
+    return shift->map( sub { $_->items->each } )->size;
 }
 
 sub has_item { return shift->count_total_items ? 1 : 0 }
@@ -107,6 +107,16 @@ the following new ones.
 L<Yetie::Domain::List::SalesOrders> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
 
+=head2 C<append_new>
+
+    my $sales_order = $sales_orders->append_new( %attributes );
+
+    my $sales_order = $sales_orders->append_new( \%attributes );
+
+Create L<Yetie::Domain::Entity::SalesOder> object and add it to the collection.
+
+Return L<Yetie::Domain::Entity::SalesOder> object.
+
 =head2 C<clear_items>
 
     my $sales_orders->clear_items;
@@ -114,16 +124,6 @@ the following new ones.
 =head2 C<count_total_items>
 
     my $count = $sales_orders->count_total_items;
-
-=head2 C<create_sales_order>
-
-    my $sales_order = $sales_orders->create_sales_order( %attributes );
-
-    my $sales_order = $sales_orders->create_sales_order( \%attributes );
-
-Create L<Yetie::Domain::Entity::SalesOder> object and add it to the collection.
-
-Return L<Yetie::Domain::Entity::SalesOder> object.
 
 =head2 C<has_item>
 
