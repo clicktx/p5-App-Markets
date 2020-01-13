@@ -171,14 +171,14 @@ See L<Yetie::Domain::List::SalesOrders/revert>.
 
 =head2 C<set_shipping_address>
 
-    # Update first element
+    # Set first element
     $checkout->set_shipping_address( $address_obj );
 
-    # Update multiple elements
+    # Set multiple elements
     $checkout->set_shipping_address( 1 => $address_obj, 3 => $address_obj, ... );
     $checkout->set_shipping_address( [ $address_obj, $address_obj, ... ] );
 
-Update shipping address.
+Set shipping address.
 
 =head1 AUTHOR
 
