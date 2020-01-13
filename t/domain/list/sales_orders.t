@@ -104,7 +104,7 @@ subtest 'revert' => sub {
         {
             items            => [],
             shipping_address => ignore(),
-            shippings        => ignore(),
+            shipments        => ignore(),
         }
       ],
       'right revert';

@@ -29,7 +29,13 @@ my %example_data = (
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
                     tax_rule => { id => 2, tax_rate => 5 },
                 },
-            ]
+            ],
+            shipments => [
+                {
+                    price    => { value => 10, currency_code => 'USD', is_tax_included => 0 },
+                    tax_rule => { id    => 2,  tax_rate      => 5 },
+                },
+            ],
         },
         {
             shipping_address => {
@@ -219,8 +225,9 @@ subtest 'set_shipping_address' => sub {
 
 subtest 'to_order_data' => sub {
     my $checkout = _create_entity;
-    cmp_deeply $checkout->to_order_data,
-      {
+    use DDP;
+    p $checkout->to_order_data;
+    cmp_deeply $checkout->to_order_data, {
         billing_address => { id => 55 },
         payment_method  => ignore(),
         sales_orders    => [
@@ -239,15 +246,21 @@ subtest 'to_order_data' => sub {
                     },
                 ],
                 shipping_address => { id => 33 },
-                shippings        => ignore(),
+                shipments        => [
+                    {
+                        price    => ignore(),
+                        tax_rule => ignore(),
+                    },
+                ],
             },
             {
                 items            => ignore(),
                 shipping_address => ignore(),
-                shippings        => ignore(),
+                shipments        => ignore(),
             }
         ],
-        transaction => ignore(),
+
+        # transaction => ignore(),
       },
       'right dump order data';
 };

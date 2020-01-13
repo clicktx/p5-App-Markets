@@ -11,7 +11,7 @@ sub cook {
     $self->aggregate( shipping_address => ( 'entity-address', $self->{shipping_address} || {} ) );
 
     # Aggregate shippings
-    $self->aggregate( shippings => ( 'list-shippings', $self->param('shippings') || [] ) );
+    $self->aggregate( shipments => ( 'list-shipments', $self->param('shipments') || [] ) );
 }
 
 1;

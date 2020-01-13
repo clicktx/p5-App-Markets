@@ -16,10 +16,10 @@ has shipping_address => (
     default => sub { shift->factory('entity-address')->construct() },
     writer  => 'set_shipping_address',
 );
-has shippings => (
+has shipments => (
     is      => 'ro',
-    isa     => 'Yetie::Domain::List::Shippings',
-    default => sub { shift->factory('list-shippings')->construct() },
+    isa     => 'Yetie::Domain::List::Shipments',
+    default => sub { shift->factory('list-shipments')->construct() },
 );
 
 sub count_items { return shift->items->size }
