@@ -219,12 +219,12 @@ subtest 'set_shipping_address' => sub {
 
 subtest 'to_order_data' => sub {
     my $checkout = _create_entity;
-    cmp_deeply $checkout->to_order_data, {
+    cmp_deeply $checkout->to_order_data,
+      {
         billing_address => { id => 55 },
         payment_method  => ignore(),
         sales_orders    => [
             {
-                id    => ignore(),
                 items => [
                     {
                         price => {
@@ -239,17 +239,15 @@ subtest 'to_order_data' => sub {
                     },
                 ],
                 shipping_address => { id => 33 },
-
-                # shippings        => ignore(),
+                shippings        => ignore(),
             },
             {
-                id               => ignore(),
                 items            => ignore(),
                 shipping_address => ignore(),
-
-                # shippings        => ignore(),
+                shippings        => ignore(),
             }
         ],
+        transaction => ignore(),
       },
       'right dump order data';
 };
