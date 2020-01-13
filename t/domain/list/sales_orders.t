@@ -15,19 +15,6 @@ subtest 'basic' => sub {
     isa_ok $v, 'Yetie::Domain::List';
 };
 
-subtest 'append_new' => sub {
-    my $v = construct();
-    my $sales_order = $v->append_new( shipping_address => { country_code => 'jp' } );
-    is $v->size, 1, 'right create sales_order';
-    isa_ok $sales_order, 'Yetie::Domain::Entity::SalesOrder';
-    isa_ok $v->first, 'Yetie::Domain::Entity::SalesOrder';
-    is $v->first->shipping_address->country_code, 'jp', 'right construct with arguments';
-
-    my $sales_order2 = $v->append_new;
-    is $v->size, 2, 'right recreate sales_order';
-    isnt $sales_order, $sales_order2, 'right compare object';
-};
-
 subtest 'is_multiple' => sub {
     my $v    = construct();
     my $bool = $v->is_multiple;
