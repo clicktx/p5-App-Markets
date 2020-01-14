@@ -5,15 +5,6 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::List';
 
-sub append_new {
-    my $self = shift;
-    my $args = args2hash(@_);
-
-    my $sales_order = $self->factory('entity-sales_order')->construct($args);
-    $self->append($sales_order);
-    return $sales_order;
-}
-
 sub clear_items {
     return shift->each( sub { $_->items->clear } );
 }
@@ -106,16 +97,6 @@ the following new ones.
 
 L<Yetie::Domain::List::SalesOrders> inherits all methods from L<Yetie::Domain::List> and implements
 the following new ones.
-
-=head2 C<append_new>
-
-    my $sales_order = $sales_orders->append_new( %attributes );
-
-    my $sales_order = $sales_orders->append_new( \%attributes );
-
-Create L<Yetie::Domain::Entity::SalesOder> object and add it to the collection.
-
-Return L<Yetie::Domain::Entity::SalesOder> object.
 
 =head2 C<clear_items>
 

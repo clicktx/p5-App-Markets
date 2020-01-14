@@ -5,10 +5,10 @@ sub cook {
     my $self = shift;
 
     # price
-    $self->aggregate( price => 'value-price', $self->{price} );
+    $self->aggregate( price => 'value-price' );
 
     # tax rule
-    $self->aggregate( tax_rule => 'entity-tax_rule', $self->param('tax_rule') || {} );
+    $self->aggregate( tax_rule => 'entity-tax_rule' );
 }
 
 1;

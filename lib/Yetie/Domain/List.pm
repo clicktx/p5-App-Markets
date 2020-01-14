@@ -1,5 +1,6 @@
 package Yetie::Domain::List;
 use Yetie::Domain::Collection;
+use Yetie::Util qw(args2hash);
 
 use Moose;
 use namespace::autoclean;
@@ -16,6 +17,15 @@ sub append {
     my $new  = $self->list->append(@_);
     $self->list($new);
     return;
+}
+
+sub append_new {
+    my ( $self, $domain, @args ) = @_;
+    my $args = args2hash(@args);
+
+    my $obj = $self->factory($domain)->construct($args);
+    $self->append($obj);
+    return $obj;
 }
 
 sub clear { return shift->list( Yetie::Domain::Collection->new ) }
@@ -94,6 +104,18 @@ the following new ones.
 See L<Yetie::Domain::Collection/append>.
 
 Return C<undefined>
+
+=head2 C<append_new>
+
+    my $new_entity_obj = $domain->append_new( 'entity-foo', %args );
+
+    my $new_value_obj = $domain->append_new( 'value-bar' => \%args );
+
+    $domain->append_new( 'entity-foo' => { id => 'bar', title => 'baz' } );
+
+Create new domain object and append for L</list>.
+
+Return created new domain object.
 
 =head2 C<clear>
 

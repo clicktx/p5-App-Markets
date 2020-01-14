@@ -104,6 +104,12 @@ subtest 'has not cook' => sub {
     $f = Yetie::Factory->new( 'entity-hoge', { hoge => 1 } );
     $entity = $f->construct( { fuga => 2 } );
     cmp_deeply { %{$entity} }, { _hash_sum => ignore(), hoge => 1, fuga => 2 }, 'right argument Hash reference';
+
+    my $v = Yetie::Domain::Value::Fuga->new();
+    $f = Yetie::Factory->new( 'entity-hoge', { hoge => $v } );
+    $entity = $f->construct( { fuga => $v } );
+    isa_ok $entity->hoge, 'Yetie::Domain::Value::Fuga', 'right argument object';
+    isa_ok $entity->fuga, 'Yetie::Domain::Value::Fuga', 'right argument object';
 };
 
 subtest 'has cook' => sub {
@@ -219,6 +225,27 @@ subtest 'aggregate method' => sub {
     is_deeply $entity->list->to_data, [ { a => 1, b => 2, f => 'fuga', h => 'hoge' } ], 'right aggregate array';
     isa_ok $entity->hash_set, 'Yetie::Domain::IxHash';
     is_deeply $entity->hash_set->to_data, { a => { hoge => {} } }, 'right aggregate hash';
+
+    subtest 'argment object' => sub {
+        my $f = Yetie::Factory->new('entity-agg');
+
+        $f->aggregate( 'hoge', 'entity-hoge', Yetie::Domain::Entity->new() );
+        $f->aggregate( 'fuga', 'value-fuga',  Yetie::Domain::Value->new() );
+
+        my $entity = $f->construct();
+        isa_ok $entity->hoge, 'Yetie::Domain::Entity';
+        isa_ok $entity->fuga, 'Yetie::Domain::Value';
+    };
+
+    subtest 'omited arguments' => sub {
+        my $f = Yetie::Factory->new( 'entity-agg', { hoge => { id => 1 }, fuga => 2 } );
+        $f->aggregate( 'hoge', 'entity-hoge' );
+        $f->aggregate( 'fuga', 'value-fuga' );
+
+        my $entity = $f->construct();
+        is $entity->hoge->id,    1, 'right domain entity';
+        is $entity->fuga->value, 2, 'right domain value';
+    };
 };
 
 done_testing();

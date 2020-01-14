@@ -5,13 +5,13 @@ sub cook {
     my $self = shift;
 
     # token
-    $self->aggregate( token => 'value-token', $self->{token} );
+    $self->aggregate( token => 'value-token' );
 
     # email
-    $self->aggregate( email => 'value-email', $self->{email} );
+    $self->aggregate( email => 'value-email' );
 
     # expires
-    $self->aggregate( expires => 'value-expires', $self->{expires} );
+    $self->aggregate( expires => 'value-expires' );
 }
 
 1;
