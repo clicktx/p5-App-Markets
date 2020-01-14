@@ -236,6 +236,16 @@ subtest 'aggregate method' => sub {
         isa_ok $entity->hoge, 'Yetie::Domain::Entity';
         isa_ok $entity->fuga, 'Yetie::Domain::Value';
     };
+
+    subtest 'omited arguments' => sub {
+        my $f = Yetie::Factory->new( 'entity-agg', { hoge => { id => 1 }, fuga => 2 } );
+        $f->aggregate( 'hoge', 'entity-hoge' );
+        $f->aggregate( 'fuga', 'value-fuga' );
+
+        my $entity = $f->construct();
+        is $entity->hoge->id,    1, 'right domain entity';
+        is $entity->fuga->value, 2, 'right domain value';
+    };
 };
 
 done_testing();

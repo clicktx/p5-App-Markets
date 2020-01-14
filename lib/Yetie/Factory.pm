@@ -17,6 +17,8 @@ has domain_class => sub {
 
 sub aggregate {
     my ( $self, $accessor, $domain, $data ) = @_;
+
+    if ( !$data ) { $data = $self->param($accessor) }
     return $self->param( $accessor => $data ) if Scalar::Util::blessed($data);
 
     my $converted_data = $self->_convert_data( $domain, $data );
@@ -251,6 +253,19 @@ the following new ones.
     }
 
 Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
+
+    sub cook {
+        my $self = shift;
+
+        $self->aggregate( user => 'entity-user' );
+        $self->aggregate( email => 'value-email' );
+
+        # Longer version
+        $self->aggregate( user => 'entity-user', $self->param('user') );
+        $self->aggregate( email => 'value-email', $self->param('email') );
+    }
+
+If third argument is omited, the value of C<param($attribure_name)> will be used.
 
 =head2 C<aggregate_domain_list>
 
