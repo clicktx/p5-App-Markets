@@ -238,19 +238,19 @@
         [ 1006, 12, 2, 96, 5, 'product 2', 4 ], # trashed on test
     ],
     'Shipment' => [
-        [qw/id order_id price_id tracking_number completed_at/],
-        [ 33, 1, 100, 'S111222333444', '2017-06-07 17:13:20' ],  # Ship partial, 2/3
-        [ 34, 2, 101, 'S222333444555', '2017-07-08 15:10:35' ],  # Shipped all items
-        [ 35, 3, 102, undef, undef ],
-        [ 36, 4, 103, undef, undef ],
-        [ 37, 5, 104, undef, undef ],
-        [ 38, 6, 105, undef, undef ],
-        [ 39, 7, 106, undef, undef ],
-        [ 40, 8, 107, undef, undef ],
-        [ 41, 9, 108, undef, undef ],
-        [ 42, 10, 109, undef, undef ],
-        [ 43, 11, 110, undef, undef ],
-        [ 44, 12, 111, undef, undef ],
+        [qw/id order_id price_id tax_rule_id tracking_number completed_at/],
+        [ 33, 1, 100, 3, 'S111222333444', '2017-06-07 17:13:20' ],  # Ship partial, 2/3
+        [ 34, 2, 101, 3, 'S222333444555', '2017-07-08 15:10:35' ],  # Shipped all items
+        [ 35, 3, 102, 3, undef, undef ],
+        [ 36, 4, 103, 3, undef, undef ],
+        [ 37, 5, 104, 3, undef, undef ],
+        [ 38, 6, 105, 3, undef, undef ],
+        [ 39, 7, 106, 3, undef, undef ],
+        [ 40, 8, 107, 3, undef, undef ],
+        [ 41, 9, 108, 3, undef, undef ],
+        [ 42, 10, 109, 3, undef, undef ],
+        [ 43, 11, 110, 3, undef, undef ],
+        [ 44, 12, 111, 3, undef, undef ],
     ],
     'ShipmentItem' => [
         [qw/shipment_id order_item_id quantity/],
