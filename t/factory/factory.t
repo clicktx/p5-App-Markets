@@ -225,6 +225,17 @@ subtest 'aggregate method' => sub {
     is_deeply $entity->list->to_data, [ { a => 1, b => 2, f => 'fuga', h => 'hoge' } ], 'right aggregate array';
     isa_ok $entity->hash_set, 'Yetie::Domain::IxHash';
     is_deeply $entity->hash_set->to_data, { a => { hoge => {} } }, 'right aggregate hash';
+
+    subtest 'argment object' => sub {
+        my $f = Yetie::Factory->new('entity-agg');
+
+        $f->aggregate( 'hoge', 'entity-hoge', Yetie::Domain::Entity->new() );
+        $f->aggregate( 'fuga', 'value-fuga',  Yetie::Domain::Value->new() );
+
+        my $entity = $f->construct();
+        isa_ok $entity->hoge, 'Yetie::Domain::Entity';
+        isa_ok $entity->fuga, 'Yetie::Domain::Value';
+    };
 };
 
 done_testing();

@@ -3,6 +3,7 @@ use Mojo::Base -base;
 use Carp 'croak';
 use Mojo::Util   ();
 use Mojo::Loader ();
+use Scalar::Util ();
 use Yetie::Util  ();
 use Yetie::Domain::Collection qw/collection/;
 use Yetie::Domain::IxHash qw/ixhash/;
@@ -16,12 +17,12 @@ has domain_class => sub {
 
 sub aggregate {
     my ( $self, $accessor, $domain, $data ) = @_;
+    return $self->param( $accessor => $data ) if Scalar::Util::blessed($data);
 
     my $converted_data = $self->_convert_data( $domain, $data );
     croak 'Data type is not Hash refference' if ref $converted_data ne 'HASH';
 
-    $self->param( $accessor => $self->factory($domain)->construct($converted_data) );
-    return $self;
+    return $self->param( $accessor => $self->factory($domain)->construct($converted_data) );
 }
 
 sub aggregate_domain_list {
@@ -243,6 +244,10 @@ the following new ones.
         # Value Object
         $self->aggregate( email => 'value-email', { value => 'a@example.org', ... } );
         $self->aggregate( email => 'value-email', 'a@example.org' );
+
+        # Object as arguments
+        $self->aggregate( user => 'entitiy-user',  Yetie::Domain::Entity::User->new );
+        $self->aggregate( email => 'value-email',  Yetie::Domain::Value::Email->new );
     }
 
 Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
