@@ -22,8 +22,6 @@ sub aggregate {
     return $self->param( $accessor => $data ) if Scalar::Util::blessed($data);
 
     my $converted_data = $self->_convert_data( $domain, $data );
-    croak 'Data type is not Hash refference' if ref $converted_data ne 'HASH';
-
     return $self->param( $accessor => $self->factory($domain)->construct($converted_data) );
 }
 
@@ -162,10 +160,10 @@ sub _convert_data {
     return $data if ref $data eq 'HASH';
 
     return { value => $data } if $domain =~ /^value/;
-    return { list => collection( @{$data} ) } if $domain =~ /^list/;
+    return { list => collection( @{ $data || [] } ) } if $domain =~ /^list/;
 
     # Not convert
-    return $data;
+    return $data || {};
 }
 
 sub _convert_param_to_list {
