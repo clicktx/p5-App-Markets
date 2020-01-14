@@ -104,6 +104,12 @@ subtest 'has not cook' => sub {
     $f = Yetie::Factory->new( 'entity-hoge', { hoge => 1 } );
     $entity = $f->construct( { fuga => 2 } );
     cmp_deeply { %{$entity} }, { _hash_sum => ignore(), hoge => 1, fuga => 2 }, 'right argument Hash reference';
+
+    my $v = Yetie::Domain::Value::Fuga->new();
+    $f = Yetie::Factory->new( 'entity-hoge', { hoge => $v } );
+    $entity = $f->construct( { fuga => $v } );
+    isa_ok $entity->hoge, 'Yetie::Domain::Value::Fuga', 'right argument object';
+    isa_ok $entity->fuga, 'Yetie::Domain::Value::Fuga', 'right argument object';
 };
 
 subtest 'has cook' => sub {
