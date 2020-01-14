@@ -3,6 +3,7 @@ use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 use Yetie::Schema::Result::SalesOrder;
+use Yetie::Schema::Result::SalesPrice;
 
 primary_column id => {
     data_type         => 'INT',
@@ -19,6 +20,12 @@ column order_id => {
 #     is_nullable => 0,
 # };
 
+# Unique column
+column price_id => {
+    data_type   => Yetie::Schema::Result::SalesPrice->column_info('id')->{data_type},
+    is_nullable => 0,
+};
+
 column tracking_number => {
     data_type   => 'VARCHAR',
     size        => 64,
@@ -33,6 +40,10 @@ column completed_at => {
 
 # Relation
 belongs_to
+  price => 'Yetie::Schema::Result::SalesPrice',
+  { 'foreign.id' => 'self.price_id' };
+
+belongs_to
   sales_order => 'Yetie::Schema::Result::SalesOrder',
   { 'foreign.id' => 'self.order_id' };
 
@@ -40,5 +51,16 @@ has_many
   shipment_items => 'Yetie::Schema::Result::ShipmentItem',
   { 'foreign.shipment_id' => 'self.id' },
   { cascade_delete        => 0 };
+
+# Index
+sub sqlt_deploy_hook {
+    my ( $self, $table ) = @_;
+
+    # alter index type
+    my @indices = $table->get_indices;
+    foreach my $index (@indices) {
+        $index->type('unique') if $index->name eq 'shipments_idx_price_id';
+    }
+}
 
 1;

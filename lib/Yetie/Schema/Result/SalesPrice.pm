@@ -42,6 +42,11 @@ might_have
   { 'foreign.price_id' => 'self.id' },
   { cascade_delete     => 0 };
 
+might_have
+  shipment => 'Yetie::Schema::Result::Shipment',
+  { 'foreign.price_id' => 'self.id' },
+  { cascade_delete     => 0 };
+
 # Methods
 sub to_data {
     my $self = shift;
