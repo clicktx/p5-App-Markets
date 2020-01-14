@@ -4,8 +4,8 @@ use Mojo::Base 'Yetie::Factory';
 sub cook {
     my $self = shift;
 
-    $self->aggregate( ancestors => 'list-category_trees', $self->param('ancestors') || [] );
-    $self->aggregate( children  => 'list-category_trees', $self->param('children')  || [] );
+    $self->aggregate( ancestors => 'list-category_trees' );
+    $self->aggregate( children  => 'list-category_trees' );
 }
 
 1;

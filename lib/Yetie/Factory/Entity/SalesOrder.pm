@@ -5,13 +5,13 @@ sub cook {
     my $self = shift;
 
     # Aggregate items
-    $self->aggregate( items => ( 'list-sales_items', $self->param('items') || [] ) );
+    $self->aggregate( items => 'list-sales_items' );
 
     # shipping_address
-    $self->aggregate( shipping_address => ( 'entity-address', $self->{shipping_address} || {} ) );
+    $self->aggregate( shipping_address => 'entity-address' );
 
     # Aggregate shippings
-    $self->aggregate( shipments => ( 'list-shipments', $self->param('shipments') || [] ) );
+    $self->aggregate( shipments => 'list-shipments' );
 }
 
 1;

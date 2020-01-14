@@ -5,7 +5,7 @@ sub cook {
     my $self = shift;
 
     # products
-    $self->aggregate( products => 'list-products', $self->param('products') || [] );
+    $self->aggregate( products => 'list-products' );
 }
 
 1;
