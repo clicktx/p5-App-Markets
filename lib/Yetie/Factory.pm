@@ -15,12 +15,12 @@ has domain_class => sub {
 };
 
 sub aggregate {
-    my ( $self, $accessor, $domain, $arg ) = @_;
+    my ( $self, $accessor, $domain, $data ) = @_;
 
-    my $data = $self->_convert_data( $domain, $arg );
-    croak 'Data type is not Hash refference' if ref $data ne 'HASH';
+    my $converted_data = $self->_convert_data( $domain, $data );
+    croak 'Data type is not Hash refference' if ref $converted_data ne 'HASH';
 
-    $self->param( $accessor => $self->factory($domain)->construct($data) );
+    $self->param( $accessor => $self->factory($domain)->construct($converted_data) );
     return $self;
 }
 
