@@ -30,7 +30,7 @@ sub get {
     return $checkout;
 }
 
-sub reset { return shift->_create }
+sub reset { return shift->_create_new }
 
 sub save {
     my $self = shift;
@@ -41,13 +41,23 @@ sub save {
     return $self->_update($checkout);
 }
 
-sub _create {
+sub _create_new {
     my $self = shift;
 
     my $checkout = $self->factory('entity-checkout')->construct();
-    $checkout->sales_orders->append_new('entity-sales_order');
-    $self->_update($checkout);
 
+    # Create Sales Order
+    my $sales_order = $checkout->sales_orders->append_new('entity-sales_order');
+
+    # Create Shipment
+    $sales_order->shipments->append_new(
+        'entity-shipment' => {
+            price    => $self->service('price')->create_object,
+            tax_rule => $self->service('tax')->get_rule,
+        }
+    );
+
+    $self->_update($checkout);
     $self->controller->stash( checkout => $checkout );
     return $checkout;
 }
@@ -56,7 +66,7 @@ sub _load {
     my $self = shift;
 
     my $data = $self->server_session->data('checkout');
-    return $self->_create if !$data;
+    return $self->_create_new if !$data;
 
     my $checkout = $self->factory('entity-checkout')->construct($data);
     $self->controller->stash( checkout => $checkout );
