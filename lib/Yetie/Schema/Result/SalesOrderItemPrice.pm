@@ -1,10 +1,17 @@
-package Yetie::Schema::Result::SalesPrice;
+package Yetie::Schema::Result::SalesOrderItemPrice;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
+
+use Yetie::Schema::Result::SalesOrderItem;
 
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
+};
+
+column item_id => {
+    data_type   => Yetie::Schema::Result::SalesOrderItem->column_info('id')->{data_type},
+    is_nullable => 0,
 };
 
 column value => {
@@ -37,15 +44,9 @@ inflate_column value => {
 };
 
 # Relation
-might_have
-  order_item => 'Yetie::Schema::Result::SalesOrderItem',
-  { 'foreign.price_id' => 'self.id' },
-  { cascade_delete     => 0 };
-
-might_have
-  shipment => 'Yetie::Schema::Result::Shipment',
-  { 'foreign.price_id' => 'self.id' },
-  { cascade_delete     => 0 };
+belongs_to
+  item => 'Yetie::Schema::Result::SalesOrderItem',
+  { 'foreign.id' => 'self.item_id' };
 
 # Methods
 sub to_data {
