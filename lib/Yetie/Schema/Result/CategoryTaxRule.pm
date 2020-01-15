@@ -5,8 +5,20 @@ use DBIx::Class::Candy -autotable => v1;
 use Yetie::Schema::Result::Category;
 use Yetie::Schema::Result::TaxRule;
 
-primary_column category_id => { data_type => Yetie::Schema::Result::Category->column_info('id')->{data_type} };
-primary_column tax_rule_id => { data_type => Yetie::Schema::Result::TaxRule->column_info('id')->{data_type} };
+primary_column id => {
+    data_type         => 'INT',
+    is_auto_increment => 1,
+};
+
+column category_id => {
+    data_type   => Yetie::Schema::Result::Category->column_info('id')->{data_type},
+    is_nullable => 0,
+};
+
+column tax_rule_id => {
+    data_type   => Yetie::Schema::Result::TaxRule->column_info('id')->{data_type},
+    is_nullable => 0,
+};
 
 column start_at => {
     data_type   => 'DATETIME',
