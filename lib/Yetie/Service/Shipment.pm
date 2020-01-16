@@ -1,4 +1,4 @@
-package Yetie::Service::Shipping;
+package Yetie::Service::Shipment;
 use Mojo::Base 'Yetie::Service';
 
 sub get_shipping_fee {
@@ -14,7 +14,7 @@ __END__
 
 =head1 NAME
 
-Yetie::Service::Shipping
+Yetie::Service::Shipment
 
 =head1 SYNOPSIS
 
@@ -22,12 +22,12 @@ Yetie::Service::Shipping
 
 =head1 ATTRIBUTES
 
-L<Yetie::Service::Shipping> inherits all attributes from L<Yetie::Service> and implements
+L<Yetie::Service::Shipment> inherits all attributes from L<Yetie::Service> and implements
 the following new ones.
 
 =head1 METHODS
 
-L<Yetie::Service::Shipping> inherits all methods from L<Yetie::Service> and implements
+L<Yetie::Service::Shipment> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
 =head2 C<get_shipping_fee>
