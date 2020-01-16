@@ -242,8 +242,8 @@
     ],
     'ShipmentPrice' => [
         [qw/id shipment_id value currency_code is_tax_included/],
-        [ 100, 33, 10, 'USD', 0 ],
-        [ 101, 34, 10, 'USD', 0 ],
+        [ 100, 33, 8, 'USD', 0 ],
+        [ 101, 34, 5, 'USD', 0 ],
         [ 102, 35, 10, 'USD', 0 ],
         [ 103, 36, 10, 'USD', 0 ],
         [ 104, 37, 10, 'USD', 0 ],
