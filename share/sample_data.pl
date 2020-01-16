@@ -225,7 +225,7 @@
         [ 95, 1005, 101, 'USD', 0 ],
         [ 96, 1006, 200, 'USD', 0 ],
     ],
-    'Shipment' => [
+    'SalesOrderShipment' => [
         [qw/id order_id tax_rule_id tracking_number completed_at/],
         [ 33, 1, 3, 'S111222333444', '2017-06-07 17:13:20' ],  # Ship partial, 2/3
         [ 34, 2, 3, 'S222333444555', '2017-07-08 15:10:35' ],  # Shipped all items
@@ -240,7 +240,7 @@
         [ 43, 11, 3, undef, undef ],
         [ 44, 12, 3, undef, undef ],
     ],
-    'ShipmentPrice' => [
+    'SalesOrderShipmentPrice' => [
         [qw/id shipment_id value currency_code is_tax_included/],
         [ 100, 33, 8, 'USD', 0 ],
         [ 101, 34, 5, 'USD', 0 ],
@@ -255,7 +255,7 @@
         [ 110, 43, 10, 'USD', 0 ],
         [ 111, 44, 10, 'USD', 0 ],
     ],
-    'ShipmentItem' => [
+    'SalesOrderShipmentItem' => [
         [qw/shipment_id order_item_id quantity/],
         [ 33, 1001, 2 ],    # Ship partial, 2/3
         [ 33, 1002, 1 ],

@@ -1,8 +1,8 @@
-package Yetie::Schema::Result::ShipmentItem;
+package Yetie::Schema::Result::SalesOrderShipmentItem;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-use Yetie::Schema::Result::Shipment;
+use Yetie::Schema::Result::SalesOrderShipment;
 use Yetie::Schema::Result::SalesOrderItem;
 
 primary_column id => {
@@ -11,7 +11,7 @@ primary_column id => {
 };
 
 column shipment_id => {
-    data_type   => Yetie::Schema::Result::Shipment->column_info('id')->{data_type},
+    data_type   => Yetie::Schema::Result::SalesOrderShipment->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
@@ -24,7 +24,7 @@ column quantity => Yetie::Schema::Result::SalesOrderItem->column_info('quantity'
 
 # Relation
 belongs_to
-  shipment => 'Yetie::Schema::Result::Shipment',
+  shipment => 'Yetie::Schema::Result::SalesOrderShipment',
   { 'foreign.id' => 'self.shipment_id' };
 
 belongs_to

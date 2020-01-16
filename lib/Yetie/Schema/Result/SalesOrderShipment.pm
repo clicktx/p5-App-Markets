@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::Shipment;
+package Yetie::Schema::Result::SalesOrderShipment;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -47,17 +47,17 @@ belongs_to
   { 'foreign.id' => 'self.tax_rule_id' };
 
 has_one
-  price => 'Yetie::Schema::Result::ShipmentPrice',
+  price => 'Yetie::Schema::Result::SalesOrderShipmentPrice',
   { 'foreign.shipment_id' => 'self.id' },
   { cascade_delete    => 0 };
 
 has_many
-  prices => 'Yetie::Schema::Result::ShipmentPrice',
+  prices => 'Yetie::Schema::Result::SalesOrderShipmentPrice',
   { 'foreign.shipment_id' => 'self.id' },
   { cascade_delete    => 0 };
 
 has_many
-  shipment_items => 'Yetie::Schema::Result::ShipmentItem',
+  shipment_items => 'Yetie::Schema::Result::SalesOrderShipmentItem',
   { 'foreign.shipment_id' => 'self.id' },
   { cascade_delete        => 0 };
 
