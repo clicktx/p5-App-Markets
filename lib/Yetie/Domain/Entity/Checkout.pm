@@ -29,6 +29,17 @@ has transaction => (
     default => sub { shift->factory('entity-transaction')->construct() },
 );
 
+override 'to_order_data' => sub {
+    my $self = shift;
+
+    my $data = super();
+
+    # Transaction
+    if ( !$self->transaction->id ) { delete $data->{transaction} }
+
+    return $data;
+};
+
 # NOTE: not use
 # sub add_shipment_item {
 #     my $self = shift;
@@ -69,30 +80,6 @@ sub set_shipping_address {
         $sales_order->set_shipping_address($address);
     }
     return $self;
-}
-
-sub to_order_data {
-    my $self = shift;
-    my $data = $self->to_data;
-
-    # Transaction
-    if ( !$self->transaction->id ) {
-        delete $data->{transaction};
-    }
-
-    # Remove unnecessary data
-    # for (qw/is_confirmed/) { delete $data->{$_} }
-
-    # Billing Address
-    $data->{billing_address} = { id => $data->{billing_address}->{id} };
-
-    # Payment Method
-    $data->{payment_method} = { id => $data->{payment_method}->{id} };
-
-    # Override Sales Orders
-    $data->{sales_orders} = $self->sales_orders->to_order_data();
-
-    return $data;
 }
 
 no Moose;
@@ -184,18 +171,14 @@ See L<Yetie::Domain::List::SalesOrders/revert>.
 
 =head2 C<set_shipping_address>
 
-    # Update first element
+    # Set first element
     $checkout->set_shipping_address( $address_obj );
 
-    # Update multiple elements
+    # Set multiple elements
     $checkout->set_shipping_address( 1 => $address_obj, 3 => $address_obj, ... );
     $checkout->set_shipping_address( [ $address_obj, $address_obj, ... ] );
 
-Update shipping address.
-
-=head2 C<to_order_data>
-
-    my $order_data = $checkout->to_order_data;
+Set shipping address.
 
 =head1 AUTHOR
 

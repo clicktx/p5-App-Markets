@@ -22,11 +22,21 @@ column tax_rate => {
 # Relation
 has_many
   category_tax_rules => 'Yetie::Schema::Result::CategoryTaxRule',
-  { 'foreign.category_id' => 'self.id' },
+  { 'foreign.tax_rule_id' => 'self.id' },
   { cascade_delete        => 0 };
 
 has_many
-  sales_order_item => 'Yetie::Schema::Result::SalesOrderItem',
+  common_tax_rules => 'Yetie::Schema::Result::CommonTaxRule',
+  { 'foreign.tax_rule_id' => 'self.id' },
+  { cascade_delete        => 0 };
+
+has_many
+  sales_order_items => 'Yetie::Schema::Result::SalesOrderItem',
+  { 'foreign.tax_rule_id' => 'self.id' },
+  { cascade_delete        => 0 };
+
+has_many
+  shipments => 'Yetie::Schema::Result::SalesOrderShipment',
   { 'foreign.tax_rule_id' => 'self.id' },
   { cascade_delete        => 0 };
 

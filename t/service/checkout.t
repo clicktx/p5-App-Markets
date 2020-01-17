@@ -104,6 +104,7 @@ sub create {
     isa_ok $checkout, 'Yetie::Domain::Entity::Checkout';
     is $checkout->sales_orders->size, 1, 'right new element in sales orders';
     isa_ok $checkout->sales_orders->first, 'Yetie::Domain::Entity::SalesOrder';
+    isa_ok $checkout->sales_orders->first->shipments->first, 'Yetie::Domain::Entity::Shipment';
     ok $c->server_session->data('checkout'), 'right create';
     ok $c->stash('checkout'), 'right stash';
 

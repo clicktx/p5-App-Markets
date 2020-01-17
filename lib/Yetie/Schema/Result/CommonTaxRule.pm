@@ -11,7 +11,7 @@ primary_column id => {
 
 column tax_rule_id => {
     data_type   => Yetie::Schema::Result::TaxRule->column_info('id')->{data_type},
-    is_nullable => 1,
+    is_nullable => 0,
 };
 
 column start_at => {

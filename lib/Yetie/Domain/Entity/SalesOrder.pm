@@ -16,10 +16,10 @@ has shipping_address => (
     default => sub { shift->factory('entity-address')->construct() },
     writer  => 'set_shipping_address',
 );
-has shippings => (
+has shipments => (
     is      => 'ro',
-    isa     => 'Yetie::Domain::List::Shippings',
-    default => sub { shift->factory('list-shippings')->construct() },
+    isa     => 'Yetie::Domain::List::Shipments',
+    default => sub { shift->factory('list-shipments')->construct() },
 );
 
 sub count_items { return shift->items->size }
@@ -42,17 +42,6 @@ sub subtotal_incl_tax {
 
     my $subtotal = $items_total;
     return $subtotal;
-}
-
-sub to_order_data {
-    my $self = shift;
-    return {
-        id               => $self->id,
-        items            => $self->items->to_order_data,
-        shipping_address => { id => $self->shipping_address->id },
-
-        # shippings => $self->shippings->to_order_data,
-    };
 }
 
 sub _init_price {
@@ -108,10 +97,6 @@ the following new ones.
 =head2 C<subtotal_incl_tax>
 
     my $subtotal_incl_tax = $sales_order->subtotal_incl_tax;
-
-=head2 C<to_order_data>
-
-    my $order_data = $sales_order->to_order_data();
 
 =head1 AUTHOR
 

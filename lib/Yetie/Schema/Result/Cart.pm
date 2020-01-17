@@ -26,7 +26,7 @@ column updated_at => {
 
 # Relation
 has_many
-  session => 'Yetie::Schema::Result::Session',
+  sessions => 'Yetie::Schema::Result::Session',
   'cart_id',
   { cascade_delete => 1 };
 

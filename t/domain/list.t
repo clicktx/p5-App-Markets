@@ -24,6 +24,19 @@ subtest 'append' => sub {
     is $l->is_modified, 1, 'right modified';
 };
 
+subtest 'append_new' => sub {
+    my $l = construct();
+    my $obj = $l->append_new( 'entity' => { id => 222 } );
+    is $l->size, 1, 'right create sales_order';
+    isa_ok $obj, 'Yetie::Domain::Entity';
+    isa_ok $l->first, 'Yetie::Domain::Entity';
+    is $l->first->id, 222, 'right construct with arguments';
+
+    my $obj2 = $l->append_new('entity');
+    is $l->size, 2, 'right recreate sales_order';
+    isnt $obj, $obj2, 'right compare object';
+};
+
 subtest 'clear' => sub {
     my $l = construct( 1, 2, 3 );
     $l->clear;

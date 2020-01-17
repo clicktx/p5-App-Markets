@@ -5,14 +5,14 @@ sub cook {
     my $self = shift;
 
     # product_categories
-    $self->aggregate( product_categories => 'list-product_categories', $self->param('product_categories') || [] );
+    $self->aggregate( product_categories => 'list-product_categories' );
 
     # price
-    $self->aggregate( price => 'value-price', $self->{price} );
+    $self->aggregate( price => 'value-price' );
 
     # tax
     if ( $self->param('tax_rule') ) {
-        $self->aggregate( tax_rule => 'entity-tax_rule', $self->param('tax_rule') );
+        $self->aggregate( tax_rule => 'entity-tax_rule' );
     }
 
 }

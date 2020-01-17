@@ -13,15 +13,6 @@ sub count_total_items {
     return shift->map( sub { $_->items->each } )->size;
 }
 
-sub create_sales_order {
-    my $self = shift;
-    my $args = args2hash(@_);
-
-    my $sales_order = $self->factory('entity-sales_order')->construct($args);
-    $self->append($sales_order);
-    return $sales_order;
-}
-
 sub has_item { return shift->count_total_items ? 1 : 0 }
 
 sub is_multiple { return shift->size > 1 ? 1 : 0 }
@@ -64,10 +55,6 @@ sub subtotal_incl_tax {
 #     my $price = $self->_init_price_object( is_tax_included => 1 );
 #     return $self->reduce( sub { $a + $b->shipping_fee_incl_tax }, $price );
 # }
-
-sub to_order_data {
-    return shift->reduce( sub { [ @{$a}, $b->to_order_data ], }, [] );
-}
 
 sub total_quantity {
     return shift->reduce( sub { $a + $b->items->total_quantity }, 0 );
@@ -119,16 +106,6 @@ the following new ones.
 
     my $count = $sales_orders->count_total_items;
 
-=head2 C<create_sales_order>
-
-    my $sales_order = $sales_orders->create_sales_order( %attributes );
-
-    my $sales_order = $sales_orders->create_sales_order( \%attributes );
-
-Create L<Yetie::Domain::Entity::SalesOder> object and add it to the collection.
-
-Return L<Yetie::Domain::Entity::SalesOder> object.
-
 =head2 C<has_item>
 
     my $bool = $sales_orders->has_item;
@@ -154,10 +131,6 @@ Delete except the first element. Also delete all items of the first element.
 =head2 C<subtotal_incl_tax>
 
     my $subtotal_incl_tax = $items->subtotal_incl_tax;
-
-=head2 C<to_order_data>
-
-    my $order_data = $sales_orders->to_order_data();
 
 =head2 C<total_quantity>
 

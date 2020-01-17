@@ -23,7 +23,7 @@ subtest 'basic' => sub {
 
     isa_ok $sales_order->items,            'Yetie::Domain::List::SalesItems';
     isa_ok $sales_order->shipping_address, 'Yetie::Domain::Entity::Address';
-    isa_ok $sales_order->shippings,        'Yetie::Domain::List::Shippings';
+    isa_ok $sales_order->shipments,        'Yetie::Domain::List::Shipments';
     is $sales_order->id,                   1, 'right id';
 };
 

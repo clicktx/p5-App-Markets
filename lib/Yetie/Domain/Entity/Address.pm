@@ -65,6 +65,11 @@ has _locale_notation => (
     }
 );
 
+override 'to_order_data' => sub {
+    my $self = shift;
+    return { id => $self->id };
+};
+
 sub empty_hash_code { return shift->hash_code('empty') }
 
 sub equals {

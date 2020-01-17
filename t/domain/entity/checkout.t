@@ -29,7 +29,13 @@ my %example_data = (
                     price         => { value => 100, currency_code => 'USD', is_tax_included => 0 },
                     tax_rule => { id => 2, tax_rate => 5 },
                 },
-            ]
+            ],
+            shipments => [
+                {
+                    price    => { value => 10, currency_code => 'USD', is_tax_included => 0 },
+                    tax_rule => { id    => 2,  tax_rate      => 5 },
+                },
+            ],
         },
         {
             shipping_address => {
@@ -119,7 +125,7 @@ subtest 'has_shipping_address' => sub {
     my $checkout = Yetie::Factory->new('entity-checkout')->construct();
     is $checkout->has_shipping_address, 0, 'right has not shipping address';
 
-    $checkout->sales_orders->create_sales_order;
+    $checkout->sales_orders->append_new('entity-sales_order');
     is $checkout->has_shipping_address, 0, 'right no address info';
 
     $checkout = _create_entity;
@@ -181,7 +187,7 @@ subtest 'set_shipping_address' => sub {
     my $checkout = _create_entity;
     dies_ok { $checkout->set_shipping_address() } 'right not arguments';
 
-    $checkout->sales_orders->create_sales_order;
+    $checkout->sales_orders->append_new('entity-sales_order');
     my $obj           = $checkout->factory('entity-address')->construct(%address);
     my $shipping_addr = $checkout->sales_orders->get(1)->shipping_address->to_data;
 
@@ -205,7 +211,7 @@ subtest 'set_shipping_address' => sub {
 
     # first set(create and set)
     $checkout = Yetie::Factory->new('entity-checkout')->construct();
-    $checkout->sales_orders->create_sales_order;
+    $checkout->sales_orders->append_new('entity-sales_order');
     $checkout->set_shipping_address($obj);
     cmp_deeply $checkout->sales_orders->get(0)->shipping_address->to_data, $valid_data,
       'right create sales order and set shipping_address';
@@ -224,7 +230,6 @@ subtest 'to_order_data' => sub {
         payment_method  => ignore(),
         sales_orders    => [
             {
-                id    => ignore(),
                 items => [
                     {
                         price => {
@@ -232,24 +237,28 @@ subtest 'to_order_data' => sub {
                             is_tax_included => 0,
                             value           => 100,
                         },
-                        tax_rule_id   => 2,
+                        tax_rule      => { id => 2 },
                         product_id    => 1,
                         product_title => "a",
                         quantity      => 1,
                     },
                 ],
                 shipping_address => { id => 33 },
-
-                # shippings        => ignore(),
+                shipments        => [
+                    {
+                        price    => ignore(),
+                        tax_rule => ignore(),
+                    },
+                ],
             },
             {
-                id               => ignore(),
                 items            => ignore(),
                 shipping_address => ignore(),
-
-                # shippings        => ignore(),
+                shipments        => ignore(),
             }
         ],
+
+        # transaction => ignore(),
       },
       'right dump order data';
 };

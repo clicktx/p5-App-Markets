@@ -9,12 +9,12 @@ my $app = $t->app;
 
 sub _init {
     my $c = $app->build_controller;
-    return ( $c, $c->service('shipping') );
+    return ( $c, $c->service('shipment') );
 }
 
 ok 1;
 
-use_ok 'Yetie::Service::Shipping';
+use_ok 'Yetie::Service::Shipment';
 
 subtest 'get_shipping_fee' => sub {
     my ( $c, $s ) = _init();

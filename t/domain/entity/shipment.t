@@ -2,15 +2,15 @@ use Mojo::Base -strict;
 use Test::More;
 use Yetie::Factory;
 
-use_ok 'Yetie::Domain::Entity::Shipping';
+use_ok 'Yetie::Domain::Entity::Shipment';
 
 sub factory {
-    return Yetie::Factory->new('entity-shipping')->construct(@_);
+    return Yetie::Factory->new('entity-shipment')->construct(@_);
 }
 
 subtest 'basic' => sub {
     my $ship = factory(
-        fee => {
+        price => {
             value         => 100,
             currency_code => 'USD',
             round_mode    => 'even',
@@ -21,7 +21,7 @@ subtest 'basic' => sub {
         },
     );
 
-    isa_ok $ship->fee,      'Yetie::Domain::Value::Price';
+    isa_ok $ship->price,    'Yetie::Domain::Value::Price';
     isa_ok $ship->tax_rule, 'Yetie::Domain::Entity::TaxRule';
 };
 

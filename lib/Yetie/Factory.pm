@@ -3,6 +3,7 @@ use Mojo::Base -base;
 use Carp 'croak';
 use Mojo::Util   ();
 use Mojo::Loader ();
+use Scalar::Util ();
 use Yetie::Util  ();
 use Yetie::Domain::Collection qw/collection/;
 use Yetie::Domain::IxHash qw/ixhash/;
@@ -15,13 +16,13 @@ has domain_class => sub {
 };
 
 sub aggregate {
-    my ( $self, $accessor, $domain, $arg ) = @_;
+    my ( $self, $accessor, $domain, $data ) = @_;
 
-    my $data = $self->_convert_data( $domain, $arg );
-    croak 'Data type is not Hash refference' if ref $data ne 'HASH';
+    if ( !$data ) { $data = $self->param($accessor) }
+    return $self->param( $accessor => $data ) if Scalar::Util::blessed($data);
 
-    $self->param( $accessor => $self->factory($domain)->construct($data) );
-    return $self;
+    my $converted_data = $self->_convert_data( $domain, $data );
+    return $self->param( $accessor => $self->factory($domain)->construct($converted_data) );
 }
 
 sub aggregate_domain_list {
@@ -159,10 +160,10 @@ sub _convert_data {
     return $data if ref $data eq 'HASH';
 
     return { value => $data } if $domain =~ /^value/;
-    return { list => collection( @{$data} ) } if $domain =~ /^list/;
+    return { list => collection( @{ $data || [] } ) } if $domain =~ /^list/;
 
     # Not convert
-    return $data;
+    return $data || {};
 }
 
 sub _convert_param_to_list {
@@ -243,9 +244,26 @@ the following new ones.
         # Value Object
         $self->aggregate( email => 'value-email', { value => 'a@example.org', ... } );
         $self->aggregate( email => 'value-email', 'a@example.org' );
+
+        # Object as arguments
+        $self->aggregate( user => 'entitiy-user',  Yetie::Domain::Entity::User->new );
+        $self->aggregate( email => 'value-email',  Yetie::Domain::Value::Email->new );
     }
 
 Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
+
+    sub cook {
+        my $self = shift;
+
+        $self->aggregate( user => 'entity-user' );
+        $self->aggregate( email => 'value-email' );
+
+        # Longer version
+        $self->aggregate( user => 'entity-user', $self->param('user') );
+        $self->aggregate( email => 'value-email', $self->param('email') );
+    }
+
+If third argument is omitted, the value of C<param($attribure_name)> will be used.
 
 =head2 C<aggregate_domain_list>
 
