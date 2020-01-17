@@ -263,7 +263,7 @@ Create L<Yetie::Domain::Entity>, or L<Yetie::Domain::Value> type aggregate.
         $self->aggregate( email => 'value-email', $self->param('email') );
     }
 
-If third argument is omited, the value of C<param($attribure_name)> will be used.
+If third argument is omitted, the value of C<param($attribure_name)> will be used.
 
 =head2 C<aggregate_domain_list>
 
