@@ -52,7 +52,7 @@ sub _create_new {
     # Create Shipment
     $sales_order->shipments->append_new(
         'entity-shipment' => {
-            price    => $self->service('price')->create_object,
+            price    => $self->service('price')->create_new,
             tax_rule => $self->service('tax')->get_rule,
         }
     );

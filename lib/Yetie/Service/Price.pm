@@ -1,7 +1,7 @@
 package Yetie::Service::Price;
 use Mojo::Base 'Yetie::Service';
 
-sub create_object {
+sub create_new {
     my ( $self, $value ) = ( shift, shift // 0 );
 
     my $attrs = {
@@ -33,9 +33,9 @@ the following new ones.
 L<Yetie::Service::Price> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
 
-=head2 C<create_object>
+=head2 C<create_new>
 
-    my $price = $service->create_object($value);
+    my $price = $service->create_new($value);
 
 Return L<Yetie::Domain::Value::Price> object.
 

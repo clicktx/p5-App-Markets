@@ -14,15 +14,15 @@ sub _init {
 
 use_ok 'Yetie::Service::Price';
 
-subtest 'create_object' => sub {
+subtest 'create_new' => sub {
     my ( $c, $s ) = _init();
 
-    my $p = $s->create_object;
+    my $p = $s->create_new;
     is $p->value,           0,     'right default';
     is $p->currency_code,   'USD', 'right default currency code';
     is $p->is_tax_included, 0,     'right default tax including';
 
-    $p = $s->create_object(101);
+    $p = $s->create_new(101);
     is $p->value, 101, 'right value';
 };
 
