@@ -20,13 +20,13 @@ column created_at => {
 };
 
 # Relation
-has_many
-  customers => 'Yetie::Schema::Result::CustomerPassword',
+might_have
+  customer => 'Yetie::Schema::Result::CustomerPassword',
   { 'foreign.password_id' => 'self.id' },
   { cascade_delete        => 0 };
 
-has_many
-  staffs => 'Yetie::Schema::Result::StaffPassword',
+might_have
+  staff => 'Yetie::Schema::Result::StaffPassword',
   { 'foreign.password_id' => 'self.id' },
   { cascade_delete        => 0 };
 
