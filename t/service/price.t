@@ -22,10 +22,10 @@ subtest 'create_new' => sub {
     is $p->currency_code,   'USD', 'right default currency code';
     is $p->is_tax_included, 0,     'right default tax including';
 
-    $p = $s->create_new(101);
+    $p = $s->create_new( value => 101 );
     is $p->value, 101, 'right value';
 
-    $p = $s->create_new( 105, { currency_code => 'JPY', is_tax_included => 1 } );
+    $p = $s->create_new( { value => 105, currency_code => 'JPY', is_tax_included => 1 } );
     is $p->value,           105,   'right value';
     is $p->currency_code,   'JPY', 'right option currency code';
     is $p->is_tax_included, 1,     'right option tax including';

@@ -3,9 +3,10 @@ use Mojo::Base 'Yetie::Service';
 use Yetie::Util qw(args2hash);
 
 sub create_new {
-    my ( $self, $value ) = ( shift, shift // 0 );
-    my $option = args2hash(@_);
+    my ( $self, @args ) = @_;
+    my $option = args2hash(@args);
 
+    my $value           = $option->{value}           || 0;
     my $currency_code   = $option->{currency_code}   || $self->pref('locale_currency_code');
     my $is_tax_included = $option->{is_tax_included} || $self->pref('is_price_including_tax');
 
@@ -39,13 +40,17 @@ the following new ones.
 
 =head2 C<create_new>
 
-    my $price = $service->create_new($value);
+    my $price = $service->create_new;
 
-    my $price = $service->create_new( $value, %options || \%options );
+    my $price = $service->create_new( %options || \%options );
 
 =over
 
 =item OPTIONS
+
+B<value>
+
+Decimal value. Default: 0
 
 B<currency_code>
 
