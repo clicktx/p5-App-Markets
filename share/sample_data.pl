@@ -87,6 +87,27 @@
         [ 18, 6, '2014-04-01 00:00:00' ],
     ],
 
+    # Price
+    'Price' => [
+        [qw/id value currency_code is_tax_included/],
+        [ 900, 10, 'USD', 0 ],
+        [ 901, 20, 'USD', 0 ],
+        [ 902, 30, 'USD', 0 ],
+    ],
+
+    # Shipping Fee
+    'ShippingFee' => [
+        [qw/id/],
+        [ 500 ],
+        [ 501 ],
+        [ 502 ],
+    ],
+    'ShippingFeePrice' => [
+        [qw/id shipping_fee_id price_id/],
+        [ 10, 500, 900 ],
+        [ 11, 500, 901 ],
+    ],
+
     # For Accounts
     'Email' => [
         [qw/id address is_verified/],
