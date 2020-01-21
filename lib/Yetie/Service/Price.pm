@@ -1,15 +1,19 @@
 package Yetie::Service::Price;
 use Mojo::Base 'Yetie::Service';
+use Yetie::Util qw(args2hash);
 
 sub create_new {
     my ( $self, $value ) = ( shift, shift // 0 );
+    my $option = args2hash(@_);
 
-    my $attrs = {
+    my $currency_code   = $option->{currency_code}   || $self->pref('locale_currency_code');
+    my $is_tax_included = $option->{is_tax_included} || $self->pref('is_price_including_tax');
+
+    return $self->factory('value-price')->construct(
         value           => $value,
-        currency_code   => $self->pref('locale_currency_code'),
-        is_tax_included => $self->pref('is_price_including_tax'),
-    };
-    return $self->factory('value-price')->construct($attrs);
+        currency_code   => $currency_code,
+        is_tax_included => $is_tax_included,
+    );
 }
 
 1;
@@ -36,6 +40,22 @@ the following new ones.
 =head2 C<create_new>
 
     my $price = $service->create_new($value);
+
+    my $price = $service->create_new( $value, %options || \%options );
+
+=over
+
+=item OPTIONS
+
+B<currency_code>
+
+String value. Default: application preference C<locale_currency_code>
+
+B<is_tax_included>
+
+Boolean value. Default: application preference C<is_price_including_tax>
+
+=back
 
 Return L<Yetie::Domain::Value::Price> object.
 
