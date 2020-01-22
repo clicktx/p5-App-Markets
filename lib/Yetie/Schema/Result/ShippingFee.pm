@@ -2,9 +2,16 @@ package Yetie::Schema::Result::ShippingFee;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
+use Yetie::Schema::Result::ShippingCarrierServiceZone;
+
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
+};
+
+column zone_id => {
+    data_type   => Yetie::Schema::Result::ShippingCarrierServiceZone->column_info('id')->{data_type},
+    is_nullable => 0,
 };
 
 # column created_at => {
@@ -20,6 +27,10 @@ primary_column id => {
 # };
 
 # Relation
+belongs_to
+  zone => 'Yetie::Schema::Result::ShippingCarrierServiceZone',
+  { 'foreign.id' => 'self.zone_id' };
+
 has_many
   prices => 'Yetie::Schema::Result::ShippingFeePrice',
   { 'foreign.shipping_fee_id' => 'self.id' },

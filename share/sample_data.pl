@@ -87,6 +87,30 @@
         [ 18, 6, '2014-04-01 00:00:00' ],
     ],
 
+    # Shipping Carrier
+    'ShippingCarrier' => [
+        [qw/id name/],
+        [ 300, 'FedEx' ],
+        [ 301, 'UPS' ],
+        [ 302, 'DHL' ],
+    ],
+
+    # Shipping Carrier
+    'ShippingCarrierService' => [
+        [qw/id carrier_id name/],
+        [ 400, 300, 'FedEx Ground' ],
+        [ 401, 300, 'FedEx Express Saver' ],
+        [ 402, 300, 'FedEx 2Day' ],
+    ],
+
+    # Shipping Carrier
+    'ShippingCarrierServiceZone' => [
+        [qw/id service_id name/],
+        [ 500, 400, 'Houston' ],
+        [ 501, 400, 'New York City' ],
+        [ 502, 400, 'San Francisco' ],
+    ],
+
     # Price
     'Price' => [
         [qw/id value currency_code is_tax_included/],
@@ -97,15 +121,15 @@
 
     # Shipping Fee
     'ShippingFee' => [
-        [qw/id/],
-        [ 500 ],
-        [ 501 ],
-        [ 502 ],
+        [qw/id zone_id/],
+        [ 600, 500 ],
+        [ 601, 500 ],
+        [ 602, 500 ],
     ],
     'ShippingFeePrice' => [
         [qw/id shipping_fee_id price_id/],
-        [ 10, 500, 900 ],
-        [ 11, 500, 901 ],
+        [ 10, 600, 900 ],
+        [ 11, 600, 901 ],
     ],
 
     # For Accounts
