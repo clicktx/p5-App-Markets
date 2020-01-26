@@ -47,14 +47,15 @@ belongs_to
   { 'foreign.id' => 'self.tax_rule_id' };
 
 has_one
-  price => 'Yetie::Schema::Result::SalesOrderShipmentPrice',
+  shipment_price => 'Yetie::Schema::Result::SalesOrderShipmentPrice',
   { 'foreign.shipment_id' => 'self.id' },
-  { cascade_delete    => 0 };
+  { cascade_delete        => 0 };
 
-has_many
-  prices => 'Yetie::Schema::Result::SalesOrderShipmentPrice',
-  { 'foreign.shipment_id' => 'self.id' },
-  { cascade_delete    => 0 };
+# has_many
+#   shipment_prices => 'Yetie::Schema::Result::SalesOrderShipmentPrice',
+#   { 'foreign.shipment_id' => 'self.id' },
+#   { cascade_delete    => 0 };
+#  Book->has_many('pages' => 'Page', 'book', { order_by => \'page_number DESC'} );
 
 has_many
   shipment_items => 'Yetie::Schema::Result::SalesOrderShipmentItem',
