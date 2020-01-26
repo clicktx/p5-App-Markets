@@ -227,6 +227,15 @@
     ],
 
     # Orders
+    'SalesPrice' => [
+        [qw/id value currency_code is_tax_included/],
+        [ 91, 300, 'USD', 0 ],
+        [ 92, 101, 'USD', 0 ],
+        [ 93, 200, 'USD', 0 ],
+        [ 94, 333, 'USD', 0 ],
+        [ 95, 101, 'USD', 0 ],
+        [ 96, 200, 'USD', 0 ],
+    ],
     'Sales' => [
         [qw/id token customer_id billing_address_id payment_method_id created_at updated_at/],
         [ 1, 'aaa', 111, 1, 1, '2017-06-06 20:01:35', '2017-06-06 20:01:35' ],
@@ -262,13 +271,13 @@
         [ 1006, 12, 2, 5, 'product 2', 4 ], # trashed on test
     ],
     'SalesOrderItemPrice' => [
-        [qw/id item_id value currency_code is_tax_included/],
-        [ 91, 1001, 300, 'USD', 0 ],
-        [ 92, 1002, 101, 'USD', 0 ],
-        [ 93, 1003, 200, 'USD', 0 ],
-        [ 94, 1004, 333, 'USD', 0 ],
-        [ 95, 1005, 101, 'USD', 0 ],
-        [ 96, 1006, 200, 'USD', 0 ],
+        [qw/price_id item_id /],
+        [ 91, 1001 ],
+        [ 92, 1002 ],
+        [ 93, 1003 ],
+        [ 94, 1004 ],
+        [ 95, 1005 ],
+        [ 96, 1006 ],
     ],
     'SalesOrderShipment' => [
         [qw/id order_id tax_rule_id tracking_number completed_at/],

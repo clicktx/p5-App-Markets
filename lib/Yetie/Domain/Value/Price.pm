@@ -37,11 +37,26 @@ has currency_code => (
     isa     => 'CurrencyCode',
     default => 'USD',
 );
+has id => (
+    is      => 'ro',
+    default => undef,
+);
 has is_tax_included => (
     is      => 'ro',
     isa     => 'Bool',
     default => 0,
 );
+
+override to_data => sub {
+    my $self = shift;
+
+    return {
+        id              => $self->id,
+        value           => $self->value,
+        currency_code   => $self->currency_code,
+        is_tax_included => $self->is_tax_included,
+    };
+};
 
 sub add {
     my $self = shift;
@@ -139,16 +154,6 @@ sub subtract {
     return $self->clone( value => $self->amount->copy->bsub($num)->as_float );
 }
 
-sub to_data {
-    my $self = shift;
-
-    return {
-        value           => $self->value,
-        currency_code   => $self->currency_code,
-        is_tax_included => $self->is_tax_included,
-    };
-}
-
 sub _validate {
     my ( $self, $arg ) = @_;
     return if !ref $arg;
@@ -224,6 +229,8 @@ PositiveNum only.
 Return boolean value.
 
 Default false.
+
+=head2 C<id>
 
 =head2 C<round_mode>
 
