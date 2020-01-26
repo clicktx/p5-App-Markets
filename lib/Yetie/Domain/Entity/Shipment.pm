@@ -9,6 +9,7 @@ override 'to_order_data' => sub {
 
     my $data = super();
     delete $data->{$_} for qw(quantity);
+    $data->{shipment_price} = { price => delete $data->{price} };
 
     return $data;
 };
