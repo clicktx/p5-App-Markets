@@ -4,7 +4,7 @@ use Mojo::Base 'Yetie::Schema::ResultSet';
 my $prefetch = [
     'shipping_address',
     {
-        items => [ 'price', 'tax_rule' ],
+        items => [ { sales_price => 'price' }, 'tax_rule' ],
     },
     {
         sales => [ 'customer', 'billing_address' ],

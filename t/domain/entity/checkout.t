@@ -232,10 +232,13 @@ subtest 'to_order_data' => sub {
             {
                 items => [
                     {
-                        price => {
-                            currency_code   => "USD",
-                            is_tax_included => 0,
-                            value           => 100,
+                        sales_price => {
+                            price => {
+                                id              => undef,
+                                currency_code   => "USD",
+                                is_tax_included => 0,
+                                value           => 100,
+                            }
                         },
                         tax_rule      => { id => 2 },
                         product_id    => 1,

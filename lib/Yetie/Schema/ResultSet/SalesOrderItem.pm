@@ -8,18 +8,24 @@ sub store_item {
     my $item = $self->find(
         $id,
         {
-            prefetch => [ 'price', 'tax_rule' ],
+            prefetch => [ { sales_price => 'price' }, 'tax_rule' ],
         }
     );
 
-    # Insert
-    return $self->create($data) if !$item;
-
     # Update
-    my $price_data = delete $data->{price};
-    $item->price->update($price_data);
-    $item->update($data);
-    return;
+    return $self->_update( $item, $data ) if $item;
+
+    # Insert
+    return $self->create($data);
+}
+
+sub _update {
+    my ( $self, $item, $data ) = @_;
+
+    # price
+    my $sales_price_data = delete $data->{sales_price};
+    $item->sales_price->price->update( $sales_price_data->{price} );
+    return $item->update($data);
 }
 
 1;

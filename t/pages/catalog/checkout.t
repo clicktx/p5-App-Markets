@@ -181,7 +181,7 @@ sub test_50_stored_data : Tests() {
     is $last_order->product_id,    1, 'right stored product_id';
     is $last_order->product_title, 'foo', 'right stored product_id';
     is $last_order->quantity,      1, 'right stored quantity';
-    ok $last_order->price->value == 100, 'right stored price';
+    ok $last_order->sales_price->price->value == 100, 'right stored price';
 }
 
 __PACKAGE__->runtests;

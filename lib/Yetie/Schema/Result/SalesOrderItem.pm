@@ -53,14 +53,15 @@ belongs_to
   { 'foreign.id' => 'self.tax_rule_id' };
 
 has_one
-  price => 'Yetie::Schema::Result::SalesOrderItemPrice',
+  sales_price => 'Yetie::Schema::Result::SalesOrderItemPrice',
   { 'foreign.item_id' => 'self.id' },
   { cascade_delete    => 0 };
 
-has_many
-  prices => 'Yetie::Schema::Result::SalesOrderItemPrice',
-  { 'foreign.item_id' => 'self.id' },
-  { cascade_delete    => 0 };
+# has_many
+#   sales_prices => 'Yetie::Schema::Result::SalesOrderItemPrice',
+#   { 'foreign.item_id' => 'self.id' },
+#   { cascade_delete    => 0 };
+#  Book->has_many('pages' => 'Page', 'book', { order_by => \'page_number DESC'} );
 
 has_many
   shipment_items => 'Yetie::Schema::Result::SalesOrderShipmentItem',
@@ -76,7 +77,7 @@ sub to_data {
     $data->{$_} = $self->$_ for @columns;
 
     # relation
-    $data->{price}    = $self->price->to_data;
+    $data->{price}    = $self->sales_price->to_data;
     $data->{tax_rule} = $self->tax_rule->to_data;
 
     return $data;
