@@ -249,8 +249,8 @@ subtest 'to_order_data' => sub {
                 shipping_address => { id => 33 },
                 shipments        => [
                     {
-                        price    => ignore(),
-                        tax_rule => ignore(),
+                        shipment_price => { price => ignore() },
+                        tax_rule       => ignore(),
                     },
                 ],
             },
