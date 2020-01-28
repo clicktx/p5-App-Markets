@@ -53,7 +53,7 @@ sub to_data {
     my $self = shift;
 
     my $data    = {};
-    my @columns = qw(value currency_code is_tax_included);
+    my @columns = qw(id value currency_code is_tax_included);
     $data->{$_} = $self->$_ for @columns;
 
     return $data;

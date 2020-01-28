@@ -114,22 +114,26 @@
     # Price
     'Price' => [
         [qw/id value currency_code is_tax_included/],
+        # Shipping Fee
         [ 900, 10, 'USD', 0 ],
         [ 901, 20, 'USD', 0 ],
         [ 902, 30, 'USD', 0 ],
+        [ 903, 40, 'USD', 0 ],
     ],
 
     # Shipping Fee
     'ShippingFee' => [
         [qw/id zone_id/],
         [ 600, 500 ],
-        [ 601, 500 ],
-        [ 602, 500 ],
+        [ 601, 501 ],
+        [ 602, 502 ],
     ],
     'ShippingFeePrice' => [
-        [qw/id shipping_fee_id price_id/],
-        [ 10, 600, 900 ],
-        [ 11, 600, 901 ],
+        [qw/price_id shipping_fee_id/],
+        [ 900, 600 ],
+        [ 901, 600 ],
+        [ 902, 601 ],
+        [ 903, 602 ],
     ],
 
     # For Accounts

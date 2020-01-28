@@ -31,22 +31,27 @@ belongs_to
   zone => 'Yetie::Schema::Result::ShippingCarrierServiceZone',
   { 'foreign.id' => 'self.zone_id' };
 
+# has_one
+#   price => 'Yetie::Schema::Result::ShippingFeePrice',
+#   { 'foreign.shipping_fee_id' => 'self.id' },
+#   { cascade_delete    => 0 };
+
 has_many
   prices => 'Yetie::Schema::Result::ShippingFeePrice',
   { 'foreign.shipping_fee_id' => 'self.id' },
   { cascade_delete            => 0 };
 
 # Methods
-sub price {
+sub latest_price {
     my $self = shift;
-    return $self->prices->first->price;
+    return $self->prices->search( {}, { order_by => { -desc => 'price_id' } } )->limit(1)->first->price;
 }
 
 sub to_data {
     my $self = shift;
 
     my $data = $self->SUPER::to_data;
-    $data->{price} = $self->price->to_data;
+    $data->{price} = $self->latest_price->to_data;
 
     return $data;
 }
