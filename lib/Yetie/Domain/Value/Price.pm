@@ -22,6 +22,12 @@ extends 'Yetie::Domain::Value';
 
 with 'Yetie::Domain::Role::TypesMoney';
 
+has _price_id => (
+    is       => 'ro',
+    default  => undef,
+    init_arg => 'id',
+    reader   => 'price_id',
+);
 has _round_mode => (
     is       => 'ro',
     isa      => 'RoundMode',
@@ -37,10 +43,6 @@ has currency_code => (
     isa     => 'CurrencyCode',
     default => 'USD',
 );
-has id => (
-    is      => 'ro',
-    default => undef,
-);
 has is_tax_included => (
     is      => 'ro',
     isa     => 'Bool',
@@ -51,7 +53,7 @@ override to_data => sub {
     my $self = shift;
 
     return {
-        id              => $self->id,
+        id              => $self->price_id,
         value           => $self->value,
         currency_code   => $self->currency_code,
         is_tax_included => $self->is_tax_included,
@@ -229,8 +231,6 @@ PositiveNum only.
 Return boolean value.
 
 Default false.
-
-=head2 C<id>
 
 =head2 C<round_mode>
 
