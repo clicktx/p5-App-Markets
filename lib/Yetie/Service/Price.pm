@@ -7,11 +7,15 @@ sub create_new {
     my $option = args2hash(@args);
 
     my $value           = $option->{value}           || 0;
+    my $price_id        = $option->{id}              || undef;
+    my $round_mode      = $option->{round_mode}      || $self->pref('default_round_mode');
     my $currency_code   = $option->{currency_code}   || $self->pref('locale_currency_code');
     my $is_tax_included = $option->{is_tax_included} || $self->pref('is_price_including_tax');
 
     return $self->factory('value-price')->construct(
         value           => $value,
+        id              => $price_id,
+        round_mode      => $round_mode,
         currency_code   => $currency_code,
         is_tax_included => $is_tax_included,
     );
