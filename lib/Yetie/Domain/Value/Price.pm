@@ -232,6 +232,12 @@ Return boolean value.
 
 Default false.
 
+=head2 C<price_id>
+
+Init argument C<id>
+
+Default undef
+
 =head2 C<round_mode>
 
 'even', 'odd', '+inf', '-inf', 'zero', 'trunc'
@@ -353,7 +359,7 @@ Alias for L</amount>.
 
 =head2 C<*>
 
-=head2 C</>
+=head2 C</id>
 
 =head2 C<%>
 
