@@ -1,6 +1,7 @@
 package Yetie::Schema::Result::Preference;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
+# __PACKAGE__->load_components(qw( Ordered ... ));
 
 primary_column id => {
     data_type         => 'INT',
