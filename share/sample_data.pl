@@ -183,10 +183,10 @@
         [ 223, 'staff',   '2017-05-02 22:31:17', '2017-05-02 22:31:17' ],
     ],
     'StaffPassword' => [
-        [qw/staff_id password_id/],
-        [ 222, 1 ],
-        [ 223, 2 ],
-        [ 223, 3 ],
+        [qw/password_id staff_id/],
+        [ 1, 222 ],
+        [ 2, 223 ],
+        [ 3, 223 ],
     ],
 
     # Customers
@@ -208,10 +208,10 @@
         [ 113, 'usy4bjf00p8bf85fqu9stup87jf3kaxbs0qn0jmf', '2017-07-08 08:01:02', '2017-07-08 08:01:02' ],
     ],
     'CustomerPassword' => [
-        [qw/customer_id password_id/],
-        [ 111, 4 ],
-        [ 112, 5 ],
-        [ 111, 6 ],
+        [qw/password_id customer_id/],
+        [ 4, 111 ],
+        [ 5, 112 ],
+        [ 6, 111 ],
     ],
     'CustomerEmail' => [
         [qw/customer_id email_id is_primary/],
