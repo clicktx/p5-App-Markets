@@ -214,12 +214,12 @@
         [ 6, 111 ],
     ],
     'CustomerEmail' => [
-        [qw/customer_id email_id is_primary/],
-        [ 111, 1, 0 ],
-        [ 111, 2, 0 ],
-        [ 111, 3, 1 ],
-        [ 112, 4, 1 ],
-        [ 113, 5, 1 ],
+        [qw/email_id customer_id is_primary/],
+        [ 1, 111, 0 ],
+        [ 2, 111, 0 ],
+        [ 3, 111, 1 ],
+        [ 4, 112, 1 ],
+        [ 5, 113, 1 ],
     ],
     'CustomerAddress' => [
         [qw/customer_id address_id/],
