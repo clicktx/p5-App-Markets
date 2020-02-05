@@ -14,10 +14,4 @@ column name => {
     is_nullable => 0,
 };
 
-# Relation
-has_many
-  shipping_zones => 'Yetie::Schema::Result::ShippingCarrierServiceZone',
-  { 'foreign.country_code' => 'self.code' },
-  { cascade_delete         => 0 };
-
 1;
