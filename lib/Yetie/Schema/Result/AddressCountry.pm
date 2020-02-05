@@ -16,7 +16,7 @@ column name => {
 
 # Relation
 has_many
-  shipping_zones => 'Yetie::Schema::Result::ShippingZone',
+  shipping_zones => 'Yetie::Schema::Result::ShippingCarrierServiceZone',
   { 'foreign.country_code' => 'self.code' },
   { cascade_delete         => 0 };
 

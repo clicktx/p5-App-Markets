@@ -1,8 +1,8 @@
-package Yetie::Schema::Result::ShippingZoneSubdivision;
+package Yetie::Schema::Result::ShippingCarrierServiceZoneSubdivision;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
-use Yetie::Schema::Result::ShippingZone;
+use Yetie::Schema::Result::ShippingCarrierServiceZone;
 use Yetie::Schema::Result::AddressSubdivision;
 
 primary_column id => {
@@ -11,7 +11,7 @@ primary_column id => {
 };
 
 column zone_id => {
-    data_type   => Yetie::Schema::Result::ShippingZone->column_info('id')->{data_type},
+    data_type   => Yetie::Schema::Result::ShippingCarrierServiceZone->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
@@ -25,7 +25,7 @@ column position => {
 
 # Relation
 belongs_to
-  zone => 'Yetie::Schema::Result::ShippingZone',
+  zone => 'Yetie::Schema::Result::ShippingCarrierServiceZone',
   { 'foreign.id' => 'self.zone_id' };
 
 belongs_to
