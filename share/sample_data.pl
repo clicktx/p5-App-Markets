@@ -1,4 +1,10 @@
-(
+my @countries = require './address_country_iso_3166_1.pl';
+my @addresses = require './address_data.pl';
+
+return (
+    @countries,
+    @addresses,
+
     # Payment Method
     'PaymentMethod' => [
         [qw/id name/],
@@ -395,4 +401,4 @@
         [ 33, 1002, 1 ],
         [ 34, 1003, 2 ],    # Shipped all items
     ],
-)
+);
