@@ -29,7 +29,7 @@ belongs_to
   { 'foreign.id' => 'self.zone_id' };
 
 belongs_to
-  subdivision => 'Yetie::Schema::Result::AddressSubdivision',
+  detail => 'Yetie::Schema::Result::AddressSubdivision',
   { 'foreign.code' => 'self.subdivision_code' };
 
 1;
