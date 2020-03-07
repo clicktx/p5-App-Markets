@@ -5,7 +5,7 @@ requires 'DateTime',                                '1.42';
 requires 'DateTime::Format::MySQL',                 '0.06';
 requires 'DateTime::Format::Strptime',              '1.73';
 requires 'Data::Page::Navigation',                  '0.06';
-requires 'DBD::mysql',                              '4.033';
+requires 'DBD::mysql',                              '4.050';
 requires 'DBI',                                     '1.636';
 requires 'DBIx::Sunny',                             '0.24';
 requires 'DBIx::Class',                             '0.082840';
@@ -71,7 +71,7 @@ on test => sub {
     requires 'Test::Exception',         '0.43';
     requires 'Test::Harness',           '3.39';
     requires 'Test::More',              '1.302140';
-    requires 'Test::mysqld',            '1.0012';
+    requires 'Test::mysqld',            '1.0013';
     requires 'Test::Perl::Critic',      '1.04';
     requires 'Test::Pod',               '1.52';
     requires 'Test::Pod::Coverage',     '1.10';
