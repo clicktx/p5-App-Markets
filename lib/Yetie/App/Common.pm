@@ -1,5 +1,6 @@
 package Yetie::App::Common;
 use Mojo::Base 'Mojolicious';
+use Try::Tiny;
 use Yetie::Addon::Handler;
 use Yetie::App::Core::DateTime;
 use DBIx::QueryLog;
@@ -26,11 +27,12 @@ has schema => sub {
     my $conf   = $self->config('db') or die "Missing configuration for db";
     my $dsn    = _dsn($conf);
     my $schema = $schema_class->connect( $dsn, $conf->{user}, $conf->{password} );
-    eval { say 'connected to DB' if $schema->storage->dbh };
-    do {
+    try { say 'connected to DB' if $schema->storage->dbh }
+    catch {
         my $message = "Could not connect to $schema_class using DSN ";
         $self->log->fatal($message) and die $message;
-    } if $@;
+    };
+
     $schema->{app} = $self;
     return $schema;
 };
