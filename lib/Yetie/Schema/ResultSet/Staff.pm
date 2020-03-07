@@ -4,7 +4,7 @@ use Mojo::Base 'Yetie::Schema::ResultSet';
 sub find_by_login_id {
     my ( $self, $login_id ) = @_;
 
-    return $self->find(
+    return $self->search(
         {
             'me.login_id' => $login_id
         },
@@ -12,7 +12,7 @@ sub find_by_login_id {
             prefetch => { staff_password => 'password' },
             order_by => [ { '-desc' => 'password.created_at' } ],
         },
-    );
+    )->limit(1)->first;
 }
 
 1;
