@@ -27,9 +27,9 @@ has schema => sub {
     my $conf   = $self->config('db') or die "Missing configuration for db";
     my $dsn    = _dsn($conf);
     my $schema = $schema_class->connect( $dsn, $conf->{user}, $conf->{password} );
-    try { say 'connected to DB' if $schema->storage->dbh }
+    try { $self->log->info('connected to DB') if $schema->storage->dbh }
     catch {
-        my $message = "Could not connect to $schema_class using DSN ";
+        my $message = "Could not connect to $schema_class using DSN \n" . $_;
         $self->log->fatal($message) and die $message;
     };
 
