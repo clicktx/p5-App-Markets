@@ -68,7 +68,7 @@
     #     [ 22, 'JP', 'Okinawa', 1200 ],
     # ],
     # 'ShippingZoneSubdivision' => [
-    #     [qw/zone_id subdivision_code position/],
+    #     [qw/zone_id region_code position/],
     #     # ヤマト http://www.kuronekoyamato.co.jp/ytc/search/payment/simulation.html?service=TK
     #     [qw/11 JP-01 100/],
     #     [qw/12 JP-02 100/],
