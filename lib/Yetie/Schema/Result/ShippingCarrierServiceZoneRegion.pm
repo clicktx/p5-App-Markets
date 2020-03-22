@@ -15,7 +15,10 @@ column zone_id => {
     is_nullable => 0,
 };
 
-column region_code => Yetie::Schema::Result::AddressCountryRegion->column_info('code');
+column region_id => {
+    data_type   => Yetie::Schema::Result::AddressCountryRegion->column_info('id')->{data_type},
+    is_nullable => 0,
+};
 
 column position => {
     data_type     => 'INT',
@@ -29,7 +32,7 @@ belongs_to
   { 'foreign.id' => 'self.zone_id' };
 
 belongs_to
-  detail => 'Yetie::Schema::Result::AddressCountryRegion',
-  { 'foreign.code' => 'self.region_code' };
+  region => 'Yetie::Schema::Result::AddressCountryRegion',
+  { 'foreign.id' => 'self.region_id' };
 
 1;

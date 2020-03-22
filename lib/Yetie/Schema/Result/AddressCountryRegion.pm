@@ -50,7 +50,7 @@ belongs_to
 
 has_many
   shipping_zones => 'Yetie::Schema::Result::ShippingCarrierServiceZoneRegion',
-  { 'foreign.region_code' => 'self.code' },
+  { 'foreign.region_id' => 'self.id' },
   { cascade_delete             => 0 };
 
 1;
