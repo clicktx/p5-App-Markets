@@ -20,10 +20,10 @@ has_field 'country_code' => (
     expanded     => 0,
     multiple     => 0,
     choices      => [
-        c( Americas       => [ [ Canada  => 'ca' ], [ 'United States' => 'us' ] ] ),
-        c( 'Asia Pacific' => [ [ China   => 'cn' ], [ Japan           => 'jp' ] ] ),
-        c( EU             => [ [ England => 'en' ], [ Germany         => 'de' ] ] ),
-        c( Africa         => [ [ Nigeria => 'ng' ], [ 'South Africa'  => 'za' ] ] ),
+        c( Americas       => [ [ Canada  => 'CA' ], [ 'United States' => 'US' ] ] ),
+        c( 'Asia Pacific' => [ [ China   => 'CN' ], [ Japan           => 'JP' ] ] ),
+        c( EU             => [ [ England => 'EN' ], [ Germany         => 'DE' ] ] ),
+        c( Africa         => [ [ Nigeria => 'NG' ], [ 'South Africa'  => 'ZA' ] ] ),
     ],
 );
 

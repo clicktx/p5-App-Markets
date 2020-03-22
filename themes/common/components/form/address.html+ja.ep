@@ -3,7 +3,7 @@ ja
 <div class="">
     <%= form_field '#country_code' =%>
     <%= form_label %>
-    <%= form_widget choiced => ['jp'] %>
+    <%= form_widget choiced => ['JP'] %>
     <%= form_help %>
     <%= form_error =%>
 </div>
