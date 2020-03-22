@@ -2,6 +2,8 @@ package Yetie::Schema::Result::Address;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
+use Yetie::Schema::Result::AddressCountry;
+
 primary_column id => {
     data_type         => 'INT',
     is_auto_increment => 1,
@@ -14,10 +16,9 @@ column hash => {
 };
 
 column country_code => {
-    data_type   => 'VARCHAR',
-    size        => 2,
+
+    %{ Yetie::Schema::Result::AddressCountry->column_info('code') },
     is_nullable => 0,
-    comments    => 'ISO 3166-1 alpha-2',
 };
 
 column line1 => {
@@ -81,6 +82,10 @@ sub sqlt_deploy_hook {
 }
 
 # Relation
+belongs_to
+  country => 'Yetie::Schema::Result::AddressCountry',
+  { 'foreign.code' => 'self.country_code' };
+
 has_many
   customer_addresses => 'Yetie::Schema::Result::CustomerAddress',
   { 'foreign.address_id' => 'self.id' },
@@ -89,11 +94,11 @@ has_many
 has_many
   sales => 'Yetie::Schema::Result::Sales',
   { 'foreign.billing_address_id' => 'self.id' },
-  { cascade_delete       => 0 };
+  { cascade_delete               => 0 };
 
 has_many
   sales_orders => 'Yetie::Schema::Result::SalesOrder',
   { 'foreign.shipping_address_id' => 'self.id' },
-  { cascade_delete       => 0 };
+  { cascade_delete                => 0 };
 
 1;
