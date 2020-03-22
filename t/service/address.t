@@ -16,7 +16,7 @@ sub _init {
 
 my %params = (
     id            => 1,
-    country_code  => 'us',
+    country_code  => 'US',
     line1         => '42 Pendergast St.',
     line2         => '',
     city          => 'Piedmont',
