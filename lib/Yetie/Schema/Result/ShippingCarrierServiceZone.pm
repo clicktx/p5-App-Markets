@@ -31,6 +31,11 @@ belongs_to
   service => 'Yetie::Schema::Result::ShippingCarrierService',
   { 'foreign.id' => 'self.service_id' };
 
+has_many
+  regions => 'Yetie::Schema::Result::ShippingCarrierServiceZoneRegion',
+  { 'foreign.zone_id' => 'self.id' },
+  { cascade_delete            => 0 };
+
 # 価格履歴を記録するためhas_manyを使用
 has_many
   shipping_fees => 'Yetie::Schema::Result::ShippingFee',
