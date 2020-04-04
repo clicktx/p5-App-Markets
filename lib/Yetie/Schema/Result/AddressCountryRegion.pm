@@ -49,8 +49,8 @@ belongs_to
   { 'foreign.code' => 'self.country_code' };
 
 has_many
-  shipping_zones => 'Yetie::Schema::Result::ShippingCarrierServiceZoneRegion',
+  carrier_service_regions => 'Yetie::Schema::Result::ShippingCarrierServiceZoneRegion',
   { 'foreign.region_id' => 'self.id' },
-  { cascade_delete             => 0 };
+  { cascade_delete      => 0 };
 
 1;
