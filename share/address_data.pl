@@ -1,5 +1,5 @@
 (
-    AddressCountryRegion => [
+    AddressState => [
         [qw/id country_code code name/],
         [qw/1  JP 1 Hokkaido/],
         [qw/2  JP 2 Aomori/],

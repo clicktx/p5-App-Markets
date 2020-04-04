@@ -29,8 +29,8 @@ column position => {
 
 # Relation
 has_many
-  regions => 'Yetie::Schema::Result::AddressCountryRegion',
+  states => 'Yetie::Schema::Result::AddressState',
   { 'foreign.country_code' => 'self.code' },
-  { cascade_delete       => 0 };
+  { cascade_delete         => 0 };
 
 1;

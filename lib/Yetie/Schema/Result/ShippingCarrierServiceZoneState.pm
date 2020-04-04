@@ -1,9 +1,9 @@
-package Yetie::Schema::Result::ShippingCarrierServiceZoneRegion;
+package Yetie::Schema::Result::ShippingCarrierServiceZoneState;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 use Yetie::Schema::Result::ShippingCarrierServiceZone;
-use Yetie::Schema::Result::AddressCountryRegion;
+use Yetie::Schema::Result::AddressState;
 
 primary_column id => {
     data_type         => 'INT',
@@ -15,8 +15,8 @@ column zone_id => {
     is_nullable => 0,
 };
 
-column region_id => {
-    data_type   => Yetie::Schema::Result::AddressCountryRegion->column_info('id')->{data_type},
+column state_id => {
+    data_type   => Yetie::Schema::Result::AddressState->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
@@ -32,7 +32,7 @@ belongs_to
   { 'foreign.id' => 'self.zone_id' };
 
 belongs_to
-  region => 'Yetie::Schema::Result::AddressCountryRegion',
-  { 'foreign.id' => 'self.region_id' };
+  state => 'Yetie::Schema::Result::AddressState',
+  { 'foreign.id' => 'self.state_id' };
 
 1;

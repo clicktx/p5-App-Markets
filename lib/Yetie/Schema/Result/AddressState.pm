@@ -1,4 +1,4 @@
-package Yetie::Schema::Result::AddressCountryRegion;
+package Yetie::Schema::Result::AddressState;
 use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
@@ -49,8 +49,8 @@ belongs_to
   { 'foreign.code' => 'self.country_code' };
 
 has_many
-  carrier_service_regions => 'Yetie::Schema::Result::ShippingCarrierServiceZoneRegion',
-  { 'foreign.region_id' => 'self.id' },
+  carrier_service_regions => 'Yetie::Schema::Result::ShippingCarrierServiceZoneState',
+  { 'foreign.state_id' => 'self.id' },
   { cascade_delete      => 0 };
 
 1;

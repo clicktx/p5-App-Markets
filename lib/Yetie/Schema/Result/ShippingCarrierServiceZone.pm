@@ -32,7 +32,7 @@ belongs_to
   { 'foreign.id' => 'self.service_id' };
 
 has_many
-  regions => 'Yetie::Schema::Result::ShippingCarrierServiceZoneRegion',
+  states => 'Yetie::Schema::Result::ShippingCarrierServiceZoneState',
   { 'foreign.zone_id' => 'self.id' },
   { cascade_delete            => 0 };
 

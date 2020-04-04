@@ -121,8 +121,8 @@
         # [ 501, 411, 'New York City' ],
         # [ 502, 411, 'San Francisco' ],
     ],
-    'ShippingCarrierServiceZoneRegion' => [
-        [qw/zone_id region_id position/],
+    'ShippingCarrierServiceZoneState' => [
+        [qw/zone_id state_id position/],
         # ヤマト http://www.kuronekoyamato.co.jp/ytc/search/payment/simulation.html?service=TK
         [qw/11  1 100/],
         [qw/12  2 100/],
