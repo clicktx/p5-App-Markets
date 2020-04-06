@@ -47,13 +47,6 @@ column city => {
     comments    => 'City/Town',
 };
 
-column state => {
-    data_type   => 'VARCHAR',
-    size        => 32,
-    is_nullable => 0,
-    comments    => 'State/Province/Province/Region',
-};
-
 column postal_code => {
     data_type   => 'VARCHAR',
     size        => 16,
