@@ -49,6 +49,11 @@ belongs_to
   { 'foreign.code' => 'self.country_code' };
 
 has_many
+  addresses => 'Yetie::Schema::Result::Address',
+  { 'foreign.state_id' => 'self.id' },
+  { cascade_delete      => 0 };
+
+has_many
   carrier_service_regions => 'Yetie::Schema::Result::ShippingCarrierServiceZoneState',
   { 'foreign.state_id' => 'self.id' },
   { cascade_delete      => 0 };
