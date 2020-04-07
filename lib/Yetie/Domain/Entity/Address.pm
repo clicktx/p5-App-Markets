@@ -5,7 +5,18 @@ use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
-my $attrs = [qw(country_code line1 line2 state city postal_code personal_name organization phone)];
+has _country => (
+    is     => 'ro',
+    init_arg => 'country',
+    reader => 'country',
+);
+has _state => (
+    is     => 'ro',
+    init_arg => 'state',
+    reader => 'state',
+);
+
+my $attrs = [qw(country_code state_id line1 line2 city postal_code personal_name organization phone)];
 has $attrs => ( is => 'rw', default => q{} );
 has hash   => ( is => 'rw', default => q{} );
 
@@ -79,7 +90,7 @@ sub equals {
 
 sub field_names {
     my $self = shift;
-    my $region = shift || 'us';
+    my $region = shift || 'us';    # FIXME:
     return $self->_locale_field_names->{$region} || $self->_locale_field_names->{us};
 }
 
