@@ -105,4 +105,15 @@ has_many
   { 'foreign.shipping_address_id' => 'self.id' },
   { cascade_delete                => 0 };
 
+sub to_data {
+    my $self = shift;
+
+    my $data = $self->SUPER::to_data();
+    return {
+        %{$data},
+        country => $self->country->name,
+        state   => $self->state->name,
+    };
+}
+
 1;
