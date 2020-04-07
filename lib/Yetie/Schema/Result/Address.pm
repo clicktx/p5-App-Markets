@@ -111,8 +111,9 @@ sub to_data {
     my $data = $self->SUPER::to_data();
     return {
         %{$data},
-        country => $self->country->name,
-        state   => $self->state->name,
+        country    => $self->country->name,
+        state      => $self->state->name,
+        state_code => $self->state->code,
     };
 }
 
