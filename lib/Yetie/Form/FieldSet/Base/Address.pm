@@ -33,7 +33,7 @@ has_field 'line1' => (
     label        => 'Address Line1',
     placeholder  => '2125 Chestnut st',
     help         => 'Street address, P.O. box, c/o',
-    autocomplete => 'address-line1',
+    autocomplete => 'address-level3',
     filters      => [qw(trim)],
     validations  => [],
 );
@@ -44,7 +44,7 @@ has_field 'line2' => (
     label        => 'Address Line2',
     placeholder  => '(optional)',
     help         => 'Apartment, suite, unit, building, floor, etc.',
-    autocomplete => 'address-line2',
+    autocomplete => 'address-level4',
     filters      => [qw(trim)],
     validations  => [],
 );
