@@ -1,6 +1,8 @@
 package Yetie::Schema::Result::AddressCountry;
 use Mojo::Base 'Yetie::Schema::Result';
-use DBIx::Class::Candy -autotable => v1;
+use DBIx::Class::Candy
+  -autotable  => v1,
+  -components => [qw(Ordered)];
 
 primary_column code => {
     data_type => 'VARCHAR',
