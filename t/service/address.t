@@ -27,6 +27,14 @@ my %params = (
     phone         => '3059398498'
 );
 
+subtest 'get_choices_address_states' => sub {
+    my ( $c, $s ) = _init();
+
+    my $choices = $s->get_choices_address_states('JP');
+    is @{$choices}, '47', 'right count array';
+    is_deeply $choices->[-1], [ Okinawa => '47' ], 'right last element';
+};
+
 subtest 'get_registered_id' => sub {
     my ( $c, $s ) = _init();
     my %p = %params;

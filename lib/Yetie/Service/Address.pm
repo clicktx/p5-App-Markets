@@ -1,6 +1,20 @@
 package Yetie::Service::Address;
 use Mojo::Base 'Yetie::Service';
 
+sub get_choices_address_states {
+    my ( $self, $country_code ) = @_;
+
+    my @choices;
+    my $rs = $self->resultset('AddressState')->search( { country_code => $country_code } );
+    $rs->each(
+        sub {
+            my $state = shift;
+            push @choices, [ $state->name => $state->code ];
+        }
+    );
+    return \@choices;
+}
+
 sub get_registered_id {
     my ( $self, $address ) = @_;
 
@@ -59,6 +73,14 @@ the following new ones.
 
 L<Yetie::Service::Address> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
+
+=head2 C<get_choices_address_states>
+
+    my $choices = get_choices_address_states($country_code);
+
+Return Array reference.
+
+Data structure: L<Yetie::Form::Field/choices>
 
 =head2 C<get_registered_id>
 
