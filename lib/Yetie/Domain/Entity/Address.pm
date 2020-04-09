@@ -6,14 +6,19 @@ use namespace::autoclean;
 extends 'Yetie::Domain::Entity';
 
 has _country => (
-    is     => 'ro',
+    is       => 'ro',
     init_arg => 'country',
-    reader => 'country',
+    reader   => 'country',
 );
 has _state => (
-    is     => 'ro',
+    is       => 'ro',
     init_arg => 'state',
-    reader => 'state',
+    reader   => 'state',
+);
+has _state_code => (
+    is       => 'ro',
+    init_arg => 'state_code',
+    reader   => 'state_code',
 );
 
 my $attrs = [qw(country_code state_id line1 line2 city postal_code personal_name organization phone)];
@@ -24,8 +29,8 @@ has _locale_field_names => (
     is      => 'ro',
     default => sub {
         {
-            us => [qw(country_code personal_name organization line1 line2 city state postal_code phone)],
-            jp => [qw(country_code personal_name organization postal_code state city line1 line2 phone)],
+            us => [qw(country_code state_code personal_name organization line1 line2 city state postal_code phone)],
+            jp => [qw(country_code state_code personal_name organization postal_code state city line1 line2 phone)],
         };
     }
 );
@@ -155,25 +160,31 @@ Yetie::Domain::Entity::Address
 L<Yetie::Domain::Entity::Address> inherits all attributes from L<Yetie::Domain::Entity> and implements
 the following new ones.
 
+=head2 C<city>
+
+=head2 C<country>
+
 =head2 C<country_code>
+
+=head2 C<hash>
 
 =head2 C<line1>
 
 =head2 C<line2>
 
-=head2 C<state>
-
-=head2 C<city>
-
-=head2 C<postal_code>
+=head2 C<organization>
 
 =head2 C<personal_name>
 
-=head2 C<organization>
-
 =head2 C<phone>
 
-=head2 C<hash>
+=head2 C<postal_code>
+
+=head2 C<state>
+
+=head2 C<state_code>
+
+=head2 C<state_id>
 
 =head1 METHODS
 
