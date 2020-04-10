@@ -60,17 +60,6 @@ has_field 'city' => (
     validations  => [],
 );
 
-has_field 'state' => (
-    type         => 'text',
-    required     => 1,
-    label        => 'State/Province/Region',
-    placeholder  => 'E.g. CA, WA',
-    help         => '',
-    autocomplete => 'address-level1',
-    filters      => [qw(trim)],
-    validations  => [],
-);
-
 has_field 'state_code' => (
     type         => 'choice',
     required     => 1,

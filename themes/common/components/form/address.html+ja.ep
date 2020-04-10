@@ -22,13 +22,6 @@ ja
     <%= form_error =%>
 </div>
 <div class="">
-    <%= form_field '#state' =%>
-    <%= form_label %>
-    <%= form_widget %>
-    <%= form_help %>
-    <%= form_error =%>
-</div>
-<div class="">
     <%= form_field '#city' =%>
     <%= form_label %>
     <%= form_widget %>
