@@ -71,6 +71,19 @@ has_field 'state' => (
     validations  => [],
 );
 
+has_field 'state_code' => (
+    type         => 'choice',
+    required     => 1,
+    label        => 'State',
+    help         => 'State/Province/Region',
+    autocomplete => 'address-level1',
+    filters      => [qw(trim)],
+    validations  => [],
+    expanded     => 0,
+    multiple     => 0,
+    choices      => [],
+);
+
 has_field 'postal_code' => (
     type         => 'text',
     required     => 1,
