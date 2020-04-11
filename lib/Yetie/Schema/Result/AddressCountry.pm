@@ -37,6 +37,12 @@ column group_id => {
     is_nullable   => 0,
 };
 
+column is_actived => {
+    data_type     => 'BOOLEAN',
+    is_nullable   => 0,
+    default_value => 0,
+};
+
 # Relation
 belongs_to
   continent => 'Yetie::Schema::Result::AddressContinent',
