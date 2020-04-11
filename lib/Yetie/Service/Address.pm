@@ -14,6 +14,7 @@ sub get_form_choices_country {
         $where,
         {
             prefetch => 'countries',
+            order_by => [ 'me.position', 'countries.position' ],
         }
     );
 
