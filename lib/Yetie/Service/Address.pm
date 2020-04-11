@@ -10,14 +10,7 @@ sub get_form_choices_country {
     my $where = {};
     if ( $option->{is_actived} ) { $where->{is_actived} = 1 }
 
-    my $rs = $self->resultset('AddressContinent')->search(
-        $where,
-        {
-            prefetch => 'countries',
-            order_by => [ 'me.position', 'countries.position' ],
-        }
-    );
-
+    my $rs = $self->resultset('AddressContinent')->get_countries($where);
     my @choices;
     $rs->each(
         sub {
