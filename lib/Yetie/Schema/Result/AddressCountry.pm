@@ -4,6 +4,8 @@ use DBIx::Class::Candy
   -autotable  => v1,
   -components => [qw(Ordered)];
 
+use Yetie::Schema::Result::AddressContinent;
+
 primary_column code => {
     data_type => 'VARCHAR',
     size      => 2,
@@ -29,7 +31,17 @@ column position => {
     is_nullable   => 0,
 };
 
+column group_id => {
+    data_type     => Yetie::Schema::Result::AddressContinent->column_info('id')->{data_type},
+    default_value => 1,
+    is_nullable   => 0,
+};
+
 # Relation
+belongs_to
+  continent => 'Yetie::Schema::Result::AddressContinent',
+  { 'foreign.id' => 'self.group_id' };
+
 has_many
   states => 'Yetie::Schema::Result::AddressState',
   { 'foreign.country_code' => 'self.code' },
