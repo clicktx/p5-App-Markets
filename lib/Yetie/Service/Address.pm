@@ -33,7 +33,7 @@ sub get_registered_id {
     my ( $self, $address ) = @_;
 
     my $registered = $self->resultset('Address')->search( { hash => $address->hash } )->first;
-    return if !$registered or $registered->id == $address->id;
+    return if !$registered || $registered->id == $address->id;
 
     return $registered->id;
 }
