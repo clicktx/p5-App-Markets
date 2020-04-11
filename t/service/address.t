@@ -27,6 +27,17 @@ my %params = (
     phone         => '3059398498'
 );
 
+subtest 'get_form_choices_country' => sub {
+    my ( $c, $s ) = _init();
+
+    my $choices = $s->get_form_choices_country();
+    is @{$choices}, '4', 'right count array';
+    isa_ok $choices->[0], 'Mojo::Collection';
+
+    $choices = $s->get_form_choices_country( is_actived => 1 );
+    is $choices->[0]->size, '2', 'right option';
+};
+
 subtest 'get_form_choices_state' => sub {
     my ( $c, $s ) = _init();
 

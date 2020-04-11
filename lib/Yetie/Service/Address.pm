@@ -1,18 +1,38 @@
 package Yetie::Service::Address;
 use Mojo::Base 'Yetie::Service';
+use Mojo::Collection qw(c);
+use Yetie::Util qw(args2hash);
+
+sub get_form_choices_country {
+    my $self   = shift;
+    my $option = args2hash(@_);
+
+    my $where = {};
+    if ( $option->{is_actived} ) { $where->{is_actived} = 1 }
+
+    my $rs = $self->resultset('AddressContinent')->search(
+        $where,
+        {
+            prefetch => 'countries',
+        }
+    );
+
+    my @choices;
+    $rs->each(
+        sub {
+            my $continent = shift;
+            my $countries = $continent->countries->to_array_name_code_pair();
+            push @choices, c( $continent->name => $countries );
+        }
+    );
+    return \@choices;
+}
 
 sub get_form_choices_state {
     my ( $self, $country_code ) = @_;
 
-    my @choices;
     my $rs = $self->resultset('AddressState')->search( { country_code => $country_code } );
-    $rs->each(
-        sub {
-            my $state = shift;
-            push @choices, [ $state->name => $state->code ];
-        }
-    );
-    return \@choices;
+    return $rs->to_array_name_code_pair();
 }
 
 sub get_registered_id {
@@ -73,6 +93,21 @@ the following new ones.
 
 L<Yetie::Service::Address> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
+
+=head2 C<get_form_choices_country>
+
+    my $choices = get_form_choices_country( %OPTIONS | \%OPTIONS );
+
+    my $all_countries = get_form_choices_country();
+    my $active_countries = get_form_choices_country( is_actived => 1 );
+
+B<OPTIONS>
+
+is_actived default: 0 get all countries
+
+Return Array reference.
+
+Data structure: L<Yetie::Form::Field/choices>
 
 =head2 C<get_form_choices_state>
 

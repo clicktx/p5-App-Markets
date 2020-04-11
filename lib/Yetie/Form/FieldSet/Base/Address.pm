@@ -19,12 +19,7 @@ has_field 'country_code' => (
     validations  => [],
     expanded     => 0,
     multiple     => 0,
-    choices      => [
-        c( Americas       => [ [ Canada  => 'CA' ], [ 'United States' => 'US' ] ] ),
-        c( 'Asia Pacific' => [ [ China   => 'CN' ], [ Japan           => 'JP' ] ] ),
-        c( EU             => [ [ England => 'EN' ], [ Germany         => 'DE' ] ] ),
-        c( Africa         => [ [ Nigeria => 'NG' ], [ 'South Africa'  => 'ZA' ] ] ),
-    ],
+    choices      => [],
 );
 
 has_field 'line1' => (
