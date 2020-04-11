@@ -27,12 +27,15 @@ my %params = (
     phone         => '3059398498'
 );
 
-subtest 'get_choices_address_states' => sub {
+subtest 'get_form_choices_state' => sub {
     my ( $c, $s ) = _init();
 
-    my $choices = $s->get_choices_address_states('JP');
+    my $choices = $s->get_form_choices_state('JP');
     is @{$choices}, '47', 'right count array';
     is_deeply $choices->[-1], [ Okinawa => '47' ], 'right last element';
+
+    $choices = $s->get_form_choices_state();
+    is_deeply $choices, [], 'right not arguments';
 };
 
 subtest 'get_registered_id' => sub {
