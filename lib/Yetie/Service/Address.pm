@@ -45,6 +45,17 @@ sub get_registered_id {
     return $registered->id;
 }
 
+sub init_form {
+    my ( $self, $form, $country_code ) = @_;
+
+    my $country_choices = $self->get_form_choices_country( is_actived => 1 );
+    $form->field('country_code')->choices($country_choices);
+
+    my $state_choices = $self->get_form_choices_state($country_code);
+    $form->field('state_code')->choices($state_choices);
+    return;
+}
+
 sub set_address_id {
     my ( $self, $address ) = @_;
 
@@ -124,6 +135,14 @@ Data structure: L<Yetie::Form::Field/choices>
     my $address_id = $service->get_registered_id($address_entity);
 
 Return address ID or C<undefined>.
+
+=head2 C<init_form>
+
+    my $form_obj = $c->form('base-address');
+    my $country_code = 'JP';
+    $service->init_form( $form_obj, $country_code );
+
+Set L<Yetie::Form::Field/choices> in form field C<country_code> and C<state_code>.
 
 =head2 C<set_address_id>
 
