@@ -23,7 +23,7 @@ column position => {
 
 # Relation
 has_many
-  countries => 'Yetie::Schema::Result::Country',
+  countries => 'Yetie::Schema::Result::AddressCountry',
   { 'foreign.group_id' => 'self.id' },
   { cascade_delete     => 0 };
 
