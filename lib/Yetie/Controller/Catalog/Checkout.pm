@@ -12,65 +12,9 @@ sub index {
     return $c->render();
 }
 
-sub shipping_address {
-    my $c = shift;
+sub shipping_address { return shift->_address('shipping_address') }
 
-    my $customer_id = $c->server_session->customer_id;
-    my $addresses   = $c->service('customer')->get_address_list($customer_id);
-    $c->stash( addresses => $addresses );
-
-    my $form = $c->form('customer_address');
-
-    # Get request
-    return $c->render() if $c->is_get_request;
-
-    # Validation form
-    return $c->render() if !$form->do_validate;
-
-    # Set Address
-    my $address = $c->factory('entity-address')->construct( $form->params->to_hash );
-    $c->service('checkout')->set_shipping_address($address);
-
-    # NOTE: 1箇所のみに配送の場合
-    # 複数配送の場合は先に配送先を複数登録しておく？別コントローラが良い？
-
-    # NOTE: 複数配送を使うかのpreference
-    if ( $c->pref('can_multiple_shipments') ) {
-        say 'multiple shipment is true';
-    }
-    else {
-        say 'multiple shipment is false';
-    }
-
-    return $c->_confirm_handler;
-}
-
-sub delivery_option {
-    my $c = shift;
-    return $c->prg_to('rn.checkout.payment');
-}
-
-sub billing_address {
-    my $c = shift;
-
-    my $customer_id = $c->server_session->customer_id;
-    my $addresses   = $c->service('customer')->get_address_list($customer_id);
-    $c->stash( addresses => $addresses );
-
-    my $form = $c->form('customer_address');
-
-    # Get request
-    return $c->render() if $c->is_get_request;
-
-    # Validation form
-    return $c->render() if !$form->do_validate;
-
-    # Set Address
-    my $address = $c->factory('entity-address')->construct( $form->params->to_hash );
-    $c->service('checkout')->set_billing_address($address);
-
-    return $c->_confirm_handler;
-}
+sub billing_address { return shift->_address('billing_address') }
 
 sub select_address {
     my $c            = shift;
@@ -88,6 +32,11 @@ sub select_address {
     return $c->reply->error() if !$res;
 
     return $c->_confirm_handler;
+}
+
+sub delivery_option {
+    my $c = shift;
+    return $c->prg_to('rn.checkout.payment');
 }
 
 sub payment {
@@ -136,6 +85,49 @@ sub confirm {
 }
 
 sub complete { return shift->render() }
+
+# billing and shipping address
+sub _address {
+    my ( $c, $address_type ) = @_;
+
+    my $customer_id = $c->server_session->customer_id;
+    my $addresses   = $c->service('customer')->get_address_list($customer_id);
+    $c->stash( addresses => $addresses );
+
+    my $form = $c->form('customer_address');
+
+    # Set select box options
+    my $country_code = $c->pref('locale_country_code');
+    $c->service('address')->init_form( $form, $country_code );
+
+    # Get request
+    return $c->render() if $c->is_get_request;
+
+    # Validation form
+    return $c->render() if !$form->do_validate;
+
+    # Set Address
+    my $address = $c->factory('entity-address')->construct( $form->params->to_hash );
+    my $method  = "set_$address_type";
+    $c->service('checkout')->$method($address);
+
+    return $c->_confirm_handler if $address_type eq 'billing_address';
+
+    # shipping_address only
+
+    # NOTE: 1箇所のみに配送の場合
+    # 複数配送の場合は先に配送先を複数登録しておく？別コントローラが良い？
+
+    # NOTE: 複数配送を使うかのpreference
+    if ( $c->pref('can_multiple_shipments') ) {
+        say 'multiple shipment is true';
+    }
+    else {
+        say 'multiple shipment is false';
+    }
+
+    return $c->_confirm_handler;
+}
 
 # handler?
 # - Select a shipping address
