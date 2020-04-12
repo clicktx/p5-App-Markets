@@ -1,5 +1,19 @@
 package Yetie::Schema::ResultSet::AddressState;
 use Mojo::Base 'Yetie::Schema::ResultSet';
+use Yetie::Util qw(args2hash);
+
+sub get_id {
+    my $self = shift;
+    my $args = args2hash(@_);
+
+    my $row = $self->find(
+        {
+            country_code => $args->{country_code},
+            code         => $args->{state_code},
+        }
+    );
+    return $row->id;
+}
 
 sub to_array_name_code_pair {
     my $self = shift;
@@ -32,6 +46,12 @@ the following new ones.
 
 L<Yetie::Schema::ResultSet::AddressState> inherits all methods from L<Yetie::Schema::ResultSet> and implements
 the following new ones.
+
+=head2 C<get_id>
+
+    my $id = $resultset->get_id( country_code => 'US', state_code => 'SC' );
+
+Get ID by country code and state code.
 
 =head2 C<to_array_name_code_pair>
 
