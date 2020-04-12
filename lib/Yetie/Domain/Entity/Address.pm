@@ -21,12 +21,15 @@ has _state_code => (
     reader   => 'state_code',
 );
 
-my $attrs = [qw(country_code state_id line1 line2 city postal_code personal_name organization phone)];
+my $attrs = [qw(line1 line2 city postal_code personal_name organization phone)];
 has $attrs => ( is => 'ro', default => q{} );
+
+has country_code => ( is => 'ro', default => q{} );
 has hash => (
     is         => 'ro',
     lazy_build => 1,
 );
+has state_id => ( is => 'ro', default => q{} );
 
 has _locale_field_names => (
     is      => 'ro',
@@ -107,7 +110,7 @@ sub field_names {
 sub hash_code {
     my ( $self, $mode ) = ( shift, shift || '' );
 
-    my $str = '';
+    my $str = $self->country_code . '::' . $self->state_code;
     foreach my $attr ( @{$attrs} ) {
         my $value = $mode eq 'empty' ? '' : $self->$attr // '';
         $str .= '::' . encode( 'UTF-8', $value );
