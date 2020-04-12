@@ -42,7 +42,9 @@ sub init_form {
     my ( $self, $form, $country_code ) = @_;
 
     my $country_choices = $self->get_form_choices_country( is_actived => 1 );
-    $form->field('country_code')->choices($country_choices);
+    my $field = $form->field('country_code');
+    $field->choices($country_choices);
+    $field->choiced($country_code);    # Default choiced
 
     my $state_choices = $self->get_form_choices_state($country_code);
     $form->field('state_code')->choices($state_choices);
