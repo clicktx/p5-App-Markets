@@ -22,8 +22,11 @@ has _state_code => (
 );
 
 my $attrs = [qw(country_code state_id line1 line2 city postal_code personal_name organization phone)];
-has $attrs => ( is => 'rw', default => q{} );
-has hash   => ( is => 'rw', default => q{} );
+has $attrs => ( is => 'ro', default => q{} );
+has hash => (
+    is         => 'ro',
+    lazy_build => 1,
+);
 
 has _locale_field_names => (
     is      => 'ro',
@@ -86,6 +89,8 @@ override 'to_order_data' => sub {
     return { id => $self->id };
 };
 
+sub _build_hash { return shift->hash_code }
+
 sub empty_hash_code { return shift->hash_code('empty') }
 
 sub equals {
@@ -114,15 +119,6 @@ sub hash_code {
 sub is_empty {
     my $self = shift;
     return $self->hash_code eq $self->empty_hash_code ? 1 : 0;
-}
-
-sub new {
-    my $class = shift;
-    my $self  = $class->SUPER::new(@_);
-
-    $self->hash( $self->hash_code );
-    $self->is_modified(0);
-    return $self;
 }
 
 sub notation {

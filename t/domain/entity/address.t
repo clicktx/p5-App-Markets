@@ -41,8 +41,8 @@ subtest 'equals' => sub {
     my $address2 = construct($data);
     is $address1->equals($address2), 1, 'right equals';
 
-    $address1->personal_name('foo bar');
-    is $address1->equals($address2), 0, 'right not equals';
+    my $address3 = $address1->clone( personal_name => 'foo bar' );
+    is $address1->equals($address3), 0, 'right not equals';
 };
 
 subtest 'field_names' => sub {
@@ -55,19 +55,19 @@ subtest 'hash_code' => sub {
     my $hash_code = $address->hash_code;
     is $hash_code, '609a982991e25113aa4e8eb536e41b40ab35f58b', 'right hash code';
 
-    $address->personal_name('foo');
-    isnt $address->hash_code, $hash_code, 'right change personal_name';
+    my $address2 = $address->clone( personal_name => 'foo' );
+    isnt $address2->hash_code, $hash_code, 'right change personal_name';
 
-    $address->personal_name('ほげ');
-    isnt $address->hash_code, $hash_code, 'right multibyte characters';
+    my $address3 = $address->clone( personal_name => 'ほげ' );
+    isnt $address3->hash_code, $hash_code, 'right multibyte characters';
 };
 
 subtest 'is_empty' => sub {
     my $address = construct();
     is $address->is_empty, 1, 'right data empty';
 
-    $address->country_code('US');
-    is $address->is_empty, 0, 'right not empty';
+    my $address2 = $address->clone( country_code => 'US' );
+    is $address2->is_empty, 0, 'right not empty';
 };
 
 subtest 'notation' => sub {
@@ -92,9 +92,6 @@ subtest 'to_data' => sub {
         phone         => '0122345678',
       },
       'right dump data';
-
-    $address->hash('foobar');
-    is $address->to_data->{hash}, '609a982991e25113aa4e8eb536e41b40ab35f58b', 'right rewrite hash';
 };
 
 done_testing();
