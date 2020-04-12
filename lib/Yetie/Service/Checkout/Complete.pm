@@ -44,11 +44,12 @@ sub complete {
 sub _billing_address {
     my ( $self, $checkout ) = @_;
 
-    my $billing_address_id = $self->service('address')->set_address_id( $checkout->billing_address );
+    my $address = $self->service('address')->find_or_create_address( $checkout->billing_address );
+    $checkout->set_billing_address($address);
 
     # Add to customer address
     # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
-    $self->service('customer')->add_to_address_book($billing_address_id);
+    $self->service('customer')->add_to_address_book( $address->id );
 
     return;
 }
@@ -84,12 +85,13 @@ sub _shipping_address {
 
     $checkout->sales_orders->each(
         sub {
-            my $sales_order         = shift;
-            my $shipping_address_id = $self->service('address')->set_address_id( $sales_order->shipping_address );
+            my $sales_order = shift;
+            my $address     = $self->service('address')->find_or_create_address( $sales_order->shipping_address );
+            $sales_order->set_shipping_address($address);
 
             # Add to customer address
             # NOTE: 選択無しでアドレス帳に登録するのは良いUXか考慮
-            $self->service('customer')->add_to_address_book($shipping_address_id);
+            $self->service('customer')->add_to_address_book( $address->id );
         }
     );
     return;

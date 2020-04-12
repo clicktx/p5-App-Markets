@@ -3,6 +3,14 @@ use Mojo::Base 'Yetie::Service';
 use Mojo::Collection qw(c);
 use Yetie::Util qw(args2hash);
 
+sub find_or_create_address {
+    my ( $self, $address ) = @_;
+
+    my $result = $self->resultset('Address')->find_or_create_address( $address->to_data );
+    my $new_address = $address->clone( id => $result->id );
+    return $new_address;
+}
+
 sub get_form_choices_country {
     my $self   = shift;
     my $option = args2hash(@_);
@@ -49,15 +57,6 @@ sub init_form {
     my $state_choices = $self->get_form_choices_state($country_code);
     $form->field('state_code')->choices($state_choices);
     return;
-}
-
-sub set_address_id {
-    my ( $self, $address ) = @_;
-
-    my $result     = $self->resultset('Address')->find_or_create_address( $address->to_hash );
-    my $address_id = $result->id;
-    $address->id($address_id);
-    return $address_id;
 }
 
 sub update_address {
