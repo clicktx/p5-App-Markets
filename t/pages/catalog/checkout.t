@@ -18,18 +18,11 @@ sub _init {
     my $self = shift;
 
     # カートに商品を入れておく
-    $self->ua->get('/');
     my $sid            = t::Util::get_sid( $self->t );
     my $server_session = t::Util::server_session( $self->app );
     $server_session->load($sid);
     $server_session->cart->data($CART_DATA);
     $server_session->flush;
-}
-
-sub startup : Test(startup) {
-    my $self = shift;
-    $self->SUPER::startup;
-    $self->_init();
 }
 
 # NOTE: カートが空の場合のtestも必要
@@ -39,6 +32,9 @@ sub test_01_no_logged_in : Tests() {
 
     $t->get_ok('/checkout')->status_is(200);
     is_deeply $t->tx->redirects, [], 'right no redirects';
+
+    # カートに商品を入れておく
+    $self->_init();
 
     $t->get_ok($_)->status_is(302)->header_is( Location => '/dropin' )
       for (
@@ -72,11 +68,11 @@ sub test_03_shipping_address : Tests() {
     # New address
     my $post_data = {
         csrf_token    => $self->csrf_token,
-        country_code  => 'us',
+        country_code  => 'US',
+        state_code    => 'NY',
         personal_name => 'foo',
         line1         => 'bar',
         city          => 'baz',
-        state         => 'foo',
         postal_code   => 'bar',
         phone         => 'baz',
     };
@@ -92,11 +88,11 @@ sub test_04_billing_address : Tests() {
     # New address
     my $post_data = {
         csrf_token    => $self->csrf_token,
-        country_code  => 'us',
+        country_code  => 'US',
+        state_code    => 'NY',
         personal_name => 'foo',
         line1         => 'bar',
         city          => 'baz',
-        state         => 'foo',
         postal_code   => 'bar',
         phone         => 'baz',
     };

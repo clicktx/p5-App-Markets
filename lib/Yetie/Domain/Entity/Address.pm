@@ -30,7 +30,10 @@ has hash => (
     is         => 'ro',
     lazy_build => 1,
 );
-has state_id => ( is => 'ro' );
+has state_id => (
+    is      => 'ro',
+    default => q{},
+);
 
 has _locale_field_names => (
     is      => 'ro',
