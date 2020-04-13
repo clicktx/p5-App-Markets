@@ -17,6 +17,7 @@ sub _init {
 my %params = (
     id            => 1,
     country_code  => 'US',
+    state_code    => 'SC',
     state_id      => '92',
     line1         => '42 Pendergast St.',
     line2         => q{},
@@ -32,10 +33,12 @@ subtest 'find_or_create_address' => sub {
     my ( $c, $s ) = _init();
     my %data = (
         country_code  => 'US',
+        state_code    => 'SC',
         state_id      => '92',
         line1         => '42 Pendergast St.',
         line2         => q{},
         city          => 'Piedmont',
+        state         => 'SC',
         postal_code   => '12345',
         personal_name => 'foo bar',
         organization  => q{},
@@ -50,6 +53,11 @@ subtest 'find_or_create_address' => sub {
     $address     = $c->factory('entity-address')->construct(%data);
     $new_address = $s->find_or_create_address($address);
     is $new_address->id, $last_id + 1, 'right load from storage';
+
+    $data{state_id} = '';
+    $address        = $c->factory('entity-address')->construct(%data);
+    $new_address    = $s->find_or_create_address($address);
+    is $new_address->id, $last_id + 1, 'right has not state_id load from storage';
 };
 
 subtest 'get_form_choices_country' => sub {
@@ -93,7 +101,7 @@ subtest 'get_registered_id' => sub {
     is $id, undef, 'right not found registered';
 
     %p       = %params;
-    $p{id}   = 2;
+    $p{id}   = 333;
     $address = $c->factory('entity-address')->construct(%p);
     $id      = $s->get_registered_id($address);
     is $id, 1, 'right found registered';

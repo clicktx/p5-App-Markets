@@ -211,11 +211,11 @@
     ],
     'Address' => [
         [qw/id country_code state_id line1 line2 city postal_code personal_name organization phone hash/],
-        [ 1, 'US', '92', '42 Pendergast St.', q{}, 'Piedmont', '29673', 'Elizabeth T. Peoples', 'Eli Moore Inc', '3059398498', 'a1b79bbc64ac6a3b773681d168d3a658894f1887' ],
-        [ 2, 'US', '82', '7004 Tunnel St.', q{}, 'New Brunswick', '08901', 'Craig M. Hise', 'Big Apple', '8037671849', '6f35ab273ec74992ad4a0eef48068ac063e82705' ],
-        [ 3, 'US', '59', '803 Wild Rose St.', q{}, 'Woodstock', '30188', 'Mary R. Johnson', q{}, '8047441468', 'ddd5a06df33a7a7f72d5c80284df6f3d6cecab65' ],
-        [ 4, 'US', '85', '906 Pearl Ave.', q{}, 'Patchogue', '11772', 'Albert B. Hastings', 'Twin Food Stores', '7089871400', '3b0af55dc218a878c041a6cb3f3467daddf6ead8' ],
-        [ 5, 'JP', '41', '北多久町 4-2-4', 'リバーサイド室瀬212', '多久市', '8460001', '沢井 咲', '株式会社 フィーデザイン', '09054172962', '7147e4227a0ced37c758a93c6f7fcfe6f34ff584' ],
+        [ 1, 'US', '92', '42 Pendergast St.', q{}, 'Piedmont', '29673', 'Elizabeth T. Peoples', 'Eli Moore Inc', '3059398498', '304bd1690da51698cd5de6510f96ea177ad2ed43' ],
+        [ 2, 'US', '82', '7004 Tunnel St.', q{}, 'New Brunswick', '08901', 'Craig M. Hise', 'Big Apple', '8037671849', 'a9ccd398f59462dc212d46b982959345fcce5e12' ],
+        [ 3, 'US', '59', '803 Wild Rose St.', q{}, 'Woodstock', '30188', 'Mary R. Johnson', q{}, '8047441468', '36cdb93653e577fa230f732fc119a8c3f15d01c9' ],
+        [ 4, 'US', '85', '906 Pearl Ave.', q{}, 'Patchogue', '11772', 'Albert B. Hastings', 'Twin Food Stores', '7089871400', '7db96342b0c9888a5da936414618a931ca750e07' ],
+        [ 5, 'JP', '41', '北多久町 4-2-4', 'リバーサイド室瀬212', '多久市', '8460001', '沢井 咲', '株式会社 フィーデザイン', '09054172962', 'e0c9f36a652191653fd3d71454d709b08ad4ce22' ],
     ],
 
     # Password
