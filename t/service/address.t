@@ -16,9 +16,11 @@ sub _init {
 
 my %params = (
     id            => 1,
-    country_code  => 'us',
+    country_code  => 'US',
+    state_code    => 'SC',
+    state_id      => '92',
     line1         => '42 Pendergast St.',
-    line2         => '',
+    line2         => q{},
     city          => 'Piedmont',
     state         => 'SC',
     postal_code   => '29673',
@@ -26,6 +28,59 @@ my %params = (
     organization  => 'Eli Moore Inc',
     phone         => '3059398498'
 );
+
+subtest 'find_or_create_address' => sub {
+    my ( $c, $s ) = _init();
+    my %data = (
+        country_code  => 'US',
+        state_code    => 'SC',
+        state_id      => '92',
+        line1         => '42 Pendergast St.',
+        line2         => q{},
+        city          => 'Piedmont',
+        state         => 'SC',
+        postal_code   => '12345',
+        personal_name => 'foo bar',
+        organization  => q{},
+        phone         => '0011223344',
+    );
+
+    my $last_id     = $c->resultset('Address')->last_id;
+    my $address     = $c->factory('entity-address')->construct(%data);
+    my $new_address = $s->find_or_create_address($address);
+    is $new_address->id, $last_id + 1, 'right store to storage';
+
+    $address     = $c->factory('entity-address')->construct(%data);
+    $new_address = $s->find_or_create_address($address);
+    is $new_address->id, $last_id + 1, 'right load from storage';
+
+    $data{state_id} = '';
+    $address        = $c->factory('entity-address')->construct(%data);
+    $new_address    = $s->find_or_create_address($address);
+    is $new_address->id, $last_id + 1, 'right has not state_id load from storage';
+};
+
+subtest 'get_form_choices_country' => sub {
+    my ( $c, $s ) = _init();
+
+    my $choices = $s->get_form_choices_country();
+    is @{$choices}, '4', 'right count array';
+    isa_ok $choices->[0], 'Mojo::Collection';
+
+    $choices = $s->get_form_choices_country( is_actived => 1 );
+    is $choices->[0]->size, '2', 'right option';
+};
+
+subtest 'get_form_choices_state' => sub {
+    my ( $c, $s ) = _init();
+
+    my $choices = $s->get_form_choices_state('JP');
+    is @{$choices}, '47', 'right count array';
+    is_deeply $choices->[-1], [ Okinawa => '47' ], 'right last element';
+
+    $choices = $s->get_form_choices_state();
+    is_deeply $choices, [], 'right not arguments';
+};
 
 subtest 'get_registered_id' => sub {
     my ( $c, $s ) = _init();
@@ -46,34 +101,10 @@ subtest 'get_registered_id' => sub {
     is $id, undef, 'right not found registered';
 
     %p       = %params;
-    $p{id}   = 2;
+    $p{id}   = 333;
     $address = $c->factory('entity-address')->construct(%p);
     $id      = $s->get_registered_id($address);
     is $id, 1, 'right found registered';
-};
-
-subtest 'set_address_id' => sub {
-    my ( $c, $s ) = _init();
-    my %data = (
-        country_code  => 'us',
-        line1         => '42 Pendergast St.',
-        line2         => '',
-        city          => 'Piedmont',
-        state         => 'SC',
-        postal_code   => '12345',
-        personal_name => 'foo bar',
-        organization  => '',
-        phone         => '0011223344',
-    );
-
-    my $last_id    = $c->resultset('Address')->last_id;
-    my $address    = $c->factory('entity-address')->construct(%data);
-    my $address_id = $s->set_address_id($address);
-    is $address_id, $last_id + 1, 'right store to storage';
-
-    $address    = $c->factory('entity-address')->construct(%data);
-    $address_id = $s->set_address_id($address);
-    is $address_id, $last_id + 1, 'right load from storage';
 };
 
 subtest 'update_address' => sub {

@@ -22,6 +22,12 @@ extends 'Yetie::Domain::Value';
 
 with 'Yetie::Domain::Role::TypesMoney';
 
+has _price_id => (
+    is       => 'ro',
+    default  => undef,
+    init_arg => 'id',
+    reader   => 'price_id',
+);
 has _round_mode => (
     is       => 'ro',
     isa      => 'RoundMode',
@@ -42,6 +48,17 @@ has is_tax_included => (
     isa     => 'Bool',
     default => 0,
 );
+
+override to_data => sub {
+    my $self = shift;
+
+    return {
+        id              => $self->price_id,
+        value           => $self->value,
+        currency_code   => $self->currency_code,
+        is_tax_included => $self->is_tax_included,
+    };
+};
 
 sub add {
     my $self = shift;
@@ -139,16 +156,6 @@ sub subtract {
     return $self->clone( value => $self->amount->copy->bsub($num)->as_float );
 }
 
-sub to_data {
-    my $self = shift;
-
-    return {
-        value           => $self->value,
-        currency_code   => $self->currency_code,
-        is_tax_included => $self->is_tax_included,
-    };
-}
-
 sub _validate {
     my ( $self, $arg ) = @_;
     return if !ref $arg;
@@ -224,6 +231,12 @@ PositiveNum only.
 Return boolean value.
 
 Default false.
+
+=head2 C<price_id>
+
+Init argument C<id>
+
+Default undef
 
 =head2 C<round_mode>
 
@@ -346,7 +359,7 @@ Alias for L</amount>.
 
 =head2 C<*>
 
-=head2 C</>
+=head2 C</id>
 
 =head2 C<%>
 

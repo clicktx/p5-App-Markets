@@ -21,6 +21,7 @@ subtest 'to_data' => sub {
         note          => ignore(),
         tax_rule      => ignore(),
         price         => {
+            id              => ignore(),
             value           => ignore(),
             currency_code   => ignore(),
             is_tax_included => ignore(),

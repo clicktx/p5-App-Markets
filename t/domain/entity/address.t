@@ -5,12 +5,12 @@ use Yetie::Factory;
 use_ok 'Yetie::Domain::Entity::Address';
 
 my $addrs = [
-    [qw(id country_code line1 line2 city state postal_code personal_name organization phone)],
-    [ 1, 'us', '42 Pendergast St.', '', 'Piedmont', 'SC', '29673', 'Claire Underwood', '', '0122345678' ],
+    [qw(id country_code state_id state_code line1 line2 city postal_code personal_name organization phone)],
+    [ 1, 'US', '92', 'SC', '42 Pendergast St.', q{}, 'Piedmont', '29673', 'Claire Underwood', q{}, '0122345678' ],
     [
-        2, 'us', '４２　　Ｐｅｎｄｅｒｇａｓｔ　Ｓｔ．',
-        '', 'Ｐｉｅｄｍｏｎｔ', 'ＳＣ', '２９６７３', 'Claire  Underwood',
-        '', '０１２２３４５６７８'
+        2, 'US', '92', 'ＳＣ', '４２　　Ｐｅｎｄｅｒｇａｓｔ　Ｓｔ．',
+        q{}, 'Ｐｉｅｄｍｏｎｔ', '２９６７３', 'Claire  Underwood',
+        q{}, '０１２２３４５６７８'
     ],
 ];
 my $cols = shift @{$addrs};
@@ -27,12 +27,13 @@ sub construct {
 }
 
 subtest 'basic' => sub {
-    my $address = Yetie::Domain::Entity::Address->new( {} );
+    my $address = Yetie::Domain::Entity::Address->new();
     isa_ok $address, 'Yetie::Domain::Entity';
     can_ok $address, qw(
-      hash country_code line1 line2 city state personal_name organization phone
+      city country country_code hash line1 line2 organization
+      personal_name phone postal_code state state_code state_id
     );
-    is $address->hash, '20f551adf8c892c32845022b874e0763ecf68788', 'right hash';
+    is $address->hash, '790d1abdb65066c354f65d4292455ebd2ae7c479', 'right hash';
 };
 
 subtest 'equals' => sub {
@@ -40,8 +41,8 @@ subtest 'equals' => sub {
     my $address2 = construct($data);
     is $address1->equals($address2), 1, 'right equals';
 
-    $address1->personal_name('foo bar');
-    is $address1->equals($address2), 0, 'right not equals';
+    my $address3 = $address1->clone( personal_name => 'foo bar' );
+    is $address1->equals($address3), 0, 'right not equals';
 };
 
 subtest 'field_names' => sub {
@@ -52,21 +53,22 @@ subtest 'field_names' => sub {
 subtest 'hash_code' => sub {
     my $address   = construct($data);
     my $hash_code = $address->hash_code;
-    is $hash_code, '83fdfb97f5ec0b93d486606da8a032af87235ccc', 'right hash code';
+    is $hash_code, '2398f6c57bd11570dcae5e28461e535eaa46243f', 'right hash code';
+    is $address->hash_code('empty'), '790d1abdb65066c354f65d4292455ebd2ae7c479', 'right empty hash code';
 
-    $address->personal_name('foo');
-    isnt $address->hash_code, $hash_code, 'right change personal_name';
+    my $address2 = $address->clone( personal_name => 'foo' );
+    isnt $address2->hash_code, $hash_code, 'right change personal_name';
 
-    $address->personal_name('ほげ');
-    is $address->hash_code, '29f476a4d05499095ff5ed2ec45e86951683951a', 'right multibyte characters';
+    my $address3 = $address->clone( personal_name => 'ほげ' );
+    isnt $address3->hash_code, $hash_code, 'right multibyte characters';
 };
 
 subtest 'is_empty' => sub {
     my $address = construct();
     is $address->is_empty, 1, 'right data empty';
 
-    $address->country_code('us');
-    is $address->is_empty, 0, 'right not empty';
+    my $address2 = $address->clone( country_code => 'US' );
+    is $address2->is_empty, 0, 'right not empty';
 };
 
 subtest 'notation' => sub {
@@ -79,21 +81,18 @@ subtest 'to_data' => sub {
     is_deeply $address->to_data,
       {
         id            => 1,
-        hash          => '83fdfb97f5ec0b93d486606da8a032af87235ccc',
-        country_code  => 'us',
+        hash          => '2398f6c57bd11570dcae5e28461e535eaa46243f',
+        country_code  => 'US',
+        state_id      => '92',
         line1         => '42 Pendergast St.',
         line2         => '',
         city          => 'Piedmont',
-        state         => 'SC',
         postal_code   => '29673',
         personal_name => 'Claire Underwood',
         organization  => '',
         phone         => '0122345678',
       },
       'right dump data';
-
-    $address->hash('foobar');
-    is $address->to_data->{hash}, '83fdfb97f5ec0b93d486606da8a032af87235ccc', 'right rewrite hash';
 };
 
 done_testing();

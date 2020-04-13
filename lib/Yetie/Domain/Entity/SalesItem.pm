@@ -4,6 +4,14 @@ use namespace::autoclean;
 
 extends 'Yetie::Domain::Entity::CartItem';
 
+override 'to_order_data' => sub {
+    my $self = shift;
+
+    my $data = super();
+    $data->{sales_price} = { price => delete $data->{price} };
+    return $data;
+};
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 

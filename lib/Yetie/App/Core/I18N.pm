@@ -15,8 +15,9 @@ sub register {
             # gettext_to_maketext => $boolean,                    # option
             # decode              => $boolean,                    # option
             data => [
-                '*::'             => '*.po',
-                '*::log_messages' => 'domain/log_messages/*.po',
+                '*::'             => '*/common.po',
+                '*::'             => '*/address.po',
+                '*::log_messages' => '*/log_messages.po',
             ],
         }
     ) if -d $locale_dir;

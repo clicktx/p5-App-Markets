@@ -16,16 +16,16 @@ use_ok $pkg;
     use Moose;
     extends 'Yetie::Domain::Entity';
 
-    has [qw(hoge fuga)] => ( is => 'rw', default => 1 );
+    has [qw(hoge fuga)] => ( is => 'rw', default => 1, traits => [qw(Clone)], );
 }
 
 subtest 'basic' => sub {
     my $e = t::entity::foo->new( id => 1, hoge => 1, fuga => 2 );
     cmp_deeply $e->to_hash, { id => 1, hoge => 1, fuga => 2 }, 'right to_hash';
 
-    $e->id(1);
+    $e->hoge(1);
     is $e->is_modified, 0, 'right not modified of update attribute but no change value';
-    $e->id(111);
+    $e->hoge(111);
     is $e->is_modified, 1, 'right modified of update attribute';
 
     $e = t::entity::foo->new( id => 1, hoge => 1, fuga => 2 );
@@ -68,24 +68,15 @@ subtest 'clone' => sub {
             ),
         ),
     };
-    my $e = t::entity::foo->new($data);
-
-    # Modify object
-    $e->fuga->fuga->first->id(1);
-
+    my $e     = t::entity::foo->new($data);
     my $clone = $e->clone;
     ok !$clone->is_modified, 'right not modified';
     isnt $e, $clone, 'right different object';
     cmp_deeply $e->to_data, $clone->to_data, 'right clone data structure';
+    isnt $e->hoge,          $clone->hoge,    'right another reference';
 
-    isnt $e->hoge, $clone->hoge, 'right another reference';
-    $e->hoge->id(1);
-    is $clone->hoge->id, undef, 'right clone attribute';
-    $e->fuga->hoge->id(1);
-    is $clone->fuga->hoge->id, undef, 'right clone attribute';
-
-    $e->fuga->fuga->first->id(2);
-    is $clone->fuga->fuga->first->id, 1, 'right clone attribute';
+    my $clone2 = $e->clone( id => 2 );
+    is $clone2->id, 2, 'right use parameter';
 };
 
 subtest 'has_id' => sub {
@@ -119,18 +110,18 @@ subtest 'to_array method' => sub {
     has [qw(hoge fuga)] => ( is => 'rw' );
 }
 subtest 'Entity object base' => sub {
-    my $e1   = t::entity::foo->new( id => 1 );
-    my $e1_1 = t::entity::foo->new( id => 1 );
-    my $e2   = t::entity::bar->new( id => 2 );
+    my $e1   = t::entity::foo->new( id => 1, hoge => 1 );
+    my $e1_1 = t::entity::foo->new( id => 1, hoge => 1 );
+    my $e2   = t::entity::bar->new( id => 2, hoge => 1 );
 
     is $e1->id, 1, 'right entity id';
     is $e1->equals($e1_1), 1, 'right equals object';
     is $e1->equals($e2),   0, 'right not equals object';
     is $e1->hash_code, '6ca65f8d83d4a82d0a13787b073002e08551ee49', 'right hash code';
 
-    $e1->id(1);
+    $e1->hoge(1);
     is $e1->is_modified, 0, 'right not modified';
-    $e1->id(111);
+    $e1->hoge(111);
     is $e1->is_modified, 1, 'right modified';
 
     my $obj = t::entity::foo->new;

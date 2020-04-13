@@ -9,11 +9,7 @@ primary_column id => {
     is_auto_increment => 1,
 };
 
-unique_column cart_id => {
-    data_type   => Yetie::Schema::Result::Cart->column_info('cart_id')->{data_type},
-    size        => Yetie::Schema::Result::Cart->column_info('cart_id')->{size},
-    is_nullable => 0,
-};
+unique_column cart_id => Yetie::Schema::Result::Cart->column_info('cart_id');
 
 column created_at => {
     data_type   => 'DATETIME',

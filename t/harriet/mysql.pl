@@ -41,9 +41,11 @@ $ENV{TEST_MYSQL} ||= do {
     my $base_dir = dirname(__FILE__);
     push @paths,
       (
-        path( $base_dir, '..', '..',  'share', 'default_data.pl' ),
-        path( $base_dir, '..', '..',  'share', 'sample_data.pl' ),
         path( $base_dir, '..', 'App', 'share', 'sample_preference.pl' ),
+        path( $base_dir, '..', '..',  'share', 'default_data.pl' ),
+        path( $base_dir, '..', '..',  'share', 'address_countries.pl' ),
+        path( $base_dir, '..', '..',  'share', 'address_states.pl' ),
+        path( $base_dir, '..', '..',  'share', 'sample_data.pl' ),
       );
     Yetie::Install::Util::insert_data( $schema, $_ ) for @paths;
 

@@ -3,6 +3,7 @@ use Mojo::Base -strict;
 use t::Util;
 use Test::More;
 use Test::Mojo;
+use Test::Deep;
 
 my $t      = Test::Mojo->new('App');
 my $app    = $t->app;
@@ -50,14 +51,14 @@ subtest 'method to_data()' => sub {
 subtest 'method to_hash()' => sub {
 
     subtest 'basic' => sub {
-        my $result = $rs->search()->first;
-        my $hash   = $result->to_hash;
+        my $result = $rs->search( { name => 'locale_language_code' } )->first;
+        my $hash = $result->to_hash;
         is ref $hash, 'HASH', 'right variable type';
-        is_deeply $hash,
+        cmp_deeply $hash,
           {
             default_value => 'en',
             group_id      => 1,
-            id            => 1,
+            id            => ignore(),
             name          => 'locale_language_code',
             position      => 10,
             summary       => 'pref.summary.locale_language_code',
@@ -68,12 +69,12 @@ subtest 'method to_hash()' => sub {
     };
 
     subtest 'options' => sub {
-        my $result = $rs->search()->first;
+        my $result = $rs->search( { name => 'locale_language_code' } )->first;
         my $ignore = $result->to_hash( ignore_columns => [qw( default_value id position summary title)] );
         is_deeply $ignore, { group_id => 1, name => 'locale_language_code', value => undef }, 'right ignore columns';
 
         my $consider = $result->to_hash( columns => [qw(id position)] );
-        is_deeply $consider, { id => 1, position => 10 }, 'right pick on columns';
+        cmp_deeply $consider, { id => ignore(), position => 10 }, 'right pick on columns';
     };
 };
 

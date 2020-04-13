@@ -13,7 +13,6 @@ $ENV{DBIX_QUERYLOG_USEQQ}   = 1;
 
 has addons    => sub { Yetie::Addon::Handler->new(@_) };
 has date_time => sub { Yetie::App::Core::DateTime->new(@_) };
-has region    => 'us';
 
 # has restart_app => sub { system shift->home . "/script/appctl --restart" };
 has restart_app => sub { system "touch " . __FILE__ };    # 本番用に変更する
@@ -207,12 +206,6 @@ Return L<Yetie::Addon::Handler> object.
     my $date_time = $app->date_time;
 
 Return L<Yetie::App::Core::DateTime> object.
-
-=head2 C<region>
-
-    my $region = $app->region;
-
-Default: us
 
 =head2 C<restart_app>
 

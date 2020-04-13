@@ -10,6 +10,21 @@ subtest 'basic' => sub {
     lives_ok { $pkg->new( value => 1 ) } 'right lives';
     lives_ok { $pkg->new( value => 0.1 ) } 'right lives';
 
+    my $price = $pkg->new(
+        value           => 111,
+        id              => 222,
+        round_mode      => 'zero',
+        currency_code   => 'JPY',
+        is_tax_included => 1,
+    );
+    is $price->value,           111,    'right value';
+    is $price->price_id,        222,    'right price_id';
+    is $price->round_mode,      'zero', 'right round_mode';
+    is $price->currency_code,   'JPY',  'right currency_code';
+    is $price->is_tax_included, 1,      'right is_tax_included';
+};
+
+subtest 'round_mode' => sub {
     my $price  = $pkg->new( value => 100 );
     my $price2 = $pkg->new( value => 100, round_mode => 'trunc' );
     my $price3 = $pkg->new( value => 100, round_mode => 'even' );

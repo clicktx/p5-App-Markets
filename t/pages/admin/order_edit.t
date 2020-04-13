@@ -73,7 +73,7 @@ sub t03_items_orderd : Tests() {
 
     my $item = $t->app->resultset('SalesOrderItem')->find(1001);
     is $item->quantity, 55, 'right update item quantity';
-    ok $item->price->value == 555, 'right update item price';
+    ok $item->sales_price->price->value == 555, 'right update item price';
 
     # roll back data
     $post_data->{'item.1.price.value'} = 300;

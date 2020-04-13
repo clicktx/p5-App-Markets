@@ -1,13 +1,6 @@
 default
 <% form $fieldset; =%>
 <div class="">
-    <%= form_field '#country_code' =%>
-    <%= form_label %>
-    <%= form_widget choiced => ['us'] %>
-    <%= form_help %>
-    <%= form_error =%>
-</div>
-<div class="">
     <%= form_field '#personal_name' =%>
     <%= form_label %>
     <%= form_widget %>
@@ -21,6 +14,14 @@ default
     <%= form_help %>
     <%= form_error =%>
 </div>
+<div class="">
+    <%= form_field '#phone' =%>
+    <%= form_label %>
+    <%= form_widget %>
+    <%= form_help %>
+    <%= form_error =%>
+</div>
+
 <div class="">
     <%= form_field '#line1' =%>
     <%= form_label %>
@@ -43,7 +44,7 @@ default
     <%= form_error =%>
 </div>
 <div class="">
-    <%= form_field '#state' =%>
+    <%= form_field '#state_code' =%>
     <%= form_label %>
     <%= form_widget %>
     <%= form_help %>
@@ -57,7 +58,7 @@ default
     <%= form_error =%>
 </div>
 <div class="">
-    <%= form_field '#phone' =%>
+    <%= form_field '#country_code' =%>
     <%= form_label %>
     <%= form_widget %>
     <%= form_help %>

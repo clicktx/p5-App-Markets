@@ -45,6 +45,19 @@ sub limit {
     $self->slice( $offset, $last );
 }
 
+# Hook sort by position column
+sub search {
+    my $self = shift;
+
+    my $source = $self->result_source;
+    return $self->next::method(@_) if !$source->has_column('position');
+
+    if ( !$self->is_ordered ) {
+        $source->resultset_attributes( { order_by => ['position'] } );
+    }
+    return $self->next::method(@_);
+}
+
 sub to_array {
     my $self    = shift;
     my @columns = $self->result_class->choose_column_name(@_);
@@ -136,6 +149,20 @@ MySQL like limit and offset.
     my $resultset = $rs->search( {} )->limit( 5, 10 );
 
 Return L<DBIx::Class::ResultSet> object.
+
+=head2 C<search>
+
+    $schema->resultset('country')->search({});
+    # ORDER BY position ASC
+
+    $schema->resultset('country')->search({}, { order_by => { -desc => 'foo' } });
+    # ORDER BY foo DESC
+
+Method hook.
+
+position ASC sort if there is a "position" column.
+
+If "order_by" is set, it takes precedence.
 
 =head2 C<to_array>
 

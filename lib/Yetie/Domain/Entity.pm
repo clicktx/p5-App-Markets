@@ -1,7 +1,6 @@
 package Yetie::Domain::Entity;
 use Yetie::Domain::Collection qw();
 use Yetie::Domain::IxHash qw();
-use Clone qw();
 
 use Moose;
 use namespace::autoclean;
@@ -9,14 +8,7 @@ extends 'Yetie::Domain::Base';
 
 my @not_dump_attrs_defautls = (qw/created_at updated_at/);
 
-has id => ( is => 'rw' );
-
-sub clone {
-    my $self = shift;
-
-    my $clone = Clone::clone($self);
-    return $clone->rehash;
-}
+has id => ( is => 'ro' );
 
 sub equals {
     my ( $self, $obj ) = @_;
@@ -155,9 +147,7 @@ the following new ones.
 
 =head2 C<clone>
 
-    my $clone = $self->clone;
-
-Return object.
+See L<Yetie::Domain::Base/clone>
 
 =head2 C<equals>
 
