@@ -6,7 +6,15 @@ use Yetie::Util qw(args2hash);
 sub find_or_create_address {
     my ( $self, $address ) = @_;
 
-    my $result = $self->resultset('Address')->find_or_create_address( $address->to_data );
+    my $data = $address->to_data;
+    if ( !$data->{state_id} ) {
+        $data->{state_id} = $self->resultset('AddressState')->get_id(
+            country_code => $address->country_code,
+            state_code   => $address->state_code,
+        );
+    }
+
+    my $result = $self->resultset('Address')->find_or_create_address($data);
     my $new_address = $address->clone( id => $result->id );
     return $new_address;
 }
@@ -99,6 +107,11 @@ the following new ones.
 
 L<Yetie::Service::Address> inherits all methods from L<Yetie::Service> and implements
 the following new ones.
+
+=head2 C<find_or_create_address>
+
+    my $address_obj = $c->factory('entity-address')->construct(%params);
+    my $new_address_obj = $service->find_or_create_address($address_obj);
 
 =head2 C<get_form_choices_country>
 
