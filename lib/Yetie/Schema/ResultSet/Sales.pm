@@ -1,6 +1,21 @@
 package Yetie::Schema::ResultSet::Sales;
 use Mojo::Base 'Yetie::Schema::ResultSet';
 
+my $prefetch = [
+    'customer',
+    {
+        billing_address => [ 'country', 'state' ],
+    },
+    {
+        sales_orders => [
+            {
+                shipping_address => [ 'country', 'state' ],
+            },
+            'items',
+        ],
+    },
+];
+
 sub create_order {
     my ( $self, $order_data ) = @_;
 
@@ -21,13 +36,7 @@ sub find_by_id {
     return $self->find(
         $id,
         {
-            prefetch => [
-                'customer',
-                'billing_address',
-                {
-                    sales_orders => [ 'shipping_address', 'items' ],
-                },
-            ],
+            prefetch => $prefetch,
         },
     );
 }

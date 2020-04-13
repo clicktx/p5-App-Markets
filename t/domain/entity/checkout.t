@@ -11,15 +11,15 @@ my %example_data = (
         {
             shipping_address => {
                 id            => 33,
-                country_code  => 'jp',
-                city          => '',
-                state         => '',
+                country_code  => 'JP',
+                state_id      => q{},
+                city          => q{},
                 line1         => 'Tokyo',
-                line2         => '',
-                postal_code   => '',
-                personal_name => '',
-                organization  => '',
-                phone         => '',
+                line2         => q{},
+                postal_code   => q{},
+                personal_name => q{},
+                organization  => q{},
+                phone         => q{},
             },
             items => [
                 {
@@ -40,15 +40,15 @@ my %example_data = (
         {
             shipping_address => {
                 id            => 44,
-                country_code  => 'jp',
-                city          => '',
-                state         => '',
+                country_code  => 'JP',
+                state_id      => q{},
+                city          => q{},
                 line1         => 'Osaka',
-                line2         => '',
-                postal_code   => '',
-                personal_name => '',
-                organization  => '',
-                phone         => '',
+                line2         => q{},
+                postal_code   => q{},
+                personal_name => q{},
+                organization  => q{},
+                phone         => q{},
             },
             items => [
                 {
@@ -70,15 +70,15 @@ my %example_data = (
     ],
     billing_address => {
         id            => 55,
-        country_code  => 'jp',
-        city          => '',
-        state         => '',
+        country_code  => 'JP',
+        state_id      => q{},
+        city          => q{},
         line1         => 'Gunma',
-        line2         => '',
-        postal_code   => '',
-        personal_name => '',
-        organization  => '',
-        phone         => '',
+        line2         => q{},
+        postal_code   => q{},
+        personal_name => q{},
+        organization  => q{},
+        phone         => q{},
     },
     payment_method => {
         id => 1,
@@ -134,12 +134,13 @@ subtest 'has_shipping_address' => sub {
 
 subtest 'set_billing_address' => sub {
     my %address = (
-        country_code => 'jp',
+        country_code => 'JP',
         line1        => 'Tokyo',
     );
     my $valid_data = {
         hash          => ignore(),
-        country_code  => 'jp',
+        country_code  => 'JP',
+        state_id      => q{},
         city          => q{},
         line1         => 'Tokyo',
         line2         => q{},
@@ -147,7 +148,6 @@ subtest 'set_billing_address' => sub {
         personal_name => q{},
         phone         => q{},
         postal_code   => q{},
-        state         => q{},
     };
 
     my $checkout = _create_entity;
@@ -168,12 +168,13 @@ subtest 'set_billing_address' => sub {
 
 subtest 'set_shipping_address' => sub {
     my %address = (
-        country_code => 'jp',
+        country_code => 'JP',
         line1        => 'Shimane',
     );
     my $valid_data = {
         hash          => ignore(),
-        country_code  => 'jp',
+        country_code  => 'JP',
+        state_id      => q{},
         city          => q{},
         line1         => 'Shimane',
         line2         => q{},
@@ -181,7 +182,6 @@ subtest 'set_shipping_address' => sub {
         personal_name => q{},
         phone         => q{},
         postal_code   => q{},
-        state         => q{},
     };
 
     my $checkout = _create_entity;

@@ -3,6 +3,7 @@ use Mojo::Base 'Yetie::Schema::Result';
 use DBIx::Class::Candy -autotable => v1;
 
 use Yetie::Schema::Result::AddressCountry;
+use Yetie::Schema::Result::AddressState;
 
 primary_column id => {
     data_type         => 'INT',
@@ -18,6 +19,12 @@ column hash => {
 column country_code => {
 
     %{ Yetie::Schema::Result::AddressCountry->column_info('code') },
+    is_nullable => 0,
+};
+
+column state_id => {
+
+    data_type   => Yetie::Schema::Result::AddressState->column_info('id')->{data_type},
     is_nullable => 0,
 };
 
@@ -38,13 +45,6 @@ column city => {
     size        => 32,
     is_nullable => 0,
     comments    => 'City/Town',
-};
-
-column state => {
-    data_type   => 'VARCHAR',
-    size        => 32,
-    is_nullable => 0,
-    comments    => 'State/Province/Province/Region',
 };
 
 column postal_code => {
@@ -86,6 +86,10 @@ belongs_to
   country => 'Yetie::Schema::Result::AddressCountry',
   { 'foreign.code' => 'self.country_code' };
 
+belongs_to
+  state => 'Yetie::Schema::Result::AddressState',
+  { 'foreign.id' => 'self.state_id' };
+
 has_many
   customer_addresses => 'Yetie::Schema::Result::CustomerAddress',
   { 'foreign.address_id' => 'self.id' },
@@ -100,5 +104,17 @@ has_many
   sales_orders => 'Yetie::Schema::Result::SalesOrder',
   { 'foreign.shipping_address_id' => 'self.id' },
   { cascade_delete                => 0 };
+
+sub to_data {
+    my $self = shift;
+
+    my $data = $self->SUPER::to_data();
+    return {
+        %{$data},
+        country    => $self->country->name,
+        state      => $self->state->name,
+        state_code => $self->state->code,
+    };
+}
 
 1;

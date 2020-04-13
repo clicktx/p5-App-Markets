@@ -1,6 +1,8 @@
 package Yetie::Schema::Result::AddressState;
 use Mojo::Base 'Yetie::Schema::Result';
-use DBIx::Class::Candy -autotable => v1;
+use DBIx::Class::Candy
+  -autotable  => v1,
+  -components => [qw(Ordered)];
 
 use Yetie::Schema::Result::AddressCountry;
 
@@ -43,14 +45,22 @@ column position => {
     is_nullable   => 0,
 };
 
+# NOTE: schemaごとに設定するかbase class(ResultSet)で設定するか
+# resultset_attributes( { order_by => ['position'] } );
+
 # Relation
 belongs_to
   country => 'Yetie::Schema::Result::AddressCountry',
   { 'foreign.code' => 'self.country_code' };
 
 has_many
+  addresses => 'Yetie::Schema::Result::Address',
+  { 'foreign.state_id' => 'self.id' },
+  { cascade_delete     => 0 };
+
+has_many
   carrier_service_regions => 'Yetie::Schema::Result::ShippingCarrierServiceZoneState',
   { 'foreign.state_id' => 'self.id' },
-  { cascade_delete      => 0 };
+  { cascade_delete     => 0 };
 
 1;

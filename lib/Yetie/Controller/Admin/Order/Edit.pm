@@ -93,10 +93,14 @@ sub _edit_address {
 sub _init_form {
     my ( $c, $address ) = @_;
 
-    my $region = 'us';
-    my $form   = $c->form('customer_address');
+    my $form = $c->form('customer_address');
+
+    # Set select box options
+    my $country_code = $address->country_code;
+    $c->service('address')->init_form( $form, $country_code );
 
     # Set default value
+    my $region      = 'us';                             # FIXME:
     my $field_names = $address->field_names($region);
     my $params      = $c->req->params;
     foreach my $key ( @{$field_names} ) {

@@ -19,12 +19,7 @@ has_field 'country_code' => (
     validations  => [],
     expanded     => 0,
     multiple     => 0,
-    choices      => [
-        c( Americas       => [ [ Canada  => 'CA' ], [ 'United States' => 'US' ] ] ),
-        c( 'Asia Pacific' => [ [ China   => 'CN' ], [ Japan           => 'JP' ] ] ),
-        c( EU             => [ [ England => 'EN' ], [ Germany         => 'DE' ] ] ),
-        c( Africa         => [ [ Nigeria => 'NG' ], [ 'South Africa'  => 'ZA' ] ] ),
-    ],
+    choices      => [],
 );
 
 has_field 'line1' => (
@@ -33,7 +28,7 @@ has_field 'line1' => (
     label        => 'Address Line1',
     placeholder  => '2125 Chestnut st',
     help         => 'Street address, P.O. box, c/o',
-    autocomplete => 'address-line1',
+    autocomplete => 'address-level3',
     filters      => [qw(trim)],
     validations  => [],
 );
@@ -44,7 +39,7 @@ has_field 'line2' => (
     label        => 'Address Line2',
     placeholder  => '(optional)',
     help         => 'Apartment, suite, unit, building, floor, etc.',
-    autocomplete => 'address-line2',
+    autocomplete => 'address-level4',
     filters      => [qw(trim)],
     validations  => [],
 );
@@ -60,15 +55,17 @@ has_field 'city' => (
     validations  => [],
 );
 
-has_field 'state' => (
-    type         => 'text',
+has_field 'state_code' => (
+    type         => 'choice',
     required     => 1,
-    label        => 'State/Province/Region',
-    placeholder  => 'E.g. CA, WA',
-    help         => '',
+    label        => 'State',
+    help         => 'State/Province/Region',
     autocomplete => 'address-level1',
     filters      => [qw(trim)],
     validations  => [],
+    expanded     => 0,
+    multiple     => 0,
+    choices      => [],
 );
 
 has_field 'postal_code' => (

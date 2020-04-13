@@ -1,11 +1,8 @@
 package Yetie::Domain::Value;
-use Yetie::Util qw(args2hash);
 
 use Moose;
 use namespace::autoclean;
 extends 'Yetie::Domain::Base';
-
-with qw(MooseX::Clone);
 
 has value => (
     is      => 'ro',
@@ -22,14 +19,6 @@ around BUILDARGS => sub {
     else {
         return $class->$orig(@_);
     }
-};
-
-around clone => sub {
-    my ( $orig, $class ) = ( shift, shift );
-    my %params = args2hash(@_);
-
-    my $clone = $class->$orig(%params);
-    return $clone->rehash;
 };
 
 sub equals {
@@ -87,11 +76,7 @@ the following new ones.
 
 =head2 C<clone>
 
-    # Hash arguments
-    my $clone = $obj->clone(%params);
-
-    # Hash reference arguments
-    my $clone = $obj->clone(\%params);
+See L<Yetie::Domain::Base/clone>
 
 =head2 C<equals>
 

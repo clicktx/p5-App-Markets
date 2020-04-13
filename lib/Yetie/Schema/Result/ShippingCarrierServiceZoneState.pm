@@ -1,6 +1,8 @@
 package Yetie::Schema::Result::ShippingCarrierServiceZoneState;
 use Mojo::Base 'Yetie::Schema::Result';
-use DBIx::Class::Candy -autotable => v1;
+use DBIx::Class::Candy
+  -autotable  => v1,
+  -components => [qw(Ordered)];
 
 use Yetie::Schema::Result::ShippingCarrierServiceZone;
 use Yetie::Schema::Result::AddressState;

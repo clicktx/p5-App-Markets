@@ -7,6 +7,8 @@ use Moose;
 use namespace::autoclean;
 use MooseX::StrictConstructor;
 
+with qw(MooseX::Clone);
+
 has _hash_sum => (
     is         => 'ro',
     isa        => 'Str',
@@ -29,6 +31,14 @@ around BUILDARGS => sub {
         if ( !defined $args{$key} ) { delete $args{$key} }
     }
     return $class->$orig(%args);
+};
+
+around clone => sub {
+    my ( $orig, $class ) = ( shift, shift );
+    my %params = args2hash(@_);
+
+    my $clone = $class->$orig(%params);
+    return $clone->rehash;
 };
 
 sub BUILD {
@@ -144,6 +154,16 @@ SEE L</hash_code>
 =head1 METHODS
 
 L<Yetie::Domain::Base> inherits all methods from L<Moose> and implements the following new ones.
+
+=head2 C<clone>
+
+    # Hash arguments
+    my $clone = $obj->clone(%params);
+
+    # Hash reference arguments
+    my $clone = $obj->clone(\%params);
+
+See L<MooseX::Clone>
 
 =head2 C<factory>
 

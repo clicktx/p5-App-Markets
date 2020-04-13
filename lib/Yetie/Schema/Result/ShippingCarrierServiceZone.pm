@@ -1,6 +1,8 @@
 package Yetie::Schema::Result::ShippingCarrierServiceZone;
 use Mojo::Base 'Yetie::Schema::Result';
-use DBIx::Class::Candy -autotable => v1;
+use DBIx::Class::Candy
+  -autotable  => v1,
+  -components => [qw(Ordered)];
 
 use Yetie::Schema::Result::ShippingCarrierService;
 
@@ -34,12 +36,12 @@ belongs_to
 has_many
   states => 'Yetie::Schema::Result::ShippingCarrierServiceZoneState',
   { 'foreign.zone_id' => 'self.id' },
-  { cascade_delete            => 0 };
+  { cascade_delete    => 0 };
 
 # 価格履歴を記録するためhas_manyを使用
 has_many
   shipping_fees => 'Yetie::Schema::Result::ShippingFee',
   { 'foreign.zone_id' => 'self.id' },
-  { cascade_delete            => 0 };
+  { cascade_delete    => 0 };
 
 1;

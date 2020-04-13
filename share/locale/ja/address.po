@@ -1,0 +1,156 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: yetie-lasted-version\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: yetie-lang-team <clicktx@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.8\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Last-Translator: \n"
+"Language: ja\n"
+
+# States
+msgid "Hokkaido"
+msgstr "北海道"
+
+#  msgid "Aomori"
+#  msgstr ""
+
+#  msgid "Iwate"
+#  msgstr ""
+
+#  msgid "Miyagi"
+#  msgstr ""
+
+#  msgid "Akita"
+#  msgstr ""
+
+#  msgid "Yamagata"
+#  msgstr ""
+
+#  msgid "Hukushima"
+#  msgstr ""
+
+#  msgid "Ibaraki"
+#  msgstr ""
+
+#  msgid "Tochigi"
+#  msgstr ""
+
+#  msgid "Gunma"
+#  msgstr ""
+
+#  msgid "Saitama"
+#  msgstr ""
+
+#  msgid "Chiba"
+#  msgstr ""
+
+#  msgid "Tokyo"
+#  msgstr ""
+
+#  msgid "Kanagawa"
+#  msgstr ""
+
+#  msgid "Niigata"
+#  msgstr ""
+
+#  msgid "Toyama"
+#  msgstr ""
+
+#  msgid "Ishikawa"
+#  msgstr ""
+
+#  msgid "Fukui"
+#  msgstr ""
+
+#  msgid "Yamanashi"
+#  msgstr ""
+
+#  msgid "Nagano"
+#  msgstr ""
+
+#  msgid "Gifu"
+#  msgstr ""
+
+#  msgid "Shizuoka"
+#  msgstr ""
+
+#  msgid "Aichi"
+#  msgstr ""
+
+#  msgid "Mie"
+#  msgstr ""
+
+#  msgid "Siga"
+#  msgstr ""
+
+#  msgid "Kyoto"
+#  msgstr ""
+
+#  msgid "Osaka"
+#  msgstr ""
+
+#  msgid "Hyogo"
+#  msgstr ""
+
+#  msgid "Nara"
+#  msgstr ""
+
+#  msgid "Wakayama"
+#  msgstr ""
+
+#  msgid "Tottori"
+#  msgstr ""
+
+#  msgid "Shimane"
+#  msgstr ""
+
+#  msgid "Okayama"
+#  msgstr ""
+
+#  msgid "Hiroshima"
+#  msgstr ""
+
+#  msgid "Yamaguchi"
+#  msgstr ""
+
+#  msgid "Tokushima"
+#  msgstr ""
+
+#  msgid "Kagawa"
+#  msgstr ""
+
+#  msgid "Ehime"
+#  msgstr ""
+
+#  msgid "Kochi"
+#  msgstr ""
+
+#  msgid "Fukuoka"
+#  msgstr ""
+
+msgid "Saga"
+msgstr "佐賀県"
+
+#  msgid "Nagasaki"
+#  msgstr ""
+
+#  msgid "Kumamoto"
+#  msgstr ""
+
+#  msgid "Oita"
+#  msgstr ""
+
+#  msgid "Miyazaki"
+#  msgstr ""
+
+#  msgid "Kagoshima"
+#  msgstr ""
+
+#  msgid "Okinawa"
+#  msgstr ""

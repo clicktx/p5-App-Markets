@@ -2,12 +2,14 @@ package Yetie::Schema::ResultSet::SalesOrder;
 use Mojo::Base 'Yetie::Schema::ResultSet';
 
 my $prefetch = [
-    'shipping_address',
+    {
+        shipping_address => [ 'country', 'state' ]
+    },
     {
         items => [ { sales_price => 'price' }, 'tax_rule' ],
     },
     {
-        sales => [ 'customer', 'billing_address' ],
+        sales => [ 'customer', { billing_address => [ 'country', 'state' ] } ],
     },
 ];
 
