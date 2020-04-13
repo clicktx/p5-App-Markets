@@ -41,7 +41,7 @@ the following new ones.
 
     $resultset->get_countries( \%where );
 
-Return resultset.
+Return L<Yetie::Schema::ResultSet::AddressContinent>
 
 =head1 AUTHOR
 
