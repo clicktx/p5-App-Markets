@@ -5,12 +5,12 @@ use Yetie::Factory;
 use_ok 'Yetie::Domain::Entity::Address';
 
 my $addrs = [
-    [qw(id country_code state_id line1 line2 city state postal_code personal_name organization phone)],
-    [ 1, 'US', '92', '42 Pendergast St.', '', 'Piedmont', 'SC', '29673', 'Claire Underwood', '', '0122345678' ],
+    [qw(id country_code state_id state_code line1 line2 city postal_code personal_name organization phone)],
+    [ 1, 'US', '92', 'SC', '42 Pendergast St.', q{}, 'Piedmont', '29673', 'Claire Underwood', q{}, '0122345678' ],
     [
-        2, 'US', '92', '４２　　Ｐｅｎｄｅｒｇａｓｔ　Ｓｔ．',
-        '', 'Ｐｉｅｄｍｏｎｔ', 'ＳＣ', '２９６７３', 'Claire  Underwood',
-        '', '０１２２３４５６７８'
+        2, 'US', '92', 'ＳＣ', '４２　　Ｐｅｎｄｅｒｇａｓｔ　Ｓｔ．',
+        q{}, 'Ｐｉｅｄｍｏｎｔ', '２９６７３', 'Claire  Underwood',
+        q{}, '０１２２３４５６７８'
     ],
 ];
 my $cols = shift @{$addrs};
@@ -27,13 +27,13 @@ sub construct {
 }
 
 subtest 'basic' => sub {
-    my $address = Yetie::Domain::Entity::Address->new( {} );
+    my $address = Yetie::Domain::Entity::Address->new();
     isa_ok $address, 'Yetie::Domain::Entity';
     can_ok $address, qw(
       city country country_code hash line1 line2 organization
       personal_name phone postal_code state state_code state_id
     );
-    is $address->hash, '20f551adf8c892c32845022b874e0763ecf68788', 'right hash';
+    is $address->hash, '790d1abdb65066c354f65d4292455ebd2ae7c479', 'right hash';
 };
 
 subtest 'equals' => sub {
@@ -53,7 +53,8 @@ subtest 'field_names' => sub {
 subtest 'hash_code' => sub {
     my $address   = construct($data);
     my $hash_code = $address->hash_code;
-    is $hash_code, '609a982991e25113aa4e8eb536e41b40ab35f58b', 'right hash code';
+    is $hash_code, '2398f6c57bd11570dcae5e28461e535eaa46243f', 'right hash code';
+    is $address->hash_code('empty'), '790d1abdb65066c354f65d4292455ebd2ae7c479', 'right empty hash code';
 
     my $address2 = $address->clone( personal_name => 'foo' );
     isnt $address2->hash_code, $hash_code, 'right change personal_name';
@@ -80,7 +81,7 @@ subtest 'to_data' => sub {
     is_deeply $address->to_data,
       {
         id            => 1,
-        hash          => '609a982991e25113aa4e8eb536e41b40ab35f58b',
+        hash          => '2398f6c57bd11570dcae5e28461e535eaa46243f',
         country_code  => 'US',
         state_id      => '92',
         line1         => '42 Pendergast St.',

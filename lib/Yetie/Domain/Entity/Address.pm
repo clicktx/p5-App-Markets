@@ -9,11 +9,13 @@ has _country => (
     is       => 'ro',
     init_arg => 'country',
     reader   => 'country',
+    default  => q{},
 );
 has _state => (
     is       => 'ro',
     init_arg => 'state',
     reader   => 'state',
+    default  => q{},
 );
 has _state_code => (
     is       => 'ro',
@@ -21,15 +23,14 @@ has _state_code => (
     reader   => 'state_code',
 );
 
-my $attrs = [qw(line1 line2 city postal_code personal_name organization phone)];
+my $attrs = [qw(country_code line1 line2 city postal_code personal_name organization phone)];
 has $attrs => ( is => 'ro', default => q{} );
 
-has country_code => ( is => 'ro', default => q{} );
 has hash => (
     is         => 'ro',
     lazy_build => 1,
 );
-has state_id => ( is => 'ro', default => q{} );
+has state_id => ( is => 'ro' );
 
 has _locale_field_names => (
     is      => 'ro',
@@ -110,12 +111,12 @@ sub field_names {
 sub hash_code {
     my ( $self, $mode ) = ( shift, shift || '' );
 
-    my $str = $self->country_code . '::' . $self->state_code;
+    my $str;
     foreach my $attr ( @{$attrs} ) {
-        my $value = $mode eq 'empty' ? '' : $self->$attr // '';
+        my $value = $mode eq 'empty' ? q{} : $self->$attr // q{};
         $str .= '::' . encode( 'UTF-8', $value );
     }
-    $str =~ s/\s//g;
+    $str =~ s/\s//sxmg;
     return $self->SUPER::hash_code($str);
 }
 
